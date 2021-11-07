@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("mou",["Enumeration","Variable"],[["MouseButton",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/MouseButton.hpp:ssGUI.Enums.MouseButton","CClass:ssGUI.Enums:MouseButton"]]],["MouseInputBlocked",,[["InputStatus",,,,1,"File:ssGUI/BaseClasses/InputStatus.hpp:InputStatus.MouseInputBlocked","CClass:InputStatus:MouseInputBlocked"]]]]);

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("isi",["Function"],[["IsInteractable",,[["Widget",,,,0,"File:ssGUI/BaseClasses/Widget.hpp:Widget.IsInteractable","CClass:Widget:IsInteractable"]]]]);

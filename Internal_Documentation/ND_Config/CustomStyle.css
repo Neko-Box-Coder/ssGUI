@@ -1,0 +1,27 @@
+﻿* {
+    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+}
+
+.HTitle, .HSubtitle
+{
+    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+}
+
+#MClassTab { display: none !important }
+
+#NDHeader {
+    background-color: #818181;
+    padding: .65em .65em .55em .65em;
+    border-bottom: 1px solid #474747;
+    z-index: 2;
+}
+
+body.NDHomePage {
+    padding: 0;
+    margin: 0;
+    background-color: #E0E0E0;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100%
+}

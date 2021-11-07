@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("typ",["Section"],[["Types",,[[,"GUI Object Types",,,0,"File:User_Manual/5._GUI_Object_Types.txt:GUI_Object_Types"]]]]);

@@ -1,0 +1,127 @@
+Title: Event Callback Class
+
+Event Callback is one of the building blocks of ssGUI. There are a number of event callbacks that comes with ssGUI, some of them are automatically added by extension or GUI Object itself.
+
+As mentioned before, you should *ALWAYS* create an event callback object on the *heap*. 
+
+The actual implementation of event callback is in <BaseEventCallback> class and every class that derives from it are just providing a name for you to identify it.
+
+_
+
+There are two types of event callbacks:
+
+- The first one is for an event that has *already happened*. This is shown in the name with *past-tense* such as MinMaxSize*Changed*EventCallback
+
+- The second one is for an event that *will happen* and normally you have some sort of way to stop this event from happening. Again, this is shown in the name with *present-tense*.
+
+A good example for this is Window*Close*EventCallback.
+
+_
+
+To actually use an event callback, we need to create it first.
+
+> ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback* eventCallback = new ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback();
+
+_
+
+ssGUI uses C++ functional header in order to hook a function to the event callback.
+The first parameter reprensents the object that *causes* the event which is passed as a GUIObject pointer.
+
+For example, if <RecursiveChildrenAddedEventCallback> is added to a parent and then an object is added as a child to this parent.
+
+Then the *child* is the one that causes the event.
+
+- To link a Lambda to the event callback:
+========================= C++ ==========================
+int eventIndex = eventCallback->AddEventListener
+(
+    [&](ssGUIObject* source)
+    {
+        std::cout<<"called\n";
+    }
+);
+========================================================
+
+- To link an object function to the event callback:
+========================= C++ ==========================
+int eventIndex = eventCallback->AddEventListener
+(
+    std::bind(&some::class::function, objectPointer, std::placeholders::_1)
+);
+========================================================
+
+- To link just a function:
+> int eventIndex = eventCallback->AddEventListener(&someFunc);
+
+<EventCallback::AddEventListener> returns a callback index where you can use to remove the callback later if you wish. Like this:
+
+> eventCallback->RemoveEventListener(eventIndex);
+
+_
+
+Well, it is useless if you just create an event callback and not attach it to any GUI object.
+
+This can be done by:
+
+> someObject.AddEventCallback(eventCallback);
+
+_Do not add the same type of event callback if there's one existed already._
+
+You can check if an event callback exists or not by passing the name of the specific type of event you want to check to <GUIObject::IsEventCallbackExist>
+
+For example, if you want to check if <MinMaxSizeChangedEventCallback> has been added to _someObject_ or not:
+
+> someObject.IsEventCallbackExist(MinMaxSizeChangedEventCallback::EVENT_NAME);
+
+_
+
+Similarly if you want to remove an event callback, you can:
+
+> someObject.RemoveEventCallback(MinMaxSizeChangedEventCallback::EVENT_NAME);
+
+_
+
+If you have created a custom event callback and want to notify the event callback whenever an event happens:
+
+> eventCallback.Notify(callerPointer);
+
+<EventCallback::Notify> takes a GUIObject pointer that reprensents the object that *causes* the event. 
+
+Note that you don't need to implement the logic for notifying the default event callbacks. 
+
+_
+
+Here's an example:
+
+======================================== C++ ============================================
+int main()
+{
+    ssGUI::MainWindow mainWindow;
+
+    ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback* callback = new ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback();
+    callback->AddEventListener
+    (
+        [&](ssGUI::GUIObject* source) 
+        {
+            std::cout<<"child added\n";
+        }
+    );
+
+    mainWindow.AddEventCallback(callback);
+
+    //Creating window
+    ssGUI::Window window;
+    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window.SetSize(glm::ivec2(150, 150));
+    window.SetParentP(&mainWindow);     //This should trigger the event callback
+
+    //Creating ssGUIManager and run it
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+
+    return 0;
+}
+=========================================================================================
+
+

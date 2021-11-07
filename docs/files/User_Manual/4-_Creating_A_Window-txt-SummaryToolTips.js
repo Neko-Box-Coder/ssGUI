@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("File:User_Manual/4._Creating_A_Window.txt",{10:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Okay, enough of talking. Let\'s try to get our hands dirty.</div></div>",11:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Well, it is quite boring to just have a blank window, isn\'t it?</div></div>"});

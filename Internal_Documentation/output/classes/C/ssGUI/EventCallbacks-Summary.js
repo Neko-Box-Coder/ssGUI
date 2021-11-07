@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.EventCallbacks","EventCallbacks");NDSummary.OnSummaryLoaded("CClass:ssGUI.EventCallbacks",[["C/C++","C"]],[["Classes","Class"]],[[750,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;EventCallbacks"]]);

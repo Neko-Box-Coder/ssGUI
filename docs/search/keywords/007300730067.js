@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("ssg",["Class"],[["ssGUI",,[[,,,,0,"File:ssGUI/BaseClasses/BaseGUIObject.hpp:ssGUI","CClass:ssGUI"]]],["ssGUIManager",,[[,,,,0,"File:ssGUI/ssGUIManager.hpp:ssGUIManager","CClass:ssGUIManager"]]]]);

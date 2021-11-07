@@ -1,0 +1,131 @@
+Title: Creating A Window
+
+Okay, enough of talking. Let's try to get our hands dirty.
+
+The first step of any GUI application is to create the actual window. In ssGUI, this is represented by the <MainWindow> class.
+
+Let's include
+
+> #include "ssGUI/HeaderGroups/StandardGroup.hpp"
+
+This will include all the standard components. Including MainWindow and ssGUIManager which we will need.
+
+_
+
+Let's start off by creating the MainWindow object under the main function.
+
+> ssGUI::MainWindow mainWindow;
+
+_
+
+Next we need to create <ssGUIManager> in order to manage all the GUI Objects. Well... in this case there's only 1 which is the MainWindow.
+
+> ssGUI::ssGUIManager guiManager;
+
+_
+
+Then we just need to add the MainWindow object to the ssGUIManager. Note that you can *only* add <MainWindow> objects to ssGUIManager.
+
+ssGUIManager will be able to find the rest of the GUI objects (if any) by iterating through the childrens of MainWindow recursively.
+
+> guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+
+<ssGUIManager::AddGUIObject> accepts a pointer to a GUI object therefore we need to use the address of it.
+
+_
+
+Finally, we can tell ssGUIManager to start running and a window should show up.
+
+================= c++ ================
+guiManager.StartRunning();
+return 0;
+======================================
+
+(see MainWindow.png)
+
+So the whole code should look like this:
+
+================ c++ ==================
+#include "ssGUI/HeaderGroups/StandardGroup.hpp"
+int main()
+{
+    ssGUI::MainWindow mainWindow;
+
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+    
+    return 0;
+}
+======================================
+
+Title: A Window Inside A Window
+
+Well, it is quite boring to just have a blank window, isn't it?
+
+Let's add a window inside the main window.
+
+_
+
+To do this, we first need to create the <Window> object, just like other objects.
+
+> ssGUI::Window window;
+
+_
+
+Then we need to add it as a child of the MainWindow. Again, <GUIObject::SetParentP> accepts a pointer.
+
+> window.SetParentP(&mainWindow);
+
+_
+
+The code should work, however since GUI Objects have a default background color of white, which matches the color of the main window.
+
+You won't be able to see the window. So let's change the color of the window.
+
+> window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+
+As you can see, we are using a glm namespace for passing the color. In ssGUI, we use glm structs for all the mathematical and graphical data. For more details about glm, please visit <here: https://github.com/g-truc/glm>
+
+In this case, we are using the unsigned 8 bit vector 4 struct provided by glm to represent color in rgba with range from 0 to 255
+
+As you might have guessed, we are setting the color of the window opague grey. 
+
+_
+
+Next, since all GUI Objects have a default size of 50 x 50 pixels, the window will be too small for us.
+
+Let's make the window larger then.
+
+> window.SetSize(glm::ivec2(150, 150));
+
+_
+
+There we go, so the whole code looks like this:
+
+================ c++ ==================
+#include "ssGUI/HeaderGroups/StandardGroup.hpp"
+int main()
+{
+    ssGUI::MainWindow mainWindow;
+
+    //Creating window
+    ssGUI::Window window;
+    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window.SetSize(glm::ivec2(150, 150));
+    window.SetParentP(&mainWindow);
+
+    //Creating ssGUIManager and run it
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+    
+    return 0;
+}
+======================================
+
+_
+
+By default, you can drag and resize Window GUI Objects. Feel free to poke around and experiment with other functions and settings.
+
+(see WindowMainWindow.png)

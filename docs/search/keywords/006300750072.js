@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("cur",["Enumeration"],[["CursorType",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/CursorType.hpp:ssGUI.Enums.CursorType","CClass:ssGUI.Enums:CursorType"]]]]);

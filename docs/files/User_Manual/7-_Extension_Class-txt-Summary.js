@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/7._Extension_Class.txt","7. Extension Class.txt");NDSummary.OnSummaryLoaded("File:User_Manual/7._Extension_Class.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[12,0,0,"Extension Class","Extension_Class"]]);

@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI","ssGUI");NDSummary.OnSummaryLoaded("CClass:ssGUI",[["C/C++","C"]],[["Classes","Class"]],[[427,0,0,"ssGUI"]]);

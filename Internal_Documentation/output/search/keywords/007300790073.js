@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("sys",["Variable","Enumeration"],[["SystemKey",,[["KeyPresses",,,,0,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses.SystemKey","CClass:KeyPresses:SystemKey"],["ssGUI::Enums",,,,1,"File:ssGUI/Enums/SystemKey.hpp:ssGUI.Enums.SystemKey","CClass:ssGUI.Enums:SystemKey"]]]]);

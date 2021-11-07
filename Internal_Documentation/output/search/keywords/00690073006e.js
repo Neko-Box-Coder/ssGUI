@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("isn",["Function"],[["IsNumberKeyPresent",,[["KeyPresses",,,,0,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses.IsNumberKeyPresent","CClass:KeyPresses:IsNumberKeyPresent"]]]]);

@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/4._Creating_A_Window.txt","4. Creating A Window.txt");NDSummary.OnSummaryLoaded("File:User_Manual/4._Creating_A_Window.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[10,0,0,"Creating A Window","Creating_A_Window"],[11,0,0,"A Window Inside A Window","A_Window_Inside_A_Window"]]);

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("del",["Constant"],[["DELETE",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SystemKey.hpp:ssGUI.Enums.DELETE","CClass:ssGUI.Enums:DELETE"]]]]);

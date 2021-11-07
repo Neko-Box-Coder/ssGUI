@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("for",["Constant"],[["FORWARD_SLASH",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SymbolKey.hpp:ssGUI.Enums.FORWARD_SLASH","CClass:ssGUI.Enums:FORWARD_SLASH"]]]]);

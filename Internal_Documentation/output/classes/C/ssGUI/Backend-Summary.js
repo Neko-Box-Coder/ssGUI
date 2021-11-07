@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.Backend","Backend");NDSummary.OnSummaryLoaded("CClass:ssGUI.Backend",[["C/C++","C"]],[["Classes","Class"]],[[190,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;Backend"]]);

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("ger",["Function"],[["GerPreferredSizeMultiplierCount",,[["Layout",,,,0,"File:ssGUI/Extensions/Layout.hpp:Layout.GerPreferredSizeMultiplierCount","CClass:Layout:GerPreferredSizeMultiplierCount"]]]]);

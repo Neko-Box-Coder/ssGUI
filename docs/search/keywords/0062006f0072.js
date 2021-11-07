@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("bor",["Class"],[["Border",,[[,,,,0,"File:ssGUI/Extensions/Border.hpp:Border","CClass:Border"]]]]);

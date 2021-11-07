@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("cal",["Section"],[["Callback",,[[,"Event Callback Class",,,0,"File:User_Manual/6._Event_Callback_Class.txt:Event_Callback_Class"]]]]);

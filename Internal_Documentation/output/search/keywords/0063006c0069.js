@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("cli",["Constant"],[["CLICKED",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/ButtonState.hpp:ssGUI.Enums.CLICKED","CClass:ssGUI.Enums:CLICKED"]]],["CLICKING",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/ButtonState.hpp:ssGUI.Enums.CLICKING","CClass:ssGUI.Enums:CLICKING"]]]]);

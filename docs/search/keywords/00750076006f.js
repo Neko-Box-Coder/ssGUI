@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("uvo",["Variable"],[["UVOrigin",,[["CharacterInfo",,,,0,"File:ssGUI/BaseClasses/CharacterInfo.hpp:CharacterInfo.UVOrigin","CClass:CharacterInfo:UVOrigin"]]]]);

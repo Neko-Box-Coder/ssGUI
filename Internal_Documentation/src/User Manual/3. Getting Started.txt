@@ -1,0 +1,34 @@
+Title: Getting Started
+
+What makes up ssGUI::
+ssGUI is made up of *GUI Objects*, *Extensions*, *Event Callbacks*, *Backends*, *ssGUIManager*, and some other miscellaneous classes such as enums and data classes.
+
+- *GUI objects* are mainly divided into 2 category, window and widget. All GUI Objects are derived from either of those two, this will be further discussed in <GUI Object Types>.
+
+- *Extensions* provide additional functionality to a GUI object. This can be in the form of visual changes, logic changes, or both.
+
+- *Event Callbacks* is what allows ssGUI to be event based if needed. There are a number of built-in event callbacks you can utilize to run code based on different events.
+
+- *Backends* is what ssGUI relies on in order to render or poll inputs from the system. ssGUI is designed in a way that the GUI code is not dependent on the backend. 
+Though you can create conditional checks or pre-proccessor checks and perform backend specific actions if needed.
+
+- *<ssGUIManager>* is the default way provided by ssGUI to update and render all the GUI objects. You can subscribe to different events in ssGUIManager to run different code at different stages of the update loop.
+You can even override the default way of rendering if needed. For more details about writing your own GUI Manager, please see [insert link]. 
+
+What do ssGUIManager and GUI Objects manage?::
+- *<ssGUIManager>* manages _inputs polling_, _updating objects' states_, _rendering GUI objects_ and _updating cursor_ in this order. 
+
+- *GUI Objects* manages the _life time_ of the *Extensions* and *Event Callbacks* binded to them. 
+Therefore when you are adding extensions or event callbacks to the GUI Object, you should *always create them on the HEAP*. Meaning you should do something like
+> ssGUI::Extensions::Extension* extension = new ssGUI::Extensions::Extension();
+instead of 
+> ssGUI::Extensions::Extension extension;
+otherwise you will get segmentation error.
+
+Again, *_DO NOT_* create extensions or event callbacks on the stack. Create them on the *heap* instead.
+
+What do you need to manage?::
+The only thing you need to manage is the _life time_ of *GUI Objects*, *ssGUIManager* and data classes that are shared between GUI objects.
+
+One thing to note here is that if you want to remove a GUI object under a main window, you should set the _parent pointer_ of that GUI Object to *nullptr* before de-allocating/destroying it.
+

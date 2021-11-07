@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("File:User_Manual/Intermediate/3._Creating_A_Custom_Widget_Or_Window.txt",{1:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div>"});

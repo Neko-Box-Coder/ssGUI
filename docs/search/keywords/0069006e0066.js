@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("inf",["Information"],[["info",,[["ssGUI::Enums","GUIObjectType enum info",,,0,"File:ssGUI/Enums/GUIObjectType.hpp:ssGUI.Enums.GUIObjectType_enum_info","CClass:ssGUI.Enums:GUIObjectType_enum_info"]]]]);

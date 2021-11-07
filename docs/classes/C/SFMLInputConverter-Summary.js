@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("CClass:SFMLInputConverter","SFMLInputConverter");NDSummary.OnSummaryLoaded("CClass:SFMLInputConverter",[["C/C++","C"]],[["Classes","Class"],["Functions","Function"],["Groups","Group"]],[[642,0,0,"SFMLInputConverter"],[643,0,2,"Functions","Functions"],[644,0,1,"ConvertKeys","ConvertKeys"],[645,0,1,"ConvertMouseButtons","ConvertMouseButtons"]]);

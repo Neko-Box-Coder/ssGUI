@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("CClass:BackendDrawingInterface","BackendDrawingInterface");NDSummary.OnSummaryLoaded("CClass:BackendDrawingInterface",[["C/C++","C"]],[["Classes","Class"],["Functions","Function"],["Groups","Group"]],[[637,0,0,"BackendDrawingInterface"],[638,0,2,"Functions","Functions"],[639,0,1,"DrawEntities","DrawEntities"],[640,0,1,"Render","Render"]]);

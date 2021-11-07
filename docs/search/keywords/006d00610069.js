@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("mai",["Constant","Class"],[["MAIN_WINDOW",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/GUIObjectType.hpp:ssGUI.Enums.MAIN_WINDOW","CClass:ssGUI.Enums:MAIN_WINDOW"]]],["MainWindow",,[[,,,,1,"File:ssGUI/BaseClasses/MainWindow.hpp:MainWindow","CClass:MainWindow"]]]]);

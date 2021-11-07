@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("hov",["Constant"],[["HOVER",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/ButtonState.hpp:ssGUI.Enums.HOVER","CClass:ssGUI.Enums:HOVER"]]]]);

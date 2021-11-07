@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("no_",["Constant"],[["NO_WRAPPING",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/TextWrapping.hpp:ssGUI.Enums.NO_WRAPPING","CClass:ssGUI.Enums:NO_WRAPPING"]]]]);

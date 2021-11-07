@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("fou",["Constant"],[["FOUR",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/NumberKey.hpp:ssGUI.Enums.FOUR","CClass:ssGUI.Enums:FOUR"]]]]);

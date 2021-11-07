@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("ish",["Function"],[["IsHorizontalLayout",,[["Layout",,,,0,"File:ssGUI/Extensions/Layout.hpp:Layout.IsHorizontalLayout","CClass:Layout:IsHorizontalLayout"]]]]);

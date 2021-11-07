@@ -1,0 +1,31 @@
+Title: Extension Class
+
+Extension class provides a way to add functionality to a GUI object without modifying it.
+
+Some extensions are general extensions that can be applied to all if not most of the GUI objects. 
+
+Others are specific extensions that can only be applied to a specific type of GUI objects.
+
+You can tell by the name of an extension or by reading the documentation associated to it.
+
+_
+
+Similar to event callbacks, you need to create it on the heap.
+
+> ssGUI::Extensions::Border* border = new ssGUI::Extensions::Border();
+
+_
+
+To add it to a GUI object, you can just call <GUIObject::AddExtension>
+
+> int extensionIndex = someObject.AddExtension(border);
+
+which returns an extension index you can use to remove the extension.
+
+> someObject.RemoveExtension(extensionIndex);
+
+_
+
+Similar to event callbacks, you can get an extension by using the name of the extension type by calling <GUIObject::GetExtension>
+
+If you have any questions on how a particular extension works, it is normally documented in that extension class.

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("iss",["Function"],[["IsSymbolKeyPresent",,[["KeyPresses",,,,0,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses.IsSymbolKeyPresent","CClass:KeyPresses:IsSymbolKeyPresent"]]],["IsSystemKeyPresent",,[["KeyPresses",,,,0,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses.IsSystemKeyPresent","CClass:KeyPresses:IsSystemKeyPresent"]]]]);

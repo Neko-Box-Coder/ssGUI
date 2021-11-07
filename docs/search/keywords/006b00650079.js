@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("key",["Variable","Class"],[["KeyInputBlocked",,[["InputStatus",,,,0,"File:ssGUI/BaseClasses/InputStatus.hpp:InputStatus.KeyInputBlocked","CClass:InputStatus:KeyInputBlocked"]]],["KeyPresses",,[[,,,,1,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses","CClass:KeyPresses"]]]]);
