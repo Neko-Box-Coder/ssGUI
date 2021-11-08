@@ -101,4 +101,4 @@ int main()
 =====================================================================
 
 What's the progress status of the current library::
-[Insert Wekan screenshot]
+(see Wekan.png) (Last Updated: 08/11/2021)
