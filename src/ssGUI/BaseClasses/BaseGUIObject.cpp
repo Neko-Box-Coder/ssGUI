@@ -61,30 +61,14 @@ namespace ssGUI
                 break;
         }
 
-        glm::ivec2 mainWindowOffset;
-        int windowOffset;
+        if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+            anchorPosition += dynamic_cast<ssGUI::MainWindow*>(ParentP)->GetPositionOffset();
+        else if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+            anchorPosition.y += dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
 
-        //Check if parent is main window. If so, apply mainwindow offset
-        if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW && (Anchor == ssGUI::Enums::AnchorType::TOP_LEFT || Anchor == ssGUI::Enums::AnchorType::TOP_RIGHT))
-        {
-            mainWindowOffset = dynamic_cast<ssGUI::MainWindow*>(ParentP)->GetPositionOffset();
-            windowOffset = 0;
-        }
-        //Check if parent is window but not main window. If so apply title bar offset
-        else if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && (Anchor == ssGUI::Enums::AnchorType::TOP_LEFT || Anchor == ssGUI::Enums::AnchorType::TOP_RIGHT))
-        {
-            mainWindowOffset = glm::ivec2();
-            windowOffset = dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
-        }
-        else
-        {
-            mainWindowOffset = glm::ivec2();
-            windowOffset = 0;
-        }
-
-        //Global position - Anchor Point * anchorDirection = Local Position
-        Position.x = (GlobalPosition.x + positionOffset.x - mainWindowOffset.x - anchorPosition.x) * anchorDirection.x;
-        Position.y = (GlobalPosition.y + positionOffset.y - mainWindowOffset.y - anchorPosition.y - windowOffset) * anchorDirection.y;
+        //Local Position = (Global position - Anchor Point) * anchorDirection
+        Position.x = (GlobalPosition.x + positionOffset.x - anchorPosition.x) * anchorDirection.x;
+        Position.y = (GlobalPosition.y + positionOffset.y - anchorPosition.y) * anchorDirection.y;
     }
     
     void BaseGUIObject::SyncGlobalPosition()
@@ -125,33 +109,15 @@ namespace ssGUI
                 break;
         }
 
-        glm::ivec2 mainWindowOffset;
-        int windowOffset;
+        if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+            anchorPosition += dynamic_cast<ssGUI::MainWindow*>(ParentP)->GetPositionOffset();
+        else if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+            anchorPosition.y += dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
 
-        //Check if parent is main window. If so, apply mainwindow offset
-        if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW && (Anchor == ssGUI::Enums::AnchorType::TOP_LEFT || Anchor == ssGUI::Enums::AnchorType::TOP_RIGHT))
-        {
-            mainWindowOffset = dynamic_cast<ssGUI::MainWindow*>(ParentP)->GetPositionOffset();
-            windowOffset = 0;
-        }
-        //Check if parent is window but not main window. If so apply title bar offset
-        else if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && (Anchor == ssGUI::Enums::AnchorType::TOP_LEFT || Anchor == ssGUI::Enums::AnchorType::TOP_RIGHT))
-        {
-            mainWindowOffset = glm::ivec2();
-            windowOffset = dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
-        }
-        else
-        {
-            mainWindowOffset = glm::ivec2();
-            windowOffset = 0;
-        }
-
-        //AnchorPoint + local position * anchorDirection = Global Position
-        GlobalPosition.x = anchorPosition.x + anchorDirection.x * (Position.x + positionOffset.x) + mainWindowOffset.x;
-        GlobalPosition.y = anchorPosition.y + anchorDirection.y * (Position.y + positionOffset.y) + mainWindowOffset.y + windowOffset;
+        //Global Position = AnchorPoint + local position * anchorDirection
+        GlobalPosition.x = anchorPosition.x + Position.x * anchorDirection.x - positionOffset.x;
+        GlobalPosition.y = anchorPosition.y + Position.y * anchorDirection.y - positionOffset.y;
     }
-
-
 
     BaseGUIObject::BaseGUIObject() :  ParentP(nullptr), Children(), Visible(true),
                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)),
