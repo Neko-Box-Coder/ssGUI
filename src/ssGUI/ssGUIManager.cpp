@@ -17,13 +17,13 @@ namespace ssGUI
             BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
 
             #if USE_DEBUG 
-                std::cout<<"Pre update\n";
+                std::cout<<"Update\n";
             #endif
 
             UpdateObjects();
 
             #if USE_DEBUG 
-                std::cout<<"Update\n";
+                std::cout<<"\nRender\n";
             #endif
 
             //Clear up any main windows that are closed
@@ -49,7 +49,7 @@ namespace ssGUI
                 Render();
             
             #if USE_DEBUG 
-                std::cout<<"Render\n";
+                std::cout<<"\nPost Render\n";
             #endif
 
             //Dispatch Post Rendering Update event
@@ -70,7 +70,7 @@ namespace ssGUI
             }
             */
 
-            #if USE_DEBUG && REFRESH_CONSOLE
+            #if REFRESH_CONSOLE
                 Clear();
             #endif
 
@@ -183,7 +183,6 @@ namespace ssGUI
                 std::cout << "Invalid object type added to gui manager\n";
                 continue;
             }
-
             if(static_cast<ssGUI::Window*>(mainWindow)->IsClosed())
                 continue;
 
@@ -220,7 +219,7 @@ namespace ssGUI
                         windowInputStatus.MouseInputBlocked = false;
                     }
                     
-                    objToUpdate.top()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus);
+                    objToUpdate.top()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
 
                     objToUpdate.pop();
                     childrenEvaluated.pop();

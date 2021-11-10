@@ -11,6 +11,7 @@
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
+#include "ssGUI/Extensions/AdvancedPosition.hpp"
 
 
 
@@ -23,7 +24,7 @@ void PrintEnter(ssGUI::ssGUIManager& manager)
         std::cout<<"Enter key down\n";
 
     else if(!inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-            inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+        inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
         std::cout<<"Enter key up\n";
 }
 
@@ -33,13 +34,13 @@ void MoveWindow(ssGUI::ssGUIManager& manager, ssGUI::Window& window, ssGUI::Wind
     ssGUI::KeyPresses currentKeyPresses = inputInterface->GetCurrentKeyPresses();
 
     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT))
-        window.SetPosition(window.GetPositon() + glm::ivec2(-1, 0));
+        window.SetPosition(window.GetPosition() + glm::ivec2(-1, 0));
     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT))
-        window.SetPosition(window.GetPositon() + glm::ivec2(1, 0));
+        window.SetPosition(window.GetPosition() + glm::ivec2(1, 0));
     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN))
-        window.SetPosition(window.GetPositon() + glm::ivec2(0, 1));
+        window.SetPosition(window.GetPosition() + glm::ivec2(0, 1));
     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP))
-        window.SetPosition(window.GetPositon() + glm::ivec2(0, -1));
+        window.SetPosition(window.GetPosition() + glm::ivec2(0, -1));
 
     if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::A))
         window.SetSize(window.GetSize() + glm::ivec2(-1, 0));
@@ -57,9 +58,87 @@ void MoveWindow(ssGUI::ssGUIManager& manager, ssGUI::Window& window, ssGUI::Wind
         //std::cout<<"WindowPos: "<<window.GetGlobalPosition().x<<", "<<window.GetGlobalPosition().y<<"\n";
         //std::cout<<"childWindowPos: "<<childWindow.GetGlobalPosition().x<<", "<<childWindow.GetGlobalPosition().y<<"\n";
     }
-
 }
 
+
+
+
+int main()
+{
+    ssGUI::MainWindow mainWindow;
+
+    //Creating window
+    ssGUI::Window window;
+    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window.SetSize(glm::ivec2(150, 150));
+    window.SetParentP(&mainWindow);
+
+    window.SetAnchorType(ssGUI::Enums::AnchorType::BOTTOM_RIGHT);
+
+    ssGUI::Extensions::AdvancedPosition* ap = new ssGUI::Extensions::AdvancedPosition();
+    ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
+    ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+
+    window.AddExtension(ap);
+
+    //Creating ssGUIManager and run it
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+
+    return 0;
+}
+
+
+
+/*//Introduction Example
+int main()
+{
+    //Create the main window
+    ssGUI::MainWindow mainWindow;
+    mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
+    mainWindow.SetSize(glm::ivec2(500, 150));
+
+    //Loading the font
+    ssGUI::Font font;
+    if(font.GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
+        std::cout<<"font loaded\n";
+
+    //Create a text widget and set the respective properties
+    ssGUI::Text text;
+    text.SetPosition(glm::ivec2(75, 25));
+    text.SetFont(&font);
+    text.SetFontSize(20);
+    text.SetText(L"Click on the button to change this text.");
+
+    //Create a button and set an event callback to change the text when it is clicked
+    ssGUI::Button button;
+    button.SetSize(glm::ivec2(50, 30));
+    button.SetPosition(glm::ivec2(225, 85));
+    button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
+    (
+        [&](ssGUI::GUIObject* src)
+        {
+            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            {
+                text.SetText(L"Button pressed and this text has changed.");
+            }
+        }
+    );
+
+    //Add the text and button widget to the main window
+    text.SetParentP(&mainWindow);
+    button.SetParentP(&mainWindow);
+
+    //Create the GUIManager, add the main window and start running
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+    return 0;
+}
+*/
+
+/*//Event callback example
 int main()
 {
     ssGUI::MainWindow mainWindow;
@@ -86,7 +165,7 @@ int main()
 
     ssGUI::Extensions::Border* b = new ssGUI::Extensions::Border();
     widget.AddExtension(b);
-            
+
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
@@ -95,6 +174,7 @@ int main()
 
     return 0;
 }
+*/
 
 /*//Window example
 int main()
@@ -143,7 +223,7 @@ int main()
 int main()
 {
     ssGUI::MainWindow mainWindow;
-    
+
     //Loading the font
     ssGUI::Font font;
     //if(font.GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))

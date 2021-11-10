@@ -102,7 +102,7 @@ namespace ssGUI
 
     }   
 
-    glm::ivec2 MainWindow::GetPositon() const
+    glm::ivec2 MainWindow::GetPosition() const
     {
         return BackendMainWindow->GetPosition();
     }
@@ -113,11 +113,11 @@ namespace ssGUI
 
     glm::ivec2 MainWindow::GetGlobalPosition()
     {
-        return BackendMainWindow->GetPosition();
+        return glm::ivec2();//BackendMainWindow->GetPosition();
     }
     void MainWindow::SetGlobalPosition(glm::ivec2 position)
     {
-        BackendMainWindow->SetPosition(position);
+        //BackendMainWindow->SetPosition(position);
     }
 
     glm::ivec2 MainWindow::GetSize() const
@@ -160,10 +160,10 @@ namespace ssGUI
         Window::Internal_OnClose();
     }
 
-    void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus)
+    void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         for(auto extension : Extensions)
-            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //Update cursor position offset every .5 seconds
         if(inputInterface->GetElapsedTime() - LastSyncTime > 500)
@@ -198,7 +198,7 @@ namespace ssGUI
         // std::cout<<"\n";
 
         for(auto extension : Extensions)
-            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }
 
     GUIObject* MainWindow::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)

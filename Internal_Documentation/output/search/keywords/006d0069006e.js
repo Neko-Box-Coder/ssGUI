@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("min",["Class","Constant"],[["MinMaxSizeChangedEventCallback",,[[,,,,0,"File:ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp:MinMaxSizeChangedEventCallback","CClass:MinMaxSizeChangedEventCallback"]]],["MINUS",,[["ssGUI::Enums",,,,1,"File:ssGUI/Enums/SymbolKey.hpp:ssGUI.Enums.MINUS","CClass:ssGUI.Enums:MINUS"]]]]);

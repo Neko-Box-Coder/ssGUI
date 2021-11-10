@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:BackendDrawingSFML","BackendDrawingSFML");NDSummary.OnSummaryLoaded("CClass:BackendDrawingSFML",[["C/C++","C"]],[["Classes","Class"],["Functions","Function"],["Groups","Group"]],[[131,0,0,"BackendDrawingSFML"],[132,0,2,"Functions","Functions"],[133,0,1,"DrawEntities","DrawEntities"],[261,0,1,"Render","Render"]]);

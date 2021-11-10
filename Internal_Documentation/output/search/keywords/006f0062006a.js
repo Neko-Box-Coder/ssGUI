@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("obj",["Section"],[["Object",,[[,"GUI Object anchor and position",,,0,"File:User_Manual/5._GUI_Object_Types.txt:GUI_Object_anchor_and_position"],[,"GUI Object Types",,,0,"File:User_Manual/5._GUI_Object_Types.txt:GUI_Object_Types"]]]]);

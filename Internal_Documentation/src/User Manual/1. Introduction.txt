@@ -47,7 +47,7 @@ How does it look::
 [TODO: Insert screenshots]
 
 Okay, what does it look like in code? (To be changed)::
-(see IntroductionExample.png)
+(see IntroductionExample.gif) 
 ================================= c++ =================================
 #include <iostream>
 #include "ssGUI/ssGUIManager.hpp"

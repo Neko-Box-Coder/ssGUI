@@ -48,8 +48,8 @@ namespace ssGUI
             //function: GetPositionOffset
             virtual glm::ivec2 GetPositionOffset();
             
-            //function: GetPositon
-            virtual glm::ivec2 GetPositon() const override;
+            //function: GetPosition
+            virtual glm::ivec2 GetPosition() const override;
             
             //function: SetPosition
             virtual void SetPosition(glm::ivec2 position) override;

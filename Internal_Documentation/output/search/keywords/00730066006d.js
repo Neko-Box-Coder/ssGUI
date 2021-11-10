@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("sfm",["Class"],[["SFMLInputConverter",,[[,,,,0,"File:ssGUI/Backend/SFML/SFMLInputConverter.hpp:SFMLInputConverter","CClass:SFMLInputConverter"]]]]);

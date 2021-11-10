@@ -25,8 +25,8 @@ namespace ssGUI
         public:
             virtual ~GUIObject() = 0;
 
-            //function: GetPositon
-            virtual glm::ivec2 GetPositon() const = 0;
+            //function: GetPosition
+            virtual glm::ivec2 GetPosition() const = 0;
             
             //function: SetPosition
             virtual void SetPosition(glm::ivec2 position) = 0;

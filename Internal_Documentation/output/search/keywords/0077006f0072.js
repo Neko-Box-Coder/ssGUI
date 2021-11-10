@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("wor",["Constant"],[["WORD_WRAPPING",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/TextWrapping.hpp:ssGUI.Enums.WORD_WRAPPING","CClass:ssGUI.Enums:WORD_WRAPPING"]]]]);

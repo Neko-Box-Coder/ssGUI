@@ -33,3 +33,14 @@
 
 # Exclude psd files
 .psd
+
+
+.vscode/
+
+.editorconfig
+
+builds/CMakeCache.txt
+builds/CMakeFiles/
+builds/cmake_install.cmake
+builds/Makefile
+builds/ssGUI/

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("siz",["Variable"],[["Size",,[["CharacterInfo",,,,0,"File:ssGUI/BaseClasses/CharacterInfo.hpp:CharacterInfo.Size","CClass:CharacterInfo:Size"]]]]);

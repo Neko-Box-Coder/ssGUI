@@ -55,7 +55,7 @@ namespace ssGUI::Extensions
 
         
     //Extension methods
-    void MaskEnforcer::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus)
+    void MaskEnforcer::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         if(CurrentMask == nullptr)
             return;
@@ -67,7 +67,7 @@ namespace ssGUI::Extensions
         if(IsPreUpdate)
         {
             //If so, check if the cursor is inside the mask
-            if(!CurrentMask->IsPointContainedInMask(inputInterface->GetCurrentMousePosition()))
+            if(!CurrentMask->IsPointContainedInMask(inputInterface->GetCurrentMousePosition(mainWindow)))
             {
                 //If not, cut off the input
                 BlockingContainerInput = true;
@@ -106,7 +106,7 @@ namespace ssGUI::Extensions
             LastMaskGlobalPosition = CurrentMask->GetGlobalPosition();
             LastMainWindowGlobalPosition = mainWindowP->GetGlobalPosition();
             
-            CurrentMask->MaskObject(Container, - (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset));
+            CurrentMask->MaskObject(Container, /*- (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset)*/glm::ivec2());
 
             if(AllowCaching)
             {
@@ -125,7 +125,7 @@ namespace ssGUI::Extensions
             Container->Extension_GetDrawingColours().assign(LastColours.begin(), LastColours.end());
             Container->Extension_GetDrawingCounts().assign(LastCounts.begin(), LastCounts.end());
 
-            glm::ivec2 posDifference = (CurrentMask->GetGlobalPosition() - mainWindowP->GetGlobalPosition()) - (LastMaskGlobalPosition - LastMainWindowGlobalPosition);
+            glm::ivec2 posDifference = CurrentMask->GetGlobalPosition() - LastMaskGlobalPosition;
         
             for(int i = 0; i < Container->Extension_GetDrawingVerticies().size(); i++)
                 Container->Extension_GetDrawingVerticies()[i] += posDifference;

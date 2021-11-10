@@ -456,7 +456,7 @@ namespace ssGUI
         for(auto extension : Extensions)
             extension->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
-        glm::ivec2 drawPos = GetGlobalPosition() - mainWindowP->GetGlobalPosition() - mainWindowPositionOffset;
+        glm::ivec2 drawPos = GetGlobalPosition();
 
         //TODO: Some optimisation maybe possible
         DrawingVerticies.push_back(drawPos);

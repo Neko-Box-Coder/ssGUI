@@ -55,8 +55,8 @@ namespace ssGUI
             virtual ~BaseGUIObject() override;
 
             //Below are from GUIObject.hpp
-            //function: GetPositon
-            virtual glm::ivec2 GetPositon() const override;
+            //function: GetPosition
+            virtual glm::ivec2 GetPosition() const override;
             
             //function: SetPosition
             virtual void SetPosition(glm::ivec2 position) override;
@@ -171,7 +171,7 @@ namespace ssGUI
             virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus) override;
+            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Clone
             virtual GUIObject* Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren) override;

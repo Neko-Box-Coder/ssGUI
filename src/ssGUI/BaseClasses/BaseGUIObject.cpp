@@ -9,7 +9,7 @@ namespace ssGUI
         SetParentP(other.GetParentP());
         SetVisible(other.IsVisible());
         SetBackgroundColour(other.GetBackgroundColour());
-        SetPosition(other.GetPositon());
+        SetPosition(other.GetPosition());
         //SetGlobalPosition(other.GetGlobalPosition());
         SetSize(other.GetSize());
         SetMinSize(other.GetMinSize());
@@ -26,10 +26,7 @@ namespace ssGUI
     void BaseGUIObject::SyncPosition()
     {
         if(ParentP == nullptr)
-        {
-            Position = GlobalPosition;
             return;
-        }
         
         glm::ivec2 parentGlobalPositon = ParentP->GetGlobalPosition();
         glm::ivec2 parentSize = ParentP->GetSize();
@@ -61,9 +58,7 @@ namespace ssGUI
                 break;
         }
 
-        if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
-            anchorPosition += dynamic_cast<ssGUI::MainWindow*>(ParentP)->GetPositionOffset();
-        else if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+        if(ParentP->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
             anchorPosition.y += dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
 
         //Local Position = (Global position - Anchor Point) * anchorDirection
@@ -74,16 +69,18 @@ namespace ssGUI
     void BaseGUIObject::SyncGlobalPosition()
     {
         if(ParentP == nullptr)
-        {
-            GlobalPosition = Position;
             return;
-        }
         
         glm::ivec2 parentGlobalPositon = ParentP->GetGlobalPosition();
         glm::ivec2 parentSize = ParentP->GetSize();
         glm::ivec2 anchorPosition = parentGlobalPositon;
         glm::ivec2 anchorDirection = glm::ivec2(1, 1);
         glm::ivec2 positionOffset = GetSize();
+
+        // std::cout<<"parent pos:"<<parentGlobalPositon.x<<", "<<parentGlobalPositon.y<<"\n";
+        // std::cout<<"parentSize: "<<parentSize.x<<", "<<parentSize.y<<"\n";
+        
+
         
         //Find anchor position
         switch(Anchor)
@@ -109,10 +106,12 @@ namespace ssGUI
                 break;
         }
 
-        if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
-            anchorPosition += dynamic_cast<ssGUI::MainWindow*>(ParentP)->GetPositionOffset();
-        else if(ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+        if(ParentP->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
             anchorPosition.y += dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
+
+        // std::cout<<"anchorPosition: "<<anchorPosition.x<<", "<<anchorPosition.y<<"\n";
+        // std::cout<<"anchorDirection: "<<anchorDirection.x<<", "<<anchorDirection.y<<"\n";
+        // std::cout<<"positionOffset: "<<positionOffset.x<<", "<<positionOffset.y<<"\n";
 
         //Global Position = AnchorPoint + local position * anchorDirection
         GlobalPosition.x = anchorPosition.x + Position.x * anchorDirection.x - positionOffset.x;
@@ -144,7 +143,7 @@ namespace ssGUI
     }
 
     //Below are from GUIObject.hpp
-    glm::ivec2 BaseGUIObject::GetPositon() const
+    glm::ivec2 BaseGUIObject::GetPosition() const
     {
         return Position;
     }
@@ -162,6 +161,8 @@ namespace ssGUI
         //Update global position
         SyncGlobalPosition();
         
+        // std::cout<<"GlobalPosition: "<<GlobalPosition.x<<", "<<GlobalPosition.y<<"\n";
+
         return GlobalPosition;
     }
 
@@ -468,18 +469,18 @@ namespace ssGUI
         DrawingProperties.clear();
     }
 
-    void BaseGUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus)
+    void BaseGUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //If it is not visible, don't even update/draw it
         if(!IsVisible())
             return;
         
         for(auto extension : Extensions)
-            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         endOfUpdate:;
         for(auto extension : Extensions)
-            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }
 
 

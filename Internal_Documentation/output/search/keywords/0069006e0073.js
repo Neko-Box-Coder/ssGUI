@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("ins",["Constant","Section"],[["INSERT",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SystemKey.hpp:ssGUI.Enums.INSERT","CClass:ssGUI.Enums:INSERT"]]],["Inside",,[[,"A Window Inside A Window",,,1,"File:User_Manual/4._Creating_A_Window.txt:A_Window_Inside_A_Window"]]],["Installation",,[[,,,,1,"File:User_Manual/2._Installation.txt:Installation"]]]]);

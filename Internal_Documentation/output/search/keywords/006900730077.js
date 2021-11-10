@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("isw",["Function"],[["IsWrappingOverflow",,[["Text",,,,0,"File:ssGUI/BaseClasses/Text.hpp:Text.IsWrappingOverflow","CClass:Text:IsWrappingOverflow"]]]]);

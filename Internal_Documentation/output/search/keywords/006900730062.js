@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("isb",["Function"],[["IsBlockInput",,[["Widget",,,,0,"File:ssGUI/BaseClasses/Widget.hpp:Widget.IsBlockInput","CClass:Widget:IsBlockInput"]]]]);

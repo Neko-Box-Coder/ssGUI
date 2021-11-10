@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("cle",["Function"],[["Clear",,[["ssGUIManager",,,,0,"File:ssGUI/ssGUIManager.hpp:ssGUIManager.Clear","CClass:ssGUIManager:Clear"]]]]);

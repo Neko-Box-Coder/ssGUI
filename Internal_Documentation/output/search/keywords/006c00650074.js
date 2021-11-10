@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("let",["Variable","Enumeration"],[["LetterKey",,[["KeyPresses",,,,0,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses.LetterKey","CClass:KeyPresses:LetterKey"],["ssGUI::Enums",,,,1,"File:ssGUI/Enums/LetterKey.hpp:ssGUI.Enums.LetterKey","CClass:ssGUI.Enums:LetterKey"]]]]);

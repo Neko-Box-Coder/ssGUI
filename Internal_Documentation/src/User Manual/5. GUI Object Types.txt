@@ -40,6 +40,8 @@ You can anchor a GUI object to either of the four corners. Meaning the GUI objec
 
 You can also position (and resize) a GUI object using extensions but it will not be covered here for now. You can see the diagram for a more cleared explaination of the positioning system.
 
+[TODO : Recreate images]
+
 (see AnchorTopLeft.png)
 
 (see AnchorBottomRight.png)

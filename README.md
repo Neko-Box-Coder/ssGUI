@@ -58,7 +58,7 @@ _
 
 ### Okay, what does it look like in code? (To be changed)
 
-![](Internal_Documentation/ND_Config/Images/IntroductionExample.png)
+![](Internal_Documentation/ND_Config/Images/IntroductionExample.gif)
 ```C++
 #include <iostream>
 #include "ssGUI/ssGUIManager.hpp"

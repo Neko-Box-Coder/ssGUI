@@ -88,7 +88,7 @@ namespace ssGUI
         if (!IsVisible())
             return;
 
-        glm::ivec2 drawPosition = GetGlobalPosition() - mainWindowP->GetGlobalPosition() - mainWindowPositionOffset;
+        glm::ivec2 drawPosition = GetGlobalPosition();
 
         //Background
         DrawingVerticies.push_back(drawPosition);
@@ -121,17 +121,17 @@ namespace ssGUI
         DrawingProperties.clear();
     }
 
-    void Button::Internal_Update(ssGUI::Backend::BackendSystemInputInterface *inputInterface, ssGUI::InputStatus &globalInputStatus, ssGUI::InputStatus &windowInputStatus)
+    void Button::Internal_Update(ssGUI::Backend::BackendSystemInputInterface *inputInterface, ssGUI::InputStatus &globalInputStatus, ssGUI::InputStatus &windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //If it is not visible, don't even update/draw it
         if (!IsVisible())
             return;
 
         for (auto extension : Extensions)
-            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //On mouse down
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition();
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
         if (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
         {
             //User pressing down on button
@@ -181,7 +181,7 @@ namespace ssGUI
         endUpdate:;
         
         for (auto extension : Extensions)
-            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }
 
     GUIObject* Button::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)

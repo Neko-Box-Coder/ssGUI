@@ -148,7 +148,11 @@ namespace ssGUI::Backend
                                         int startIndex, int endIndex)
     {      
         if(vertices.size() != colours.size() || vertices.empty())
+        {
+            std::cout<<"vertices size"<<vertices.size()<<"\n";
+            std::cout<<"colours size"<<colours.size()<<"\n";
             return false;
+        }
         
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
@@ -163,7 +167,7 @@ namespace ssGUI::Backend
         }
         
         targetWindow->draw(outputShape);
-
+        
         return true;
     }
 

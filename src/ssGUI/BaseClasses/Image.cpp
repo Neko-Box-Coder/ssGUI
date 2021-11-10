@@ -49,7 +49,7 @@ namespace ssGUI
         if(!IsVisible())
             return;
     
-        glm::ivec2 drawPosition = GetGlobalPosition() - mainWindowP->GetGlobalPosition() - mainWindowPositionOffset;
+        glm::ivec2 drawPosition = GetGlobalPosition();
 
         //Background
         DrawingVerticies.push_back(drawPosition);
@@ -73,7 +73,7 @@ namespace ssGUI
         
 
         //TODO: The code below can be moved to its own function
-        glm::ivec2 imgDrawPosition = GetGlobalPosition() - mainWindowP->GetGlobalPosition() - mainWindowPositionOffset;
+        glm::ivec2 imgDrawPosition = GetGlobalPosition();
         glm::ivec2 imgSize = BackendImage->GetSize();
 
         DrawingColours.push_back(glm::u8vec4(255, 255, 255, 255));

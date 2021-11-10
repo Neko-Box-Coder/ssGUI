@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:InputStatus","InputStatus");NDSummary.OnSummaryLoaded("CClass:InputStatus",[["C/C++","C"]],[["Classes","Class"],["Groups","Group"],["Variables","Variable"]],[[268,0,0,"InputStatus"],[273,0,1,"Variables","Variables"],[274,0,2,"MouseInputBlocked","MouseInputBlocked"],[275,0,2,"KeyInputBlocked","KeyInputBlocked"]]);

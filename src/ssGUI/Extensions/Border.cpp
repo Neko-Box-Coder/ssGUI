@@ -41,7 +41,7 @@ namespace ssGUI::Extensions
 
     void Border::DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {        
-        glm::ivec2 drawPosition = Container->GetGlobalPosition() - mainWindowP->GetGlobalPosition() - mainWindowPositionOffset;
+        glm::ivec2 drawPosition = Container->GetGlobalPosition();
         
         int width = GetBorderWidth();
         glm::u8vec4 colour = GetBorderColour();
@@ -129,7 +129,7 @@ namespace ssGUI::Extensions
         drawingProperties.push_back(ssGUI::DrawingProperty()); 
     }
 
-    void Border::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus)
+    void Border::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //Do nothing
     }

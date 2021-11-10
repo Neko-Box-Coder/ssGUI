@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("nor",["Constant"],[["NORMAL",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/ButtonState.hpp:ssGUI.Enums.NORMAL","CClass:ssGUI.Enums:NORMAL"]]]]);

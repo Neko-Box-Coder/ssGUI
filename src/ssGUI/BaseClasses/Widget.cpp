@@ -52,7 +52,7 @@ namespace ssGUI
             extension->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         //Draw background by default
-        glm::ivec2 drawPosition = GetGlobalPosition() - mainWindowP->GetGlobalPosition() - mainWindowPositionOffset;
+        glm::ivec2 drawPosition = GetGlobalPosition();
 
         //TODO: Some optimisation maybe possible
         DrawingVerticies.push_back(drawPosition);
@@ -85,14 +85,14 @@ namespace ssGUI
         DrawingProperties.clear();
     }
 
-    void Widget::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus)
+    void Widget::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //If it is not visible, don't even update/draw it
         if(!IsVisible())
             return;
         
         for(auto extension : Extensions)
-            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //It will only block when BlockInput flag is true OR is interactable
         if(!IsBlockInput() || IsInteractable())
@@ -104,7 +104,7 @@ namespace ssGUI
 
         //On mouse down
         {
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition();
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
         if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
         {
             bool mouseInWindowBoundX = false;
@@ -125,7 +125,7 @@ namespace ssGUI
         endOfUpdate:;
 
         for(auto extension : Extensions)
-            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }
 
     GUIObject* Widget::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)

@@ -3,6 +3,8 @@
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
 
+#include "ssGUI/BaseClasses/MainWindow.hpp"     //For getting cursor in MainWindow space
+
 namespace ssGUI::Backend
 {
     template <class T>
@@ -135,14 +137,20 @@ namespace ssGUI::Backend
         return CurrentKeyPresses;
     }
 
-    glm::ivec2 BackendSystemInputSFML::GetLastMousePosition() const
+    glm::ivec2 BackendSystemInputSFML::GetLastMousePosition(ssGUI::GUIObject* mainWindow) const
     {
-        return LastMousePosition;
+        if(mainWindow != nullptr)
+            return LastMousePosition - mainWindow->GetPosition() - dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetPositionOffset();
+        else
+            return LastMousePosition;
     }
 
-    glm::ivec2 BackendSystemInputSFML::GetCurrentMousePosition() const
+    glm::ivec2 BackendSystemInputSFML::GetCurrentMousePosition(ssGUI::GUIObject* mainWindow) const
     {
-        return CurrentMousePosition;
+        if(mainWindow != nullptr)
+            return CurrentMousePosition - mainWindow->GetPosition() - dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetPositionOffset();
+        else
+            return CurrentMousePosition;
     }
 
     bool BackendSystemInputSFML::GetLastMouseButton(ssGUI::Enums::MouseButton button) const

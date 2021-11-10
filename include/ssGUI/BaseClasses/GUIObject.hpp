@@ -25,8 +25,8 @@ namespace ssGUI
         public:
             virtual ~GUIObject() = 0;
 
-            //function: GetPositon
-            virtual glm::ivec2 GetPositon() const = 0;
+            //function: GetPosition
+            virtual glm::ivec2 GetPosition() const = 0;
             
             //function: SetPosition
             virtual void SetPosition(glm::ivec2 position) = 0;
@@ -143,7 +143,7 @@ namespace ssGUI
             virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
             
             //function: Internal_Update
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus) = 0;
+            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) = 0;
     
             //function: Clone
             virtual GUIObject* Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren) = 0;

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("sem",["Constant"],[["SEMICOLON",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SymbolKey.hpp:ssGUI.Enums.SEMICOLON","CClass:ssGUI.Enums:SEMICOLON"]]]]);

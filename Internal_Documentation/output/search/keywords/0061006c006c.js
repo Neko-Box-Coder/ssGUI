@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("all",["Constant"],[["ALL",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/ResizeType.hpp:ssGUI.Enums.ALL","CClass:ssGUI.Enums:ALL"]]]]);

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("com",["Constant","Function"],[["COMMA",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SymbolKey.hpp:ssGUI.Enums.COMMA","CClass:ssGUI.Enums:COMMA"]]],["ComputeCharactersPositionAndSize",,[["Text",,,,1,"File:ssGUI/BaseClasses/Text.hpp:Text.ComputeCharactersPositionAndSize","CClass:Text:ComputeCharactersPositionAndSize"]]]]);

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("sym",["Variable","Enumeration"],[["SymbolKey",,[["KeyPresses",,,,0,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses.SymbolKey","CClass:KeyPresses:SymbolKey"],["ssGUI::Enums",,,,1,"File:ssGUI/Enums/SymbolKey.hpp:ssGUI.Enums.SymbolKey","CClass:ssGUI.Enums:SymbolKey"]]]]);

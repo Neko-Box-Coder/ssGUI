@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("dis",["Constant","Function"],[["DISABLED",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/ButtonState.hpp:ssGUI.Enums.DISABLED","CClass:ssGUI.Enums:DISABLED"]]],["DiscardCache",,[["MaskEnforcer",,,,1,"File:ssGUI/Extensions/MaskEnforcer.hpp:MaskEnforcer.DiscardCache","CClass:MaskEnforcer:DiscardCache"]]]]);

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("fon",["Class","Variable"],[["Font",,[[,,,,0,"File:ssGUI/BaseClasses/Font.hpp:Font","CClass:Font"]]],["fontP",,[["DrawingProperty",,,,1,"File:ssGUI/BaseClasses/DrawingProperties.hpp:DrawingProperty.fontP","CClass:DrawingProperty:fontP"]]]]);

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("mov",["Constant"],[["MOVE",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/CursorType.hpp:ssGUI.Enums.MOVE","CClass:ssGUI.Enums:MOVE"]]]]);

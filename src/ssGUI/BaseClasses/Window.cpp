@@ -4,7 +4,7 @@ namespace ssGUI
 {
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Closable(true), Closed(false),
                        IsClosingAborted(false), ResizeHitbox(5), IsResizingTop(false), IsResizingBot(false), IsResizingLeft(false), 
-                       IsResizingRight(false), IsDragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownOffset(), 
+                       IsResizingRight(false), IsDragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), 
                        MouseDownPosition()
     {
         AddEventCallback(new ssGUI::EventCallbacks::WindowCloseEventCallback());
@@ -149,12 +149,11 @@ namespace ssGUI
         for(auto extension : Extensions)
             extension->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-        //std::cout<<"Drawed: "<<GetPositon().x<<", "<<GetPositon().y<<"\n";
-        //std::cout<<"rendering pos: "<<GetGlobalPositon().y<<"\n";
-        //std::cout<<"rendering size: "<<GetSize().y<<"\n";
+        // std::cout<<"local pos: "<<GetPosition().x<<", "<<GetPosition().y<<"\n";
+        // std::cout<<"rendering pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
+        // std::cout<<"rendering size: "<<GetSize().x<<", "<<GetSize().y<<"\n";
 
-
-        glm::ivec2 drawPosition = GetGlobalPosition() - mainWindowP->GetGlobalPosition() - mainWindowPositionOffset;
+        glm::ivec2 drawPosition = GetGlobalPosition();
 
         //TODO: Some optimisation maybe possible
 
@@ -172,7 +171,7 @@ namespace ssGUI
         DrawingColours.push_back(GetBackgroundColour());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingUVs.push_back(glm::ivec2());        //TODO : Caching
         DrawingColours.push_back(GetBackgroundColour());
 
         DrawingCounts.push_back(4);
@@ -201,7 +200,7 @@ namespace ssGUI
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
         
-        
+        // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
 
         for(auto extension : Extensions)
             extension->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
@@ -214,14 +213,14 @@ namespace ssGUI
         DrawingProperties.clear();
     }
 
-    void Window::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus)
+    void Window::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {        
         //If it is not visible, don't even update/draw it
         if(!IsVisible())
             return;
         
         for(auto extension : Extensions)
-            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus);
+            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
         //Only block mouse input when the user is not resizing or dragging the window 
         if(!IsResizingLeft && !IsResizingRight && !IsResizingTop && !IsResizingBot && !IsDragging)
@@ -231,7 +230,7 @@ namespace ssGUI
         }
         
         {
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition();
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
 
         // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";
         // std::cout << "current window pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
@@ -244,7 +243,6 @@ namespace ssGUI
         //On mouse down
         if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
         {
-            MouseDownOffset = currentMousePos - GetGlobalPosition();
             MouseDownPosition = currentMousePos;
             OnTransformBeginPosition = GetGlobalPosition();
             OnTransformBeginSize = GetSize();
@@ -436,14 +434,13 @@ namespace ssGUI
             IsDragging = false;
             OnTransformBeginSize = glm::ivec2();
             OnTransformBeginPosition = glm::ivec2();
-            MouseDownOffset = glm::ivec2();
             MouseDownPosition = glm::ivec2();
         }
         }   //Extra bracket to tell compiler that the variables are not created if endUpdate label is used
 
         endUpdate:
             for(auto extension : Extensions)
-                extension->Update(false, inputInterface, globalInputStatus, windowInputStatus);
+                extension->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }
 
     GUIObject* Window::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)

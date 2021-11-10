@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("per",["Constant"],[["PERIOD",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SymbolKey.hpp:ssGUI.Enums.PERIOD","CClass:ssGUI.Enums:PERIOD"]]]]);

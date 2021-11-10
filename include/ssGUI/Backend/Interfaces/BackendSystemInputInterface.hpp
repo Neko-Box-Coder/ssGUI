@@ -8,6 +8,12 @@
 #include <vector>
 #include "glm/vec2.hpp"
 
+namespace ssGUI
+{
+    class GUIObject;
+}
+
+
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
@@ -29,9 +35,9 @@ namespace ssGUI::Backend
             virtual ssGUI::KeyPresses const & GetCurrentKeyPresses() = 0;
 
             //function: GetLastMousePosition
-            virtual glm::ivec2 GetLastMousePosition() const = 0;
+            virtual glm::ivec2 GetLastMousePosition(ssGUI::GUIObject* mainWindow) const = 0;
             //function: GetCurrentMousePosition
-            virtual glm::ivec2 GetCurrentMousePosition() const = 0;
+            virtual glm::ivec2 GetCurrentMousePosition(ssGUI::GUIObject* mainWindow) const = 0;
             //function: SetMousePosition
             virtual void SetMousePosition(glm::ivec2 position) = 0;
 
