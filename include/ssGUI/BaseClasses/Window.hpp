@@ -19,17 +19,18 @@ namespace ssGUI
             bool Titlebar;
             int TitlebarHeight;
             ssGUI::Enums::ResizeType ResizeType;
+            bool Draggable;
             bool Closable;
             bool Closed;
             bool IsClosingAborted;
 
             //Resize/Drag settings
             int ResizeHitbox;
-            bool IsResizingTop;
-            bool IsResizingBot;
-            bool IsResizingLeft;
-            bool IsResizingRight;
-            bool IsDragging;
+            bool ResizingTop;
+            bool ResizingBot;
+            bool ResizingLeft;
+            bool ResizingRight;
+            bool Dragging;
             glm::ivec2 OnTransformBeginPosition;
             glm::ivec2 OnTransformBeginSize;
             glm::ivec2 MouseDownPosition;
@@ -84,6 +85,19 @@ namespace ssGUI
             
             //function: IsClosable
             virtual bool IsClosable() const;
+
+            //function: SetDraggable
+            virtual void SetDraggable(bool draggable);
+
+            //function: IsDraggable
+            virtual bool IsDraggable() const;
+
+            //fucntion: IsDragging
+            virtual bool IsDragging() const;
+
+            //function: IsResizing
+            virtual bool IsResizing() const;
+
 
             //function: AddOnCloseEventListener
             virtual int AddOnCloseEventListener(std::function<void()> onClose);
