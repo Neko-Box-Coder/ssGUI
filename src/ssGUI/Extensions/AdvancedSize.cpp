@@ -18,7 +18,7 @@ namespace ssGUI::Extensions
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
     
     AdvancedSize::AdvancedSize() : Container(nullptr), HorizontalUsePercentage(false), VerticalUsePercentage(false), 
-                                    HorizontalPixelValue(0), VerticalPixelValue(0), HorizontalPercentageValue(0), 
+                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0), 
                                     VerticalPercentageValue(0), OverrideDefaultSize(true)
     {}
 
@@ -114,7 +114,7 @@ namespace ssGUI::Extensions
             finalSize.x = GetHorizontalPixel();
 
         //Vertical
-        if(IsHorizontalUsePercentage())
+        if(IsVerticalUsePercentage())
             finalSize.y = parent->GetSize().y * GetVerticalPercentage();
         else
             finalSize.y = GetVerticalPixel();
