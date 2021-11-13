@@ -9,6 +9,7 @@ namespace ssGUI
         SetParentP(other.GetParentP());
         SetVisible(other.IsVisible());
         SetBackgroundColour(other.GetBackgroundColour());
+        SetUserCreated(other.IsUserCreated());
         SetPosition(other.GetPosition());
         //SetGlobalPosition(other.GetGlobalPosition());
         SetSize(other.GetSize());
