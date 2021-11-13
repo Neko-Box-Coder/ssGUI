@@ -120,7 +120,7 @@ namespace ssGUI::Extensions
 
     void AdvancedPosition::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        //TODO : Caching
+        //TODO : Cache if parent's global position and size hasn't changed
         
         //This should be done in post update
         if(IsPreUpdate || !IsOverrideDefaultPosition() || Container == nullptr || Container->GetParentP() == nullptr)

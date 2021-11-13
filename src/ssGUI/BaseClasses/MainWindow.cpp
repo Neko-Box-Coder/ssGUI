@@ -113,11 +113,11 @@ namespace ssGUI
 
     glm::ivec2 MainWindow::GetGlobalPosition()
     {
-        return glm::ivec2();//BackendMainWindow->GetPosition();
+        return BackendMainWindow->GetPosition();
     }
     void MainWindow::SetGlobalPosition(glm::ivec2 position)
     {
-        //BackendMainWindow->SetPosition(position);
+        BackendMainWindow->SetPosition(position);
     }
 
     glm::ivec2 MainWindow::GetSize() const

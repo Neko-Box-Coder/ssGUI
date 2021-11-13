@@ -28,7 +28,7 @@ namespace ssGUI
         if(ParentP == nullptr)
             return;
         
-        glm::ivec2 parentGlobalPositon = ParentP->GetGlobalPosition();
+        glm::ivec2 parentGlobalPositon = ParentP->GetParentP() == nullptr ? glm::ivec2() : ParentP->GetGlobalPosition();
         glm::ivec2 parentSize = ParentP->GetSize();
         glm::ivec2 anchorPosition = parentGlobalPositon;
         glm::ivec2 anchorDirection = glm::ivec2(1, 1);
@@ -71,7 +71,7 @@ namespace ssGUI
         if(ParentP == nullptr)
             return;
         
-        glm::ivec2 parentGlobalPositon = ParentP->GetGlobalPosition();
+        glm::ivec2 parentGlobalPositon = ParentP->GetParentP() == nullptr ? glm::ivec2() : ParentP->GetGlobalPosition();
         glm::ivec2 parentSize = ParentP->GetSize();
         glm::ivec2 anchorPosition = parentGlobalPositon;
         glm::ivec2 anchorDirection = glm::ivec2(1, 1);
@@ -79,8 +79,6 @@ namespace ssGUI
 
         // std::cout<<"parent pos:"<<parentGlobalPositon.x<<", "<<parentGlobalPositon.y<<"\n";
         // std::cout<<"parentSize: "<<parentSize.x<<", "<<parentSize.y<<"\n";
-        
-
         
         //Find anchor position
         switch(Anchor)

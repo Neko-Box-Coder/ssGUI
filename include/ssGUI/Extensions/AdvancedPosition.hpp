@@ -16,7 +16,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    //class: Layout
+    //class: AdvancedPosition
     class AdvancedPosition : public Extension
     {
         //Forward declaration

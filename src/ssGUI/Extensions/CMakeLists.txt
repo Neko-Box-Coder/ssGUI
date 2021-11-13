@@ -4,4 +4,5 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/MaskEnforcer.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Border.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/AdvancedPosition.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/AdvancedSize.cpp"
                     )
