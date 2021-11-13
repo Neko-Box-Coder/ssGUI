@@ -91,6 +91,12 @@ namespace ssGUI
             //function: IsVisible
             virtual bool IsVisible() const = 0;
 
+            //function: SetUserCreated
+            virtual void SetUserCreated(bool created) = 0;
+
+            //function: IsUserCreated()
+            virtual bool IsUserCreated() const = 0;
+
             //function: SetBackgroundColour
             virtual void SetBackgroundColour(glm::u8vec4 color) = 0;
             

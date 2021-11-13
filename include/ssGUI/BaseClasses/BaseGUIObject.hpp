@@ -22,6 +22,7 @@ namespace ssGUI
             std::list<ssGUI::GUIObject*> Children;
             bool Visible;
             glm::u8vec4 BackgroundColour;
+            bool UserCreated;
 
             //Widget transform
             glm::ivec2 Position;
@@ -120,6 +121,12 @@ namespace ssGUI
             
             //function: IsVisible
             virtual bool IsVisible() const override;
+
+            //function: SetUserCreated
+            virtual void SetUserCreated(bool created) override;
+
+            //function: IsUserCreated()
+            virtual bool IsUserCreated() const override;
             
             //function: SetBackgroundColour
             virtual void SetBackgroundColour(glm::u8vec4 color) override;

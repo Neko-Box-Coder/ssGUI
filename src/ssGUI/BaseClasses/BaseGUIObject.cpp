@@ -117,12 +117,11 @@ namespace ssGUI
     }
 
     BaseGUIObject::BaseGUIObject() :  ParentP(nullptr), Children(), Visible(true),
-                        BackgroundColour(glm::u8vec4(255, 255, 255, 255)), Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)),
-                        Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(0, 0)),
+                        BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), Position(glm::ivec2(0, 0)), 
+                        GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(0, 0)),
                         MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
-                        Anchor(ssGUI::Enums::AnchorType::TOP_LEFT),
-                        DrawingVerticies(), DrawingUVs(), DrawingColours(), DrawingCounts(), DrawingProperties(),
-                        Extensions(), EventCallbacks()
+                        Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
+                        DrawingCounts(), DrawingProperties(), Extensions(), EventCallbacks()
     {
         SetPosition(glm::ivec2(0, 0)); //Sync global position
     }
@@ -331,6 +330,16 @@ namespace ssGUI
     bool BaseGUIObject::IsVisible() const
     {
         return Visible;
+    }
+
+    void BaseGUIObject::SetUserCreated(bool created)
+    {
+        UserCreated = created;
+    }
+
+    bool BaseGUIObject::IsUserCreated() const
+    {
+        return UserCreated;
     }
 
     void BaseGUIObject::SetBackgroundColour(glm::u8vec4 color)
