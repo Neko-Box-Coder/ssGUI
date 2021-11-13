@@ -306,7 +306,8 @@ namespace ssGUI
             }
                 
             if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
-                currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + TitlebarHeight)
+                currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + TitlebarHeight &&
+                IsDraggable())
             {
                 Dragging = true;
                 globalInputStatus.MouseInputBlocked = true;
