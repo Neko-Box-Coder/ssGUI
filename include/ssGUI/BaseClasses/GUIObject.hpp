@@ -59,7 +59,7 @@ namespace ssGUI
             virtual ssGUI::GUIObject* GetParentP() const = 0;
             
             //function: SetParentP
-            virtual void SetParentP(ssGUI::GUIObject* parentP) = 0;
+            virtual void SetParentP(ssGUI::GUIObject* newParent) = 0;
 
             //function: GetChildrenCount
             virtual int GetChildrenCount() const = 0;
@@ -69,12 +69,25 @@ namespace ssGUI
             
             //function: GetChildrenEndIterator
             virtual std::list<ssGUI::GUIObject*>::iterator GetChildrenEndIterator() = 0;
+
+            //function: GetChildrenReverseStartIterator
+            virtual std::list<ssGUI::GUIObject*>::reverse_iterator GetChildrenReverseStartIterator() = 0;
             
-            //function: AddChild
-            virtual void AddChild(ssGUI::GUIObject* obj) = 0;
+            //function: GetChildrenReverseEndIterator
+            virtual std::list<ssGUI::GUIObject*>::reverse_iterator GetChildrenReverseEndIterator() = 0;
+
+            //function: FindChild
+            virtual std::list<ssGUI::GUIObject*>::iterator FindChild(ssGUI::GUIObject* child) = 0;
+
+            //function: ChangeChildOrder
+            //Both child and position iterator MUST be from the same GUI object parent.
+            virtual void ChangeChildOrder(std::list<ssGUI::GUIObject*>::iterator child, std::list<ssGUI::GUIObject*>::iterator position) = 0;
             
-            //function: RemoveChild
-            virtual void RemoveChild(ssGUI::GUIObject* obj) = 0;
+            //function: Internal_AddChild
+            virtual void Internal_AddChild(ssGUI::GUIObject* obj) = 0;
+            
+            //function: Internal_RemoveChild
+            virtual void Internal_RemoveChild(ssGUI::GUIObject* obj) = 0;
 
             //function: GetType
             virtual ssGUI::Enums::GUIObjectType GetType() const = 0;
@@ -103,6 +116,15 @@ namespace ssGUI
             //function: GetBackgroundColour
             virtual glm::u8vec4 GetBackgroundColour() const = 0;
 
+            //function: Delete 
+            virtual void Delete(bool cleanUp) = 0;
+
+            //function: Internal_IsDeleted
+            virtual bool Internal_IsDeleted() const = 0;
+
+            //function: Internal_NeedCleanUp
+            virtual bool Internal_NeedCleanUp() const = 0;
+        
             //function: Extension_GetDrawingVerticies
             //This function should only be called by <Extension::Draw>.
             //This will return all the drawing verticies position that is already offset by the window titlebar. 
@@ -144,6 +166,12 @@ namespace ssGUI
             
             //function: RemoveEventCallback
             virtual void RemoveEventCallback(std::string eventCallbackName) = 0;
+
+            virtual void AddTag(std::string tag) = 0;
+
+            virtual void RemoveTag(std::string tag) = 0;
+
+            virtual bool HasTag(std::string tag) const = 0;
 
             //function: Draw
             virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;

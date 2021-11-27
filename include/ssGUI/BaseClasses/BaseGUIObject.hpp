@@ -9,6 +9,7 @@
 #include <vector>
 #include <list>
 #include <limits>
+#include <unordered_set>
 
 //namespace: ssGUI
 namespace ssGUI
@@ -23,6 +24,8 @@ namespace ssGUI
             bool Visible;
             glm::u8vec4 BackgroundColour;
             bool UserCreated;
+            bool ObjectDelete;
+            bool ObjectCleanUp;
 
             //Widget transform
             glm::ivec2 Position;
@@ -44,6 +47,8 @@ namespace ssGUI
 
             std::vector<ssGUI::Extensions::Extension*> Extensions;
             std::vector<ssGUI::EventCallbacks::EventCallback*> EventCallbacks;
+
+            std::unordered_set<std::string> CurrentTags;
 
             BaseGUIObject(BaseGUIObject const& other);
 
@@ -90,7 +95,7 @@ namespace ssGUI
             virtual ssGUI::GUIObject* GetParentP() const override;
             
             //function: SetParentP
-            virtual void SetParentP(ssGUI::GUIObject* parentP) override;
+            virtual void SetParentP(ssGUI::GUIObject* newParent) override;
 
             //function: GetChildrenCount
             virtual int GetChildrenCount() const override;
@@ -100,12 +105,24 @@ namespace ssGUI
             
             //function: GetChildrenEndIterator
             virtual std::list<ssGUI::GUIObject*>::iterator GetChildrenEndIterator() override;
+
+            //function: GetChildrenReverseStartIterator
+            virtual std::list<ssGUI::GUIObject*>::reverse_iterator GetChildrenReverseStartIterator() override;
             
-            //function: AddChild
-            virtual void AddChild(ssGUI::GUIObject* obj) override;
+            //function: GetChildrenReverseEndIterator
+            virtual std::list<ssGUI::GUIObject*>::reverse_iterator GetChildrenReverseEndIterator() override;
+
+            //function: FindChild
+            virtual std::list<ssGUI::GUIObject*>::iterator FindChild(ssGUI::GUIObject* child) override;
+
+            //function: ChangeChildOrder
+            virtual void ChangeChildOrder(std::list<ssGUI::GUIObject*>::iterator child, std::list<ssGUI::GUIObject*>::iterator position) override;
             
-            //function: RemoveChild
-            virtual void RemoveChild(ssGUI::GUIObject* obj) override;
+            //function: Internal_AddChild
+            virtual void Internal_AddChild(ssGUI::GUIObject* obj) override;
+            
+            //function: Internal_RemoveChild
+            virtual void Internal_RemoveChild(ssGUI::GUIObject* obj) override;
 
             //function: GetType
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
@@ -133,6 +150,15 @@ namespace ssGUI
             
             //function: GetBackgroundColour
             virtual glm::u8vec4 GetBackgroundColour() const override;
+
+            //function: Delete 
+            virtual void Delete(bool cleanUp) override;
+
+            //function: Internal_IsDeleted
+            virtual bool Internal_IsDeleted() const override;
+
+            //function: Internal_NeedCleanUp
+            virtual bool Internal_NeedCleanUp() const override;
             
             //function: Extension_GetDrawingVerticies
             virtual std::vector<glm::ivec2>& Extension_GetDrawingVerticies() override;
@@ -173,6 +199,12 @@ namespace ssGUI
             
             //function: RemoveEventCallback
             virtual void RemoveEventCallback(std::string eventCallbackName) override;
+
+            virtual void AddTag(std::string tag) override;
+
+            virtual void RemoveTag(std::string tag) override;
+
+            virtual bool HasTag(std::string tag) const override;
 
             //function: Draw
             virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
