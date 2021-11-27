@@ -1,6 +1,11 @@
 #include "ssGUI/ssGUIManager.hpp"
 
 
+//Debug
+#include "ssGUI/Extensions/Layout.hpp"
+
+
+
 namespace ssGUI
 {
     void ssGUIManager::Internal_Update()
@@ -69,14 +74,14 @@ namespace ssGUI
                 GetBackendWindowInterface()).GetSFWindow().setMouseCursorVisible(true);
             }
             */
+            #if SLOW_UPDATE
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            #endif
 
             #if REFRESH_CONSOLE
                 Clear();
             #endif
 
-            #if SLOW_UPDATE
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            #endif
         }
     }
     
@@ -140,7 +145,7 @@ namespace ssGUI
 
                 //Draw the gui object only when it is visible
                 if(currentObjP->IsVisible())
-                {
+                {                    
                     (currentObjP)->Draw(    currentMainWindowP->GetBackendDrawingInterface(), 
                                             dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
                                             currentMainWindowP->GetPositionOffset());
@@ -207,6 +212,19 @@ namespace ssGUI
 
             while (!objToUpdate.empty())
             {
+                //TODO : Check if it is a deleted object or not
+                if(objToUpdate.top()->Internal_IsDeleted())
+                {
+                    objToUpdate.top()->SetParentP(nullptr);
+                    
+                    if(objToUpdate.top()->Internal_NeedCleanUp())
+                       delete objToUpdate.top();
+
+                    objToUpdate.pop();
+                    childrenEvaluated.pop();
+                    continue;
+                }
+
                 //Update object if there's no children or the children are already evaluated
                 if(objToUpdate.top()->GetChildrenCount() == 0 || childrenEvaluated.top() == true)
                 {                    
@@ -217,10 +235,10 @@ namespace ssGUI
                         parentWindowP = currentParentP;
                         windowInputStatus.KeyInputBlocked = false;
                         windowInputStatus.MouseInputBlocked = false;
+                        windowInputStatus.DockingBlocked = false;
                     }
                     
                     objToUpdate.top()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
-
                     objToUpdate.pop();
                     childrenEvaluated.pop();
                 }
@@ -230,6 +248,7 @@ namespace ssGUI
                     childrenEvaluated.top() = true;
 
                     ssGUI::GUIObject* currentObjP = objToUpdate.top();
+
                     for(std::list<ssGUI::GUIObject*>::iterator childIt = currentObjP->GetChildrenStartIterator();
                         childIt != currentObjP->GetChildrenEndIterator(); childIt++)
                     {

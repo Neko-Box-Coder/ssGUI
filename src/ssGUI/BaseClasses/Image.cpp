@@ -6,7 +6,7 @@ namespace ssGUI
     Image::Image(Image const& other) : Widget(other)
     {
         BackendImage = other.BackendImage->Clone();
-        SetFitting(other.GetFitting());
+        Fitting = other.GetFitting();
     }
     
     Image::Image() : BackendImage(), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_AREA) 

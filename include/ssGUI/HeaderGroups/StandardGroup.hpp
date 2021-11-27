@@ -15,6 +15,6 @@
 #include "ssGUI/BaseClasses/Widget.hpp"
 #include "ssGUI/BaseClasses/Window.hpp"
 #include "ssGUI/ssGUIManager.hpp"
-
+#include "ssGUI/ssGUITags.hpp"
 
 #endif

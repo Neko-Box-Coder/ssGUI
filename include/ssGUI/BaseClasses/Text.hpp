@@ -12,6 +12,11 @@
 //namespace: ssGUI
 namespace ssGUI
 {
+    //TODO : Add original text
+    //TODO : allow to get show text and original text
+
+    
+    
     //class: Text
     class Text : public Widget
     {

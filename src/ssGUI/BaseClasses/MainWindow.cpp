@@ -7,7 +7,8 @@ namespace ssGUI
     {
         BackendMainWindow = other.BackendMainWindow->Clone();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
-
+        LastSyncTime = other.LastSyncTime;
+        
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
     }
     

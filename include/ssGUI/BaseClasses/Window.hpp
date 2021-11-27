@@ -4,7 +4,10 @@
 #include "ssGUI/BaseClasses/BaseGUIObject.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include "ssGUI/Enums/ResizeType.hpp"
+#include "ssGUI/Enums/WindowDragState.hpp"
 #include "ssGUI/EventCallbacks/WindowCloseEventCallback.hpp"
+#include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
+#include "ssGUI/Extensions/Border.hpp"
 #include <cmath>
 #include <functional>
 
@@ -25,6 +28,7 @@ namespace ssGUI
             bool IsClosingAborted;
 
             //Resize/Drag settings
+            ssGUI::Enums::WindowDragState CurrentDragState;
             int ResizeHitbox;
             bool ResizingTop;
             bool ResizingBot;
@@ -35,6 +39,8 @@ namespace ssGUI
             glm::ivec2 OnTransformBeginSize;
             glm::ivec2 MouseDownPosition;
             Window& operator=(Window const& other) = default;
+
+            virtual void SetWindowDragState(ssGUI::Enums::WindowDragState dragState);
 
         protected:
             Window(Window const& other) = default;
@@ -91,6 +97,8 @@ namespace ssGUI
 
             //function: IsDraggable
             virtual bool IsDraggable() const;
+
+            virtual ssGUI::Enums::WindowDragState GetWindowDragState() const;
 
             //fucntion: IsDragging
             virtual bool IsDragging() const;

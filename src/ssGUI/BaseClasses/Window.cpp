@@ -2,12 +2,26 @@
 
 namespace ssGUI
 {
+    void Window::SetWindowDragState(ssGUI::Enums::WindowDragState dragState)
+    {
+        if(CurrentDragState == dragState)
+            return;
+        
+        CurrentDragState = dragState;
+
+
+        //TODO : Cache this
+        if(IsEventCallbackExist(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME))
+           GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->Notify(this);
+    }
+    
+    
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
-                       ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), 
-                       MouseDownPosition()
+                       IsClosingAborted(false), CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), 
+                       ResizingLeft(false), ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
     {
         AddEventCallback(new ssGUI::EventCallbacks::WindowCloseEventCallback());
+        AddExtension(new ssGUI::Extensions::Border());
     }
 
     Window::~Window()
@@ -86,7 +100,7 @@ namespace ssGUI
 
     int Window::GetTitlebarHeight() const
     {
-        return TitlebarHeight;
+        return HasTitlebar() ? TitlebarHeight : 0;
     }
 
     void Window::SetResizeType(ssGUI::Enums::ResizeType resizeType)
@@ -121,12 +135,22 @@ namespace ssGUI
 
     void Window::SetDraggable(bool draggable)
     {
+        if(draggable)
+            SetWindowDragState(ssGUI::Enums::WindowDragState::NONE);
+        else
+            SetWindowDragState(ssGUI::Enums::WindowDragState::DISABLED);
+        
         Draggable = draggable;
     }
 
     bool Window::IsDraggable() const
     {
         return Draggable;
+    }
+
+    ssGUI::Enums::WindowDragState Window::GetWindowDragState() const
+    {
+        return CurrentDragState;
     }
 
     bool Window::IsDragging() const
@@ -242,13 +266,6 @@ namespace ssGUI
         for(auto extension : Extensions)
             extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
-        //Only block mouse input when the user is not resizing or dragging the window 
-        if(!ResizingLeft && !ResizingRight && !ResizingTop && !ResizingBot && !Dragging)
-        {
-            if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
-                goto endUpdate;
-        }
-        
         {
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
 
@@ -261,7 +278,8 @@ namespace ssGUI
         
         //Resize
         //On mouse down
-        if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
+        if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
+            !globalInputStatus.MouseInputBlocked)
         {
             MouseDownPosition = currentMousePos;
             OnTransformBeginPosition = GetGlobalPosition();
@@ -311,6 +329,8 @@ namespace ssGUI
             {
                 Dragging = true;
                 globalInputStatus.MouseInputBlocked = true;
+                SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
+
                 goto endUpdate;
             }
 
@@ -324,56 +344,54 @@ namespace ssGUI
         //When the user is resizing or dragging the window
         else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
         {
-            //Resize
-            glm::ivec2 newPos = OnTransformBeginPosition;
-            glm::ivec2 newSize = OnTransformBeginSize;
-            if(ResizingTop)
-            {
-                newPos += glm::ivec2(0, mouseDelta.y);
-                newSize -= glm::ivec2(0, mouseDelta.y);
-
-                //Bound new pos to prevent moving the window when resizing reaches max or min
-                if(newSize.y < GetMinSize().y)
-                    newPos.y = OnTransformBeginPosition.y + (OnTransformBeginSize.y - GetMinSize().y);
-                else if(newSize.y > GetMaxSize().y)
-                    newPos.y = OnTransformBeginPosition.y - (GetMaxSize().y - OnTransformBeginSize.y);
-                
-                globalInputStatus.MouseInputBlocked = true;
-            }
-            else if(ResizingBot)
-            {
-                newSize += glm::ivec2(0, mouseDelta.y);
-                globalInputStatus.MouseInputBlocked = true;
-            }
+            globalInputStatus.MouseInputBlocked = true;
             
-            if(ResizingLeft)
+            glm::ivec2 newPos = OnTransformBeginPosition;
+            if(ResizingLeft || ResizingRight || ResizingTop || ResizingBot)
             {
-                newPos += glm::ivec2(mouseDelta.x, 0);
-                newSize -= glm::ivec2(mouseDelta.x, 0);
+                //Resize
+                glm::ivec2 newSize = OnTransformBeginSize;
+                if(ResizingTop)
+                {
+                    newPos += glm::ivec2(0, mouseDelta.y);
+                    newSize -= glm::ivec2(0, mouseDelta.y);
 
-                //Bound new pos to prevent moving the window when resizing reaches max or min
-                if(newSize.x < GetMinSize().x)
-                    newPos.x = OnTransformBeginPosition.x + (OnTransformBeginSize.x - GetMinSize().x);
-                else if(newSize.x > GetMaxSize().x)
-                    newPos.x = OnTransformBeginPosition.x - (GetMaxSize().x - OnTransformBeginSize.x);
+                    //Bound new pos to prevent moving the window when resizing reaches max or min
+                    if(newSize.y < GetMinSize().y)
+                        newPos.y = OnTransformBeginPosition.y + (OnTransformBeginSize.y - GetMinSize().y);
+                    else if(newSize.y > GetMaxSize().y)
+                        newPos.y = OnTransformBeginPosition.y - (GetMaxSize().y - OnTransformBeginSize.y);
+                }
+                else if(ResizingBot)
+                {
+                    newSize += glm::ivec2(0, mouseDelta.y);
+                }
+                
+                if(ResizingLeft)
+                {
+                    newPos += glm::ivec2(mouseDelta.x, 0);
+                    newSize -= glm::ivec2(mouseDelta.x, 0);
 
-                globalInputStatus.MouseInputBlocked = true;
-            }
-            else if(ResizingRight)
-            {
-                newSize += glm::ivec2(mouseDelta.x, 0);
-                globalInputStatus.MouseInputBlocked = true;
+                    //Bound new pos to prevent moving the window when resizing reaches max or min
+                    if(newSize.x < GetMinSize().x)
+                        newPos.x = OnTransformBeginPosition.x + (OnTransformBeginSize.x - GetMinSize().x);
+                    else if(newSize.x > GetMaxSize().x)
+                        newPos.x = OnTransformBeginPosition.x - (GetMaxSize().x - OnTransformBeginSize.x);
+                }
+                else if(ResizingRight)
+                {
+                    newSize += glm::ivec2(mouseDelta.x, 0);
+                }
+                SetSize(newSize);
             }
                 
             //Titlebar Drag
             if(Dragging)
             {
-                globalInputStatus.MouseInputBlocked = true;
                 newPos += mouseDelta;
-                
+                SetWindowDragState(ssGUI::Enums::WindowDragState::DRAGGING);
             }
 
-            SetSize(newSize);
             SetGlobalPosition(newPos);
 
             //Updating cursor
@@ -394,65 +412,90 @@ namespace ssGUI
             else if(ResizingRight)
                 inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
         }
-        //Otherwise
+        //Otherwise show resize cursor if necessary 
         else
         {
-            //Updating cursor
-            bool canResizeTop = false;
-            bool canResizeBot = false;
-            bool canResizeLeft = false;
-            bool canResizeRight = false;
-
-            if(currentMousePos.x >= GetGlobalPosition().x - ResizeHitbox && currentMousePos.x <= GetGlobalPosition().x + GetSize().x + ResizeHitbox)
+            if(!globalInputStatus.MouseInputBlocked)
             {
-                if(std::abs(currentMousePos.y - GetGlobalPosition().y) <= ResizeHitbox && 
-                    (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::TOP))
+                //Mouse Input blocking
+                bool mouseInWindowBoundX = false;
+                bool mouseInWindowBoundY = false;
+                
+                if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+                    mouseInWindowBoundX = true;
+
+                if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                    mouseInWindowBoundY = true;
+                
+                //Input blocking
+                if(mouseInWindowBoundX && mouseInWindowBoundY)
+                    globalInputStatus.MouseInputBlocked = true;
+                
+                
+                //Updating cursor
+                bool canResizeTop = false;
+                bool canResizeBot = false;
+                bool canResizeLeft = false;
+                bool canResizeRight = false;
+
+                if(currentMousePos.x >= GetGlobalPosition().x - ResizeHitbox && currentMousePos.x <= GetGlobalPosition().x + GetSize().x + ResizeHitbox)
                 {
-                    canResizeTop = true;
+                    if(std::abs(currentMousePos.y - GetGlobalPosition().y) <= ResizeHitbox && 
+                        (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::TOP))
+                    {
+                        canResizeTop = true;
+                    }
+                    else if(std::abs(currentMousePos.y - (GetGlobalPosition().y + GetSize().y)) <= ResizeHitbox && 
+                        (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::BOTTOM))
+                    {
+                        canResizeBot = true;                        
+                    }
                 }
-                else if(std::abs(currentMousePos.y - (GetGlobalPosition().y + GetSize().y)) <= ResizeHitbox && 
-                    (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::BOTTOM))
+
+                if(currentMousePos.y >= GetGlobalPosition().y - ResizeHitbox && currentMousePos.y <= GetGlobalPosition().y + GetSize().y + ResizeHitbox)
                 {
-                    canResizeBot = true;                        
+                    if(std::abs(currentMousePos.x - GetGlobalPosition().x) <= ResizeHitbox && 
+                        (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::LEFT))
+                    {
+                        canResizeLeft = true;   
+                    }
+                    else if(std::abs(currentMousePos.x - (GetGlobalPosition().x + GetSize().x)) <= ResizeHitbox && 
+                        (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::RIGHT))
+                    {
+                        canResizeRight = true;
+                    }
                 }
+
+                if(canResizeTop && canResizeLeft)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_TOP_LEFT);
+                else if(canResizeTop && canResizeRight)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT);
+                else if(canResizeBot && canResizeLeft)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT);
+                else if(canResizeBot && canResizeRight)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT);
+                else if(canResizeTop)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_UP);
+                else if(canResizeLeft)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_LEFT);
+                else if(canResizeBot)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_DOWN);
+                else if(canResizeRight)
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
             }
-
-            if(currentMousePos.y >= GetGlobalPosition().y - ResizeHitbox && currentMousePos.y <= GetGlobalPosition().y + GetSize().y + ResizeHitbox)
-            {
-                if(std::abs(currentMousePos.x - GetGlobalPosition().x) <= ResizeHitbox && 
-                    (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::LEFT))
-                {
-                    canResizeLeft = true;   
-                }
-                else if(std::abs(currentMousePos.x - (GetGlobalPosition().x + GetSize().x)) <= ResizeHitbox && 
-                    (GetResizeType() == ssGUI::Enums::ResizeType::ALL || GetResizeType() == ssGUI::Enums::ResizeType::RIGHT))
-                {
-                    canResizeRight = true;
-                }
-            }
-
-            if(canResizeTop && canResizeLeft)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_TOP_LEFT);
-            else if(canResizeTop && canResizeRight)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT);
-            else if(canResizeBot && canResizeLeft)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT);
-            else if(canResizeBot && canResizeRight)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT);
-            else if(canResizeTop)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_UP);
-            else if(canResizeLeft)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_LEFT);
-            else if(canResizeBot)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_DOWN);
-            else if(canResizeRight)
-                inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
-
+            
+            //Reset drag and resize variables
             ResizingTop = false;
             ResizingBot = false;
             ResizingLeft = false;
             ResizingRight = false;
             Dragging = false;
+
+            if(GetWindowDragState() == ssGUI::Enums::WindowDragState::DRAGGING)
+                SetWindowDragState(ssGUI::Enums::WindowDragState::ENDED);
+            else
+                SetWindowDragState(ssGUI::Enums::WindowDragState::NONE);
+
             OnTransformBeginSize = glm::ivec2();
             OnTransformBeginPosition = glm::ivec2();
             MouseDownPosition = glm::ivec2();

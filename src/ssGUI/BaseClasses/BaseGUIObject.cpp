@@ -6,22 +6,28 @@ namespace ssGUI
 {    
     BaseGUIObject::BaseGUIObject(BaseGUIObject const& other)
     {
-        SetParentP(other.GetParentP());
-        SetVisible(other.IsVisible());
-        SetBackgroundColour(other.GetBackgroundColour());
-        SetUserCreated(other.IsUserCreated());
-        SetPosition(other.GetPosition());
-        //SetGlobalPosition(other.GetGlobalPosition());
-        SetSize(other.GetSize());
-        SetMinSize(other.GetMinSize());
-        SetMaxSize(other.GetMaxSize());
-        SetAnchorType(other.GetAnchorType());
-
+        ParentP = nullptr;
+        SetParentP(other.GetParentP()); //Note : Reason of using SetParentP is to inform the parent to add this as a child
+        Children = std::list<ssGUI::GUIObject*>();
+        Visible = other.IsVisible();
+        BackgroundColour = other.GetBackgroundColour();
+        UserCreated = other.IsUserCreated();
+        ObjectDelete = other.Internal_IsDeleted();
+        ObjectCleanUp = other.Internal_NeedCleanUp();
+        Position = other.GetPosition();
+        GlobalPosition = other.GlobalPosition;
+        Size = other.GetSize();
+        MinSize = other.GetMinSize();
+        MaxSize = other.GetMaxSize();
+        Anchor = other.GetAnchorType();
         DrawingVerticies = other.DrawingVerticies;
         DrawingUVs = other.DrawingUVs;
         DrawingColours = other.DrawingColours;
         DrawingCounts = other.DrawingCounts;
         DrawingProperties = std::vector<ssGUI::DrawingProperty>(other.DrawingProperties);
+        Extensions = std::vector<ssGUI::Extensions::Extension*>();
+        EventCallbacks = std::vector<ssGUI::EventCallbacks::EventCallback*>();
+        CurrentTags = std::unordered_set<std::string>();
     }
     
     void BaseGUIObject::SyncPosition()
@@ -117,15 +123,13 @@ namespace ssGUI
         GlobalPosition.y = anchorPosition.y + Position.y * anchorDirection.y - positionOffset.y;
     }
 
-    BaseGUIObject::BaseGUIObject() :  ParentP(nullptr), Children(), Visible(true),
-                        BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), Position(glm::ivec2(0, 0)), 
-                        GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(0, 0)),
-                        MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
-                        Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
-                        DrawingCounts(), DrawingProperties(), Extensions(), EventCallbacks()
-    {
-        SetPosition(glm::ivec2(0, 0)); //Sync global position
-    }
+    BaseGUIObject::BaseGUIObject() : ParentP(nullptr), Children(), Visible(true),
+                                        BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), ObjectCleanUp(false),
+                                        Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
+                                        MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
+                                        Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
+                                        DrawingCounts(), DrawingProperties(), Extensions(), EventCallbacks(), CurrentTags()
+    {}
 
     BaseGUIObject::~BaseGUIObject()
     {
@@ -222,50 +226,51 @@ namespace ssGUI
         return ParentP;
     }
 
-    void BaseGUIObject::SetParentP(ssGUI::GUIObject* parentP)
-    {
+    void BaseGUIObject::SetParentP(ssGUI::GUIObject* newParent)
+    {        
         if(ParentP != nullptr)
         {
             //Check if this object is the parent of the new parent
-            ssGUI::GUIObject* checkParent = parentP->GetParentP();
-            while (checkParent != nullptr)
+            if(newParent != nullptr)
             {
-                if(checkParent == (ssGUI::GUIObject*)this)
-                    return;
+                ssGUI::GUIObject* checkParent = newParent;//->GetParentP();
+                while (checkParent != nullptr)
+                {
+                    if(checkParent == (ssGUI::GUIObject*)this)
+                        return;
 
-                checkParent = checkParent->GetParentP();
+                    checkParent = checkParent->GetParentP();
+                }
             }
 
             //Inform original parent to remove child
-            ParentP -> RemoveChild(this);
+            ParentP->Internal_RemoveChild(this);
 
             //Send event callback if any object is subscribed to on children removed
-            ssGUI::GUIObject* currentParent = ParentP;
-            while (currentParent != nullptr)
+            ssGUI::GUIObject* originalParent = ParentP;
+            while (originalParent != nullptr)
             {
-                if(currentParent == (ssGUI::GUIObject*)this)
-                    return;
+                if(originalParent == newParent)
+                    break;
 
-                if(currentParent->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME))
-                {
-                    currentParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME)->Notify(this);
-                }
-
-                currentParent = currentParent->GetParentP();
+                if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME))
+                    originalParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME)->Notify(this);
+                
+                originalParent = originalParent->GetParentP();
             }
         }
 
-        if (parentP == nullptr)
+        ParentP = newParent;
+
+        if (newParent == nullptr)
             return;
 
         //Inform new parent to add this as child
-        parentP -> AddChild(this);
-
-        ParentP = parentP;
+        newParent->Internal_AddChild(this);
 
         //Update local position
         SetGlobalPosition(GetGlobalPosition());
-
+        
         //Send event callback if any object is subscribed to on children added
         ssGUI::GUIObject* currentParent = ParentP;
         while (currentParent != nullptr)
@@ -297,13 +302,44 @@ namespace ssGUI
     {
         return Children.end();
     }
+
+    std::list<ssGUI::GUIObject*>::reverse_iterator BaseGUIObject::GetChildrenReverseStartIterator()
+    {
+        return Children.rbegin();
+    }
     
-    void BaseGUIObject::AddChild(ssGUI::GUIObject* obj)
+    std::list<ssGUI::GUIObject*>::reverse_iterator BaseGUIObject::GetChildrenReverseEndIterator()
+    {
+        return Children.rend();
+    }
+
+    std::list<ssGUI::GUIObject*>::iterator BaseGUIObject::FindChild(ssGUI::GUIObject* child)
+    {
+        std::list<ssGUI::GUIObject*>::iterator it = GetChildrenStartIterator();
+        std::list<ssGUI::GUIObject*>::iterator endIt = GetChildrenEndIterator();
+
+        while (it != endIt)
+        {
+            if(*it == child)
+                break;
+            
+            it++;
+        }
+
+        return it;
+    }
+
+    void BaseGUIObject::ChangeChildOrder(std::list<ssGUI::GUIObject*>::iterator child, std::list<ssGUI::GUIObject*>::iterator position)
+    {
+        Children.splice(position, Children, child);
+    }
+    
+    void BaseGUIObject::Internal_AddChild(ssGUI::GUIObject* obj)
     {
         Children.push_back(obj);
     }
     
-    void BaseGUIObject::RemoveChild(ssGUI::GUIObject* obj)
+    void BaseGUIObject::Internal_RemoveChild(ssGUI::GUIObject* obj)
     {
         Children.remove(obj);
     }
@@ -350,7 +386,25 @@ namespace ssGUI
 
     glm::u8vec4 BaseGUIObject::GetBackgroundColour() const
     {
+        //std::cout<<"GetBackgroundColour: "<<BackgroundColour.r<<","<<BackgroundColour.g<<","<<BackgroundColour.b<<","<<BackgroundColour.a<<"\n";
+        
         return BackgroundColour;
+    }
+
+    void BaseGUIObject::Delete(bool cleanUp)
+    {
+        ObjectDelete = true;
+        ObjectCleanUp = cleanUp;
+    }
+
+    bool BaseGUIObject::Internal_IsDeleted() const
+    {
+        return ObjectDelete;
+    }
+
+    bool BaseGUIObject::Internal_NeedCleanUp() const
+    {
+        return ObjectCleanUp;
     }
 
     std::vector<glm::ivec2>& BaseGUIObject::Extension_GetDrawingVerticies()
@@ -380,6 +434,9 @@ namespace ssGUI
 
     void BaseGUIObject::AddExtension(ssGUI::Extensions::Extension* extension)
     {
+        if(IsExtensionExist(extension->GetExtensionName()))
+            return;
+
         Extensions.push_back(extension);
         extension->BindToObject(this);
     }
@@ -457,6 +514,23 @@ namespace ssGUI
         } 
     }
 
+    void BaseGUIObject::AddTag(std::string tag)
+    {
+        if(CurrentTags.find(tag) == CurrentTags.end())
+            CurrentTags.insert(tag);
+    }
+
+    void BaseGUIObject::RemoveTag(std::string tag)
+    {
+        if(CurrentTags.find(tag) != CurrentTags.end())
+            CurrentTags.erase(tag);
+    }
+
+    bool BaseGUIObject::HasTag(std::string tag) const
+    {
+        return CurrentTags.find(tag) != CurrentTags.end();
+    }
+
     void BaseGUIObject::Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
         if(!IsVisible())
@@ -495,7 +569,6 @@ namespace ssGUI
     GUIObject* BaseGUIObject::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)
     {
         //TODO : implement clone children
-        
         BaseGUIObject* temp = new BaseGUIObject(*this);
         
         for(auto extension : Extensions)

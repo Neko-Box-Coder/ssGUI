@@ -13,6 +13,9 @@ namespace ssGUI
             
             //var: KeyInputBlocked
             bool KeyInputBlocked = false;
+
+            //var: DockingBlocked
+            bool DockingBlocked = false;
     };
 }
 

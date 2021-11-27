@@ -4,20 +4,18 @@ namespace ssGUI
 {    
     Text::Text(Text const& other) : Widget(other)
     {
-        CurrentFont = other.CurrentFont->Clone();
-
-        SetText(other.GetText());
+        CurrentText = other.GetText();
         CurrentTextChanged = true;
         CharactersPosition = other.CharactersPosition;
         CharactersInfos = other.CharactersInfos;
-
         WrappingOverflow = other.WrappingOverflow;
-        SetFontSize(other.GetFontSize());
-        SetMultilineAllowed(other.IsMultilineAllowed());
-        SetWrappingMode(other.GetWrappingMode());
-        SetCharacterSpace(other.GetCharacterSpace());
-        SetLineSpace(other.GetLineSpace());
-        SetTabSize(other.GetTabSize());
+        FontSize = other.GetFontSize();
+        MultilineAllowed = other.IsMultilineAllowed();
+        WrappingMode = other.GetWrappingMode();
+        CurrentFont = other.CurrentFont->Clone();
+        CharacterSpace = other.GetCharacterSpace();
+        LineSpace = other.GetLineSpace();
+        TabSize = other.GetTabSize();
     }
 
     //TODO: Maybe remove drawingInterface as it is not used anywhere?
@@ -70,6 +68,8 @@ namespace ssGUI
         
         int numberOfLines = 1;
 
+
+        //TODO : move this to a function
         //If multiline is disabled, replace all newline to spaces and remove all \r
         if(!MultilineAllowed)
         {
@@ -99,6 +99,12 @@ namespace ssGUI
             }
         }
 
+
+        //Empty text guard
+        if(CurrentText.size() == 0)
+            return;
+
+
         //Populate CharactersPosition list and CharactersInfos list
         CharactersPosition.clear();
         CharactersInfos.clear();
@@ -114,6 +120,8 @@ namespace ssGUI
         //If word wrapping mode, find out the lengths of all the words
         if(WrappingMode == ssGUI::Enums::TextWrapping::WORD_WRAPPING)
         {
+            //TODO : move this to a function
+            
             int currentWordIndex = 0;
             int currentLineLength = 0;
             int currentWordLength = 0;
@@ -215,6 +223,8 @@ namespace ssGUI
         //Otherwise wrap until it reaches the end of widget
         else if(WrappingMode == ssGUI::Enums::TextWrapping::CHARACTER_WRAPPING)
         {
+            //TODO : move this to a function
+            
             int currentLineLength = 0;
             glm::ivec2 currentDrawPos = glm::ivec2();
 
@@ -291,6 +301,9 @@ namespace ssGUI
         //Otherwise just position text normally
         else
         {
+            //TODO : move this to a function
+            
+            
             glm::ivec2 currentDrawPos = glm::ivec2();
 
             wchar_t prevChar = 0;
@@ -339,6 +352,26 @@ namespace ssGUI
                 }
             }
         }
+
+
+        //TODO : text alignment
+        /*
+        int lineStartPos = 0;
+        int lineEndPos = 0;
+        int lineStartHeight = 0;
+        int textStartHeight = 0;
+        int textEndHeight = 0;
+
+        for(int i = 0; i < CharactersPosition.size(); i++)
+        {
+            //For each line, find out how long it is and align accordingly
+
+
+
+        }
+        */
+
+        //Find out how tall all the texts are and align accordingly
     }
     
 

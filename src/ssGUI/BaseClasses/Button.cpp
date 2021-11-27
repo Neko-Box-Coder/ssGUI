@@ -4,13 +4,53 @@ namespace ssGUI
 {
     Button::Button(Button const& other) : Widget(other)
     {
-        SetButtonState(other.GetButtonState());
-        Button();
+        CurrentState = other.GetButtonState();
+        StateChangedEventCallback = nullptr;
+
+        if(other.IsEventCallbackExist(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME))
+        {
+            StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
+            StateChangedEventCallback->AddEventListener(
+                [](ssGUI::GUIObject* obj)
+                {
+                    ssGUI::Button* btn = static_cast<ssGUI::Button*>(obj);
+                    glm::u8vec4 bgcolor = btn->GetBackgroundColour();
+                    switch(btn->GetButtonState())
+                    {
+                        case ssGUI::Enums::ButtonState::NORMAL:
+                            bgcolor.a = 255;
+                            btn->SetBackgroundColour(bgcolor);
+                            break;
+                        case ssGUI::Enums::ButtonState::HOVER:
+                            bgcolor.a = 200;
+                            btn->SetBackgroundColour(bgcolor);
+                            break;
+                        case ssGUI::Enums::ButtonState::CLICKED:
+                        case ssGUI::Enums::ButtonState::ON_CLICK:
+                        case ssGUI::Enums::ButtonState::CLICKING:
+                            bgcolor.a = 100;
+                            btn->SetBackgroundColour(bgcolor);
+                            break;
+                        case ssGUI::Enums::ButtonState::DISABLED:
+                            bgcolor.a = 50;
+                            btn->SetBackgroundColour(bgcolor);
+                            break;
+                    }
+                }
+            );
+            
+            AddEventCallback(StateChangedEventCallback);
+        }
     }
 
     void Button::SetButtonState(ssGUI::Enums::ButtonState state)
     {
+        if(CurrentState == state)
+            return;
+        
         CurrentState = state;
+
+        //TODO : Set it as optional
         StateChangedEventCallback->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
