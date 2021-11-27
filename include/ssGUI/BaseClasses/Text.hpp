@@ -5,6 +5,8 @@
 #include "ssGUI/BaseClasses/Widget.hpp"
 #include "ssGUI/BaseClasses/CharacterInfo.hpp"
 #include "ssGUI/Enums/TextWrapping.hpp"
+#include "ssGUI/Enums/TextAlignmentHorizontal.hpp"
+#include "ssGUI/Enums/TextAlignmentVertical.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include <string>
 #include "ssGUI/Backend/BackendFactory.hpp"
@@ -15,7 +17,7 @@ namespace ssGUI
     //TODO : Add original text
     //TODO : allow to get show text and original text
 
-    
+
     
     //class: Text
     class Text : public Widget
@@ -30,9 +32,13 @@ namespace ssGUI
             bool WrappingOverflow;
             int FontSize;
             bool MultilineAllowed;
-            ssGUI::Enums::TextWrapping WrappingMode;           
+            ssGUI::Enums::TextWrapping WrappingMode;
+            ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
+            ssGUI::Enums::TextAlignmentVertical VerticalAlignment;
             ssGUI::Font* CurrentFont;
 
+            int HorizontalPadding;
+            int VerticalPadding;
             int CharacterSpace;
             int LineSpace;
             float TabSize;
@@ -87,12 +93,29 @@ namespace ssGUI
             
             //function: GetWrappingMode
             virtual ssGUI::Enums::TextWrapping GetWrappingMode() const;
-            
+
+            virtual void SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal align);
+
+            virtual ssGUI::Enums::TextAlignmentHorizontal GetHorizontalAlignment();
+
+            virtual void SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical align);
+
+            virtual ssGUI::Enums::TextAlignmentVertical GetVerticalAlignment();
+
+
             //function: SetFont
             virtual void SetFont(ssGUI::Font* font);
             
             //function: GetFont
             virtual ssGUI::Font* GetFont();
+
+            virtual void SetHorizontalPadding(int padding);
+
+            virtual int GetHorizontalPadding();
+
+            virtual void SetVerticalPadding(int padding);
+
+            virtual int GetVerticalPadding();
             
             //function: SetCharacterSpace
             virtual void SetCharacterSpace(int charSpace);

@@ -48,8 +48,9 @@ namespace ssGUI
     
     Text::Text() :  CurrentText(), CurrentTextChanged(false), CharactersPosition(), 
                     CharactersInfos(), WrappingOverflow(false), FontSize(20), MultilineAllowed(true), 
-                    WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), CurrentFont(nullptr),
-                    CharacterSpace(0), LineSpace(0), TabSize(4)
+                    WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
+                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFont(nullptr), 
+                    HorizontalPadding(0), VerticalPadding(0), CharacterSpace(0), LineSpace(0), TabSize(4)
     {
         //AddExtension(new ssGUI::Extensions::Border());
     }
@@ -354,24 +355,97 @@ namespace ssGUI
         }
 
 
-        //TODO : text alignment
-        /*
-        int lineStartPos = 0;
-        int lineEndPos = 0;
-        int lineStartHeight = 0;
-        int textStartHeight = 0;
-        int textEndHeight = 0;
+        //Text alignment
+        int lineStartPos = CharactersPosition[0].x + CharactersInfos[0].DrawOffset.x - GetFontSize() * 0.25 - GetHorizontalPadding();
+        int lineStartIndex = 0;
+        int lineEndPos = lineStartPos;
+        int currentLineHeight = -1;
 
+        //For each line, find out how long it is and align accordingly
         for(int i = 0; i < CharactersPosition.size(); i++)
         {
-            //For each line, find out how long it is and align accordingly
+            //If this character is on a newline
+            if(CharactersPosition[i].y != currentLineHeight)
+            {
+                //Align the previous line first
+                if(i > 0)
+                {
+                    lineEndPos = CharactersPosition[i-1].x + CharactersInfos[i-1].Size.x + GetFontSize() * 0.25 + GetHorizontalPadding();
+                    int alignOffset = 0; 
 
+                    switch (HorizontalAlignment)
+                    {
+                        case ssGUI::Enums::TextAlignmentHorizontal::LEFT:
+                            alignOffset = -lineStartPos;
+                            break;
+                    
+                        case ssGUI::Enums::TextAlignmentHorizontal::CENTER:
+                            alignOffset = (GetSize().x * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
+                            break;
+                        
+                        case ssGUI::Enums::TextAlignmentHorizontal::RIGHT:
+                            alignOffset = GetSize().x - lineEndPos;
+                            break;
+                    }
 
+                    for(int j = lineStartIndex; j < i; j++)
+                        CharactersPosition[j].x += alignOffset;
+                }
 
+                //Then record where the newline starts
+                lineStartPos = CharactersPosition[i].x + CharactersInfos[i].DrawOffset.x - GetFontSize() * 0.25 - GetHorizontalPadding();
+                currentLineHeight = CharactersPosition[i].y;
+                lineStartIndex = i;
+            }
+
+            //End of character
+            if(i == CharactersPosition.size() - 1)
+            {
+                lineEndPos = CharactersPosition[i].x + CharactersInfos[i].Size.x + GetFontSize() * 0.25 + GetHorizontalPadding();
+                int alignOffset = 0; 
+
+                switch (HorizontalAlignment)
+                {
+                    case ssGUI::Enums::TextAlignmentHorizontal::LEFT:
+                        alignOffset = -lineStartPos;
+                        break;
+                
+                    case ssGUI::Enums::TextAlignmentHorizontal::CENTER:
+                        alignOffset = (GetSize().x * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
+                        break;
+                    
+                    case ssGUI::Enums::TextAlignmentHorizontal::RIGHT:
+                        alignOffset = GetSize().x - lineEndPos;
+                        break;
+                }
+
+                for(int j = lineStartIndex; j <= i; j++)
+                    CharactersPosition[j].x += alignOffset;
+            }
         }
-        */
-
+        
         //Find out how tall all the texts are and align accordingly
+        int alignOffset = 0;
+        lineStartPos = CharactersPosition[0].y - GetVerticalPadding();  //There's already some padding by default
+        lineEndPos = (CharactersPosition[CharactersPosition.size() - 1].y + GetFontSize() * 1.25) + GetVerticalPadding();;
+        switch (VerticalAlignment)
+        {
+            case ssGUI::Enums::TextAlignmentVertical::TOP:
+                alignOffset = -lineStartPos;
+                break;
+        
+            case ssGUI::Enums::TextAlignmentVertical::CENTER:
+                
+                alignOffset = (GetSize().y * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
+                break;
+            
+            case ssGUI::Enums::TextAlignmentVertical::BOTTOM:
+                alignOffset = GetSize().y - lineEndPos;
+                break;
+        }
+
+        for(int i = 0; i < CharactersPosition.size(); i++)
+            CharactersPosition[i].y += alignOffset;
     }
     
 
@@ -436,6 +510,26 @@ namespace ssGUI
         return WrappingMode;
     }
 
+    void Text::SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal align)
+    {
+        HorizontalAlignment = align;
+    }
+
+    ssGUI::Enums::TextAlignmentHorizontal Text::GetHorizontalAlignment()
+    {
+        return HorizontalAlignment;
+    }
+
+    void Text::SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical align)
+    {
+        VerticalAlignment = align;
+    }
+
+    ssGUI::Enums::TextAlignmentVertical Text::GetVerticalAlignment()
+    {
+        return VerticalAlignment;
+    }
+
     void Text::SetFont(ssGUI::Font* font)
     {
         CurrentFont = font;
@@ -444,6 +538,26 @@ namespace ssGUI
     ssGUI::Font* Text::GetFont()
     {
         return CurrentFont;
+    }
+
+    void Text::SetHorizontalPadding(int padding)
+    {
+        HorizontalPadding = padding;
+    }
+
+    int Text::GetHorizontalPadding()
+    {
+        return HorizontalPadding;
+    }
+
+    void Text::SetVerticalPadding(int padding)
+    {
+        VerticalPadding = padding;
+    }
+
+    int Text::GetVerticalPadding()
+    {
+        return VerticalPadding;
     }
 
     void Text::SetCharacterSpace(int charSpace)
@@ -492,6 +606,7 @@ namespace ssGUI
         glm::ivec2 drawPos = GetGlobalPosition();
 
         //TODO: Some optimisation maybe possible
+        //Drawing background
         DrawingVerticies.push_back(drawPos);
         DrawingUVs.push_back(glm::ivec2());
         DrawingColours.push_back(GetBackgroundColour());
