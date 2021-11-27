@@ -601,7 +601,7 @@ namespace ssGUI
             return;
         
         for(auto extension : Extensions)
-            extension->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         glm::ivec2 drawPos = GetGlobalPosition();
 
@@ -653,7 +653,7 @@ namespace ssGUI
         endOfDrawing:;
 
         for(auto extension : Extensions)
-            extension->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -669,16 +669,16 @@ namespace ssGUI
 
         for(auto extension : Extensions)
         {
-            if(!temp->IsExtensionExist(extension->GetExtensionName()))
-                temp->AddExtension(extension->Clone(this));
+            if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
+                temp->AddExtension(extension.second->Clone(this));
         }
 
         for(auto eventCallback : EventCallbacks)
         {
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
 
-            if(!temp->IsEventCallbackExist(eventCallback->GetEventCallbackName()))
-                temp->AddEventCallback(eventCallback->Clone(this, originalObjs, tempVec));
+            if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+                temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
         }
 
         return temp;

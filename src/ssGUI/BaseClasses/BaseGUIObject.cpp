@@ -25,8 +25,8 @@ namespace ssGUI
         DrawingColours = other.DrawingColours;
         DrawingCounts = other.DrawingCounts;
         DrawingProperties = std::vector<ssGUI::DrawingProperty>(other.DrawingProperties);
-        Extensions = std::vector<ssGUI::Extensions::Extension*>();
-        EventCallbacks = std::vector<ssGUI::EventCallbacks::EventCallback*>();
+        Extensions = std::unordered_map<std::string, ssGUI::Extensions::Extension*>();
+        EventCallbacks = std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*>();
         CurrentTags = std::unordered_set<std::string>();
     }
     
@@ -133,15 +133,11 @@ namespace ssGUI
 
     BaseGUIObject::~BaseGUIObject()
     {
-        for(int i = 0; i < Extensions.size(); i++)
-        {
-            delete Extensions[i];
-        }
-
-        for(int i = 0; i < EventCallbacks.size(); i++)
-        {
-            delete EventCallbacks[i];
-        }
+        for(auto it : Extensions)
+            delete it.second;
+        
+        for(auto it : EventCallbacks)
+            delete it.second;
     }
 
     //Below are from GUIObject.hpp
@@ -437,81 +433,58 @@ namespace ssGUI
         if(IsExtensionExist(extension->GetExtensionName()))
             return;
 
-        Extensions.push_back(extension);
+        Extensions[extension->GetExtensionName()] = extension;
         extension->BindToObject(this);
     }
 
     ssGUI::Extensions::Extension* BaseGUIObject::GetExtension(std::string extensionName)
     {
-        for(auto extension : Extensions)
-        {
-            if(extension->GetExtensionName() == extensionName)
-                return extension;
-        }
+        if(!IsExtensionExist(extensionName))
+            return nullptr;
 
-        return nullptr;
+        return Extensions[extensionName];
     }
 
     bool BaseGUIObject::IsExtensionExist(std::string extensionName) const
     {
-        for(auto extension : Extensions)
-        {
-            if(extension->GetExtensionName() == extensionName)
-                return true;
-        }
-            
-        return false;
+        return Extensions.find(extensionName) != Extensions.end();
     }
 
     void BaseGUIObject::RemoveExtension(std::string extensionName)
     {
-        for(int i = 0; i < Extensions.size(); i++)
-        {
-            if(Extensions[i]->GetExtensionName() == extensionName)
-            {
-                Extensions.erase(Extensions.begin() + i);
-                return;
-            }
-        }    
+        if(!IsExtensionExist(extensionName))
+            return;
+
+        Extensions.erase(extensionName);
     }
 
     void BaseGUIObject::AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback)
     {
-        EventCallbacks.push_back(eventCallback);
+        if(IsEventCallbackExist(eventCallback->GetEventCallbackName()))
+            return;
+        
+        EventCallbacks[eventCallback->GetEventCallbackName()] = eventCallback;
     }
 
     ssGUI::EventCallbacks::EventCallback* BaseGUIObject::GetEventCallback(std::string eventCallbackName)
     {
-        for(auto eventCallback : EventCallbacks)
-        {
-            if(eventCallback->GetEventCallbackName() == eventCallbackName)
-                return eventCallback;
-        }
+        if(!IsEventCallbackExist(eventCallbackName))
+            return nullptr;
 
-        return nullptr;
+        return EventCallbacks[eventCallbackName];
     }
 
     bool BaseGUIObject::IsEventCallbackExist(std::string eventCallbackName) const
     {
-        for(auto eventCallback : EventCallbacks)
-        {
-            if(eventCallback->GetEventCallbackName() == eventCallbackName)
-                return true;
-        }
-            
-        return false;
+        return EventCallbacks.find(eventCallbackName) != EventCallbacks.end();
     }
 
     void BaseGUIObject::RemoveEventCallback(std::string eventCallbackName)
     {
-        for(int i = 0; i < EventCallbacks.size(); i++)
-        {
-            if(EventCallbacks[i]->GetEventCallbackName() == eventCallbackName)
-            {
-                EventCallbacks.erase(EventCallbacks.begin() + i);
-                return;
-            }
-        } 
+        if(!IsEventCallbackExist(eventCallbackName))
+            return;
+
+        EventCallbacks.erase(eventCallbackName);
     }
 
     void BaseGUIObject::AddTag(std::string tag)
@@ -537,11 +510,11 @@ namespace ssGUI
             return;
         
         for(auto extension : Extensions)
-            extension->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
 
         for(auto extension : Extensions)
-            extension->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -558,11 +531,11 @@ namespace ssGUI
             return;
         
         for(auto extension : Extensions)
-            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         endOfUpdate:;
         for(auto extension : Extensions)
-            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }
 
 
@@ -573,16 +546,16 @@ namespace ssGUI
         
         for(auto extension : Extensions)
         {
-            if(!temp->IsExtensionExist(extension->GetExtensionName()))
-                temp->AddExtension(extension->Clone(this));
+            if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
+                temp->AddExtension(extension.second->Clone(this));
         }
 
         for(auto eventCallback : EventCallbacks)
         {
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
             
-            if(!temp->IsEventCallbackExist(eventCallback->GetEventCallbackName()))
-                temp->AddEventCallback(eventCallback->Clone(this, originalObjs, tempVec));
+            if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+                temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
         }
 
         return temp;

@@ -10,6 +10,7 @@
 #include <list>
 #include <limits>
 #include <unordered_set>
+#include <unordered_map>
 
 //namespace: ssGUI
 namespace ssGUI
@@ -45,8 +46,8 @@ namespace ssGUI
             std::vector<int> DrawingCounts;
             std::vector<ssGUI::DrawingProperty> DrawingProperties;
 
-            std::vector<ssGUI::Extensions::Extension*> Extensions;
-            std::vector<ssGUI::EventCallbacks::EventCallback*> EventCallbacks;
+            std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;
+            std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*> EventCallbacks;
 
             std::unordered_set<std::string> CurrentTags;
 

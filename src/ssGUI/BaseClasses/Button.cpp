@@ -123,7 +123,7 @@ namespace ssGUI
     void Button::Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
         for (auto extension : Extensions)
-            extension->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         if (!IsVisible())
             return;
@@ -151,7 +151,7 @@ namespace ssGUI
         DrawingProperties.push_back(ssGUI::DrawingProperty());
 
         for (auto extension : Extensions)
-            extension->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -168,7 +168,7 @@ namespace ssGUI
             return;
 
         for (auto extension : Extensions)
-            extension->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //On mouse down
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
@@ -221,7 +221,7 @@ namespace ssGUI
         endUpdate:;
         
         for (auto extension : Extensions)
-            extension->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }
 
     GUIObject* Button::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)
@@ -230,16 +230,16 @@ namespace ssGUI
 
         for(auto extension : Extensions)
         {
-            if(!temp->IsExtensionExist(extension->GetExtensionName()))
-                temp->AddExtension(extension->Clone(this));
+            if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
+                temp->AddExtension(extension.second->Clone(this));
         }
 
         for(auto eventCallback : EventCallbacks)
         {
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
 
-            if(!temp->IsEventCallbackExist(eventCallback->GetEventCallbackName()))
-                temp->AddEventCallback(eventCallback->Clone(this, originalObjs, tempVec));
+            if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+                temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
         }
 
         return temp;

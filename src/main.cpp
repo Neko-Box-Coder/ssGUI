@@ -180,7 +180,7 @@ int main()
 }*/
 
 
-/*//Introduction Example
+//Introduction Example
 int main()
 {
     //Create the main window
@@ -225,7 +225,7 @@ int main()
     guiManager.StartRunning();
     return 0;
 }
-*/
+
 
 /*//Event callback example
 int main()
