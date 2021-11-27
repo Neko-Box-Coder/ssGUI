@@ -215,7 +215,7 @@ namespace ssGUI
                 //TODO : Check if it is a deleted object or not
                 if(objToUpdate.top()->Internal_IsDeleted())
                 {
-                    objToUpdate.top()->SetParentP(nullptr);
+                    objToUpdate.top()->SetParent(nullptr);
                     
                     if(objToUpdate.top()->Internal_NeedCleanUp())
                        delete objToUpdate.top();
@@ -268,10 +268,10 @@ namespace ssGUI
 
     ssGUI::GUIObject* ssGUIManager::FindParentWindowP(ssGUI::GUIObject& obj)
     {        
-        ssGUI::GUIObject* currentParentP = obj.GetParentP();
+        ssGUI::GUIObject* currentParentP = obj.GetParent();
 
         while (currentParentP != nullptr && currentParentP->GetType() != ssGUI::Enums::GUIObjectType::WINDOW)
-            currentParentP = currentParentP->GetParentP();
+            currentParentP = currentParentP->GetParent();
         
         if(currentParentP != nullptr && currentParentP->GetType() != ssGUI::Enums::GUIObjectType::WINDOW)
             return nullptr;
@@ -282,7 +282,7 @@ namespace ssGUI
     void ssGUIManager::AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP)
     {
         for(auto it = targetObj.GetChildrenStartIterator(); it != targetObj.GetChildrenEndIterator(); it++)
-            (*it)->SetParentP(newParentP);
+            (*it)->SetParent(newParentP);
     }
 
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;

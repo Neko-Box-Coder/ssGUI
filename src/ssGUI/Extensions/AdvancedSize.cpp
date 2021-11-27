@@ -111,10 +111,10 @@ namespace ssGUI::Extensions
         //TODO : Cache if parent's size hasn't changed
         
         //This should be done in post update
-        if(IsPreUpdate || !IsOverrideDefaultSize() || Container == nullptr || Container->GetParentP() == nullptr || !Enabled)
+        if(IsPreUpdate || !IsOverrideDefaultSize() || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
             return;
         
-        ssGUI::GUIObject* parent = Container->GetParentP();
+        ssGUI::GUIObject* parent = Container->GetParent();
 
         glm::vec2 finalSize;
 

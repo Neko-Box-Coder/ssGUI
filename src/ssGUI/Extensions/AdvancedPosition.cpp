@@ -134,10 +134,10 @@ namespace ssGUI::Extensions
         //TODO : Cache if parent's global position and size hasn't changed
         
         //This should be done in post update
-        if(IsPreUpdate || !IsOverrideDefaultPosition() || Container == nullptr || Container->GetParentP() == nullptr || !Enabled)
+        if(IsPreUpdate || !IsOverrideDefaultPosition() || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
             return;
         
-        ssGUI::GUIObject* parent = Container->GetParentP();
+        ssGUI::GUIObject* parent = Container->GetParent();
 
         glm::vec2 finalPos;
 

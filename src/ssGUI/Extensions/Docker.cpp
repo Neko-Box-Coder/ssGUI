@@ -50,7 +50,7 @@ namespace ssGUI::Extensions
         }
 
         (*widget)->AddTag(ssGUI::Tags::OVERLAY);
-        (*widget)->SetParentP(Container);
+        (*widget)->SetParent(Container);
         (*widget)->SetBackgroundColour(color);
     }
 
@@ -346,7 +346,7 @@ namespace ssGUI::Extensions
     {
         Container = bindObj;
 
-        ssGUI::GUIObject* containerParent = Container->GetParentP();
+        ssGUI::GUIObject* containerParent = Container->GetParent();
 
         //Check if we are using the parent's docker & layout settings or not
         if(containerParent != nullptr && containerParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME)

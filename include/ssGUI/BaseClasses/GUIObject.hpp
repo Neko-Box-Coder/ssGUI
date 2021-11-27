@@ -55,11 +55,11 @@ namespace ssGUI
             //function: SetMaxSize
             virtual void SetMaxSize(glm::ivec2 maxSize) = 0;
 
-            //function: GetParentP
-            virtual ssGUI::GUIObject* GetParentP() const = 0;
+            //function: GetParent
+            virtual ssGUI::GUIObject* GetParent() const = 0;
             
-            //function: SetParentP
-            virtual void SetParentP(ssGUI::GUIObject* newParent) = 0;
+            //function: SetParent
+            virtual void SetParent(ssGUI::GUIObject* newParent) = 0;
 
             //function: GetChildrenCount
             virtual int GetChildrenCount() const = 0;

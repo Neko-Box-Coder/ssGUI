@@ -53,7 +53,7 @@ namespace ssGUI::Extensions
         }
         
         (*widget)->AddTag(ssGUI::Tags::OVERLAY);
-        (*widget)->SetParentP(Container);
+        (*widget)->SetParent(Container);
         (*widget)->SetBackgroundColour(color);
     }
 
@@ -248,10 +248,10 @@ namespace ssGUI::Extensions
         GlobalDockMode = true;
 
         //Find the Main Window
-        ssGUI::GUIObject* curParent = TopLevelParent == nullptr ? Container->GetParentP() : TopLevelParent;
+        ssGUI::GUIObject* curParent = TopLevelParent == nullptr ? Container->GetParent() : TopLevelParent;
         while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr)
         {
-            curParent = curParent->GetParentP();
+            curParent = curParent->GetParent();
         }
         
         //If this has no parent. Docking is disabled
@@ -268,12 +268,12 @@ namespace ssGUI::Extensions
 
         //Docking mechanism
         //Parent the container to the MainWindow.
-        OriginalParent = Container->GetParentP();
+        OriginalParent = Container->GetParent();
 
         if(TopLevelParent == nullptr)
-            Container->SetParentP(MainWindowUnderDocking);
+            Container->SetParent(MainWindowUnderDocking);
         else
-            Container->SetParentP(TopLevelParent);
+            Container->SetParent(TopLevelParent);
     }
 
     void Dockable::OnWindowDragFinished()
@@ -282,12 +282,12 @@ namespace ssGUI::Extensions
         Container->RemoveTag(ssGUI::Tags::FLOATING);
         
         //Docking mechanism for dockable window
-        if(TargetDockObject != nullptr && TargetDockObject->GetParentP() != nullptr && TargetDockSide != DockSide::NONE)
+        if(TargetDockObject != nullptr && TargetDockObject->GetParent() != nullptr && TargetDockSide != DockSide::NONE)
         {
             //If it is just docker, just need to add it as a child
             if(TargetDockObject->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
             {
-                Container->SetParentP(TargetDockObject);
+                Container->SetParent(TargetDockObject);
                 goto reset;
             }
             
@@ -295,11 +295,11 @@ namespace ssGUI::Extensions
             ssGUI::Extensions::Layout* dockLayout = nullptr;
 
             //Check if the parent of the targetDockObject has the Docker extension
-            if(TargetDockObject->GetParentP()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && TargetDockObject->GetParentP()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            if(TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
             {
-                ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(TargetDockObject->GetParentP()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+                ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(TargetDockObject->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
 
-                if(TargetDockObject->GetParentP()->GetChildrenCount() > 1)
+                if(TargetDockObject->GetParent()->GetChildrenCount() > 1)
                 {
                     if(parentLayout->IsHorizontalLayout() && (TargetDockSide == DockSide::LEFT || TargetDockSide == DockSide::RIGHT))
                         dockLayout = parentLayout;
@@ -326,15 +326,15 @@ namespace ssGUI::Extensions
                 newParent->SetSize(TargetDockObject->GetSize());
                 newParent->SetAnchorType(TargetDockObject->GetAnchorType());
                 newParent->SetPosition(TargetDockObject->GetPosition());
-                newParent->SetParentP(TargetDockObject->GetParentP());
+                newParent->SetParent(TargetDockObject->GetParent());
 
                 //The docker will automatically create layout extension if not exist
                 newParent->AddExtension(new ssGUI::Extensions::Docker());
 
                 //Check if the generated docker does not use parent docker or not. If so, use default docker & layout settings if present
-                if(newParent->GetParentP()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) 
-                    && !static_cast<ssGUI::Extensions::Docker*>(newParent->GetParentP()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsChildrenDockerUseThisSettings()
-                    && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParentP()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsEnabled())
+                if(newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) 
+                    && !static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsChildrenDockerUseThisSettings()
+                    && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsEnabled())
                 {
                     if(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerSettings() != nullptr)
                         newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->Copy(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerSettings());
@@ -353,8 +353,8 @@ namespace ssGUI::Extensions
                     dockLayout->SetHorizontalLayout(false);
 
                 //Floating
-                if(TargetDockObject->GetParentP()->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW ||
-                    TargetDockObject->GetParentP() == TopLevelParent)
+                if(TargetDockObject->GetParent()->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW ||
+                    TargetDockObject->GetParent() == TopLevelParent)
                 {
                     newParent->SetBackgroundColour(static_cast<ssGUI::Extensions::Docker*>(newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
                 }
@@ -367,44 +367,44 @@ namespace ssGUI::Extensions
                 }
 
                 //Restore order
-                std::list<ssGUI::GUIObject*>::iterator dockObjectIt = TargetDockObject->GetParentP()->FindChild(TargetDockObject);
-                std::list<ssGUI::GUIObject*>::iterator endIt = TargetDockObject->GetParentP()->GetChildrenEndIterator();
+                std::list<ssGUI::GUIObject*>::iterator dockObjectIt = TargetDockObject->GetParent()->FindChild(TargetDockObject);
+                std::list<ssGUI::GUIObject*>::iterator endIt = TargetDockObject->GetParent()->GetChildrenEndIterator();
                 
-                TargetDockObject->GetParentP()->ChangeChildOrder(--endIt, dockObjectIt);
-                TargetDockObject->SetParentP(newParent);
+                TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
+                TargetDockObject->SetParent(newParent);
             }
 
             //This inserts the container to the end
             TargetDockObject->SetSize(glm::ivec2(TargetDockObject->GetSize().x * 0.5, TargetDockObject->GetSize().y * 0.5));
             //Container->SetSize(TargetDockObject->GetSize());
-            Container->SetParentP(TargetDockObject->GetParentP());
+            Container->SetParent(TargetDockObject->GetParent());
 
             //Insert the Container after/before it
-            std::list<ssGUI::GUIObject*>::iterator dockObjectIt = TargetDockObject->GetParentP()->FindChild(TargetDockObject);
-            std::list<ssGUI::GUIObject*>::iterator endIt = TargetDockObject->GetParentP()->GetChildrenEndIterator();
+            std::list<ssGUI::GUIObject*>::iterator dockObjectIt = TargetDockObject->GetParent()->FindChild(TargetDockObject);
+            std::list<ssGUI::GUIObject*>::iterator endIt = TargetDockObject->GetParent()->GetChildrenEndIterator();
             
             if(!dockLayout->IsReverseOrder())
             {
                 //Before
                 if(TargetDockSide == DockSide::LEFT || TargetDockSide == DockSide::TOP)
-                    TargetDockObject->GetParentP()->ChangeChildOrder(--endIt, dockObjectIt);
+                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
                 //After
                 else
                 {
                     dockObjectIt++;
-                    TargetDockObject->GetParentP()->ChangeChildOrder(--endIt, dockObjectIt);
+                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
                 }
             }
             else
             {
                 //Before
                 if(TargetDockSide == DockSide::RIGHT || TargetDockSide == DockSide::BOTTOM)
-                    TargetDockObject->GetParentP()->ChangeChildOrder(--endIt, dockObjectIt);
+                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
                 //After
                 else
                 {
                     dockObjectIt++;
-                    TargetDockObject->GetParentP()->ChangeChildOrder(--endIt, dockObjectIt);
+                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
                 }
             }
         }
@@ -417,19 +417,19 @@ namespace ssGUI::Extensions
                 ssGUI::GUIObject* child = (*(OriginalParent->GetChildrenStartIterator()));
 
                 //Restore order
-                if(OriginalParent->GetParentP() != nullptr)
+                if(OriginalParent->GetParent() != nullptr)
                 {
                     child->SetPosition(OriginalParent->GetPosition());
                     
-                    std::list<ssGUI::GUIObject*>::iterator posObjectIt = OriginalParent->GetParentP()->FindChild(OriginalParent);
-                    std::list<ssGUI::GUIObject*>::iterator endIt = OriginalParent->GetParentP()->GetChildrenEndIterator();
-                    child->SetParentP(OriginalParent->GetParentP());
-                    child->GetParentP()->ChangeChildOrder(--endIt, posObjectIt);
+                    std::list<ssGUI::GUIObject*>::iterator posObjectIt = OriginalParent->GetParent()->FindChild(OriginalParent);
+                    std::list<ssGUI::GUIObject*>::iterator endIt = OriginalParent->GetParent()->GetChildrenEndIterator();
+                    child->SetParent(OriginalParent->GetParent());
+                    child->GetParent()->ChangeChildOrder(--endIt, posObjectIt);
                     OriginalParent->Delete(true);
                     
                     //Check if the child is a docker and if the parent of originalParent is MainWindow or not. (Floating)
                     //If so, make the child draggable 
-                    if(!child->IsUserCreated() && child->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && OriginalParent->GetParentP()->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+                    if(!child->IsUserCreated() && child->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && OriginalParent->GetParent()->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
                     {
                         ssGUI::Window* childDocker = dynamic_cast<ssGUI::Window*>(child);
 
@@ -441,7 +441,7 @@ namespace ssGUI::Extensions
                 }
                 else
                 {
-                    child->SetParentP(OriginalParent->GetParentP());   
+                    child->SetParent(OriginalParent->GetParent());   
                     OriginalParent->Delete(true);
                 }
             }

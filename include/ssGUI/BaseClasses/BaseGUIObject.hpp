@@ -20,7 +20,7 @@ namespace ssGUI
     class BaseGUIObject : public GUIObject
     {
         private:
-            ssGUI::GUIObject* ParentP;
+            ssGUI::GUIObject* Parent;
             std::list<ssGUI::GUIObject*> Children;
             bool Visible;
             glm::u8vec4 BackgroundColour;
@@ -92,11 +92,11 @@ namespace ssGUI
             //function: SetMaxSize
             virtual void SetMaxSize(glm::ivec2 maxSize) override;
 
-            //function: GetParentP
-            virtual ssGUI::GUIObject* GetParentP() const override;
+            //function: GetParent
+            virtual ssGUI::GUIObject* GetParent() const override;
             
-            //function: SetParentP
-            virtual void SetParentP(ssGUI::GUIObject* newParent) override;
+            //function: SetParent
+            virtual void SetParent(ssGUI::GUIObject* newParent) override;
 
             //function: GetChildrenCount
             virtual int GetChildrenCount() const override;

@@ -53,7 +53,7 @@ namespace ssGUI
 
         Closed = true;
 
-        SetParentP(nullptr);
+        SetParent(nullptr);
     }
 
     void Window::AbortClosing()

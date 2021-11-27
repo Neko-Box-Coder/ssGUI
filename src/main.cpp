@@ -75,13 +75,13 @@ int main()
     ssGUI::Window window;
     window.SetBackgroundColour(glm::u8vec4(255, 127, 127, 255));
     window.SetSize(glm::ivec2(150, 150));
-    window.SetParentP(&mainWindow);
+    window.SetParent(&mainWindow);
 
     //Creating window
     ssGUI::Window window2;
     window2.SetBackgroundColour(glm::u8vec4(127, 255, 127, 255));
     window2.SetSize(glm::ivec2(150, 150));
-    window2.SetParentP(&mainWindow);
+    window2.SetParent(&mainWindow);
 
     std::vector<ssGUI::GUIObject *> children;
     ssGUI::Window* window3 = static_cast<ssGUI::Window*>(window2.Clone(children, false));
@@ -92,7 +92,7 @@ int main()
 
 
 
-    //window3->SetParentP(&mainWindow);
+    //window3->SetParent(&mainWindow);
 
     ssGUI::Extensions::Dockable* dock = new ssGUI::Extensions::Dockable();
     ssGUI::Extensions::Dockable* dock2 = new ssGUI::Extensions::Dockable();
@@ -131,7 +131,7 @@ int main()
     
     mainWindowWidget.SetSize(glm::ivec2(400, 400));
     
-    mainWindowWidget.SetParentP(&mainWindow);
+    mainWindowWidget.SetParent(&mainWindow);
     mainWindow.ChangeChildOrder(--mainWindow.GetChildrenEndIterator(), mainWindow.GetChildrenStartIterator());
 
     //Creating ssGUIManager and run it
@@ -170,7 +170,7 @@ int main()
 
 
     //Add the text and button widget to the main window
-    text.SetParentP(&mainWindow);
+    text.SetParent(&mainWindow);
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
@@ -216,8 +216,8 @@ int main()
     );
 
     //Add the text and button widget to the main window
-    text.SetParentP(&mainWindow);
-    button.SetParentP(&mainWindow);
+    text.SetParent(&mainWindow);
+    button.SetParent(&mainWindow);
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
@@ -242,7 +242,7 @@ int main()
     window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
     window.SetSize(glm::ivec2(400, 300));
     window.SetPosition(glm::ivec2(50, 200));
-    window.SetParentP(&mainWindow);     //This should trigger the event callback
+    window.SetParent(&mainWindow);     //This should trigger the event callback
     ssGUI::Extensions::Border* b2 = new ssGUI::Extensions::Border();
     window.AddExtension(b2);
 
@@ -250,7 +250,7 @@ int main()
     ssGUI::Widget widget;
     widget.SetAnchorType(ssGUI::Enums::AnchorType::BOTTOM_RIGHT);
     widget.SetPosition(glm::ivec2(75, 75));
-    widget.SetParentP(&window);
+    widget.SetParent(&window);
 
     ssGUI::Extensions::Border* b = new ssGUI::Extensions::Border();
     widget.AddExtension(b);
@@ -274,7 +274,7 @@ int main()
     ssGUI::Window window;
     window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
     window.SetSize(glm::ivec2(150, 150));
-    window.SetParentP(&mainWindow);
+    window.SetParent(&mainWindow);
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
@@ -297,7 +297,7 @@ int main()
     image.SetSize(glm::ivec2(300, 300));
     image.SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
     image.GetBackendImageInterface()->LoadFromPath("sd.png");
-    image.SetParentP(&mainWindow);
+    image.SetParent(&mainWindow);
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
@@ -327,7 +327,7 @@ int main()
     text.SetFontSize(20);
     text.SetWrappingMode(ssGUI::Enums::TextWrapping::CHARACTER_WRAPPING);
     text.SetText(L"これは非常に長い日本語の文章です~~~~~");
-    text.SetParentP(&mainWindow);
+    text.SetParent(&mainWindow);
 
     text.AddExtension(new ssGUI::Extensions::Border());
 

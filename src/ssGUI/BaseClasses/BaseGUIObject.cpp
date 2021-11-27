@@ -6,8 +6,8 @@ namespace ssGUI
 {    
     BaseGUIObject::BaseGUIObject(BaseGUIObject const& other)
     {
-        ParentP = nullptr;
-        SetParentP(other.GetParentP()); //Note : Reason of using SetParentP is to inform the parent to add this as a child
+        Parent = nullptr;
+        SetParent(other.GetParent()); //Note : Reason of using SetParent is to inform the parent to add this as a child
         Children = std::list<ssGUI::GUIObject*>();
         Visible = other.IsVisible();
         BackgroundColour = other.GetBackgroundColour();
@@ -32,11 +32,11 @@ namespace ssGUI
     
     void BaseGUIObject::SyncPosition()
     {
-        if(ParentP == nullptr)
+        if(Parent == nullptr)
             return;
         
-        glm::ivec2 parentGlobalPositon = ParentP->GetParentP() == nullptr ? glm::ivec2() : ParentP->GetGlobalPosition();
-        glm::ivec2 parentSize = ParentP->GetSize();
+        glm::ivec2 parentGlobalPositon = Parent->GetParent() == nullptr ? glm::ivec2() : Parent->GetGlobalPosition();
+        glm::ivec2 parentSize = Parent->GetSize();
         glm::ivec2 anchorPosition = parentGlobalPositon;
         glm::ivec2 anchorDirection = glm::ivec2(1, 1);
         glm::ivec2 positionOffset = GetSize();
@@ -65,8 +65,8 @@ namespace ssGUI
                 break;
         }
 
-        if(ParentP->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
-            anchorPosition.y += dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
+        if(Parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && Parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+            anchorPosition.y += dynamic_cast<ssGUI::Window*>(Parent)->GetTitlebarHeight();
 
         //Local Position = (Global position - Anchor Point) * anchorDirection
         Position.x = (GlobalPosition.x + positionOffset.x - anchorPosition.x) * anchorDirection.x;
@@ -75,11 +75,11 @@ namespace ssGUI
     
     void BaseGUIObject::SyncGlobalPosition()
     {
-        if(ParentP == nullptr)
+        if(Parent == nullptr)
             return;
         
-        glm::ivec2 parentGlobalPositon = ParentP->GetParentP() == nullptr ? glm::ivec2() : ParentP->GetGlobalPosition();
-        glm::ivec2 parentSize = ParentP->GetSize();
+        glm::ivec2 parentGlobalPositon = Parent->GetParent() == nullptr ? glm::ivec2() : Parent->GetGlobalPosition();
+        glm::ivec2 parentSize = Parent->GetSize();
         glm::ivec2 anchorPosition = parentGlobalPositon;
         glm::ivec2 anchorDirection = glm::ivec2(1, 1);
         glm::ivec2 positionOffset = GetSize();
@@ -111,8 +111,8 @@ namespace ssGUI
                 break;
         }
 
-        if(ParentP->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && ParentP->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
-            anchorPosition.y += dynamic_cast<ssGUI::Window*>(ParentP)->GetTitlebarHeight();
+        if(Parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && Parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+            anchorPosition.y += dynamic_cast<ssGUI::Window*>(Parent)->GetTitlebarHeight();
 
         // std::cout<<"anchorPosition: "<<anchorPosition.x<<", "<<anchorPosition.y<<"\n";
         // std::cout<<"anchorDirection: "<<anchorDirection.x<<", "<<anchorDirection.y<<"\n";
@@ -123,7 +123,7 @@ namespace ssGUI
         GlobalPosition.y = anchorPosition.y + Position.y * anchorDirection.y - positionOffset.y;
     }
 
-    BaseGUIObject::BaseGUIObject() : ParentP(nullptr), Children(), Visible(true),
+    BaseGUIObject::BaseGUIObject() : Parent(nullptr), Children(), Visible(true),
                                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), ObjectCleanUp(false),
                                         Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
                                         MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
@@ -217,33 +217,33 @@ namespace ssGUI
             GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(this);
     }
 
-    ssGUI::GUIObject* BaseGUIObject::GetParentP() const 
+    ssGUI::GUIObject* BaseGUIObject::GetParent() const 
     {
-        return ParentP;
+        return Parent;
     }
 
-    void BaseGUIObject::SetParentP(ssGUI::GUIObject* newParent)
+    void BaseGUIObject::SetParent(ssGUI::GUIObject* newParent)
     {        
-        if(ParentP != nullptr)
+        if(Parent != nullptr)
         {
             //Check if this object is the parent of the new parent
             if(newParent != nullptr)
             {
-                ssGUI::GUIObject* checkParent = newParent;//->GetParentP();
+                ssGUI::GUIObject* checkParent = newParent;//->GetParent();
                 while (checkParent != nullptr)
                 {
                     if(checkParent == (ssGUI::GUIObject*)this)
                         return;
 
-                    checkParent = checkParent->GetParentP();
+                    checkParent = checkParent->GetParent();
                 }
             }
 
             //Inform original parent to remove child
-            ParentP->Internal_RemoveChild(this);
+            Parent->Internal_RemoveChild(this);
 
             //Send event callback if any object is subscribed to on children removed
-            ssGUI::GUIObject* originalParent = ParentP;
+            ssGUI::GUIObject* originalParent = Parent;
             while (originalParent != nullptr)
             {
                 if(originalParent == newParent)
@@ -252,11 +252,11 @@ namespace ssGUI
                 if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME))
                     originalParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME)->Notify(this);
                 
-                originalParent = originalParent->GetParentP();
+                originalParent = originalParent->GetParent();
             }
         }
 
-        ParentP = newParent;
+        Parent = newParent;
 
         if (newParent == nullptr)
             return;
@@ -268,7 +268,7 @@ namespace ssGUI
         SetGlobalPosition(GetGlobalPosition());
         
         //Send event callback if any object is subscribed to on children added
-        ssGUI::GUIObject* currentParent = ParentP;
+        ssGUI::GUIObject* currentParent = Parent;
         while (currentParent != nullptr)
         {
             if(currentParent == (ssGUI::GUIObject*)this)
@@ -279,7 +279,7 @@ namespace ssGUI
                 currentParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME)->Notify(this);
             }
 
-            currentParent = currentParent->GetParentP();
+            currentParent = currentParent->GetParent();
         }
     }
 

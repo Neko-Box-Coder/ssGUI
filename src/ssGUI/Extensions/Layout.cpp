@@ -570,14 +570,14 @@ namespace ssGUI::Extensions
         {
             ObjectsToExclude.erase(obj);
 
-            if(obj->GetParentP() == Container)
+            if(obj->GetParent() == Container)
                 Internal_OnRecursiveChildAdded(obj);
         }
     }
 
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
-        if(child->GetParentP() != Container)
+        if(child->GetParent() != Container)
             return;
 
         if(ObjectsToExclude.find(child) != ObjectsToExclude.end())
@@ -717,7 +717,7 @@ namespace ssGUI::Extensions
         std::vector<ssGUI::GUIObject*> objToRemove;
         for(auto it = ObjectsToExclude.begin(); it != ObjectsToExclude.end(); it++)
         {
-            if((*it)->GetParentP() != Container)
+            if((*it)->GetParent() != Container)
                 objToRemove.push_back(*it);
             else
                 excludeCount++;
