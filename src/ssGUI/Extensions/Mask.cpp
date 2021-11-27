@@ -845,20 +845,21 @@ namespace ssGUI::Extensions
     Mask::Mask(Mask const& other)
     {
         Container = nullptr;
-        SetMaskChildren(other.GetMaskChildren());
-        SetMaskContainer(other.GetMaskContainer());
-        SetFollowContainer(other.GetFollowContainer());
-        SetFollowPositionOffset(other.GetFollowPositionOffset());
-        SetFollowSizePadding(other.GetFollowSizePadding());
-        SetGlobalPosition(other.GetGlobalPosition());
-        SetSize(other.GetSize());
+        Enabled = other.IsEnabled();
+        MaskChildren = other.GetMaskChildren();
+        MaskContainer = other.GetMaskContainer();
+        FollowContainer = other.GetFollowContainer();
+        FollowPositionOffset = other.GetFollowPositionOffset();
+        FollowSizePadding = other.GetFollowSizePadding();
+        GlobalPosition = other.GetGlobalPosition();
+        Size = other.GetSize();
         OnChildAddedEventIndex = -1;
         OnChildRemovedEventIndex = -1;
     }
 
     const std::string Mask::EXTENSION_NAME = "Mask";
 
-    Mask::Mask() :  Container(nullptr), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
+    Mask::Mask() :  Container(nullptr), Enabled(true), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
                     FollowPositionOffset(), FollowSizePadding(), GlobalPosition(), Size(),
                     OnChildAddedEventIndex(-1), OnChildRemovedEventIndex(-1)
     {}
@@ -1153,11 +1154,21 @@ namespace ssGUI::Extensions
 
         verticesCount.assign(newVerticesCount.begin(), newVerticesCount.end());
     }
+
+    void Mask::SetEnabled(bool enabled)
+    {
+        Enabled = enabled;
+    }
+
+    bool Mask::IsEnabled() const
+    {
+        return Enabled;
+    }
     
     //Extension methods
     void Mask::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        if(IsPreUpdate)
+        if(IsPreUpdate || Container == nullptr || !Enabled)
             return;
 
         if(FollowContainer)
@@ -1203,10 +1214,28 @@ namespace ssGUI::Extensions
         SetMaskChildren(true);  //Setting it to true in order to add mask enforcer extension as well as event callbacks
     }
 
+    void Mask::Copy(ssGUI::Extensions::Extension* extension)
+    {
+        if(extension->GetExtensionName() != EXTENSION_NAME)
+            return;
+        
+        ssGUI::Extensions::Mask* mask = static_cast<ssGUI::Extensions::Mask*>(extension);
+        
+        Enabled = mask->IsEnabled();
+        MaskChildren = mask->GetMaskChildren();
+        MaskContainer = mask->GetMaskContainer();
+        FollowContainer = mask->GetFollowContainer();
+        FollowPositionOffset = mask->GetFollowPositionOffset();
+        FollowSizePadding = mask->GetFollowSizePadding();
+        GlobalPosition = mask->GetGlobalPosition();
+        Size = mask->GetSize();
+    }
+
     Extension* Mask::Clone(ssGUI::GUIObject* newContainer)
     {
         Mask* temp = new Mask(*this);
-        temp->BindToObject(newContainer);
+        if(newContainer != nullptr)
+            newContainer->AddExtension(temp);
         return temp;
     }
 }

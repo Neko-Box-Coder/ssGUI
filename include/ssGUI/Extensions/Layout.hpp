@@ -2,12 +2,14 @@
 #define SSGUI_LAYOUT
 
 #include <unordered_map>
+#include <unordered_set>
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/BaseClasses/Window.hpp"
 #include "ssGUI/BaseClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
 #include "ssGUI/EventCallbacks/RecursiveChildrenAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildrenRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
+#include "ssGUI/ssGUITags.hpp"
 
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
@@ -28,18 +30,23 @@ namespace ssGUI::Extensions
             bool ReverseOrder;
             bool CoverFullLength; 
             ssGUI::GUIObject* Container;
+            bool Enabled;
             int Padding;
             int Spacing;
 
             int OnChildAddedEventIndex;
             int OnChildRemovedEventIndex;
 
+            std::unordered_map<ssGUI::GUIObject*, glm::ivec2> LastUpdateChildrenSize;
+            std::unordered_set<ssGUI::GUIObject*> ObjectsToExclude;
+            std::unordered_map<ssGUI::GUIObject*, glm::ivec2> OriginalChildrenSize;
             std::unordered_map<ssGUI::GUIObject*, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
             std::unordered_map<ssGUI::GUIObject*, int> MinMaxSizeChangedEventIndices;
 
 
             void LayoutChildren(int startPos, int length, std::vector<int>& childrenPos, std::vector<int>& childrenLength, 
-                                std::vector<int>& minChildrenLength, std::vector<int>& maxChildrenLength);
+                                std::vector<int>& minChildrenLength, std::vector<int>& maxChildrenLength, int lastChildChangeIndex,
+                                int sizeDiff);
 
             void UpdateChildrenResizeTypes();
 
@@ -113,6 +120,10 @@ namespace ssGUI::Extensions
             //function: SetSpacing
             virtual void SetSpacing(int spacing);
 
+            virtual void ExcludeObject(ssGUI::GUIObject* obj);
+
+            virtual void UnexcludeObject(ssGUI::GUIObject* obj);
+
             //function: Internal_OnRecursiveChildAdded
             virtual void Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child);
             
@@ -123,8 +134,12 @@ namespace ssGUI::Extensions
             virtual void Internal_OnChildMinMaxSizeChanged(ssGUI::GUIObject* child);
 
             //Override from Extension
+            virtual void SetEnabled(bool enabled) override;
+
+            virtual bool IsEnabled() const override;
+
             //function: Update
-            virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Draw
             virtual void Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
@@ -134,6 +149,8 @@ namespace ssGUI::Extensions
             
             //function: BindToObject
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
+
+            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
 
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;

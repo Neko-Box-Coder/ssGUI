@@ -5,14 +5,15 @@ namespace ssGUI::Extensions
 {
     Border::Border(Border const& other)
     {
+        Container = nullptr;
         BorderColour = other.GetBorderColour();
         BorderWidth = other.GetBorderWidth();
-        Container = nullptr;
+        Enabled = other.IsEnabled();
     }
     
     const std::string Border::EXTENSION_NAME = "Border";
     
-    Border::Border() : BorderColour(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), Container(nullptr)
+    Border::Border() : BorderColour(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), Container(nullptr), Enabled(true)
     {}
     
     Border::~Border()
@@ -129,6 +130,16 @@ namespace ssGUI::Extensions
         drawingProperties.push_back(ssGUI::DrawingProperty()); 
     }
 
+    void Border::SetEnabled(bool enabled)
+    {
+        Enabled = enabled;
+    }
+
+    bool Border::IsEnabled() const
+    {
+        return Enabled;
+    }
+
     void Border::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //Do nothing
@@ -136,6 +147,9 @@ namespace ssGUI::Extensions
     
     void Border::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
+        if(IsPreRender || Container == nullptr || Container->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW || !Enabled)
+            return;
+        
         DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
     }
     
@@ -148,11 +162,23 @@ namespace ssGUI::Extensions
     {
         Container = bindObj;
     }
+
+    void Border::Copy(ssGUI::Extensions::Extension* extension)
+    {
+        if(extension->GetExtensionName() != EXTENSION_NAME)
+            return;
+        
+        ssGUI::Extensions::Border* border = static_cast<ssGUI::Extensions::Border*>(extension);
+        BorderColour = border->GetBorderColour();
+        BorderWidth = border->GetBorderWidth();
+        Enabled = border->IsEnabled();
+    }
     
     Extension* Border::Clone(ssGUI::GUIObject* newContainer)
     {
         Border* temp = new Border(*this);
-        temp->BindToObject(newContainer);
+        if(newContainer != nullptr)
+            newContainer->AddExtension(temp);
         return temp;
     }
 }

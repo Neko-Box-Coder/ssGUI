@@ -6,11 +6,6 @@
 #include "ssGUI/BaseClasses/GUIObject.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject
 #include "glm/vec4.hpp"
 
-namespace ssGUI
-{
-    class GUIObject;
-}
-
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {   
@@ -24,6 +19,8 @@ namespace ssGUI::Extensions
             glm::u8vec4 BorderColour;
             int BorderWidth;
             ssGUI::GUIObject* Container;
+            bool Enabled;
+
             virtual void DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset);
             
             Border(Border const& other);
@@ -45,7 +42,13 @@ namespace ssGUI::Extensions
             
             //function: SetBorderWidth
             virtual void SetBorderWidth(int width);
-            
+
+
+            //Override from Extension
+            virtual void SetEnabled(bool enabled) override;
+
+            virtual bool IsEnabled() const override;
+
             //function: Update
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
@@ -57,6 +60,9 @@ namespace ssGUI::Extensions
             
             //function: BindToObject
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
+
+            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+
             
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;

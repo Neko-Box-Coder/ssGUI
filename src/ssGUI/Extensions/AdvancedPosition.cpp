@@ -6,20 +6,21 @@ namespace ssGUI::Extensions
     AdvancedPosition::AdvancedPosition(AdvancedPosition const& other)
     {
         Container = nullptr;
-        SetHorizontalAnchor(GetHorizontalAnchor());
-        SetVerticalAnchor(GetVerticalAnchor());
-        SetHorizontalUsePercentage(IsHorizontalUsePercentage());
-        SetVerticalUsePercentage(IsVerticalUsePercentage());
-        SetHorizontalPixel(GetHorizontalPixel());
-        SetVerticalPixel(GetVerticalPixel());
-        SetHorizontalPercentage(GetHorizontalPercentage());
-        SetVerticalPercentage(GetVerticalPercentage());
-        SetOverrideDefaultPosition(IsOverrideDefaultPosition());
+        Enabled = other.IsEnabled();
+        CurrentHorizontal = other.GetHorizontalAnchor();
+        CurrentVertical = other.GetVerticalAnchor();
+        HorizontalUsePercentage = other.IsHorizontalUsePercentage();
+        VerticalUsePercentage = other.IsVerticalUsePercentage();
+        HorizontalPixelValue = other.GetHorizontalPixel();
+        VerticalPixelValue = other.GetVerticalPixel();
+        HorizontalPercentageValue = other.GetHorizontalPercentage();
+        VerticalPercentageValue = other.GetVerticalPercentage();
+        OverrideDefaultPosition = other.IsOverrideDefaultPosition();
     }
 
     const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";
     
-    AdvancedPosition::AdvancedPosition() : Container(nullptr), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::LEFT), 
+    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::LEFT), 
                                             CurrentVertical(AdvancedPosition::VerticalAnchor::TOP), HorizontalUsePercentage(false),
                                             VerticalUsePercentage(false), HorizontalPixelValue(0), VerticalPixelValue(0),
                                             HorizontalPercentageValue(0), VerticalPercentageValue(0), OverrideDefaultPosition(true)
@@ -118,12 +119,22 @@ namespace ssGUI::Extensions
         return OverrideDefaultPosition;
     }
 
+    void AdvancedPosition::SetEnabled(bool enabled)
+    {
+        Enabled = enabled;
+    }
+
+    bool AdvancedPosition::IsEnabled() const
+    {
+        return Enabled;
+    }
+
     void AdvancedPosition::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //TODO : Cache if parent's global position and size hasn't changed
         
         //This should be done in post update
-        if(IsPreUpdate || !IsOverrideDefaultPosition() || Container == nullptr || Container->GetParentP() == nullptr)
+        if(IsPreUpdate || !IsOverrideDefaultPosition() || Container == nullptr || Container->GetParentP() == nullptr || !Enabled)
             return;
         
         ssGUI::GUIObject* parent = Container->GetParentP();
@@ -273,10 +284,30 @@ namespace ssGUI::Extensions
         Container = bindObj;
     }
 
+    void AdvancedPosition::Copy(ssGUI::Extensions::Extension* extension)
+    {
+        if(extension->GetExtensionName() != EXTENSION_NAME)
+            return;
+        
+        ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(extension);
+        Enabled = ap->IsEnabled();
+        CurrentHorizontal = ap->GetHorizontalAnchor();
+        CurrentVertical = ap->GetVerticalAnchor();
+        HorizontalUsePercentage = ap->IsHorizontalUsePercentage();
+        VerticalUsePercentage = ap->IsVerticalUsePercentage();
+        HorizontalPixelValue = ap->GetHorizontalPixel();
+        VerticalPixelValue = ap->GetVerticalPixel();
+        HorizontalPercentageValue = ap->GetHorizontalPercentage();
+        VerticalPercentageValue = ap->GetVerticalPercentage();
+        OverrideDefaultPosition = ap->IsOverrideDefaultPosition();
+    }
+    
+
     Extension* AdvancedPosition::Clone(ssGUI::GUIObject* newContainer)
     {
         AdvancedPosition* temp = new AdvancedPosition(*this);
-        temp->BindToObject(newContainer);
+        if(newContainer != nullptr)
+            newContainer->AddExtension(temp);
         return temp;
     }
     

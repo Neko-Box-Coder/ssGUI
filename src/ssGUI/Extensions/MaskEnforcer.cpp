@@ -6,6 +6,7 @@ namespace ssGUI::Extensions
     {
         BindToMask(other.CurrentMask);
         Container = nullptr;
+        Enabled = other.IsEnabled();
         BlockingContainerInput = false;
         LastMaskGlobalPosition = glm::ivec2();
         LastMaskSize = glm::ivec2();
@@ -19,12 +20,12 @@ namespace ssGUI::Extensions
         LastCounts = std::vector<int>();
 
         Cached = false;
-        SetAllowingCaching(other.IsAllowingCaching());
+        AllowCaching = other.IsAllowingCaching();
     }
     
     const std::string MaskEnforcer::EXTENSION_NAME = "Mask Enforcer";
     
-    MaskEnforcer::MaskEnforcer() : CurrentMask(nullptr), Container(nullptr), BlockingContainerInput(false), LastMaskGlobalPosition(), 
+    MaskEnforcer::MaskEnforcer() : CurrentMask(nullptr), Container(nullptr), Enabled(true), BlockingContainerInput(false), LastMaskGlobalPosition(), 
                                     LastMaskSize(), LastContainerGlobalPosition(), LastContainerSize(), LastVertices(), LastUVs(),
                                     LastColours(), LastCounts(), Cached(false), AllowCaching(false)
     {}
@@ -53,16 +54,22 @@ namespace ssGUI::Extensions
         Cached = false;
     }
 
+    void MaskEnforcer::SetEnabled(bool enabled)
+    {
+        Enabled = enabled;
+    }
+
+    bool MaskEnforcer::IsEnabled() const
+    {
+        return Enabled;
+    }
         
     //Extension methods
     void MaskEnforcer::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        if(CurrentMask == nullptr)
+        if(CurrentMask == nullptr || Container == nullptr || globalInputStatus.MouseInputBlocked || windowInputStatus.MouseInputBlocked || !Enabled)
             return;
 
-        if(globalInputStatus.MouseInputBlocked || windowInputStatus.MouseInputBlocked)
-            return;
-        
         //Check if there's any mouse input
         if(IsPreUpdate)
         {
@@ -142,10 +149,25 @@ namespace ssGUI::Extensions
         Container = bindObj;
     }
 
+    void MaskEnforcer::Copy(ssGUI::Extensions::Extension* extension)
+    {
+        if(extension->GetExtensionName() != EXTENSION_NAME)
+            return;
+        
+        ssGUI::Extensions::MaskEnforcer* maskEnforcer = static_cast<ssGUI::Extensions::MaskEnforcer*>(extension);
+        
+        BindToMask(maskEnforcer->CurrentMask);
+        Enabled = maskEnforcer->IsEnabled();
+
+        Cached = false;
+        AllowCaching = maskEnforcer->IsAllowingCaching();
+    }
+
     Extension* MaskEnforcer::Clone(ssGUI::GUIObject* newContainer)
     {
         MaskEnforcer* temp = new MaskEnforcer(*this);
-        temp->BindToObject(newContainer);
+        if(newContainer != nullptr)
+            newContainer->AddExtension(temp);
         return temp;
     }
 }

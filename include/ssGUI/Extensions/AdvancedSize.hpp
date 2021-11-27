@@ -24,6 +24,7 @@ namespace ssGUI::Extensions
         
         protected:
             ssGUI::GUIObject* Container;
+            bool Enabled;
 
             bool HorizontalUsePercentage;
             bool VerticalUsePercentage;
@@ -79,6 +80,10 @@ namespace ssGUI::Extensions
             virtual float IsOverrideDefaultSize() const;
 
             //Override from Extension
+            virtual void SetEnabled(bool enabled) override;
+
+            virtual bool IsEnabled() const override;
+            
             //function: Update
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
             
@@ -90,6 +95,8 @@ namespace ssGUI::Extensions
             
             //function: BindToObject
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
+
+            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
 
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;

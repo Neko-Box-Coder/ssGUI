@@ -6,18 +6,19 @@ namespace ssGUI::Extensions
     AdvancedSize::AdvancedSize(AdvancedSize const& other)
     {
         Container = nullptr;
-        SetHorizontalUsePercentage(IsHorizontalUsePercentage());
-        SetVerticalUsePercentage(IsVerticalUsePercentage());
-        SetHorizontalPixel(GetHorizontalPixel());
-        SetVerticalPixel(GetVerticalPixel());
-        SetHorizontalPercentage(GetHorizontalPercentage());
-        SetVerticalPercentage(GetVerticalPercentage());
-        SetOverrideDefaultSize(IsOverrideDefaultSize());
+        Enabled = other.IsEnabled();
+        HorizontalUsePercentage = other.IsHorizontalUsePercentage();
+        VerticalUsePercentage = other.IsVerticalUsePercentage();
+        HorizontalPixelValue = other.GetHorizontalPixel();
+        VerticalPixelValue = other.GetVerticalPixel();
+        HorizontalPercentageValue = other.GetHorizontalPercentage();
+        VerticalPercentageValue = other.GetVerticalPercentage();
+        OverrideDefaultSize = other.IsOverrideDefaultSize();
     }
 
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
     
-    AdvancedSize::AdvancedSize() : Container(nullptr), HorizontalUsePercentage(false), VerticalUsePercentage(false), 
+    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(false), VerticalUsePercentage(false), 
                                     HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0), 
                                     VerticalPercentageValue(0), OverrideDefaultSize(true)
     {}
@@ -95,12 +96,22 @@ namespace ssGUI::Extensions
         return OverrideDefaultSize;
     }
 
+    void AdvancedSize::SetEnabled(bool enabled)
+    {
+        Enabled = enabled;
+    }
+
+    bool AdvancedSize::IsEnabled() const
+    {
+        return Enabled;
+    }
+
     void AdvancedSize::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //TODO : Cache if parent's size hasn't changed
         
         //This should be done in post update
-        if(IsPreUpdate || !IsOverrideDefaultSize() || Container == nullptr || Container->GetParentP() == nullptr)
+        if(IsPreUpdate || !IsOverrideDefaultSize() || Container == nullptr || Container->GetParentP() == nullptr || !Enabled)
             return;
         
         ssGUI::GUIObject* parent = Container->GetParentP();
@@ -115,7 +126,13 @@ namespace ssGUI::Extensions
 
         //Vertical
         if(IsVerticalUsePercentage())
-            finalSize.y = parent->GetSize().y * GetVerticalPercentage();
+        {
+            float windowOffset = 0;
+            if(parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+                windowOffset = static_cast<ssGUI::Window*>(parent)->GetTitlebarHeight();
+
+            finalSize.y = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
+        }
         else
             finalSize.y = GetVerticalPixel();
 
@@ -138,10 +155,28 @@ namespace ssGUI::Extensions
         Container = bindObj;
     }
 
+    void AdvancedSize::Copy(ssGUI::Extensions::Extension* extension)
+    {
+        if(extension->GetExtensionName() != EXTENSION_NAME)
+            return;
+        
+        ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(extension);
+        Enabled = as->IsEnabled();
+        HorizontalUsePercentage = as->IsHorizontalUsePercentage();
+        VerticalUsePercentage = as->IsVerticalUsePercentage();
+        HorizontalPixelValue = as->GetHorizontalPixel();
+        VerticalPixelValue = as->GetVerticalPixel();
+        HorizontalPercentageValue = as->GetHorizontalPercentage();
+        VerticalPercentageValue = as->GetVerticalPercentage();
+        OverrideDefaultSize = as->IsOverrideDefaultSize();
+    }
+
+
     Extension* AdvancedSize::Clone(ssGUI::GUIObject* newContainer)
     {
         AdvancedSize* temp = new AdvancedSize(*this);
-        temp->BindToObject(newContainer);
+        if(newContainer != nullptr)
+            newContainer->AddExtension(temp);
         return temp;
     }
     

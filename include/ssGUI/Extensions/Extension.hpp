@@ -22,6 +22,10 @@ namespace ssGUI::Extensions
         public:
             virtual ~Extension() = 0;
 
+            virtual void SetEnabled(bool enabled) = 0;
+
+            virtual bool IsEnabled() const = 0;
+
             //function: Update
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) = 0;
             
@@ -34,6 +38,8 @@ namespace ssGUI::Extensions
             //function: BindToObject
             virtual void BindToObject(ssGUI::GUIObject* bindObj) = 0;
             
+            virtual void Copy(ssGUI::Extensions::Extension* extension) = 0;
+
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) = 0;
     };
