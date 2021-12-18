@@ -5,7 +5,7 @@
 #include "ssGUI/Backend/BackendManager.hpp"
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #include "ssGUI/Backend/SFML/SFMLInputConverter.hpp"
-#include "ssGUI/ssGUIBuildConfig.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include <unordered_set>
 #include <memory>
 #include <string>

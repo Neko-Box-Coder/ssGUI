@@ -58,6 +58,7 @@ endif()
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend/SFML")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/BaseClasses")
+# add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/CompositeClasses")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/EventCallbacks")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Extensions")
 

@@ -10,6 +10,7 @@
 #include "ssGUI/Extensions/Border.hpp"
 #include <string>
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -139,11 +140,12 @@ namespace ssGUI
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
             
             //function: Draw
-            virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             //virtual void Internal_Update(ssGUI::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow, ssGUI::GUIObject* mainWindow) override;
             
             //function: Clone
-            virtual GUIObject* Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren) override;
+            virtual GUIObject* Clone(bool cloneChildren) override;
+
     };
 }
 

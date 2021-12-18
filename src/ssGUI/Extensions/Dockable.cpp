@@ -17,7 +17,8 @@ namespace ssGUI::Extensions
     {
         Container = nullptr;
         Enabled = other.IsEnabled();
-        TopLevelParent = other.GetTopLevelParent();
+        TopLevelParent = other.TopLevelParent;
+        CurrentObjectsReferences = other.CurrentObjectsReferences;
         UseTriggerPercentage = other.IsUseTriggerPercentage();
         TriggerPixel = other.GetTriggerPixel();
         TriggerAreaColor = other.GetTriggerAreaColor();
@@ -36,11 +37,14 @@ namespace ssGUI::Extensions
 
     void Dockable::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         //If widget is not present, create it
         if((*widget) == nullptr)
         {            
             (*widget) = new ssGUI::Widget();
             (*widget)->SetUserCreated(false);
+            (*widget)->SetHeapAllocated(true);
             static_cast<ssGUI::Widget*>((*widget))->SetInteractable(false);
             static_cast<ssGUI::Widget*>((*widget))->SetBlockInput(false);
 
@@ -49,17 +53,20 @@ namespace ssGUI::Extensions
 
             (*widget)->AddExtension(ap);
             (*widget)->AddExtension(as);
-
         }
         
         (*widget)->AddTag(ssGUI::Tags::OVERLAY);
         (*widget)->SetParent(Container);
         (*widget)->SetBackgroundColour(color);
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     
     void Dockable::DrawLeftPreview()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         CreateWidgetIfNotPresent(&DockPreivewLeft, GetDockPreviewColor());
 
         //Set the correct position and size
@@ -73,10 +80,14 @@ namespace ssGUI::Extensions
         as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
+        
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Dockable::DrawTopPreview()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         CreateWidgetIfNotPresent(&DockPreivewTop, GetDockPreviewColor());
 
         //Set the correct position and size
@@ -90,10 +101,14 @@ namespace ssGUI::Extensions
         as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
+        
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Dockable::DrawRightPreview()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         CreateWidgetIfNotPresent(&DockPreivewRight, GetDockPreviewColor());
 
         //Set the correct position and size
@@ -107,10 +122,14 @@ namespace ssGUI::Extensions
         as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Dockable::DrawBottomPreview()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         CreateWidgetIfNotPresent(&DockPreivewBottom, GetDockPreviewColor());
 
         //Set the correct position and size
@@ -124,15 +143,16 @@ namespace ssGUI::Extensions
         as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
+        
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Dockable::DiscardLeftPreview()
     {
         if(DockPreivewLeft != nullptr)
         {
-            DockPreivewLeft->Delete(true);
+            DockPreivewLeft->Delete();
             DockPreivewLeft = nullptr;
-
         }
     }
 
@@ -140,7 +160,7 @@ namespace ssGUI::Extensions
     {
         if(DockPreivewTop != nullptr)
         {
-            DockPreivewTop->Delete(true);
+            DockPreivewTop->Delete();
             DockPreivewTop = nullptr;
         }
     }
@@ -149,7 +169,7 @@ namespace ssGUI::Extensions
     {
         if(DockPreivewRight != nullptr)
         {
-            DockPreivewRight->Delete(true);
+            DockPreivewRight->Delete();
             DockPreivewRight = nullptr;
         }
     }
@@ -158,7 +178,7 @@ namespace ssGUI::Extensions
     {
         if(DockPreivewBottom != nullptr)
         {
-            DockPreivewBottom->Delete(true);
+            DockPreivewBottom->Delete();
             DockPreivewBottom = nullptr;
         }
     }
@@ -167,6 +187,7 @@ namespace ssGUI::Extensions
     void Dockable::DrawTriggerAreas()
     {
         //return;
+        FUNC_DEBUG_LINE("Entry");
         
         CreateWidgetIfNotPresent(&DockTriggerTop, GetTriggerAreaColor());
         CreateWidgetIfNotPresent(&DockTriggerRight, GetTriggerAreaColor());
@@ -239,16 +260,20 @@ namespace ssGUI::Extensions
             asLeft->SetHorizontalPixel(GetTriggerPixel());
             asLeft->SetVerticalPixel(Container->GetSize().y - GetTriggerPixel() * 2);
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     //TODO : Add mutex for multi-threading support
     void Dockable::OnWindowDragStarted()
     {        
+        FUNC_DEBUG_LINE("Entry");
+        
         ContainerIsDocking = true;
         GlobalDockMode = true;
 
         //Find the Main Window
-        ssGUI::GUIObject* curParent = TopLevelParent == nullptr ? Container->GetParent() : TopLevelParent;
+        ssGUI::GUIObject* curParent = TopLevelParent == -1 ? Container->GetParent() : CurrentObjectsReferences.GetObjectReference(TopLevelParent);
         while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr)
         {
             curParent = curParent->GetParent();
@@ -259,6 +284,7 @@ namespace ssGUI::Extensions
         {
             ContainerIsDocking = false;
             GlobalDockMode = false;
+            FUNC_DEBUG_LINE("Exit");
             return;
         }
 
@@ -270,17 +296,21 @@ namespace ssGUI::Extensions
         //Parent the container to the MainWindow.
         OriginalParent = Container->GetParent();
 
-        if(TopLevelParent == nullptr)
+        if(TopLevelParent == -1)
             Container->SetParent(MainWindowUnderDocking);
         else
-            Container->SetParent(TopLevelParent);
+            Container->SetParent(CurrentObjectsReferences.GetObjectReference(TopLevelParent));
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Dockable::OnWindowDragFinished()
-    {        
+    {                
+        FUNC_DEBUG_LINE("Entry");
+        
         //Remove the floating tag to allow docking
         Container->RemoveTag(ssGUI::Tags::FLOATING);
-        
+
         //Docking mechanism for dockable window
         if(TargetDockObject != nullptr && TargetDockObject->GetParent() != nullptr && TargetDockSide != DockSide::NONE)
         {
@@ -290,10 +320,9 @@ namespace ssGUI::Extensions
                 Container->SetParent(TargetDockObject);
                 goto reset;
             }
-            
             //Otherwise dock as normal
             ssGUI::Extensions::Layout* dockLayout = nullptr;
-
+            
             //Check if the parent of the targetDockObject has the Docker extension
             if(TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
             {
@@ -321,8 +350,9 @@ namespace ssGUI::Extensions
             if(dockLayout == nullptr)
             {
                 ssGUI::Window* newParent = new ssGUI::Window();
-                                
+
                 newParent->SetUserCreated(false);
+                newParent->SetHeapAllocated(true);
                 newParent->SetSize(TargetDockObject->GetSize());
                 newParent->SetAnchorType(TargetDockObject->GetAnchorType());
                 newParent->SetPosition(TargetDockObject->GetPosition());
@@ -342,8 +372,7 @@ namespace ssGUI::Extensions
                     if(ssGUI::Extensions::Docker::GetDefaultGeneratedLayoutSettings() != nullptr)
                         newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME)->Copy(ssGUI::Extensions::Docker::GetDefaultGeneratedLayoutSettings());
                 }
-
-
+                
                 dockLayout = static_cast<ssGUI::Extensions::Layout*>(newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
                 
                 //Then change the Layout orientation to the same as the docking orientation
@@ -353,8 +382,8 @@ namespace ssGUI::Extensions
                     dockLayout->SetHorizontalLayout(false);
 
                 //Floating
-                if(TargetDockObject->GetParent()->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW ||
-                    TargetDockObject->GetParent() == TopLevelParent)
+                //ssGUI::GUIObject* topLevelParent = (TopLevelParent == -1 ? nullptr : CurrentObjectsReferences.GetObjectReference(TopLevelParent));
+                if(!TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
                 {
                     newParent->SetBackgroundColour(static_cast<ssGUI::Extensions::Docker*>(newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
                 }
@@ -367,45 +396,44 @@ namespace ssGUI::Extensions
                 }
 
                 //Restore order
-                std::list<ssGUI::GUIObject*>::iterator dockObjectIt = TargetDockObject->GetParent()->FindChild(TargetDockObject);
-                std::list<ssGUI::GUIObject*>::iterator endIt = TargetDockObject->GetParent()->GetChildrenEndIterator();
+                TargetDockObject->GetParent()->FindChild(TargetDockObject);
+                std::list<ssGUIObjectIndex>::iterator dockObjectIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
+                TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
+                std::list<ssGUIObjectIndex>::iterator lastIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
                 
-                TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
+                TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
                 TargetDockObject->SetParent(newParent);
             }
-
-            //This inserts the container to the end
+            
+            //This inserts the container to the end. Halfing the size for TargetDockObject and Container so they fit the original space
             TargetDockObject->SetSize(glm::ivec2(TargetDockObject->GetSize().x * 0.5, TargetDockObject->GetSize().y * 0.5));
-            //Container->SetSize(TargetDockObject->GetSize());
+            glm::ivec2 newContainerSize = TargetDockObject->GetSize();
             Container->SetParent(TargetDockObject->GetParent());
+            Container->SetSize(newContainerSize);
 
             //Insert the Container after/before it
-            std::list<ssGUI::GUIObject*>::iterator dockObjectIt = TargetDockObject->GetParent()->FindChild(TargetDockObject);
-            std::list<ssGUI::GUIObject*>::iterator endIt = TargetDockObject->GetParent()->GetChildrenEndIterator();
+            TargetDockObject->GetParent()->FindChild(TargetDockObject);
+            std::list<ssGUIObjectIndex>::iterator dockObjectIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
+            TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
+            std::list<ssGUIObjectIndex>::iterator lastIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
             
             if(!dockLayout->IsReverseOrder())
-            {
+            {                
                 //Before
                 if(TargetDockSide == DockSide::LEFT || TargetDockSide == DockSide::TOP)
-                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
+                    TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
                 //After
                 else
-                {
-                    dockObjectIt++;
-                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
-                }
+                    TargetDockObject->GetParent()->ChangeChildOrderToAfterPosition(lastIt, dockObjectIt);
             }
             else
             {
                 //Before
                 if(TargetDockSide == DockSide::RIGHT || TargetDockSide == DockSide::BOTTOM)
-                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
+                    TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
                 //After
                 else
-                {
-                    dockObjectIt++;
-                    TargetDockObject->GetParent()->ChangeChildOrder(--endIt, dockObjectIt);
-                }
+                    TargetDockObject->GetParent()->ChangeChildOrderToAfterPosition(lastIt, dockObjectIt);
             }
         }
         
@@ -414,18 +442,21 @@ namespace ssGUI::Extensions
         {
             if(OriginalParent->GetChildrenCount() == 1)
             {
-                ssGUI::GUIObject* child = (*(OriginalParent->GetChildrenStartIterator()));
-
+                OriginalParent->MoveChildrenIteratorToFirst();
+                ssGUI::GUIObject* child = OriginalParent->GetCurrentChild();
+                
                 //Restore order
                 if(OriginalParent->GetParent() != nullptr)
                 {
                     child->SetPosition(OriginalParent->GetPosition());
                     
-                    std::list<ssGUI::GUIObject*>::iterator posObjectIt = OriginalParent->GetParent()->FindChild(OriginalParent);
-                    std::list<ssGUI::GUIObject*>::iterator endIt = OriginalParent->GetParent()->GetChildrenEndIterator();
+                    OriginalParent->GetParent()->FindChild(OriginalParent);
+                    std::list<ssGUIObjectIndex>::iterator posObjectIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
+                    OriginalParent->GetParent()->MoveChildrenIteratorToLast();
+                    std::list<ssGUIObjectIndex>::iterator lastIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
                     child->SetParent(OriginalParent->GetParent());
-                    child->GetParent()->ChangeChildOrder(--endIt, posObjectIt);
-                    OriginalParent->Delete(true);
+                    child->GetParent()->ChangeChildOrderToBeforePosition(lastIt, posObjectIt);
+                    OriginalParent->Delete();
                     
                     //Check if the child is a docker and if the parent of originalParent is MainWindow or not. (Floating)
                     //If so, make the child draggable 
@@ -442,13 +473,13 @@ namespace ssGUI::Extensions
                 else
                 {
                     child->SetParent(OriginalParent->GetParent());   
-                    OriginalParent->Delete(true);
+                    OriginalParent->Delete();
                 }
             }
             else
-                OriginalParent->Delete(true);
+                OriginalParent->Delete();
         }
-
+            
         //Reset docking variables
         reset:
         OriginalParent = nullptr;
@@ -457,39 +488,41 @@ namespace ssGUI::Extensions
         MainWindowUnderDocking = nullptr;
         TargetDockObject = nullptr;
         TargetDockSide = DockSide::NONE;
+
+        FUNC_DEBUG_LINE("Exit");
     }
     
     void Dockable::DiscardTriggerAreas()
     {
         if(DockTriggerTop != nullptr)
         {
-            DockTriggerTop->Delete(true);
+            DockTriggerTop->Delete();
             DockTriggerTop = nullptr;
         }
 
         if(DockTriggerRight != nullptr)
         {
-            DockTriggerRight->Delete(true);
+            DockTriggerRight->Delete();
             DockTriggerRight = nullptr;
         }
 
         if(DockTriggerBottom != nullptr)
         {
-            DockTriggerBottom->Delete(true);
+            DockTriggerBottom->Delete();
             DockTriggerBottom = nullptr;
         }
 
         if(DockTriggerLeft != nullptr)
         {
-            DockTriggerLeft->Delete(true);
+            DockTriggerLeft->Delete();
             DockTriggerLeft = nullptr;
         }
     }
     
     const std::string Dockable::EXTENSION_NAME = "Dockable";
 
-    Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(nullptr), UseTriggerPercentage(true), TriggerPercentage(0.25f), 
-                            TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
+    Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(-1), CurrentObjectsReferences(), UseTriggerPercentage(true), 
+                            TriggerPercentage(0.25f), TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
                             ContainerIsDocking(false), DockPreivewTop(nullptr), DockPreivewRight(nullptr), DockPreivewBottom(nullptr), DockPreivewLeft(nullptr),
                             DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr)
     {}
@@ -552,12 +585,23 @@ namespace ssGUI::Extensions
 
     void Dockable::SetTopLevelParent(ssGUI::GUIObject* parent)
     {
-        TopLevelParent = parent;
+        if(parent != nullptr)
+        {
+            if(TopLevelParent != -1)
+                CurrentObjectsReferences.SetObjectReference(TopLevelParent, parent);
+            else
+                TopLevelParent = CurrentObjectsReferences.AddObjectReference(parent);
+        }
+        else
+            TopLevelParent = -1;
     }
 
     ssGUI::GUIObject* Dockable::GetTopLevelParent() const
     {
-        return TopLevelParent;
+        if(TopLevelParent != -1)
+            return nullptr;
+        else
+            return CurrentObjectsReferences.GetObjectReference(TopLevelParent);
     }   
 
     void Dockable::SetEnabled(bool enabled)
@@ -573,8 +617,13 @@ namespace ssGUI::Extensions
     //function: Update
     void Dockable::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(!IsPreUpdate || Container == nullptr || !Enabled)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
 
         //If global dock mode is true, check the cursor against the trigger area
         if(GlobalDockMode && !ContainerIsDocking && !globalInputStatus.DockingBlocked)
@@ -599,12 +648,13 @@ namespace ssGUI::Extensions
                 inputInterface->GetCurrentMousePosition(mainWindow).y >= containerPos.y + titleBarOffset + triggerSize.y && 
                 inputInterface->GetCurrentMousePosition(mainWindow).y <= containerPos.y + titleBarOffset + containerSize.y - triggerSize.y)
             {
+                
                 DiscardTopPreview();
                 DiscardRightPreview();
                 DiscardBottomPreview();
                 DrawLeftPreview();
                 previewDrawn = true;
-                TargetDockSide = DockSide::LEFT;
+                TargetDockSide = DockSide::LEFT;                
             }
             //Top
             else if(inputInterface->GetCurrentMousePosition(mainWindow).x >= containerPos.x + triggerSize.x && 
@@ -657,6 +707,7 @@ namespace ssGUI::Extensions
             if(inputInterface->GetCurrentMousePosition(mainWindow).x >= containerPos.x && inputInterface->GetCurrentMousePosition(mainWindow).x <= containerPos.x + containerSize.x &&
                 inputInterface->GetCurrentMousePosition(mainWindow).y >= containerPos.y + titleBarOffset && inputInterface->GetCurrentMousePosition(mainWindow).y <= containerPos.y + containerSize.y)
             {
+                
                 if(!previewDrawn)
                 {
                     TargetDockSide = DockSide::NONE;
@@ -675,6 +726,7 @@ namespace ssGUI::Extensions
                 TargetDockSide = DockSide::NONE;
                 DiscardTriggerAreas();
             }
+
         }
         else
         {   
@@ -684,9 +736,11 @@ namespace ssGUI::Extensions
             DiscardBottomPreview();
             DiscardTriggerAreas();
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    void Dockable::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Dockable::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {}
     
     //function: GetExtensionName
@@ -698,6 +752,8 @@ namespace ssGUI::Extensions
     //function: BindToObject
     void Dockable::BindToObject(ssGUI::GUIObject* bindObj)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         Container = bindObj;
 
         ssGUI::EventCallbacks::EventCallback* event = nullptr;
@@ -725,6 +781,8 @@ namespace ssGUI::Extensions
                 }
             });
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Dockable::Copy(ssGUI::Extensions::Extension* extension)
@@ -735,14 +793,19 @@ namespace ssGUI::Extensions
         ssGUI::Extensions::Dockable* dockable = static_cast<ssGUI::Extensions::Dockable*>(extension);
 
         Enabled = dockable->IsEnabled();
-        TopLevelParent = dockable->GetTopLevelParent();
+        TopLevelParent = dockable->TopLevelParent;
+        CurrentObjectsReferences = dockable->CurrentObjectsReferences;
         UseTriggerPercentage = dockable->IsUseTriggerPercentage();
         TriggerPixel = dockable->GetTriggerPixel();
         TriggerAreaColor = dockable->GetTriggerAreaColor();
         DockPreviewColor = dockable->GetDockPreviewColor();   
     }
-    
-    //function: Clone
+
+    ObjectsReferences* Dockable::Internal_GetObjectsReferences()
+    {
+        return &CurrentObjectsReferences;
+    }
+
     Extension* Dockable::Clone(ssGUI::GUIObject* newContainer)
     {
         Dockable* temp = new Dockable(*this);

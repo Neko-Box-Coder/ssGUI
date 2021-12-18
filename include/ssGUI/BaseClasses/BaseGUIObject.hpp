@@ -2,9 +2,12 @@
 #define SSGUI_BASE_GUI_OBJECT
 
 #include "ssGUI/BaseClasses/GUIObject.hpp"
+#include "ssGUI/EventCallbacks/OnRecursiveChildAddEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildrenAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildrenRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
+#include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
 #include "glm/vec4.hpp"
 #include <vector>
 #include <list>
@@ -20,13 +23,16 @@ namespace ssGUI
     class BaseGUIObject : public GUIObject
     {
         private:
-            ssGUI::GUIObject* Parent;
-            std::list<ssGUI::GUIObject*> Children;
+            ssGUIObjectIndex Parent;
+            std::list<ssGUIObjectIndex> Children;
+            std::list<ssGUIObjectIndex>::iterator CurrentChild;
+            bool CurrentChildIteratorEnd;
             bool Visible;
             glm::u8vec4 BackgroundColour;
             bool UserCreated;
             bool ObjectDelete;
-            bool ObjectCleanUp;
+            bool HeapAllocated;
+            ObjectsReferences CurrentObjectsReferences;
 
             //Widget transform
             glm::ivec2 Position;
@@ -56,6 +62,7 @@ namespace ssGUI
             virtual void SyncPosition() override;
             virtual void SyncGlobalPosition() override;
             //virtual void DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset);
+            virtual void NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
 
         public:
             BaseGUIObject();
@@ -101,24 +108,33 @@ namespace ssGUI
             //function: GetChildrenCount
             virtual int GetChildrenCount() const override;
             
-            //function: GetChildrenStartIterator
-            virtual std::list<ssGUI::GUIObject*>::iterator GetChildrenStartIterator() override;
-            
-            //function: GetChildrenEndIterator
-            virtual std::list<ssGUI::GUIObject*>::iterator GetChildrenEndIterator() override;
+            virtual void MoveChildrenIteratorToFirst() override;
 
-            //function: GetChildrenReverseStartIterator
-            virtual std::list<ssGUI::GUIObject*>::reverse_iterator GetChildrenReverseStartIterator() override;
-            
-            //function: GetChildrenReverseEndIterator
-            virtual std::list<ssGUI::GUIObject*>::reverse_iterator GetChildrenReverseEndIterator() override;
+            virtual void MoveChildrenIteratorToLast() override;
+
+            virtual void MoveChildrenIteratorNext() override;
+
+            virtual void MoveChildrenIteratorPrevious() override;
+
+            virtual bool IsChildrenIteratorLast() override;
+
+            virtual bool IsChildrenIteratorFirst() override;
+
+            virtual bool IsChildrenIteratorEnd() override;
 
             //function: FindChild
-            virtual std::list<ssGUI::GUIObject*>::iterator FindChild(ssGUI::GUIObject* child) override;
+            virtual bool FindChild(ssGUI::GUIObject* child) override;
 
-            //function: ChangeChildOrder
-            virtual void ChangeChildOrder(std::list<ssGUI::GUIObject*>::iterator child, std::list<ssGUI::GUIObject*>::iterator position) override;
+            virtual ssGUI::GUIObject* GetCurrentChild() override;
+
+            virtual std::list<ssGUIObjectIndex>::iterator GetCurrentChildReferenceIterator() override;
             
+            virtual void ChangeChildOrderToBeforePosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position) override;
+            
+            virtual void ChangeChildOrderToAfterPosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position) override;
+
+
+
             //function: Internal_AddChild
             virtual void Internal_AddChild(ssGUI::GUIObject* obj) override;
             
@@ -153,13 +169,15 @@ namespace ssGUI
             virtual glm::u8vec4 GetBackgroundColour() const override;
 
             //function: Delete 
-            virtual void Delete(bool cleanUp) override;
+            virtual void Delete() override;
 
             //function: Internal_IsDeleted
             virtual bool Internal_IsDeleted() const override;
 
-            //function: Internal_NeedCleanUp
-            virtual bool Internal_NeedCleanUp() const override;
+            virtual void SetHeapAllocated(bool heap) override;
+
+
+            virtual bool IsHeapAllocated() const override;
             
             //function: Extension_GetDrawingVerticies
             virtual std::vector<glm::ivec2>& Extension_GetDrawingVerticies() override;
@@ -187,7 +205,6 @@ namespace ssGUI
             
             //function: RemoveExtension
             virtual void RemoveExtension(std::string extensionName) override;
-
             
             //function: AddEventCallback
             virtual void AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback) override;
@@ -207,14 +224,19 @@ namespace ssGUI
 
             virtual bool HasTag(std::string tag) const override;
 
+            virtual ObjectsReferences* Internal_GetObjectsReferences() override;
+
             //function: Draw
-            virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
+            virtual GUIObject* Internal_Clone(int currentindex, std::vector<ssGUI::GUIObject*>& objsToCopy, std::vector<ssGUI::GUIObject*>& copiedObjs, std::vector<int>& clonedParents, bool cloneChildren) override;
+
             //function: Clone
-            virtual GUIObject* Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren) override;
+            virtual GUIObject* Clone(bool cloneChildren) override;
+
     };
 }
 

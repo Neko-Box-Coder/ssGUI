@@ -22,6 +22,7 @@ namespace ssGUI
 
     MainWindow::~MainWindow()
     {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
         delete BackendMainWindow;
         delete BackendDrawing;
     }
@@ -56,13 +57,13 @@ namespace ssGUI
         return BackendMainWindow->GetPositionOffset();
     }
 
-    void MainWindow::Draw()
+    void MainWindow::Internal_Draw()
     {
-        Draw(BackendDrawing, this, glm::ivec2());
+        Internal_Draw(BackendDrawing, this, glm::ivec2());
     }
 
     //TODO : Refactor this, merge it to sync in update function
-    void MainWindow::Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {       
         //Settings that require window to be relaunched -----------------------------------------
         if(BackendMainWindow->HasTitlebar() != HasTitlebar())
@@ -163,6 +164,8 @@ namespace ssGUI
 
     void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         for(auto extension : Extensions)
             extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
@@ -200,25 +203,27 @@ namespace ssGUI
 
         for(auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    GUIObject* MainWindow::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)
+    GUIObject* MainWindow::Clone(bool cloneChildren)
     {
         MainWindow* temp = new MainWindow(*this);
 
-        for(auto extension : Extensions)
-        {
-            if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
-                temp->AddExtension(extension.second->Clone(this));
-        }
+        // for(auto extension : Extensions)
+        // {
+        //     if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
+        //         temp->AddExtension(extension.second->Clone(this));
+        // }
 
-        for(auto eventCallback : EventCallbacks)
-        {
-            std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
+        // for(auto eventCallback : EventCallbacks)
+        // {
+        //     std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
 
-            if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
-        }
+        //     if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+        //         temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
+        // }
 
         return temp;
     }

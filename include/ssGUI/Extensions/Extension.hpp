@@ -2,11 +2,13 @@
 #define SSGUI_EXTENSION
 
 
-#include <string>
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/BaseClasses/InputStatus.hpp"
+#include "ssGUI/BaseClasses/ObjectsReferences.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "glm/vec2.hpp"
+#include <string>
 
 namespace ssGUI
 {
@@ -29,8 +31,8 @@ namespace ssGUI::Extensions
             //function: Update
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) = 0;
             
-            //function: Draw
-            virtual void Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
+            //function: Internal_Draw
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
             
             //function: GetExtensionName
             virtual std::string GetExtensionName() = 0;
@@ -39,6 +41,8 @@ namespace ssGUI::Extensions
             virtual void BindToObject(ssGUI::GUIObject* bindObj) = 0;
             
             virtual void Copy(ssGUI::Extensions::Extension* extension) = 0;
+
+            virtual ObjectsReferences* Internal_GetObjectsReferences() = 0;
 
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) = 0;

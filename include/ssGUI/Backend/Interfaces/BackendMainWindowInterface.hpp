@@ -6,7 +6,6 @@
 #include "glm/vec2.hpp"
 #include <string>
 #include <functional>
-//#include "ssGUI/Backend/BackendDrawingInterface.hpp"
 
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend

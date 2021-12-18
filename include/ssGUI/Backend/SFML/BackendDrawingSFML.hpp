@@ -7,7 +7,6 @@
 #include "ssGUI/Backend/SFML/BackendFontSFML.hpp"
 #include "SFML/Graphics.hpp"
 #include <functional>
-#include <vector>
 
 //namespace: ssGUI.Backend
 namespace ssGUI::Backend

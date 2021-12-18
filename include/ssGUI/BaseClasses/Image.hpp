@@ -40,12 +40,13 @@ namespace ssGUI
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
             //function: Draw
-            virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
 
             //virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow) override;
 
             //function: Clone
-            virtual GUIObject* Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren) override;
+            virtual GUIObject* Clone(bool cloneChildren) override;
+
     };
 }
 

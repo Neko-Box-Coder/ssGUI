@@ -30,15 +30,17 @@ namespace ssGUI::Extensions
 
             ssGUI::GUIObject* Container;
             bool Enabled;
-            ssGUI::GUIObject* TopLevelParent;
+            ssGUIObjectIndex TopLevelParent;
+
+            ObjectsReferences CurrentObjectsReferences;
 
             bool UseTriggerPercentage;
             float TriggerPercentage;
             int TriggerPixel;
             glm::u8vec4 TriggerAreaColor;
             glm::u8vec4 DockPreviewColor;
-            ssGUI::GUIObject* OriginalParent;
 
+            ssGUI::GUIObject* OriginalParent;
             bool ContainerIsDocking;
 
             ssGUI::GUIObject* DockPreivewTop;
@@ -115,8 +117,8 @@ namespace ssGUI::Extensions
             //function: Update
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
-            //function: Draw
-            virtual void Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            //function: Internal_Draw
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             virtual std::string GetExtensionName() override;
@@ -126,7 +128,8 @@ namespace ssGUI::Extensions
 
             virtual void Copy(ssGUI::Extensions::Extension* extension) override;
 
-            
+            virtual ObjectsReferences* Internal_GetObjectsReferences() override;
+
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
     };

@@ -5,7 +5,7 @@
 #include "ssGUI/Enums/MouseButton.hpp"
 #include "ssGUI/Enums/ResizeType.hpp"
 #include "ssGUI/Enums/WindowDragState.hpp"
-#include "ssGUI/EventCallbacks/WindowCloseEventCallback.hpp"
+#include "ssGUI/EventCallbacks/OnWindowCloseEventCallback.hpp"
 #include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include <cmath>
@@ -26,6 +26,7 @@ namespace ssGUI
             bool Closable;
             bool Closed;
             bool IsClosingAborted;
+            glm::ivec4 TitlebarColorDifference;
 
             //Resize/Drag settings
             ssGUI::Enums::WindowDragState CurrentDragState;
@@ -41,6 +42,10 @@ namespace ssGUI
             Window& operator=(Window const& other) = default;
 
             virtual void SetWindowDragState(ssGUI::Enums::WindowDragState dragState);
+            virtual void OnMouseDownUpdate(glm::ivec2 currentMousePos, ssGUI::InputStatus& globalInputStatus);
+            virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::ivec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
+            virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::ivec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
+
 
         protected:
             Window(Window const& other) = default;
@@ -73,6 +78,10 @@ namespace ssGUI
             
             //function: GetTitlebarHeight
             virtual int GetTitlebarHeight() const;
+
+            virtual void SetTitlebarColor(glm::u8vec4 color);
+
+            virtual glm::u8vec4 GetTitlebarColor() const;
             
             //function: SetResizeType
             virtual void SetResizeType(ssGUI::Enums::ResizeType resizeType);
@@ -117,13 +126,13 @@ namespace ssGUI
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
             
             //function: Draw
-            virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Clone
-            virtual GUIObject* Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren) override;
+            virtual GUIObject* Clone(bool cloneChildren) override;
     };
 }
 

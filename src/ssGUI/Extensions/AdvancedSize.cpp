@@ -108,11 +108,16 @@ namespace ssGUI::Extensions
 
     void AdvancedSize::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         //TODO : Cache if parent's size hasn't changed
         
         //This should be done in post update
         if(IsPreUpdate || !IsOverrideDefaultSize() || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
         
         ssGUI::GUIObject* parent = Container->GetParent();
 
@@ -138,9 +143,11 @@ namespace ssGUI::Extensions
 
         //Use finalPos
         Container->SetSize(glm::ivec2(finalSize));
+        
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    void AdvancedSize::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void AdvancedSize::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
         //Nothing to draw
     }
@@ -171,6 +178,10 @@ namespace ssGUI::Extensions
         OverrideDefaultSize = as->IsOverrideDefaultSize();
     }
 
+    ObjectsReferences* AdvancedSize::Internal_GetObjectsReferences()
+    {
+        return nullptr;
+    }
 
     Extension* AdvancedSize::Clone(ssGUI::GUIObject* newContainer)
     {

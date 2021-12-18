@@ -131,11 +131,15 @@ namespace ssGUI::Extensions
 
     void AdvancedPosition::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");        
         //TODO : Cache if parent's global position and size hasn't changed
         
         //This should be done in post update
         if(IsPreUpdate || !IsOverrideDefaultPosition() || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
         
         ssGUI::GUIObject* parent = Container->GetParent();
 
@@ -267,9 +271,11 @@ namespace ssGUI::Extensions
 
         //Use finalPos
         Container->SetPosition(glm::ivec2(finalPos));
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    void AdvancedPosition::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void AdvancedPosition::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
         //Nothing to draw
     }
@@ -301,7 +307,11 @@ namespace ssGUI::Extensions
         VerticalPercentageValue = ap->GetVerticalPercentage();
         OverrideDefaultPosition = ap->IsOverrideDefaultPosition();
     }
-    
+
+    ObjectsReferences* AdvancedPosition::Internal_GetObjectsReferences()
+    {
+        return nullptr;
+    }
 
     Extension* AdvancedPosition::Clone(ssGUI::GUIObject* newContainer)
     {

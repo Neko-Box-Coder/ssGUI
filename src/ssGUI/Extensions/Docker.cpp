@@ -34,11 +34,14 @@ namespace ssGUI::Extensions
 
     void Docker::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         //If widget is not present, create it
         if((*widget) == nullptr)
         {            
             (*widget) = new ssGUI::Widget();
             (*widget)->SetUserCreated(false);
+            (*widget)->SetHeapAllocated(true);
             static_cast<ssGUI::Widget*>((*widget))->SetInteractable(false);
             static_cast<ssGUI::Widget*>((*widget))->SetBlockInput(false);
 
@@ -52,10 +55,14 @@ namespace ssGUI::Extensions
         (*widget)->AddTag(ssGUI::Tags::OVERLAY);
         (*widget)->SetParent(Container);
         (*widget)->SetBackgroundColour(color);
+        
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Docker::DrawPreview()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         CreateWidgetIfNotPresent(&DockPreivew, GetDockPreviewColor());
 
         //Set the correct position and size
@@ -69,20 +76,23 @@ namespace ssGUI::Extensions
         as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(1);
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Docker::DiscardPreview()
     {
         if(DockPreivew != nullptr)
         {
-            DockPreivew->Delete(true);
+            DockPreivew->Delete();
             DockPreivew = nullptr;
         }
     }
 
     void Docker::DrawTriggerArea()
     {
-        //return;  
+        FUNC_DEBUG_LINE("Entry");
+        
         CreateWidgetIfNotPresent(&DockTrigger, GetTriggerAreaColor());
 
         //Set the correct position and size
@@ -106,13 +116,15 @@ namespace ssGUI::Extensions
             as->SetHorizontalPixel(GetTriggerHorizontalPixel());
             as->SetVerticalPixel(GetTriggerVerticalPixel());
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Docker::DiscardTriggerArea()
     {
         if(DockTrigger != nullptr)
         {
-            DockTrigger->Delete(true);
+            DockTrigger->Delete();
             DockTrigger = nullptr;
         }
     }
@@ -250,12 +262,20 @@ namespace ssGUI::Extensions
     //Extension methods
     void Docker::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(!IsPreUpdate || Container == nullptr || !Enabled)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
 
         //Check if Layout extension exists
         if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
 
         int baseChildCount = 0;
         if(DockPreivew != nullptr)
@@ -269,6 +289,7 @@ namespace ssGUI::Extensions
             //static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetEnabled(true);
             DiscardPreview();
             DiscardTriggerArea();
+            FUNC_DEBUG_LINE("Exit");
             return;
         }
 
@@ -330,10 +351,10 @@ namespace ssGUI::Extensions
             DiscardTriggerArea();
         }
 
-
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    void Docker::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Docker::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
     }
 
@@ -344,6 +365,8 @@ namespace ssGUI::Extensions
 
     void Docker::BindToObject(ssGUI::GUIObject* bindObj)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         Container = bindObj;
 
         ssGUI::GUIObject* containerParent = Container->GetParent();
@@ -374,6 +397,8 @@ namespace ssGUI::Extensions
             if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 Container->AddExtension(new ssGUI::Extensions::Layout());
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Docker::Copy(ssGUI::Extensions::Extension* extension)
@@ -394,6 +419,11 @@ namespace ssGUI::Extensions
         TriggerVerticalPixel = docker->GetTriggerVerticalPixel();
         TriggerAreaColor = docker->GetTriggerAreaColor();
         DockPreviewColor = docker->GetDockPreviewColor();
+    }
+
+    ObjectsReferences* Docker::Internal_GetObjectsReferences()
+    {
+        return nullptr;
     }
 
     Extension* Docker::Clone(ssGUI::GUIObject* newContainer)

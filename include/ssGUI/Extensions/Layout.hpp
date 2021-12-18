@@ -34,14 +34,19 @@ namespace ssGUI::Extensions
             int Padding;
             int Spacing;
 
-            int OnChildAddedEventIndex;
-            int OnChildRemovedEventIndex;
+            int OnChildAddEventIndex;
+            int ChildAddedEventIndex;
+            int ChildRemovedEventIndex;
+            int ChildPositionChangedEventIndex;
 
-            std::unordered_map<ssGUI::GUIObject*, glm::ivec2> LastUpdateChildrenSize;
-            std::unordered_set<ssGUI::GUIObject*> ObjectsToExclude;
-            std::unordered_map<ssGUI::GUIObject*, glm::ivec2> OriginalChildrenSize;
-            std::unordered_map<ssGUI::GUIObject*, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
-            std::unordered_map<ssGUI::GUIObject*, int> MinMaxSizeChangedEventIndices;
+            ObjectsReferences CurrentObjectsReferences;
+
+            std::unordered_map<ssGUIObjectIndex, glm::ivec2> LastUpdateChildrenSize;
+            std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
+            std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //note: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
+            std::unordered_map<ssGUIObjectIndex, glm::ivec2> OriginalChildrenSize;
+            std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
+            std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
 
 
             void LayoutChildren(int startPos, int length, std::vector<int>& childrenPos, std::vector<int>& childrenLength, 
@@ -141,8 +146,8 @@ namespace ssGUI::Extensions
             //function: Update
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
-            //function: Draw
-            virtual void Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            //function: Internal_Draw
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             virtual std::string GetExtensionName() override;
@@ -151,6 +156,8 @@ namespace ssGUI::Extensions
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
 
             virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+
+            virtual ObjectsReferences* Internal_GetObjectsReferences() override;
 
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;

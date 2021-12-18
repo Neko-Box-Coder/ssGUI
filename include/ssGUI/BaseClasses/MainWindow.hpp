@@ -81,16 +81,17 @@ namespace ssGUI
             //function: Draw
             //Although it says it is drawing, it actually doesn't draw anything.
             //Instead, it sets the window state instead
-            virtual void Draw();
+            virtual void Internal_Draw();
             
             //function: Draw
-            virtual void Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
     
             //function: Clone
-            virtual GUIObject* Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren) override;
+            virtual GUIObject* Clone(bool cloneChildren) override;
+
     };
 }
 

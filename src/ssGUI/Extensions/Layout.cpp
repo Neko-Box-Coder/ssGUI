@@ -6,6 +6,8 @@ namespace ssGUI::Extensions
                                 std::vector<int>& minChildrenLength, std::vector<int>& maxChildrenLength, int lastChildChangeIndex,
                                 int sizeDiff)
     {        
+        FUNC_DEBUG_LINE("Entry");
+        
         int endPos = startPos + length;
         int currentPos = IsReverseOrder() ? endPos : startPos;
         int currentLength = 0;
@@ -81,6 +83,8 @@ namespace ssGUI::Extensions
             childrenPos[i] = IsReverseOrder() ? currentPos - childrenLength[i] : currentPos;
             currentPos = IsReverseOrder() ? currentPos - childrenLength[i] - GetSpacing() : currentPos + childrenLength[i] + GetSpacing();
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     Layout::Layout(Layout const& other)
@@ -96,21 +100,26 @@ namespace ssGUI::Extensions
         Enabled = other.IsEnabled();
         Padding = other.GetPadding();
         Spacing = other.GetSpacing();
-        OnChildAddedEventIndex = -1;
-        OnChildRemovedEventIndex = -1;
-        LastUpdateChildrenSize = std::unordered_map<ssGUI::GUIObject*, glm::ivec2>();
-        ObjectsToExclude = other.ObjectsToExclude;
-        OriginalChildrenSize = std::unordered_map<ssGUI::GUIObject*, glm::ivec2>();
-        OriginalChildrenResizeType = std::unordered_map<ssGUI::GUIObject*, ssGUI::Enums::ResizeType>();
-        MinMaxSizeChangedEventIndices = std::unordered_map<ssGUI::GUIObject*, int>();
+        OnChildAddEventIndex = -1;
+        ChildAddedEventIndex = -1;
+        ChildRemovedEventIndex = -1;
+        ChildPositionChangedEventIndex = -1;
+        CurrentObjectsReferences = other.CurrentObjectsReferences;
+        LastUpdateChildrenSize = other.LastUpdateChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
+        OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
+        OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
+        
+        //TODO : Re-add the event listeners
+        MinMaxSizeChangedEventIndices = std::unordered_map<ssGUIObjectIndex, int>();//other.MinMaxSizeChangedEventIndices;
     }
 
     const std::string Layout::EXTENSION_NAME = "Layout";
 
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
                         OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(5), Spacing(5), OnChildAddedEventIndex(-1), OnChildRemovedEventIndex(-1), 
-                        LastUpdateChildrenSize(), ObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
+                        Container(nullptr), Enabled(true), Padding(5), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
+                        ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
     {}
 
     Layout::~Layout()
@@ -178,30 +187,51 @@ namespace ssGUI::Extensions
 
     void Layout::UpdateChildrenResizeTypes()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(Container == nullptr)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
         
         if(GetOverrideChildrenResizeType())
         {
             if(DisableChildrenResizing)
+            {
+                FUNC_DEBUG_LINE("Exit");
                 return;
+            }
         }
 
-        for(auto it = Container->GetChildrenStartIterator(); it != Container->GetChildrenEndIterator(); ++it)
-        {            
-            if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
-                continue;
-            
-            if((*it)->GetType() != ssGUI::Enums::GUIObjectType::WINDOW)
-                continue;
+        Container->MoveChildrenIteratorToFirst();
+        while(!Container->IsChildrenIteratorEnd())
+        {
+            ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
 
-            ssGUI::Window* windowP = dynamic_cast<ssGUI::Window*>(*it);
+            if(currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end())
+            {
+                Container->MoveChildrenIteratorNext();
+                continue;
+            }
+            
+            if(Container->GetCurrentChild()->GetType() != ssGUI::Enums::GUIObjectType::WINDOW)
+            {
+                Container->MoveChildrenIteratorNext();
+                continue;
+            }
+
+            //Add the child to reference if not present
+            if(currentChildIndex == -1)
+                currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
+
+            ssGUI::Window* windowP = dynamic_cast<ssGUI::Window*>(Container->GetCurrentChild());
             
             //Recording original resize type and override it
             if(GetOverrideChildrenResizeType())
             {
-                if(OriginalChildrenResizeType.find(*it) == OriginalChildrenResizeType.end())
-                    OriginalChildrenResizeType[(*it)] = windowP->GetResizeType();
+                if(OriginalChildrenResizeType.find(currentChildIndex) == OriginalChildrenResizeType.end())
+                    OriginalChildrenResizeType[currentChildIndex] = windowP->GetResizeType();
                 
                 if(HorizontalLayout)
                 {
@@ -219,27 +249,33 @@ namespace ssGUI::Extensions
                 }
 
                 //last element
-                if(++it == Container->GetChildrenEndIterator())
-                {
+                if(Container->IsChildrenIteratorLast())
                     windowP->SetResizeType(ssGUI::Enums::ResizeType::NONE);
-                }
-                it--; //Decrement the iterator as it is incremented to check the last element
             }
             
             //Restoring original resize type
-            if(!GetOverrideChildrenResizeType() && OriginalChildrenResizeType.find(*it) != OriginalChildrenResizeType.end())
+            if(!GetOverrideChildrenResizeType() && OriginalChildrenResizeType.find(currentChildIndex) != OriginalChildrenResizeType.end())
             {                
-                windowP->SetResizeType(OriginalChildrenResizeType[(*it)]);
+                windowP->SetResizeType(OriginalChildrenResizeType[currentChildIndex]);
 
-                OriginalChildrenResizeType.erase(*it);
+                OriginalChildrenResizeType.erase(currentChildIndex);
             }
+
+            Container->MoveChildrenIteratorNext();
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Layout::SyncContainerMinMaxSize()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
         
         if(HorizontalLayout)
         {
@@ -248,31 +284,43 @@ namespace ssGUI::Extensions
             int minMaxY = std::numeric_limits<int>::max();
             int maxMinY = -1;
             
-            for(auto it = Container->GetChildrenStartIterator(); it != Container->GetChildrenEndIterator(); it++)
+            Container->MoveChildrenIteratorToFirst();
+            while(!Container->IsChildrenIteratorEnd())
             {
-                if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
+                ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
+                if(currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end())
+                {
+                    Container->MoveChildrenIteratorNext();
                     continue;
+                }
+
+                //Add the child to reference if not present
+                if(currentChildIndex == -1)
+                    currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
-                minSizeTotalX += (*it)->GetMinSize().x;
+                minSizeTotalX += Container->GetCurrentChild()->GetMinSize().x;
 
                 if(maxSizeTotalX == std::numeric_limits<int>::max())
+                {
+                    Container->MoveChildrenIteratorNext();
                     continue;
-                else if((*it)->GetMaxSize().x == std::numeric_limits<int>::max())
+                }
+                else if(Container->GetCurrentChild()->GetMaxSize().x == std::numeric_limits<int>::max())
                     maxSizeTotalX = std::numeric_limits<int>::max();
                 else
-                    maxSizeTotalX += (*it)->GetMaxSize().x;
+                    maxSizeTotalX += Container->GetCurrentChild()->GetMaxSize().x;
                 
-                if((*it)->GetMaxSize().y < minMaxY)
-                    minMaxY = (*it)->GetMaxSize().y;
+                if(Container->GetCurrentChild()->GetMaxSize().y < minMaxY)
+                    minMaxY = Container->GetCurrentChild()->GetMaxSize().y;
 
-                if((*it)->GetMinSize().y > maxMinY)
-                    maxMinY = (*it)->GetMinSize().y;
+                if(Container->GetCurrentChild()->GetMinSize().y > maxMinY)
+                    maxMinY = Container->GetCurrentChild()->GetMinSize().y;
                 
+                Container->MoveChildrenIteratorNext();
             }
 
             if(minMaxY < maxMinY)
                 minMaxY = maxMinY;
-            
 
             int paddingTotalX = GetPadding() * 2;
             int spacingTotalX = (Container->GetChildrenCount() - ObjectsToExclude.size() - 1) * GetSpacing();
@@ -304,25 +352,39 @@ namespace ssGUI::Extensions
             int minMaxX = std::numeric_limits<int>::max();
             int maxMinX = -1;
             
-            for(auto it = Container->GetChildrenStartIterator(); it != Container->GetChildrenEndIterator(); it++)
+            Container->MoveChildrenIteratorToFirst();
+            while(!Container->IsChildrenIteratorEnd())   
             {
-                if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
+                ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
+                if(currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end())
+                {
+                    Container->MoveChildrenIteratorNext();
                     continue;
+                }
+
+                //Add the child to reference if not present
+                if(currentChildIndex == -1)
+                    currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
-                minSizeTotalY += (*it)->GetMinSize().y;
+                minSizeTotalY += Container->GetCurrentChild()->GetMinSize().y;
 
                 if(maxSizeTotalY == std::numeric_limits<int>::max())
+                {
+                    Container->MoveChildrenIteratorNext();
                     continue;
-                else if((*it)->GetMaxSize().y == std::numeric_limits<int>::max())
+                }
+                else if(Container->GetCurrentChild()->GetMaxSize().y == std::numeric_limits<int>::max())
                     maxSizeTotalY = std::numeric_limits<int>::max();
                 else
-                    maxSizeTotalY += (*it)->GetMaxSize().y;
+                    maxSizeTotalY += Container->GetCurrentChild()->GetMaxSize().y;
                 
-                if((*it)->GetMaxSize().x < minMaxX)
-                    minMaxX = (*it)->GetMaxSize().x;
+                if(Container->GetCurrentChild()->GetMaxSize().x < minMaxX)
+                    minMaxX = Container->GetCurrentChild()->GetMaxSize().x;
 
-                if((*it)->GetMinSize().x > maxMinX)
-                    maxMinX = (*it)->GetMinSize().x;
+                if(Container->GetCurrentChild()->GetMinSize().x > maxMinX)
+                    maxMinX = Container->GetCurrentChild()->GetMinSize().x;
+
+                Container->MoveChildrenIteratorNext();
             }
 
             if(minMaxX < maxMinX)
@@ -348,6 +410,8 @@ namespace ssGUI::Extensions
             Container->SetMinSize(glm::ivec2(maxMinX, minSizeTotalY));
             Container->SetMaxSize(glm::ivec2(minMaxX, maxSizeTotalY));
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     bool Layout::GetOverrideChildrenResizeType() const
@@ -357,69 +421,75 @@ namespace ssGUI::Extensions
 
     void Layout::SetOverrideChildrenResizeType(bool override)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         OverrideChildrenResizeTypes = override;
         
         if(Container == nullptr)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
         
         const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME;
         const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME;
 
-        if(override)
-        {
-            //If callback doesn't exist, add it
-            if(!Container->IsEventCallbackExist(onChildAddedEventName))
-            {
-                Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
-                    new ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback()));
-            }
+        // if(override)
+        // {
+        //     //If callback doesn't exist, add it
+        //     if(!Container->IsEventCallbackExist(onChildAddedEventName))
+        //     {
+        //         Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
+        //             new ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback()));
+        //     }
             
-            //If event index is not assigned, assign it
-            if(OnChildAddedEventIndex == -1)
-            {
-                OnChildAddedEventIndex = Container->GetEventCallback(onChildAddedEventName)->AddEventListener(
-                    std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1));
-            }
+        //     //If event index is not assigned, assign it
+        //     if(ChildAddedEventIndex == -1)
+        //     {
+        //         ChildAddedEventIndex = Container->GetEventCallback(onChildAddedEventName)->AddEventListener(
+        //             std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1));
+        //     }
             
-            if(!Container->IsEventCallbackExist(onChildRemovedEventName))
-            {
-                Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
-                    new ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback()));
-            }
+        //     if(!Container->IsEventCallbackExist(onChildRemovedEventName))
+        //     {
+        //         Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
+        //             new ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback()));
+        //     }
             
-            if(OnChildRemovedEventIndex == -1)
-            {
-                OnChildRemovedEventIndex = Container->GetEventCallback(onChildRemovedEventName)->AddEventListener(
-                    std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1));
-            }
+        //     if(ChildRemovedEventIndex == -1)
+        //     {
+        //         ChildRemovedEventIndex = Container->GetEventCallback(onChildRemovedEventName)->AddEventListener(
+        //             std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1));
+        //     }
+        // }
+        // else
+        // {
+        //     //If callback exists, check if event index exists. 
+        //     //If so remove event listener and remove the callback if there's no other listeners. Then reset the event index
+        //     if(Container->IsEventCallbackExist(onChildAddedEventName) && ChildAddedEventIndex != -1)
+        //     {
+        //         Container->GetEventCallback(onChildAddedEventName)->RemoveEventListener(ChildAddedEventIndex);
 
-        }
-        else
-        {
-            //If callback exists, check if event index exists. 
-            //If so remove event listener and remove the callback if there's no other listeners. Then reset the event index
-            if(Container->IsEventCallbackExist(onChildAddedEventName) && OnChildAddedEventIndex != -1)
-            {
-                Container->GetEventCallback(onChildAddedEventName)->RemoveEventListener(OnChildAddedEventIndex);
-
-                if(Container->GetEventCallback(onChildAddedEventName)->GetEventListenerCount() == 0)
-                    Container->RemoveEventCallback(onChildAddedEventName);
+        //         if(Container->GetEventCallback(onChildAddedEventName)->GetEventListenerCount() == 0)
+        //             Container->RemoveEventCallback(onChildAddedEventName);
                 
-                OnChildAddedEventIndex = -1;
-            }
+        //         ChildAddedEventIndex = -1;
+        //     }
 
-            if(Container->IsEventCallbackExist(onChildRemovedEventName) && OnChildRemovedEventIndex != -1)
-            {
-                Container->GetEventCallback(onChildRemovedEventName)->RemoveEventListener(OnChildRemovedEventIndex);
+        //     if(Container->IsEventCallbackExist(onChildRemovedEventName) && ChildRemovedEventIndex != -1)
+        //     {
+        //         Container->GetEventCallback(onChildRemovedEventName)->RemoveEventListener(ChildRemovedEventIndex);
 
-                if(Container->GetEventCallback(onChildRemovedEventName)->GetEventListenerCount() == 0)
-                    Container->RemoveEventCallback(onChildRemovedEventName);
+        //         if(Container->GetEventCallback(onChildRemovedEventName)->GetEventListenerCount() == 0)
+        //             Container->RemoveEventCallback(onChildRemovedEventName);
                 
-                OnChildRemovedEventIndex = -1;
-            }
-        }
+        //         ChildRemovedEventIndex = -1;
+        //     }
+        // }
 
         UpdateChildrenResizeTypes();
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     bool Layout::GetUpdateContainerMinMaxSize() const
@@ -429,10 +499,15 @@ namespace ssGUI::Extensions
 
     void Layout::SetUpdateContainerMinMaxSize(bool update)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         UpdateContainerMinMaxSize = update;
         
         if(Container == nullptr)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
 
         const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME;
         const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME;
@@ -440,100 +515,115 @@ namespace ssGUI::Extensions
 
         if(update)
         {
-            //If callback doesn't exist, add it
-            if(!Container->IsEventCallbackExist(onChildAddedEventName))
-            {
-                Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
-                    new ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback()));
-            }
+            // //If callback doesn't exist, add it
+            // if(!Container->IsEventCallbackExist(onChildAddedEventName))
+            // {
+            //     Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
+            //         new ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback()));
+            // }
             
-            //If event index is not assigned, assign it
-            if(OnChildAddedEventIndex == -1)
-            {
-                OnChildAddedEventIndex = Container->GetEventCallback(onChildAddedEventName)->AddEventListener(
-                    std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1));
-            }
+            // //If event index is not assigned, assign it
+            // if(ChildAddedEventIndex == -1)
+            // {
+            //     ChildAddedEventIndex = Container->GetEventCallback(onChildAddedEventName)->AddEventListener(
+            //         std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1));
+            // }
             
-            if(!Container->IsEventCallbackExist(onChildRemovedEventName))
-            {
-                Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
-                    new ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback()));
-            }
+            // if(!Container->IsEventCallbackExist(onChildRemovedEventName))
+            // {
+            //     Container->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
+            //         new ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback()));
+            // }
             
-            if(OnChildRemovedEventIndex == -1)
-            {
-                OnChildRemovedEventIndex = Container->GetEventCallback(onChildRemovedEventName)->AddEventListener(
-                    std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1));
-            }
+            // if(ChildRemovedEventIndex == -1)
+            // {
+            //     ChildRemovedEventIndex = Container->GetEventCallback(onChildRemovedEventName)->AddEventListener(
+            //         std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1));
+            // }
 
             //Iterate each child to see if event callback exists
-            auto childIt = Container->GetChildrenStartIterator();
-            while(childIt != Container->GetChildrenEndIterator())
+            Container->MoveChildrenIteratorToFirst();
+            while(!Container->IsChildrenIteratorEnd())
             {
-                if(ObjectsToExclude.find(*childIt) != ObjectsToExclude.end())
-                    continue;
-                
-                if(!(*childIt)->IsEventCallbackExist(onMinMaxSizeChangedEventName))
+                ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
+                if(currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end())
                 {
-                    (*childIt)->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
+                    Container->MoveChildrenIteratorNext();
+                    continue;
+                }
+
+                //Add the child to reference if not present
+                if(currentChildIndex == -1)
+                    currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
+                
+                if(!Container->GetCurrentChild()->IsEventCallbackExist(onMinMaxSizeChangedEventName))
+                {
+                    Container->GetCurrentChild()->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
                         new ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback()));
                 }
 
-                if(MinMaxSizeChangedEventIndices.find((*childIt)) == MinMaxSizeChangedEventIndices.end())
+                if(MinMaxSizeChangedEventIndices.find(currentChildIndex) == MinMaxSizeChangedEventIndices.end())
                 {
-                    MinMaxSizeChangedEventIndices[(*childIt)] = (*childIt)->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener(
+                    MinMaxSizeChangedEventIndices[currentChildIndex] = Container->GetCurrentChild()->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener(
                         std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1));
                 }
 
-                childIt++;
+                Container->MoveChildrenIteratorNext();
             }
 
             SyncContainerMinMaxSize();
         }
         else
         {
-            //If callback exists, check if event index exists. 
-            //If so remove event listener and remove the callback if there's no other listeners. Then reset the event index
-            if(Container->IsEventCallbackExist(onChildAddedEventName) && OnChildAddedEventIndex != -1)
-            {
-                Container->GetEventCallback(onChildAddedEventName)->RemoveEventListener(OnChildAddedEventIndex);
+            // //If callback exists, check if event index exists. 
+            // //If so remove event listener and remove the callback if there's no other listeners. Then reset the event index
+            // if(Container->IsEventCallbackExist(onChildAddedEventName) && ChildAddedEventIndex != -1)
+            // {
+            //     Container->GetEventCallback(onChildAddedEventName)->RemoveEventListener(ChildAddedEventIndex);
 
-                if(Container->GetEventCallback(onChildAddedEventName)->GetEventListenerCount() == 0)
-                    Container->RemoveEventCallback(onChildAddedEventName);
+            //     if(Container->GetEventCallback(onChildAddedEventName)->GetEventListenerCount() == 0)
+            //         Container->RemoveEventCallback(onChildAddedEventName);
                 
-                OnChildAddedEventIndex = -1;
-            }
+            //     ChildAddedEventIndex = -1;
+            // }
 
-            if(Container->IsEventCallbackExist(onChildRemovedEventName) && OnChildRemovedEventIndex != -1)
-            {
-                Container->GetEventCallback(onChildRemovedEventName)->RemoveEventListener(OnChildRemovedEventIndex);
+            // if(Container->IsEventCallbackExist(onChildRemovedEventName) && ChildRemovedEventIndex != -1)
+            // {
+            //     Container->GetEventCallback(onChildRemovedEventName)->RemoveEventListener(ChildRemovedEventIndex);
 
-                if(Container->GetEventCallback(onChildRemovedEventName)->GetEventListenerCount() == 0)
-                    Container->RemoveEventCallback(onChildRemovedEventName);
+            //     if(Container->GetEventCallback(onChildRemovedEventName)->GetEventListenerCount() == 0)
+            //         Container->RemoveEventCallback(onChildRemovedEventName);
                 
-                OnChildRemovedEventIndex = -1;
-            }
+            //     ChildRemovedEventIndex = -1;
+            // }
             
             //Iterate each child to see if event callback exists
-            auto childIt = Container->GetChildrenStartIterator();
-            while(childIt != Container->GetChildrenEndIterator())
+            Container->MoveChildrenIteratorToFirst();
+            while(!Container->IsChildrenIteratorEnd())
             {
-                if(ObjectsToExclude.find(*childIt) != ObjectsToExclude.end())
-                    continue;
-                
-                if((*childIt)->IsEventCallbackExist(onMinMaxSizeChangedEventName) 
-                    && MinMaxSizeChangedEventIndices.find((*childIt)) != MinMaxSizeChangedEventIndices.end())
-                {
-                    (*childIt)->GetEventCallback(onMinMaxSizeChangedEventName)->RemoveEventListener(MinMaxSizeChangedEventIndices[(*childIt)]);
-                    
-                    if((*childIt)->GetEventCallback(onMinMaxSizeChangedEventName)->GetEventListenerCount() == 0)
-                        (*childIt)->RemoveEventCallback(onMinMaxSizeChangedEventName);
+                ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
 
-                    MinMaxSizeChangedEventIndices.erase((*childIt));
+                //Add the child to reference if not present
+                if(currentChildIndex == -1)
+                    currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
+                
+                if(Container->GetCurrentChild()->IsEventCallbackExist(onMinMaxSizeChangedEventName) 
+                    && MinMaxSizeChangedEventIndices.find(currentChildIndex) != MinMaxSizeChangedEventIndices.end())
+                {
+                    Container->GetCurrentChild()->GetEventCallback(onMinMaxSizeChangedEventName)->RemoveEventListener(MinMaxSizeChangedEventIndices[currentChildIndex]);
+                    
+                    //If we were the only one using the event callback, remove it
+                    if(Container->GetCurrentChild()->GetEventCallback(onMinMaxSizeChangedEventName)->GetEventListenerCount() == 0)
+                        Container->GetCurrentChild()->RemoveEventCallback(onMinMaxSizeChangedEventName);
+
+                    MinMaxSizeChangedEventIndices.erase(currentChildIndex);
                 }
-                childIt++;
+
+                Container->MoveChildrenIteratorNext();
             }
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     int Layout::GetPadding() const
@@ -558,17 +648,32 @@ namespace ssGUI::Extensions
 
     void Layout::ExcludeObject(ssGUI::GUIObject* obj)
     {
-        if(ObjectsToExclude.find(obj) == ObjectsToExclude.end())
+        ssGUIObjectIndex objIndex = CurrentObjectsReferences.GetObjectIndex(obj);
+
+        //Add the child to reference if not present
+        if(objIndex == -1)
+            objIndex = CurrentObjectsReferences.AddObjectReference(obj);
+        
+        if(ObjectsToExclude.find(objIndex) == ObjectsToExclude.end())
         {
-            ObjectsToExclude.insert(obj);
+            ObjectsToExclude.insert(objIndex);
         }
     }
 
     void Layout::UnexcludeObject(ssGUI::GUIObject* obj)
     {
-        if(ObjectsToExclude.find(obj) != ObjectsToExclude.end())
+        ssGUIObjectIndex objIndex = CurrentObjectsReferences.GetObjectIndex(obj);
+
+        //Add the child to reference if not present
+        if(objIndex == -1)
+            objIndex = CurrentObjectsReferences.AddObjectReference(obj);
+        
+        if(ObjectsToExclude.find(objIndex) != ObjectsToExclude.end())
         {
-            ObjectsToExclude.erase(obj);
+            ObjectsToExclude.erase(objIndex);
+
+            if(SpecialObjectsToExclude.find(objIndex) != SpecialObjectsToExclude.end())
+                SpecialObjectsToExclude.erase(objIndex);
 
             if(obj->GetParent() == Container)
                 Internal_OnRecursiveChildAdded(obj);
@@ -577,27 +682,40 @@ namespace ssGUI::Extensions
 
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(child->GetParent() != Container)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
-
-        if(ObjectsToExclude.find(child) != ObjectsToExclude.end())
+        }
+        
+        ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
+        
+        //Add the child to reference if not present
+        if(childIndex == -1)
+            childIndex = CurrentObjectsReferences.AddObjectReference(child);
+        
+        if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
-
+        }
+        
         if(child->HasTag(ssGUI::Tags::OVERLAY) || child->HasTag(ssGUI::Tags::FLOATING))
         {
-            ObjectsToExclude.insert(child);
+            ObjectsToExclude.insert(childIndex);
+            SpecialObjectsToExclude.insert(childIndex);
+            FUNC_DEBUG_LINE("Exit");
             return;
         }
         
         if(GetOverrideChildrenResizeType())
-        {
             UpdateChildrenResizeTypes();
-        }
         
         if(GetUpdateContainerMinMaxSize())
         {
             SyncContainerMinMaxSize();
-
             const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
             
             //Add MinMax size changed callback
@@ -606,68 +724,91 @@ namespace ssGUI::Extensions
                 child->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
                     new ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback()));
             }
-
-            if(MinMaxSizeChangedEventIndices.find(child) == MinMaxSizeChangedEventIndices.end())
+            
+            if(MinMaxSizeChangedEventIndices.find(childIndex) == MinMaxSizeChangedEventIndices.end())
             {
-                MinMaxSizeChangedEventIndices[child] = child->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener(
+                MinMaxSizeChangedEventIndices[childIndex] = child->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener(
                     std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1));
+                DEBUG_LINE("childIndex added: "<<this<<", "<<childIndex<<", "<<MinMaxSizeChangedEventIndices[childIndex]);
             }
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Layout::Internal_OnRecursiveChildRemoved(ssGUI::GUIObject* child)
     {        
-        //If this is one of the excluding objects, remove it to prevent invalid object pointer
-        if(ObjectsToExclude.find(child) != ObjectsToExclude.end())
+        FUNC_DEBUG_LINE("Entry");
+
+        ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
+
+        //If not present, no need to continue
+        if(childIndex == -1)
         {
-            ObjectsToExclude.erase(child);
+            FUNC_DEBUG_LINE("Exit");
             return;
         }
-        
-        if(GetOverrideChildrenResizeType())
+
+        //If this is one of the excluding objects, remove it to prevent invalid object pointer
+        if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
         {
-            UpdateChildrenResizeTypes();
+            ObjectsToExclude.erase(childIndex);
+
+            if(SpecialObjectsToExclude.find(childIndex) != SpecialObjectsToExclude.end())
+                SpecialObjectsToExclude.erase(childIndex);
+
+            FUNC_DEBUG_LINE("Exit");
+            return;
         }
 
         //Restore resize type if it is recorded
-        if(OriginalChildrenResizeType.find(child) != OriginalChildrenResizeType.end())
+        if(OriginalChildrenResizeType.find(childIndex) != OriginalChildrenResizeType.end())
         {
-            static_cast<ssGUI::Window*>(child)->SetResizeType(OriginalChildrenResizeType[child]);
+            static_cast<ssGUI::Window*>(child)->SetResizeType(OriginalChildrenResizeType[childIndex]);
 
-            OriginalChildrenResizeType.erase(child);
+            OriginalChildrenResizeType.erase(childIndex);
         }
-        
+
         if(GetUpdateContainerMinMaxSize())
-        {
             SyncContainerMinMaxSize();
 
-            const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
+        //Remove MinMax size changed callbacks
+        const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
+        if(child->IsEventCallbackExist(onMinMaxSizeChangedEventName) 
+            && MinMaxSizeChangedEventIndices.find(childIndex) != MinMaxSizeChangedEventIndices.end())
+        {                
+            child->GetEventCallback(onMinMaxSizeChangedEventName)->RemoveEventListener(MinMaxSizeChangedEventIndices[childIndex]);
 
-            //Remove MinMax size changed callbacks
-            if(child->IsEventCallbackExist(onMinMaxSizeChangedEventName) 
-                && MinMaxSizeChangedEventIndices.find(child) != MinMaxSizeChangedEventIndices.end())
-            {                
-                child->GetEventCallback(onMinMaxSizeChangedEventName)->RemoveEventListener(MinMaxSizeChangedEventIndices[child]);
+            if(child->GetEventCallback(onMinMaxSizeChangedEventName)->GetEventListenerCount() == 0)
+                child->RemoveEventCallback(onMinMaxSizeChangedEventName);
 
-                if(child->GetEventCallback(onMinMaxSizeChangedEventName)->GetEventListenerCount() == 0)
-                    child->RemoveEventCallback(onMinMaxSizeChangedEventName);
-
-                MinMaxSizeChangedEventIndices.erase(child);
-            }
-        }   
-
-        if(OriginalChildrenSize.find(child) != OriginalChildrenSize.end())
-        {
-            std::cout<<"removed: "<<OriginalChildrenSize[child].x<<","<<OriginalChildrenSize[child].y<<"\n";
-            child->SetSize(OriginalChildrenSize[child]);
-            std::cout<<"removed 2: "<<child->GetSize().x<<","<<child->GetSize().y<<"\n";
-            OriginalChildrenSize.erase(child);   
+            MinMaxSizeChangedEventIndices.erase(childIndex);
         }
+
+        if(GetOverrideChildrenResizeType())
+            UpdateChildrenResizeTypes();
+
+        if(OriginalChildrenSize.find(childIndex) != OriginalChildrenSize.end())
+        {
+            child->SetSize(OriginalChildrenSize[childIndex]);
+            OriginalChildrenSize.erase(childIndex);   
+        }
+
+        //Remove the object reference to this child as it is no longer needed to be maintained
+        CurrentObjectsReferences.RemoveObjectReference(childIndex);
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Layout::Internal_OnChildMinMaxSizeChanged(ssGUI::GUIObject* child)
     {        
-        if(ObjectsToExclude.find(child) != ObjectsToExclude.end())
+        ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
+
+        //Add the child to reference if not present
+        if(childIndex == -1)
+            childIndex = CurrentObjectsReferences.AddObjectReference(child);
+        
+        if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
             return;
         
         if(GetUpdateContainerMinMaxSize())
@@ -686,66 +827,113 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
+
     //Override from Extension
     void Layout::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(IsPreUpdate || Container == nullptr || Container->GetChildrenCount() == 0 || !Enabled)
-            return;
-
-        //Update excluded objects if there's an overlay tag
-        for(auto it = Container->GetChildrenStartIterator(); it != Container->GetChildrenEndIterator(); it++)
         {
-            if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
-                continue;
-            
-            if((*it)->HasTag(ssGUI::Tags::OVERLAY) || (*it)->HasTag(ssGUI::Tags::FLOATING))
+            FUNC_DEBUG_LINE("Exit");
+            return;
+        }
+
+        //Update SpecialObjectsToExclude if needed
+        std::vector<ssGUIObjectIndex> objsToRemove;
+        for(auto it : SpecialObjectsToExclude)
+        {
+            if(!CurrentObjectsReferences.GetObjectReference(it)->HasTag(ssGUI::Tags::OVERLAY) && 
+                !CurrentObjectsReferences.GetObjectReference(it)->HasTag(ssGUI::Tags::FLOATING) && 
+                CurrentObjectsReferences.GetObjectReference(it)->IsVisible())
             {
-                ObjectsToExclude.insert(*it);
-                continue;
-            }
-            
-            //Record the original size if not exists (Can't be done in OnChildAdded as that's after the child being added)
-            if(OriginalChildrenSize.find(*it) == OriginalChildrenSize.end())
-            {
-                std::cout<<"added: "<<(*it)->GetSize().x<<","<<(*it)->GetSize().y<<"\n";
-                OriginalChildrenSize[*it] = (*it)->GetSize();
+                objsToRemove.push_back(it);
             }
         }
 
+        for(auto objIndex : objsToRemove)
+        {
+            ObjectsToExclude.erase(objIndex);
+            SpecialObjectsToExclude.erase(objIndex);
+        }
+
+        //Update excluded objects if there's an overlay tag
+        Container->MoveChildrenIteratorToFirst();
+        while(!Container->IsChildrenIteratorEnd())
+        {
+            ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
+            
+            //Don't update the objects if excluded
+            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            {
+                Container->MoveChildrenIteratorNext();
+                continue;
+            }
+                
+            if(childIndex == -1)
+                childIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
+            
+            if(Container->GetCurrentChild()->HasTag(ssGUI::Tags::OVERLAY) || Container->GetCurrentChild()->HasTag(ssGUI::Tags::FLOATING) || !Container->GetCurrentChild()->IsVisible())
+            {
+                ObjectsToExclude.insert(childIndex);
+                SpecialObjectsToExclude.insert(childIndex);
+                Container->MoveChildrenIteratorNext();
+                continue;
+            }
+            
+            Container->MoveChildrenIteratorNext();
+        }
+        
         //Check if object to exclude has valid parents
         int excludeCount = 0;
-        std::vector<ssGUI::GUIObject*> objToRemove;
+        std::vector<ssGUIObjectIndex> objToRemove;
         for(auto it = ObjectsToExclude.begin(); it != ObjectsToExclude.end(); it++)
         {
-            if((*it)->GetParent() != Container)
+            if(CurrentObjectsReferences.GetObjectReference(*it)->GetParent() != Container)
                 objToRemove.push_back(*it);
             else
                 excludeCount++;
         }
-
-        for(auto obj : objToRemove)
-            ObjectsToExclude.erase(obj);
-
+        
+        for(auto objIndex : objToRemove)
+        {
+            ObjectsToExclude.erase(objIndex);
+            if(SpecialObjectsToExclude.find(objIndex) != SpecialObjectsToExclude.end())
+                SpecialObjectsToExclude.erase(objIndex);
+            
+            //Don't need to hold reference for it as it is not a child
+            CurrentObjectsReferences.RemoveObjectReference(objIndex);
+        }
+        
         //Check preffered size multipliers length
         if(PreferredSizeMultipliers.size() != Container->GetChildrenCount() - excludeCount)
         {
             PreferredSizeMultipliers.resize(Container->GetChildrenCount() - excludeCount, -1);
         }
-
+        
         //Disable children resizing
         if(DisableChildrenResizing)
         {
-            for(auto it = Container->GetChildrenStartIterator(); it != Container->GetChildrenEndIterator(); it++)
+            Container->MoveChildrenIteratorToFirst();
+            while(!Container->IsChildrenIteratorEnd())
             {
-                if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
-                    continue;
+                ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
                 
-                if((*it)->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
-                    dynamic_cast<ssGUI::Window*>(*it)->SetResizeType(ssGUI::Enums::ResizeType::NONE);
+                //Don't update the objects if excluded
+                if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+                {
+                    Container->MoveChildrenIteratorNext();
+                    continue;
+                }
+                
+                if(Container->GetCurrentChild()->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+                    dynamic_cast<ssGUI::Window*>(Container->GetCurrentChild())->SetResizeType(ssGUI::Enums::ResizeType::NONE);
+
+                Container->MoveChildrenIteratorNext();
             }
         }
-
-        //Update min max size
+        
+        //TODO : Probably don't need this as events will sort this out
         if(UpdateContainerMinMaxSize)
             SyncContainerMinMaxSize();
 
@@ -759,16 +947,22 @@ namespace ssGUI::Extensions
 
         glm::ivec2 ContainerPos = Container->GetGlobalPosition();
         glm::ivec2 containerSize = Container->GetSize();
-
-        for(auto it = Container->GetChildrenStartIterator(); it != Container->GetChildrenEndIterator(); it++)
+        
+        Container->MoveChildrenIteratorToFirst();
+        while(!Container->IsChildrenIteratorEnd())
         {
-            if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
+            ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
+            
+            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            {   
+                Container->MoveChildrenIteratorNext();
                 continue;
+            }
 
-            glm::ivec2 currentPos = (*it)->GetGlobalPosition();
-            glm::ivec2 currentSize = (*it)->GetSize();
-            glm::ivec2 currentMinSize = (*it)->GetMinSize();
-            glm::ivec2 currentMaxSize = (*it)->GetMaxSize();
+            glm::ivec2 currentPos = Container->GetCurrentChild()->GetGlobalPosition();
+            glm::ivec2 currentSize = Container->GetCurrentChild()->GetSize();
+            glm::ivec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
+            glm::ivec2 currentMaxSize = Container->GetCurrentChild()->GetMaxSize();
             
             if(IsHorizontalLayout())
             {
@@ -782,10 +976,10 @@ namespace ssGUI::Extensions
 
                 
                 if(currentPos.y != verticalPos)
-                    (*it)->SetGlobalPosition(glm::ivec2(currentPos.x, verticalPos));
+                    Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(currentPos.x, verticalPos));
             
                 if(currentSize.y != verticalSize)
-                    (*it)->SetSize(glm::ivec2(currentSize.x, verticalSize));
+                    Container->GetCurrentChild()->SetSize(glm::ivec2(currentSize.x, verticalSize));
 
                 childrenPos.push_back(currentPos.x);
                 childrenSize.push_back(currentSize.x);
@@ -795,42 +989,55 @@ namespace ssGUI::Extensions
             else
             {
                 if(currentPos.x != ContainerPos.x + GetPadding())
-                    (*it)->SetGlobalPosition(glm::ivec2(ContainerPos.x + GetPadding(), currentPos.y));
+                    Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(ContainerPos.x + GetPadding(), currentPos.y));
             
                 if(currentSize.x != containerSize.x - GetPadding() * 2)
-                    (*it)->SetSize(glm::ivec2(containerSize.x - GetPadding() * 2, currentSize.y));
+                    Container->GetCurrentChild()->SetSize(glm::ivec2(containerSize.x - GetPadding() * 2, currentSize.y));
 
                 childrenPos.push_back(currentPos.y);
                 childrenSize.push_back(currentSize.y);
                 childrenMinSize.push_back(currentMinSize.y);
                 childrenMaxSize.push_back(currentMaxSize.y);
             }
-            
+
+            Container->MoveChildrenIteratorNext();
         }
         
         //Check if size is different from last update (Iterating from back to front so to get the first child with size change)
         int itIndex = childrenPos.size() - 1;
-        for(auto it = Container->GetChildrenReverseStartIterator(); it != Container->GetChildrenReverseEndIterator(); it++)
+        
+        Container->MoveChildrenIteratorToLast();
+        while(!Container->IsChildrenIteratorEnd())
         {
-            if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
-                continue;
+            ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
             
-            if(LastUpdateChildrenSize.find(*it) != LastUpdateChildrenSize.end())
+            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
             {
-                if(IsHorizontalLayout() && LastUpdateChildrenSize[(*it)].x != childrenSize[itIndex])
+                Container->MoveChildrenIteratorPrevious();
+                continue;
+            }
+
+            if(childIndex == -1)
+                childIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
+            
+            if(LastUpdateChildrenSize.find(childIndex) != LastUpdateChildrenSize.end())
+            {
+                if(IsHorizontalLayout() && LastUpdateChildrenSize[childIndex].x != childrenSize[itIndex])
                 {
-                    sizeDiff = childrenSize[itIndex] - LastUpdateChildrenSize[(*it)].x;
+                    sizeDiff = childrenSize[itIndex] - LastUpdateChildrenSize[childIndex].x;
                     lastChildChangeIndex = itIndex;
                 }
-                else if(!IsHorizontalLayout() && LastUpdateChildrenSize[(*it)].y != childrenSize[itIndex])
+                else if(!IsHorizontalLayout() && LastUpdateChildrenSize[childIndex].y != childrenSize[itIndex])
                 {
-                    sizeDiff = childrenSize[itIndex] - LastUpdateChildrenSize[(*it)].y;
+                    sizeDiff = childrenSize[itIndex] - LastUpdateChildrenSize[childIndex].y;
                     lastChildChangeIndex = itIndex;
                 }                
             }
-            itIndex--;
-        }
 
+            itIndex--;
+            Container->MoveChildrenIteratorPrevious();
+        }
+        
         //Check for window for laying out children differently
         if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && static_cast<ssGUI::Window*>(Container)->HasTitlebar())
         {
@@ -857,39 +1064,51 @@ namespace ssGUI::Extensions
                 LayoutChildren(ContainerPos.y + GetPadding(), containerSize.y - GetPadding() * 2, 
                                 childrenPos, childrenSize, childrenMinSize, childrenMaxSize, lastChildChangeIndex, sizeDiff);
         }
-
+        
         //Assigning position and size to children
         int index = 0;
-        for(auto it = Container->GetChildrenStartIterator(); it != Container->GetChildrenEndIterator(); it++)
+        Container->MoveChildrenIteratorToFirst();
+        while(!Container->IsChildrenIteratorEnd())
         {
-            if(ObjectsToExclude.find(*it) != ObjectsToExclude.end())
-                continue;
             
-            glm::ivec2 currentPos = (*it)->GetGlobalPosition();
-            glm::ivec2 currentSize = (*it)->GetSize();
-            glm::ivec2 currentMinSize = (*it)->GetMinSize();
-
+            ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
+            
+            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            {
+                Container->MoveChildrenIteratorNext();
+                continue;
+            }
+            
+            glm::ivec2 currentPos = Container->GetCurrentChild()->GetGlobalPosition();
+            glm::ivec2 currentSize = Container->GetCurrentChild()->GetSize();
+            glm::ivec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
+            
             if(IsHorizontalLayout())
             {
-                (*it)->SetSize(glm::ivec2(childrenSize[index], currentSize.y));
-                (*it)->SetGlobalPosition(glm::ivec2(childrenPos[index], currentPos.y));
+                Container->GetCurrentChild()->SetSize(glm::ivec2(childrenSize[index], currentSize.y));
+                Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(childrenPos[index], currentPos.y));
             }
             else
             {
-                (*it)->SetSize(glm::ivec2(currentSize.x, childrenSize[index]));
-                (*it)->SetGlobalPosition(glm::ivec2(currentPos.x, childrenPos[index]));
+                Container->GetCurrentChild()->SetSize(glm::ivec2(currentSize.x, childrenSize[index]));
+                Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(currentPos.x, childrenPos[index]));
             }
-
-            index++;
             
             //Update ChildrenSize
-            LastUpdateChildrenSize[(*it)] = (*it)->GetSize();   
+            if(childIndex == -1)
+                childIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
+            LastUpdateChildrenSize[childIndex] = Container->GetCurrentChild()->GetSize();
+            
+            index++;
+            Container->MoveChildrenIteratorNext();
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    void Layout::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Layout::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
-        //Draw nothing
+        //Internal_Draw nothing
     }
 
     std::string Layout::GetExtensionName()
@@ -899,6 +1118,8 @@ namespace ssGUI::Extensions
 
     void Layout::BindToObject(ssGUI::GUIObject* bindObj)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         Container = bindObj;
 
         //By default, layout extension will override children resize type and will also update container min max size
@@ -907,13 +1128,57 @@ namespace ssGUI::Extensions
         
         if(GetUpdateContainerMinMaxSize())
             SetUpdateContainerMinMaxSize(true);
+
+        if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))
+            Container->AddEventCallback(new ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback());
+
+        OnChildAddEventIndex = static_cast<ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback*>(
+            Container->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))->AddEventListener
+            (
+                [&](ssGUI::GUIObject* child)
+                {
+                    int childIndex = CurrentObjectsReferences.IsObjectReferenceExist(child) ? CurrentObjectsReferences.GetObjectIndex(child) : CurrentObjectsReferences.AddObjectReference(child);
+                    
+                    //Record the original size if not exists (Can't be done in OnChildAdded as that's after the child being added)
+                    if(OriginalChildrenSize.find(childIndex) == OriginalChildrenSize.end())
+                        OriginalChildrenSize[childIndex] = child->GetSize();
+                }
+            );
+
+        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME;
+        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME;
+        const std::string childPositionChangedEventName = ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME;
+
+        if(!Container->IsEventCallbackExist(onChildAddedEventName))
+            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback());
+        
+        if(!Container->IsEventCallbackExist(onChildRemovedEventName))
+            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback());
+
+        if(!Container->IsEventCallbackExist(childPositionChangedEventName))
+            Container->AddEventCallback(new ssGUI::EventCallbacks::ChildPositionChangedEventCallback());
+
+        ChildAddedEventIndex = Container->GetEventCallback(onChildAddedEventName)->AddEventListener(
+            std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1));
+        ChildRemovedEventIndex = Container->GetEventCallback(onChildRemovedEventName)->AddEventListener(
+            std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1));
+
+        ChildPositionChangedEventIndex = Container->GetEventCallback(childPositionChangedEventName)->AddEventListener
+            (
+                [&](ssGUI::GUIObject* obj)
+                {
+                    if(GetOverrideChildrenResizeType())
+                        UpdateChildrenResizeTypes();
+                }
+            );
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Layout::Copy(ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
-        
         ssGUI::Extensions::Layout* layout = static_cast<ssGUI::Extensions::Layout*>(extension);
         
         HorizontalLayout = layout->IsHorizontalLayout();
@@ -926,7 +1191,12 @@ namespace ssGUI::Extensions
         Enabled = layout->IsEnabled();
         Padding = layout->GetPadding();
         Spacing = layout->GetSpacing();
-        ObjectsToExclude = layout->ObjectsToExclude;
+        CurrentObjectsReferences = layout->CurrentObjectsReferences;
+    }
+
+    ObjectsReferences* Layout::Internal_GetObjectsReferences()
+    {
+        return &CurrentObjectsReferences;
     }
 
     Extension* Layout::Clone(ssGUI::GUIObject* newContainer)

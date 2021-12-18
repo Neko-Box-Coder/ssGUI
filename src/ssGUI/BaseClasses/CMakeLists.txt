@@ -7,4 +7,5 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/Button.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Widget.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Window.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/ObjectsReferences.cpp"
                     )

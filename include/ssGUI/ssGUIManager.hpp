@@ -1,7 +1,7 @@
 #ifndef SSGUI_MANAGER
 #define SSGUI_MANAGER
 
-#include "ssGUI/ssGUIBuildConfig.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/BaseClasses/MainWindow.hpp"
 #include "ssGUI/Enums/GUIObjectType.hpp"
 #include "ssGUI/BaseClasses/InputStatus.hpp"
@@ -103,7 +103,7 @@ namespace ssGUI
             //function: Clear
             inline void Clear()
             {
-                #if defined _WIN32
+                #if defined (_WIN32)
                     system("cls");
                     //clrscr(); // including header file : conio.h
                 #elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)

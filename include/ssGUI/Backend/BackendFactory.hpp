@@ -7,7 +7,7 @@
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
-#include "ssGUI/Backend/BackendConfig.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 
 #ifdef USE_SFML_BACKEND
     #include "ssGUI/Backend/SFML/BackendDrawingSFML.hpp"

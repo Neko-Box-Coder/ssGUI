@@ -21,13 +21,13 @@ namespace ssGUI
             ssGUI::Enums::CursorType lastCursor = BackendInput->GetCursorType();
             BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
 
-            #if USE_DEBUG 
+            #if DEBUG_STATE 
                 std::cout<<"Update\n";
             #endif
 
             UpdateObjects();
 
-            #if USE_DEBUG 
+            #if DEBUG_STATE 
                 std::cout<<"\nRender\n";
             #endif
 
@@ -53,7 +53,7 @@ namespace ssGUI
             else
                 Render();
             
-            #if USE_DEBUG 
+            #if DEBUG_STATE 
                 std::cout<<"\nPost Render\n";
             #endif
 
@@ -128,46 +128,44 @@ namespace ssGUI
 
             ssGUI::MainWindow* currentMainWindowP = dynamic_cast<ssGUI::MainWindow*>(mainWindow);
 
-            currentMainWindowP->Draw();
+            currentMainWindowP->Internal_Draw();
 
             //Populate the render queue first
-            for(std::list<ssGUI::GUIObject*>::iterator childIt = currentMainWindowP->GetChildrenStartIterator();
-                childIt != currentMainWindowP->GetChildrenEndIterator(); childIt++)
+            currentMainWindowP->MoveChildrenIteratorToFirst();
+            while (!currentMainWindowP->IsChildrenIteratorEnd())
             {
-                objToRender.push_back(*childIt);
+                objToRender.push_back(currentMainWindowP->GetCurrentChild());
+                currentMainWindowP->MoveChildrenIteratorNext();
             }
-
+            
             while (!objToRender.empty())
             {
                 ssGUI::GUIObject* currentObjP = objToRender.front();
                 //Remove current gui object from draw queue
                 objToRender.pop_front();
 
-                //Draw the gui object only when it is visible
+                //Internal_Draw the gui object only when it is visible
                 if(currentObjP->IsVisible())
                 {                    
-                    (currentObjP)->Draw(    currentMainWindowP->GetBackendDrawingInterface(), 
-                                            dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
-                                            currentMainWindowP->GetPositionOffset());
+                    (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
+                                                    dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
+                                                    currentMainWindowP->GetPositionOffset());
 
                     //Add children to draw queue
                     if(currentObjP->GetChildrenCount() > 0)
                     {
                         //Add children from back to front so that the drawing queue order is front to back
-                        std::list<ssGUI::GUIObject*>::iterator childIt = currentObjP->GetChildrenEndIterator();
-                        childIt--;
-                        std::list<ssGUI::GUIObject*>::iterator childTerminateIt = currentObjP->GetChildrenStartIterator();
-                        childTerminateIt--;
-
-                        for(;childIt != childTerminateIt; childIt--)
+                        currentObjP->MoveChildrenIteratorToLast();
+                        while (!currentObjP->IsChildrenIteratorEnd())
                         {
-                            objToRender.push_front(*childIt);
+                            objToRender.push_front(currentObjP->GetCurrentChild());
+                            currentObjP->MoveChildrenIteratorPrevious();
                         }
                     }                
                 }
             }
 
-            //Draw everything that is displayed on the mainWindow buffer
+            //Internal_Draw everything that is displayed on the mainWindow buffer
             currentMainWindowP->Render();
         }
     }
@@ -212,12 +210,12 @@ namespace ssGUI
 
             while (!objToUpdate.empty())
             {
-                //TODO : Check if it is a deleted object or not
                 if(objToUpdate.top()->Internal_IsDeleted())
                 {
+                    //TODO : Maybe move set parent to delete function instead?
                     objToUpdate.top()->SetParent(nullptr);
                     
-                    if(objToUpdate.top()->Internal_NeedCleanUp())
+                    if(objToUpdate.top()->IsHeapAllocated())
                        delete objToUpdate.top();
 
                     objToUpdate.pop();
@@ -248,12 +246,12 @@ namespace ssGUI
                     childrenEvaluated.top() = true;
 
                     ssGUI::GUIObject* currentObjP = objToUpdate.top();
-
-                    for(std::list<ssGUI::GUIObject*>::iterator childIt = currentObjP->GetChildrenStartIterator();
-                        childIt != currentObjP->GetChildrenEndIterator(); childIt++)
+                    currentObjP->MoveChildrenIteratorToFirst();
+                    while (!currentObjP->IsChildrenIteratorEnd())
                     {
-                        objToUpdate.push(*childIt);
+                        objToUpdate.push(currentObjP->GetCurrentChild());
                         childrenEvaluated.push(false);
+                        currentObjP->MoveChildrenIteratorNext();
                     }
                 }
             }
@@ -280,9 +278,13 @@ namespace ssGUI
     }
 
     void ssGUIManager::AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP)
-    {
-        for(auto it = targetObj.GetChildrenStartIterator(); it != targetObj.GetChildrenEndIterator(); it++)
-            (*it)->SetParent(newParentP);
+    {        
+        targetObj.MoveChildrenIteratorToFirst();
+        while (targetObj.IsChildrenIteratorEnd())
+        {
+            targetObj.GetCurrentChild()->SetParent(newParentP);
+            targetObj.MoveChildrenIteratorNext();
+        }
     }
 
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;
@@ -301,6 +303,8 @@ namespace ssGUI
     ssGUIManager::~ssGUIManager()
     {
         delete BackendInput;
+
+        //TODO : Remove all non user created objects
     }
     
     void ssGUIManager::AddGUIObject(ssGUI::GUIObject* obj)

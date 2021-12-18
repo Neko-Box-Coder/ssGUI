@@ -17,6 +17,7 @@ namespace ssGUI
 
     Image::~Image()
     {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
         delete BackendImage;
     }
 
@@ -41,13 +42,18 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::IMAGE | ssGUI::Enums::GUIObjectType::BASE_WIDGET;
     }
 
-    void Image::Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Image::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         for(auto extension : Extensions)
-            extension.second->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         if(!IsVisible())
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
     
         glm::ivec2 drawPosition = GetGlobalPosition();
 
@@ -164,7 +170,7 @@ namespace ssGUI
         //DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         for(auto extension : Extensions)
-            extension.second->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -172,25 +178,27 @@ namespace ssGUI
         DrawingColours.clear();
         DrawingCounts.clear();
         DrawingProperties.clear();
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    GUIObject* Image::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)
+    GUIObject* Image::Clone(bool cloneChildren)
     {
         Image* temp = new Image(*this);
 
-        for(auto extension : Extensions)
-        {
-            if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
-                temp->AddExtension(extension.second->Clone(this));
-        }
+        // for(auto extension : Extensions)
+        // {
+        //     if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
+        //         temp->AddExtension(extension.second->Clone(this));
+        // }
 
-        for(auto eventCallback : EventCallbacks)
-        {
-            std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
+        // for(auto eventCallback : EventCallbacks)
+        // {
+        //     std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
 
-            if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
-        }
+        //     if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+        //         temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
+        // }
 
         return temp;
     }

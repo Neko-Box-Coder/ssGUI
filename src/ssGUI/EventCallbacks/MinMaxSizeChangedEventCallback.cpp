@@ -7,9 +7,12 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    ssGUI::EventCallbacks::EventCallback* MinMaxSizeChangedEventCallback::Clone(ssGUI::GUIObject* container, std::vector<ssGUI::GUIObject*>& originalObjs, std::vector<ssGUI::GUIObject*>& clonedObjs)
+    EventCallback* MinMaxSizeChangedEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
     {
-        return new MinMaxSizeChangedEventCallback();
+        if(copyListeners)
+            return new MinMaxSizeChangedEventCallback(*this);
+        else
+            return new MinMaxSizeChangedEventCallback();
     }
 
     const std::string MinMaxSizeChangedEventCallback::EVENT_NAME = "MinMaxSizeChangedEvent";

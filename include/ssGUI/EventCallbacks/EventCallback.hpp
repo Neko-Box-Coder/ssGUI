@@ -19,12 +19,12 @@ namespace ssGUI::EventCallbacks
     //> index = EventCallback->AddEventListener(std::bind(&some::class::function, objectPointer, std::placeholders::_1));
     class EventCallback
     {
-        private:
-            //EventCallback(EventCallback const &) = default;
-            //EventCallback& operator=(EventCallback const &) = default;
+        protected:
+            EventCallback(EventCallback const &) = default;
+            EventCallback& operator=(EventCallback const &) = default;
+            EventCallback() = default;
 
         public:
-            //EventCallback() = default;
             
             //function: AddEventListener
             virtual int AddEventListener(std::function<void(ssGUI::GUIObject *)> callback) = 0;
@@ -42,7 +42,7 @@ namespace ssGUI::EventCallbacks
             virtual std::string GetEventCallbackName() const = 0;
             
             //function: Clone
-            virtual EventCallback* Clone(ssGUI::GUIObject* container, std::vector<ssGUI::GUIObject*>& originalObjs, std::vector<ssGUI::GUIObject*>& clonedObjs) = 0;
+            virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) = 0;
     };
 }
 

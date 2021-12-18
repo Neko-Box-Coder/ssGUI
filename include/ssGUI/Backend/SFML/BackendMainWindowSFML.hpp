@@ -1,10 +1,8 @@
 #ifndef SSGUI_BACKEND_MAIN_WINDOW_SFML
 #define SSGUI_BACKEND_MAIN_WINDOW_SFML
 
-#include <string>
 #include <iostream>
 #include <vector>
-#include "glm/vec2.hpp"
 #include "SFML/Graphics.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"

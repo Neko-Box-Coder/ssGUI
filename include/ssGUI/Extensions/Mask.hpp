@@ -145,7 +145,7 @@ namespace ssGUI::Extensions
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
             
             //function: Draw
-            virtual void Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             virtual std::string GetExtensionName() override;
@@ -154,6 +154,8 @@ namespace ssGUI::Extensions
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
             
             virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+
+            virtual ObjectsReferences* Internal_GetObjectsReferences() override;
 
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;

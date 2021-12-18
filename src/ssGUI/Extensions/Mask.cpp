@@ -180,6 +180,8 @@ namespace ssGUI::Extensions
                                                 std::vector<glm::ivec2>& maskVerticies, std::vector<glm::ivec2>& intersections,
                                                 std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         //Lambda function of adding new vertex infomation
         auto addNewVertexInfo = [&currentShapeVertices, &currentShapeUVs, &currentShapeColours, &currentVertexChanged]
         (glm::ivec2 newVertex, glm::u8vec4 newColour, bool changed, glm::ivec2 uv = glm::ivec2())
@@ -441,6 +443,8 @@ namespace ssGUI::Extensions
 
             }
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Mask::SampleNewUVsAndColoursForShapes(std::vector<glm::ivec2>& originalVerticies, std::vector<glm::ivec2>& originalUVs, std::vector<glm::u8vec4>& originalColours,
@@ -475,7 +479,6 @@ namespace ssGUI::Extensions
 
                 if(!GetAxesValues(axis, axis2, newVertices[vertexIndex] - currentShapeVertices[closestIndicies[0]], axisValue, axis2Value))  
                     break;
-
 
                 glm::ivec2 uvAxis = originalUVs[oldOffset + closestIndicies[1]] - originalUVs[oldOffset + closestIndicies[0]];
                 glm::ivec2 uvAxis2 = originalUVs[oldOffset + closestIndicies[2]] - originalUVs[oldOffset + closestIndicies[0]];
@@ -685,8 +688,13 @@ namespace ssGUI::Extensions
 
     bool Mask::GetSampleIndicesFromShape(std::vector<glm::ivec2>& vertices, int closestIndices[], glm::ivec2 samplePoint)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(vertices.size() < 3)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return false;
+        }
 
         closestIndices[0] = -1;
         closestIndices[1] = -1;
@@ -770,18 +778,30 @@ namespace ssGUI::Extensions
             }
         }
         
+        FUNC_DEBUG_LINE("Exit");
         return true;
     }
 
     void Mask::AddMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
+        if(Container == nullptr)
+        {
+            FUNC_DEBUG_LINE("Exit");
+            return;
+        }
+        
         std::queue<ssGUI::GUIObject*> children;
 
         if(!includeParent)
         {
-            auto it = Container->GetChildrenStartIterator();
-            while (it != Container->GetChildrenEndIterator())
-                children.push(*it);
+            Container->MoveChildrenIteratorToFirst();
+            while (!Container->IsChildrenIteratorEnd())
+            {
+                children.push(Container->GetCurrentChild());
+                Container->MoveChildrenIteratorNext();
+            }
         }
         else
             children.push(parent);
@@ -793,29 +813,39 @@ namespace ssGUI::Extensions
             if(!child->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
             {
                 ssGUI::Extensions::MaskEnforcer* enforcer = new MaskEnforcer();
-                enforcer->BindToMask(this);
+                enforcer->BindToMaskGUIObject(Container);
                 child->AddExtension(enforcer);
             }
             else
-                static_cast<ssGUI::Extensions::MaskEnforcer*>(child->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))->BindToMask(this);
+                static_cast<ssGUI::Extensions::MaskEnforcer*>(child->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))->BindToMaskGUIObject(Container);
 
-            auto it = child->GetChildrenStartIterator();
-            while (it != child->GetChildrenEndIterator())
-                children.push(*it);
-
+            child->MoveChildrenIteratorToFirst();
+            while (!child->IsChildrenIteratorEnd())
+            {
+                children.push(child->GetCurrentChild());   
+                child->MoveChildrenIteratorNext();
+            }
+            
             children.pop();
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Mask::RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         std::queue<ssGUI::GUIObject*> children;
 
         if(!includeParent)
-        {
-            auto it = Container->GetChildrenStartIterator();
-            while (it != Container->GetChildrenEndIterator())
-                children.push(*it);
+        {            
+            Container->MoveChildrenIteratorToFirst();
+            while (!Container->IsChildrenIteratorEnd())
+            {
+                children.push(Container->GetCurrentChild());
+                Container->MoveChildrenIteratorNext();
+            }
         }
         else
             children.push(parent);
@@ -833,13 +863,18 @@ namespace ssGUI::Extensions
 
                 delete(enforcer);
             }
-
-            auto it = child->GetChildrenStartIterator();
-            while (it != child->GetChildrenEndIterator())
-                children.push(*it);
+            
+            child->MoveChildrenIteratorToFirst();
+            while (!child->IsChildrenIteratorEnd())
+            {
+                children.push(child->GetCurrentChild());   
+                child->MoveChildrenIteratorNext();
+            }
 
             children.pop();
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     Mask::Mask(Mask const& other)
@@ -869,13 +904,18 @@ namespace ssGUI::Extensions
 
     void Mask::SetMaskChildren(bool maskChildren)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         MaskChildren = maskChildren;
 
         std::queue<ssGUI::GUIObject*> children;
-        auto it = Container->GetChildrenStartIterator();
 
-        while (it != Container->GetChildrenEndIterator())
-            children.push(*it);
+        Container->MoveChildrenIteratorToFirst();
+        while (!Container->IsChildrenIteratorEnd())
+        {
+            children.push(Container->GetCurrentChild());
+            Container->MoveChildrenIteratorNext();
+        }
 
         if(MaskChildren)
         {
@@ -941,7 +981,9 @@ namespace ssGUI::Extensions
 
             OnChildAddedEventIndex = -1;
             OnChildRemovedEventIndex = -1;
-        }        
+        }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     bool Mask::GetMaskChildren() const
@@ -1027,6 +1069,8 @@ namespace ssGUI::Extensions
 
     void Mask::MaskObject(ssGUI::GUIObject* obj, glm::ivec2 renderOffset)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         std::vector<glm::ivec2> maskShape;
         std::vector<glm::ivec2>& originalVerticies = obj->Extension_GetDrawingVerticies();
         std::vector<bool> isOriginalVerticesInside;
@@ -1153,6 +1197,8 @@ namespace ssGUI::Extensions
         originalColours.assign(newColours.begin(), newColours.end());
 
         verticesCount.assign(newVerticesCount.begin(), newVerticesCount.end());
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Mask::SetEnabled(bool enabled)
@@ -1168,8 +1214,13 @@ namespace ssGUI::Extensions
     //Extension methods
     void Mask::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(IsPreUpdate || Container == nullptr || !Enabled)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
 
         if(FollowContainer)
         {
@@ -1196,9 +1247,11 @@ namespace ssGUI::Extensions
                 SetSize(Container->GetSize() + FollowSizePadding);
             }
         }
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    void Mask::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::ivec2 mainWindowPositionOffset)
+    void Mask::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::ivec2 mainWindowPositionOffset)
     {
         //Call mask function
     }
@@ -1229,6 +1282,11 @@ namespace ssGUI::Extensions
         FollowSizePadding = mask->GetFollowSizePadding();
         GlobalPosition = mask->GetGlobalPosition();
         Size = mask->GetSize();
+    }
+
+    ObjectsReferences* Mask::Internal_GetObjectsReferences()
+    {
+        return nullptr;
     }
 
     Extension* Mask::Clone(ssGUI::GUIObject* newContainer)

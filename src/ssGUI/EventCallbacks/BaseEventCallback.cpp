@@ -56,15 +56,13 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* container, std::vector<ssGUI::GUIObject*>& originalObjs, std::vector<ssGUI::GUIObject*>& clonedObjs)
+    EventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
     {
-        return new BaseEventCallback();
+        if(copyListeners)
+            return new BaseEventCallback(*this);
+        else
+            return new BaseEventCallback();
     }
-
-    // ssGUI::EventCallbacks::EventCallback* BaseEventCallback::Clone()
-    // {
-    //     return new ssGUI::EventCallbacks::BaseEventCallback(*this);
-    // }
 
     const std::string BaseEventCallback::EVENT_NAME = "BaseEvent";
 }

@@ -56,16 +56,23 @@ namespace ssGUI
     }
 
     Text::~Text()
-    {}
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+    }
     
     //TODO : Maybe subdivide this function
     void Text::ComputeCharactersPositionAndSize()
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         CurrentTextChanged = false;
         WrappingOverflow = false;
 
         if(CurrentFont == nullptr)
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
         
         int numberOfLines = 1;
 
@@ -446,6 +453,8 @@ namespace ssGUI
 
         for(int i = 0; i < CharactersPosition.size(); i++)
             CharactersPosition[i].y += alignOffset;
+
+        FUNC_DEBUG_LINE("Exit");
     }
     
 
@@ -532,6 +541,9 @@ namespace ssGUI
 
     void Text::SetFont(ssGUI::Font* font)
     {
+        if(CurrentFont != font && IsEventCallbackExist(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME))
+            GetEventCallback(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME)->Notify(this);
+        
         CurrentFont = font;
     }
 
@@ -595,13 +607,18 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
     }
 
-    void Text::Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Text::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         if(!IsVisible())
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
         
         for(auto extension : Extensions)
-            extension.second->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         glm::ivec2 drawPos = GetGlobalPosition();
 
@@ -653,7 +670,7 @@ namespace ssGUI
         endOfDrawing:;
 
         for(auto extension : Extensions)
-            extension.second->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -661,25 +678,27 @@ namespace ssGUI
         DrawingColours.clear();
         DrawingCounts.clear();
         DrawingProperties.clear();
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    GUIObject* Text::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)
+    GUIObject* Text::Clone(bool cloneChildren)
     {
         Text* temp = new Text(*this);
 
-        for(auto extension : Extensions)
-        {
-            if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
-                temp->AddExtension(extension.second->Clone(this));
-        }
+        // for(auto extension : Extensions)
+        // {
+        //     if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
+        //         temp->AddExtension(extension.second->Clone(this));
+        // }
 
-        for(auto eventCallback : EventCallbacks)
-        {
-            std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
+        // for(auto eventCallback : EventCallbacks)
+        // {
+        //     std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
 
-            if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
-        }
+        //     if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+        //         temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
+        // }
 
         return temp;
     }

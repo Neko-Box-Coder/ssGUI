@@ -92,7 +92,9 @@ namespace ssGUI
     }
 
     Button::~Button()
-    {}
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+    }
 
     void Button::NotifyButtonEventCallbackManually()
     {   
@@ -120,13 +122,18 @@ namespace ssGUI
         ssGUI::Widget::SetInteractable(interactable);
     }
 
-    void Button::Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Button::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
+        FUNC_DEBUG_LINE("Entry");
+        
         for (auto extension : Extensions)
-            extension.second->Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         if (!IsVisible())
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
 
         glm::ivec2 drawPosition = GetGlobalPosition();
 
@@ -151,7 +158,7 @@ namespace ssGUI
         DrawingProperties.push_back(ssGUI::DrawingProperty());
 
         for (auto extension : Extensions)
-            extension.second->Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -159,13 +166,20 @@ namespace ssGUI
         DrawingColours.clear();
         DrawingCounts.clear();
         DrawingProperties.clear();
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Button::Internal_Update(ssGUI::Backend::BackendSystemInputInterface *inputInterface, ssGUI::InputStatus &globalInputStatus, ssGUI::InputStatus &windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
+        FUNC_DEBUG_LINE("Entry");
+
         //If it is not visible, don't even update/draw it
         if (!IsVisible())
+        {
+            FUNC_DEBUG_LINE("Exit");
             return;
+        }
 
         for (auto extension : Extensions)
             extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
@@ -222,25 +236,27 @@ namespace ssGUI
         
         for (auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
-    GUIObject* Button::Clone(std::vector<GUIObject*>& originalObjs, bool cloneChildren)
+    GUIObject* Button::Clone(bool cloneChildren)
     {
         Button* temp = new Button(*this);
 
-        for(auto extension : Extensions)
-        {
-            if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
-                temp->AddExtension(extension.second->Clone(this));
-        }
+        // for(auto extension : Extensions)
+        // {
+        //     if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
+        //         temp->AddExtension(extension.second->Clone(this));
+        // }
 
-        for(auto eventCallback : EventCallbacks)
-        {
-            std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
+        // for(auto eventCallback : EventCallbacks)
+        // {
+        //     std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
 
-            if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
-        }
+        //     if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+        //         temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
+        // }
 
         return temp;
     }

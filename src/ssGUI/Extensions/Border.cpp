@@ -42,6 +42,8 @@ namespace ssGUI::Extensions
 
     void Border::DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {        
+        FUNC_DEBUG_LINE("Entry");
+        
         glm::ivec2 drawPosition = Container->GetGlobalPosition();
         
         int width = GetBorderWidth();
@@ -128,6 +130,8 @@ namespace ssGUI::Extensions
 
         drawingCounts.push_back(4);
         drawingProperties.push_back(ssGUI::DrawingProperty()); 
+
+        FUNC_DEBUG_LINE("Exit");
     }
 
     void Border::SetEnabled(bool enabled)
@@ -145,7 +149,7 @@ namespace ssGUI::Extensions
         //Do nothing
     }
     
-    void Border::Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Border::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
         if(IsPreRender || Container == nullptr || Container->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW || !Enabled)
             return;
@@ -173,7 +177,12 @@ namespace ssGUI::Extensions
         BorderWidth = border->GetBorderWidth();
         Enabled = border->IsEnabled();
     }
-    
+
+    ObjectsReferences* Border::Internal_GetObjectsReferences()
+    {
+        return nullptr;
+    }
+
     Extension* Border::Clone(ssGUI::GUIObject* newContainer)
     {
         Border* temp = new Border(*this);

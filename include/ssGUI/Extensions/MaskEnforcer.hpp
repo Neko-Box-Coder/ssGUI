@@ -13,7 +13,7 @@ namespace ssGUI::Extensions
     class MaskEnforcer : public Extension
     {
         private:
-            ssGUI::Extensions::Mask* CurrentMask;
+            ssGUIObjectIndex CurrentMask;
             ssGUI::GUIObject* Container;
             bool Enabled;
             bool BlockingContainerInput;
@@ -29,6 +29,8 @@ namespace ssGUI::Extensions
             std::vector<glm::u8vec4> LastColours;
             std::vector<int> LastCounts;
 
+            ObjectsReferences CurrentObjectsReferences;
+
             bool Cached;
             bool AllowCaching;
             MaskEnforcer& operator=(MaskEnforcer const& other);
@@ -42,8 +44,9 @@ namespace ssGUI::Extensions
             MaskEnforcer();
             virtual ~MaskEnforcer() override;
             
-            //function: BindToMask
-            void BindToMask(ssGUI::Extensions::Mask* bindMask);
+            void BindToMaskGUIObject(ssGUI::GUIObject* maskGUIObj);
+
+            ssGUI::GUIObject* GetMaskGUIObject();
             
             //function: SetAllowingCaching
             void SetAllowingCaching(bool allowCaching);
@@ -62,8 +65,8 @@ namespace ssGUI::Extensions
             //function: Update
             virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
             
-            //function: Draw
-            virtual void Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            //function: Internal_Draw
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             virtual std::string GetExtensionName() override;
@@ -72,6 +75,8 @@ namespace ssGUI::Extensions
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
 
             virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+
+            virtual ObjectsReferences* Internal_GetObjectsReferences() override;
 
             //function: Clone
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
