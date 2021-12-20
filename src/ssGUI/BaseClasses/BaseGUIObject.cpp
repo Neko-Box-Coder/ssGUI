@@ -454,6 +454,7 @@ namespace ssGUI
         }
 
         CurrentChild = it;
+        CurrentChildIteratorEnd = false;
         return found;
     }
 

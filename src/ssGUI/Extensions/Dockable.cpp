@@ -291,8 +291,24 @@ namespace ssGUI::Extensions
         MainWindowUnderDocking = static_cast<ssGUI::MainWindow*>(curParent);
 
         Container->AddTag(ssGUI::Tags::FLOATING);
+        ssGUI::GUIObject* containerParent = Container->GetParent();
 
         //Docking mechanism
+        //Check if container is docked under docker. If so, set the size for the child after container to fill the gap
+        if(containerParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && containerParent->GetChildrenCount() > 1)
+        {
+            containerParent->FindChild(Container);
+            if(!containerParent->IsChildrenIteratorLast())
+            {
+                containerParent->MoveChildrenIteratorNext();
+                glm::ivec2 childSize = containerParent->GetCurrentChild()->GetSize();
+                if(static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsHorizontalLayout())
+                    containerParent->GetCurrentChild()->SetSize(glm::ivec2(childSize.x + Container->GetSize().x, childSize.y));
+                else
+                    containerParent->GetCurrentChild()->SetSize(glm::ivec2(childSize.x, childSize.y + Container->GetSize().y));                
+            }
+        }
+
         //Parent the container to the MainWindow.
         OriginalParent = Container->GetParent();
 
@@ -453,8 +469,8 @@ namespace ssGUI::Extensions
                     OriginalParent->GetParent()->FindChild(OriginalParent);
                     std::list<ssGUIObjectIndex>::iterator posObjectIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
                     OriginalParent->GetParent()->MoveChildrenIteratorToLast();
-                    std::list<ssGUIObjectIndex>::iterator lastIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
                     child->SetParent(OriginalParent->GetParent());
+                    std::list<ssGUIObjectIndex>::iterator lastIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
                     child->GetParent()->ChangeChildOrderToBeforePosition(lastIt, posObjectIt);
                     OriginalParent->Delete();
                     

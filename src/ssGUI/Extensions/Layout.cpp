@@ -729,7 +729,6 @@ namespace ssGUI::Extensions
             {
                 MinMaxSizeChangedEventIndices[childIndex] = child->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener(
                     std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1));
-                DEBUG_LINE("childIndex added: "<<this<<", "<<childIndex<<", "<<MinMaxSizeChangedEventIndices[childIndex]);
             }
         }
 
@@ -1017,8 +1016,13 @@ namespace ssGUI::Extensions
                 continue;
             }
 
+            //New child. Meaning no resizing is done therefore can just exit
             if(childIndex == -1)
-                childIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
+            {
+                sizeDiff = 0;
+                lastChildChangeIndex = -1;
+                break;
+            }
             
             if(LastUpdateChildrenSize.find(childIndex) != LastUpdateChildrenSize.end())
             {
@@ -1032,6 +1036,13 @@ namespace ssGUI::Extensions
                     sizeDiff = childrenSize[itIndex] - LastUpdateChildrenSize[childIndex].y;
                     lastChildChangeIndex = itIndex;
                 }                
+            }
+            //New child. Meaning no resizing is done therefore can just exit
+            else
+            {
+                sizeDiff = 0;
+                lastChildChangeIndex = -1;
+                break;
             }
 
             itIndex--;
