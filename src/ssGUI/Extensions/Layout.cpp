@@ -842,6 +842,9 @@ namespace ssGUI::Extensions
         std::vector<ssGUIObjectIndex> objsToRemove;
         for(auto it : SpecialObjectsToExclude)
         {
+            if(CurrentObjectsReferences.GetObjectReference(it) == nullptr)
+                continue;
+            
             if(!CurrentObjectsReferences.GetObjectReference(it)->HasTag(ssGUI::Tags::OVERLAY) && 
                 !CurrentObjectsReferences.GetObjectReference(it)->HasTag(ssGUI::Tags::FLOATING) && 
                 CurrentObjectsReferences.GetObjectReference(it)->IsVisible())
@@ -888,6 +891,9 @@ namespace ssGUI::Extensions
         std::vector<ssGUIObjectIndex> objToRemove;
         for(auto it = ObjectsToExclude.begin(); it != ObjectsToExclude.end(); it++)
         {
+            if(CurrentObjectsReferences.GetObjectReference(*it) == nullptr)
+                continue;
+
             if(CurrentObjectsReferences.GetObjectReference(*it)->GetParent() != Container)
                 objToRemove.push_back(*it);
             else

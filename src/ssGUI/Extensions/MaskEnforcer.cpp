@@ -79,7 +79,8 @@ namespace ssGUI::Extensions
     {
         FUNC_DEBUG_LINE("Entry");
         
-        if(CurrentMask == -1 || !CurrentObjectsReferences.GetObjectReference(CurrentMask)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME) || 
+        if(CurrentMask == -1 || CurrentObjectsReferences.GetObjectReference(CurrentMask) == nullptr ||
+            !CurrentObjectsReferences.GetObjectReference(CurrentMask)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME) || 
             !CurrentObjectsReferences.GetObjectReference(CurrentMask)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled() ||
             Container == nullptr || globalInputStatus.MouseInputBlocked || windowInputStatus.MouseInputBlocked || !Enabled)
         {
@@ -116,7 +117,8 @@ namespace ssGUI::Extensions
     {        
         FUNC_DEBUG_LINE("Entry");
         
-        if(IsPreRender || CurrentMask == -1 || !CurrentObjectsReferences.GetObjectReference(CurrentMask)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME) || 
+        if(IsPreRender || CurrentMask == -1 || CurrentObjectsReferences.GetObjectReference(CurrentMask) == nullptr ||
+            !CurrentObjectsReferences.GetObjectReference(CurrentMask)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME) || 
             !CurrentObjectsReferences.GetObjectReference(CurrentMask)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled() ||
             Container == nullptr || !Enabled)
         {

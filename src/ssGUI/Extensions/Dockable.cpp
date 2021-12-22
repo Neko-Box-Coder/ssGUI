@@ -273,7 +273,8 @@ namespace ssGUI::Extensions
         GlobalDockMode = true;
 
         //Find the Main Window
-        ssGUI::GUIObject* curParent = TopLevelParent == -1 ? Container->GetParent() : CurrentObjectsReferences.GetObjectReference(TopLevelParent);
+        ssGUI::GUIObject* curParent = TopLevelParent == -1 || CurrentObjectsReferences.GetObjectReference(TopLevelParent) == nullptr ? 
+                                        Container->GetParent() : CurrentObjectsReferences.GetObjectReference(TopLevelParent);
         while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr)
         {
             curParent = curParent->GetParent();
@@ -312,7 +313,7 @@ namespace ssGUI::Extensions
         //Parent the container to the MainWindow.
         OriginalParent = Container->GetParent();
 
-        if(TopLevelParent == -1)
+        if(TopLevelParent == -1 || CurrentObjectsReferences.GetObjectReference(TopLevelParent) == nullptr)
             Container->SetParent(MainWindowUnderDocking);
         else
             Container->SetParent(CurrentObjectsReferences.GetObjectReference(TopLevelParent));
@@ -603,7 +604,7 @@ namespace ssGUI::Extensions
     {
         if(parent != nullptr)
         {
-            if(TopLevelParent != -1)
+            if(TopLevelParent != -1 && CurrentObjectsReferences.GetObjectReference(TopLevelParent) != nullptr)
                 CurrentObjectsReferences.SetObjectReference(TopLevelParent, parent);
             else
                 TopLevelParent = CurrentObjectsReferences.AddObjectReference(parent);
@@ -614,7 +615,7 @@ namespace ssGUI::Extensions
 
     ssGUI::GUIObject* Dockable::GetTopLevelParent() const
     {
-        if(TopLevelParent != -1)
+        if(TopLevelParent != -1 && CurrentObjectsReferences.GetObjectReference(TopLevelParent) != nullptr)
             return nullptr;
         else
             return CurrentObjectsReferences.GetObjectReference(TopLevelParent);

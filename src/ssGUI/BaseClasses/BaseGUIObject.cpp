@@ -42,6 +42,13 @@ namespace ssGUI
             FUNC_DEBUG_LINE("Exit");
             return;
         }
+
+        if(CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
+        {
+            Parent = -1;
+            FUNC_DEBUG_LINE("Exit");
+            return;
+        }
         
         glm::ivec2 parentGlobalPositon = CurrentObjectsReferences.GetObjectReference(Parent)->GetParent() == nullptr ? glm::ivec2() : CurrentObjectsReferences.GetObjectReference(Parent)->GetGlobalPosition();
         glm::ivec2 parentSize = CurrentObjectsReferences.GetObjectReference(Parent)->GetSize();
@@ -92,6 +99,13 @@ namespace ssGUI
         
         if(Parent == -1)
         {
+            FUNC_DEBUG_LINE("Exit");
+            return;
+        }
+
+        if(CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
+        {
+            Parent = -1;
             FUNC_DEBUG_LINE("Exit");
             return;
         }
@@ -260,6 +274,9 @@ namespace ssGUI
     void BaseGUIObject::SetParent(ssGUI::GUIObject* newParent)
     {        
         FUNC_DEBUG_LINE("Entry");
+
+        if(CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
+            Parent = -1;
         
         //Remove child from the original parent
         if(Parent != -1)
@@ -435,6 +452,9 @@ namespace ssGUI
 
     bool BaseGUIObject::FindChild(ssGUI::GUIObject* child)
     {
+        if(child == nullptr)
+            return false;
+        
         std::list<ssGUIObjectIndex>::iterator it = Children.begin();
         std::list<ssGUIObjectIndex>::iterator endIt = Children.end();
         bool found = false;
