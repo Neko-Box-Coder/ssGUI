@@ -979,7 +979,6 @@ namespace ssGUI::Extensions
                                     containerSize.y - GetPadding() - dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
                                     containerSize.y - GetPadding() * 2;
 
-                
                 if(currentPos.y != verticalPos)
                     Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(currentPos.x, verticalPos));
             
@@ -989,7 +988,7 @@ namespace ssGUI::Extensions
                 childrenPos.push_back(currentPos.x);
                 childrenSize.push_back(currentSize.x);
                 childrenMinSize.push_back(currentMinSize.x);
-                childrenMaxSize.push_back(currentMaxSize.x);                
+                childrenMaxSize.push_back(currentMaxSize.x);  
             }
             else
             {

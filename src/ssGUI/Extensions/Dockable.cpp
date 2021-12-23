@@ -420,6 +420,9 @@ namespace ssGUI::Extensions
                 
                 TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
                 TargetDockObject->SetParent(newParent);
+                //Setting a new parent from the dock will causes it to revert to original size. 
+                //Therefore will need to set the size to match the new parent again.
+                TargetDockObject->SetSize(newParent->GetSize());
             }
             
             //This inserts the container to the end. Halfing the size for TargetDockObject and Container so they fit the original space
@@ -462,17 +465,18 @@ namespace ssGUI::Extensions
                 OriginalParent->MoveChildrenIteratorToFirst();
                 ssGUI::GUIObject* child = OriginalParent->GetCurrentChild();
                 
-                //Restore order
+                //Restore order and size
                 if(OriginalParent->GetParent() != nullptr)
                 {
                     child->SetPosition(OriginalParent->GetPosition());
                     
                     OriginalParent->GetParent()->FindChild(OriginalParent);
                     std::list<ssGUIObjectIndex>::iterator posObjectIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
-                    OriginalParent->GetParent()->MoveChildrenIteratorToLast();
                     child->SetParent(OriginalParent->GetParent());
+                    OriginalParent->GetParent()->MoveChildrenIteratorToLast();
                     std::list<ssGUIObjectIndex>::iterator lastIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
                     child->GetParent()->ChangeChildOrderToBeforePosition(lastIt, posObjectIt);
+                    child->SetSize(OriginalParent->GetSize());
                     OriginalParent->Delete();
                     
                     //Check if the child is a docker and if the parent of originalParent is MainWindow or not. (Floating)
