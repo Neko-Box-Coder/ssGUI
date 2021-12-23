@@ -276,6 +276,30 @@ namespace ssGUI::Extensions
             FUNC_DEBUG_LINE("Exit");
             return;
         }
+
+        //Check the number of valid children
+        Container->MoveChildrenIteratorToFirst();
+        int validChildrenSize = 0;
+        while(!Container->IsChildrenIteratorEnd())
+        {
+            ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
+            
+            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            {
+                Container->MoveChildrenIteratorNext();
+                continue;
+            }
+
+            validChildrenSize++;
+            
+            Container->MoveChildrenIteratorNext();
+        }
+
+        if(validChildrenSize == 0)
+        {
+            FUNC_DEBUG_LINE("Exit");
+            return;
+        }
         
         if(HorizontalLayout)
         {
@@ -653,11 +677,9 @@ namespace ssGUI::Extensions
         //Add the child to reference if not present
         if(objIndex == -1)
             objIndex = CurrentObjectsReferences.AddObjectReference(obj);
-        
+    
         if(ObjectsToExclude.find(objIndex) == ObjectsToExclude.end())
-        {
             ObjectsToExclude.insert(objIndex);
-        }
     }
 
     void Layout::UnexcludeObject(ssGUI::GUIObject* obj)
@@ -691,17 +713,17 @@ namespace ssGUI::Extensions
         }
         
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
-        
+
         //Add the child to reference if not present
         if(childIndex == -1)
             childIndex = CurrentObjectsReferences.AddObjectReference(child);
-        
+
         if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
         {
             FUNC_DEBUG_LINE("Exit");
             return;
         }
-        
+
         if(child->HasTag(ssGUI::Tags::OVERLAY) || child->HasTag(ssGUI::Tags::FLOATING))
         {
             ObjectsToExclude.insert(childIndex);
@@ -709,7 +731,7 @@ namespace ssGUI::Extensions
             FUNC_DEBUG_LINE("Exit");
             return;
         }
-        
+
         if(GetOverrideChildrenResizeType())
             UpdateChildrenResizeTypes();
         
@@ -748,14 +770,20 @@ namespace ssGUI::Extensions
             return;
         }
 
-        //If this is one of the excluding objects, remove it to prevent invalid object pointer
-        if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+        //If this is one of the special excluding objects, remove it to prevent invalid object pointer
+        if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end() &&
+            SpecialObjectsToExclude.find(childIndex) != SpecialObjectsToExclude.end())
         {
             ObjectsToExclude.erase(childIndex);
+            SpecialObjectsToExclude.erase(childIndex);
 
-            if(SpecialObjectsToExclude.find(childIndex) != SpecialObjectsToExclude.end())
-                SpecialObjectsToExclude.erase(childIndex);
+            FUNC_DEBUG_LINE("Exit");
+            return;
+        }
 
+        //If this is one of the excluding objects, just don't do anything
+        if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+        {
             FUNC_DEBUG_LINE("Exit");
             return;
         }
@@ -764,7 +792,6 @@ namespace ssGUI::Extensions
         if(OriginalChildrenResizeType.find(childIndex) != OriginalChildrenResizeType.end())
         {
             static_cast<ssGUI::Window*>(child)->SetResizeType(OriginalChildrenResizeType[childIndex]);
-
             OriginalChildrenResizeType.erase(childIndex);
         }
 
@@ -886,22 +913,19 @@ namespace ssGUI::Extensions
             Container->MoveChildrenIteratorNext();
         }
         
-        //Check if object to exclude has valid parents
+        //Check if special object to exclude has valid parents
         int excludeCount = 0;
         std::vector<ssGUIObjectIndex> objToRemove;
-        for(auto it = ObjectsToExclude.begin(); it != ObjectsToExclude.end(); it++)
+        for(auto it = SpecialObjectsToExclude.begin(); it != SpecialObjectsToExclude.end(); it++)
         {
-            if(CurrentObjectsReferences.GetObjectReference(*it) == nullptr)
-                continue;
-
-            if(CurrentObjectsReferences.GetObjectReference(*it)->GetParent() != Container)
+            if(CurrentObjectsReferences.GetObjectReference(*it) == nullptr || CurrentObjectsReferences.GetObjectReference(*it)->GetParent() != Container)
                 objToRemove.push_back(*it);
             else
                 excludeCount++;
         }
         
         for(auto objIndex : objToRemove)
-        {
+        {            
             ObjectsToExclude.erase(objIndex);
             if(SpecialObjectsToExclude.find(objIndex) != SpecialObjectsToExclude.end())
                 SpecialObjectsToExclude.erase(objIndex);
@@ -1006,7 +1030,7 @@ namespace ssGUI::Extensions
 
             Container->MoveChildrenIteratorNext();
         }
-        
+
         //Check if size is different from last update (Iterating from back to front so to get the first child with size change)
         int itIndex = childrenPos.size() - 1;
         
@@ -1054,6 +1078,13 @@ namespace ssGUI::Extensions
             Container->MoveChildrenIteratorPrevious();
         }
         
+        //Check if there's any child to resize. If not, just go back
+        if(childrenSize.empty())
+        {
+            FUNC_DEBUG_LINE("Exit");
+            return;
+        }
+
         //Check for window for laying out children differently
         if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && static_cast<ssGUI::Window*>(Container)->HasTitlebar())
         {

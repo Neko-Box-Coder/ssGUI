@@ -324,7 +324,7 @@ namespace ssGUI::Extensions
     void Dockable::OnWindowDragFinished()
     {                
         FUNC_DEBUG_LINE("Entry");
-        
+
         //Remove the floating tag to allow docking
         Container->RemoveTag(ssGUI::Tags::FLOATING);
 
