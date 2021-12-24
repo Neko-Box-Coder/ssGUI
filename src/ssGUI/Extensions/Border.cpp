@@ -42,7 +42,7 @@ namespace ssGUI::Extensions
 
     void Border::DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {        
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         glm::ivec2 drawPosition = Container->GetGlobalPosition();
         
@@ -131,7 +131,7 @@ namespace ssGUI::Extensions
         drawingCounts.push_back(4);
         drawingProperties.push_back(ssGUI::DrawingProperty()); 
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Border::SetEnabled(bool enabled)

@@ -17,7 +17,7 @@ namespace ssGUI
 
     void Window::OnMouseDownUpdate(glm::ivec2 currentMousePos, ssGUI::InputStatus& globalInputStatus)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         MouseDownPosition = currentMousePos;
         OnTransformBeginPosition = GetGlobalPosition();
@@ -58,7 +58,7 @@ namespace ssGUI
         if(ResizingBot || ResizingLeft || ResizingRight || ResizingTop)
         {
             globalInputStatus.MouseInputBlocked = true;
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
             
@@ -69,7 +69,7 @@ namespace ssGUI
             Dragging = true;
             globalInputStatus.MouseInputBlocked = true;
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -80,12 +80,12 @@ namespace ssGUI
             globalInputStatus.MouseInputBlocked = true;   
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Window::OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::ivec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         globalInputStatus.MouseInputBlocked = true;
             
         glm::ivec2 newPos = OnTransformBeginPosition;
@@ -154,12 +154,12 @@ namespace ssGUI
         else if(ResizingRight)
             inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::ivec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(!globalInputStatus.MouseInputBlocked)
         {
@@ -246,7 +246,7 @@ namespace ssGUI
         OnTransformBeginPosition = glm::ivec2();
         MouseDownPosition = glm::ivec2();
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
         
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
@@ -340,7 +340,8 @@ namespace ssGUI
 
     void Window::SetTitlebarColor(glm::u8vec4 color)
     {
-        TitlebarColorDifference = static_cast<glm::ivec4>(GetBackgroundColour()) - static_cast<glm::ivec4>(color);
+        TitlebarColorDifference = static_cast<glm::ivec4>(color) - static_cast<glm::ivec4>(GetBackgroundColour());
+    
     }
 
     glm::u8vec4 Window::GetTitlebarColor() const
@@ -432,11 +433,11 @@ namespace ssGUI
 
     void Window::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -520,17 +521,17 @@ namespace ssGUI
         DrawingCounts.clear();
         DrawingProperties.clear();
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Window::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {        
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         //If it is not visible, don't even update/draw it
         if(!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -566,7 +567,7 @@ namespace ssGUI
         for(auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     GUIObject* Window::Clone(bool cloneChildren)

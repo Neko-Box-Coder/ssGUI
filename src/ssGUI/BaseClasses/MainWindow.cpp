@@ -164,7 +164,7 @@ namespace ssGUI
 
     void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         for(auto extension : Extensions)
             extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
@@ -204,7 +204,7 @@ namespace ssGUI
         for(auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     GUIObject* MainWindow::Clone(bool cloneChildren)

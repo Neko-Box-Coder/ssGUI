@@ -34,7 +34,7 @@ namespace ssGUI::Extensions
 
     void Docker::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         //If widget is not present, create it
         if((*widget) == nullptr)
@@ -56,12 +56,12 @@ namespace ssGUI::Extensions
         (*widget)->SetParent(Container);
         (*widget)->SetBackgroundColour(color);
         
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Docker::DrawPreview()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CreateWidgetIfNotPresent(&DockPreivew, GetDockPreviewColor());
 
@@ -77,7 +77,7 @@ namespace ssGUI::Extensions
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(1);
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Docker::DiscardPreview()
@@ -91,7 +91,7 @@ namespace ssGUI::Extensions
 
     void Docker::DrawTriggerArea()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CreateWidgetIfNotPresent(&DockTrigger, GetTriggerAreaColor());
 
@@ -117,7 +117,7 @@ namespace ssGUI::Extensions
             as->SetVerticalPixel(GetTriggerVerticalPixel());
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Docker::DiscardTriggerArea()
@@ -262,18 +262,18 @@ namespace ssGUI::Extensions
     //Extension methods
     void Docker::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(!IsPreUpdate || Container == nullptr || !Enabled)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
         //Check if Layout extension exists
         if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -289,7 +289,7 @@ namespace ssGUI::Extensions
             //static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetEnabled(true);
             DiscardPreview();
             DiscardTriggerArea();
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -351,7 +351,7 @@ namespace ssGUI::Extensions
             DiscardTriggerArea();
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Docker::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
@@ -365,40 +365,60 @@ namespace ssGUI::Extensions
 
     void Docker::BindToObject(ssGUI::GUIObject* bindObj)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         Container = bindObj;
-
+        DEBUG_LINE();
         ssGUI::GUIObject* containerParent = Container->GetParent();
+        DEBUG_LINE();
 
         //Check if we are using the parent's docker & layout settings or not
         if(containerParent != nullptr && containerParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME)
             && static_cast<ssGUI::Extensions::Docker*>(containerParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsChildrenDockerUseThisSettings()
             && static_cast<ssGUI::Extensions::Docker*>(containerParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsEnabled())
         {            
+        DEBUG_LINE();
+            
             ssGUI::Extensions::Docker* parentDocker = static_cast<ssGUI::Extensions::Docker*>(containerParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
             Copy(parentDocker);
+        DEBUG_LINE();
 
             if(containerParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
             {
+        DEBUG_LINE();
+                
                 ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
                 if(Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+                {
+        DEBUG_LINE();
                     static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->Copy(parentLayout);
+                }
                 else
+                {
+        DEBUG_LINE();
                     parentLayout->Clone(Container);
+                }
+        DEBUG_LINE();
+            
             }
             else if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+            {
+        DEBUG_LINE();
+
                 Container->AddExtension(new ssGUI::Extensions::Layout());
+            }
         }
         //Otherwise we generate layout extension if there isn't one
         else
         {
+        DEBUG_LINE();
+            
             //Check if there's a layout extension for container
             if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 Container->AddExtension(new ssGUI::Extensions::Layout());
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Docker::Copy(ssGUI::Extensions::Extension* extension)

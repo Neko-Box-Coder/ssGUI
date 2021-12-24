@@ -63,14 +63,14 @@ namespace ssGUI
     //TODO : Maybe subdivide this function
     void Text::ComputeCharactersPositionAndSize()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CurrentTextChanged = false;
         WrappingOverflow = false;
 
         if(CurrentFont == nullptr)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -454,7 +454,7 @@ namespace ssGUI
         for(int i = 0; i < CharactersPosition.size(); i++)
             CharactersPosition[i].y += alignOffset;
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
     
 
@@ -609,11 +609,11 @@ namespace ssGUI
 
     void Text::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -679,7 +679,7 @@ namespace ssGUI
         DrawingCounts.clear();
         DrawingProperties.clear();
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     GUIObject* Text::Clone(bool cloneChildren)

@@ -124,14 +124,14 @@ namespace ssGUI
 
     void Button::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         for (auto extension : Extensions)
             extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         if (!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -167,17 +167,17 @@ namespace ssGUI
         DrawingCounts.clear();
         DrawingProperties.clear();
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Button::Internal_Update(ssGUI::Backend::BackendSystemInputInterface *inputInterface, ssGUI::InputStatus &globalInputStatus, ssGUI::InputStatus &windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
 
         //If it is not visible, don't even update/draw it
         if (!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -237,7 +237,7 @@ namespace ssGUI
         for (auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     GUIObject* Button::Clone(bool cloneChildren)

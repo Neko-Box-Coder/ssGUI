@@ -6,6 +6,7 @@
 #include "ssGUI/BaseClasses/Button.hpp"
 */
 
+int TabSpace = 0;
 #include <iostream>
 #include <vector>
 #include "glm/vec2.hpp"
@@ -16,6 +17,7 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 
 
 
@@ -25,11 +27,16 @@ void PrintEnter(ssGUI::ssGUIManager& manager)
 
     if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
         !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+    {
         std::cout<<"Enter key down\n";
-
+        
+    }
     else if(!inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
         inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+    {
+        
         std::cout<<"Enter key up\n";
+    }
 }
 
 void MoveWindow(ssGUI::ssGUIManager& manager, ssGUI::Window& window, ssGUI::Window& childWindow)
@@ -66,33 +73,45 @@ void MoveWindow(ssGUI::ssGUIManager& manager, ssGUI::Window& window, ssGUI::Wind
 
 
 
-/*
+
 int main()
 {
     ssGUI::MainWindow mainWindow;
 
     //Creating window
     ssGUI::Window window;
-    window.SetBackgroundColour(glm::u8vec4(255, 127, 127, 255));
+    //window.SetBackgroundColour(glm::u8vec4(255, 127, 127, 255));
+    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
     window.SetSize(glm::ivec2(150, 150));
     window.SetParent(&mainWindow);
+    DEBUG_LINE("window: "<<&window);
 
     //Creating window
     ssGUI::Window window2;
+    DEBUG_LINE("window2: "<<&window2);
+
     window2.SetBackgroundColour(glm::u8vec4(127, 255, 127, 255));
     window2.SetSize(glm::ivec2(150, 150));
     window2.SetParent(&mainWindow);
 
-    std::vector<ssGUI::GUIObject *> children;
-    ssGUI::Window* window3 = static_cast<ssGUI::Window*>(window2.Clone(children, false));
+    
+    ssGUI::Window* window3 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
     window3->SetBackgroundColour(glm::u8vec4(127, 127, 255, 255));
+    window3->SetParent(&mainWindow);
+    DEBUG_LINE("window3: "<<&window3);
 
-    ssGUI::Window* window4 = static_cast<ssGUI::Window*>(window2.Clone(children, false));
+    ssGUI::GUIObject* window3ObjPtr = window3;
+    DEBUG_LINE("window3 obj ptr: "<<window3ObjPtr);
+
+
+
+    ssGUI::Window* window4 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
     window4->SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window4->SetParent(&mainWindow);
+    DEBUG_LINE("window4: "<<&window4);
 
-
-
-    //window3->SetParent(&mainWindow);
+    
 
     ssGUI::Extensions::Dockable* dock = new ssGUI::Extensions::Dockable();
     ssGUI::Extensions::Dockable* dock2 = new ssGUI::Extensions::Dockable();
@@ -107,8 +126,8 @@ int main()
 
 
     ssGUI::Extensions::Docker* docker = new ssGUI::Extensions::Docker();
-    docker->SetChildrenDockerUseThisSettings(false);
-
+    docker->SetChildrenDockerUseThisSettings(true);
+    
     ssGUI::Extensions::AdvancedPosition* ap = new ssGUI::Extensions::AdvancedPosition();
     ssGUI::Extensions::AdvancedSize* as = new ssGUI::Extensions::AdvancedSize();
     ssGUI::Extensions::Border* bor = new ssGUI::Extensions::Border();
@@ -124,24 +143,50 @@ int main()
 
     mainWindowWidget.AddExtension(docker);
     static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetPadding(0);
+    //static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->
+    //    ExcludeObject(window3ObjPtr);
     mainWindowWidget.AddExtension(ap);
-    //mainWindowWidget.AddExtension(as);
+    mainWindowWidget.AddExtension(as);
     mainWindowWidget.AddExtension(bor);
     mainWindowWidget.SetBackgroundColour(glm::u8vec4(200, 200, 200, 255));
     
     mainWindowWidget.SetSize(glm::ivec2(400, 400));
     
     mainWindowWidget.SetParent(&mainWindow);
-    mainWindow.ChangeChildOrder(--mainWindow.GetChildrenEndIterator(), mainWindow.GetChildrenStartIterator());
+
+
+    mainWindow.MoveChildrenIteratorToLast();
+    std::list<ssGUI::ssGUIObjectIndex>::iterator lastIt = mainWindow.GetCurrentChildReferenceIterator();
+    mainWindow.MoveChildrenIteratorToFirst();
+    std::list<ssGUI::ssGUIObjectIndex>::iterator firstIt = mainWindow.GetCurrentChildReferenceIterator();
+    mainWindow.ChangeChildOrderToBeforePosition(lastIt, firstIt);
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
+
+    guiManager.AddOnUpdateEventListener
+    (
+        [&]()
+        {
+            ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
+            
+            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            {
+                if(window.GetBackgroundColour().a == 255)
+                    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 127));
+                else
+                    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+            }
+        }
+    );
+
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
 
     return 0;
 }
-*/
+
 
 /*//Text test
 int main()
@@ -181,6 +226,7 @@ int main()
 
 
 //Introduction Example
+/*
 int main()
 {
     //Create the main window
@@ -225,7 +271,7 @@ int main()
     guiManager.StartRunning();
     return 0;
 }
-
+*/
 
 /*//Event callback example
 int main()

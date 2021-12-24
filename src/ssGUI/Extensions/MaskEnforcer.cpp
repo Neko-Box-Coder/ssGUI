@@ -77,14 +77,14 @@ namespace ssGUI::Extensions
     //Extension methods
     void MaskEnforcer::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(CurrentMask == -1 || CurrentObjectsReferences.GetObjectReference(CurrentMask) == nullptr ||
             !CurrentObjectsReferences.GetObjectReference(CurrentMask)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME) || 
             !CurrentObjectsReferences.GetObjectReference(CurrentMask)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled() ||
             Container == nullptr || globalInputStatus.MouseInputBlocked || windowInputStatus.MouseInputBlocked || !Enabled)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -110,19 +110,19 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void MaskEnforcer::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {        
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(IsPreRender || CurrentMask == -1 || CurrentObjectsReferences.GetObjectReference(CurrentMask) == nullptr ||
             !CurrentObjectsReferences.GetObjectReference(CurrentMask)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME) || 
             !CurrentObjectsReferences.GetObjectReference(CurrentMask)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled() ||
             Container == nullptr || !Enabled)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -168,7 +168,7 @@ namespace ssGUI::Extensions
                 Container->Extension_GetDrawingVerticies()[i] += posDifference;
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     std::string MaskEnforcer::GetExtensionName()

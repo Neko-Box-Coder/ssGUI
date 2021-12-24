@@ -1,8 +1,9 @@
 #ifndef SSGUI_CONFIG
 #define SSGUI_CONFIG
 
-#include "ssGUI/DebugAndBuild/ssGUIDebugMacro.hpp"
 
+#include "ssGUI/DebugAndBuild/ssGUIDebugMacro.hpp"
+#include <string>
 
 #define USE_DEBUG 0         //This will show which function is not exited if crashes
 #define DEBUG_STATE 0       //This will print all the state of each update (Pre-Update, Render, Post-Render, etc..)
@@ -12,13 +13,28 @@
 
 #if !USE_DEBUG
 
-    #define FUNC_DEBUG_LINE(debugText)
+    #define FUNC_DEBUG_ENTRY()
+
+    #define FUNC_DEBUG_EXIT()
+
 
 #else
+    extern int TabSpace;
+    
+    inline std::string TabAdder(int tabAmount)
+    {
+        std::string returnString = "";
+        for(int tab = 0; tab < tabAmount; tab++)
+        {
+            returnString += "|  ";
+        }
 
-    #define FUNC_DEBUG_LINE( ... ) VA_SELECT( FUNC_DEBUG_LINE, __VA_ARGS__ )
+        return returnString;
+    }
 
-    #define FUNC_DEBUG_LINE_1(debugText) std::cout<<__FILE__<<" in "<<__func__<<" on "<<__LINE__<<": "<<debugText<<"\n";
+    #define FUNC_DEBUG_ENTRY() std::cout<<TabAdder(TabSpace++)<<typeid(*this).name()<<" in "<<__func__<<" on "<<__LINE__<<": "<<"Entry"<<"\n";
+
+    #define FUNC_DEBUG_EXIT() std::cout<<TabAdder(--TabSpace)<<typeid(*this).name()<<" in "<<__func__<<" on "<<__LINE__<<": "<<"Exit"<<"\n";
 
 #endif
 

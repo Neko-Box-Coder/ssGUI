@@ -37,7 +37,7 @@ namespace ssGUI::Extensions
 
     void Dockable::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         //If widget is not present, create it
         if((*widget) == nullptr)
@@ -59,13 +59,13 @@ namespace ssGUI::Extensions
         (*widget)->SetParent(Container);
         (*widget)->SetBackgroundColour(color);
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     
     void Dockable::DrawLeftPreview()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CreateWidgetIfNotPresent(&DockPreivewLeft, GetDockPreviewColor());
 
@@ -81,12 +81,12 @@ namespace ssGUI::Extensions
         as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
         
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Dockable::DrawTopPreview()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CreateWidgetIfNotPresent(&DockPreivewTop, GetDockPreviewColor());
 
@@ -102,12 +102,12 @@ namespace ssGUI::Extensions
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
         
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Dockable::DrawRightPreview()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CreateWidgetIfNotPresent(&DockPreivewRight, GetDockPreviewColor());
 
@@ -123,12 +123,12 @@ namespace ssGUI::Extensions
         as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Dockable::DrawBottomPreview()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CreateWidgetIfNotPresent(&DockPreivewBottom, GetDockPreviewColor());
 
@@ -144,7 +144,7 @@ namespace ssGUI::Extensions
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
         
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Dockable::DiscardLeftPreview()
@@ -187,7 +187,7 @@ namespace ssGUI::Extensions
     void Dockable::DrawTriggerAreas()
     {
         //return;
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         CreateWidgetIfNotPresent(&DockTriggerTop, GetTriggerAreaColor());
         CreateWidgetIfNotPresent(&DockTriggerRight, GetTriggerAreaColor());
@@ -261,13 +261,13 @@ namespace ssGUI::Extensions
             asLeft->SetVerticalPixel(Container->GetSize().y - GetTriggerPixel() * 2);
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     //TODO : Add mutex for multi-threading support
     void Dockable::OnWindowDragStarted()
     {        
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         ContainerIsDocking = true;
         GlobalDockMode = true;
@@ -285,7 +285,7 @@ namespace ssGUI::Extensions
         {
             ContainerIsDocking = false;
             GlobalDockMode = false;
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -318,12 +318,12 @@ namespace ssGUI::Extensions
         else
             Container->SetParent(CurrentObjectsReferences.GetObjectReference(TopLevelParent));
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Dockable::OnWindowDragFinished()
     {                
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
 
         //Remove the floating tag to allow docking
         Container->RemoveTag(ssGUI::Tags::FLOATING);
@@ -510,7 +510,7 @@ namespace ssGUI::Extensions
         TargetDockObject = nullptr;
         TargetDockSide = DockSide::NONE;
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
     
     void Dockable::DiscardTriggerAreas()
@@ -638,11 +638,11 @@ namespace ssGUI::Extensions
     //function: Update
     void Dockable::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(!IsPreUpdate || Container == nullptr || !Enabled)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -758,7 +758,7 @@ namespace ssGUI::Extensions
             DiscardTriggerAreas();
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Dockable::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
@@ -773,7 +773,7 @@ namespace ssGUI::Extensions
     //function: BindToObject
     void Dockable::BindToObject(ssGUI::GUIObject* bindObj)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         Container = bindObj;
 
@@ -803,7 +803,7 @@ namespace ssGUI::Extensions
             });
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Dockable::Copy(ssGUI::Extensions::Extension* extension)

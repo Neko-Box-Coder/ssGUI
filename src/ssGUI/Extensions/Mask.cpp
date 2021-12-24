@@ -180,7 +180,7 @@ namespace ssGUI::Extensions
                                                 std::vector<glm::ivec2>& maskVerticies, std::vector<glm::ivec2>& intersections,
                                                 std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         //Lambda function of adding new vertex infomation
         auto addNewVertexInfo = [&currentShapeVertices, &currentShapeUVs, &currentShapeColours, &currentVertexChanged]
@@ -444,7 +444,7 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Mask::SampleNewUVsAndColoursForShapes(std::vector<glm::ivec2>& originalVerticies, std::vector<glm::ivec2>& originalUVs, std::vector<glm::u8vec4>& originalColours,
@@ -688,11 +688,11 @@ namespace ssGUI::Extensions
 
     bool Mask::GetSampleIndicesFromShape(std::vector<glm::ivec2>& vertices, int closestIndices[], glm::ivec2 samplePoint)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(vertices.size() < 3)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return false;
         }
 
@@ -778,17 +778,17 @@ namespace ssGUI::Extensions
             }
         }
         
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
         return true;
     }
 
     void Mask::AddMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(Container == nullptr)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -829,12 +829,12 @@ namespace ssGUI::Extensions
             children.pop();
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Mask::RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         std::queue<ssGUI::GUIObject*> children;
 
@@ -874,7 +874,7 @@ namespace ssGUI::Extensions
             children.pop();
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     Mask::Mask(Mask const& other)
@@ -904,7 +904,7 @@ namespace ssGUI::Extensions
 
     void Mask::SetMaskChildren(bool maskChildren)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         MaskChildren = maskChildren;
 
@@ -983,7 +983,7 @@ namespace ssGUI::Extensions
             OnChildRemovedEventIndex = -1;
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     bool Mask::GetMaskChildren() const
@@ -1069,7 +1069,7 @@ namespace ssGUI::Extensions
 
     void Mask::MaskObject(ssGUI::GUIObject* obj, glm::ivec2 renderOffset)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         std::vector<glm::ivec2> maskShape;
         std::vector<glm::ivec2>& originalVerticies = obj->Extension_GetDrawingVerticies();
@@ -1198,7 +1198,7 @@ namespace ssGUI::Extensions
 
         verticesCount.assign(newVerticesCount.begin(), newVerticesCount.end());
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Mask::SetEnabled(bool enabled)
@@ -1214,11 +1214,11 @@ namespace ssGUI::Extensions
     //Extension methods
     void Mask::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(IsPreUpdate || Container == nullptr || !Enabled)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -1248,7 +1248,7 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void Mask::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::ivec2 mainWindowPositionOffset)

@@ -44,14 +44,14 @@ namespace ssGUI
 
     void Image::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         for(auto extension : Extensions)
             extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         if(!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
     
@@ -179,7 +179,7 @@ namespace ssGUI
         DrawingCounts.clear();
         DrawingProperties.clear();
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     GUIObject* Image::Clone(bool cloneChildren)

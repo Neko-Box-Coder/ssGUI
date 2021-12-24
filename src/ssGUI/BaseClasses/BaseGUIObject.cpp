@@ -35,18 +35,18 @@ namespace ssGUI
     
     void BaseGUIObject::SyncPosition()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(Parent == -1)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
         if(CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
         {
             Parent = -1;
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -90,23 +90,23 @@ namespace ssGUI
         Position.x = (GlobalPosition.x + positionOffset.x - anchorPosition.x) * anchorDirection.x;
         Position.y = (GlobalPosition.y + positionOffset.y - anchorPosition.y) * anchorDirection.y;
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
     
     void BaseGUIObject::SyncGlobalPosition()
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         if(Parent == -1)
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
 
         if(CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
         {
             Parent = -1;
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -157,7 +157,7 @@ namespace ssGUI
         GlobalPosition.x = anchorPosition.x + Position.x * anchorDirection.x - positionOffset.x;
         GlobalPosition.y = anchorPosition.y + Position.y * anchorDirection.y - positionOffset.y;
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void BaseGUIObject::NotifyAndRemoveOnObjectDestroyEventCallbackIfExist()
@@ -273,7 +273,7 @@ namespace ssGUI
 
     void BaseGUIObject::SetParent(ssGUI::GUIObject* newParent)
     {        
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
 
         if(CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
             Parent = -1;
@@ -289,7 +289,7 @@ namespace ssGUI
                 {
                     if(checkParent == (ssGUI::GUIObject*)this)
                     {
-                        FUNC_DEBUG_LINE("Exit");
+                        FUNC_DEBUG_EXIT();
                         return;
                     }
 
@@ -320,7 +320,7 @@ namespace ssGUI
                 CurrentObjectsReferences.RemoveObjectReference(Parent);
             
             Parent = -1;
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         else
@@ -337,7 +337,7 @@ namespace ssGUI
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(this))
             {
-                FUNC_DEBUG_LINE("Exit");
+                FUNC_DEBUG_EXIT();
                 return;
             }
             
@@ -359,7 +359,7 @@ namespace ssGUI
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(this))
             {
-                FUNC_DEBUG_LINE("Exit");
+                FUNC_DEBUG_EXIT();
                 return;
             }
             
@@ -368,7 +368,7 @@ namespace ssGUI
             
             currentParent = currentParent->GetParent();
         }
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     int BaseGUIObject::GetChildrenCount() const
@@ -700,11 +700,11 @@ namespace ssGUI
 
     void BaseGUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
 
         if(!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -721,17 +721,17 @@ namespace ssGUI
         DrawingCounts.clear();
         DrawingProperties.clear();
 
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     void BaseGUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_LINE("Entry");
+        FUNC_DEBUG_ENTRY();
         
         //If it is not visible, don't even update/draw it
         if(!IsVisible())
         {
-            FUNC_DEBUG_LINE("Exit");
+            FUNC_DEBUG_EXIT();
             return;
         }
         
@@ -742,7 +742,7 @@ namespace ssGUI
         for(auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
-        FUNC_DEBUG_LINE("Exit");
+        FUNC_DEBUG_EXIT();
     }
 
     GUIObject* BaseGUIObject::Internal_Clone(int currentindex, std::vector<ssGUI::GUIObject*>& objsToCopy, std::vector<ssGUI::GUIObject*>& copiedObjs, std::vector<int>& clonedParents, bool cloneChildren)
