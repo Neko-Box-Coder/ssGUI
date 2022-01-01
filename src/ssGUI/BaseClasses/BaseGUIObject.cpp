@@ -1,6 +1,7 @@
 #include "ssGUI/BaseClasses/BaseGUIObject.hpp"
 
 #include "ssGUI/BaseClasses/MainWindow.hpp" //This is for getting the MainWindow offset
+#include "ssGUI/ssGUIManager.hpp" //This is for accessing DeletedObjs
 
 namespace ssGUI
 {    
@@ -17,6 +18,7 @@ namespace ssGUI
         ObjectDelete = other.Internal_IsDeleted();
         HeapAllocated = other.IsHeapAllocated();
         CurrentObjectsReferences = other.CurrentObjectsReferences;
+        DestroyEventCalled = other.DestroyEventCalled;
         Position = other.GetPosition();
         GlobalPosition = other.GlobalPosition;
         Size = other.GetSize();
@@ -50,7 +52,8 @@ namespace ssGUI
             return;
         }
         
-        glm::ivec2 parentGlobalPositon = CurrentObjectsReferences.GetObjectReference(Parent)->GetParent() == nullptr ? glm::ivec2() : CurrentObjectsReferences.GetObjectReference(Parent)->GetGlobalPosition();
+        glm::ivec2 parentGlobalPositon = CurrentObjectsReferences.GetObjectReference(Parent)->GetParent() == nullptr ? 
+                                            glm::ivec2() : CurrentObjectsReferences.GetObjectReference(Parent)->GetGlobalPosition();
         glm::ivec2 parentSize = CurrentObjectsReferences.GetObjectReference(Parent)->GetSize();
         glm::ivec2 anchorPosition = parentGlobalPositon;
         glm::ivec2 anchorDirection = glm::ivec2(1, 1);
@@ -162,6 +165,10 @@ namespace ssGUI
 
     void BaseGUIObject::NotifyAndRemoveOnObjectDestroyEventCallbackIfExist()
     {
+        if(DestroyEventCalled)
+            return;
+        
+        DestroyEventCalled = true;
         if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
         {
             GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME)->Notify(this);
@@ -171,7 +178,7 @@ namespace ssGUI
 
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
                                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
-                                        CurrentObjectsReferences(), Position(glm::ivec2(0, 0)), 
+                                        CurrentObjectsReferences(), DestroyEventCalled(false), Position(glm::ivec2(0, 0)), 
                                         GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
                                         MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
@@ -180,13 +187,18 @@ namespace ssGUI
 
     BaseGUIObject::~BaseGUIObject()
     {
-        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        
-        for(auto it : Extensions)
-            delete it.second;
-        
-        for(auto it : EventCallbacks)
-            delete it.second;
+        if(!ObjectDelete)
+        {
+            CurrentObjectsReferences.CleanUp();
+            
+            NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+            
+            for(auto it : Extensions)
+                delete it.second;
+            
+            for(auto it : EventCallbacks)
+                delete it.second;
+        }
     }
 
     //Below are from GUIObject.hpp
@@ -198,9 +210,6 @@ namespace ssGUI
     void BaseGUIObject::SetPosition(glm::ivec2 position)
     {
         Position = position;
-
-        //Update global position
-        //SyncGlobalPosition();
     }
 
     glm::ivec2 BaseGUIObject::GetGlobalPosition()
@@ -208,8 +217,6 @@ namespace ssGUI
         //Update global position
         SyncGlobalPosition();
         
-        // std::cout<<"GlobalPosition: "<<GlobalPosition.x<<", "<<GlobalPosition.y<<"\n";
-
         return GlobalPosition;
     }
 
@@ -274,22 +281,35 @@ namespace ssGUI
     void BaseGUIObject::SetParent(ssGUI::GUIObject* newParent)
     {        
         FUNC_DEBUG_ENTRY();
-
-        if(CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
-            Parent = -1;
         
+        DEBUG_LINE("Setting "<<this<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
+        ssGUI::GUIObject* originalParent = nullptr;
+
+        //If setting parent to the same, don't need to do anything
+        if(newParent == CurrentObjectsReferences.GetObjectReference(Parent))
+        {
+            //DEBUG_LINE("Invalid parent detected");
+            //DEBUG_EXIT_PROGRAM();
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        //If invalid parent, flag it
+        if(Parent != -1 && CurrentObjectsReferences.GetObjectReference(Parent) == nullptr)
+            Parent = -1;
         //Remove child from the original parent
-        if(Parent != -1)
+        else if(Parent != -1)
         {
             //Check if this object is the parent of the new parent
             if(newParent != nullptr)
             {
-                ssGUI::GUIObject* checkParent = newParent;//->GetParent();
+                ssGUI::GUIObject* checkParent = newParent;
                 while (checkParent != nullptr)
                 {
-                    if(checkParent == (ssGUI::GUIObject*)this)
+                    if(checkParent == static_cast<ssGUI::GUIObject*>(this))
                     {
-                        FUNC_DEBUG_EXIT();
+                        DEBUG_LINE("Invalid parent detected");
+                        DEBUG_EXIT_PROGRAM();
                         return;
                     }
 
@@ -300,44 +320,54 @@ namespace ssGUI
             //Inform original parent to remove child
             CurrentObjectsReferences.GetObjectReference(Parent)->Internal_RemoveChild(this);
             
-            //Send event callback if any object is subscribed to on children removed
-            ssGUI::GUIObject* originalParent = CurrentObjectsReferences.GetObjectReference(Parent);
-            while (originalParent != nullptr)
-            {
-                if(originalParent == newParent)
-                    break;
-
-                if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME))
-                    originalParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME)->Notify(this);
-                
-                originalParent = originalParent->GetParent();
-            }
+            //Record original parent
+            originalParent = CurrentObjectsReferences.GetObjectReference(Parent);
         }
 
+        //If the new parent is nullptr, then remove the reference of the original parent and flag it
         if (newParent == nullptr)
+        {
+            // if(Parent != -1)
+            //     CurrentObjectsReferences.RemoveObjectReference(Parent);
+            
+            Parent = -1;
+        }
+        //Otherwise, add it to objects reference
+        else
         {
             if(Parent != -1)
                 CurrentObjectsReferences.RemoveObjectReference(Parent);
             
-            Parent = -1;
+            Parent = CurrentObjectsReferences.AddObjectReference(newParent);
+        }
+
+        //Send event callback if any object is subscribed to on children removed
+        while (originalParent != nullptr)
+        {
+            if(originalParent == newParent)
+                break;
+
+            if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME))
+                originalParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME)->Notify(this);
+            
+            originalParent = originalParent->GetParent();
+        }
+
+        //Exit if this object is parented to nothing
+        if(newParent == nullptr)
+        {
             FUNC_DEBUG_EXIT();
             return;
         }
-        else
-        {
-            if(Parent != -1)
-                CurrentObjectsReferences.SetObjectReference(Parent, newParent);
-            else
-                Parent = CurrentObjectsReferences.AddObjectReference(newParent);
-        }
 
-        //Send event callback if any object is subscribed to on children add
+        //Send event callback if any object is subscribed to on children add event
         ssGUI::GUIObject* currentParent = newParent;
         while (currentParent != nullptr)
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(this))
             {
-                FUNC_DEBUG_EXIT();
+                DEBUG_LINE("Invalid parent detected");
+                DEBUG_EXIT_PROGRAM();
                 return;
             }
             
@@ -359,7 +389,8 @@ namespace ssGUI
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(this))
             {
-                FUNC_DEBUG_EXIT();
+                DEBUG_LINE("Invalid parent detected");
+                DEBUG_EXIT_PROGRAM();
                 return;
             }
             
@@ -368,6 +399,20 @@ namespace ssGUI
             
             currentParent = currentParent->GetParent();
         }
+
+
+        //DEBUG
+        currentParent = CurrentObjectsReferences.GetObjectReference(Parent);
+
+        currentParent->MoveChildrenIteratorToFirst();
+
+        while (!currentParent->IsChildrenIteratorEnd())
+        {
+            DEBUG_LINE("New parent's child: "<<currentParent->GetCurrentChild());
+            currentParent->MoveChildrenIteratorNext();
+        }
+        
+
         FUNC_DEBUG_EXIT();
     }
 
@@ -481,7 +526,21 @@ namespace ssGUI
     ssGUI::GUIObject* BaseGUIObject::GetCurrentChild()
     {
         if(!CurrentChildIteratorEnd)
+        {
+            if(CurrentObjectsReferences.GetObjectReference(*CurrentChild) == nullptr)
+            {
+                DEBUG_LINE("invalid child found");
+                DEBUG_EXIT_PROGRAM();
+                return nullptr;
+            }
+
+            {
+                //Check if child is clean or not
+                CurrentObjectsReferences.GetObjectReference(*CurrentChild)->Internal_IsDeleted();
+            }
+            
             return CurrentObjectsReferences.GetObjectReference(*CurrentChild);
+        }
         else
             return nullptr;
     }
@@ -513,16 +572,37 @@ namespace ssGUI
             return;
 
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.AddObjectReference(obj);
+        
         Children.push_back(childIndex);
     }
     
     void BaseGUIObject::Internal_RemoveChild(ssGUI::GUIObject* obj)
     {
+        FUNC_DEBUG_ENTRY();
+        DEBUG_LINE(this<<" removing child "<<obj);
+        
         if(!FindChild(obj))
+        {
+            DEBUG_LINE("Remove failed");
+            DEBUG_EXIT_PROGRAM();
             return;
+        }
         
         std::list<ssGUIObjectIndex>::iterator it = GetCurrentChildReferenceIterator();
+
+        if(CurrentChild == it)
+        {
+            if(Children.size() == 1 || CurrentChild == --Children.end() || CurrentChild == Children.begin())
+            {
+                CurrentChildIteratorEnd = true;
+                CurrentChild = Children.end();
+            }
+            else
+                CurrentChild--;
+        }
         Children.remove(*it);
+        DEBUG_LINE("Remove success");
+        FUNC_DEBUG_EXIT();
     }
 
     ssGUI::Enums::GUIObjectType BaseGUIObject::GetType() const
@@ -574,7 +654,23 @@ namespace ssGUI
 
     void BaseGUIObject::Delete()
     {
+        FUNC_DEBUG_ENTRY();
+        DEBUG_LINE(this<<" object is getting deleted");   
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        
+        //for(auto it : Extensions)
+        //    delete it.second;
+        //
+        //for(auto it : EventCallbacks)
+        //    delete it.second;
+
+        SetParent(nullptr);
+        CurrentObjectsReferences.CleanUp();
         ObjectDelete = true;
+        ssGUI::ssGUIManager::DeletedObjs.push_back(this);
+
+
+        FUNC_DEBUG_EXIT();
     }
 
     bool BaseGUIObject::Internal_IsDeleted() const
@@ -644,7 +740,13 @@ namespace ssGUI
         if(!IsExtensionExist(extensionName))
             return;
 
+        ssGUI::Extensions::Extension* targetExtension = (*Extensions.find(extensionName)).second;
+        // ssGUI::ObjectsReferences* ptr = targetExtension->Internal_GetObjectsReferences();
+        // if(ptr != nullptr)
+        //     ptr->CleanUp();
+        
         Extensions.erase(extensionName);
+        delete targetExtension;
     }
 
     void BaseGUIObject::AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback)

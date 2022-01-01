@@ -121,7 +121,7 @@ namespace ssGUI
             
             //function: RemoveOnCloseEventListener
             virtual void RemoveOnCloseEventListener(int index);
-            
+
             //function: GetType
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
             

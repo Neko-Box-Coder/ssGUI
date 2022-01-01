@@ -27,6 +27,20 @@ namespace ssGUI
 
             UpdateObjects();
 
+            //Clean up deleted objects
+            if(!DeletedObjs.empty())
+            {
+                for(int i = 0; i < DeletedObjs.size(); i++)
+                {
+                    if(DeletedObjs[i]->Internal_IsDeleted())
+                    {
+                        if(DeletedObjs[i]->IsHeapAllocated())
+                           delete DeletedObjs[i];
+                    }
+                }
+                DeletedObjs = std::vector<ssGUI::GUIObject*>();
+            }
+
             #if DEBUG_STATE 
                 std::cout<<"\nRender\n";
             #endif
@@ -113,10 +127,16 @@ namespace ssGUI
 
     void ssGUIManager::Render()
     {        
+        FUNC_DEBUG_ENTRY();
+        
         if(MainWindowPList.empty())
+        {
+            FUNC_DEBUG_EXIT();
             return;
+        }
 
         std::list<ssGUI::GUIObject*> objToRender;
+        std::queue<ssGUI::GUIObject*> renderQueue;
 
         for(auto mainWindow : MainWindowPList)
         {
@@ -137,19 +157,25 @@ namespace ssGUI
                 objToRender.push_back(currentMainWindowP->GetCurrentChild());
                 currentMainWindowP->MoveChildrenIteratorNext();
             }
-            
+
             while (!objToRender.empty())
             {
                 ssGUI::GUIObject* currentObjP = objToRender.front();
-                //Remove current gui object from draw queue
                 objToRender.pop_front();
 
                 //Internal_Draw the gui object only when it is visible
+                    DEBUG_LINE();
+
                 if(currentObjP->IsVisible())
                 {                    
+                    DEBUG_LINE();
+                    renderQueue.push(currentObjP);
+                    /*
                     (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
                                                     dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
-                                                    currentMainWindowP->GetPositionOffset());
+                                                    currentMainWindowP->GetPositionOffset());*/
+                    DEBUG_LINE();
+
 
                     //Add children to draw queue
                     if(currentObjP->GetChildrenCount() > 0)
@@ -161,22 +187,47 @@ namespace ssGUI
                             objToRender.push_front(currentObjP->GetCurrentChild());
                             currentObjP->MoveChildrenIteratorPrevious();
                         }
-                    }                
+                    }
                 }
+                    DEBUG_LINE();
+            }
+                    DEBUG_LINE();
+            
+            while(!renderQueue.empty())
+            {
+                ssGUI::GUIObject* currentObjP = renderQueue.front();
+
+                //Remove current gui object from render queue
+                renderQueue.pop();
+
+                if(currentObjP->Internal_IsDeleted())
+                    continue;
+
+                (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
+                                                dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
+                                                currentMainWindowP->GetPositionOffset());
             }
 
             //Internal_Draw everything that is displayed on the mainWindow buffer
             currentMainWindowP->Render();
+                    DEBUG_LINE();
         }
+        FUNC_DEBUG_EXIT();
     }
 
     void ssGUIManager::UpdateObjects()
     {
+        FUNC_DEBUG_ENTRY();
+        
         if(MainWindowPList.empty())
+        {
+            FUNC_DEBUG_EXIT();
             return;
+        }
 
         std::stack<ssGUI::GUIObject*> objToUpdate;
         std::stack<bool> childrenEvaluated;
+        std::queue<ssGUI::GUIObject*> updateQueue;
 
         //For now, update main window in order as it doesn't matter
         for(auto mainWindow : MainWindowPList)
@@ -200,6 +251,8 @@ namespace ssGUI
                 childrenEvaluated.push(false);
             }
             */
+            
+
 
             objToUpdate.push(mainWindow);
             childrenEvaluated.push(false);
@@ -210,19 +263,6 @@ namespace ssGUI
 
             while (!objToUpdate.empty())
             {
-                if(objToUpdate.top()->Internal_IsDeleted())
-                {
-                    //TODO : Maybe move set parent to delete function instead?
-                    objToUpdate.top()->SetParent(nullptr);
-                    
-                    if(objToUpdate.top()->IsHeapAllocated())
-                       delete objToUpdate.top();
-
-                    objToUpdate.pop();
-                    childrenEvaluated.pop();
-                    continue;
-                }
-
                 //Update object if there's no children or the children are already evaluated
                 if(objToUpdate.top()->GetChildrenCount() == 0 || childrenEvaluated.top() == true)
                 {                    
@@ -236,7 +276,8 @@ namespace ssGUI
                         windowInputStatus.DockingBlocked = false;
                     }
                     
-                    objToUpdate.top()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
+                    //objToUpdate.top()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
+                    updateQueue.push(objToUpdate.top());
                     objToUpdate.pop();
                     childrenEvaluated.pop();
                 }
@@ -255,7 +296,15 @@ namespace ssGUI
                     }
                 }
             }
+
+            while (!updateQueue.empty())
+            {
+                updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
+                updateQueue.pop();
+            }
         }
+
+        FUNC_DEBUG_EXIT();
     }
 
     void ssGUIManager::UpdateCursor()
@@ -288,6 +337,9 @@ namespace ssGUI
     }
 
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;
+
+    std::vector<ssGUI::GUIObject*> ssGUIManager::DeletedObjs = std::vector<ssGUI::GUIObject*>();
+
 
     ssGUIManager::ssGUIManager() :  BackendInput(), MainWindowPList(), OnUpdateEventListeners(), 
                                     OnUpdateEventListenersValid(), OnUpdateEventListenersNextFreeIndices(),

@@ -139,6 +139,9 @@ namespace ssGUI
         for(auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
+        DEBUG_LINE("object "<<this<<" checking validity");
+        Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
+
         FUNC_DEBUG_EXIT();
     }
 

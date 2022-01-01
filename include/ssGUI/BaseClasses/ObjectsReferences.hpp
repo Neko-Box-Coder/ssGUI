@@ -40,7 +40,7 @@ namespace ssGUI
             virtual ssGUIObjectIndex AddObjectReference(ssGUI::GUIObject* obj);
             virtual ssGUI::GUIObject* GetObjectReference(ssGUIObjectIndex index) const;          
             virtual void SetObjectReference(ssGUIObjectIndex index, ssGUI::GUIObject* obj);
-            virtual void RemoveObjectReference(ssGUIObjectIndex index);
+            virtual void RemoveObjectReference(ssGUIObjectIndex index, bool internalCleanUp = false);
 
             virtual void AddExternalDependency(ObjectsReferences* dependency, ssGUIObjectIndex index);
             virtual void RemoveExternalDependency(ObjectsReferences* dependency);
@@ -49,6 +49,9 @@ namespace ssGUI
             virtual bool IsObjectReferenceExist(ssGUI::GUIObject* obj) const;
 
             virtual void CleanUp();
+
+            virtual void CheckObjectsReferencesValidity();
+
     };
 }
 

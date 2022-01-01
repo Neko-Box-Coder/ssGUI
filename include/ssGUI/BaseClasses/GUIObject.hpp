@@ -2,6 +2,7 @@
 #define SSGUI_OBJECT_H
 
 #include <list>
+#include <vector>
 #include <string>
 #include "glm/vec2.hpp"
 #include "ssGUI/Enums/GUIObjectType.hpp"

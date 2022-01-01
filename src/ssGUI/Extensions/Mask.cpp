@@ -900,7 +900,21 @@ namespace ssGUI::Extensions
     {}
 
     Mask::~Mask()
-    {} 
+    {
+        if(Container != nullptr)
+        {
+            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName, int removeIndex)
+            {
+                target->GetEventCallback(eventCallbackName)->RemoveEventListener(removeIndex);
+            
+                if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
+                    target->RemoveEventCallback(eventCallbackName);
+            };
+
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME, OnChildAddedEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME, OnChildRemovedEventIndex);
+        }
+    } 
 
     void Mask::SetMaskChildren(bool maskChildren)
     {
@@ -1058,12 +1072,16 @@ namespace ssGUI::Extensions
 
     void Mask::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
+        FUNC_DEBUG_ENTRY();
         AddMaskEnforcerToChildren(child, true);
+        FUNC_DEBUG_EXIT();
     }
 
     void Mask::Internal_OnRecursiveChildRemoved(ssGUI::GUIObject* child)
     {
+        FUNC_DEBUG_ENTRY();
         RemoveMaskEnforcerToChildren(child, true);
+        FUNC_DEBUG_EXIT();
     }
 
 

@@ -341,7 +341,6 @@ namespace ssGUI
     void Window::SetTitlebarColor(glm::u8vec4 color)
     {
         TitlebarColorDifference = static_cast<glm::ivec4>(color) - static_cast<glm::ivec4>(GetBackgroundColour());
-    
     }
 
     glm::u8vec4 Window::GetTitlebarColor() const
@@ -429,7 +428,6 @@ namespace ssGUI
     {
         return ssGUI::Enums::GUIObjectType::WINDOW;
     }
-
 
     void Window::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
@@ -534,7 +532,7 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
-        
+
         for(auto extension : Extensions)
             extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
@@ -566,6 +564,9 @@ namespace ssGUI
 
         for(auto extension : Extensions)
             extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        DEBUG_LINE("object "<<this<<" checking validity");
+        Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
 
         FUNC_DEBUG_EXIT();
     }

@@ -23,6 +23,10 @@ namespace ssGUI
     class BaseGUIObject : public GUIObject
     {
         private:
+
+            BaseGUIObject& operator=(BaseGUIObject const& other);
+
+        protected:
             ssGUIObjectIndex Parent;
             std::list<ssGUIObjectIndex> Children;
             std::list<ssGUIObjectIndex>::iterator CurrentChild;
@@ -33,6 +37,7 @@ namespace ssGUI
             bool ObjectDelete;
             bool HeapAllocated;
             ObjectsReferences CurrentObjectsReferences;
+            bool DestroyEventCalled;
 
             //Widget transform
             glm::ivec2 Position;
@@ -42,9 +47,6 @@ namespace ssGUI
             glm::ivec2 MaxSize;
             ssGUI::Enums::AnchorType Anchor;
 
-            BaseGUIObject& operator=(BaseGUIObject const& other);
-
-        protected:
             //Rendering
             std::vector<glm::ivec2> DrawingVerticies;
             std::vector<glm::ivec2> DrawingUVs;

@@ -36,6 +36,7 @@ namespace ssGUI::Extensions
             glm::ivec2 GlobalPosition;
             glm::ivec2 Size;
 
+            //TODO : Remove "On"
             int OnChildAddedEventIndex;
             int OnChildRemovedEventIndex;
 

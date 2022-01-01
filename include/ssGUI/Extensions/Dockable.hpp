@@ -11,6 +11,8 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {       
+    class Layout;
+    
     //class: Dockable
     class Dockable : public Extension
     {
@@ -52,6 +54,8 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* DockTriggerBottom;
             ssGUI::GUIObject* DockTriggerLeft;
 
+            int WindowDragStateChangedEventIndex;
+
             static bool GlobalDockMode;
             static ssGUI::MainWindow* MainWindowUnderDocking;
             static ssGUI::GUIObject* TargetDockObject;          //Target Dockable Object to dock next to. This can be a docker as well. (This is NOT the object being docked)
@@ -74,6 +78,13 @@ namespace ssGUI::Extensions
             virtual void DiscardTriggerAreas();
 
             virtual void OnWindowDragStarted();
+
+            virtual void RemoveUnnecessaryDocker(ssGUI::GUIObject* checkObj);
+            
+            //virtual void RemoveOriginalParentIfNeeded();
+
+            virtual void FindDockLayout(ssGUI::Extensions::Layout*& dockLayout);
+            virtual void CreateEmptyParentForDocking(ssGUI::Extensions::Layout*& dockLayout);
             virtual void OnWindowDragFinished();
 
         public:

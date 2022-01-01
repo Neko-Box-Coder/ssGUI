@@ -395,7 +395,8 @@ namespace ssGUI::Extensions
                 }
                 else
                 {
-        DEBUG_LINE();
+        DEBUG_LINE("Container: "<<Container);
+        DEBUG_LINE("Container parent: "<<containerParent);
                     parentLayout->Clone(Container);
                 }
         DEBUG_LINE();

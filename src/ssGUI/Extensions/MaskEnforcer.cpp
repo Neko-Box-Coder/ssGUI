@@ -31,7 +31,9 @@ namespace ssGUI::Extensions
     {}
 
     MaskEnforcer::~MaskEnforcer()
-    {}
+    {
+        CurrentObjectsReferences.CleanUp();
+    }
     
     void MaskEnforcer::BindToMaskGUIObject(ssGUI::GUIObject* maskGUIObj)
     {        
