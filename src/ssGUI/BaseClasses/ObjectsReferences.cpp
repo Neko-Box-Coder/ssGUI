@@ -44,31 +44,27 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         ObjectsReferencesTable = other.ObjectsReferencesTable;
-        DEBUG_LINE();
         ReverseObjectsReferencesTable = other.ReverseObjectsReferencesTable;
-        DEBUG_LINE();
         NextFreeIndex = other.NextFreeIndex;
-        DEBUG_LINE();
         ExternalObjectsDependencies = std::unordered_map<ObjectsReferences*, ssGUIObjectIndex>();
-        DEBUG_LINE();
         CleanedUp = false;
-        DEBUG_LINE();
 
-        //TODO : This is crashing docking mechanism
         //Iterate all objects references and add external dependencies
         for(auto it : ObjectsReferencesTable)
         {
             if(it.second != nullptr)
             {
+                #if USE_DEBUG
                 DEBUG_LINE("Adding external dependency to "<<it.second);
+                #endif
                 it.second->Internal_GetObjectsReferences()->AddExternalDependency(this, it.first);
             }
             else
             {
                 DEBUG_LINE("Invalid object reference found!");
+                DEBUG_EXIT_PROGRAM();
             }
         }
-        DEBUG_LINE();
         
         FUNC_DEBUG_EXIT();
         return *this;
@@ -91,15 +87,11 @@ namespace ssGUI
             return -1;
         }
 
-            DEBUG_LINE();
         if(!IsObjectReferenceExist(obj))
         {
             ObjectsReferencesTable[NextFreeIndex] = obj;
             ReverseObjectsReferencesTable[obj] = NextFreeIndex;
-            DEBUG_LINE("obj: "<<obj);
-            DEBUG_LINE("Deleted?: "<<obj->Internal_IsDeleted());
             obj->Internal_GetObjectsReferences()->AddExternalDependency(this, NextFreeIndex);
-            DEBUG_LINE();
             return NextFreeIndex++;
         }
         else
@@ -163,11 +155,14 @@ namespace ssGUI
         if(CleanedUp)
             return;
 
-        DEBUG_LINE();
-        //if(ExternalObjectsDependencies.find(dependency) != ExternalObjectsDependencies.end())
-            ExternalObjectsDependencies[dependency] = index;   
-        DEBUG_LINE();
-    
+        if(dependency == nullptr)
+        {
+            DEBUG_LINE("Adding null dependency found");
+            DEBUG_EXIT_PROGRAM();
+            return;
+        }
+
+        ExternalObjectsDependencies[dependency] = index;   
     }
 
     void ObjectsReferences::RemoveExternalDependency(ObjectsReferences* dependency)
@@ -210,13 +205,17 @@ namespace ssGUI
 
         for(auto it : ExternalObjectsDependencies)
         {
+            #if USE_DEBUG
             DEBUG_LINE("Removing "<<it.first<<" external reference of this object");
+            #endif
             it.first->RemoveObjectReference(it.second, true);
         }
 
         for(auto it : ObjectsReferencesTable)
         {
+            #if USE_DEBUG
             DEBUG_LINE("Removing external depenency record stored on "<<it.second);
+            #endif
             it.second->Internal_GetObjectsReferences()->RemoveExternalDependency(this);
         }
         

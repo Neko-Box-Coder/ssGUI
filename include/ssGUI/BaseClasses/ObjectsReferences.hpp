@@ -16,7 +16,7 @@ namespace ssGUI
     //     │    A   │              │    B    │
     //     │        │              │         │
     //     │        ├─────────────►│         │
-    //     └────────┘Dependents On └─────────┘
+    //     └────────┘  Depends On  └─────────┘
 
     class ObjectsReferences
     {

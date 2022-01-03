@@ -141,6 +141,12 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::MAIN_WINDOW | ssGUI::Enums::GUIObjectType::WINDOW;
     }
 
+    void MainWindow::Delete()
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        ssGUI::BaseGUIObject::Delete();
+    }
+
     void MainWindow::Close()
     {
         //Forwarding signal to backend

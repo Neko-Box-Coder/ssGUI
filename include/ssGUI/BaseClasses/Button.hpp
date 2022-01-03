@@ -42,6 +42,9 @@ namespace ssGUI
             //Overriding widget
             //function: GetType
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
+
+            //function: Delete 
+            virtual void Delete() override;
             
             //function: SetInteractable
             virtual void SetInteractable(bool interactable) override;

@@ -5,7 +5,7 @@
 #include "ssGUI/DebugAndBuild/ssGUIDebugMacro.hpp"
 #include <string>
 
-#define USE_DEBUG 1         //This will show which function is not exited if crashes
+#define USE_DEBUG 0         //This will show which function is not exited if crashes
 #define DEBUG_STATE 0       //This will print all the state of each update (Pre-Update, Render, Post-Render, etc..)
 #define REFRESH_CONSOLE 0   //Normally you have this on when DEBUG_STATE is on in order to refresh the console otherwise it will be spammed
 #define SLOW_UPDATE 0        //This will slow down the update for easier debugging
@@ -23,7 +23,7 @@
     #define FUNC_DEBUG_ENTRY_1(customFunc)
     #define FUNC_DEBUG_EXIT_1(customFunc)
 
-    #define DEBUG_EXIT_PROGRAM
+    #define DEBUG_EXIT_PROGRAM()
 
 #else
     extern int TabSpace;

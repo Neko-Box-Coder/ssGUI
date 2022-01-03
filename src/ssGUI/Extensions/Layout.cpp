@@ -299,25 +299,18 @@ namespace ssGUI::Extensions
     void Layout::SyncContainerMinMaxSize()
     {
         FUNC_DEBUG_ENTRY();
-        DEBUG_LINE("Container: "<<Container);
-        DEBUG_LINE("Container Parent: "<<Container->GetParent());
-        if(Container->GetParent() != nullptr && !Container->GetParent()->Internal_IsDeleted())
-            DEBUG_LINE("Container Parent Parent: "<<Container->GetParent()->GetParent());
 
         if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0)
         {
             FUNC_DEBUG_EXIT();
             return;
         }
+
         //Check the number of valid children
         Container->MoveChildrenIteratorToFirst();
         int validChildrenSize = 0;
         while(!Container->IsChildrenIteratorEnd())
-        {
-            DEBUG_LINE("Child: "<<Container->GetCurrentChild());
-            if(Container->GetCurrentChild() != nullptr)
-                DEBUG_LINE("child type: "<<(int)Container->GetCurrentChild()->GetType());
-            
+        {            
             ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
             
             if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
@@ -325,13 +318,12 @@ namespace ssGUI::Extensions
                 Container->MoveChildrenIteratorNext();
                 continue;
             }
-            DEBUG_LINE("Valid child: "<<Container->GetCurrentChild());
+
             if(Container->GetCurrentChild() != nullptr && Container->GetCurrentChild()->GetType() == ssGUI::Enums::GUIObjectType::WINDOW &&
                 !Container->GetCurrentChild()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
             {
                 ssGUI::Window* childWin = static_cast<ssGUI::Window*>(Container->GetCurrentChild());
                 glm::ivec4 tColor = childWin->GetTitlebarColor();
-                DEBUG_LINE("Child titlebar color: "<<tColor.r<<", "<<tColor.g<<", "<<tColor.b<<", "<<tColor.a);
             }
 
             validChildrenSize++;
@@ -952,16 +944,16 @@ namespace ssGUI::Extensions
     {        
         FUNC_DEBUG_ENTRY();
 
-        DEBUG_LINE("Container: "<<Container);
-        DEBUG_LINE("child removed: "<<child);
+        // DEBUG_LINE("Container: "<<Container);
+        // DEBUG_LINE("child removed: "<<child);
 
-        //DEBUG
-        child->MoveChildrenIteratorToFirst();
-        while (!child->IsChildrenIteratorEnd())
-        {
-            DEBUG_LINE("child's child: "<<child->GetCurrentChild());
-            child->MoveChildrenIteratorNext();
-        }
+        // //DEBUG
+        // child->MoveChildrenIteratorToFirst();
+        // while (!child->IsChildrenIteratorEnd())
+        // {
+        //     DEBUG_LINE("child's child: "<<child->GetCurrentChild());
+        //     child->MoveChildrenIteratorNext();
+        // }
 
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
 
@@ -1011,10 +1003,7 @@ namespace ssGUI::Extensions
         }
 
         if(GetUpdateContainerMinMaxSize())
-        {
-DEBUG_LINE();
             SyncContainerMinMaxSize();
-        }
 
         if(GetOverrideChildrenResizeType())
             UpdateChildrenResizeTypes();
@@ -1266,15 +1255,9 @@ DEBUG_LINE();
 
     Extension* Layout::Clone(ssGUI::GUIObject* newContainer)
     {
-        DEBUG_LINE();
         Layout* temp = new Layout(*this);
-        DEBUG_LINE();
         if(newContainer != nullptr)
-        {
-        DEBUG_LINE();
             newContainer->AddExtension(temp);
-        }    
-        DEBUG_LINE();
         
         return temp;
     }

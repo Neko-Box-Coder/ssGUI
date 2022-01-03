@@ -112,6 +112,12 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::BUTTON | ssGUI::Enums::GUIObjectType::BASE_WIDGET;
     }
 
+    void Button::Delete()
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        ssGUI::BaseGUIObject::Delete();
+    }
+
     void Button::SetInteractable(bool interactable)
     {
         if(interactable)

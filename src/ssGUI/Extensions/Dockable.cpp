@@ -152,7 +152,6 @@ namespace ssGUI::Extensions
     {
         if(DockPreivewLeft != nullptr)
         {
-            DEBUG_LINE();
             DockPreivewLeft->Delete();
             DockPreivewLeft = nullptr;
         }
@@ -162,7 +161,6 @@ namespace ssGUI::Extensions
     {
         if(DockPreivewTop != nullptr)
         {
-            DEBUG_LINE();
             DockPreivewTop->Delete();
             DockPreivewTop = nullptr;
         }
@@ -172,7 +170,6 @@ namespace ssGUI::Extensions
     {
         if(DockPreivewRight != nullptr)
         {
-            DEBUG_LINE();
             DockPreivewRight->Delete();
             DockPreivewRight = nullptr;
         }
@@ -182,7 +179,6 @@ namespace ssGUI::Extensions
     {
         if(DockPreivewBottom != nullptr)
         {
-            DEBUG_LINE();
             DockPreivewBottom->Delete();
             DockPreivewBottom = nullptr;
         }
@@ -486,32 +482,9 @@ namespace ssGUI::Extensions
         //Remove empty dockers
         cleanUpEmptyDockers:;
         
-        //DEBUG
-        ssGUI::GUIObject* checkParent = childrenHolder;
         for(auto obj : objsToDelete)
-        {
-            if(obj == childrenHolder)
-            {
-                checkParent = checkParent->GetParent();
-                break;
-            }
-        }
-
-        //Not debug
-        for(auto obj : objsToDelete)
-        {
-            DEBUG_LINE("Deleting "<<obj);
-            //obj->SetParent(nullptr);
             obj->Delete();
-        }
         
-        //DEBUG
-        checkParent->MoveChildrenIteratorToFirst();
-        while (!checkParent->IsChildrenIteratorEnd())
-        {
-            DEBUG_LINE("checkParent's child: "<<checkParent->GetCurrentChild());
-            checkParent->MoveChildrenIteratorNext();
-        }
         
         FUNC_DEBUG_EXIT();
     }
@@ -715,17 +688,37 @@ namespace ssGUI::Extensions
             }
         }
         
+        reset:
         if(OriginalParent != nullptr)
         {
             ssGUI::GUIObject* parentOfOriginalParent = OriginalParent->GetParent();
-            RemoveUnnecessaryDocker(OriginalParent);
 
+            //Check if originalParent's child has any unnecessary docker
             if(!OriginalParent->Internal_IsDeleted() && OriginalParent->GetChildrenCount() == 1)
             {
                 OriginalParent->MoveChildrenIteratorToFirst();
                 RemoveUnnecessaryDocker(OriginalParent->GetCurrentChild());
             }
-            else if(parentOfOriginalParent != nullptr && OriginalParent->Internal_IsDeleted())
+            
+            //Check if originalParent has any unnecessary docker if it doesn't have any child
+            if(OriginalParent->GetChildrenCount() == 0) 
+                RemoveUnnecessaryDocker(OriginalParent);
+            
+            //Check if originalParent has any unnecessary docker if it is docked
+            else if(parentOfOriginalParent != nullptr && 
+                    parentOfOriginalParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            {
+                RemoveUnnecessaryDocker(OriginalParent);
+            }
+            //check if originalParent has any unnecessary docker if it is NOT docked and has 1 or no child
+            else if(OriginalParent->GetChildrenCount() <= 1 && parentOfOriginalParent != nullptr && 
+                    !parentOfOriginalParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            {
+                RemoveUnnecessaryDocker(OriginalParent);
+            }
+
+            //Check if the parent of originalParent (and its child) has any unnecessary docker if the originalParent is deleted
+            if(parentOfOriginalParent != nullptr && OriginalParent->Internal_IsDeleted())
             {
                 if(parentOfOriginalParent->GetChildrenCount() == 1)
                 {
@@ -738,7 +731,6 @@ namespace ssGUI::Extensions
         }
             
         //Reset docking variables
-        reset:
         OriginalParent = nullptr;
         ContainerIsDocking = false;
         GlobalDockMode = false;
@@ -897,9 +889,6 @@ namespace ssGUI::Extensions
             return;
         }
 
-        //DEBUG_LINE("Container "<<Container<<" checking validity");
-        //Container->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
-
         //If global dock mode is true, check the cursor against the trigger area
         if(GlobalDockMode && !ContainerIsDocking && !globalInputStatus.DockingBlocked)
         {
@@ -1010,9 +999,6 @@ namespace ssGUI::Extensions
             DiscardBottomPreview();
             DiscardTriggerAreas();
         }
-
-        //DEBUG_LINE("Container "<<Container<<" checking validity");
-        //Container->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
 
         FUNC_DEBUG_EXIT();
     }

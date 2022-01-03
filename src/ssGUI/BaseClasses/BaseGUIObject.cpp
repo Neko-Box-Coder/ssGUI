@@ -282,14 +282,23 @@ namespace ssGUI
     {        
         FUNC_DEBUG_ENTRY();
         
+        #if USE_DEBUG
         DEBUG_LINE("Setting "<<this<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
+        #endif
+
         ssGUI::GUIObject* originalParent = nullptr;
 
-        //If setting parent to the same, don't need to do anything
+        //If setting parent to the same, just need to move this to the end of child
         if(newParent == CurrentObjectsReferences.GetObjectReference(Parent))
         {
             //DEBUG_LINE("Invalid parent detected");
             //DEBUG_EXIT_PROGRAM();
+
+            newParent->FindChild(this);
+            auto it = newParent->GetCurrentChildReferenceIterator();
+            newParent->MoveChildrenIteratorToLast();
+            auto lastIt = newParent->GetCurrentChildReferenceIterator();
+            newParent->ChangeChildOrderToAfterPosition(it, lastIt);
             FUNC_DEBUG_EXIT();
             return;
         }
@@ -398,20 +407,7 @@ namespace ssGUI
                 currentParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME)->Notify(this);    
             
             currentParent = currentParent->GetParent();
-        }
-
-
-        //DEBUG
-        currentParent = CurrentObjectsReferences.GetObjectReference(Parent);
-
-        currentParent->MoveChildrenIteratorToFirst();
-
-        while (!currentParent->IsChildrenIteratorEnd())
-        {
-            DEBUG_LINE("New parent's child: "<<currentParent->GetCurrentChild());
-            currentParent->MoveChildrenIteratorNext();
-        }
-        
+        }        
 
         FUNC_DEBUG_EXIT();
     }
@@ -533,11 +529,6 @@ namespace ssGUI
                 DEBUG_EXIT_PROGRAM();
                 return nullptr;
             }
-
-            {
-                //Check if child is clean or not
-                CurrentObjectsReferences.GetObjectReference(*CurrentChild)->Internal_IsDeleted();
-            }
             
             return CurrentObjectsReferences.GetObjectReference(*CurrentChild);
         }
@@ -579,7 +570,10 @@ namespace ssGUI
     void BaseGUIObject::Internal_RemoveChild(ssGUI::GUIObject* obj)
     {
         FUNC_DEBUG_ENTRY();
+        
+        #if USE_DEBUG
         DEBUG_LINE(this<<" removing child "<<obj);
+        #endif
         
         if(!FindChild(obj))
         {
@@ -601,7 +595,9 @@ namespace ssGUI
                 CurrentChild--;
         }
         Children.remove(*it);
+        #if USE_DEBUG
         DEBUG_LINE("Remove success");
+        #endif
         FUNC_DEBUG_EXIT();
     }
 
@@ -655,20 +651,23 @@ namespace ssGUI
     void BaseGUIObject::Delete()
     {
         FUNC_DEBUG_ENTRY();
-        DEBUG_LINE(this<<" object is getting deleted");   
+
+        #if USE_DEBUG
+        DEBUG_LINE(this<<" object is getting deleted");
+        #endif
+
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
         
-        //for(auto it : Extensions)
-        //    delete it.second;
-        //
-        //for(auto it : EventCallbacks)
-        //    delete it.second;
-
         SetParent(nullptr);
         CurrentObjectsReferences.CleanUp();
         ObjectDelete = true;
         ssGUI::ssGUIManager::DeletedObjs.push_back(this);
 
+        for(auto it : Extensions)
+           delete it.second;
+        
+        for(auto it : EventCallbacks)
+           delete it.second;
 
         FUNC_DEBUG_EXIT();
     }

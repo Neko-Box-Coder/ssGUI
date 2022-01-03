@@ -69,6 +69,9 @@ namespace ssGUI
             //function: GetType
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
             
+            //function: Delete 
+            virtual void Delete() override;
+
             //function: Close
             virtual void Close() override;
             

@@ -164,18 +164,9 @@ namespace ssGUI
                 objToRender.pop_front();
 
                 //Internal_Draw the gui object only when it is visible
-                    DEBUG_LINE();
-
                 if(currentObjP->IsVisible())
                 {                    
-                    DEBUG_LINE();
                     renderQueue.push(currentObjP);
-                    /*
-                    (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
-                                                    dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
-                                                    currentMainWindowP->GetPositionOffset());*/
-                    DEBUG_LINE();
-
 
                     //Add children to draw queue
                     if(currentObjP->GetChildrenCount() > 0)
@@ -189,9 +180,7 @@ namespace ssGUI
                         }
                     }
                 }
-                    DEBUG_LINE();
             }
-                    DEBUG_LINE();
             
             while(!renderQueue.empty())
             {
@@ -210,7 +199,6 @@ namespace ssGUI
 
             //Internal_Draw everything that is displayed on the mainWindow buffer
             currentMainWindowP->Render();
-                    DEBUG_LINE();
         }
         FUNC_DEBUG_EXIT();
     }
@@ -252,8 +240,6 @@ namespace ssGUI
             }
             */
             
-
-
             objToUpdate.push(mainWindow);
             childrenEvaluated.push(false);
 
@@ -299,7 +285,15 @@ namespace ssGUI
 
             while (!updateQueue.empty())
             {
-                updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
+                if(!updateQueue.front()->Internal_IsDeleted())
+                {
+                    updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
+                    
+                    #if USE_DEBUG
+                    DEBUG_LINE("object "<<updateQueue.front()<<" checking validity");
+                    updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
+                    #endif
+                }
                 updateQueue.pop();
             }
         }

@@ -139,6 +139,9 @@ namespace ssGUI
             //function: GetType
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
             
+            //function: Delete 
+            virtual void Delete() override;
+
             //function: Draw
             virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             //virtual void Internal_Update(ssGUI::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow, ssGUI::GUIObject* mainWindow) override;

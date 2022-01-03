@@ -42,6 +42,12 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::IMAGE | ssGUI::Enums::GUIObjectType::BASE_WIDGET;
     }
 
+    void Image::Delete()
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        ssGUI::BaseGUIObject::Delete();
+    }
+
     void Image::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();

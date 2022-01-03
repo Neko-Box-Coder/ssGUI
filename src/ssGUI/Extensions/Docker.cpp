@@ -368,52 +368,30 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_ENTRY();
         
         Container = bindObj;
-        DEBUG_LINE();
         ssGUI::GUIObject* containerParent = Container->GetParent();
-        DEBUG_LINE();
 
         //Check if we are using the parent's docker & layout settings or not
         if(containerParent != nullptr && containerParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME)
             && static_cast<ssGUI::Extensions::Docker*>(containerParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsChildrenDockerUseThisSettings()
             && static_cast<ssGUI::Extensions::Docker*>(containerParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsEnabled())
         {            
-        DEBUG_LINE();
-            
             ssGUI::Extensions::Docker* parentDocker = static_cast<ssGUI::Extensions::Docker*>(containerParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
             Copy(parentDocker);
-        DEBUG_LINE();
 
             if(containerParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
             {
-        DEBUG_LINE();
-                
                 ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
                 if(Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                {
-        DEBUG_LINE();
                     static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->Copy(parentLayout);
-                }
                 else
-                {
-        DEBUG_LINE("Container: "<<Container);
-        DEBUG_LINE("Container parent: "<<containerParent);
-                    parentLayout->Clone(Container);
-                }
-        DEBUG_LINE();
-            
+                    parentLayout->Clone(Container);            
             }
             else if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-            {
-        DEBUG_LINE();
-
                 Container->AddExtension(new ssGUI::Extensions::Layout());
-            }
         }
         //Otherwise we generate layout extension if there isn't one
         else
-        {
-        DEBUG_LINE();
-            
+        {            
             //Check if there's a layout extension for container
             if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 Container->AddExtension(new ssGUI::Extensions::Layout());

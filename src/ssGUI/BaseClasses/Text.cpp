@@ -607,6 +607,12 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
     }
 
+    void Text::Delete()
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        ssGUI::BaseGUIObject::Delete();
+    }
+
     void Text::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
