@@ -1,6 +1,8 @@
 #ifndef SSGUI_DEBUG_MACRO
 #define SSGUI_CONFIG
 
+#include <string>
+
 
 // Overloadable Marco function =======================================================================
 #define CAT( A, B ) A ## B
@@ -18,9 +20,19 @@
 
 #define DEBUG_LINE( ... ) VA_SELECT( DEBUG_LINE, __VA_ARGS__ )
 
-#define DEBUG_LINE_0() std::cout<<__FILE__<<" in "<<__func__<<" on "<<__LINE__<<"\n";
+#define DEBUG_LINE_0()\
+{\
+    std::string fileName = __FILE__;\
+    std::size_t found = fileName.find_last_of("/\\");\
+    std::cout<<fileName.substr(found+1)<<" in "<<__func__<<" on "<<__LINE__<<"\n";\
+}
 
-#define DEBUG_LINE_1(debugText) std::cout<<__FILE__<<" in "<<__func__<<" on "<<__LINE__<<": "<<debugText<<"\n";
+#define DEBUG_LINE_1(debugText)\
+{\
+    std::string fileName = __FILE__;\
+    std::size_t found = fileName.find_last_of("/\\");\
+    std::cout<<fileName.substr(found+1)<<" in "<<__func__<<" on "<<__LINE__<<": "<<debugText<<"\n";\
+}
 
 
 #endif
