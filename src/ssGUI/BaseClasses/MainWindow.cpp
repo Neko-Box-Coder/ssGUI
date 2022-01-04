@@ -65,6 +65,9 @@ namespace ssGUI
     //TODO : Refactor this, merge it to sync in update function
     void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {       
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        
         //Settings that require window to be relaunched -----------------------------------------
         if(BackendMainWindow->HasTitlebar() != HasTitlebar())
             BackendMainWindow->SetTitlebar(HasTitlebar());
@@ -102,6 +105,8 @@ namespace ssGUI
         drawingInterface.DrawShape(cord, color);
         */
 
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
     }   
 
     glm::ivec2 MainWindow::GetPosition() const
@@ -172,8 +177,9 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        for(auto extension : Extensions)
-            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            
 
         //Update cursor position offset every .5 seconds
         if(inputInterface->GetElapsedTime() - LastSyncTime > 500)
@@ -207,8 +213,8 @@ namespace ssGUI
         // std::cout << "window offset: "<<GetPositionOffset().x << ", "<<GetPositionOffset().y<<"\n";
         // std::cout<<"\n";
 
-        for(auto extension : Extensions)
-            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         FUNC_DEBUG_EXIT();
     }

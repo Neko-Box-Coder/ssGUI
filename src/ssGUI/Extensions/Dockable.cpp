@@ -10,6 +10,7 @@ namespace ssGUI::Extensions
 {
     bool Dockable::GlobalDockMode = false;
     ssGUI::MainWindow* Dockable::MainWindowUnderDocking = nullptr;
+    ssGUI::GUIObject* Dockable::DockingTopLevelParent = nullptr;
     ssGUI::GUIObject* Dockable::TargetDockObject = nullptr;
     Dockable::DockSide Dockable::TargetDockSide = Dockable::DockSide::NONE;
     
@@ -287,6 +288,8 @@ namespace ssGUI::Extensions
             ContainerIsDocking = false;
             GlobalDockMode = false;
             OriginalParent = nullptr;
+            MainWindowUnderDocking = nullptr;
+            DockingTopLevelParent = nullptr;
             FUNC_DEBUG_EXIT();
             return;
         }
@@ -316,9 +319,15 @@ namespace ssGUI::Extensions
         OriginalParent = Container->GetParent();
 
         if(TopLevelParent == -1 || CurrentObjectsReferences.GetObjectReference(TopLevelParent) == nullptr)
+        {
             Container->SetParent(MainWindowUnderDocking);
+            DockingTopLevelParent = MainWindowUnderDocking;
+        }
         else
+        {
             Container->SetParent(CurrentObjectsReferences.GetObjectReference(TopLevelParent));
+            DockingTopLevelParent = CurrentObjectsReferences.GetObjectReference(TopLevelParent);
+        }
 
         FUNC_DEBUG_EXIT();
     }
@@ -735,6 +744,7 @@ namespace ssGUI::Extensions
         ContainerIsDocking = false;
         GlobalDockMode = false;
         MainWindowUnderDocking = nullptr;
+        DockingTopLevelParent = nullptr;
         TargetDockObject = nullptr;
         TargetDockSide = DockSide::NONE;
 
@@ -793,9 +803,6 @@ namespace ssGUI::Extensions
 
         CurrentObjectsReferences.CleanUp();
     }
-    
-    bool GlobalDockMode = false;
-    ssGUI::MainWindow* MainWindowUnderDocking = nullptr;
 
     void Dockable::SetTriggerPercentage(float percentage)
     {
@@ -888,10 +895,29 @@ namespace ssGUI::Extensions
             FUNC_DEBUG_EXIT();
             return;
         }
-
-        //If global dock mode is true, check the cursor against the trigger area
+        
+        //If global dock mode is true, check topLevelParent first, then check the cursor against the trigger area
         if(GlobalDockMode && !ContainerIsDocking && !globalInputStatus.DockingBlocked)
         {
+            ssGUI::GUIObject* curParent = Container;
+            while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr && curParent != DockingTopLevelParent)
+            {
+                curParent = curParent->GetParent();
+            }
+
+            //If this is not the same parent as the one which is being docked, exit
+            if((DockingTopLevelParent == MainWindowUnderDocking && curParent != MainWindowUnderDocking) || 
+                curParent != DockingTopLevelParent)
+            {
+                DiscardLeftPreview();
+                DiscardTopPreview();
+                DiscardRightPreview();
+                DiscardBottomPreview();
+                DiscardTriggerAreas();
+                FUNC_DEBUG_EXIT();
+                return;
+            }
+            
             glm::ivec2 containerPos = Container->GetGlobalPosition();
             glm::ivec2 containerSize = Container->GetSize();
             int titleBarOffset = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW ? 

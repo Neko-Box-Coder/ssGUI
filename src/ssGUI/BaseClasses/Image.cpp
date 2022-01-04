@@ -52,8 +52,8 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         if(!IsVisible())
         {
@@ -175,8 +175,8 @@ namespace ssGUI
         //Border (Depricated)
         //DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();

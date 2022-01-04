@@ -445,8 +445,8 @@ namespace ssGUI
             return;
         }
 
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         // std::cout<<"local pos: "<<GetPosition().x<<", "<<GetPosition().y<<"\n";
         // std::cout<<"rendering pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
@@ -515,8 +515,8 @@ namespace ssGUI
         
         // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
 
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -539,8 +539,8 @@ namespace ssGUI
             return;
         }
 
-        for(auto extension : Extensions)
-            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
         glm::ivec2 mouseDelta = currentMousePos - MouseDownPosition;
@@ -568,8 +568,8 @@ namespace ssGUI
             BlockMouseInputAndUpdateCursor(globalInputStatus, currentMousePos, inputInterface);
         }
 
-        for(auto extension : Extensions)
-            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         FUNC_DEBUG_EXIT();
     }

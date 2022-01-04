@@ -55,6 +55,8 @@ namespace ssGUI
             std::vector<ssGUI::DrawingProperty> DrawingProperties;
 
             std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;
+            std::vector<std::string> ExtensionsDrawOrder;
+            std::vector<std::string> ExtensionsUpdateOrder;
             std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*> EventCallbacks;
 
             std::unordered_set<std::string> CurrentTags;
@@ -207,6 +209,16 @@ namespace ssGUI
             
             //function: RemoveExtension
             virtual void RemoveExtension(std::string extensionName) override;
+
+            virtual int GetExtensionsCount() const override;
+
+            virtual int GetExtensionDrawOrder(std::string extensionName) const override;
+
+            virtual void ChangeExtensionDrawOrder(std::string extensionName, int order) override;
+
+            virtual int GetExtensionUpdateOrder(std::string extensionName) const override;
+
+            virtual void ChangeExtensionUpdateOrder(std::string extensionName, int order) override;
             
             //function: AddEventCallback
             virtual void AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback) override;

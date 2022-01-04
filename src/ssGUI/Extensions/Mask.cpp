@@ -860,8 +860,6 @@ namespace ssGUI::Extensions
                                                 child->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME));
                 
                 child->RemoveExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME);
-
-                delete(enforcer);
             }
             
             child->MoveChildrenIteratorToFirst();
@@ -1008,6 +1006,26 @@ namespace ssGUI::Extensions
     void Mask::SetMaskContainer(bool maskContainer)
     {
         MaskContainer = maskContainer;
+
+        if(maskContainer)
+        {
+            if(!Container->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
+            {
+                ssGUI::Extensions::MaskEnforcer* enforcer = new MaskEnforcer();
+                enforcer->BindToMaskGUIObject(Container);
+                Container->AddExtension(enforcer);
+            }
+            else
+                static_cast<ssGUI::Extensions::MaskEnforcer*>(Container->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))->BindToMaskGUIObject(Container);
+        }
+        else
+        {
+            if(Container->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME) && static_cast<ssGUI::Extensions::MaskEnforcer*>
+                (Container->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))->GetMaskGUIObject() == Container)
+            {
+                Container->RemoveExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME);
+            }
+        }
     }
 
     bool Mask::GetMaskContainer() const

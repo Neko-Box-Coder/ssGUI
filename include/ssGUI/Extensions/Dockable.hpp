@@ -58,6 +58,7 @@ namespace ssGUI::Extensions
 
             static bool GlobalDockMode;
             static ssGUI::MainWindow* MainWindowUnderDocking;
+            static ssGUI::GUIObject* DockingTopLevelParent;
             static ssGUI::GUIObject* TargetDockObject;          //Target Dockable Object to dock next to. This can be a docker as well. (This is NOT the object being docked)
             static Dockable::DockSide TargetDockSide;
 

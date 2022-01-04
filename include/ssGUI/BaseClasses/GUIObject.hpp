@@ -165,6 +165,16 @@ namespace ssGUI
             //function: RemoveExtension
             virtual void RemoveExtension(std::string extensionName) = 0;
 
+            virtual int GetExtensionsCount() const = 0;
+
+            virtual int GetExtensionDrawOrder(std::string extensionName) const = 0;
+
+            virtual void ChangeExtensionDrawOrder(std::string extensionName, int order) = 0;
+
+            virtual int GetExtensionUpdateOrder(std::string extensionName) const = 0;
+
+            virtual void ChangeExtensionUpdateOrder(std::string extensionName, int order) = 0;
+
             //function: AddEventCallback
             virtual void AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback) = 0;
             

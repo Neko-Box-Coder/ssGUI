@@ -61,8 +61,8 @@ namespace ssGUI
             return;
         }
         
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
         //Internal_Draw background by default
         glm::ivec2 drawPosition = GetGlobalPosition();
@@ -87,8 +87,8 @@ namespace ssGUI
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
 
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -111,8 +111,8 @@ namespace ssGUI
             return;
         }
         
-        for(auto extension : Extensions)
-            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //It will only block when BlockInput flag is true OR is interactable
         if(!IsBlockInput() || IsInteractable())
@@ -142,8 +142,8 @@ namespace ssGUI
 
         endOfUpdate:;
 
-        for(auto extension : Extensions)
-            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         FUNC_DEBUG_EXIT();
     }

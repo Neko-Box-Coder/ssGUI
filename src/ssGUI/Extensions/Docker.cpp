@@ -296,6 +296,22 @@ namespace ssGUI::Extensions
         //If global dock mode is true, check the cursor against the trigger area
         if(Dockable::GlobalDockMode && !globalInputStatus.DockingBlocked)
         {
+            ssGUI::GUIObject* curParent = Container;
+            while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr && curParent != Dockable::DockingTopLevelParent)
+            {
+                curParent = curParent->GetParent();
+            }
+
+            //If this is not the same parent as the one which is being docked, exit
+            if((Dockable::DockingTopLevelParent == Dockable::MainWindowUnderDocking && curParent != Dockable::MainWindowUnderDocking) || 
+                curParent != Dockable::DockingTopLevelParent)
+            {
+                DiscardPreview();
+                DiscardTriggerArea();
+                FUNC_DEBUG_EXIT();
+                return;
+            }
+            
             glm::ivec2 containerPos = Container->GetGlobalPosition();
             glm::ivec2 containerSize = Container->GetSize();
             int titleBarOffset = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW ? 

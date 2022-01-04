@@ -31,6 +31,8 @@ namespace ssGUI
         DrawingCounts = other.DrawingCounts;
         DrawingProperties = std::vector<ssGUI::DrawingProperty>(other.DrawingProperties);
         Extensions = std::unordered_map<std::string, ssGUI::Extensions::Extension*>();
+        ExtensionsDrawOrder = std::vector<std::string>();
+        ExtensionsUpdateOrder = std::vector<std::string>();
         EventCallbacks = std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*>();
         CurrentTags = other.CurrentTags;// std::unordered_set<std::string>();
     }
@@ -182,7 +184,8 @@ namespace ssGUI
                                         GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
                                         MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
-                                        DrawingCounts(), DrawingProperties(), Extensions(), EventCallbacks(), CurrentTags()
+                                        DrawingCounts(), DrawingProperties(), Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), 
+                                        EventCallbacks(), CurrentTags()
     {}
 
     BaseGUIObject::~BaseGUIObject()
@@ -718,6 +721,8 @@ namespace ssGUI
             return;
 
         Extensions[extension->GetExtensionName()] = extension;
+        ExtensionsDrawOrder.push_back(extension->GetExtensionName());
+        ExtensionsUpdateOrder.push_back(extension->GetExtensionName());
         extension->BindToObject(this);
     }
 
@@ -745,7 +750,74 @@ namespace ssGUI
         //     ptr->CleanUp();
         
         Extensions.erase(extensionName);
+        ExtensionsDrawOrder.erase(ExtensionsDrawOrder.begin() + GetExtensionDrawOrder(extensionName));
+        ExtensionsUpdateOrder.erase(ExtensionsUpdateOrder.begin() + GetExtensionUpdateOrder(extensionName));
         delete targetExtension;
+    }
+
+    int BaseGUIObject::GetExtensionsCount() const
+    {
+        return ExtensionsDrawOrder.size();
+    }
+
+    int BaseGUIObject::GetExtensionDrawOrder(std::string extensionName) const
+    {
+        if(!IsExtensionExist(extensionName))
+            return -1;
+        
+        auto it = find(ExtensionsDrawOrder.begin(), ExtensionsDrawOrder.end(), extensionName);
+
+        if(it == ExtensionsDrawOrder.end())
+            return -1;
+        else
+            return it - ExtensionsDrawOrder.begin();
+    }
+
+    void BaseGUIObject::ChangeExtensionDrawOrder(std::string extensionName, int order)
+    {
+        int drawIndex = GetExtensionDrawOrder(extensionName);
+
+        if(drawIndex == -1)
+            return;
+        
+        if(order < 0 || order >= GetExtensionsCount())
+            return;
+
+        //https://stackoverflow.com/questions/45447361/how-to-move-certain-elements-of-stdvector-to-a-new-index-within-the-vector
+        if (drawIndex > order)
+            std::rotate(ExtensionsDrawOrder.rend() - drawIndex - 1, ExtensionsDrawOrder.rend() - drawIndex, ExtensionsDrawOrder.rend() - order);
+        else        
+            std::rotate(ExtensionsDrawOrder.begin() + drawIndex, ExtensionsDrawOrder.begin() + drawIndex + 1, ExtensionsDrawOrder.begin() + order + 1);
+    }
+
+    int BaseGUIObject::GetExtensionUpdateOrder(std::string extensionName) const
+    {
+        if(!IsExtensionExist(extensionName))
+            return -1;
+        
+        auto it = find(ExtensionsUpdateOrder.begin(), ExtensionsUpdateOrder.end(), extensionName);
+
+        if(it == ExtensionsUpdateOrder.end())
+            return -1;
+        else
+            return it - ExtensionsUpdateOrder.begin();
+    }
+
+    void BaseGUIObject::ChangeExtensionUpdateOrder(std::string extensionName, int order)
+    {
+        int updateIndex = GetExtensionUpdateOrder(extensionName);
+
+        if(updateIndex == -1)
+            return;
+        
+        if(order < 0 || order >= GetExtensionsCount())
+            return;
+
+        //https://stackoverflow.com/questions/45447361/how-to-move-certain-elements-of-stdvector-to-a-new-index-within-the-vector
+        if (updateIndex > order)
+            std::rotate(ExtensionsUpdateOrder.rend() - updateIndex - 1, ExtensionsUpdateOrder.rend() - updateIndex, ExtensionsUpdateOrder.rend() - order);
+        else        
+            std::rotate(ExtensionsUpdateOrder.begin() + updateIndex, ExtensionsUpdateOrder.begin() + updateIndex + 1, ExtensionsUpdateOrder.begin() + order + 1);
     }
 
     void BaseGUIObject::AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback)
@@ -809,11 +881,11 @@ namespace ssGUI
             return;
         }
         
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-        for(auto extension : Extensions)
-            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        for(auto extension : ExtensionsDrawOrder)
+            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
         drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
         DrawingVerticies.clear();
@@ -835,13 +907,12 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
-        
-        for(auto extension : Extensions)
-            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
-        endOfUpdate:;
-        for(auto extension : Extensions)
-            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
         FUNC_DEBUG_EXIT();
     }

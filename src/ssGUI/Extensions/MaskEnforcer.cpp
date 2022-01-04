@@ -90,6 +90,9 @@ namespace ssGUI::Extensions
             return;
         }
 
+        if(Container->GetExtensionDrawOrder(GetExtensionName()) != Container->GetExtensionsCount() - 1)
+            Container->ChangeExtensionDrawOrder(GetExtensionName(), Container->GetExtensionsCount() - 1);
+
         //Check if there's any mouse input
         if(IsPreUpdate)
         {
