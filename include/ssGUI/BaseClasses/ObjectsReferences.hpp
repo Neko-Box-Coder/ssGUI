@@ -2,6 +2,7 @@
 #define OBJECTS_REFERENCES
 
 #include <unordered_map>
+#include <vector>
 
 namespace ssGUI
 {
@@ -47,6 +48,8 @@ namespace ssGUI
 
             virtual ssGUIObjectIndex GetObjectIndex(ssGUI::GUIObject* obj) const;
             virtual bool IsObjectReferenceExist(ssGUI::GUIObject* obj) const;
+
+            virtual std::vector<ssGUIObjectIndex> GetListOfObjectsIndices();
 
             virtual void CleanUp();
 

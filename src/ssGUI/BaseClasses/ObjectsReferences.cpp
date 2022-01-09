@@ -23,13 +23,18 @@ namespace ssGUI
         //Iterate all objects references and add external dependencies
         for(auto it : ObjectsReferencesTable)
         {
-            if(it.second == nullptr)
+            if(it.second != nullptr)
             {
-                DEBUG_LINE("Invalid record found");
-                DEBUG_EXIT_PROGRAM();
+                #if USE_DEBUG
+                DEBUG_LINE("Adding external dependency to "<<it.second);
+                #endif
+                it.second->Internal_GetObjectsReferences()->AddExternalDependency(this, it.first);
             }
             else
-                it.second->Internal_GetObjectsReferences()->AddExternalDependency(this, it.first);
+            {
+                DEBUG_LINE("Invalid object reference found!");
+                DEBUG_EXIT_PROGRAM();
+            }
         }
         
         FUNC_DEBUG_EXIT();
@@ -191,6 +196,16 @@ namespace ssGUI
             return false;
 
         return ReverseObjectsReferencesTable.find(obj) != ReverseObjectsReferencesTable.end();
+    }
+
+    std::vector<ssGUIObjectIndex> ObjectsReferences::GetListOfObjectsIndices()
+    {
+        std::vector<ssGUIObjectIndex> indices = std::vector<ssGUIObjectIndex>();
+
+        for(auto it : ObjectsReferencesTable)
+            indices.push_back(it.first);
+        
+        return indices;
     }
 
     void ObjectsReferences::CleanUp()

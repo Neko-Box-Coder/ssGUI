@@ -15,6 +15,8 @@
 #include <unordered_set>
 #include <unordered_map>
 
+//TODO : Maybe replace GUIObject one day with this instead
+
 //namespace: ssGUI
 namespace ssGUI
 {
@@ -67,6 +69,8 @@ namespace ssGUI
             virtual void SyncGlobalPosition() override;
             //virtual void DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset);
             virtual void NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+            virtual ssGUI::GUIObject* CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot);
+            virtual void CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj);
 
         public:
             BaseGUIObject();
@@ -204,6 +208,8 @@ namespace ssGUI
             //function: GetExtension
             virtual ssGUI::Extensions::Extension* GetExtension(std::string extensionName) override;
             
+            virtual std::vector<ssGUI::Extensions::Extension*> GetListOfExtensions() override;
+
             //function: IsExtensionExist
             virtual bool IsExtensionExist(std::string extensionName) const override;
             
@@ -245,8 +251,6 @@ namespace ssGUI
             
             //function: Internal_Update
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
-            
-            virtual GUIObject* Internal_Clone(int currentindex, std::vector<ssGUI::GUIObject*>& objsToCopy, std::vector<ssGUI::GUIObject*>& copiedObjs, std::vector<int>& clonedParents, bool cloneChildren) override;
 
             //function: Clone
             virtual GUIObject* Clone(bool cloneChildren) override;

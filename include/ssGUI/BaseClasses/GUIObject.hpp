@@ -158,6 +158,8 @@ namespace ssGUI
             
             //function: GetExtension
             virtual ssGUI::Extensions::Extension* GetExtension(std::string extensionName) = 0;
+
+            virtual std::vector<ssGUI::Extensions::Extension*> GetListOfExtensions() = 0;
             
             //function: IsExtensionExist
             virtual bool IsExtensionExist(std::string extensionName) const = 0;
@@ -200,8 +202,6 @@ namespace ssGUI
             
             //function: Internal_Update
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) = 0;
-    
-            virtual GUIObject* Internal_Clone(int currentindex, std::vector<ssGUI::GUIObject*>& objsToCopy, std::vector<ssGUI::GUIObject*>& copiedObjs, std::vector<int>& clonedParents, bool cloneChildren) = 0;
 
             //function: Clone
             virtual GUIObject* Clone(bool cloneChildren) = 0;    

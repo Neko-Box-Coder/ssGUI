@@ -16,7 +16,7 @@ namespace ssGUI
         BackgroundColour = other.GetBackgroundColour();
         UserCreated = other.IsUserCreated();
         ObjectDelete = other.Internal_IsDeleted();
-        HeapAllocated = other.IsHeapAllocated();
+        HeapAllocated = true;//other.IsHeapAllocated();
         CurrentObjectsReferences = other.CurrentObjectsReferences;
         DestroyEventCalled = other.DestroyEventCalled;
         Position = other.GetPosition();
@@ -177,6 +177,117 @@ namespace ssGUI
             RemoveEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME);
         }
     }
+
+    ssGUI::GUIObject* BaseGUIObject::CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot)
+    {
+        FUNC_DEBUG_ENTRY();
+        
+        //1. First get a list of objects needed to be cloned and create a hashmap of original objects with the index of it
+        std::vector<ssGUI::GUIObject*> originalObjsToClone = std::vector<ssGUI::GUIObject*>();
+        std::unordered_map<ssGUI::GUIObject*, int> originalObjsIndex = std::unordered_map<ssGUI::GUIObject*, int>();
+        std::vector<ssGUI::GUIObject*> clonedObjs = std::vector<ssGUI::GUIObject*>();
+
+        originalObjsToClone.push_back(originalRoot);
+        originalObjsIndex[originalRoot] = 0;
+        clonedObjs.push_back(clonedRoot);
+
+        int currentIndex = 0;
+        do
+        {
+            ssGUI::GUIObject* curObj = originalObjsToClone[currentIndex];
+            curObj->MoveChildrenIteratorToFirst();
+            while (!curObj->IsChildrenIteratorEnd())
+            {
+                originalObjsToClone.push_back(curObj->GetCurrentChild());
+                originalObjsIndex[curObj->GetCurrentChild()] = originalObjsToClone.size() - 1;
+                curObj->MoveChildrenIteratorNext();
+            }
+            currentIndex++;
+        }
+        while (currentIndex < originalObjsToClone.size());
+
+        //2. Clone the objects (starting from 1 because root is cloned)
+        for(int i = 1; i < originalObjsToClone.size(); i++)
+        {
+            auto curClonedObj = originalObjsToClone[i]->Clone(false);
+            curClonedObj->SetParent(nullptr);
+            clonedObjs.push_back(curClonedObj);
+        }
+
+        //3. Set ObjectsReferences for both the object itself and extension using the hashmap
+        for(int i = 0; i < clonedObjs.size(); i++)
+        {
+            auto curClonedObj = clonedObjs[i];
+            auto curObjOR = clonedObjs[i]->Internal_GetObjectsReferences();
+            auto curObjORindices = curObjOR->GetListOfObjectsIndices();
+
+            //Fix the object's objects references
+            for(auto orIndex : curObjORindices)
+            {
+                auto refObj = curObjOR->GetObjectReference(orIndex);
+
+                //if the referencing object is found to be cloned
+                if(originalObjsIndex.find(refObj) != originalObjsIndex.end())
+                    curObjOR->SetObjectReference(orIndex, clonedObjs[originalObjsIndex[refObj]]);
+            }
+
+            //Fix the object's extensions' objects references
+            auto extensionsList = curClonedObj->GetListOfExtensions();
+            for(auto extension : extensionsList)
+            {
+                auto curExtensionOR = extension->Internal_GetObjectsReferences();
+                if(curExtensionOR == nullptr)
+                    continue;
+                
+                auto curExtensionORindices = curExtensionOR->GetListOfObjectsIndices();
+                for(auto orIndex : curExtensionORindices)
+                {
+                    auto refObj = curObjOR->GetObjectReference(orIndex);
+
+                    //if the referencing object is found to be cloned
+                    if(originalObjsIndex.find(refObj) != originalObjsIndex.end())
+                        curObjOR->SetObjectReference(orIndex, clonedObjs[originalObjsIndex[refObj]]);
+                }
+            }
+        }
+
+        //4. Set the correct parent to the cloned objects (Don't need to set root's parent as it is already set when it was cloned)
+        for(int i = 1; i < clonedObjs.size(); i++)
+        {
+            auto oriParent = originalObjsToClone[i]->GetParent();
+            if(originalObjsIndex.find(oriParent) == originalObjsIndex.end())
+            {
+                DEBUG_LINE("Unable to clone, original parent can't be found: "<<oriParent);
+                DEBUG_EXIT_PROGRAM();
+                return nullptr;
+            }
+            
+            clonedObjs[i]->SetParent(clonedObjs[originalObjsIndex.at(oriParent)]);
+        }
+
+        FUNC_DEBUG_EXIT();
+        return clonedRoot;
+    }
+
+    void BaseGUIObject::CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj)
+    {
+        for(auto extension : Extensions)
+        {
+            if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
+                clonedObj->AddExtension(extension.second->Clone(clonedObj));
+            else
+                clonedObj->GetExtension(extension.first)->Copy(extension.second);
+        }
+
+        for(auto eventCallback : EventCallbacks)
+        {
+            std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
+            
+            if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+                clonedObj->AddEventCallback(eventCallback.second->Clone(clonedObj, false));
+        }
+    }
+
 
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
                                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
@@ -734,6 +845,17 @@ namespace ssGUI
         return Extensions[extensionName];
     }
 
+    std::vector<ssGUI::Extensions::Extension*> BaseGUIObject::GetListOfExtensions()
+    {
+        std::vector<ssGUI::Extensions::Extension*> returnVector = std::vector<ssGUI::Extensions::Extension*>();
+        
+        for(auto extension : Extensions)
+            returnVector.push_back(extension.second);
+        
+        return returnVector;
+    }
+    
+
     bool BaseGUIObject::IsExtensionExist(std::string extensionName) const
     {
         return Extensions.find(extensionName) != Extensions.end();
@@ -917,45 +1039,16 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* BaseGUIObject::Internal_Clone(int currentindex, std::vector<ssGUI::GUIObject*>& objsToCopy, std::vector<ssGUI::GUIObject*>& copiedObjs, std::vector<int>& clonedParents, bool cloneChildren)
-    {
-        //Local copy
-        BaseGUIObject* temp = new BaseGUIObject(*this);
-
-        // if(clonedParents[currentindex] == -1)
-        //     temp->SetParent(objsToCopy[0]->GetParent());
-        // else 
-        //     temp->SetParent(copiedObjs[clonedParents[currentindex]]);
-
-
-        // if(cloneChildren)
-        // {
-
-        // }
-    
-        return temp;
-    }
-
     GUIObject* BaseGUIObject::Clone(bool cloneChildren)
     {
-        //TODO : implement clone children
         BaseGUIObject* temp = new BaseGUIObject(*this);
+        CloneExtensionsAndEventCallbacks(temp);   
         
-
-
-        // for(auto extension : Extensions)
-        // {
-        //     if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
-        //         temp->AddExtension(extension.second->Clone(temp));
-        // }
-
-        // for(auto eventCallback : EventCallbacks)
-        // {
-        //     std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
-            
-        //     if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-        //         temp->AddEventCallback(eventCallback.second->Clone(temp, originalObjs, tempVec));
-        // }
+        if(cloneChildren)
+        {
+            if(CloneChildren(this, temp) == nullptr)
+                return nullptr;
+        }
 
         return temp;
     }

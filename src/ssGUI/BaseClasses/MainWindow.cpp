@@ -222,20 +222,13 @@ namespace ssGUI
     GUIObject* MainWindow::Clone(bool cloneChildren)
     {
         MainWindow* temp = new MainWindow(*this);
-
-        // for(auto extension : Extensions)
-        // {
-        //     if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
-        //         temp->AddExtension(extension.second->Clone(this));
-        // }
-
-        // for(auto eventCallback : EventCallbacks)
-        // {
-        //     std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
-
-        //     if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-        //         temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
-        // }
+        CloneExtensionsAndEventCallbacks(temp);   
+        
+        if(cloneChildren)
+        {
+            if(CloneChildren(this, temp) == nullptr)
+                return nullptr;
+        }
 
         return temp;
     }
