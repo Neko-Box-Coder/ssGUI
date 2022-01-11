@@ -870,10 +870,9 @@ namespace ssGUI
         // ssGUI::ObjectsReferences* ptr = targetExtension->Internal_GetObjectsReferences();
         // if(ptr != nullptr)
         //     ptr->CleanUp();
-        
-        Extensions.erase(extensionName);
         ExtensionsDrawOrder.erase(ExtensionsDrawOrder.begin() + GetExtensionDrawOrder(extensionName));
         ExtensionsUpdateOrder.erase(ExtensionsUpdateOrder.begin() + GetExtensionUpdateOrder(extensionName));
+        Extensions.erase(extensionName);
         delete targetExtension;
     }
 

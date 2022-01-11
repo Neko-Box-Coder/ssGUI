@@ -835,9 +835,14 @@ namespace ssGUI::Extensions
     void Mask::RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
         FUNC_DEBUG_ENTRY();
+
+        if(Container == nullptr)
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
         
         std::queue<ssGUI::GUIObject*> children;
-
         if(!includeParent)
         {            
             Container->MoveChildrenIteratorToFirst();
@@ -856,8 +861,8 @@ namespace ssGUI::Extensions
 
             if(child->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
             {
-                ssGUI::Extensions::MaskEnforcer* enforcer = dynamic_cast<ssGUI::Extensions::MaskEnforcer*>(
-                                                child->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME));
+                ssGUI::Extensions::MaskEnforcer* enforcer = dynamic_cast<ssGUI::Extensions::MaskEnforcer*>
+                    (child->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME));
                 
                 child->RemoveExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME);
             }
