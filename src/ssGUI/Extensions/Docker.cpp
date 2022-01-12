@@ -324,10 +324,10 @@ namespace ssGUI::Extensions
             bool previewDrawn = false;
 
             //Center
-            if(inputInterface->GetCurrentMousePosition(mainWindow).x >= containerPos.x + (containerSize.x - triggerSize.x) * 0.5 && 
-                inputInterface->GetCurrentMousePosition(mainWindow).x <= containerPos.x + (containerSize.x + triggerSize.x) * 0.5 &&
-                inputInterface->GetCurrentMousePosition(mainWindow).y >= containerPos.y + titleBarOffset + (containerSize.y - triggerSize.y) * 0.5 && 
-                inputInterface->GetCurrentMousePosition(mainWindow).y <= containerPos.y + titleBarOffset + (containerSize.y + triggerSize.y) * 0.5)
+            if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x + (containerSize.x - triggerSize.x) * 0.5 && 
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + (containerSize.x + triggerSize.x) * 0.5 &&
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset + (containerSize.y - triggerSize.y) * 0.5 && 
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + titleBarOffset + (containerSize.y + triggerSize.y) * 0.5)
             {
                 DrawPreview();
                 previewDrawn = true;
@@ -339,8 +339,8 @@ namespace ssGUI::Extensions
             }
             
             //Check if the cursor is inside the window
-            if(inputInterface->GetCurrentMousePosition(mainWindow).x >= containerPos.x && inputInterface->GetCurrentMousePosition(mainWindow).x <= containerPos.x + containerSize.x &&
-                inputInterface->GetCurrentMousePosition(mainWindow).y >= containerPos.y + titleBarOffset && inputInterface->GetCurrentMousePosition(mainWindow).y <= containerPos.y + containerSize.y)
+            if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + containerSize.x &&
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset && inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + containerSize.y)
             {
                 if(!previewDrawn)
                 {

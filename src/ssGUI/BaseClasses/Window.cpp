@@ -1,5 +1,7 @@
 #include "ssGUI/BaseClasses/Window.hpp"
 
+#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+
 namespace ssGUI
 {
     void Window::SetWindowDragState(ssGUI::Enums::WindowDragState dragState)
@@ -542,7 +544,7 @@ namespace ssGUI
         for(auto extension : ExtensionsUpdateOrder)
             Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
         glm::ivec2 mouseDelta = currentMousePos - MouseDownPosition;
 
         // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";

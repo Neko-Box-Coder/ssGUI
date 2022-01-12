@@ -1124,7 +1124,8 @@ namespace ssGUI::Extensions
         }
 
         //Check for window for laying out children differently
-        if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && static_cast<ssGUI::Window*>(Container)->HasTitlebar())
+        if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+            static_cast<ssGUI::Window*>(Container)->HasTitlebar())
         {
             if(IsHorizontalLayout())
             {

@@ -1,4 +1,5 @@
 #include "ssGUI/BaseClasses/Button.hpp"
+#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
 
 namespace ssGUI
 {
@@ -191,7 +192,7 @@ namespace ssGUI
             extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //On mouse down
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
         if (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
         {
             //User pressing down on button

@@ -137,18 +137,18 @@ namespace ssGUI::Backend
         return CurrentKeyPresses;
     }
 
-    glm::ivec2 BackendSystemInputSFML::GetLastMousePosition(ssGUI::GUIObject* mainWindow) const
+    glm::ivec2 BackendSystemInputSFML::GetLastMousePosition(ssGUI::MainWindow* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return LastMousePosition - mainWindow->GetPosition() - dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetPositionOffset();
+            return LastMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
         else
             return LastMousePosition;
     }
 
-    glm::ivec2 BackendSystemInputSFML::GetCurrentMousePosition(ssGUI::GUIObject* mainWindow) const
+    glm::ivec2 BackendSystemInputSFML::GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return CurrentMousePosition - mainWindow->GetPosition() - dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetPositionOffset();
+            return CurrentMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
         else
             return CurrentMousePosition;
     }

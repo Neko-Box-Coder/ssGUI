@@ -52,11 +52,21 @@ namespace ssGUI
         BackendMainWindow->SetFocus(focus);
     }
 
-    glm::ivec2 MainWindow::GetPositionOffset()
+    glm::ivec2 MainWindow::GetPositionOffset() const
     {
         return BackendMainWindow->GetPositionOffset();
     }
 
+    glm::ivec2 MainWindow::GetDisplayPosition() const
+    {
+        return BackendMainWindow->GetPosition();
+    }
+
+    void MainWindow::SetDisplayPosition(glm::ivec2 pos)
+    {
+        BackendMainWindow->SetPosition(pos);
+    }
+    
     void MainWindow::Internal_Draw()
     {
         Internal_Draw(BackendDrawing, this, glm::ivec2());
@@ -111,20 +121,20 @@ namespace ssGUI
 
     glm::ivec2 MainWindow::GetPosition() const
     {
-        return BackendMainWindow->GetPosition();
+        return glm::ivec2(0, 0);// BackendMainWindow->GetPosition();
     }
     void MainWindow::SetPosition(glm::ivec2 position)
     {
-        BackendMainWindow->SetPosition(position);
+        //BackendMainWindow->SetPosition(position);
     }
 
     glm::ivec2 MainWindow::GetGlobalPosition()
     {
-        return BackendMainWindow->GetPosition();
+        return glm::ivec2(0, 0);//return BackendMainWindow->GetPosition();
     }
     void MainWindow::SetGlobalPosition(glm::ivec2 position)
     {
-        BackendMainWindow->SetPosition(position);
+        //BackendMainWindow->SetPosition(position);
     }
 
     glm::ivec2 MainWindow::GetSize() const

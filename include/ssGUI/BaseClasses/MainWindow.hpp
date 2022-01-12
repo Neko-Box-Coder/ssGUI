@@ -46,7 +46,11 @@ namespace ssGUI
             virtual void SetFocus(bool focus);
             
             //function: GetPositionOffset
-            virtual glm::ivec2 GetPositionOffset();
+            virtual glm::ivec2 GetPositionOffset() const;
+
+            virtual glm::ivec2 GetDisplayPosition() const;
+
+            virtual void SetDisplayPosition(glm::ivec2 pos);
             
             //function: GetPosition
             virtual glm::ivec2 GetPosition() const override;

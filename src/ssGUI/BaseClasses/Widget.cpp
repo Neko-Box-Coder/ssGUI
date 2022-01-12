@@ -1,5 +1,7 @@
 #include "ssGUI/BaseClasses/Widget.hpp"
 
+#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+
 namespace ssGUI
 {
     Widget::Widget() :  Focused(false), Interactable(true), BlockInput(true) 
@@ -124,7 +126,7 @@ namespace ssGUI
 
         //Mouse Input blocking
         {
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
 
         bool mouseInWindowBoundX = false;
         bool mouseInWindowBoundY = false;

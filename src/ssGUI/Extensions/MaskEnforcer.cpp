@@ -1,5 +1,7 @@
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 
+#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+
 namespace ssGUI::Extensions
 {
     MaskEnforcer::MaskEnforcer(MaskEnforcer const& other)
@@ -98,7 +100,7 @@ namespace ssGUI::Extensions
         {
             //If so, check if the cursor is inside the mask
             if(!static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(CurrentMask)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME))
-                ->IsPointContainedInMask(inputInterface->GetCurrentMousePosition(mainWindow)))
+                ->IsPointContainedInMask(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow))))
             {
                 //If not, cut off the input
                 BlockingContainerInput = true;

@@ -68,10 +68,10 @@ namespace ssGUI::Backend
             ssGUI::KeyPresses const & GetCurrentKeyPresses() override;
 
             //function: GetLastMousePosition
-            glm::ivec2 GetLastMousePosition(ssGUI::GUIObject* mainWindow) const override;
+            glm::ivec2 GetLastMousePosition(ssGUI::MainWindow* mainWindow) const override;
             
             //function: GetCurrentMousePosition
-            glm::ivec2 GetCurrentMousePosition(ssGUI::GUIObject* mainWindow) const override;
+            glm::ivec2 GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const override;
             
             //function: SetMousePosition
             void SetMousePosition(glm::ivec2 position) override;          
