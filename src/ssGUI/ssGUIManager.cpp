@@ -49,20 +49,24 @@ namespace ssGUI
             CheckMainWindowExistence();
 
             //Dispatch Update event
+            FUNC_DEBUG_ENTRY("ssGUIManager Custom Update Event");
             for(int i = 0; i < OnUpdateEventListeners.size(); i++)
             {                
                 if(OnUpdateEventListenersValid[i])
                     OnUpdateEventListeners[i]();
             }
+            FUNC_DEBUG_EXIT("ssGUIManager Custom Update Event");
 
             //Dispatch Custom Rendering event
             if(IsCustomRendering)
             {
+                FUNC_DEBUG_ENTRY("ssGUIManager Custom Rendering Event");
                 for(int i = 0; i < OnCustomRenderEventListeners.size(); i++)
                 {
                     if(OnCustomRenderEventListenersValid[i])
                         OnCustomRenderEventListeners[i](MainWindowPList);
                 }
+                FUNC_DEBUG_EXIT("ssGUIManager Custom Rendering Event");
             }
             else
                 Render();
@@ -72,11 +76,13 @@ namespace ssGUI
             #endif
 
             //Dispatch Post Rendering Update event
+            FUNC_DEBUG_ENTRY("ssGUIManager Post Rendering Update Event");
             for(int i = 0; i < OnPostRenderingUpdateEventListeners.size(); i++)
             {
                 if(OnPostRenderingUpdateEventListenersValid[i])
                     OnPostRenderingUpdateEventListeners[i]();
             }
+            FUNC_DEBUG_EXIT("ssGUIManager Post Rendering Update Event");
 
             if(lastCursor != BackendInput->GetCursorType())
                 UpdateCursor();
@@ -95,7 +101,6 @@ namespace ssGUI
             #if REFRESH_CONSOLE
                 Clear();
             #endif
-
         }
     }
     
