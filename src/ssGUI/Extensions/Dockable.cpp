@@ -6,6 +6,8 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/Docker.hpp"
 
+//TODO : Remove border for new empty docker and remove padding
+
 namespace ssGUI::Extensions
 {
     bool Dockable::GlobalDockMode = false;
@@ -21,6 +23,7 @@ namespace ssGUI::Extensions
         TopLevelParent = other.TopLevelParent;
         CurrentObjectsReferences = other.CurrentObjectsReferences;
         UseTriggerPercentage = other.IsUseTriggerPercentage();
+        TriggerPercentage = other.GetTriggerPercentage();
         TriggerPixel = other.GetTriggerPixel();
         TriggerAreaColor = other.GetTriggerAreaColor();
         DockPreviewColor = other.GetDockPreviewColor();

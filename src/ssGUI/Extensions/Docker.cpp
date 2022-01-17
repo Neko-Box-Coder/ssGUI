@@ -398,7 +398,11 @@ namespace ssGUI::Extensions
             {
                 ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
                 if(Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+                {
+                    bool originalOrientation = static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsHorizontalLayout();
                     static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->Copy(parentLayout);
+                    static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetHorizontalLayout(originalOrientation);
+                }
                 else
                     parentLayout->Clone(Container);            
             }
