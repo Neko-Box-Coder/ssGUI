@@ -561,7 +561,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Layout::GetChildrenDetails(std::vector<int>& childrenPos, std::vector<int>& childrenSize, std::vector<int>& childrenMinSize,
+    void Layout::GetAndValidateChildrenDetails(std::vector<int>& childrenPos, std::vector<int>& childrenSize, std::vector<int>& childrenMinSize,
                                     std::vector<int>& childrenMaxSize, glm::ivec2 containerPos, glm::ivec2 containerSize)
     {
         FUNC_DEBUG_ENTRY();
@@ -583,11 +583,13 @@ namespace ssGUI::Extensions
             
             if(IsHorizontalLayout())
             {
-                int verticalPos = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW ? 
+                int verticalPos = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+                                    static_cast<ssGUI::Window*>(Container)->HasTitlebar() ? 
                                     containerPos.y + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
                                     containerPos.y + GetPadding();     
 
-                int verticalSize = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW ? 
+                int verticalSize = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+                                    static_cast<ssGUI::Window*>(Container)->HasTitlebar() ? 
                                     containerSize.y - GetPadding() - dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
                                     containerSize.y - GetPadding() * 2;
 
@@ -932,8 +934,8 @@ namespace ssGUI::Extensions
             
             if(MinMaxSizeChangedEventIndices.find(childIndex) == MinMaxSizeChangedEventIndices.end())
             {
-                MinMaxSizeChangedEventIndices[childIndex] = child->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener(
-                    std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1));
+                MinMaxSizeChangedEventIndices[childIndex] = child->GetEventCallback(onMinMaxSizeChangedEventName)->
+                    AddEventListener(std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1));
             }
         }
 
@@ -956,7 +958,6 @@ namespace ssGUI::Extensions
         // }
 
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
-
         //If not present, no need to continue
         if(childIndex == -1)
         {
@@ -995,10 +996,8 @@ namespace ssGUI::Extensions
             && MinMaxSizeChangedEventIndices.find(childIndex) != MinMaxSizeChangedEventIndices.end())
         {                
             child->GetEventCallback(onMinMaxSizeChangedEventName)->RemoveEventListener(MinMaxSizeChangedEventIndices[childIndex]);
-
             if(child->GetEventCallback(onMinMaxSizeChangedEventName)->GetEventListenerCount() == 0)
                 child->RemoveEventCallback(onMinMaxSizeChangedEventName);
-
             MinMaxSizeChangedEventIndices.erase(childIndex);
         }
 
@@ -1054,10 +1053,6 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-
-    
-    
-
     //Override from Extension
     void Layout::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
@@ -1108,7 +1103,7 @@ namespace ssGUI::Extensions
         glm::ivec2 containerPos = Container->GetGlobalPosition();
         glm::ivec2 containerSize = Container->GetSize();
         
-        GetChildrenDetails(childrenPos, childrenSize, childrenMinSize, childrenMaxSize, containerPos, containerSize);
+        GetAndValidateChildrenDetails(childrenPos, childrenSize, childrenMinSize, childrenMaxSize, containerPos, containerSize);
 
         //Check if size is different from last update (Iterating from back to front so to get the first child with size change)
         int lastChildChangeIndex = -1;

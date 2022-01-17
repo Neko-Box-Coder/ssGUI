@@ -63,7 +63,7 @@ namespace ssGUI::Extensions
 
             void DisableChildrenResizingInUpdate();
 
-            void GetChildrenDetails(std::vector<int>& childrenPos, std::vector<int>& childrenSize, std::vector<int>& childrenMinSize,
+            void GetAndValidateChildrenDetails(std::vector<int>& childrenPos, std::vector<int>& childrenSize, std::vector<int>& childrenMinSize,
                                     std::vector<int>& childrenMaxSize, glm::ivec2 containerPos, glm::ivec2 containerSize);
             
             void GetLastDifferentChild(std::vector<int>& childrenPos, std::vector<int>& childrenSize, int& sizeDiff, int& lastChildChangeIndex);
