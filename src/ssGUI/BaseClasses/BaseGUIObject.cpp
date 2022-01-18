@@ -974,7 +974,9 @@ namespace ssGUI
         if(!IsEventCallbackExist(eventCallbackName))
             return;
 
+        auto ecb = EventCallbacks.at(eventCallbackName);
         EventCallbacks.erase(eventCallbackName);
+        delete ecb;
     }
 
     void BaseGUIObject::AddTag(std::string tag)
