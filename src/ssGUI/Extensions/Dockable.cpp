@@ -6,8 +6,6 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/Docker.hpp"
 
-//TODO : Remove border for new empty docker and remove padding
-
 namespace ssGUI::Extensions
 {
     bool Dockable::GlobalDockMode = false;
@@ -625,6 +623,7 @@ namespace ssGUI::Extensions
             newParent->SetTitlebar(false);
             newParent->SetBackgroundColour(glm::u8vec4(0, 0, 0, 0));
             newParent->SetResizeType(ssGUI::Enums::ResizeType::NONE);
+            newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         }
 
         //Restore order

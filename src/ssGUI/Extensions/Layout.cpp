@@ -121,7 +121,7 @@ namespace ssGUI::Extensions
 
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
                         OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(5), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
+                        Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
                         ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
                         ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
     {}

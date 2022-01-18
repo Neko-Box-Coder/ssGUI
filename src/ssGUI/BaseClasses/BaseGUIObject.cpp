@@ -8,7 +8,6 @@ namespace ssGUI
     BaseGUIObject::BaseGUIObject(BaseGUIObject const& other)
     {
         Parent = -1;
-        SetParent(other.GetParent()); //Note : Reason of using SetParent is to inform the parent to add this as a child
         Children = std::list<ssGUIObjectIndex>();
         CurrentChild = Children.end();
         CurrentChildIteratorEnd = true;
@@ -35,6 +34,8 @@ namespace ssGUI
         ExtensionsUpdateOrder = std::vector<std::string>();
         EventCallbacks = std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*>();
         CurrentTags = other.CurrentTags;// std::unordered_set<std::string>();
+
+        SetParent(other.GetParent()); //Note : Reason of using SetParent is to inform the parent to add this as a child
     }
     
     void BaseGUIObject::SyncPosition()
@@ -271,6 +272,7 @@ namespace ssGUI
 
     void BaseGUIObject::CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj)
     {
+        FUNC_DEBUG_ENTRY();
         for(auto extension : Extensions)
         {
             if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
@@ -286,6 +288,8 @@ namespace ssGUI
             if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
                 clonedObj->AddEventCallback(eventCallback.second->Clone(clonedObj, false));
         }
+
+        FUNC_DEBUG_EXIT();
     }
 
 
@@ -401,14 +405,17 @@ namespace ssGUI
         #endif
 
         ssGUI::GUIObject* originalParent = nullptr;
-
         //If setting parent to the same, just need to move this to the end of child
         if(newParent == CurrentObjectsReferences.GetObjectReference(Parent))
         {
-            //DEBUG_LINE("Invalid parent detected");
-            //DEBUG_EXIT_PROGRAM();
+            auto result = newParent->FindChild(this);
+            if(!result)
+            {
+                DEBUG_LINE("Invalid parent detected");
+                DEBUG_EXIT_PROGRAM();
+                return;
+            }
 
-            newParent->FindChild(this);
             auto it = newParent->GetCurrentChildReferenceIterator();
             newParent->MoveChildrenIteratorToLast();
             auto lastIt = newParent->GetCurrentChildReferenceIterator();
@@ -945,7 +952,7 @@ namespace ssGUI
     {
         if(IsEventCallbackExist(eventCallback->GetEventCallbackName()))
             return;
-        
+
         EventCallbacks[eventCallback->GetEventCallbackName()] = eventCallback;
     }
 
@@ -1040,15 +1047,20 @@ namespace ssGUI
 
     GUIObject* BaseGUIObject::Clone(bool cloneChildren)
     {
+        FUNC_DEBUG_ENTRY();
         BaseGUIObject* temp = new BaseGUIObject(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
+            {
+                FUNC_DEBUG_EXIT();
                 return nullptr;
+            }
         }
 
+        FUNC_DEBUG_EXIT();
         return temp;
     }
 }

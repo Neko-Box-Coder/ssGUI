@@ -190,15 +190,20 @@ namespace ssGUI
 
     GUIObject* Image::Clone(bool cloneChildren)
     {
+        FUNC_DEBUG_ENTRY();
         Image* temp = new Image(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
+            {
+                FUNC_DEBUG_EXIT();
                 return nullptr;
+            }
         }
-
+        
+        FUNC_DEBUG_EXIT();
         return temp;
     }
 

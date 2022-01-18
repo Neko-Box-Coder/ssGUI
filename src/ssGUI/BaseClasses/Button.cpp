@@ -249,15 +249,20 @@ namespace ssGUI
 
     GUIObject* Button::Clone(bool cloneChildren)
     {
+        FUNC_DEBUG_ENTRY();
         Button* temp = new Button(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
+            {
+                FUNC_DEBUG_EXIT();
                 return nullptr;
+            }
         }
 
+        FUNC_DEBUG_EXIT();
         return temp;
     }
 }

@@ -231,15 +231,20 @@ namespace ssGUI
 
     GUIObject* MainWindow::Clone(bool cloneChildren)
     {
+        FUNC_DEBUG_ENTRY();
         MainWindow* temp = new MainWindow(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
+            {
+                FUNC_DEBUG_EXIT();
                 return nullptr;
+            }
         }
-
+        
+        FUNC_DEBUG_EXIT();
         return temp;
     }
 }

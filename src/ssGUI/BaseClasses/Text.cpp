@@ -690,15 +690,20 @@ namespace ssGUI
 
     GUIObject* Text::Clone(bool cloneChildren)
     {
+        FUNC_DEBUG_ENTRY();
         Text* temp = new Text(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
+            {
+                FUNC_DEBUG_EXIT();
                 return nullptr;
+            }
         }
 
+        FUNC_DEBUG_EXIT();
         return temp;
     }
 

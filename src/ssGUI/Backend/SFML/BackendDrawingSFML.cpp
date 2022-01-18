@@ -149,8 +149,8 @@ namespace ssGUI::Backend
     {      
         if(vertices.size() != colours.size() || vertices.empty())
         {
-            std::cout<<"vertices size"<<vertices.size()<<"\n";
-            std::cout<<"colours size"<<colours.size()<<"\n";
+            // std::cout<<"vertices size: "<<vertices.size()<<"\n";
+            // std::cout<<"colours size: "<<colours.size()<<"\n";
             return false;
         }
         
