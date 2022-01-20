@@ -15,15 +15,13 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //TODO : Add original text
-    //TODO : allow to get show text and original text
-
-
-    
     //class: Text
     class Text : public Widget
     {
         private:
+            Text& operator=(Text const& other);
+
+        protected:
             std::wstring CurrentText;
 
             bool CurrentTextChanged;
@@ -44,9 +42,8 @@ namespace ssGUI
             int LineSpace;
             float TabSize;
 
-            Text& operator=(Text const& other);
+            static ssGUI::Font* DefaultFont;
 
-        protected:
             Text(Text const& other);
 
             virtual void DrawCharacter(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset,
@@ -103,7 +100,6 @@ namespace ssGUI
 
             virtual ssGUI::Enums::TextAlignmentVertical GetVerticalAlignment();
 
-
             //function: SetFont
             virtual void SetFont(ssGUI::Font* font);
             
@@ -135,6 +131,10 @@ namespace ssGUI
             
             //function: GetTabSize
             virtual float GetTabSize() const;
+
+            static void SetDefaultFont(ssGUI::Font* font);
+
+            static ssGUI::Font* GetDefaultFont();
             
             //function: GetType
             virtual ssGUI::Enums::GUIObjectType GetType() const override;

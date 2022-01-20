@@ -2,6 +2,25 @@
 
 namespace ssGUI
 {    
+    ssGUI::Font* Text::DefaultFont = []()->ssGUI::Font*
+    {
+        FUNC_DEBUG_ENTRY("LoadDefaultFont");
+        auto font = new ssGUI::Font();
+        if(!font->GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
+        {
+            DEBUG_LINE();
+            delete font;
+            return nullptr;
+        }
+        else
+        {
+            DEBUG_LINE();
+
+            return font;
+        }
+        FUNC_DEBUG_EXIT("LoadDefaultFont");
+    }();    //Brackets at the end to call this lambda, pretty cool.
+    
     Text::Text(Text const& other) : Widget(other)
     {
         CurrentText = other.GetText();
@@ -68,7 +87,7 @@ namespace ssGUI
         CurrentTextChanged = false;
         WrappingOverflow = false;
 
-        if(CurrentFont == nullptr)
+        if(GetFont() == nullptr)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -122,7 +141,7 @@ namespace ssGUI
             CharactersInfos.push_back(ssGUI::CharacterInfo());
         }
 
-        ssGUI::Backend::BackendFontInterface* fontInterface = CurrentFont->GetBackendFontInterface();
+        ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
         int whitespaceWidth = fontInterface->GetCharacterInfo(L' ', FontSize).Advance + GetCharacterSpace();
         
         //If word wrapping mode, find out the lengths of all the words
@@ -549,6 +568,9 @@ namespace ssGUI
 
     ssGUI::Font* Text::GetFont()
     {
+        if(CurrentFont == nullptr)
+            return DefaultFont;
+
         return CurrentFont;
     }
 
@@ -602,6 +624,17 @@ namespace ssGUI
         return TabSize;
     }
 
+    void Text::SetDefaultFont(ssGUI::Font* font)
+    {
+        delete DefaultFont;
+        DefaultFont = font;
+    }
+
+    ssGUI::Font* Text::GetDefaultFont()
+    {
+        return DefaultFont;
+    }
+
     ssGUI::Enums::GUIObjectType Text::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
@@ -649,14 +682,17 @@ namespace ssGUI
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
 
-        if(CurrentFont == nullptr)
+        if(GetFont() == nullptr)
+        {
+            DEBUG_LINE();
             goto endOfDrawing;
+        }
 
         {
         if(CurrentTextChanged)
             ComputeCharactersPositionAndSize();
         
-        ssGUI::Backend::BackendFontInterface* fontInterface = CurrentFont->GetBackendFontInterface();
+        //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
 
         for (std::size_t i = 0; i < CurrentText.size(); i++)
         {
