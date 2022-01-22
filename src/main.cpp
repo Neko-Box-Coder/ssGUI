@@ -6,7 +6,7 @@
 #include "ssGUI/BaseClasses/Button.hpp"
 */
 
-int TabSpace = 0;
+
 #include <iostream>
 #include <vector>
 #include "glm/vec2.hpp"
@@ -17,7 +17,9 @@ int TabSpace = 0;
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+#include "ssGUI/Extensions/Mask.hpp"
 
 
 
@@ -72,8 +74,7 @@ void MoveWindow(ssGUI::ssGUIManager& manager, ssGUI::Window& window, ssGUI::Wind
 }
 
 
-
-
+/*// Cloning test
 int main()
 {
     ssGUI::MainWindow mainWindow;
@@ -91,13 +92,102 @@ int main()
     ssGUI::Window window2;
     DEBUG_LINE("window2: "<<&window2);
 
-    window2.SetBackgroundColour(glm::u8vec4(127, 255, 127, 255));
+    window2.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window2.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
+    window2.SetSize(glm::ivec2(150, 150));
+    window2.SetParent(&mainWindow);
+    
+
+    ssGUI::Extensions::Dockable* dock = new ssGUI::Extensions::Dockable();
+    ssGUI::Extensions::Dockable* dock2 = new ssGUI::Extensions::Dockable();
+    
+    window.AddExtension(dock);
+    window2.AddExtension(dock2);
+
+    ssGUI::Extensions::Docker* docker = new ssGUI::Extensions::Docker();
+    docker->SetChildrenDockerUseThisSettings(false);
+    
+    ssGUI::Extensions::Border* bor = new ssGUI::Extensions::Border();
+    ssGUI::Extensions::Mask* mask = new ssGUI::Extensions::Mask();
+    
+    mainWindow.AddExtension(new ssGUI::Extensions::Layout());
+    static_cast<ssGUI::Extensions::Layout*>(mainWindow.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetCoverFullLength(false);
+    static_cast<ssGUI::Extensions::Layout*>(mainWindow.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetHorizontalLayout(true);
+
+
+    ssGUI::Widget mainWindowWidget;
+
+    mainWindowWidget.AddExtension(docker);
+    //static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetPadding(0);
+    //static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->
+    //    ExcludeObject(window3ObjPtr);
+    mainWindowWidget.AddExtension(bor);
+    mainWindowWidget.AddExtension(mask);
+    mainWindowWidget.SetBackgroundColour(glm::u8vec4(200, 200, 200, 255));
+    
+    mainWindowWidget.SetSize(glm::ivec2(400, 400));
+    
+    mainWindowWidget.SetParent(&mainWindow);
+
+    mainWindow.MoveChildrenIteratorToLast();
+    std::list<ssGUI::ssGUIObjectIndex>::iterator lastIt = mainWindow.GetCurrentChildReferenceIterator();
+    mainWindow.MoveChildrenIteratorToFirst();
+    std::list<ssGUI::ssGUIObjectIndex>::iterator firstIt = mainWindow.GetCurrentChildReferenceIterator();
+    mainWindow.ChangeChildOrderToBeforePosition(lastIt, firstIt);
+
+    //Creating ssGUIManager and run it
+    ssGUI::ssGUIManager guiManager;
+
+    guiManager.AddOnUpdateEventListener
+    (
+        [&]()
+        {
+            ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
+            
+            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            {
+                mainWindowWidget.Clone(true);
+            }
+        }
+    );
+
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+
+    return 0;
+}
+*/
+
+
+/*//Docking test
+int main()
+{
+    ssGUI::MainWindow mainWindow;
+
+    //Creating window
+    ssGUI::Window window;
+    //window.SetBackgroundColour(glm::u8vec4(255, 127, 127, 255));
+    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
+    window.SetSize(glm::ivec2(150, 150));
+    window.SetParent(&mainWindow);
+    DEBUG_LINE("window: "<<&window);
+
+    //Creating window
+    ssGUI::Window window2;
+    DEBUG_LINE("window2: "<<&window2);
+
+    window2.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window2.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
     window2.SetSize(glm::ivec2(150, 150));
     window2.SetParent(&mainWindow);
 
     
     ssGUI::Window* window3 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
-    window3->SetBackgroundColour(glm::u8vec4(127, 127, 255, 255));
+    window3->SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window3->SetTitlebarColor(glm::u8vec4(255, 255, 255, 255));
+    window3->SetSize(glm::ivec2(150, 150));
     window3->SetParent(&mainWindow);
     DEBUG_LINE("window3: "<<&window3);
 
@@ -108,6 +198,7 @@ int main()
 
     ssGUI::Window* window4 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
     window4->SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window4->SetSize(glm::ivec2(150, 150));
     window4->SetParent(&mainWindow);
     DEBUG_LINE("window4: "<<&window4);
 
@@ -131,6 +222,7 @@ int main()
     ssGUI::Extensions::AdvancedPosition* ap = new ssGUI::Extensions::AdvancedPosition();
     ssGUI::Extensions::AdvancedSize* as = new ssGUI::Extensions::AdvancedSize();
     ssGUI::Extensions::Border* bor = new ssGUI::Extensions::Border();
+    ssGUI::Extensions::Mask* mask = new ssGUI::Extensions::Mask();
 
     ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
     ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
@@ -142,17 +234,21 @@ int main()
     ssGUI::Widget mainWindowWidget;
 
     mainWindowWidget.AddExtension(docker);
-    static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetPadding(0);
+    //static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetPadding(0);
     //static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->
     //    ExcludeObject(window3ObjPtr);
     mainWindowWidget.AddExtension(ap);
     mainWindowWidget.AddExtension(as);
     mainWindowWidget.AddExtension(bor);
+    mainWindowWidget.AddExtension(mask);
     mainWindowWidget.SetBackgroundColour(glm::u8vec4(200, 200, 200, 255));
     
     mainWindowWidget.SetSize(glm::ivec2(400, 400));
     
     mainWindowWidget.SetParent(&mainWindow);
+
+    window4->SetParent(&mainWindowWidget);
+    dock4->SetTopLevelParent(&mainWindowWidget);
 
 
     mainWindow.MoveChildrenIteratorToLast();
@@ -186,7 +282,7 @@ int main()
 
     return 0;
 }
-
+*/
 
 /*//Text test
 int main()
@@ -197,22 +293,20 @@ int main()
     //mainWindow.SetSize(glm::ivec2(500, 150));
 
     //Loading the font
-    ssGUI::Font font;
-    if(font.GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
+    //ssGUI::Font font;
+    //if(font.GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
     // if(font.GetBackendFontInterface()->LoadFromPath("SourceHanSansJP-Normal.otf"))
-        std::cout<<"font loaded\n";
+    //    std::cout<<"font loaded\n";
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetPosition(glm::ivec2(75, 25));
     text.SetSize(glm::ivec2(500, 300));
     text.AddExtension(new ssGUI::Extensions::Border());
-    text.SetFont(&font);
+    //text.SetFont(&font);
     text.SetFontSize(20);
     // text.SetText(L"これは非常に長い日本語の文章です~~~~~");
     text.SetText(L"Click on the button to change this text.");
-
-
 
     //Add the text and button widget to the main window
     text.SetParent(&mainWindow);
@@ -333,7 +427,7 @@ int main()
 
 
 
-/*//IMage example
+//Image example
 int main()
 {
     ssGUI::MainWindow mainWindow;
@@ -342,7 +436,10 @@ int main()
     ssGUI::Image image;
     image.SetSize(glm::ivec2(300, 300));
     image.SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
-    image.GetBackendImageInterface()->LoadFromPath("sd.png");
+
+    ssGUI::ImageData data;
+    data.LoadFromPath("sd.png");
+    image.SetImageData(&data);
     image.SetParent(&mainWindow);
 
     //Creating ssGUIManager and run it
@@ -352,7 +449,7 @@ int main()
 
     return 0;
 }
-*/
+
 
 /*//Text example
 int main()
