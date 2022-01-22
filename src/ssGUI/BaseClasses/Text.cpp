@@ -689,24 +689,24 @@ namespace ssGUI
         }
 
         {
-        if(CurrentTextChanged)
-            ComputeCharactersPositionAndSize();
-        
-        //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
+            if(CurrentTextChanged)
+                ComputeCharactersPositionAndSize();
+            
+            //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
 
-        for (std::size_t i = 0; i < CurrentText.size(); i++)
-        {
-            wchar_t curChar = CurrentText.at(i);
+            for (std::size_t i = 0; i < CurrentText.size(); i++)
+            {
+                wchar_t curChar = CurrentText.at(i);
 
-            if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t'))
-                continue;
+                if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t'))
+                    continue;
 
-            // Add the glyph to the vertices
-            DrawCharacter(drawingInterface, mainWindowP, mainWindowPositionOffset, curChar, drawPos + CharactersPosition[i], CharactersInfos[i]);
-        }
+                // Add the glyph to the vertices
+                DrawCharacter(drawingInterface, mainWindowP, mainWindowPositionOffset, curChar, drawPos + CharactersPosition[i], CharactersInfos[i]);
+            }
 
-        //Border
-        //DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
+            //Border
+            //DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
         }
 
         endOfDrawing:;

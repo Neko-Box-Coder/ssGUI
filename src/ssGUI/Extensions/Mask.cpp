@@ -1151,73 +1151,73 @@ namespace ssGUI::Extensions
                 
             { //Extra bracket to create scope for the vectors below
 
-            //Find all the intersections (Order of the intersections are not guaranteed)
-            std::vector<glm::ivec2> intersections;
-            std::vector<int> shapeIntersectIndices;
-            std::vector<int> maskIntersectIndices;
+                //Find all the intersections (Order of the intersections are not guaranteed)
+                std::vector<glm::ivec2> intersections;
+                std::vector<int> shapeIntersectIndices;
+                std::vector<int> maskIntersectIndices;
 
-            GetIntersections(intersections, shapeIntersectIndices, maskIntersectIndices, originalVerticies, currentOffset, verticesCount[shapeIndex], maskShape);
+                GetIntersections(intersections, shapeIntersectIndices, maskIntersectIndices, originalVerticies, currentOffset, verticesCount[shapeIndex], maskShape);
 
-            /*
-            std::cout<<"\n";
-            std::cout<<"\n";
-            std::cout<<"Mask:\n";
-            for(int j = 0; j < maskIntersectionsCount.size(); j++)
-            {
-                std::cout<<maskIntersectionsCount[j]<<"\n";
-            }
-            std::cout<<"\n";
+                /*
+                std::cout<<"\n";
+                std::cout<<"\n";
+                std::cout<<"Mask:\n";
+                for(int j = 0; j < maskIntersectionsCount.size(); j++)
+                {
+                    std::cout<<maskIntersectionsCount[j]<<"\n";
+                }
+                std::cout<<"\n";
 
-            std::cout<<"Shape:\n";
-            for(int j = 0; j < shapeIntersectionsCount.size(); j++)
-            {
-                std::cout<<shapeIntersectionsCount[j]<<"\n";
-            }
-            std::cout<<"\n";
-            */
+                std::cout<<"Shape:\n";
+                for(int j = 0; j < shapeIntersectionsCount.size(); j++)
+                {
+                    std::cout<<shapeIntersectionsCount[j]<<"\n";
+                }
+                std::cout<<"\n";
+                */
 
-            std::vector<glm::ivec2> currentShapeVertices;
-            std::vector<glm::ivec2> currentShapeUVs;
-            std::vector<glm::u8vec4> currentShapeColours;
-            std::vector<bool> currentVertexChanged;
+                std::vector<glm::ivec2> currentShapeVertices;
+                std::vector<glm::ivec2> currentShapeUVs;
+                std::vector<glm::u8vec4> currentShapeColours;
+                std::vector<bool> currentVertexChanged;
 
-            //If there's no intersection, check if the mask is contained in the shape instead
-            if(intersections.empty() && shapeMin.x < maskMin.x && shapeMax.x > maskMax.x && shapeMin.y < maskMin.y && shapeMax.y > maskMax.y)
-            {
-                //Change the shape into mask
-                currentShapeVertices.push_back(maskMin);
-                currentShapeVertices.push_back(maskMin + glm::ivec2(GetSize().x, 0));
-                currentShapeVertices.push_back(maskMin + GetSize());
-                currentShapeVertices.push_back(maskMin + glm::ivec2(0, GetSize().y));
-                currentShapeUVs.assign(4, glm::ivec2());
-                currentShapeColours.assign(4, originalColours[currentOffset]);
-                currentVertexChanged.assign(4, true);
-            }
-            //If there's intersection, form a new shape with intersections
-            else if(!intersections.empty())
-            {
-                FromNewShapeWithIntersections(currentShapeVertices, currentShapeUVs, currentShapeColours, currentVertexChanged,
-                                                originalVerticies, originalColours, originalUVs, maskMin, maskMax, currentOffset, 
-                                                verticesCount[shapeIndex], maskShape, intersections, shapeIntersectIndices,
-                                                maskIntersectIndices);
-            }
-            //If there's no intersection, that means the shape is inside the mask
-            else
-            {
-                newVertices.insert(     newVertices.end(),      originalVerticies.begin() + currentOffset,  originalVerticies.begin() + currentOffset + verticesCount[shapeIndex]);
-                newUVs.insert(          newUVs.end(),           originalUVs.begin() + currentOffset,        originalUVs.begin() + currentOffset + verticesCount[shapeIndex]);
-                newColours.insert(      newColours.end(),       originalColours.begin() + currentOffset,    originalColours.begin() + currentOffset + verticesCount[shapeIndex]);
-                changed.insert(         changed.end(),          verticesCount[shapeIndex],   false);
-                newVerticesCount.insert(newVerticesCount.end(), verticesCount[shapeIndex]);
-                goto nextShape;
-            }
+                //If there's no intersection, check if the mask is contained in the shape instead
+                if(intersections.empty() && shapeMin.x < maskMin.x && shapeMax.x > maskMax.x && shapeMin.y < maskMin.y && shapeMax.y > maskMax.y)
+                {
+                    //Change the shape into mask
+                    currentShapeVertices.push_back(maskMin);
+                    currentShapeVertices.push_back(maskMin + glm::ivec2(GetSize().x, 0));
+                    currentShapeVertices.push_back(maskMin + GetSize());
+                    currentShapeVertices.push_back(maskMin + glm::ivec2(0, GetSize().y));
+                    currentShapeUVs.assign(4, glm::ivec2());
+                    currentShapeColours.assign(4, originalColours[currentOffset]);
+                    currentVertexChanged.assign(4, true);
+                }
+                //If there's intersection, form a new shape with intersections
+                else if(!intersections.empty())
+                {
+                    FromNewShapeWithIntersections(currentShapeVertices, currentShapeUVs, currentShapeColours, currentVertexChanged,
+                                                    originalVerticies, originalColours, originalUVs, maskMin, maskMax, currentOffset, 
+                                                    verticesCount[shapeIndex], maskShape, intersections, shapeIntersectIndices,
+                                                    maskIntersectIndices);
+                }
+                //If there's no intersection, that means the shape is inside the mask
+                else
+                {
+                    newVertices.insert(     newVertices.end(),      originalVerticies.begin() + currentOffset,  originalVerticies.begin() + currentOffset + verticesCount[shapeIndex]);
+                    newUVs.insert(          newUVs.end(),           originalUVs.begin() + currentOffset,        originalUVs.begin() + currentOffset + verticesCount[shapeIndex]);
+                    newColours.insert(      newColours.end(),       originalColours.begin() + currentOffset,    originalColours.begin() + currentOffset + verticesCount[shapeIndex]);
+                    changed.insert(         changed.end(),          verticesCount[shapeIndex],   false);
+                    newVerticesCount.insert(newVerticesCount.end(), verticesCount[shapeIndex]);
+                    goto nextShape;
+                }
 
-            //If there's intersection, append the newly formed shape
-            newVertices.insert(newVertices.end(), currentShapeVertices.begin(), currentShapeVertices.end());
-            newUVs.insert(newUVs.end(), currentShapeUVs.begin(), currentShapeUVs.end());
-            newColours.insert(newColours.end(), currentShapeColours.begin(), currentShapeColours.end());
-            changed.insert(changed.end(), currentVertexChanged.begin(), currentVertexChanged.end());
-            newVerticesCount.insert(newVerticesCount.end(), currentShapeVertices.size());
+                //If there's intersection, append the newly formed shape
+                newVertices.insert(newVertices.end(), currentShapeVertices.begin(), currentShapeVertices.end());
+                newUVs.insert(newUVs.end(), currentShapeUVs.begin(), currentShapeUVs.end());
+                newColours.insert(newColours.end(), currentShapeColours.begin(), currentShapeColours.end());
+                changed.insert(changed.end(), currentVertexChanged.begin(), currentVertexChanged.end());
+                newVerticesCount.insert(newVerticesCount.end(), currentShapeVertices.size());
             }   //Extra bracket to create scope to tell compiler the variables are not created if nextShape label is used
 
             nextShape:;

@@ -126,20 +126,20 @@ namespace ssGUI
 
         //Mouse Input blocking
         {
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
 
-        bool mouseInWindowBoundX = false;
-        bool mouseInWindowBoundY = false;
-        
-        if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
-            mouseInWindowBoundX = true;
+            bool mouseInWindowBoundX = false;
+            bool mouseInWindowBoundY = false;
+            
+            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+                mouseInWindowBoundX = true;
 
-        if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
-            mouseInWindowBoundY = true;
-        
-        //Input blocking
-        if(mouseInWindowBoundX && mouseInWindowBoundY)
-            windowInputStatus.MouseInputBlocked = true;
+            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                mouseInWindowBoundY = true;
+            
+            //Input blocking
+            if(mouseInWindowBoundX && mouseInWindowBoundY)
+                windowInputStatus.MouseInputBlocked = true;
         }
 
         endOfUpdate:;

@@ -2,7 +2,7 @@
 #define SSGUI_IMAGE
 
 #include "ssGUI/BaseClasses/Widget.hpp"
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/BaseClasses/ImageData.hpp"
 #include "ssGUI/Enums/ImageFitting.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "SFML/Graphics.hpp"
@@ -15,7 +15,7 @@ namespace ssGUI
     class Image : public Widget
     {
         private:
-            ssGUI::Backend::BackendImageInterface* BackendImage;
+            ssGUI::ImageData* ImageData;
             ssGUI::Enums::ImageFitting Fitting;
             Image& operator=(Image const& other);
         
@@ -26,8 +26,9 @@ namespace ssGUI
             Image();
             virtual ~Image() override;
 
-            //function: GetBackendImageInterface
-            virtual ssGUI::Backend::BackendImageInterface* GetBackendImageInterface();
+            virtual ssGUI::ImageData* GetImageData() const;
+
+            virtual void SetImageData(ssGUI::ImageData* imageData);
 
             //function: GetFitting
             virtual ssGUI::Enums::ImageFitting GetFitting() const;
