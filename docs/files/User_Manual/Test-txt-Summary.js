@@ -1,1 +1,1 @@
-﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/Test.txt","Test.txt");NDSummary.OnSummaryLoaded("File:User_Manual/Test.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[9,0,0,"License","License"]]);
+﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/Test.txt","Test.txt");NDSummary.OnSummaryLoaded("File:User_Manual/Test.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[3,0,0,"License","License"]]);

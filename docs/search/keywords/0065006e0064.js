@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("end",["Constant"],[["END",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SystemKey.hpp:ssGUI.Enums.END","CClass:ssGUI.Enums:END"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("end",["Constant"],[["END",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SystemKey.hpp:ssGUI.Enums.END","CClass:ssGUI.Enums:END"]]],["ENDED",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/WindowDragState.hpp:ssGUI.Enums.ENDED","CClass:ssGUI.Enums:ENDED"]]]]);

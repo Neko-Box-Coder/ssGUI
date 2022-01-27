@@ -8,120 +8,153 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI"></a><a name="Topic359"></a><div class="CTopic TClass LC first">
+<a name="ssGUI"></a><a name="Topic488"></a><div class="CTopic TClass LC first">
  <div class="CTitle">ssGUI</div>
- <div class="NDClassPrototype" id="NDClassPrototype359"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName">ssGUI</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype488"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName">ssGUI</div></div></div>
 </div>
 
-<a name="MainWindow"></a><a name="Topic360"></a><div class="CTopic TClass LC">
+<a name="MainWindow"></a><a name="Topic521"></a><div class="CTopic TClass LC">
  <div class="CTitle">MainWindow</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype360"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,383);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Window</div></a><div class="CPEntry TClass Current"><div class="CPName">MainWindow</div></div></div>
- <div class="CBody"><p>This class should not be overwritten unless you know what you are doing</p></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype521"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,519);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Window</div></a><div class="CPEntry TClass Current"><div class="CPName">MainWindow</div></div></div>
+ <div class="CBody"><p>Main Window is the <b>actual</b> window. Not to be confused with <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,519);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window</a> which lives inside MainWindow.&nbsp; This class should not be overwritten unless you know what you are doing</p></div>
 </div>
 
-<a name="MainWindow.Functions"></a><a name="Topic361"></a><div class="CTopic TGroup LC">
+<a name="MainWindow.Functions"></a><a name="Topic490"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="MainWindow.Render"></a><a name="Topic362"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.Render"></a><a name="Topic522"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Render</div>
- <div id="NDPrototype362" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Render()</div></div>
+ <div id="NDPrototype522" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Render()</div></div>
+ <div class="CBody"><p>Renders all the entities drawn on this MainWindow. Called by ssGUIManager normally.</p></div>
 </div>
 
-<a name="MainWindow.GetBackendWindowInterface"></a><a name="Topic363"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.GetBackendWindowInterface"></a><a name="Topic492"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetBackendWindowInterface</div>
- <div id="NDPrototype363" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Backend::BackendMainWindowInterface* GetBackendWindowInterface()</div></div>
+ <div id="NDPrototype492" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Backend::BackendMainWindowInterface* GetBackendWindowInterface()</div></div>
 </div>
 
-<a name="MainWindow.GetBackendDrawingInterface"></a><a name="Topic364"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.GetBackendDrawingInterface"></a><a name="Topic493"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetBackendDrawingInterface</div>
- <div id="NDPrototype364" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Backend::BackendDrawingInterface* GetBackendDrawingInterface()</div></div>
+ <div id="NDPrototype493" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Backend::BackendDrawingInterface* GetBackendDrawingInterface()</div></div>
 </div>
 
-<a name="MainWindow.IsFocused"></a><a name="Topic365"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.IsFocused"></a><a name="Topic494"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsFocused</div>
- <div id="NDPrototype365" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsFocused() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype494" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsFocused() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="MainWindow.SetFocus"></a><a name="Topic366"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.SetFocus"></a><a name="Topic495"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetFocus</div>
- <div id="NDPrototype366" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetFocus(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">focus</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype495" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetFocus(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">focus</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="MainWindow.GetPositionOffset"></a><a name="Topic367"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.GetPositionOffset"></a><a name="Topic523"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetPositionOffset</div>
- <div id="NDPrototype367" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetPositionOffset()</div></div>
+ <div id="NDPrototype523" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetPositionOffset() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns the distance between the top-left corner of the MainWindow and top-left corner of the MainWindow content.</p></div>
 </div>
 
-<a name="MainWindow.GetPositon"></a><a name="Topic368"></a><div class="CTopic TFunction LC">
- <div class="CTitle">GetPositon</div>
- <div id="NDPrototype368" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetPositon() <span class="SHKeyword">const override</span></div></div>
+<a name="MainWindow.GetDisplayPosition"></a><a name="Topic524"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetDisplayPosition</div>
+ <div id="NDPrototype524" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetDisplayPosition() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns the position of the MainWindow on the screen</p></div>
 </div>
 
-<a name="MainWindow.SetPosition"></a><a name="Topic369"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.SetDisplayPosition"></a><a name="Topic525"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetDisplayPosition</div>
+ <div id="NDPrototype525" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetDisplayPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">pos</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the position of the MainWindow on the screen</p></div>
+</div>
+
+<a name="MainWindow.GetPosition"></a><a name="Topic526"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetPosition</div>
+ <div id="NDPrototype526" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetPosition() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.GetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,285);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetPosition</a></p></div>
+</div>
+
+<a name="MainWindow.SetPosition"></a><a name="Topic531"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetPosition</div>
- <div id="NDPrototype369" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype531" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,613);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetPosition</a></p></div>
 </div>
 
-<a name="MainWindow.GetGlobalPosition"></a><a name="Topic370"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.GetGlobalPosition"></a><a name="Topic532"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetGlobalPosition</div>
- <div id="NDPrototype370" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetGlobalPosition() <span class="SHKeyword">override</span></div></div>
+ <div id="NDPrototype532" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetGlobalPosition() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.GetGlobalPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,614);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetGlobalPosition</a></p></div>
 </div>
 
-<a name="MainWindow.SetGlobalPosition"></a><a name="Topic371"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.SetGlobalPosition"></a><a name="Topic533"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetGlobalPosition</div>
- <div id="NDPrototype371" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetGlobalPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype533" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetGlobalPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetGlobalPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,615);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetGlobalPosition</a></p></div>
 </div>
 
-<a name="MainWindow.GetSize"></a><a name="Topic372"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.GetSize"></a><a name="Topic534"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetSize</div>
- <div id="NDPrototype372" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetSize() <span class="SHKeyword">const override</span></div></div>
+ <div id="NDPrototype534" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetSize() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.GetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,616);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetSize</a></p></div>
 </div>
 
-<a name="MainWindow.SetSize"></a><a name="Topic373"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.SetSize"></a><a name="Topic535"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetSize</div>
- <div id="NDPrototype373" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype535" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,617);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetSize</a></p></div>
 </div>
 
-<a name="MainWindow.GetType"></a><a name="Topic374"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.GetType"></a><a name="Topic536"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetType</div>
- <div id="NDPrototype374" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Enums/GUIObjectType.hpp:ssGUI.Enums.GUIObjectType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,598);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::GUIObjectType</a> GetType() <span class="SHKeyword">const override</span></div></div>
+ <div id="NDPrototype536" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Enums/GUIObjectType.hpp:ssGUI.Enums.GUIObjectType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,198);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::GUIObjectType</a> GetType() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.GetType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,556);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::GetType</a></p></div>
 </div>
 
-<a name="MainWindow.Close"></a><a name="Topic375"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.Delete"></a><a name="Topic538"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Delete</div>
+ <div id="NDPrototype538" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Delete() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.Delete" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,557);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::Delete</a></p></div>
+</div>
+
+<a name="MainWindow.Close"></a><a name="Topic539"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Close</div>
- <div id="NDPrototype375" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Close() <span class="SHKeyword">override</span></div></div>
+ <div id="NDPrototype539" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Close() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.Close" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,455);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::Close</a></p></div>
 </div>
 
-<a name="MainWindow.AbortClosing"></a><a name="Topic376"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.AbortClosing"></a><a name="Topic540"></a><div class="CTopic TFunction LC">
  <div class="CTitle">AbortClosing</div>
- <div id="NDPrototype376" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> AbortClosing() <span class="SHKeyword">override</span></div></div>
+ <div id="NDPrototype540" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> AbortClosing() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.AbortClosing" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,457);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::AbortClosing</a></p></div>
 </div>
 
-<a name="MainWindow.Internal_OnClose"></a><a name="Topic377"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.Internal_OnClose"></a><a name="Topic541"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_OnClose</div>
- <div id="NDPrototype377" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_OnClose() <span class="SHKeyword">override</span></div></div>
+ <div id="NDPrototype541" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_OnClose() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.Internal_OnClose" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,458);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::Internal_OnClose</a></p></div>
 </div>
 
-<a name="MainWindow.Draw"></a><a name="Topic378"></a><div class="CTopic TFunction LC">
- <div class="CTitle">Draw</div>
- <div id="NDPrototype378" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Draw()</div></div>
- <div class="CBody"><p>Although it says it is drawing, it actually doesn't draw anything.&nbsp; Instead, it sets the window state instead</p></div>
+<a name="MainWindow.Internal_Draw"></a><a name="Topic542"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Internal_Draw</div>
+ <div id="NDPrototype542" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw()</div></div>
+ <div class="CBody"><p>This checks for window state before rendering</p></div>
 </div>
 
-<a name="MainWindow.Draw(2)"></a><a name="Topic379"></a><div class="CTopic TFunction LC">
- <div class="CTitle">Draw</div>
- <div id="NDPrototype379" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindowP,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+<a name="MainWindow.Internal_Draw(2)"></a><a name="Topic543"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Internal_Draw</div>
+ <div id="NDPrototype543" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindowP,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>This checks for window state before rendering</p></div>
 </div>
 
-<a name="MainWindow.Internal_Update"></a><a name="Topic380"></a><div class="CTopic TFunction LC">
+<a name="MainWindow.Internal_Update"></a><a name="Topic544"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_Update</div>
- <div id="NDPrototype380" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendSystemInputInterface*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">windowInputStatus</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype544" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendSystemInputInterface*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">windowInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindow</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.Internal_Update" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,559);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::Internal_Update</a></p></div>
 </div>
 
-<a name="MainWindow.Clone"></a><a name="Topic381"></a><div class="CTopic TFunction LC last">
+<a name="MainWindow.Clone"></a><a name="Topic910"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype381" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,317);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType">vector&lt;<a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,317);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&gt;&amp;&nbsp;</td><td class="PName last">originalObjs,</td></tr><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype910" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,561);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,909);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::Clone</a></p></div>
 </div>
 
 </body></html>

@@ -7,7 +7,7 @@
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
-#include "ssGUI/Backend/BackendConfig.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 
 #ifdef USE_SFML_BACKEND
     #include "ssGUI/Backend/SFML/BackendDrawingSFML.hpp"
@@ -22,7 +22,7 @@
 namespace ssGUI::Backend
 {
     //class: BackendFactory
-    //BackendFactory is used to create backend objects without referencing the backend by using interfaces.
+    //BackendFactory is used to create backend objects without referencing the actual backend by using interfaces.
     class BackendFactory
     {
         public:

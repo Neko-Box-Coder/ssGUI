@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("onw",["Class"],[["OnWindowCloseEventCallback",,[[,,,,0,"File:ssGUI/EventCallbacks/OnWindowCloseEventCallback.hpp:OnWindowCloseEventCallback","CClass:OnWindowCloseEventCallback"]]]]);

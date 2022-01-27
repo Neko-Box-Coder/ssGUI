@@ -5,7 +5,7 @@
 #include "ssGUI/Backend/BackendManager.hpp"
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #include "ssGUI/Backend/SFML/SFMLInputConverter.hpp"
-#include "ssGUI/ssGUIBuildConfig.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include <unordered_set>
 #include <memory>
 #include <string>
@@ -13,7 +13,7 @@
 #include "glm/vec2.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/Mouse.hpp"
-#include "ssGUI/Enums/Key.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 
 #if !USE_SFML_TIME
     #include <chrono>
@@ -59,44 +59,57 @@ namespace ssGUI::Backend
             virtual ~BackendSystemInputSFML();
 
             //function: UpdateInput
+            //See <BackendSystemInputInterface::UpdateInput>
             void UpdateInput() override;
 
             //function: GetLastKeyPresses
+            //See <BackendSystemInputInterface::GetLastKeyPresses>
             ssGUI::KeyPresses const & GetLastKeyPresses() override;
             
             //function: GetCurrentKeyPresses
+            //See <BackendSystemInputInterface::GetCurrentKeyPresses>
             ssGUI::KeyPresses const & GetCurrentKeyPresses() override;
 
             //function: GetLastMousePosition
-            glm::ivec2 GetLastMousePosition() const override;
+            //See <BackendSystemInputInterface::GetLastMousePosition>
+            glm::ivec2 GetLastMousePosition(ssGUI::MainWindow* mainWindow) const override;
             
             //function: GetCurrentMousePosition
-            glm::ivec2 GetCurrentMousePosition() const override;
+            //See <BackendSystemInputInterface::GetCurrentMousePosition>
+            glm::ivec2 GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const override;
             
             //function: SetMousePosition
+            //See <BackendSystemInputInterface::SetMousePosition>
             void SetMousePosition(glm::ivec2 position) override;          
 
             //function: GetLastMouseButton
+            //See <BackendSystemInputInterface::GetLastMouseButton>
             bool GetLastMouseButton(ssGUI::Enums::MouseButton button) const override;
             
             //function: GetCurrentMouseButton
+            //See <BackendSystemInputInterface::GetCurrentMouseButton>
             bool GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const override;
 
             //function: GetTextInput
+            //See <BackendSystemInputInterface::GetTextInput>
             std::wstring GetTextInput() const override;
 
             //sf::Cursor* GetSFMLCursor();
             
             //function: SetCursorType
+            //See <BackendSystemInputInterface::SetCursorType>
             void SetCursorType(ssGUI::Enums::CursorType cursorType) override;
             
             //function: GetCursorType
+            //See <BackendSystemInputInterface::GetCursorType>
             ssGUI::Enums::CursorType GetCursorType() const override;
             
             //function: UpdateCursor
+            //See <BackendSystemInputInterface::UpdateCursor>
             void UpdateCursor() override;
 
             //function: GetElapsedTime
+            //See <BackendSystemInputInterface::GetElapsedTime>
             uint64_t GetElapsedTime() const override;
     };
 }

@@ -8,17 +8,20 @@
 namespace ssGUI
 {
     //struct: DrawingProperty
+    //Structure used to pass to BackendDrawing to draw entities
     struct DrawingProperty
     {
         public:
+            //DrawingProperty& operator=(DrawingProperty const& other) = default;
+
             //var: fontP
-            const ssGUI::Backend::BackendFontInterface* fontP = nullptr;
+            ssGUI::Backend::BackendFontInterface* fontP = nullptr;
             
             //var: characterSize
-            const int characterSize = -1;
+            int characterSize = -1;
 
             //var: imageP
-            const ssGUI::Backend::BackendImageInterface* imageP = nullptr;
+            ssGUI::Backend::BackendImageInterface* imageP = nullptr;
     };
 }
 

@@ -1,1 +1,1 @@
-﻿NDContentPage.OnToolTipsLoaded({});
+﻿NDContentPage.OnToolTipsLoaded({521:"<div class=\"NDToolTip TClass LC\"><div class=\"NDClassPrototype\" id=\"NDClassPrototype521\"><div class=\"CPEntry TClass Current\"><div class=\"CPName\">MainWindow</div></div></div><div class=\"TTSummary\">Main Window is the <b>actual</b> window. Not to be confused with Window which lives inside MainWindow.&nbsp; This class should not be overwritten unless you know what you are doing</div></div>"});

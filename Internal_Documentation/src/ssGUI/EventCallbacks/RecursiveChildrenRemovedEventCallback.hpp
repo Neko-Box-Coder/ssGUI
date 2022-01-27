@@ -7,6 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: RecursiveChildrenRemovedEventCallback
+    //This event callback is triggered *after* a child is removed recursively on this GUI object
     class RecursiveChildrenRemovedEventCallback : public BaseEventCallback
     {        
         private:
@@ -17,10 +18,12 @@ namespace ssGUI::EventCallbacks
             RecursiveChildrenRemovedEventCallback() = default;
             
             //function: GetEventCallbackName
+            //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override; 
             
             //function: Clone
-            virtual EventCallback* Clone(ssGUI::GUIObject* container, std::vector<ssGUI::GUIObject*>& originalObjs, std::vector<ssGUI::GUIObject*>& clonedObjs) override;
+            //See <BaseEventCallback::Clone>
+            virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME
             static const std::string EVENT_NAME;

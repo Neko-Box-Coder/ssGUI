@@ -8,43 +8,60 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI"></a><a name="Topic419"></a><div class="CTopic TClass LC first">
+<a name="ssGUI"></a><a name="Topic552"></a><div class="CTopic TClass LC first">
  <div class="CTitle">ssGUI</div>
- <div class="NDClassPrototype" id="NDClassPrototype419"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName">ssGUI</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype552"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName">ssGUI</div></div></div>
 </div>
 
-<a name="Image"></a><a name="Topic420"></a><div class="CTopic TClass LC">
+<a name="Image"></a><a name="Topic553"></a><div class="CTopic TClass LC">
  <div class="CTitle">Image</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype420"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/BaseClasses/Widget.hpp:Widget" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,552);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Widget</div></a><div class="CPEntry TClass Current"><div class="CPName">Image</div></div></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype553"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/BaseClasses/Widget.hpp:Widget" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Widget</div></a><div class="CPEntry TClass Current"><div class="CPName">Image</div></div></div>
 </div>
 
-<a name="Image.Functions"></a><a name="Topic421"></a><div class="CTopic TGroup LC">
+<a name="Image.Functions"></a><a name="Topic554"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="Image.GetBackendImageInterface"></a><a name="Topic422"></a><div class="CTopic TFunction LC">
- <div class="CTitle">GetBackendImageInterface</div>
- <div id="NDPrototype422" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Backend::BackendImageInterface* GetBackendImageInterface()</div></div>
+<a name="Image.GetImageData"></a><a name="Topic304"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetImageData</div>
+ <div id="NDPrototype304" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::ImageData* GetImageData() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Gets the ImageData object used by this Image widget. Returns nullptr if no ImageData is used</p></div>
 </div>
 
-<a name="Image.GetFitting"></a><a name="Topic423"></a><div class="CTopic TFunction LC">
+<a name="Image.SetImageData"></a><a name="Topic305"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetImageData</div>
+ <div id="NDPrototype305" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetImageData(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">ImageData*&nbsp;</td><td class="PName last">imageData</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the ImageData object to be used by this Image widget</p></div>
+</div>
+
+<a name="Image.GetFitting"></a><a name="Topic306"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetFitting</div>
- <div id="NDPrototype423" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Enums/ImageFitting.hpp:ssGUI.Enums.ImageFitting" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,201);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::ImageFitting</a> GetFitting() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype306" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Enums/ImageFitting.hpp:ssGUI.Enums.ImageFitting" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,69);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::ImageFitting</a> GetFitting() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns how the image will be fitted inside this Image Widget</p></div>
 </div>
 
-<a name="Image.SetFitting"></a><a name="Topic424"></a><div class="CTopic TFunction LC">
+<a name="Image.SetFitting"></a><a name="Topic307"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetFitting</div>
- <div id="NDPrototype424" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetFitting(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Enums/ImageFitting.hpp:ssGUI.Enums.ImageFitting" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,201);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Enums/ImageFitting.hpp:ssGUI.Enums.ImageFitting" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,201);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ImageFitting</a>&nbsp;</td><td class="PName last">fitting</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype307" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetFitting(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Enums/ImageFitting.hpp:ssGUI.Enums.ImageFitting" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,69);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Enums/ImageFitting.hpp:ssGUI.Enums.ImageFitting" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,69);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ImageFitting</a>&nbsp;</td><td class="PName last">fitting</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets how the image will be fitted inside this Image Widget</p></div>
 </div>
 
-<a name="Image.Draw"></a><a name="Topic425"></a><div class="CTopic TFunction LC">
- <div class="CTitle">Draw</div>
- <div id="NDPrototype425" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindowP,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+<a name="Image.Delete"></a><a name="Topic308"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Delete</div>
+ <div id="NDPrototype308" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Delete() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Widget.hpp:Widget.Delete" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,608);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Widget::Delete</a></p></div>
 </div>
 
-<a name="Image.Clone"></a><a name="Topic426"></a><div class="CTopic TFunction LC last">
+<a name="Image.Internal_Draw"></a><a name="Topic309"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Internal_Draw</div>
+ <div id="NDPrototype309" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindowP,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Widget.hpp:Widget.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,610);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Widget::Internal_Draw</a></p></div>
+</div>
+
+<a name="Image.Clone"></a><a name="Topic310"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype426" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,317);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType">vector&lt;<a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,317);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&gt;&amp;&nbsp;</td><td class="PName last">originalObjs,</td></tr><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype310" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,561);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Widget.hpp:Widget.Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,612);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Widget::Clone</a></p></div>
 </div>
 
 </body></html>

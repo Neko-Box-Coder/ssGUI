@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("onf",["Class"],[["OnFontChangeEventCallback",,[[,,,,0,"File:ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp:OnFontChangeEventCallback","CClass:OnFontChangeEventCallback"]]]]);

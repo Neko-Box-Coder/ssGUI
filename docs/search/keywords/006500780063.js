@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("exc",["Function"],[["ExcludeObject",,[["Layout",,,,0,"File:ssGUI/Extensions/Layout.hpp:Layout.ExcludeObject","CClass:Layout:ExcludeObject"]]]]);

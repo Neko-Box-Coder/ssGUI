@@ -28,20 +28,25 @@ namespace ssGUI::Backend
             sf::Texture* GetGPUTextureP();
 
             //function: IsValid
+            //See <BackendImageInterface::IsValid>
             bool IsValid() const override;
             
             //function: LoadImgFileFromMemory
+            //See <BackendImageInterface::LoadImgFileFromMemory>
             //The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.
             bool LoadImgFileFromMemory(void* dataPtr, std::size_t size) override;
             
             //function: LoadFromPath
+            //See <BackendImageInterface::LoadFromPath>
             //The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.
             bool LoadFromPath(std::string path) override;
             
             //function: LoadRawFromMemory
+            //See <BackendImageInterface::LoadRawFromMemory>
             bool LoadRawFromMemory(void* dataPtr, int width, int height) override;
             
             //function: GetSize
+            //See <BackendImageInterface::GetSize>
             glm::ivec2 GetSize() const override;
 
             //function: Clone

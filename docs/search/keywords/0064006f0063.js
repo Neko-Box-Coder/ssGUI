@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("doc",["Class","Variable"],[["Dockable",,[[,,,,0,"File:ssGUI/Extensions/Dockable.hpp:Dockable","CClass:Dockable"]]],["Docker",,[[,,,,0,"File:ssGUI/Extensions/Docker.hpp:Docker","CClass:Docker"]]],["DockingBlocked",,[["InputStatus",,,,1,"File:ssGUI/BaseClasses/InputStatus.hpp:InputStatus.DockingBlocked","CClass:InputStatus:DockingBlocked"]]]]);

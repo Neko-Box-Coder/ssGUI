@@ -8,43 +8,73 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI.Extensions"></a><a name="Topic94"></a><div class="CTopic TClass LC first">
+<a name="ssGUI.Extensions"></a><a name="Topic798"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div>
- <div class="NDClassPrototype" id="NDClassPrototype94"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype798"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div></div></div>
 </div>
 
-<a name="Extension"></a><a name="Topic95"></a><div class="CTopic TClass LC">
+<a name="Extension"></a><a name="Topic807"></a><div class="CTopic TClass LC">
  <div class="CTitle">Extension</div>
- <div class="NDClassPrototype HasChildren" id="NDClassPrototype95"><div class="CPEntry TClass Current"><div class="CPName">Extension</div></div><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/Border.hpp:Border" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,83);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">Border</div></a><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/Layout.hpp:Layout" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,28);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">Layout</div></a><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/Mask.hpp:Mask" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,58);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">Mask</div></a><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/MaskEnforcer.hpp:MaskEnforcer" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,137);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">MaskEnforcer</div></a></div>
+ <div class="NDClassPrototype HasChildren" id="NDClassPrototype807"><div class="CPEntry TClass Current"><div class="CPName">Extension</div></div><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/AdvancedPosition.hpp:AdvancedPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">AdvancedPosition</div></a><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/AdvancedSize.hpp:AdvancedSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,868);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">AdvancedSize</div></a><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/Border.hpp:Border" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,272);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">Border</div></a><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/Extensions/MaskEnforcer.hpp:MaskEnforcer" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,782);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">MaskEnforcer</div></a></div>
+ <div class="CBody"><p>Extension provides additional functionality to a GUI object, without the need to create a new type of GUI object.&nbsp; You cannot attach multiple extension of the same type to the same GUI Object. If needed, consider attaching to an empty widget/window instead.</p></div>
 </div>
 
-<a name="Extension.Functions"></a><a name="Topic96"></a><div class="CTopic TGroup LC">
+<a name="Extension.Functions"></a><a name="Topic800"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="Extension.Update"></a><a name="Topic97"></a><div class="CTopic TFunction LC">
- <div class="CTitle">Update</div>
- <div id="NDPrototype97" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreUpdate,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendSystemInputInterface*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">windowInputStatus</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+<a name="Extension.SetEnabled"></a><a name="Topic809"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetEnabled</div>
+ <div id="NDPrototype809" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetEnabled(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">enabled</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>If false, this extension is disabled and will not provide and functionality</p></div>
 </div>
 
-<a name="Extension.Draw"></a><a name="Topic98"></a><div class="CTopic TFunction LC">
- <div class="CTitle">Draw</div>
- <div id="NDPrototype98" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreRender,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindowP,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+<a name="Extension.IsEnabled"></a><a name="Topic810"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">IsEnabled</div>
+ <div id="NDPrototype810" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsEnabled() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
+ <div class="CBody"><p>If false, this extension is disabled and will not provide and functionality</p></div>
 </div>
 
-<a name="Extension.GetExtensionName"></a><a name="Topic99"></a><div class="CTopic TFunction LC">
+<a name="Extension.Internal_Update"></a><a name="Topic812"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Internal_Update</div>
+ <div id="NDPrototype812" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreUpdate,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendSystemInputInterface*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">windowInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindow</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Updates function called every frame</p></div>
+</div>
+
+<a name="Extension.Internal_Draw"></a><a name="Topic813"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Internal_Draw</div>
+ <div id="NDPrototype813" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreRender,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindowP,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Renders function called every frame</p></div>
+</div>
+
+<a name="Extension.GetExtensionName"></a><a name="Topic814"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetExtensionName</div>
- <div id="NDPrototype99" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::<span class="SHKeyword">string</span> GetExtensionName() = <span class="SHNumber">0</span></div></div>
+ <div id="NDPrototype814" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::<span class="SHKeyword">string</span> GetExtensionName() = <span class="SHNumber">0</span></div></div>
+ <div class="CBody"><p>Returns this extension's name</p></div>
 </div>
 
-<a name="Extension.BindToObject"></a><a name="Topic100"></a><div class="CTopic TFunction LC">
+<a name="Extension.BindToObject"></a><a name="Topic815"></a><div class="CTopic TFunction LC">
  <div class="CTitle">BindToObject</div>
- <div id="NDPrototype100" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> BindToObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">bindObj</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div id="NDPrototype815" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> BindToObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">bindObj</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Binds this extension to a GUI object</p></div>
 </div>
 
-<a name="Extension.Clone"></a><a name="Topic101"></a><div class="CTopic TFunction LC last">
+<a name="Extension.Copy"></a><a name="Topic816"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Copy</div>
+ <div id="NDPrototype816" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Copy(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Extensions::</td><td class="PType">Extension*&nbsp;</td><td class="PName last">extension</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Copy all values of this extension to another extension</p></div>
+</div>
+
+<a name="Extension.Internal_GetObjectsReferences"></a><a name="Topic1073"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Internal_GetObjectsReferences</div>
+ <div id="NDPrototype1073" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,271);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>* Internal_GetObjectsReferences() = <span class="SHNumber">0</span></div></div>
+ <div class="CBody"><p>Returns all the referenced GUI Objects. If nullptr is returned, this extension is not referencing any GUI Object (exception for container).</p></div>
+</div>
+
+<a name="Extension.Clone"></a><a name="Topic1074"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype101" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,95);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div id="NDPrototype1074" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,807);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Clones this extension to a new extension that can be attached to a different container</p></div>
 </div>
 
 </body></html>

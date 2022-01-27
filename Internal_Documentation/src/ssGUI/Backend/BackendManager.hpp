@@ -10,7 +10,7 @@
 namespace ssGUI::Backend
 {
     //class: BackendManager
-    //Backend manager allows backend objects to communicate to each other, without reference each other.
+    //Backend manager allows backend objects to communicate to each other, without reference each other. Normally you don't need to deal with this class
     class BackendManager
     {
         private:

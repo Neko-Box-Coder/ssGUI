@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("che",["Function"],[["CheckObjectsReferencesValidity",,[["ObjectsReferences",,,,0,"File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences.CheckObjectsReferencesValidity","CClass:ObjectsReferences:CheckObjectsReferencesValidity"]]]]);

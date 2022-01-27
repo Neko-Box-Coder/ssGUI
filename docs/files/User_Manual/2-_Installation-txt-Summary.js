@@ -1,1 +1,1 @@
-﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/2._Installation.txt","2. Installation.txt");NDSummary.OnSummaryLoaded("File:User_Manual/2._Installation.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[6,0,0,"Installation","Installation"]]);
+﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/2._Installation.txt","2. Installation.txt");NDSummary.OnSummaryLoaded("File:User_Manual/2._Installation.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[4,0,0,"Installation","Installation"]]);

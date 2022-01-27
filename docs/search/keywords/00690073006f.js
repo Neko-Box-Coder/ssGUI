@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("iso",["Function"],[["IsObjectReferenceExist",,[["ObjectsReferences",,,,0,"File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences.IsObjectReferenceExist","CClass:ObjectsReferences:IsObjectReferenceExist"]]]]);

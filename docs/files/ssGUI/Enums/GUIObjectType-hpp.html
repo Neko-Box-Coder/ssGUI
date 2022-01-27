@@ -8,27 +8,27 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI.Enums"></a><a name="Topic594"></a><div class="CTopic TClass LC first">
+<a name="ssGUI.Enums"></a><a name="Topic204"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Enums</div>
- <div class="NDClassPrototype" id="NDClassPrototype594"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Enums</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype204"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Enums</div></div></div>
 </div>
 
-<a name="ssGUI.Enums.Information"></a><a name="Topic595"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Enums.Information"></a><a name="Topic205"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Information</div>
 </div>
 
-<a name="ssGUI.Enums.GUIObjectType_enum_info"></a><a name="Topic596"></a><div class="CTopic TInformation LC">
+<a name="ssGUI.Enums.GUIObjectType_enum_info"></a><a name="Topic206"></a><div class="CTopic TInformation LC">
  <div class="CTitle">GUIObjectType enum info</div>
  <div class="CBody"><p>This class is a bit enum class. Therefore it can contain multiple enum value at once by using the | operator. For example, for a button is default to:</p><pre>ssGUI::Enums::GUIObjectType type =    ssGUI::Enums::GUIObjectType::BUTTON |<br />                                      ssGUI::Enums::GUIObjectType::BASE_WIDGET |<br />                                      ssGUI::Enums::GUIObjectType::BASE_OBJECT;</pre><p>If you want to check if a GUI object <b>is or equal</b> to a GUI object type, you can just use the == or !=.</p><p>For example, the following will return true as Button <b>is</b> a widget</p><pre>ssGUI::BaseClasses::Button button;<br /><span class="SHKeyword">return</span> button == ssGUI::Enums::GUIObjectType::Widget;</pre><p>Please note that this operation is <b>not commutative</b>. Meaning the follow will not be true since a widget <b>is not</b> a button.</p><pre>return ssGUI::Enums::GUIObjectType::Widget == button;</pre><p>Further more, the bit &amp; operator is supported as well if you need it.</p></div>
 </div>
 
-<a name="ssGUI.Enums.Types"></a><a name="Topic597"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Enums.Types"></a><a name="Topic207"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Types</div>
 </div>
 
-<a name="ssGUI.Enums.GUIObjectType"></a><a name="Topic598"></a><div class="CTopic TEnumeration LC last">
+<a name="ssGUI.Enums.GUIObjectType"></a><a name="Topic198"></a><div class="CTopic TEnumeration LC last">
  <div class="CTitle">GUIObjectType</div>
- <div class="CBody"><table class="CDefinitionList"><tr><td class="CDLEntry"><a name="ssGUI.Enums.WINDOW"></a><a name="Topic599"></a>WINDOW</td><td class="CDLDefinition"><p>Window object type. All windows will have this value.</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.BASE_WIDGET"></a><a name="Topic600"></a>BASE_WIDGET</td><td class="CDLDefinition"><p>Base widget object type. All widgets will have this value.</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.MAIN_WINDOW"></a><a name="Topic601"></a>MAIN_WINDOW</td><td class="CDLDefinition"><p>Main window object type.</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.IMAGE"></a><a name="Topic602"></a>IMAGE</td><td class="CDLDefinition"><p>Image object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.TEXT"></a><a name="Topic603"></a>TEXT</td><td class="CDLDefinition"><p>Text object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.BUTTON"></a><a name="Topic604"></a>BUTTON</td><td class="CDLDefinition"><p>Button object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.BASE_OBJECT"></a><a name="Topic605"></a>BASE_OBJECT</td><td class="CDLDefinition"><p>Base Object type. All GUI object will have this value.</p></td></tr></table></div>
+ <div class="CBody"><table class="CDefinitionList"><tr><td class="CDLEntry"><a name="ssGUI.Enums.WINDOW"></a><a name="Topic209"></a>WINDOW</td><td class="CDLDefinition"><p>Window object type. All windows will have this value.</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.BASE_WIDGET"></a><a name="Topic210"></a>BASE_WIDGET</td><td class="CDLDefinition"><p>Base widget object type. All widgets will have this value.</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.MAIN_WINDOW"></a><a name="Topic199"></a>MAIN_WINDOW</td><td class="CDLDefinition"><p>Main window object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.IMAGE"></a><a name="Topic212"></a>IMAGE</td><td class="CDLDefinition"><p>Image object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.TEXT"></a><a name="Topic213"></a>TEXT</td><td class="CDLDefinition"><p>Text object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.BUTTON"></a><a name="Topic214"></a>BUTTON</td><td class="CDLDefinition"><p>Button object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.BASE_OBJECT"></a><a name="Topic200"></a>BASE_OBJECT</td><td class="CDLDefinition"><p>Base Object type</p></td></tr><tr><td class="CDLEntry"><a name="ssGUI.Enums.STANDARD_WINDOW"></a><a name="Topic201"></a>STANDARD_WINDOW</td><td class="CDLDefinition"><p>Standard window object type (WIP)</p></td></tr></table></div>
 </div>
 
 </body></html>

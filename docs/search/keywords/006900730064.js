@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("isd",["Function"],[["IsDraggable",,[["Window",,,,0,"File:ssGUI/BaseClasses/Window.hpp:Window.IsDraggable","CClass:Window:IsDraggable"]]]]);

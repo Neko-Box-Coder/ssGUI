@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <algorithm>
-#include "ssGUI/Enums/Key.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
