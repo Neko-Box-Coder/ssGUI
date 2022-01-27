@@ -4,13 +4,13 @@
 //namespace: ssGUI::Enums
 namespace ssGUI::Enums
 {
-    /*enum: ButtonState
+    /*enum: WindowDragState
     
-    NONE      - TODO 
-    STARTED    - TODO (Only trigger once)
-    DRAGGING    - TODO (Will be triggered continuously)
-    ENDED     - TODO (Only trigger once)
-    DISABLED    - TODO
+    NONE        - Window is not being dragged
+    STARTED     - Window dragging begins in this update (Only trigger once)
+    DRAGGING    - Window is currently being dragged (Will be triggered continuously)
+    ENDED       - Window dragging ends in this update (Only trigger once)
+    DISABLED    - Window can't be dragged
     */
     enum class WindowDragState
     {

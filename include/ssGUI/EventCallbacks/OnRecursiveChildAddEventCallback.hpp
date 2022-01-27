@@ -7,6 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: OnRecursiveChildAddEventCallback
+    //This event callback is triggered *before* a child is paranted recursively on this GUI object
     class OnRecursiveChildAddEventCallback : public BaseEventCallback
     {        
         private:
@@ -17,9 +18,11 @@ namespace ssGUI::EventCallbacks
             OnRecursiveChildAddEventCallback() = default;
             
             //function: GetEventCallbackName
+            //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override; 
             
             //function: Clone
+            //See <BaseEventCallback::Clone>
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME

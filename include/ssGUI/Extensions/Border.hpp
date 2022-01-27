@@ -10,6 +10,7 @@
 namespace ssGUI::Extensions
 {   
     //class: Border
+    //Draws a border according to the *size* of the GUI Object
     class Border : public Extension
     {
         private:
@@ -43,29 +44,41 @@ namespace ssGUI::Extensions
             //function: SetBorderWidth
             virtual void SetBorderWidth(int width);
 
-
             //Override from Extension
+            //function: SetEnabled           
+            //See <Extension::SetEnabled>
             virtual void SetEnabled(bool enabled) override;
 
+            //function: IsEnabled
+            //See <Extension::IsEnabled>
             virtual bool IsEnabled() const override;
 
-            //function: Update
-            virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            //function: Internal_Update
+            //See <Extension::Internal_Update>
+            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
+            //See <Extension::Internal_Draw>
             virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
+            //See <Extension::GetExtensionName>
             virtual std::string GetExtensionName() override;
             
             //function: BindToObject
+            //See <Extension::BindToObject>
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
 
+            //function: Copy
+            //See <Extension::Copy>
             virtual void Copy(ssGUI::Extensions::Extension* extension) override;
 
+            //function: Internal_GetObjectsReferences
+            //See <Extension::Internal_GetObjectsReferences>
             virtual ObjectsReferences* Internal_GetObjectsReferences() override;
 
             //function: Clone
+            //See <Extension::Clone>
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }

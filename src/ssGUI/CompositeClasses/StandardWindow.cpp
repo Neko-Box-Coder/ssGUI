@@ -125,7 +125,7 @@ namespace ssGUI
 
         CloseButton = new ssGUI::Button();
         CloseButton->SetUserCreated(false);
-        CloseButton->SetBackgroundColour(glm::u8vec4(255, 0, 0, 255));
+        CloseButton->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
 
         UpdateTitleText();
         UpdateIconImage();
@@ -281,7 +281,7 @@ namespace ssGUI
             return;
         
         for(auto extension : Extensions)
-            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
         glm::ivec2 mouseDelta = currentMousePos - MouseDownPosition;
@@ -305,7 +305,7 @@ namespace ssGUI
         }
 
         for(auto extension : Extensions)
-            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }*/
 
     //function: Clone

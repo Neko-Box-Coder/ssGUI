@@ -79,7 +79,7 @@ namespace ssGUI::Extensions
     }
         
     //Extension methods
-    void MaskEnforcer::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void MaskEnforcer::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -154,7 +154,7 @@ namespace ssGUI::Extensions
 
             if(AllowCaching)
             {
-                LastVertices.assign(Container->Extension_GetDrawingVerticies().begin(), Container->Extension_GetDrawingVerticies().end());
+                LastVertices.assign(Container->Extension_GetDrawingVertices().begin(), Container->Extension_GetDrawingVertices().end());
                 LastUVs.assign(Container->Extension_GetDrawingUVs().begin(), Container->Extension_GetDrawingUVs().end());
                 LastColours.assign(Container->Extension_GetDrawingColours().begin(), Container->Extension_GetDrawingColours().end());
                 LastCounts.assign(Container->Extension_GetDrawingCounts().begin(), Container->Extension_GetDrawingCounts().end());
@@ -164,15 +164,15 @@ namespace ssGUI::Extensions
         }
         else
         {             
-            Container->Extension_GetDrawingVerticies().assign(LastVertices.begin(), LastVertices.end());
+            Container->Extension_GetDrawingVertices().assign(LastVertices.begin(), LastVertices.end());
             Container->Extension_GetDrawingUVs().assign(LastUVs.begin(), LastUVs.end());
             Container->Extension_GetDrawingColours().assign(LastColours.begin(), LastColours.end());
             Container->Extension_GetDrawingCounts().assign(LastCounts.begin(), LastCounts.end());
 
             glm::ivec2 posDifference = currentMask->GetGlobalPosition() - LastMaskGlobalPosition;
         
-            for(int i = 0; i < Container->Extension_GetDrawingVerticies().size(); i++)
-                Container->Extension_GetDrawingVerticies()[i] += posDifference;
+            for(int i = 0; i < Container->Extension_GetDrawingVertices().size(); i++)
+                Container->Extension_GetDrawingVertices()[i] += posDifference;
         }
 
         FUNC_DEBUG_EXIT();

@@ -17,6 +17,7 @@
 namespace ssGUI::Extensions
 {
     //class: AdvancedPosition
+    //This extension allows extra option for positioning a GUI Object
     class AdvancedPosition : public Extension
     {
         //Forward declaration
@@ -67,70 +68,93 @@ namespace ssGUI::Extensions
                 BOTTOM
             };
 
+            //function: SetHorizontalAnchor
             virtual void SetHorizontalAnchor(HorizontalAnchor anchor);
 
+            //function: GetHorizontalAnchor
             virtual HorizontalAnchor GetHorizontalAnchor() const;
 
+            //function: SetVerticalAnchor
             virtual void SetVerticalAnchor(VerticalAnchor anchor);
 
+            //function: GetVerticalAnchor
             virtual VerticalAnchor GetVerticalAnchor() const;
 
+            //function: SetHorizontalUsePercentage
             virtual void SetHorizontalUsePercentage(bool percentage);
 
+            //function: IsHorizontalUsePercentage
             virtual bool IsHorizontalUsePercentage() const;
 
+            //function: SetVerticalUsePercentage
             virtual void SetVerticalUsePercentage(bool percentage);
 
+            //function: IsVerticalUsePercentage
             virtual bool IsVerticalUsePercentage() const;
 
+            //function: SetHorizontalPixel
             virtual void SetHorizontalPixel(int pixel);
 
-            //This value will not be valid if using percentage for horizontal
+            //function: GetHorizontalPixel            
             virtual int GetHorizontalPixel() const;
 
+            //function: SetVerticalPixel
             virtual void SetVerticalPixel(int pixel);
 
-            //This value will not be valid if using percentage for vertical
+            //function: GetVerticalPixel            
             virtual int GetVerticalPixel() const;
             
-            //0 - 1
+            //function:  SetHorizontalPercentage           
+            //0 = 0%, 1 = 100%. This can go below 0 or over 1
             virtual void SetHorizontalPercentage(float percentage);
 
-            //This value will not be valid if using pixel for horizontal
+            //function: GetHorizontalPercentage          
+            //0 = 0%, 1 = 100%. This can go below 0 or over 1
             virtual float GetHorizontalPercentage() const;
 
-            //0 - 1
+            //function: SetVerticalPercentage
+            //0 = 0%, 1 = 100%. This can go below 0 or over 1
             virtual void SetVerticalPercentage(float percentage);
 
-            //This value will not be valid if using pixel for vertical
+            //function: GetVerticalPercentage          
+            //0 = 0%, 1 = 100%. This can go below 0 or over 1
             virtual float GetVerticalPercentage() const;
 
-            virtual void SetOverrideDefaultPosition(bool override);
-
-            virtual float IsOverrideDefaultPosition() const;
-
             //Override from Extension
+            //function: SetEnabled
+            //See <Extension::SetEnabled>
             virtual void SetEnabled(bool enabled) override;
 
+            //function: IsEnabled
+            //See <Extension::IsEnabled>
             virtual bool IsEnabled() const override;
 
-            //function: Update
-            virtual void Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
+            //function: Internal_Update
+            //See <Extension::Internal_Update>
+            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
             
             //function: Internal_Draw
+            //See <Extension::Internal_Draw>
             virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
+            //See <Extension::GetExtensionName>
             virtual std::string GetExtensionName() override;
             
             //function: BindToObject
+            //See <Extension::BindToObject>
             virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
 
+            //function: Copy
+            //See <Extension::Copy>
             virtual void Copy(ssGUI::Extensions::Extension* extension) override;
 
+            //function: Internal_GetObjectsReferences
+            //See <Extension::Internal_GetObjectsReferences>
             virtual ObjectsReferences* Internal_GetObjectsReferences() override;
 
             //function: Clone
+            //See <Extension::Clone>
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }

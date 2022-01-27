@@ -15,26 +15,26 @@ namespace ssGUI
                 [](ssGUI::GUIObject* obj)
                 {
                     ssGUI::Button* btn = static_cast<ssGUI::Button*>(obj);
-                    glm::u8vec4 bgcolor = btn->GetBackgroundColour();
+                    glm::u8vec4 bgcolor = btn->GetBackgroundColor();
                     switch(btn->GetButtonState())
                     {
                         case ssGUI::Enums::ButtonState::NORMAL:
                             bgcolor.a = 255;
-                            btn->SetBackgroundColour(bgcolor);
+                            btn->SetBackgroundColor(bgcolor);
                             break;
                         case ssGUI::Enums::ButtonState::HOVER:
                             bgcolor.a = 200;
-                            btn->SetBackgroundColour(bgcolor);
+                            btn->SetBackgroundColor(bgcolor);
                             break;
                         case ssGUI::Enums::ButtonState::CLICKED:
                         case ssGUI::Enums::ButtonState::ON_CLICK:
                         case ssGUI::Enums::ButtonState::CLICKING:
                             bgcolor.a = 100;
-                            btn->SetBackgroundColour(bgcolor);
+                            btn->SetBackgroundColor(bgcolor);
                             break;
                         case ssGUI::Enums::ButtonState::DISABLED:
                             bgcolor.a = 50;
-                            btn->SetBackgroundColour(bgcolor);
+                            btn->SetBackgroundColor(bgcolor);
                             break;
                     }
                 }
@@ -57,32 +57,32 @@ namespace ssGUI
 
     Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
     {
-        SetBackgroundColour(glm::u8vec4(127,127,127,255)); //Gray background colour for button (For now)
+        SetBackgroundColor(glm::u8vec4(127,127,127,255)); //Gray background colour for button (For now)
         StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
         StateChangedEventCallback->AddEventListener(
             [](ssGUI::GUIObject* obj)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(obj);
-                glm::u8vec4 bgcolor = btn->GetBackgroundColour();
+                glm::u8vec4 bgcolor = btn->GetBackgroundColor();
                 switch(btn->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
                         bgcolor.a = 255;
-                        btn->SetBackgroundColour(bgcolor);
+                        btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::HOVER:
                         bgcolor.a = 200;
-                        btn->SetBackgroundColour(bgcolor);
+                        btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::ON_CLICK:
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.a = 100;
-                        btn->SetBackgroundColour(bgcolor);
+                        btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::DISABLED:
                         bgcolor.a = 50;
-                        btn->SetBackgroundColour(bgcolor);
+                        btn->SetBackgroundColor(bgcolor);
                         break;
                 }
             }
@@ -147,19 +147,19 @@ namespace ssGUI
         //Background
         DrawingVerticies.push_back(drawPosition);
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
@@ -189,7 +189,7 @@ namespace ssGUI
         }
 
         for (auto extension : Extensions)
-            extension.second->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //On mouse down
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
@@ -242,7 +242,7 @@ namespace ssGUI
         endUpdate:;
         
         for (auto extension : Extensions)
-            extension.second->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            extension.second->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         FUNC_DEBUG_EXIT();
     }

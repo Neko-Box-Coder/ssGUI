@@ -29,7 +29,7 @@ namespace ssGUI
     
     void MainWindow::Render()
     {
-        BackendDrawing->Render(GetBackgroundColour());
+        BackendDrawing->Render(GetBackgroundColor());
     }
 
     ssGUI::Backend::BackendMainWindowInterface* MainWindow::GetBackendWindowInterface()
@@ -188,7 +188,7 @@ namespace ssGUI
         FUNC_DEBUG_ENTRY();
         
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
             
 
         //Update cursor position offset every .5 seconds
@@ -224,7 +224,7 @@ namespace ssGUI
         // std::cout<<"\n";
 
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         FUNC_DEBUG_EXIT();
     }
@@ -243,7 +243,7 @@ namespace ssGUI
                 return nullptr;
             }
         }
-        
+
         FUNC_DEBUG_EXIT();
         return temp;
     }

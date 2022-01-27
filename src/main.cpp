@@ -81,8 +81,8 @@ int main()
 
     //Creating window
     ssGUI::Window window;
-    //window.SetBackgroundColour(glm::u8vec4(255, 127, 127, 255));
-    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    //window.SetBackgroundColor(glm::u8vec4(255, 127, 127, 255));
+    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
     window.SetSize(glm::ivec2(150, 150));
     window.SetParent(&mainWindow);
@@ -92,7 +92,7 @@ int main()
     ssGUI::Window window2;
     DEBUG_LINE("window2: "<<&window2);
 
-    window2.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window2.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window2.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
     window2.SetSize(glm::ivec2(150, 150));
     window2.SetParent(&mainWindow);
@@ -123,7 +123,7 @@ int main()
     //    ExcludeObject(window3ObjPtr);
     mainWindowWidget.AddExtension(bor);
     mainWindowWidget.AddExtension(mask);
-    mainWindowWidget.SetBackgroundColour(glm::u8vec4(200, 200, 200, 255));
+    mainWindowWidget.SetBackgroundColor(glm::u8vec4(200, 200, 200, 255));
     
     mainWindowWidget.SetSize(glm::ivec2(400, 400));
     
@@ -167,8 +167,8 @@ int main()
 
     //Creating window
     ssGUI::Window window;
-    //window.SetBackgroundColour(glm::u8vec4(255, 127, 127, 255));
-    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    //window.SetBackgroundColor(glm::u8vec4(255, 127, 127, 255));
+    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
     window.SetSize(glm::ivec2(150, 150));
     window.SetParent(&mainWindow);
@@ -178,14 +178,14 @@ int main()
     ssGUI::Window window2;
     DEBUG_LINE("window2: "<<&window2);
 
-    window2.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window2.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window2.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
     window2.SetSize(glm::ivec2(150, 150));
     window2.SetParent(&mainWindow);
 
     
     ssGUI::Window* window3 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
-    window3->SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window3->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window3->SetTitlebarColor(glm::u8vec4(255, 255, 255, 255));
     window3->SetSize(glm::ivec2(150, 150));
     window3->SetParent(&mainWindow);
@@ -197,7 +197,7 @@ int main()
 
 
     ssGUI::Window* window4 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
-    window4->SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window4->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window4->SetSize(glm::ivec2(150, 150));
     window4->SetParent(&mainWindow);
     DEBUG_LINE("window4: "<<&window4);
@@ -241,7 +241,7 @@ int main()
     mainWindowWidget.AddExtension(as);
     mainWindowWidget.AddExtension(bor);
     mainWindowWidget.AddExtension(mask);
-    mainWindowWidget.SetBackgroundColour(glm::u8vec4(200, 200, 200, 255));
+    mainWindowWidget.SetBackgroundColor(glm::u8vec4(200, 200, 200, 255));
     
     mainWindowWidget.SetSize(glm::ivec2(400, 400));
     
@@ -269,10 +269,10 @@ int main()
             if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
                 !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
             {
-                if(window.GetBackgroundColour().a == 255)
-                    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 127));
+                if(window.GetBackgroundColor().a == 255)
+                    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 127));
                 else
-                    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+                    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
             }
         }
     );
@@ -379,7 +379,7 @@ int main()
 
     //Creating window
     ssGUI::Window window;
-    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window.SetSize(glm::ivec2(400, 300));
     window.SetPosition(glm::ivec2(50, 200));
     window.SetParent(&mainWindow);     //This should trigger the event callback
@@ -412,7 +412,7 @@ int main()
 
     //Creating window
     ssGUI::Window window;
-    window.SetBackgroundColour(glm::u8vec4(127, 127, 127, 255));
+    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window.SetSize(glm::ivec2(150, 150));
     window.SetParent(&mainWindow);
 

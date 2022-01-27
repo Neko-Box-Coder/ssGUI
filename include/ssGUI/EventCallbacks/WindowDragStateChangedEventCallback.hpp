@@ -7,6 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: WindowDragStateChangedEventCallback
+    //This event callback is triggered *after* this GUI object (window) drag state is changed
     class WindowDragStateChangedEventCallback : public BaseEventCallback
     {        
         private:
@@ -17,9 +18,11 @@ namespace ssGUI::EventCallbacks
             WindowDragStateChangedEventCallback() = default;
             
             //function: GetEventCallbackName
+            //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;
             
             //function: Clone
+            //See <BaseEventCallback::Clone>
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME

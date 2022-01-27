@@ -9,6 +9,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: BaseEventCallback
+    //Implementation class for <EventCallback>
     class BaseEventCallback : public EventCallback
     {
         private:
@@ -26,21 +27,27 @@ namespace ssGUI::EventCallbacks
             BaseEventCallback();
             
             //function: AddEventListener
+            //See <EventCallback::AddEventListener>
             int AddEventListener(std::function<void(ssGUI::GUIObject*)> callback) override;
             
             //function: RemoveEventListener
+            //See <EventCallback::RemoveEventListener>
             void RemoveEventListener(int index) override;
             
             //function: GetEventListenerCount
+            //See <EventCallback::GetEventListenerCount>
             int GetEventListenerCount() const override;
             
             //function: Notify
+            //See <EventCallback::Notify>
             void Notify(ssGUI::GUIObject* source) override;
             
             //function: GetEventCallbackName
+            //See <EventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;
             
             //function: Clone
+            //See <EventCallback::Clone>
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
 
             //const: EVENT_NAME

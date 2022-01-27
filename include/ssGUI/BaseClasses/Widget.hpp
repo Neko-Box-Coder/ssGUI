@@ -36,9 +36,11 @@ namespace ssGUI
             virtual void SetInteractable(bool interactable);
             
             //function: IsBlockInput
+            //Returns if this widget blocks input. If true, the GUI Object behind this widget will not receive the input.
             virtual bool IsBlockInput() const;
             
             //function: SetBlockInput
+            //Sets if this widget blocks input. If true, the GUI Object behind this widget will not receive the input.
             virtual void SetBlockInput(bool blockInput);
 
             //virtual int GetBorderWidth();
@@ -48,18 +50,23 @@ namespace ssGUI
             //virtual void SetBorderColor(glm::u8vec4 color);
             
             //function: GetType
+            //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
             
             //function: Delete 
+            //See <GUIObject::Delete>
             virtual void Delete() override;
 
-            //function: Draw
+            //function: Internal_Draw
+            //See <GUIObject::Internal_Draw>
             virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
+            //See <GUIObject::Internal_Update>
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Clone
+            //See <GUIObject::Clone>
             virtual GUIObject* Clone(bool cloneChildren) override;
     };
 }

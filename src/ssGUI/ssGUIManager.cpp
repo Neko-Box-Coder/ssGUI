@@ -28,17 +28,17 @@ namespace ssGUI
             UpdateObjects();
 
             //Clean up deleted objects
-            if(!DeletedObjs.empty())
+            if(!ObjsToDelete.empty())
             {
-                for(int i = 0; i < DeletedObjs.size(); i++)
+                for(int i = 0; i < ObjsToDelete.size(); i++)
                 {
-                    if(DeletedObjs[i]->Internal_IsDeleted())
+                    if(ObjsToDelete[i]->Internal_IsDeleted())
                     {
-                        if(DeletedObjs[i]->IsHeapAllocated())
-                           delete DeletedObjs[i];
+                        if(ObjsToDelete[i]->IsHeapAllocated())
+                           delete ObjsToDelete[i];
                     }
                 }
-                DeletedObjs = std::vector<ssGUI::GUIObject*>();
+                ObjsToDelete = std::vector<ssGUI::GUIObject*>();
             }
 
             #if DEBUG_STATE 
@@ -337,7 +337,7 @@ namespace ssGUI
 
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;
 
-    std::vector<ssGUI::GUIObject*> ssGUIManager::DeletedObjs = std::vector<ssGUI::GUIObject*>();
+    std::vector<ssGUI::GUIObject*> ssGUIManager::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
 
 
     ssGUIManager::ssGUIManager() :  BackendInput(), MainWindowPList(), OnUpdateEventListeners(), 

@@ -8,6 +8,7 @@
 namespace ssGUI
 {
     //struct: DrawingProperty
+    //Structure used to pass to BackendDrawing to draw entities
     struct DrawingProperty
     {
         public:

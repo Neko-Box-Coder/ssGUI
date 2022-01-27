@@ -60,6 +60,7 @@ namespace ssGUI::Backend
             virtual ~BackendDrawingSFML();
 
             //function: DrawEntities
+            //See <BackendDrawingInterface::DrawEntities>
             bool DrawEntities(  const std::vector<glm::ivec2>& vertices, 
                                 const std::vector<glm::ivec2>& texCoords,
                                 const std::vector<glm::u8vec4>& colours,
@@ -67,6 +68,7 @@ namespace ssGUI::Backend
                                 const std::vector<ssGUI::DrawingProperty>& properties) override;
 
             //function: Render
+            //See <BackendDrawingInterface::Render>
             virtual void Render(glm::u8vec3 clearColor) override;
     };
 }

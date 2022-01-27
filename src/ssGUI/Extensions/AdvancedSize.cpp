@@ -13,7 +13,6 @@ namespace ssGUI::Extensions
         VerticalPixelValue = other.GetVerticalPixel();
         HorizontalPercentageValue = other.GetHorizontalPercentage();
         VerticalPercentageValue = other.GetVerticalPercentage();
-        OverrideDefaultSize = other.IsOverrideDefaultSize();
     }
 
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
@@ -86,16 +85,6 @@ namespace ssGUI::Extensions
         return VerticalPercentageValue;
     }
 
-    void AdvancedSize::SetOverrideDefaultSize(bool override)
-    {
-        OverrideDefaultSize = override;
-    }
-
-    float AdvancedSize::IsOverrideDefaultSize() const
-    {
-        return OverrideDefaultSize;
-    }
-
     void AdvancedSize::SetEnabled(bool enabled)
     {
         Enabled = enabled;
@@ -106,14 +95,14 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    void AdvancedSize::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void AdvancedSize::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         
         //TODO : Cache if parent's size hasn't changed
         
         //This should be done in post update
-        if(IsPreUpdate || !IsOverrideDefaultSize() || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
+        if(IsPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -175,7 +164,6 @@ namespace ssGUI::Extensions
         VerticalPixelValue = as->GetVerticalPixel();
         HorizontalPercentageValue = as->GetHorizontalPercentage();
         VerticalPercentageValue = as->GetVerticalPercentage();
-        OverrideDefaultSize = as->IsOverrideDefaultSize();
     }
 
     ObjectsReferences* AdvancedSize::Internal_GetObjectsReferences()

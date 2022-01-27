@@ -4,12 +4,15 @@
 #include "ssGUI/BaseClasses/Window.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
+//namespace: ssGUI
 namespace ssGUI
 {
     class Text;
     class Button;
     class Image;
 
+    //class: StandardWindow
+    //WIP
     class StandardWindow : public Window
     {
         private:

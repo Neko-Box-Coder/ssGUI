@@ -24,34 +24,44 @@ namespace ssGUI::Backend
             virtual ~BackendFontSFML();
             
             //function: GetSFMLFont
+            //Gets the pointer of sf::font object
             sf::Font* GetSFMLFont();
             
             //function: IsValid
+            //See <BackendFontInterface::IsValid>
             bool IsValid() override;
             
             //function: GetCharacterInfo
+            //See <BackendFontInterface::GetCharacterInfo>
             ssGUI::CharacterInfo GetCharacterInfo(wchar_t charUnicode, int charSize) override;
             
             //function: IsCharacterSupported
+            //See <BackendFontInterface::IsCharacterSupported>
             bool IsCharacterSupported(wchar_t charUnicode) override;
             
             //function: GetKerning
+            //See <BackendFontInterface::GetKerning>
             int GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, int charSize) override;
             
             //function: GetLineSpacing
+            //See <BackendFontInterface::GetLineSpacing>
             int GetLineSpacing(int charSize) override;
             
             //function: GetUnderlineOffset
+            //See <BackendFontInterface::GetUnderlineOffset>
             int GetUnderlineOffset(int charSize) override;
             
             //function: GetUnderlineThickness
+            //See <BackendFontInterface::GetUnderlineThickness>
             int GetUnderlineThickness(int charSize) override;
 
             //function: LoadFromPath
+            //See <BackendFontInterface::LoadFromPath>
             //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromPath(std::string path) override;
             
             //function: LoadFromMemory
+            //See <BackendFontInterface::LoadFromMemory>
             //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
 

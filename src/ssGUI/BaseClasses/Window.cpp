@@ -342,12 +342,12 @@ namespace ssGUI
 
     void Window::SetTitlebarColor(glm::u8vec4 color)
     {
-        TitlebarColorDifference = static_cast<glm::ivec4>(color) - static_cast<glm::ivec4>(GetBackgroundColour());
+        TitlebarColorDifference = static_cast<glm::ivec4>(color) - static_cast<glm::ivec4>(GetBackgroundColor());
     }
 
     glm::u8vec4 Window::GetTitlebarColor() const
     {
-        return static_cast<glm::u8vec4>(static_cast<glm::ivec4>(GetBackgroundColour()) + TitlebarColorDifference);
+        return static_cast<glm::u8vec4>(static_cast<glm::ivec4>(GetBackgroundColor()) + TitlebarColorDifference);
     }
 
     void Window::SetResizeType(ssGUI::Enums::ResizeType resizeType)
@@ -461,25 +461,25 @@ namespace ssGUI
         //Base window
         DrawingVerticies.push_back(drawPosition);
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());        //TODO : Caching
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
 
         //Title bar 
-        glm::u8vec4 titlebarColor = GetBackgroundColour();
+        glm::u8vec4 titlebarColor = GetBackgroundColor();
 
         auto rgbAdder = [](glm::uint8* rgbField, int fieldDifference)->void
         {
@@ -542,7 +542,7 @@ namespace ssGUI
         }
 
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
         glm::ivec2 mouseDelta = currentMousePos - MouseDownPosition;
@@ -571,7 +571,7 @@ namespace ssGUI
         }
 
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         FUNC_DEBUG_EXIT();
     }
@@ -590,7 +590,7 @@ namespace ssGUI
                 return nullptr;
             }
         }
-        
+
         FUNC_DEBUG_EXIT();
         return temp;
     }

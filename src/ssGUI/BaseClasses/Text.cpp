@@ -665,19 +665,19 @@ namespace ssGUI
         //Drawing background
         DrawingVerticies.push_back(drawPos);
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, 0));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPos + glm::ivec2(0, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());

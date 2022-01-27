@@ -15,7 +15,6 @@ namespace ssGUI::Extensions
         VerticalPixelValue = other.GetVerticalPixel();
         HorizontalPercentageValue = other.GetHorizontalPercentage();
         VerticalPercentageValue = other.GetVerticalPercentage();
-        OverrideDefaultPosition = other.IsOverrideDefaultPosition();
     }
 
     const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";
@@ -23,7 +22,7 @@ namespace ssGUI::Extensions
     AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::LEFT), 
                                             CurrentVertical(AdvancedPosition::VerticalAnchor::TOP), HorizontalUsePercentage(false),
                                             VerticalUsePercentage(false), HorizontalPixelValue(0), VerticalPixelValue(0),
-                                            HorizontalPercentageValue(0), VerticalPercentageValue(0), OverrideDefaultPosition(true)
+                                            HorizontalPercentageValue(0), VerticalPercentageValue(0)
     {}
 
     AdvancedPosition::~AdvancedPosition()
@@ -109,16 +108,6 @@ namespace ssGUI::Extensions
         return VerticalPercentageValue;
     }
 
-    void AdvancedPosition::SetOverrideDefaultPosition(bool override)
-    {
-        OverrideDefaultPosition = override;
-    }
-
-    float AdvancedPosition::IsOverrideDefaultPosition() const
-    {
-        return OverrideDefaultPosition;
-    }
-
     void AdvancedPosition::SetEnabled(bool enabled)
     {
         Enabled = enabled;
@@ -129,13 +118,13 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    void AdvancedPosition::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void AdvancedPosition::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();        
         //TODO : Cache if parent's global position and size hasn't changed
         
         //This should be done in post update
-        if(IsPreUpdate || !IsOverrideDefaultPosition() || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
+        if(IsPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -305,7 +294,6 @@ namespace ssGUI::Extensions
         VerticalPixelValue = ap->GetVerticalPixel();
         HorizontalPercentageValue = ap->GetHorizontalPercentage();
         VerticalPercentageValue = ap->GetVerticalPercentage();
-        OverrideDefaultPosition = ap->IsOverrideDefaultPosition();
     }
 
     ObjectsReferences* AdvancedPosition::Internal_GetObjectsReferences()

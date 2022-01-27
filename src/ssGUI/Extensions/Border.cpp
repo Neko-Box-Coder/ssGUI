@@ -49,7 +49,7 @@ namespace ssGUI::Extensions
         int width = GetBorderWidth();
         glm::u8vec4 colour = GetBorderColour();
 
-        std::vector<glm::ivec2>& drawingVerticies = Container->Extension_GetDrawingVerticies();
+        std::vector<glm::ivec2>& drawingVerticies = Container->Extension_GetDrawingVertices();
         std::vector<glm::ivec2>& drawingUVs = Container->Extension_GetDrawingUVs();
         std::vector<glm::u8vec4>& drawingColours = Container->Extension_GetDrawingColours();
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
@@ -144,7 +144,7 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    void Border::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Border::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         //Do nothing
     }

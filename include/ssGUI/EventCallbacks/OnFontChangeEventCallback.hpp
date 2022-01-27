@@ -7,6 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: OnFontChangeEventCallback
+    //This event callback is triggered *before* the font of a text is changed 
     class OnFontChangeEventCallback : public BaseEventCallback
     {        
         private:
@@ -17,9 +18,11 @@ namespace ssGUI::EventCallbacks
             OnFontChangeEventCallback() = default;
             
             //function: GetEventCallbackName
+            //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;
             
             //function: Clone
+            //See <BaseEventCallback::Clone>
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME

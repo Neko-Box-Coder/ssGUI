@@ -21,7 +21,7 @@
 namespace ssGUI
 {
     //class: BaseGUIObject
-    //This is the implementation class for <GUIObject>
+    //This is the implementation class for <GUIObject>. See <GUIObject> for more details about the functions
     class BaseGUIObject : public GUIObject
     {
         private:
@@ -78,181 +78,267 @@ namespace ssGUI
 
             //Below are from GUIObject.hpp
             //function: GetPosition
+            //See <GUIObject::GetPosition>
             virtual glm::ivec2 GetPosition() const override;
             
             //function: SetPosition
+            //See <GUIObject::SetPosition>
             virtual void SetPosition(glm::ivec2 position) override;
             
             //function: GetGlobalPosition
+            //See <GUIObject::GetGlobalPosition>
             virtual glm::ivec2 GetGlobalPosition() override;    //TODO : SyncGlobalPosition is called so can't be const. Try to turn this to const
             
             //function: SetGlobalPosition
+            //See <GUIObject::SetGlobalPosition>
             virtual void SetGlobalPosition(glm::ivec2 position) override;
 
             //function: GetSize
+            //See <GUIObject::GetSize>
             virtual glm::ivec2 GetSize() const override;
             
             //function: SetSize
+            //See <GUIObject::SetSize>
             virtual void SetSize(glm::ivec2 size) override;
 
             //function: GetMinSize
+            //See <GUIObject::GetMinSize>
             virtual glm::ivec2 GetMinSize() const override;
             
             //function: SetMinSize
+            //See <GUIObject::SetMinSize>
             virtual void SetMinSize(glm::ivec2 minSize) override;
 
             //function: GetMaxSize
+            //See <GUIObject::GetMaxSize>
             virtual glm::ivec2 GetMaxSize() const override;
             
             //function: SetMaxSize
+            //See <GUIObject::SetMaxSize>
             virtual void SetMaxSize(glm::ivec2 maxSize) override;
 
             //function: GetParent
+            //See <GUIObject::GetParent>
             virtual ssGUI::GUIObject* GetParent() const override;
             
             //function: SetParent
+            //See <GUIObject::SetParent>
             virtual void SetParent(ssGUI::GUIObject* newParent) override;
 
             //function: GetChildrenCount
+            //See <GUIObject::GetChildrenCount>
             virtual int GetChildrenCount() const override;
             
+            //function: MoveChildrenIteratorToFirst
+            //See <GUIObject::MoveChildrenIteratorToFirst>
             virtual void MoveChildrenIteratorToFirst() override;
-
+            
+            //function: MoveChildrenIteratorToLast
+            //See <GUIObject::MoveChildrenIteratorToLast>
             virtual void MoveChildrenIteratorToLast() override;
-
+            
+            //function: MoveChildrenIteratorNext
+            //See <GUIObject::MoveChildrenIteratorNext>
             virtual void MoveChildrenIteratorNext() override;
-
+            
+            //function: MoveChildrenIteratorPrevious
+            //See <GUIObject::MoveChildrenIteratorPrevious>
             virtual void MoveChildrenIteratorPrevious() override;
-
+            
+            //function: IsChildrenIteratorLast
+            //See <GUIObject::IsChildrenIteratorLast>
             virtual bool IsChildrenIteratorLast() override;
-
+            
+            //function: IsChildrenIteratorFirst
+            //See <GUIObject::IsChildrenIteratorFirst>
             virtual bool IsChildrenIteratorFirst() override;
-
+            
+            //function: IsChildrenIteratorEnd
+            //See <GUIObject::IsChildrenIteratorEnd>
             virtual bool IsChildrenIteratorEnd() override;
 
             //function: FindChild
+            //See <GUIObject::FindChild>
             virtual bool FindChild(ssGUI::GUIObject* child) override;
 
+            //function: GetCurrentChild
+            //See <GUIObject::GetCurrentChild>
             virtual ssGUI::GUIObject* GetCurrentChild() override;
 
+            //function: GetCurrentChildReferenceIterator
+            //See <GUIObject::GetCurrentChildReferenceIterator>
             virtual std::list<ssGUIObjectIndex>::iterator GetCurrentChildReferenceIterator() override;
             
+            //function: ChangeChildOrderToBeforePosition
+            //See <GUIObject::ChangeChildOrderToBeforePosition>
             virtual void ChangeChildOrderToBeforePosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position) override;
             
+            //function: ChangeChildOrderToAfterPosition
+            //See <GUIObject::ChangeChildOrderToAfterPosition>
             virtual void ChangeChildOrderToAfterPosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position) override;
 
-
-
             //function: Internal_AddChild
+            //See <GUIObject::Internal_AddChild>
             virtual void Internal_AddChild(ssGUI::GUIObject* obj) override;
             
             //function: Internal_RemoveChild
+            //See <GUIObject::Internal_RemoveChild>
             virtual void Internal_RemoveChild(ssGUI::GUIObject* obj) override;
 
             //function: GetType
+            //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
             //function: GetAnchorType
+            //See <GUIObject::GetAnchorType>
             virtual ssGUI::Enums::AnchorType GetAnchorType() const override;
             
             //function: SetAnchorType
+            //See <GUIObject::SetAnchorType>
             virtual void SetAnchorType(ssGUI::Enums::AnchorType anchorType) override;
 
             //function: SetVisible
+            //See <GUIObject::SetVisible>
             virtual void SetVisible(bool visible) override;
             
             //function: IsVisible
+            //See <GUIObject::IsVisible>
             virtual bool IsVisible() const override;
 
             //function: SetUserCreated
+            //See <GUIObject::SetUserCreated>
             virtual void SetUserCreated(bool created) override;
 
             //function: IsUserCreated()
+            //See <GUIObject::IsUserCreated>
             virtual bool IsUserCreated() const override;
             
-            //function: SetBackgroundColour
-            virtual void SetBackgroundColour(glm::u8vec4 color) override;
+            //function: SetBackgroundColor
+            //See <GUIObject::SetBackgroundColor>
+            virtual void SetBackgroundColor(glm::u8vec4 color) override;
             
-            //function: GetBackgroundColour
-            virtual glm::u8vec4 GetBackgroundColour() const override;
+            //function: GetBackgroundColor
+            //See <GUIObject::GetBackgroundColor>
+            virtual glm::u8vec4 GetBackgroundColor() const override;
 
             //function: Delete 
+            //See <GUIObject::Delete>
             virtual void Delete() override;
 
             //function: Internal_IsDeleted
+            //See <GUIObject::Internal_IsDeleted>
             virtual bool Internal_IsDeleted() const override;
 
+            //function: SetHeapAllocated
+            //See <GUIObject::SetHeapAllocated>
             virtual void SetHeapAllocated(bool heap) override;
 
-
+            //function: IsHeapAllocated
+            //See <GUIObject::IsHeapAllocated>
             virtual bool IsHeapAllocated() const override;
             
-            //function: Extension_GetDrawingVerticies
-            virtual std::vector<glm::ivec2>& Extension_GetDrawingVerticies() override;
+            //function: Extension_GetDrawingVertices
+            //See <GUIObject::Extension_GetDrawingVertices>
+            virtual std::vector<glm::ivec2>& Extension_GetDrawingVertices() override;
             
             //function: Extension_GetDrawingUVs
+            //See <GUIObject::Extension_GetDrawingUVs>
             virtual std::vector<glm::ivec2>& Extension_GetDrawingUVs() override;
             
             //function: Extension_GetDrawingColours
+            //See <GUIObject::Extension_GetDrawingColours>
             virtual std::vector<glm::u8vec4>& Extension_GetDrawingColours() override;
             
             //function: Extension_GetDrawingCounts
+            //See <GUIObject::Extension_GetDrawingCounts>
             virtual std::vector<int>& Extension_GetDrawingCounts() override;
             
             //function: Extension_GetDrawingProperties
+            //See <GUIObject::Extension_GetDrawingProperties>
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties() override;
             
             //function: AddExtension
+            //See <GUIObject::AddExtension>
             virtual void AddExtension(ssGUI::Extensions::Extension* extension) override;
             
             //function: GetExtension
+            //See <GUIObject::GetExtension>
             virtual ssGUI::Extensions::Extension* GetExtension(std::string extensionName) override;
             
+            //function: GetListOfExtensions
+            //See <GUIObject::GetListOfExtensions>
             virtual std::vector<ssGUI::Extensions::Extension*> GetListOfExtensions() override;
 
             //function: IsExtensionExist
+            //See <GUIObject::IsExtensionExist>
             virtual bool IsExtensionExist(std::string extensionName) const override;
             
             //function: RemoveExtension
+            //See <GUIObject::RemoveExtension>
             virtual void RemoveExtension(std::string extensionName) override;
-
+            
+            //function: GetExtensionsCount
+            //See <GUIObject::GetExtensionsCount>
             virtual int GetExtensionsCount() const override;
-
+            
+            //function: GetExtensionDrawOrder
+            //See <GUIObject::GetExtensionDrawOrder>
             virtual int GetExtensionDrawOrder(std::string extensionName) const override;
-
+            
+            //function: ChangeExtensionDrawOrder
+            //See <GUIObject::ChangeExtensionDrawOrder>
             virtual void ChangeExtensionDrawOrder(std::string extensionName, int order) override;
-
+            
+            //function: GetExtensionUpdateOrder
+            //See <GUIObject::GetExtensionUpdateOrder>
             virtual int GetExtensionUpdateOrder(std::string extensionName) const override;
-
+            
+            //function: ChangeExtensionUpdateOrder
+            //See <GUIObject::ChangeExtensionUpdateOrder>
             virtual void ChangeExtensionUpdateOrder(std::string extensionName, int order) override;
             
             //function: AddEventCallback
+            //See <GUIObject::AddEventCallback>
             virtual void AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback) override;
             
             //function: GetEventCallback
+            //See <GUIObject::GetEventCallback>
             virtual ssGUI::EventCallbacks::EventCallback* GetEventCallback(std::string eventCallbackName) override;
             
             //function: IsEventCallbackExist
+            //See <GUIObject::IsEventCallbackExist>
             virtual bool IsEventCallbackExist(std::string eventCallbackName) const override;
             
             //function: RemoveEventCallback
+            //See <GUIObject::RemoveEventCallback>
             virtual void RemoveEventCallback(std::string eventCallbackName) override;
-
+            
+            //function: AddTag
+            //See <GUIObject::AddTag>
             virtual void AddTag(std::string tag) override;
-
+            
+            //function: RemoveTag
+            //See <GUIObject::RemoveTag>
             virtual void RemoveTag(std::string tag) override;
-
+            
+            //function: HasTag
+            //See <GUIObject::HasTag>
             virtual bool HasTag(std::string tag) const override;
-
+            
+            //function: Internal_GetObjectsReferences
+            //See <GUIObject::Internal_GetObjectsReferences>
             virtual ObjectsReferences* Internal_GetObjectsReferences() override;
 
-            //function: Draw
+            //function: Internal_Draw
+            //See <GUIObject::Internal_Draw>
             virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
+            //See <GUIObject::Internal_Update>
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
             //function: Clone
+            //See <GUIObject::Clone>
             virtual GUIObject* Clone(bool cloneChildren) override;
 
     };

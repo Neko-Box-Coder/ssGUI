@@ -15,6 +15,7 @@ namespace ssGUI
             bool KeyInputBlocked = false;
 
             //var: DockingBlocked
+            //Blocks docking of a window if there's another GUI Object on top of it.
             bool DockingBlocked = false;
     };
 }

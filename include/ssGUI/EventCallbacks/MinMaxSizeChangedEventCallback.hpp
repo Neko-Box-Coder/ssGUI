@@ -7,6 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: MinMaxSizeChangedEventCallback
+    //This event callback is triggered *after* min or max size of a GUI object has changed
     class MinMaxSizeChangedEventCallback : public BaseEventCallback
     {        
         private:
@@ -17,9 +18,11 @@ namespace ssGUI::EventCallbacks
             MinMaxSizeChangedEventCallback() = default;
             
             //function: GetEventCallbackName
+            //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;
             
             //function: Clone
+            //See <BaseEventCallback::Clone>
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME

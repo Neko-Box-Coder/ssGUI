@@ -20,6 +20,21 @@
 namespace ssGUI
 {
     //class: ssGUIManager
+    /*This manages all the GUI Objects, system input, update and render order, etc...
+    There's should only be 1 instance of ssGUIManager.
+
+    You only need to add the MainWindow object and run it.
+    ================== C++ ==================
+    ssGUIManager manager = ssGUIManager();
+    manager.AddGUIObject(mainWindowObject);
+    manager.StartRunning();
+    =========================================
+
+    You can subscribe to the update function (called every frame) by adding a listener to <AddOnUpdateEventListener>
+
+    You can also get the current instance of ssGUIManager without having to get a reference of it.
+    > ssGUIManager* currentInstance = ssGUIManager::GetInstance();
+    */
     class ssGUIManager
     {
         private:
@@ -56,7 +71,7 @@ namespace ssGUI
         public:
 
             //TODO : Maybe make this thread safe?
-            static std::vector<ssGUI::GUIObject*> DeletedObjs;
+            static std::vector<ssGUI::GUIObject*> ObjsToDelete;
 
             ssGUIManager();
             virtual ~ssGUIManager();
@@ -78,6 +93,7 @@ namespace ssGUI
             int GetGUIObjectCount();
 
             //function: StartRunning
+            //This will block the thread until all <MainWindow>s are closed
             void StartRunning();
 
             //function: GetBackendInputInterface

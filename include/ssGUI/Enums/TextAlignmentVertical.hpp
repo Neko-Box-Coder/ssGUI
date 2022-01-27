@@ -4,6 +4,11 @@
 //namespace: ssGUI::Enums
 namespace ssGUI::Enums
 {
+    /*enum: TextAlignmentVertical
+    TOP     - Top allignment
+    CENTER  - Center allignment
+    BOTTOM  - Bottom allignment
+    */
     enum class TextAlignmentVertical
     {
         TOP,

@@ -7,6 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: ButtonStateChangedEventCallback
+    //This event callback is triggered *after* the button state has changed
     class ButtonStateChangedEventCallback : public BaseEventCallback
     {        
         private:
@@ -17,9 +18,11 @@ namespace ssGUI::EventCallbacks
             ButtonStateChangedEventCallback() = default;
             
             //function: GetEventCallbackName
+            //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;
             
             //function: Clone
+            //See <BaseEventCallback::Clone>
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME

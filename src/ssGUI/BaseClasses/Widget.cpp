@@ -72,19 +72,19 @@ namespace ssGUI
         //TODO: Some optimisation maybe possible
         DrawingVerticies.push_back(drawPosition);
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
         DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColour());
+        DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
@@ -114,7 +114,7 @@ namespace ssGUI
         }
         
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //It will only block when BlockInput flag is true OR is interactable
         if(!IsBlockInput() || IsInteractable())
@@ -145,7 +145,7 @@ namespace ssGUI
         endOfUpdate:;
 
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         FUNC_DEBUG_EXIT();
     }

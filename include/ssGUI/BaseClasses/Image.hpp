@@ -15,40 +15,50 @@ namespace ssGUI
     class Image : public Widget
     {
         private:
-            ssGUI::ImageData* ImageData;
-            ssGUI::Enums::ImageFitting Fitting;
             Image& operator=(Image const& other);
         
         protected:
+            ssGUI::ImageData* ImageData;
+            ssGUI::Enums::ImageFitting Fitting;
             Image(Image const& other);
 
         public:
             Image();
             virtual ~Image() override;
 
+            //function: GetImageData
+            //Gets the ImageData object used by this Image widget. Returns nullptr if no ImageData is used
             virtual ssGUI::ImageData* GetImageData() const;
 
+            //function: SetImageData
+            //Sets the ImageData object to be used by this Image widget
             virtual void SetImageData(ssGUI::ImageData* imageData);
 
             //function: GetFitting
+            //Returns how the image will be fitted inside this Image Widget
             virtual ssGUI::Enums::ImageFitting GetFitting() const;
 
             //function: SetFitting
+            //Sets how the image will be fitted inside this Image Widget
             virtual void SetFitting(ssGUI::Enums::ImageFitting fitting);
 
             //Overriding widget
             //function: GetType
+            //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
             //function: Delete 
+            //See <Widget::Delete>
             virtual void Delete() override;
 
-            //function: Draw
+            //function: Internal_Draw
+            //See <Widget::Internal_Draw>
             virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
 
             //virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow) override;
 
             //function: Clone
+            //See <Widget::Clone>
             virtual GUIObject* Clone(bool cloneChildren) override;
 
     };

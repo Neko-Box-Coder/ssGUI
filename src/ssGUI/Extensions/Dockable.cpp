@@ -60,7 +60,7 @@ namespace ssGUI::Extensions
         
         (*widget)->AddTag(ssGUI::Tags::OVERLAY);
         (*widget)->SetParent(Container);
-        (*widget)->SetBackgroundColour(color);
+        (*widget)->SetBackgroundColor(color);
 
         FUNC_DEBUG_EXIT();
     }
@@ -533,7 +533,7 @@ namespace ssGUI::Extensions
                     childDocker->SetTitlebar(true);
                     childDocker->SetDraggable(true);
                     childDocker->SetResizeType(ssGUI::Enums::ResizeType::ALL);
-                    childDocker->SetBackgroundColour(static_cast<ssGUI::Extensions::Docker*>(child->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
+                    childDocker->SetBackgroundColor(static_cast<ssGUI::Extensions::Docker*>(child->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
                 }
                 //Check if the child is a docker and the parent of child now is a docker ot not. 
                 //If so, move the contents of child to the parent recursively
@@ -615,13 +615,13 @@ namespace ssGUI::Extensions
         //ssGUI::GUIObject* topLevelParent = (TopLevelParent == -1 ? nullptr : CurrentObjectsReferences.GetObjectReference(TopLevelParent));
         if(!TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
         {
-            newParent->SetBackgroundColour(static_cast<ssGUI::Extensions::Docker*>(newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
+            newParent->SetBackgroundColor(static_cast<ssGUI::Extensions::Docker*>(newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
         }
         //Non Floating
         else
         {
             newParent->SetTitlebar(false);
-            newParent->SetBackgroundColour(glm::u8vec4(0, 0, 0, 0));
+            newParent->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
             newParent->SetResizeType(ssGUI::Enums::ResizeType::NONE);
             newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         }
@@ -887,8 +887,7 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    //function: Update
-    void Dockable::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Dockable::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -1034,13 +1033,11 @@ namespace ssGUI::Extensions
     void Dockable::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {}
     
-    //function: GetExtensionName
     std::string Dockable::GetExtensionName()
     {
         return EXTENSION_NAME;
     }
     
-    //function: BindToObject
     void Dockable::BindToObject(ssGUI::GUIObject* bindObj)
     {
         FUNC_DEBUG_ENTRY();

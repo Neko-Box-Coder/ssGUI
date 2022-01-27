@@ -7,6 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: OnObjectDestroyEventCallback
+    //This event callback is triggered *before* the GUI object is destroyed
     class OnObjectDestroyEventCallback : public BaseEventCallback
     {        
         private:
@@ -17,9 +18,11 @@ namespace ssGUI::EventCallbacks
             OnObjectDestroyEventCallback() = default;
             
             //function: GetEventCallbackName
+            //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;
             
             //function: Clone
+            //See <BaseEventCallback::Clone>
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME

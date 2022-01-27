@@ -29,11 +29,12 @@ namespace ssGUI::Enums
 
     WINDOW          - Window object type. All windows will have this value.
     BASE_WIDGET     - Base widget object type. All widgets will have this value.
-    MAIN_WINDOW     - Main window object type.
+    MAIN_WINDOW     - Main window object type
     IMAGE           - Image object type
     TEXT            - Text object type
     BUTTON          - Button object type
-    BASE_OBJECT     - Base Object type.
+    BASE_OBJECT     - Base Object type
+    STANDARD_WINDOW - Standard window object type (WIP)
 
     */
     enum class GUIObjectType

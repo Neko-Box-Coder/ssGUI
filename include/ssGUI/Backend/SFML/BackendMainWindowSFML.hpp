@@ -42,92 +42,120 @@ namespace ssGUI::Backend
             virtual ~BackendMainWindowSFML();
 
             //function: SyncPositionOffset
+            //See <BackendMainWindowInterface::SyncPositionOffset>
             void SyncPositionOffset() override;
             
             //function: GetPositionOffset
+            //See <BackendMainWindowInterface::GetPositionOffset>
             glm::ivec2 GetPositionOffset() const override;
 
             //function: SetPosition
+            //See <BackendMainWindowInterface::SetPosition>
             void SetPosition(glm::ivec2 pos) override;
             
             //function: GetPosition
+            //See <BackendMainWindowInterface::GetPosition>
             glm::ivec2 GetPosition() const override;
 
             //function: SetSize
+            //See <BackendMainWindowInterface::SetSize>
             void SetSize(glm::ivec2 size) override;
             
             //function: GetSize
+            //See <BackendMainWindowInterface::GetSize>
             glm::ivec2 GetSize() const override;
             
             //function: IsClosed
+            //See <BackendMainWindowInterface::IsClosed>
             bool IsClosed() const override;
             
             //function: Close
+            //See <BackendMainWindowInterface::Close>
             void Close() override;
             
             //function: AbortClosing
+            //See <BackendMainWindowInterface::AbortClosing>
             void AbortClosing() override;
 
             //function: AddOnCloseEvent
+            //See <BackendMainWindowInterface::AddOnCloseEvent>
             int AddOnCloseEvent(std::function<void()> func) override;
             
             //function: RemoveOnCloseEvent
+            //See <BackendMainWindowInterface::RemoveOnCloseEvent>
             void RemoveOnCloseEvent(int index) override;
 
             //function: SetTitle
+            //See <BackendMainWindowInterface::SetTitle>
             void SetTitle(std::string title) override;
             
             //function: GetTitle
+            //See <BackendMainWindowInterface::GetTitle>
             std::string GetTitle() const override;
             
             //function: SetIcon
+            //See <BackendMainWindowInterface::SetIcon>
             void SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage) override;
 
             //function: SetVisible
+            //See <BackendMainWindowInterface::SetVisible>
             void SetVisible(bool visible) override;
             
             //function: IsVisible
+            //See <BackendMainWindowInterface::IsVisible>
             bool IsVisible() const override;
 
             //function: SetVSync
+            //See <BackendMainWindowInterface::SetVSync>
             void SetVSync(bool vSync) override;
             
             //function: IsVSync
+            //See <BackendMainWindowInterface::IsVSync>
             bool IsVSync() const override;
 
             //function: IsFocused
+            //See <BackendMainWindowInterface::IsFocused>
             bool IsFocused() const override;
             
             //function: SetFocus
+            //See <BackendMainWindowInterface::SetFocus>
             void SetFocus(bool focus) override; 
 
             //function: GetMSAA
+            //See <BackendMainWindowInterface::GetMSAA>
             int GetMSAA() const override;
             
             //function: SetMSAA
+            //See <BackendMainWindowInterface::SetMSAA>
             void SetMSAA(int level) override;
 
             
             //function: SetTitlebar
+            //See <BackendMainWindowInterface::SetTitlebar>
             //Setting title bar will cause window to be reloaded
             void SetTitlebar(bool titlebar) override;
             
             //function: HasTitlebar
+            //See <BackendMainWindowInterface::HasTitlebar>
             bool HasTitlebar() const override;
 
             //function: SetResizable
+            //See <BackendMainWindowInterface::SetResizable>
             //Setting resizable will cause window to be reloaded
             void SetResizable(bool resizable) override;
             
             //function: IsResizable
+            //See <BackendMainWindowInterface::IsResizable>
             bool IsResizable() const override;
 
             
             //function: SetCloseButton
+            //See <BackendMainWindowInterface::SetCloseButton>
             //Setting close button will cause window to be reloaded
             void SetCloseButton(bool closeButton) override;
             
             //function: HasCloseButton
+            //See <BackendMainWindowInterface::HasCloseButton>
             bool HasCloseButton() const override;
 
             //function: Clone

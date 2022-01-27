@@ -54,7 +54,7 @@ namespace ssGUI::Extensions
 
         (*widget)->AddTag(ssGUI::Tags::OVERLAY);
         (*widget)->SetParent(Container);
-        (*widget)->SetBackgroundColour(color);
+        (*widget)->SetBackgroundColor(color);
         
         FUNC_DEBUG_EXIT();
     }
@@ -141,7 +141,7 @@ namespace ssGUI::Extensions
     
     void Docker::SetDefaultGeneratedDockerSettings(ssGUI::Extensions::Docker* defaultDocker)
     {
-        DefaultGeneratedDockerSettings = defaultDocker;
+        DefaultGeneratedDockerSettings = static_cast<ssGUI::Extensions::Docker*>(defaultDocker->Clone(nullptr));
     }
 
     ssGUI::Extensions::Docker* Docker::GetDefaultGeneratedDockerSettings()
@@ -151,7 +151,7 @@ namespace ssGUI::Extensions
 
     void Docker::SetDefaultGeneratedLayoutSettings(ssGUI::Extensions::Layout* defaultLayout)
     {
-        DefaultGeneratedLayoutSettings = defaultLayout;
+        DefaultGeneratedLayoutSettings = static_cast<ssGUI::Extensions::Layout*>(defaultLayout->Clone(nullptr));
     }
 
     ssGUI::Extensions::Layout* Docker::GetDefaultGeneratedLayoutSettings()
@@ -260,7 +260,7 @@ namespace ssGUI::Extensions
     }
 
     //Extension methods
-    void Docker::Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Docker::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         

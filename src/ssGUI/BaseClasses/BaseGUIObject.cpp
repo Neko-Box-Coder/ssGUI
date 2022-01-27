@@ -12,7 +12,7 @@ namespace ssGUI
         CurrentChild = Children.end();
         CurrentChildIteratorEnd = true;
         Visible = other.IsVisible();
-        BackgroundColour = other.GetBackgroundColour();
+        BackgroundColour = other.GetBackgroundColor();
         UserCreated = other.IsUserCreated();
         ObjectDelete = other.Internal_IsDeleted();
         HeapAllocated = true;//other.IsHeapAllocated();
@@ -757,14 +757,14 @@ namespace ssGUI
         return UserCreated;
     }
 
-    void BaseGUIObject::SetBackgroundColour(glm::u8vec4 color)
+    void BaseGUIObject::SetBackgroundColor(glm::u8vec4 color)
     {
         BackgroundColour = color;
     }
 
-    glm::u8vec4 BaseGUIObject::GetBackgroundColour() const
+    glm::u8vec4 BaseGUIObject::GetBackgroundColor() const
     {
-        //std::cout<<"GetBackgroundColour: "<<BackgroundColour.r<<","<<BackgroundColour.g<<","<<BackgroundColour.b<<","<<BackgroundColour.a<<"\n";
+        //std::cout<<"GetBackgroundColor: "<<BackgroundColour.r<<","<<BackgroundColour.g<<","<<BackgroundColour.b<<","<<BackgroundColour.a<<"\n";
         
         return BackgroundColour;
     }
@@ -782,7 +782,7 @@ namespace ssGUI
         SetParent(nullptr);
         CurrentObjectsReferences.CleanUp();
         ObjectDelete = true;
-        ssGUI::ssGUIManager::DeletedObjs.push_back(this);
+        ssGUI::ssGUIManager::ObjsToDelete.push_back(this);
 
         for(auto it : Extensions)
            delete it.second;
@@ -808,7 +808,7 @@ namespace ssGUI
         return HeapAllocated;
     }
 
-    std::vector<glm::ivec2>& BaseGUIObject::Extension_GetDrawingVerticies()
+    std::vector<glm::ivec2>& BaseGUIObject::Extension_GetDrawingVertices()
     {
         return DrawingVerticies;
     }
@@ -1039,10 +1039,10 @@ namespace ssGUI
         }
 
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         for(auto extension : ExtensionsUpdateOrder)
-            Extensions.at(extension)->Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
         FUNC_DEBUG_EXIT();
     }

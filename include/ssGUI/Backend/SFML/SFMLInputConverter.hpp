@@ -18,9 +18,11 @@ namespace ssGUI::Backend
     {
         public:
             //function: ConvertKeys
+            //This converts sfml key events into <KeyPresses> 
             static ssGUI::KeyPresses ConvertKeys(const std::vector<sf::Event>& events);
 
             //function: ConvertMouseButtons
+            //This converts sfml mouse button events into <Enums::MouseButton>
             static std::vector<ssGUI::Enums::MouseButton> ConvertMouseButtons(const std::vector<sf::Event>& events);
 
     };
