@@ -40,7 +40,7 @@ namespace ssGUI
         private:
             ssGUI::Backend::BackendSystemInputInterface* BackendInput;
             
-            std::list<ssGUI::GUIObject*> MainWindowPList;       //TODO : Turn this into ssGUI::MainWindow* instead maybe
+            std::list<ssGUI::GUIObject*> MainWindowPList;      //TODO : Turn this into ssGUI::MainWindow* instead maybe
             //std::list<ssGUI::GUIObject*> GUIObjectPList;
 
             std::vector<std::function<void()>> OnUpdateEventListeners;
