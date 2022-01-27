@@ -8,8 +8,10 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic748"></a><div class="CTopic TClass LC first">
+<a name="Topic803"></a><div class="CTopic TClass LC first">
  <div class="CTitle">Layout</div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype803"><a class="CPEntry Parent TClass" href="../../index.html#CClass:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,807);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Extension</div></a><div class="CPEntry TClass Current"><div class="CPName">Layout</div></div></div>
+ <div class="CBody"><p>This extensions allows the children of this GUI object to be positioned and sized in a row or column fashion.</p><p>The size and resize type (window) will be recorded when a child is being added, and will be set back to it when it is removed from this GUI object.</p></div>
 </div>
 
 <a name="Functions"></a><a name="Topic757"></a><div class="CTopic TGroup LC">
@@ -74,12 +76,16 @@
  <div class="CBody"><p>If false, the children are positioned left to right (horizontal) or top to bottom (vertical)</p></div>
 </div>
 
-<a name="IsCoverFullLength"></a><a name="Topic1049"></a><div class="CTopic TFunction LC">
+<a name="IsCoverFullLength"></a><a name="Topic804"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsCoverFullLength</div>
+ <div id="NDPrototype804" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsCoverFullLength() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>If true, the children will be sized to cover the whole length of the container.</p><p>If false, the children will just be sized according to their size or size multiplier.&nbsp; However, the children won't be allowed to overflow the length of the container.&nbsp; (this is due to be changed by adding an option for allowing overflow or not)</p></div>
 </div>
 
-<a name="SetCoverFullLength"></a><a name="Topic1050"></a><div class="CTopic TFunction LC">
+<a name="SetCoverFullLength"></a><a name="Topic805"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetCoverFullLength</div>
+ <div id="NDPrototype805" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetCoverFullLength(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">fullLength</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>If true, the children will be sized to cover the whole length of the container.</p><p>If false, the children will just be sized according to their size or size multiplier.&nbsp; However, the children won't be allowed to overflow the length of the container.&nbsp; (this is due to be changed by adding an option for allowing overflow or not)</p></div>
 </div>
 
 <a name="GetOverrideChildrenResizeType"></a><a name="Topic1051"></a><div class="CTopic TFunction LC">

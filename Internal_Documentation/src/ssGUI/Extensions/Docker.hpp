@@ -62,8 +62,8 @@ namespace ssGUI::Extensions
             Docker();
             virtual ~Docker() override;
             
-            //function: SetDefaultGeneratedDockerSettings
-            /*Sets the default docker settings for the dockers that are generated (after this call).
+            /*function: SetDefaultGeneratedDockerSettings
+            Sets the default docker settings for the dockers that are generated (after this call).
             The settings are *copied* and stored locally staticly.
             Therefore, you should not call this function every frame.
             */
@@ -73,8 +73,8 @@ namespace ssGUI::Extensions
             //Returns the default docker settings. If nullptr is returned, it will use docker default initialization values.
             static ssGUI::Extensions::Docker* GetDefaultGeneratedDockerSettings();
 
-            //function: SetDefaultGeneratedLayoutSettings
-            /*Sets the default layout settings for the layout that are generated (after this call).
+            /*function: SetDefaultGeneratedLayoutSettings
+            Sets the default layout settings for the layout that are generated (after this call).
             The settings are *copied* and stored locally staticly.
             Therefore, you should not call this function every frame.
             */

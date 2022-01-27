@@ -13,8 +13,10 @@
  <div class="NDClassPrototype" id="NDClassPrototype817"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div></div></div>
 </div>
 
-<a name="Dockable"></a><a name="Topic756"></a><div class="CTopic TClass LC">
+<a name="Dockable"></a><a name="Topic799"></a><div class="CTopic TClass LC">
  <div class="CTitle">Dockable</div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype799"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,807);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Extension</div></a><div class="CPEntry TClass Current"><div class="CPName">Dockable</div></div></div>
+ <div class="CBody"><p>This extension allows this GUI Object (window) to be docked to other GUI Objects.</p><p>Trigger areas are areas that the cursor (when dragging another window) can enter to trigger a docking preview and action.&nbsp; A docking preview gives a visual reprenstation of how the window will be docked.</p><p>A top level parent can be set so that this GUI object (window) cannot be docked outside of the top level parent.&nbsp; When this GUI object (window) is being dragged, this will be parented to MainWindow unless top level parent is set (In that case, it will be parented to top level parent).&nbsp; For example:</p><pre>A<br />│<br />├─►B<br />│  │<br />│  ├─►C<br />│  │<br />│  ├─►D<br />│  │<br />│  └─►E<br />│<br />└─►F<br />   │<br />   └─►G</pre><p>If C is currently being docked and its top level parent is set to B, then it can only be docked to D or E.</p></div>
 </div>
 
 <a name="Dockable.Functions"></a><a name="Topic819"></a><div class="CTopic TGroup LC">

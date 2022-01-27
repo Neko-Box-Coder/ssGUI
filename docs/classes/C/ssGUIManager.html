@@ -8,8 +8,10 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic780"></a><div class="CTopic TClass LC first">
+<a name="Topic276"></a><div class="CTopic TClass LC first">
  <div class="CTitle">ssGUIManager</div>
+ <div class="NDClassPrototype" id="NDClassPrototype276"><div class="CPEntry TClass Current"><div class="CPName">ssGUIManager</div></div></div>
+ <div class="CBody"><p>This manages all the GUI Objects, system input, update and render order, etc...&nbsp; There's should only be 1 instance of ssGUIManager.</p><p>You only need to add the MainWindow object and run it.</p><pre>ssGUIManager manager = ssGUIManager();<br />manager.AddGUIObject(mainWindowObject);<br />manager.StartRunning();</pre><p>You can subscribe to the update function (called every frame) by adding a listener to <a href="../../index.html#CClass:ssGUIManager:AddOnUpdateEventListener" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,860);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >AddOnUpdateEventListener</a></p><p>You can also get the current instance of ssGUIManager without having to get a reference of it.</p><pre>ssGUIManager* currentInstance = ssGUIManager::GetInstance();</pre></div>
 </div>
 
 <a name="Functions"></a><a name="Topic853"></a><div class="CTopic TGroup LC">

@@ -28,6 +28,7 @@ namespace ssGUI::Backend
             virtual bool IsCharacterSupported(wchar_t charUnicode) = 0;
             
             //function: GetKerning
+            //Kerning represents the drawing position offset when drawn after certain characters. (i.e. AV has a negative kerning for the characte V)
             virtual int GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, int charSize) = 0;
             
             //function: GetLineSpacing

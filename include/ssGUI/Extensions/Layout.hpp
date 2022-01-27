@@ -14,8 +14,8 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    //class: Layout
-    /*This extensions allows the children of this GUI object to be positioned and sized in a row or column fashion.
+    /*class: Layout
+    This extensions allows the children of this GUI object to be positioned and sized in a row or column fashion.
     
     The size and resize type (window) will be recorded when a child is being added, 
     and will be set back to it when it is removed from this GUI object.
@@ -126,8 +126,8 @@ namespace ssGUI::Extensions
             //If false, the children are positioned left to right (horizontal) or top to bottom (vertical)
             virtual void SetReverseOrder(bool reverseOrder);
             
-            //function: IsCoverFullLength
-            /*If true, the children will be sized to cover the whole length of the container.
+            /*function: IsCoverFullLength
+            If true, the children will be sized to cover the whole length of the container.
             
             If false, the children will just be sized according to their size or size multiplier.
             However, the children won't be allowed to overflow the length of the container. 
@@ -135,8 +135,8 @@ namespace ssGUI::Extensions
             */
             virtual bool IsCoverFullLength() const;
             
-            //function: SetCoverFullLength
-            /*If true, the children will be sized to cover the whole length of the container.
+            /*function: SetCoverFullLength
+            If true, the children will be sized to cover the whole length of the container.
             
             If false, the children will just be sized according to their size or size multiplier.
             However, the children won't be allowed to overflow the length of the container. 

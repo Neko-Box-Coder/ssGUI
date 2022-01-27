@@ -14,10 +14,10 @@
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"*/
 
 //namespace: ssGUI::Extensions
-//This extension allows extra option for sizing a GUI Object
 namespace ssGUI::Extensions
 {
     //class: AdvancedSize
+    //This extension allows extra option for sizing a GUI Object
     class AdvancedSize : public Extension
     {
         private:

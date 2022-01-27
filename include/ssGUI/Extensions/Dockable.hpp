@@ -13,8 +13,8 @@ namespace ssGUI::Extensions
 {       
     class Layout;
     
-    //class: Dockable
-    /*This extension allows this GUI Object (window) to be docked to other GUI Objects. 
+    /*class: Dockable
+    This extension allows this GUI Object (window) to be docked to other GUI Objects. 
     
     Trigger areas are areas that the cursor (when dragging another window) can enter to trigger a docking preview and action.
     A docking preview gives a visual reprenstation of how the window will be docked.

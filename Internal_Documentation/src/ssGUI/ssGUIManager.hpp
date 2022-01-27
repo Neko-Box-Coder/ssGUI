@@ -19,8 +19,8 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: ssGUIManager
-    /*This manages all the GUI Objects, system input, update and render order, etc...
+    /*class: ssGUIManager
+    This manages all the GUI Objects, system input, update and render order, etc...
     There's should only be 1 instance of ssGUIManager.
 
     You only need to add the MainWindow object and run it.
@@ -40,7 +40,7 @@ namespace ssGUI
         private:
             ssGUI::Backend::BackendSystemInputInterface* BackendInput;
             
-            std::list<ssGUI::GUIObject*> MainWindowPList;       //TODO : Turn this into ssGUI::MainWindow* instead maybe
+            std::list<ssGUI::GUIObject*> MainWindowPList;      //TODO : Turn this into ssGUI::MainWindow* instead maybe
             //std::list<ssGUI::GUIObject*> GUIObjectPList;
 
             std::vector<std::function<void()>> OnUpdateEventListeners;

@@ -14,8 +14,8 @@ namespace ssGUI
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: EventCallback
-    /*EventCallback enables the ablity to act against a certain event. 
+    /*class: EventCallback
+    EventCallback enables the ablity to act against a certain event. 
 
     In order to add a class's function as a listener to an event callback
     > int index = EventCallback->AddEventListener(std::bind(&some::class::function, objectPointer, std::placeholders::_1));
@@ -30,8 +30,7 @@ namespace ssGUI::EventCallbacks
             //Do something with source
         }    
     );
-    ===========================================================================
-    */
+    ===========================================================================*/
     class EventCallback
     {
         protected:
