@@ -8,14 +8,11 @@ namespace ssGUI
         auto font = new ssGUI::Font();
         if(!font->GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
         {
-            DEBUG_LINE();
             delete font;
             return nullptr;
         }
         else
         {
-            DEBUG_LINE();
-
             return font;
         }
         FUNC_DEBUG_EXIT("LoadDefaultFont");
@@ -73,6 +70,7 @@ namespace ssGUI
                     HorizontalPadding(0), VerticalPadding(0), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFont(nullptr)
     {
         //AddExtension(new ssGUI::Extensions::Border());
+        SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
     }
 
     Text::~Text()
