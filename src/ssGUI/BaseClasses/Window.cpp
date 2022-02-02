@@ -555,7 +555,7 @@ namespace ssGUI
         //Resize
         //On mouse down
         if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-            !globalInputStatus.MouseInputBlocked)
+            !globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
         {
             OnMouseDownUpdate(currentMousePos, globalInputStatus);
         }
@@ -565,7 +565,7 @@ namespace ssGUI
             OnMouseDragOrResizeUpdate(globalInputStatus, mouseDelta, inputInterface);
         }
         //Otherwise show resize cursor if necessary 
-        else
+        else if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
         {
             BlockMouseInputAndUpdateCursor(globalInputStatus, currentMousePos, inputInterface);
         }
