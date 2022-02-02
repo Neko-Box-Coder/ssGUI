@@ -406,7 +406,7 @@ namespace ssGUI
 
         ssGUI::GUIObject* originalParent = nullptr;
         //If setting parent to the same, just need to move this to the end of child
-        if(newParent == CurrentObjectsReferences.GetObjectReference(Parent))
+        if(Parent != -1 && newParent == CurrentObjectsReferences.GetObjectReference(Parent))
         {
             auto result = newParent->FindChild(this);
             if(!result)
