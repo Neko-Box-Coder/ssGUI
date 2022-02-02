@@ -17,9 +17,9 @@ namespace ssGUI::Extensions
 
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
     
-    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(false), VerticalUsePercentage(false), 
-                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0), 
-                                    VerticalPercentageValue(0), OverrideDefaultSize(true)
+    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
+                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
+                                    VerticalPercentageValue(0.2), OverrideDefaultSize(true)
     {}
 
     AdvancedSize::~AdvancedSize()

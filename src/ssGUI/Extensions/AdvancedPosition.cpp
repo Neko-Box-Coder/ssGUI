@@ -19,9 +19,9 @@ namespace ssGUI::Extensions
 
     const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";
     
-    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::LEFT), 
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::TOP), HorizontalUsePercentage(false),
-                                            VerticalUsePercentage(false), HorizontalPixelValue(0), VerticalPixelValue(0),
+    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
+                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalUsePercentage(true),
+                                            VerticalUsePercentage(true), HorizontalPixelValue(0), VerticalPixelValue(0),
                                             HorizontalPercentageValue(0), VerticalPercentageValue(0)
     {}
 
@@ -129,6 +129,7 @@ namespace ssGUI::Extensions
             FUNC_DEBUG_EXIT();
             return;
         }
+
         
         ssGUI::GUIObject* parent = Container->GetParent();
 
@@ -187,9 +188,8 @@ namespace ssGUI::Extensions
                 windowOffset = static_cast<ssGUI::Window*>(parent)->GetTitlebarHeight();
             
             if(VerticalUsePercentage)
-            {                
-
-                float distanceFromAnchor = (parent->GetSize().x - windowOffset) * GetHorizontalPercentage();
+            {
+                float distanceFromAnchor = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
 
                 switch (GetVerticalAnchor())
                 {
@@ -202,8 +202,8 @@ namespace ssGUI::Extensions
                         finalPos.y = anchorPointY - Container->GetSize().y * 0.5 + distanceFromAnchor;
                         break;
                     case AdvancedPosition::VerticalAnchor::BOTTOM:
-                        anchorPointX = (parent->GetSize().y - windowOffset);
-                        finalPos.x = anchorPointY - Container->GetSize().y + distanceFromAnchor * -1.f;
+                        anchorPointY = (parent->GetSize().y - windowOffset);
+                        finalPos.y = anchorPointY - Container->GetSize().y + distanceFromAnchor * -1.f;
                         break;   
                 }
             }
@@ -213,15 +213,15 @@ namespace ssGUI::Extensions
                 {
                     case AdvancedPosition::VerticalAnchor::TOP:
                         anchorPointY = 0;
-                        finalPos.y = GetHorizontalPixel();
+                        finalPos.y = GetVerticalPixel();
                         break;
                     case AdvancedPosition::VerticalAnchor::CENTER:
                         anchorPointY = (parent->GetSize().y - windowOffset) * 0.5f;
-                        finalPos.y = anchorPointY - Container->GetSize().y * 0.5 + GetHorizontalPixel();
+                        finalPos.y = anchorPointY - Container->GetSize().y * 0.5 + GetVerticalPixel();
                         break;
                     case AdvancedPosition::VerticalAnchor::BOTTOM:
                         anchorPointY = (parent->GetSize().y - windowOffset);
-                        finalPos.y = anchorPointY - Container->GetSize().y + GetHorizontalPixel() * -1.f;
+                        finalPos.y = anchorPointY - Container->GetSize().y + GetVerticalPixel() * -1.f;
                         break;   
                 }
             }
@@ -255,12 +255,11 @@ namespace ssGUI::Extensions
                 finalPos.y = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
             }
             else
-                finalPos.y = GetHorizontalPixel();   
+                finalPos.y = GetVerticalPixel();   
         }
 
         //Use finalPos
         Container->SetPosition(glm::ivec2(finalPos));
-
         FUNC_DEBUG_EXIT();
     }
 
