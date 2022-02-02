@@ -24,7 +24,7 @@ namespace ssGUI
     Text::Text(Text const& other) : Widget(other)
     {
         CurrentText = other.GetText();
-        CurrentTextChanged = true;
+        RecalculateTextNeeded = true;
         CharactersPosition = other.CharactersPosition;
         CharactersInfos = other.CharactersInfos;
         WrappingOverflow = other.WrappingOverflow;
@@ -35,6 +35,7 @@ namespace ssGUI
         CharacterSpace = other.GetCharacterSpace();
         LineSpace = other.GetLineSpace();
         TabSize = other.GetTabSize();
+        LastDefaultFont = other.LastDefaultFont;
     }
 
     //TODO: Maybe remove drawingInterface as it is not used anywhere?
@@ -65,11 +66,11 @@ namespace ssGUI
     }
     
     
-    Text::Text() :  CurrentText(), CurrentTextChanged(false), CharactersPosition(), 
+    Text::Text() :  CurrentText(), RecalculateTextNeeded(false), CharactersPosition(), 
                     CharactersInfos(), WrappingOverflow(false), FontSize(20), MultilineAllowed(true), 
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
                     VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFont(nullptr), 
-                    HorizontalPadding(0), VerticalPadding(0), CharacterSpace(0), LineSpace(0), TabSize(4)
+                    HorizontalPadding(0), VerticalPadding(0), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFont(nullptr)
     {
         //AddExtension(new ssGUI::Extensions::Border());
     }
@@ -83,15 +84,14 @@ namespace ssGUI
     void Text::ComputeCharactersPositionAndSize()
     {
         FUNC_DEBUG_ENTRY();
-        
-        CurrentTextChanged = false;
-        WrappingOverflow = false;
-
         if(GetFont() == nullptr)
         {
             FUNC_DEBUG_EXIT();
             return;
         }
+        
+        RecalculateTextNeeded = false;
+        WrappingOverflow = false;
         
         int numberOfLines = 1;
 
@@ -479,7 +479,7 @@ namespace ssGUI
 
     void Text::SetText(std::wstring text)
     {
-        CurrentTextChanged = true;
+        RecalculateTextNeeded = true;
         CurrentText = text;
     }
 
@@ -511,6 +511,7 @@ namespace ssGUI
     void Text::SetFontSize(int size)
     {
         FontSize = size;
+        RecalculateTextNeeded = true;
     }
 
     int Text::GetFontSize() const
@@ -521,6 +522,7 @@ namespace ssGUI
     void Text::SetMultilineAllowed(bool multiline)
     {
         MultilineAllowed = multiline;
+        RecalculateTextNeeded = true;
     }
 
     bool Text::IsMultilineAllowed() const
@@ -531,6 +533,7 @@ namespace ssGUI
     void Text::SetWrappingMode(ssGUI::Enums::TextWrapping wrappingMode)
     {
         WrappingMode = wrappingMode;
+        RecalculateTextNeeded = true;
     }
 
     ssGUI::Enums::TextWrapping Text::GetWrappingMode() const
@@ -541,6 +544,7 @@ namespace ssGUI
     void Text::SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal align)
     {
         HorizontalAlignment = align;
+        RecalculateTextNeeded = true;
     }
 
     ssGUI::Enums::TextAlignmentHorizontal Text::GetHorizontalAlignment()
@@ -551,6 +555,7 @@ namespace ssGUI
     void Text::SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical align)
     {
         VerticalAlignment = align;
+        RecalculateTextNeeded = true;
     }
 
     ssGUI::Enums::TextAlignmentVertical Text::GetVerticalAlignment()
@@ -564,6 +569,7 @@ namespace ssGUI
             GetEventCallback(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME)->Notify(this);
         
         CurrentFont = font;
+        RecalculateTextNeeded = true;
     }
 
     ssGUI::Font* Text::GetFont()
@@ -577,6 +583,7 @@ namespace ssGUI
     void Text::SetHorizontalPadding(int padding)
     {
         HorizontalPadding = padding;
+        RecalculateTextNeeded = true;
     }
 
     int Text::GetHorizontalPadding()
@@ -587,6 +594,7 @@ namespace ssGUI
     void Text::SetVerticalPadding(int padding)
     {
         VerticalPadding = padding;
+        RecalculateTextNeeded = true;
     }
 
     int Text::GetVerticalPadding()
@@ -597,6 +605,7 @@ namespace ssGUI
     void Text::SetCharacterSpace(int charSpace)
     {
         CharacterSpace = charSpace;
+        RecalculateTextNeeded = true;
     }
 
     int Text::GetCharacterSpace() const
@@ -607,6 +616,7 @@ namespace ssGUI
     void Text::SetLineSpace(int lineSpace)
     {
         LineSpace = lineSpace;
+        RecalculateTextNeeded = true;
     }
 
     int Text::GetLineSpace() const
@@ -617,6 +627,7 @@ namespace ssGUI
     void Text::SetTabSize(float tabSize)
     {
         TabSize = tabSize;
+        RecalculateTextNeeded = true;
     }
     
     float Text::GetTabSize() const
@@ -655,6 +666,12 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
+
+        if(LastDefaultFont != GetDefaultFont())
+        {
+            LastDefaultFont = GetDefaultFont();
+            RecalculateTextNeeded = true;
+        }
         
         for(auto extension : ExtensionsDrawOrder)
             Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
@@ -689,8 +706,9 @@ namespace ssGUI
         }
 
         {
-            if(CurrentTextChanged)
-                ComputeCharactersPositionAndSize();
+            //TODO : Add size changed event callback and register it with RecalculateTextNeeded
+            //if(RecalculateTextNeeded)
+                ComputeCharactersPositionAndSize(); 
             
             //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
 
