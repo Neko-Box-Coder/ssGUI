@@ -44,8 +44,6 @@ namespace ssGUI::Extensions
             float HorizontalPercentageValue;
             float VerticalPercentageValue;
 
-            bool OverrideDefaultPosition;
-
             AdvancedPosition(AdvancedPosition const& other);
 
         public:

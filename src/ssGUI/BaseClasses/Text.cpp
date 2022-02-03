@@ -474,11 +474,18 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
     
-
     void Text::SetText(std::wstring text)
     {
         RecalculateTextNeeded = true;
         CurrentText = text;
+    }
+
+    void Text::SetText(std::string text)
+    {
+        RecalculateTextNeeded = true;
+        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+        //CurrentText = text;
+        CurrentText = converter.from_bytes(text);
     }
 
     std::wstring Text::GetText() const

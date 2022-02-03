@@ -8,9 +8,11 @@
 #include "ssGUI/Enums/TextAlignmentHorizontal.hpp"
 #include "ssGUI/Enums/TextAlignmentVertical.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include <string>
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
+#include <string>
+#include <locale>
+#include <codecvt>
 
 //namespace: ssGUI
 namespace ssGUI
@@ -24,7 +26,7 @@ namespace ssGUI
         protected:
             std::wstring CurrentText;
 
-            bool CurrentTextChanged;
+            bool RecalculateTextNeeded;
             std::vector<glm::ivec2> CharactersPosition;
             std::vector<ssGUI::CharacterInfo> CharactersInfos;
 
@@ -41,6 +43,7 @@ namespace ssGUI
             int CharacterSpace;
             int LineSpace;
             float TabSize;
+            ssGUI::Font* LastDefaultFont;
 
             static ssGUI::Font* DefaultFont;
 
@@ -60,6 +63,10 @@ namespace ssGUI
             //function: SetText
             //Sets the text to show
             virtual void SetText(std::wstring text);
+
+            //function: SetText
+            //Sets the text to show
+            virtual void SetText(std::string text);
             
             //function: GetText
             //Gets the text being shown
