@@ -20,13 +20,17 @@ namespace ssGUI::Backend
         public:
             BackendMainWindowInterface(){}
             //function: SetPosition
+            //Sets the MainWindow position (distance from top-left) on the screen
             virtual void SetPosition(glm::ivec2 pos) = 0;
             //function: GetPosition
+            //Gets the MainWindow position (distance from top-left) on the screen
             virtual glm::ivec2 GetPosition() const = 0;
 
             //function: SyncPositionOffset
+            //Updates the distance between the top-left corner of the titlebar and top-left corner of the content
             virtual void SyncPositionOffset() = 0;
             //function: GetPositionOffset
+            //Gets the distance between the top-left corner of the titlebar and top-left corner of the content
             virtual glm::ivec2 GetPositionOffset() const = 0;
 
             //function: SetSize
@@ -35,10 +39,13 @@ namespace ssGUI::Backend
             virtual glm::ivec2 GetSize() const = 0;
 
             //function: IsClosed
+            //Returns if the main window is closed or not
             virtual bool IsClosed() const = 0;
             //function: Close
+            //Closes the main window
             virtual void Close() = 0;
             //function: AbortClosing
+            //Stops the main window from closing. Needs to be called when it is being closed in order for it to work.
             virtual void AbortClosing() = 0;
 
             //function: AddOnCloseEvent
