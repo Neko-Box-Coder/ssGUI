@@ -23,55 +23,55 @@
 
 
 
-void PrintEnter(ssGUI::ssGUIManager& manager)
-{
-    ssGUI::Backend::BackendSystemInputInterface* inputInterface = manager.GetBackendInputInterface();
+// void PrintEnter(ssGUI::ssGUIManager& manager)
+// {
+//     ssGUI::Backend::BackendSystemInputInterface* inputInterface = manager.GetBackendInputInterface();
 
-    if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-        !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
-    {
-        std::cout<<"Enter key down\n";
+//     if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+//         !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+//     {
+//         std::cout<<"Enter key down\n";
         
-    }
-    else if(!inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-        inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
-    {
+//     }
+//     else if(!inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+//         inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+//     {
         
-        std::cout<<"Enter key up\n";
-    }
-}
+//         std::cout<<"Enter key up\n";
+//     }
+// }
 
-void MoveWindow(ssGUI::ssGUIManager& manager, ssGUI::Window& window, ssGUI::Window& childWindow)
-{
-    ssGUI::Backend::BackendSystemInputInterface* inputInterface = manager.GetBackendInputInterface();
-    ssGUI::KeyPresses currentKeyPresses = inputInterface->GetCurrentKeyPresses();
+// void MoveWindow(ssGUI::ssGUIManager& manager, ssGUI::Window& window, ssGUI::Window& childWindow)
+// {
+//     ssGUI::Backend::BackendSystemInputInterface* inputInterface = manager.GetBackendInputInterface();
+//     ssGUI::KeyPresses currentKeyPresses = inputInterface->GetCurrentKeyPresses();
 
-    if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT))
-        window.SetPosition(window.GetPosition() + glm::ivec2(-1, 0));
-    if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT))
-        window.SetPosition(window.GetPosition() + glm::ivec2(1, 0));
-    if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN))
-        window.SetPosition(window.GetPosition() + glm::ivec2(0, 1));
-    if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP))
-        window.SetPosition(window.GetPosition() + glm::ivec2(0, -1));
+//     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT))
+//         window.SetPosition(window.GetPosition() + glm::ivec2(-1, 0));
+//     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT))
+//         window.SetPosition(window.GetPosition() + glm::ivec2(1, 0));
+//     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN))
+//         window.SetPosition(window.GetPosition() + glm::ivec2(0, 1));
+//     if(currentKeyPresses.IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP))
+//         window.SetPosition(window.GetPosition() + glm::ivec2(0, -1));
 
-    if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::A))
-        window.SetSize(window.GetSize() + glm::ivec2(-1, 0));
-    if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::D))
-        window.SetSize(window.GetSize() + glm::ivec2(1, 0));
-    if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::S))
-        window.SetSize(window.GetSize() + glm::ivec2(0, 1));
-    if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::W))
-        window.SetSize(window.GetSize() + glm::ivec2(0, -1));
+//     if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::A))
+//         window.SetSize(window.GetSize() + glm::ivec2(-1, 0));
+//     if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::D))
+//         window.SetSize(window.GetSize() + glm::ivec2(1, 0));
+//     if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::S))
+//         window.SetSize(window.GetSize() + glm::ivec2(0, 1));
+//     if(currentKeyPresses.IsLetterKeyPresent(ssGUI::Enums::LetterKey::W))
+//         window.SetSize(window.GetSize() + glm::ivec2(0, -1));
 
-    if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-        !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
-    {
-        window.SetVisible(window.IsVisible() ? false : true);
-        //std::cout<<"WindowPos: "<<window.GetGlobalPosition().x<<", "<<window.GetGlobalPosition().y<<"\n";
-        //std::cout<<"childWindowPos: "<<childWindow.GetGlobalPosition().x<<", "<<childWindow.GetGlobalPosition().y<<"\n";
-    }
-}
+//     if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+//         !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+//     {
+//         window.SetVisible(window.IsVisible() ? false : true);
+//         //std::cout<<"WindowPos: "<<window.GetGlobalPosition().x<<", "<<window.GetGlobalPosition().y<<"\n";
+//         //std::cout<<"childWindowPos: "<<childWindow.GetGlobalPosition().x<<", "<<childWindow.GetGlobalPosition().y<<"\n";
+//     }
+// }
 
 
 /*// Cloning test
@@ -427,7 +427,7 @@ int main()
 
 
 
-//Image example
+/*//Image example
 int main()
 {
     ssGUI::MainWindow mainWindow;
@@ -449,7 +449,7 @@ int main()
 
     return 0;
 }
-
+*/
 
 /*//Text example
 int main()
@@ -482,3 +482,58 @@ int main()
     return 0;
 }
 */
+
+//Readme example
+int main()
+{
+    //Create the main window
+    ssGUI::MainWindow mainWindow;
+    mainWindow.SetSize(glm::ivec2(450, 125));
+
+    //Adds a layout extension to the main window to allow GUI objects to be stacked next to each other
+    ssGUI::Extensions::Layout* layoutExtension = new ssGUI::Extensions::Layout();
+    layoutExtension->SetHorizontalLayout(false);
+    layoutExtension->SetSpacing(10);
+    mainWindow.AddExtension(layoutExtension);
+
+    //AdvancedPosition extension allows a GUI Object to be centered.
+    ssGUI::Extensions::AdvancedPosition* positionExtension = new ssGUI::Extensions::AdvancedPosition();
+    positionExtension->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
+    positionExtension->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);    
+
+    //Create a text widget and set the respective properties
+    ssGUI::Text text;
+    text.SetFontSize(20);
+    text.SetText(L"Click on the button to change this text.");
+    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
+    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
+
+    //Create a button and set an event callback to change the text when it is clicked
+    ssGUI::Button button;
+    button.SetSize(glm::ivec2(50, 30));
+    button.AddExtension(positionExtension);
+    button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
+    (
+        [&](ssGUI::GUIObject* src)
+        {
+            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            {
+                text.SetText(L"Button pressed and this text has changed.");
+            }
+        }
+    );
+
+    //Wraps the button inside an empty widget for consistence size under layout extension
+    ssGUI::Widget emptyWidget;
+    button.SetParent(&emptyWidget);
+
+    //Add the text and button widget (wrapped inside empty widget) to the main window
+    text.SetParent(&mainWindow);
+    emptyWidget.SetParent(&mainWindow);
+
+    //Create the GUIManager, add the main window and start running
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+    return 0;
+}

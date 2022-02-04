@@ -12,8 +12,8 @@ project(example VERSION 1.0)
 configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
 # add the example executable
-add_executable(example main.cpp)
-# add_executable(example main2.cpp)
+add_executable(example ./Examples/PositionSystem.cpp)
+# add_executable(example main.cpp)
 
 # For projectconfig.hpp in build folder
 target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")
