@@ -39,8 +39,5 @@
 
 .editorconfig
 
-builds/CMakeCache.txt
-builds/CMakeFiles/
-builds/cmake_install.cmake
-builds/Makefile
-builds/ssGUI/
+builds/
+v0.9/
