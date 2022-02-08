@@ -45,7 +45,7 @@ int main()
     draggableWindow.SetPosition(glm::ivec2(50, 50));
     //draggableWindow.SetAnchorType(ssGUI::Enums::AnchorType::BOTTOM_RIGHT);    //You can uncomment this line to anchor the window to different anchor points
 
-    //Add the text and button widget (wrapped inside empty widget) to the main window
+    //Add the GUI objects to the main window
     fixedWindow.SetParent(&mainWindow);
     positionText.SetParent(&mainWindow);
     draggableWindow.SetParent(&fixedWindow);

@@ -41,7 +41,7 @@ int main()
         static_cast<ssGUI::Extensions::AdvancedPosition*>(positionExtension->Clone(&button));
     positionExtension2->SetVerticalPixel(20);
 
-    //Add the text and button widget (wrapped inside empty widget) to the main window
+    //Add the text and button widget to the main window
     text.SetParent(&mainWindow);
     button.SetParent(&mainWindow);
 

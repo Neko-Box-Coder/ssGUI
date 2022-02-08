@@ -1,5 +1,3 @@
-
-
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
 
@@ -55,7 +53,11 @@ namespace ssGUI::Backend
                                             CurrentMouseButtons(), LastMouseButtons(), SFMLCursor(), CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
                                             CursorMappedWindow(), ElapsedTime()
     {
-        SFMLCursor.loadFromSystem(sf::Cursor::Arrow);
+        if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
+        {
+            DEBUG_LINE("Failed to load cursor!");
+            DEBUG_EXIT_PROGRAM();
+        }
 
         #if !USE_SFML_TIME
             ElapsedTime = std::chrono::high_resolution_clock::now();
@@ -189,47 +191,61 @@ namespace ssGUI::Backend
             case ssGUI::Enums::CursorType::NONE:
                 break;
             case ssGUI::Enums::CursorType::NORMAL:
-                SFMLCursor.loadFromSystem(sf::Cursor::Arrow);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::TEXT:
-                SFMLCursor.loadFromSystem(sf::Cursor::Text);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Text))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HAND:
-                SFMLCursor.loadFromSystem(sf::Cursor::Hand);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Hand))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_LEFT:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_RIGHT:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeRight);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeRight))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_UP:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeTop);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTop))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_DOWN:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
-                SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::MOVE:
                 if (!SFMLCursor.loadFromSystem(sf::Cursor::SizeAll)) //Not supported natively for mac os
-                    SFMLCursor.loadFromSystem(sf::Cursor::Cross);       
+                    if(!SFMLCursor.loadFromSystem(sf::Cursor::Cross))
+                        DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HELP:
-                SFMLCursor.loadFromSystem(sf::Cursor::Arrow);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Help))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::NOT_ALLOWED:
-                SFMLCursor.loadFromSystem(sf::Cursor::Arrow);
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
+                    DEBUG_LINE("Failed to load cursor");
                 break;
         }
 

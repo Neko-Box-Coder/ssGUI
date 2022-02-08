@@ -11,7 +11,7 @@ project(example VERSION 1.0)
 # TODO : Project information 
 configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
-# add the example executable
+# add the executable
 add_executable(example ./Examples/PositionSystem.cpp)
 # add_executable(example main.cpp)
 
@@ -22,22 +22,20 @@ target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")
 # Variables 
 # ==========================================================
 
-set(USE_32_BIT "FALSE" CACHE STRING "Create 32 bit library instead")
-set(OUTPUT_STATIC "TRUE" CACHE STRING "Create static library instead")
+set(OUTPUT_STATIC "TRUE" CACHE STRING "Use and create static library instead")
 
 #Find shared libraries in the same location as the executable
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,$ORIGIN")
 
-
-# Use different library directory depending on the OS
-if (WIN32)
-    set(LIB_LOCATION "${PROJECT_SOURCE_DIR}/../libs/lib_windows")
-elseif(UNIX)
-    set(LIB_LOCATION "${PROJECT_SOURCE_DIR}/../libs/lib_linux")
+# Use different library directory depending on the static or shared
+set(LIB_LOCATION "${PROJECT_SOURCE_DIR}/../libs")
+if ("${OUTPUT_STATIC}")
+    set(LIB_LOCATION "${LIB_LOCATION}/static")
+else()
+    set(LIB_LOCATION "${LIB_LOCATION}/shared")
 endif()
 
 set(INCLUDE_LOCATION "${PROJECT_SOURCE_DIR}/../include")
-
 
 target_include_directories(example PUBLIC "${INCLUDE_LOCATION}")
 set(CMAKE_CXX_FLAGS "-fpermissive -std=c++0x")  #For surpressing goto warning
@@ -55,6 +53,10 @@ else()
 )
 endif()
 
+# If you are on 32 bit linux, uncomment this
+# set (CMAKE_CXX_FLAGS "-m32")
+# set (CMAKE_C_FLAGS "-m32")
+
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend/SFML")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/BaseClasses")
@@ -64,32 +66,25 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Extensions")
 
 target_include_directories(ssGUI PUBLIC "${INCLUDE_LOCATION}")
 
+# Copy Default font
+file(   COPY "${PROJECT_SOURCE_DIR}/NotoSans-Regular.ttf"
+        DESTINATION "${PROJECT_BINARY_DIR}") 
+
 # ==========================================================
 # SFML 
 # ==========================================================
 
-if(WIN32)
-    # TODO : Implement this
-    # set(SFML_STATIC_LIBRARIES TRUE)
-    # set(SFML_DIR "${LIB_LOCATION}/SFML/cmake/SFML")
-elseif(UNIX)
+set(SFML_DIR "${LIB_LOCATION}/SFML/lib/cmake/SFML")
+message("${SFML_DIR}")
 
-    if("${OUTPUT_STATIC}")
-        ## If you want to link SFML statically
-        set(SFML_STATIC_LIBRARIES TRUE)
-        # In most cases better set in the CMake cache
-        set(SFML_DIR "${LIB_LOCATION}/static/SFML/lib/cmake/SFML")
-    else()
-        # In most cases better set in the CMake cache
-        set(SFML_DIR "${LIB_LOCATION}/shared/SFML/lib/cmake/SFML")
-    endif()
+# target_link_options(ssGUI PRIVATE -mwindows) # uncomment to disabling console on Windows
+if("${OUTPUT_STATIC}")
+    set(SFML_STATIC_LIBRARIES TRUE)
 endif()
 
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
-target_link_libraries(ssGUI PUBLIC sfml-network sfml-audio sfml-graphics sfml-window sfml-system)
-
-# For disabling console (Probably mainly on windows)
-# target_link_options(ssGUI PRIVATE -mwindows)
+# Import SFML
+find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
+target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
 
 # Link the library
 target_link_libraries(example PUBLIC ssGUI)

@@ -8,6 +8,7 @@ namespace ssGUI
         auto font = new ssGUI::Font();
         if(!font->GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
         {
+            DEBUG_LINE("Failed to load default font");
             delete font;
             return nullptr;
         }
@@ -483,7 +484,7 @@ namespace ssGUI
     void Text::SetText(std::string text)
     {
         RecalculateTextNeeded = true;
-        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         //CurrentText = text;
         CurrentText = converter.from_bytes(text);
     }
