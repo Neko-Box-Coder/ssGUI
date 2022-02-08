@@ -1,0 +1,15 @@
+- rotation: 0
+  origin: Center
+  fontStyle: normal
+  fillColor: rgb(255,255,255)
+  startTime: 0
+  fontFamily: Noto Serif Tibetan
+  text: Achored Top-Left
+  xTranslation: -0.2900000000000001
+  fontSize: 30
+  fontStretch: normal
+  endTime: 27.1
+  yTranslation: 0.45000000000000023
+  outlineSize: 4
+  outlineColor: rgb(0,0,0)
+  fontWeight: 300

@@ -19,6 +19,45 @@ namespace ssGUI::Extensions
     
     The size and resize type (window) will be recorded when a child is being added, 
     and will be set back to it when it is removed from this GUI object.
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        bool HorizontalLayout;
+        std::vector<float> PreferredSizeMultipliers;
+        bool DisableChildrenResizing;
+        bool OverrideChildrenResizeTypes;
+
+        bool UpdateContainerMinMaxSize;
+        bool ReverseOrder;
+        bool CoverFullLength; 
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+        int Padding;
+        int Spacing;
+
+        int OnChildAddEventIndex;
+        int ChildAddedEventIndex;
+        int ChildRemovedEventIndex;
+        int ChildPositionChangedEventIndex;
+
+        ObjectsReferences CurrentObjectsReferences;
+
+        std::unordered_map<ssGUIObjectIndex, glm::ivec2> LastUpdateChildrenSize;
+        std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
+        std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //note: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
+        std::unordered_map<ssGUIObjectIndex, glm::ivec2> OriginalChildrenSize;
+        std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
+        std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
+    =================================================================
+    ============================== C++ ==============================
+    Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
+                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
+                        Container(nullptr), Enabled(true), Padding(0), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
+                        ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
+    {}
+    =================================================================
     */
     class Layout : public Extension
     {

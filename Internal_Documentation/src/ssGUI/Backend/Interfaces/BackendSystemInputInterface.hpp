@@ -58,9 +58,11 @@ namespace ssGUI::Backend
             virtual ssGUI::Enums::CursorType GetCursorType() const = 0;
 
             //function: UpdateCursor
+            //Updates the cursor. This needs to be called after a new cursor is set.
             virtual void UpdateCursor() = 0;
 
             //function: GetElapsedTime
+            //Returns elapsed time since application startup in millisecond
             virtual uint64_t GetElapsedTime() const = 0;
     };
 }

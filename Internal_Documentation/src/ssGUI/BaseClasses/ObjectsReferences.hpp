@@ -38,7 +38,24 @@ namespace ssGUI
     This is do so to prevent invalid referencing when one of the referencing GUI Objects is deleted. 
     In other words, this is a 2-way referencing system.
     
-    You normally don't need to deal with this*/
+    You normally don't need to deal with this
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        std::unordered_map<ssGUIObjectIndex, ssGUI::GUIObject*> ObjectsReferencesTable;
+        std::unordered_map<ssGUI::GUIObject*, ssGUIObjectIndex> ReverseObjectsReferencesTable;
+
+        ssGUIObjectIndex NextFreeIndex;
+        std::unordered_map<ObjectsReferences*, ssGUIObjectIndex> ExternalObjectsDependencies;
+        bool CleanedUp;
+    =================================================================
+    ============================== C++ ==============================
+    ObjectsReferences::ObjectsReferences() : ObjectsReferencesTable(), ReverseObjectsReferencesTable(), NextFreeIndex(0), 
+                                                ExternalObjectsDependencies(), CleanedUp(false)
+    {}
+    =================================================================
+    */
     class ObjectsReferences
     {
         protected:

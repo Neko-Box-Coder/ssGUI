@@ -8,9 +8,10 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic705"></a><div class="CTopic TClass LC first">
+<a name="Topic272"></a><div class="CTopic TClass LC first">
  <div class="CTitle">Text</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype705"><a class="CPEntry Parent TClass" href="../../index.html#CClass:Widget" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Widget</div></a><div class="CPEntry TClass Current"><div class="CPName">Text</div></div></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype272"><a class="CPEntry Parent TClass" href="../../index.html#CClass:Widget" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,408);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Widget</div></a><div class="CPEntry TClass Current"><div class="CPName">Text</div></div></div>
+ <div class="CBody"><p>A class that can show a string with <a href="../../index.html#CClass:Font" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,17);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Font</a></p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">protected</span>:<br />    std::wstring CurrentText;<br /><br />    <span class="SHKeyword">bool</span> RecalculateTextNeeded;<br />    std::vector&lt;glm::ivec2&gt; CharactersPosition;<br />    std::vector&lt;ssGUI::CharacterInfo&gt; CharactersInfos;<br /><br />    <span class="SHKeyword">bool</span> WrappingOverflow;<br />    <span class="SHKeyword">int</span> FontSize;<br />    <span class="SHKeyword">bool</span> MultilineAllowed;<br />    ssGUI::Enums::TextWrapping WrappingMode;<br />    ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;<br />    ssGUI::Enums::TextAlignmentVertical VerticalAlignment;<br />    ssGUI::Font* CurrentFont;<br /><br />    <span class="SHKeyword">int</span> HorizontalPadding;<br />    <span class="SHKeyword">int</span> VerticalPadding;<br />    <span class="SHKeyword">int</span> CharacterSpace;<br />    <span class="SHKeyword">int</span> LineSpace;<br />    <span class="SHKeyword">float</span> TabSize;<br />    ssGUI::Font* LastDefaultFont;<br /><br />    <span class="SHKeyword">static</span> ssGUI::Font* DefaultFont;</pre><pre>Text::Text() :  CurrentText(), RecalculateTextNeeded(<span class="SHKeyword">false</span>), CharactersPosition(),<br />                CharactersInfos(), WrappingOverflow(<span class="SHKeyword">false</span>), FontSize(<span class="SHNumber">20</span>), MultilineAllowed(<span class="SHKeyword">true</span>),<br />                WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),<br />                VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFont(nullptr),<br />                HorizontalPadding(<span class="SHNumber">0</span>), VerticalPadding(<span class="SHNumber">0</span>), CharacterSpace(<span class="SHNumber">0</span>), LineSpace(<span class="SHNumber">0</span>), TabSize(<span class="SHNumber">4</span>), LastDefaultFont(nullptr)<br />{<br />    <span class="SHComment">//AddExtension(new ssGUI::Extensions::Border());</span><br />    SetBackgroundColor(glm::ivec4(<span class="SHNumber">255</span>, <span class="SHNumber">255</span>, <span class="SHNumber">255</span>, <span class="SHNumber">0</span>));<br />}</pre></div>
 </div>
 
 <a name="Functions"></a><a name="Topic706"></a><div class="CTopic TGroup LC">
@@ -26,6 +27,12 @@
 <a name="SetText"></a><a name="Topic564"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetText</div>
  <div id="NDPrototype564" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetText(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType">wstring&nbsp;</td><td class="PName last">text</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the text to show</p></div>
+</div>
+
+<a name="SetText(2)"></a><a name="Topic354"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetText</div>
+ <div id="NDPrototype354" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetText(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">text</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the text to show</p></div>
 </div>
 
@@ -217,7 +224,7 @@
 
 <a name="Clone"></a><a name="Topic598"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype598" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../index.html#CClass:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,561);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype598" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../index.html#CClass:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,521);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
  <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,996);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::Clone</a></p></div>
 </div>
 

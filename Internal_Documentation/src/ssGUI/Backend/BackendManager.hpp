@@ -9,8 +9,24 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendManager
-    //Backend manager allows backend objects to communicate to each other, without reference each other. Normally you don't need to deal with this class
+    /*class: BackendManager
+    Backend manager allows backend objects to communicate to each other, without reference each other. Normally you don't need to deal with this class
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        static int MainWindowCount;
+        static std::vector<ssGUI::Backend::BackendDrawingInterface*> BackendDrawingInterfaces;
+        static std::vector<ssGUI::Backend::BackendMainWindowInterface*> BackendMainWindowInterfaces;
+        static ssGUI::Backend::BackendSystemInputInterface* BackendSystemInputInterface;
+    =================================================================
+    ============================== C++ ==============================
+    int BackendManager::MainWindowCount = 0;
+    std::vector<ssGUI::Backend::BackendDrawingInterface*> BackendManager::BackendDrawingInterfaces;
+    std::vector<ssGUI::Backend::BackendMainWindowInterface*> BackendManager::BackendMainWindowInterfaces;
+    ssGUI::Backend::BackendSystemInputInterface* BackendManager::BackendSystemInputInterface = nullptr;
+    =================================================================
+    */
     class BackendManager
     {
         private:

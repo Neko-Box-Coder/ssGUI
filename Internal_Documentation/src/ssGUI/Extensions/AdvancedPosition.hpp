@@ -16,8 +16,35 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    //class: AdvancedPosition
-    //This extension allows extra option for positioning a GUI Object
+    /*class: AdvancedPosition
+    This extension allows extra option for positioning a GUI Object
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+
+        HorizontalAnchor CurrentHorizontal;
+        VerticalAnchor CurrentVertical;
+
+        bool HorizontalUsePercentage;
+        bool VerticalUsePercentage;
+
+        int HorizontalPixelValue;
+        int VerticalPixelValue;
+
+        float HorizontalPercentageValue;
+        float VerticalPercentageValue;
+    =================================================================
+    ============================== C++ ==============================
+    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
+                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalUsePercentage(true),
+                                            VerticalUsePercentage(true), HorizontalPixelValue(0), VerticalPixelValue(0),
+                                            HorizontalPercentageValue(0), VerticalPercentageValue(0)
+    {}
+    =================================================================
+    */
     class AdvancedPosition : public Extension
     {
         //Forward declaration
@@ -43,8 +70,6 @@ namespace ssGUI::Extensions
 
             float HorizontalPercentageValue;
             float VerticalPercentageValue;
-
-            bool OverrideDefaultPosition;
 
             AdvancedPosition(AdvancedPosition const& other);
 

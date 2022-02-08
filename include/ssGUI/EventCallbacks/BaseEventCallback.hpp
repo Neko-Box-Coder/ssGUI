@@ -8,8 +8,23 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: BaseEventCallback
-    //Implementation class for <EventCallback>
+    /*class: BaseEventCallback
+    Implementation class for <EventCallback>
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        //Events
+        std::vector<std::function<void(ssGUI::GUIObject*)>> EventListeners;
+        std::vector<bool> EventListenersValid;
+        std::queue<int> NextFreeIndices;
+        int EventListenerCount;
+    =================================================================
+    ============================== C++ ==============================
+    BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0)
+    {}
+    =================================================================
+    */
     class BaseEventCallback : public EventCallback
     {
         private:
@@ -51,6 +66,7 @@ namespace ssGUI::EventCallbacks
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
 
             //const: EVENT_NAME
+            //This is what you use in order to get the EventCallback that is added to the GUIObject
             static const std::string EVENT_NAME;
     };
 }

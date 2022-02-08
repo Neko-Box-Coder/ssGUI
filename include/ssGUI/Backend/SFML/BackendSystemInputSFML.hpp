@@ -22,8 +22,44 @@
 //namespace ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendSystemInputSFML
-    //For functions explainations, please see <BackendSystemInputInterface>. Normally you don't need to deal with this class
+    /*class: BackendSystemInputSFML
+    For functions explainations, please see <BackendSystemInputInterface>. Normally you don't need to deal with this class
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        ssGUI::KeyPresses CurrentKeyPresses;
+        ssGUI::KeyPresses LastKeyPresses;
+        std::wstring InputText;
+        glm::ivec2 CurrentMousePosition;
+        glm::ivec2 LastMousePosition;
+        std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;
+        std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;
+        sf::Cursor SFMLCursor;
+        ssGUI::Enums::CursorType CurrentCursor;
+        std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
+
+        #if USE_SFML_TIME
+            sf::Clock ElapsedTime;
+        #else
+            std::chrono::high_resolution_clock::time_point ElapsedTime;
+        #endif
+    =================================================================
+    ============================== C++ ==============================
+    BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
+                                            CurrentMouseButtons(), LastMouseButtons(), SFMLCursor(), CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
+                                            CursorMappedWindow(), ElapsedTime()
+    {
+        SFMLCursor.loadFromSystem(sf::Cursor::Arrow);
+
+        #if !USE_SFML_TIME
+            ElapsedTime = std::chrono::high_resolution_clock::now();
+        #endif
+
+        ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
+    }
+    =================================================================
+    */
     class BackendSystemInputSFML : public BackendSystemInputInterface
     {           
         private:

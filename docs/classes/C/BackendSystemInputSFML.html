@@ -8,10 +8,10 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic323"></a><div class="CTopic TClass LC first">
+<a name="Topic331"></a><div class="CTopic TClass LC first">
  <div class="CTitle">BackendSystemInputSFML</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype323"><a class="CPEntry Parent TClass" href="../../index.html#CClass:BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,379);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">BackendSystemInputInterface</div></a><div class="CPEntry TClass Current"><div class="CPName">BackendSystemInputSFML</div></div></div>
- <div class="CBody"><p>For functions explainations, please see <a href="../../index.html#CClass:BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,379);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface</a>. Normally you don't need to deal with this class</p></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype331"><a class="CPEntry Parent TClass" href="../../index.html#CClass:BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,379);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">BackendSystemInputInterface</div></a><div class="CPEntry TClass Current"><div class="CPName">BackendSystemInputSFML</div></div></div>
+ <div class="CBody"><p>For functions explainations, please see <a href="../../index.html#CClass:BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,379);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface</a>. Normally you don't need to deal with this class</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    ssGUI::KeyPresses CurrentKeyPresses;<br />    ssGUI::KeyPresses LastKeyPresses;<br />    std::wstring InputText;<br />    glm::ivec2 CurrentMousePosition;<br />    glm::ivec2 LastMousePosition;<br />    std::vector&lt;ssGUI::Enums::MouseButton&gt; CurrentMouseButtons;<br />    std::vector&lt;ssGUI::Enums::MouseButton&gt; LastMouseButtons;<br />    sf::Cursor SFMLCursor;<br />    ssGUI::Enums::CursorType CurrentCursor;<br />    std::unordered_set&lt;ssGUI::Backend::BackendMainWindowInterface*&gt; CursorMappedWindow;<br /><br />    #<span class="SHKeyword">if</span> USE_SFML_TIME<br />        sf::Clock ElapsedTime;<br />    #<span class="SHKeyword">else</span><br />        std::chrono::high_resolution_clock::time_point ElapsedTime;<br />    #endif</pre><pre>BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),<br />                                        CurrentMouseButtons(), LastMouseButtons(), SFMLCursor(), CurrentCursor(ssGUI::Enums::CursorType::NORMAL),<br />                                        CursorMappedWindow(), ElapsedTime()<br />{<br />    SFMLCursor.loadFromSystem(sf::Cursor::Arrow);<br /><br />    #<span class="SHKeyword">if</span> !USE_SFML_TIME<br />        ElapsedTime = std::chrono::high_resolution_clock::now();<br />    #endif<br /><br />    ssGUI::Backend::BackendManager::AddInputInterface(static_cast&lt;ssGUI::Backend::BackendSystemInputInterface*&gt;(<span class="SHKeyword">this</span>));<br />}</pre></div>
 </div>
 
 <a name="Functions"></a><a name="Topic324"></a><div class="CTopic TGroup LC">
@@ -87,13 +87,13 @@
 <a name="UpdateCursor"></a><a name="Topic449"></a><div class="CTopic TFunction LC">
  <div class="CTitle">UpdateCursor</div>
  <div id="NDPrototype449" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">void</span> UpdateCursor() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:BackendSystemInputInterface:UpdateCursor" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,392);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface::UpdateCursor</a></p></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:BackendSystemInputInterface:UpdateCursor" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,300);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface::UpdateCursor</a></p></div>
 </div>
 
 <a name="GetElapsedTime"></a><a name="Topic450"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">GetElapsedTime</div>
  <div id="NDPrototype450" class="NDPrototype"><div class="PSection PPlainSection">uint64_t GetElapsedTime() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:BackendSystemInputInterface:GetElapsedTime" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,393);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface::GetElapsedTime</a></p></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:BackendSystemInputInterface:GetElapsedTime" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,323);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface::GetElapsedTime</a></p></div>
 </div>
 
 </body></html>

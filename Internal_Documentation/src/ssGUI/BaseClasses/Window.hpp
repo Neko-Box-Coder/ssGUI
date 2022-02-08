@@ -14,7 +14,45 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: Window
+    /*class: Window
+    A base classes for any window GUI Object (including <MainWindow>). By itself, it can be used as a window that's inside <MainWindow>. 
+    By default, it can be resized or move by a cursor.
+
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        //Window status
+        bool Titlebar;
+        int TitlebarHeight;
+        ssGUI::Enums::ResizeType ResizeType;
+        bool Draggable;
+        bool Closable;
+        bool Closed;
+        bool IsClosingAborted;
+        glm::ivec4 TitlebarColorDifference;
+
+        //Resize/Drag settings
+        ssGUI::Enums::WindowDragState CurrentDragState;
+        int ResizeHitbox;
+        bool ResizingTop;
+        bool ResizingBot;
+        bool ResizingLeft;
+        bool ResizingRight;
+        bool Dragging;
+        glm::ivec2 OnTransformBeginPosition;
+        glm::ivec2 OnTransformBeginSize;
+        glm::ivec2 MouseDownPosition;
+    =================================================================
+    ============================== C++ ==============================
+    Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), 
+                       ResizingLeft(false), ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
+    {       
+        AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
+        AddExtension(new ssGUI::Extensions::Border());
+    }
+    =================================================================    
+    */
     class Window : public BaseGUIObject
     {
         private:

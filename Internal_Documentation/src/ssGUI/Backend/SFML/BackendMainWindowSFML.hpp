@@ -11,8 +11,35 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendMainWindowSFML
-    //For functions explainations, please see <BackendMainWindowInterface>. Normally you don't need to deal with this class
+    /*class: BackendMainWindowSFML
+    For functions explainations, please see <BackendMainWindowInterface>. Normally you don't need to deal with this class
+    
+    Variables & Constructor:
+    ============================= C++ =============================
+    private:
+        sf::RenderWindow CurrentWindow;
+        std::vector<std::function<void()>> OnCloseCallback;
+        bool Visible;
+        bool VSync;
+        bool Closed;
+
+        bool Titlebar;
+        bool Resizable;
+        bool CloseButton;
+        std::string Title;
+        bool IsClosingAborted;
+
+        glm::ivec2 PositionOffset;
+    ===============================================================
+    ============================= C++ =============================
+    BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(800, 600), ""), Visible(false), VSync(false), Closed(false),
+                                                        Titlebar(true), Resizable(true), CloseButton(true), Title(), IsClosingAborted(false), 
+                                                        PositionOffset()
+    {
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+    }
+    ===============================================================
+    */
     class BackendMainWindowSFML : public BackendMainWindowInterface
     {
         private:

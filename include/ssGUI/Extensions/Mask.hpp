@@ -23,6 +23,30 @@ namespace ssGUI::Extensions
     - Provides function to mask GUI Objects
     - Manages <MaskEnforcer> that actually uses the function in this extension to mask the GUI objects that the <MaskEnforcer> attached to.
     This includes adding (and removing) <MaskEnforcer> automatically to the children or to a specific GUI object. 
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+        bool MaskChildren;
+        bool MaskContainer;
+        bool FollowContainer;
+        glm::ivec2 FollowPositionOffset;
+        glm::ivec2 FollowSizePadding;
+
+        glm::ivec2 GlobalPosition;
+        glm::ivec2 Size;
+
+        int ChildAddedEventIndex;
+        int ChildRemovedEventIndex;
+    =================================================================
+    ============================== C++ ==============================
+    Mask::Mask() :  Container(nullptr), Enabled(true), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
+                    FollowPositionOffset(), FollowSizePadding(), GlobalPosition(), Size(),
+                    ChildAddedEventIndex(-1), ChildRemovedEventIndex(-1)
+    {}
+    =================================================================    
     */
     class Mask : public Extension
     {

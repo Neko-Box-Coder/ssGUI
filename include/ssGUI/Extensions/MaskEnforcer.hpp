@@ -9,9 +9,41 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    //class: MaskEnforcer
-    //This extension masks the container by calling <Mask::MaskObject> that is linked to this extension.
-    //Normally you should not add this extension manually. You should manage objects to be masked via <Mask>.
+    /*class: MaskEnforcer
+    This extension masks the container by calling <Mask::MaskObject> that is linked to this extension.
+    Normally you should not add this extension manually. You should manage objects to be masked via <Mask>.
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        ssGUIObjectIndex CurrentMask;
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+        bool BlockingContainerInput;
+
+        glm::ivec2 LastMaskGlobalPosition;
+        glm::ivec2 LastMaskSize;
+        glm::ivec2 LastContainerGlobalPosition;
+        glm::ivec2 LastContainerSize;
+        glm::ivec2 LastMainWindowGlobalPosition;
+
+        std::vector<glm::ivec2> LastVertices;
+        std::vector<glm::ivec2> LastUVs;
+        std::vector<glm::u8vec4> LastColours;
+        std::vector<int> LastCounts;
+
+        ObjectsReferences CurrentObjectsReferences;
+
+        bool Cached;
+        bool AllowCaching;
+    =================================================================
+    ============================== C++ ==============================
+    MaskEnforcer::MaskEnforcer() : CurrentMask(-1), Container(nullptr), Enabled(true), BlockingContainerInput(false), LastMaskGlobalPosition(), 
+                                    LastMaskSize(), LastContainerGlobalPosition(), LastContainerSize(), LastVertices(), LastUVs(),
+                                    LastColours(), LastCounts(), CurrentObjectsReferences(), Cached(false), AllowCaching(false)
+    {}
+    =================================================================
+    */
     class MaskEnforcer : public Extension
     {
         private:

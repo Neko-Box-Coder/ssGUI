@@ -7,8 +7,21 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendFontSFML
-    //For functions explainations, please see <BackendFontInterface>. Normally you don't need to deal with this class
+    /*class: BackendFontSFML
+    For functions explainations, please see <BackendFontInterface>. Normally you don't need to deal with this class
+
+    Variables & Constructor:
+    =============================== C++ ===============================
+    private:
+        sf::Font Font;
+        bool SFFontValid;
+    ===================================================================
+    =============================== C++ ===============================
+    BackendFontSFML::BackendFontSFML() : Font(), SFFontValid(false)
+    {
+    }
+    ===================================================================
+    */
     class BackendFontSFML : public BackendFontInterface
     {
         private:

@@ -21,6 +21,38 @@ namespace ssGUI::Extensions
     In the case of being added explictly:
     This extension allows windows with <Dockable> extension attached to be docked to this GUI object.
     This GUI object does not have to be a window.
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+        bool ChildrenDockerUseThisSettings;         //This works by having the child checking if parent has docker or not. Therefore if the docker extension is added after the child being added, this won't work.
+
+        glm::u8vec4 FloatingDockerColor;                //Only applies when the docker is floating. Otherwise it is transparent.
+        bool UseTriggerPercentage;
+        float TriggerHorizontalPercentage;
+        float TriggerVerticalPercentage;
+        int TriggerHorizontalPixel;
+        int TriggerVerticalPixel;
+        glm::u8vec4 TriggerAreaColor;
+        glm::u8vec4 DockPreviewColor;
+
+        ssGUI::GUIObject* DockPreivew;
+        ssGUI::GUIObject* DockTrigger;
+
+        static ssGUI::Extensions::Docker* DefaultGeneratedDockerSettings;
+        static ssGUI::Extensions::Layout* DefaultGeneratedLayoutSettings;
+    =================================================================
+    ============================== C++ ==============================
+    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), FloatingDockerColor(glm::u8vec4(127, 127, 127, 255)), UseTriggerPercentage(true),
+                        TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
+                        TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
+                        DockTrigger(nullptr)
+    {}
+    ssGUI::Extensions::Docker* Docker::DefaultGeneratedDockerSettings = nullptr;
+    ssGUI::Extensions::Layout* Docker::DefaultGeneratedLayoutSettings = nullptr;
+    =================================================================
     */
     class Docker : public Extension
     {
@@ -28,8 +60,6 @@ namespace ssGUI::Extensions
             Docker& operator=(Docker const& other);
 
         protected:
-            Docker(Docker const& other);
-
             ssGUI::GUIObject* Container;
             bool Enabled;
             bool ChildrenDockerUseThisSettings;         //This works by having the child checking if parent has docker or not. Therefore if the docker extension is added after the child being added, this won't work.
@@ -55,7 +85,7 @@ namespace ssGUI::Extensions
             virtual void DrawTriggerArea();
             virtual void DiscardTriggerArea();
 
-        
+            Docker(Docker const& other);
         public:
             static const std::string EXTENSION_NAME;
 

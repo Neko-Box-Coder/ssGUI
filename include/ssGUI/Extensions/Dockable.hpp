@@ -39,6 +39,65 @@ namespace ssGUI::Extensions
     ======================================
 
     If C is currently being docked and its top level parent is set to B, then it can only be docked to D or E.
+
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        enum class DockSide
+        {
+            NONE,
+            TOP,
+            RIGHT,
+            BOTTOM,
+            LEFT,
+            CENTER
+        };
+
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+        ssGUIObjectIndex TopLevelParent;
+
+        ObjectsReferences CurrentObjectsReferences;
+
+        bool UseTriggerPercentage;
+        float TriggerPercentage;
+        int TriggerPixel;
+        glm::u8vec4 TriggerAreaColor;
+        glm::u8vec4 DockPreviewColor;
+
+        ssGUI::GUIObject* OriginalParent;
+        bool ContainerIsDocking;
+
+        ssGUI::GUIObject* DockPreivewTop;
+        ssGUI::GUIObject* DockPreivewRight;
+        ssGUI::GUIObject* DockPreivewBottom;
+        ssGUI::GUIObject* DockPreivewLeft;
+        ssGUI::GUIObject* DockTriggerTop;
+        ssGUI::GUIObject* DockTriggerRight;
+        ssGUI::GUIObject* DockTriggerBottom;
+        ssGUI::GUIObject* DockTriggerLeft;
+
+        int WindowDragStateChangedEventIndex;
+
+        static bool GlobalDockMode;
+        static ssGUI::MainWindow* MainWindowUnderDocking;
+        static ssGUI::GUIObject* DockingTopLevelParent;
+        static ssGUI::GUIObject* TargetDockObject;          //Target Dockable Object to dock next to. This can be a docker as well. (This is NOT the object being docked)
+        static Dockable::DockSide TargetDockSide;
+    =================================================================
+    ============================== C++ ==============================
+    Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(-1), CurrentObjectsReferences(), UseTriggerPercentage(true), 
+                            TriggerPercentage(0.25f), TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
+                            ContainerIsDocking(false), DockPreivewTop(nullptr), DockPreivewRight(nullptr), DockPreivewBottom(nullptr), DockPreivewLeft(nullptr),
+                            DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr), WindowDragStateChangedEventIndex(-1)
+    {}
+
+    bool Dockable::GlobalDockMode = false;
+    ssGUI::MainWindow* Dockable::MainWindowUnderDocking = nullptr;
+    ssGUI::GUIObject* Dockable::DockingTopLevelParent = nullptr;
+    ssGUI::GUIObject* Dockable::TargetDockObject = nullptr;
+    Dockable::DockSide Dockable::TargetDockSide = Dockable::DockSide::NONE;
+    =================================================================
     */
     class Dockable : public Extension
     {

@@ -20,8 +20,58 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: BaseGUIObject
-    //This is the implementation class for <GUIObject>. See <GUIObject> for more details about the functions
+    /*class: BaseGUIObject
+    This is the implementation class for <GUIObject>. See <GUIObject> for more details about the functions
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        ssGUIObjectIndex Parent;
+        std::list<ssGUIObjectIndex> Children;
+        std::list<ssGUIObjectIndex>::iterator CurrentChild;
+        bool CurrentChildIteratorEnd;
+        bool Visible;
+        glm::u8vec4 BackgroundColour;
+        bool UserCreated;
+        bool ObjectDelete;
+        bool HeapAllocated;
+        ObjectsReferences CurrentObjectsReferences;
+        bool DestroyEventCalled;
+
+        //Widget transform
+        glm::ivec2 Position;
+        glm::ivec2 GlobalPosition;
+        glm::ivec2 Size;
+        glm::ivec2 MinSize;
+        glm::ivec2 MaxSize;
+        ssGUI::Enums::AnchorType Anchor;
+
+        //Rendering
+        std::vector<glm::ivec2> DrawingVerticies;
+        std::vector<glm::ivec2> DrawingUVs;
+        std::vector<glm::u8vec4> DrawingColours;
+        std::vector<int> DrawingCounts;
+        std::vector<ssGUI::DrawingProperty> DrawingProperties;
+
+        std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;
+        std::vector<std::string> ExtensionsDrawOrder;
+        std::vector<std::string> ExtensionsUpdateOrder;
+        std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*> EventCallbacks;
+
+        std::unordered_set<std::string> CurrentTags;
+    =================================================================
+    ============================== C++ ==============================
+    BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
+                                        BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
+                                        CurrentObjectsReferences(), DestroyEventCalled(false), Position(glm::ivec2(0, 0)), 
+                                        GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
+                                        MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
+                                        Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
+                                        DrawingCounts(), DrawingProperties(), Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), 
+                                        EventCallbacks(), CurrentTags()
+    {}
+    =================================================================
+    */
     class BaseGUIObject : public GUIObject
     {
         private:

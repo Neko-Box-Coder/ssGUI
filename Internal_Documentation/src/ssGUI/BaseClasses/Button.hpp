@@ -11,7 +11,54 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: Button
+    /*class: Button
+    A class that provides on click functionality when being clicked by the cursor.
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        ssGUI::Enums::ButtonState CurrentState;
+        ssGUI::EventCallbacks::ButtonStateChangedEventCallback* StateChangedEventCallback;
+    =================================================================
+    ============================== C++ ==============================
+    Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
+    {
+        SetBackgroundColor(glm::u8vec4(127,127,127,255)); //Gray background colour for button (For now)
+        StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
+        StateChangedEventCallback->AddEventListener(
+            [](ssGUI::GUIObject* obj)
+            {
+                ssGUI::Button* btn = static_cast<ssGUI::Button*>(obj);
+                glm::u8vec4 bgcolor = btn->GetBackgroundColor();
+                switch(btn->GetButtonState())
+                {
+                    case ssGUI::Enums::ButtonState::NORMAL:
+                        bgcolor.a = 255;
+                        btn->SetBackgroundColor(bgcolor);
+                        break;
+                    case ssGUI::Enums::ButtonState::HOVER:
+                        bgcolor.a = 200;
+                        btn->SetBackgroundColor(bgcolor);
+                        break;
+                    case ssGUI::Enums::ButtonState::CLICKED:
+                    case ssGUI::Enums::ButtonState::ON_CLICK:
+                    case ssGUI::Enums::ButtonState::CLICKING:
+                        bgcolor.a = 100;
+                        btn->SetBackgroundColor(bgcolor);
+                        break;
+                    case ssGUI::Enums::ButtonState::DISABLED:
+                        bgcolor.a = 50;
+                        btn->SetBackgroundColor(bgcolor);
+                        break;
+                }
+            }
+        );
+        
+        AddEventCallback(StateChangedEventCallback);
+        AddExtension(new ssGUI::Extensions::Border());
+    }
+    =================================================================
+    */
     class Button : public Widget
     {
         private:

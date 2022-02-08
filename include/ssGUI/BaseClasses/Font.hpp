@@ -8,7 +8,20 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: Font
+    /*class: Font
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        ssGUI::Backend::BackendFontInterface* BackendFont;
+    =================================================================
+    ============================== C++ ==============================
+    Font::Font() : BackendFont()
+    {
+        BackendFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
+    }
+    =================================================================
+    */
     class Font
     {
         private:

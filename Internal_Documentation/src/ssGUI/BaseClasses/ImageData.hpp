@@ -7,7 +7,20 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: ImageData
+    /*class: ImageData
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        ssGUI::Backend::BackendImageInterface* BackendImage;
+    =================================================================
+    ============================== C++ ==============================
+    ImageData::ImageData()
+    {
+        BackendImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
+    }
+    =================================================================
+    */
     class ImageData
     {
         private:

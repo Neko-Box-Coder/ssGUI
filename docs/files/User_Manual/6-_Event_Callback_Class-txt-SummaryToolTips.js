@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:User_Manual/6._Event_Callback_Class.txt",{17:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Event Callback is one of the building blocks of ssGUI. There are a number of event callbacks that comes with ssGUI, some of them are automatically added by extension or GUI Object itself.</div></div>"});

@@ -1,0 +1,98 @@
+Title: Using ssGUI
+
+1. Before importing ssGUI, you should have the chosen backend (only SFML for now) working first. 
+
+- *SFML*: 
+
+For more details about that, please consult the <SFML tutorial: https://www.sfml-dev.org/tutorials/2.5/#getting-started>.
+
+SFML 3.0.0 or above is *required*. You can download them on the <Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> page.
+
+_
+
+2. You can import <ssGUI: https://github.com/Neko-Box-Coder/ssGUI/releases> to your project by adding all the .cpp files and add the /include directory to the include paths.
+
+- If you are using Visual Studio, CMake is recommended for generating the solution. 
+If not, you will have to add the /include to the include paths and all the cpp files as well.
+
+- If you are using CMake, here's an example of it
+
+======================= Text =========================
+
+cmake_minimum_required(VERSION 3.14)
+set (CMAKE_CXX_STANDARD 11)
+
+# ==========================================================
+# Example 
+# ==========================================================
+
+# set the project name and version
+project(example VERSION 1.0)
+
+# add the executable
+add_executable(example main.cpp)
+
+# ==========================================================
+# Variables 
+# ==========================================================
+
+set(OUTPUT_STATIC "TRUE" CACHE STRING "Use and create static library instead")
+
+#Find shared libraries in the same location as the executable
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,$ORIGIN")
+
+set(INCLUDE_LOCATION "${PROJECT_SOURCE_DIR}/../include")
+
+target_include_directories(example PUBLIC "${INCLUDE_LOCATION}")
+set(CMAKE_CXX_FLAGS "-fpermissive -std=c++0x")  #For surpressing goto warning
+
+# ==========================================================
+# ssGUI 
+# ==========================================================
+if("${OUTPUT_STATIC}")
+    add_library(ssGUI STATIC
+    "${PROJECT_SOURCE_DIR}/ssGUI/ssGUIManager.cpp"
+)
+else()
+    add_library(ssGUI SHARED
+    "${PROJECT_SOURCE_DIR}/ssGUI/ssGUIManager.cpp"
+)
+endif()
+
+# If you are on 32 bit linux, uncomment this
+# set (CMAKE_CXX_FLAGS "-m32")
+# set (CMAKE_C_FLAGS "-m32")
+
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend")
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend/SFML")
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/BaseClasses")
+# add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/CompositeClasses")
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/EventCallbacks")
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Extensions")
+
+target_include_directories(ssGUI PUBLIC "${INCLUDE_LOCATION}")
+
+# Copy Default font
+file(   COPY "${PROJECT_SOURCE_DIR}/NotoSans-Regular.ttf"
+        DESTINATION "${PROJECT_BINARY_DIR}") 
+
+# ==========================================================
+# SFML 
+# ==========================================================
+
+set(SFML_DIR "[Path to SFML cmake folder]")
+message("${SFML_DIR}")
+
+# target_link_options(ssGUI PRIVATE -mwindows) # uncomment to disabling console on Windows
+if("${OUTPUT_STATIC}")
+    set(SFML_STATIC_LIBRARIES TRUE)
+endif()
+
+# Import SFML
+find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
+target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
+
+# Link the library
+target_link_libraries(example PUBLIC ssGUI)
+
+========================================================

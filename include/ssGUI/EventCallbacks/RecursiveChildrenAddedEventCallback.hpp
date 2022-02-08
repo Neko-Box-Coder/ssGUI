@@ -28,6 +28,7 @@ namespace ssGUI::EventCallbacks
             virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
             
             //const: EVENT_NAME
+            //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
 }

@@ -6,7 +6,22 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: Widget
+    /*class: Widget
+    A base class for any interactable or non-window GUI objects
+
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        //Widget status
+        bool Focused;
+        bool Interactable;
+        bool BlockInput;
+    =================================================================
+    ============================== C++ ==============================
+    Widget::Widget() :  Focused(false), Interactable(true), BlockInput(true) 
+    {}
+    =================================================================
+    */
     class Widget : public BaseGUIObject
     {
         private:

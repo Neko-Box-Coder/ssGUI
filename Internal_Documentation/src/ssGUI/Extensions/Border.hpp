@@ -9,8 +9,22 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {   
-    //class: Border
-    //Draws a border according to the *size* of the GUI Object
+    /*class: Border
+    Draws a border according to the *size* of the GUI Object
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        glm::u8vec4 BorderColour;
+        int BorderWidth;
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+    =================================================================
+    ============================== C++ ==============================
+    Border::Border() : BorderColour(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), Container(nullptr), Enabled(true)
+    {}
+    =================================================================
+    */
     class Border : public Extension
     {
         private:

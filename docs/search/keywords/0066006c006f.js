@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("flo",["Variable"],[["FLOATING",,[["ssGUI::Tags",,,,0,"File:ssGUI/ssGUITags.hpp:ssGUI.Tags.FLOATING","CClass:ssGUI.Tags:FLOATING"]]]]);

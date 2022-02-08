@@ -10,9 +10,28 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: MainWindow
-    //Main Window is the *actual* window. Not to be confused with <Window> which lives inside MainWindow.
-    //This class should not be overwritten unless you know what you are doing
+    /*class: MainWindow
+    Main Window is the *actual* window. Not to be confused with <Window> which lives inside MainWindow.
+    This class should not be overwritten unless you know what you are doing
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    private:
+        ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;
+        ssGUI::Backend::BackendDrawingInterface* BackendDrawing;
+
+        uint64_t LastSyncTime;
+    =================================================================
+    ============================== C++ ==============================
+    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSyncTime(0)
+    {
+        BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
+        BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+        
+        BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
+    }
+    =================================================================
+    */
     class MainWindow : public Window
     {
         private:

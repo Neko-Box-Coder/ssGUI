@@ -11,7 +11,22 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: Image
+    /*class: Image
+    A class that can show the content of <ImageData>
+
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        ssGUI::ImageData* ImageData;
+        ssGUI::Enums::ImageFitting Fitting;
+    =================================================================
+    ============================== C++ ==============================
+    Image::Image() : ImageData(nullptr), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_AREA) 
+    {
+        AddExtension(new ssGUI::Extensions::Border());
+    }
+    =================================================================
+    */
     class Image : public Widget
     {
         private:

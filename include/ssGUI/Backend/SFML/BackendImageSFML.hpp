@@ -7,8 +7,20 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendImageSFML
-    //For functions explainations, please see <BackendImageInterface>. Normally you don't need to deal with this class
+    /*class: BackendImageSFML
+    For functions explainations, please see <BackendImageInterface>. Normally you don't need to deal with this class
+    
+    Variables & Constructor:
+    ========================== C++ ==========================
+    private:
+        sf::Texture GPUTexture;
+        bool GPUTextureValid;
+    =========================================================
+    ========================== C++ ==========================
+    BackendImageSFML::BackendImageSFML() : GPUTexture(), GPUTextureValid(false)
+    {}
+    =========================================================
+    */
     class BackendImageSFML : public BackendImageInterface
     {
         private:

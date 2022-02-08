@@ -8,10 +8,10 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic801"></a><div class="CTopic TClass LC first">
+<a name="Topic519"></a><div class="CTopic TClass LC first">
  <div class="CTitle">AdvancedSize</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype801"><a class="CPEntry Parent TClass" href="../../index.html#CClass:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,807);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Extension</div></a><div class="CPEntry TClass Current"><div class="CPName">AdvancedSize</div></div></div>
- <div class="CBody"><p>This extension allows extra option for sizing a GUI Object</p></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype519"><a class="CPEntry Parent TClass" href="../../index.html#CClass:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Extension</div></a><div class="CPEntry TClass Current"><div class="CPName">AdvancedSize</div></div></div>
+ <div class="CBody"><p>This extension allows extra option for sizing a GUI Object</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">protected</span>:<br />    ssGUI::GUIObject* Container;<br />    <span class="SHKeyword">bool</span> Enabled;<br /><br />    <span class="SHKeyword">bool</span> HorizontalUsePercentage;<br />    <span class="SHKeyword">bool</span> VerticalUsePercentage;<br /><br />    <span class="SHKeyword">int</span> HorizontalPixelValue;<br />    <span class="SHKeyword">int</span> VerticalPixelValue;<br /><br />    <span class="SHKeyword">float</span> HorizontalPercentageValue;<br />    <span class="SHKeyword">float</span> VerticalPercentageValue;<br /><br />    <span class="SHKeyword">bool</span> OverrideDefaultSize;</pre><pre>AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(<span class="SHKeyword">true</span>), HorizontalUsePercentage(<span class="SHKeyword">true</span>), VerticalUsePercentage(<span class="SHKeyword">true</span>),<br />                                HorizontalPixelValue(<span class="SHNumber">50</span>), VerticalPixelValue(<span class="SHNumber">50</span>), HorizontalPercentageValue(<span class="SHNumber">0.2</span>),<br />                                VerticalPercentageValue(<span class="SHNumber">0.2</span>), OverrideDefaultSize(<span class="SHKeyword">true</span>)<br />{}</pre></div>
 </div>
 
 <a name="Functions"></a><a name="Topic869"></a><div class="CTopic TGroup LC">
@@ -120,13 +120,13 @@
 
 <a name="Internal_GetObjectsReferences"></a><a name="Topic1016"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_GetObjectsReferences</div>
- <div id="NDPrototype1016" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../index.html#CClass:ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,271);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>* Internal_GetObjectsReferences() <span class="SHKeyword">override</span></div></div>
+ <div id="NDPrototype1016" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../index.html#CClass:ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,393);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>* Internal_GetObjectsReferences() <span class="SHKeyword">override</span></div></div>
  <div class="CBody"><p>See <a href="../../index.html#CClass:Extension:Internal_GetObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1073);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_GetObjectsReferences</a></p></div>
 </div>
 
 <a name="Clone"></a><a name="Topic1017"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype1017" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../index.html#CClass:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,807);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype1017" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../index.html#CClass:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
  <div class="CBody"><p>See <a href="../../index.html#CClass:Extension:Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1074);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Clone</a></p></div>
 </div>
 

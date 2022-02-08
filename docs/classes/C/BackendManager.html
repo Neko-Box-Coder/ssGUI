@@ -8,10 +8,10 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic331"></a><div class="CTopic TClass LC first">
+<a name="Topic314"></a><div class="CTopic TClass LC first">
  <div class="CTitle">BackendManager</div>
- <div class="NDClassPrototype" id="NDClassPrototype331"><div class="CPEntry TClass Current"><div class="CPName">BackendManager</div></div></div>
- <div class="CBody"><p>Backend manager allows backend objects to communicate to each other, without reference each other. Normally you don't need to deal with this class</p></div>
+ <div class="NDClassPrototype" id="NDClassPrototype314"><div class="CPEntry TClass Current"><div class="CPName">BackendManager</div></div></div>
+ <div class="CBody"><p>Backend manager allows backend objects to communicate to each other, without reference each other. Normally you don't need to deal with this class</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    <span class="SHKeyword">static int</span> MainWindowCount;<br />    <span class="SHKeyword">static</span> std::vector&lt;ssGUI::Backend::BackendDrawingInterface*&gt; BackendDrawingInterfaces;<br />    <span class="SHKeyword">static</span> std::vector&lt;ssGUI::Backend::BackendMainWindowInterface*&gt; BackendMainWindowInterfaces;<br />    <span class="SHKeyword">static</span> ssGUI::Backend::BackendSystemInputInterface* BackendSystemInputInterface;</pre><pre><span class="SHKeyword">int</span> BackendManager::MainWindowCount = <span class="SHNumber">0</span>;<br />std::vector&lt;ssGUI::Backend::BackendDrawingInterface*&gt; BackendManager::BackendDrawingInterfaces;<br />std::vector&lt;ssGUI::Backend::BackendMainWindowInterface*&gt; BackendManager::BackendMainWindowInterfaces;<br />ssGUI::Backend::BackendSystemInputInterface* BackendManager::BackendSystemInputInterface = nullptr;</pre></div>
 </div>
 
 <a name="Functions"></a><a name="Topic414"></a><div class="CTopic TGroup LC">

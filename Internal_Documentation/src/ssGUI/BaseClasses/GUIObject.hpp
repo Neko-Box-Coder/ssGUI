@@ -18,6 +18,7 @@
 namespace ssGUI
 {
     //class: GUIObject
+    //Base class for all GUI Objects
     class GUIObject
     {       
         protected:

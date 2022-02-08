@@ -16,8 +16,33 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    //class: AdvancedSize
-    //This extension allows extra option for sizing a GUI Object
+    /*class: AdvancedSize
+    This extension allows extra option for sizing a GUI Object
+    
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+
+        bool HorizontalUsePercentage;
+        bool VerticalUsePercentage;
+
+        int HorizontalPixelValue;
+        int VerticalPixelValue;
+
+        float HorizontalPercentageValue;
+        float VerticalPercentageValue;
+
+        bool OverrideDefaultSize;
+    =================================================================
+    ============================== C++ ==============================
+    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
+                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
+                                    VerticalPercentageValue(0.2), OverrideDefaultSize(true)
+    {}
+    =================================================================
+    */
     class AdvancedSize : public Extension
     {
         private:

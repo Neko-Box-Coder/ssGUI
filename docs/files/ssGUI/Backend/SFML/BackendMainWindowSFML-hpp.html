@@ -13,10 +13,10 @@
  <div class="NDClassPrototype" id="NDClassPrototype435"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div></div></div>
 </div>
 
-<a name="BackendMainWindowSFML"></a><a name="Topic436"></a><div class="CTopic TClass LC">
+<a name="BackendMainWindowSFML"></a><a name="Topic344"></a><div class="CTopic TClass LC">
  <div class="CTitle">BackendMainWindowSFML</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype436"><a class="CPEntry Parent TClass" href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,346);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">BackendMainWindowInterface</div></a><div class="CPEntry TClass Current"><div class="CPName">BackendMainWindowSFML</div></div></div>
- <div class="CBody"><p>For functions explainations, please see <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,346);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface</a>. Normally you don't need to deal with this class</p></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype344"><a class="CPEntry Parent TClass" href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,346);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">BackendMainWindowInterface</div></a><div class="CPEntry TClass Current"><div class="CPName">BackendMainWindowSFML</div></div></div>
+ <div class="CBody"><p>For functions explainations, please see <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,346);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface</a>. Normally you don't need to deal with this class</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    sf::RenderWindow CurrentWindow;<br />    std::vector&lt;std::<span class="SHKeyword">function</span>&lt;<span class="SHKeyword">void</span>()&gt;&gt; OnCloseCallback;<br />    <span class="SHKeyword">bool</span> Visible;<br />    <span class="SHKeyword">bool</span> VSync;<br />    <span class="SHKeyword">bool</span> Closed;<br /><br />    <span class="SHKeyword">bool</span> Titlebar;<br />    <span class="SHKeyword">bool</span> Resizable;<br />    <span class="SHKeyword">bool</span> CloseButton;<br />    std::<span class="SHKeyword">string</span> Title;<br />    <span class="SHKeyword">bool</span> IsClosingAborted;<br /><br />    glm::ivec2 PositionOffset;</pre><pre>BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(<span class="SHNumber">800</span>, <span class="SHNumber">600</span>), <span class="SHString">&quot;&quot;</span>), Visible(<span class="SHKeyword">false</span>), VSync(<span class="SHKeyword">false</span>), Closed(<span class="SHKeyword">false</span>),<br />                                                    Titlebar(<span class="SHKeyword">true</span>), Resizable(<span class="SHKeyword">true</span>), CloseButton(<span class="SHKeyword">true</span>), Title(), IsClosingAborted(<span class="SHKeyword">false</span>),<br />                                                    PositionOffset()<br />{<br />    ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast&lt;ssGUI::Backend::BackendMainWindowInterface*&gt;(<span class="SHKeyword">this</span>));<br />}</pre></div>
 </div>
 
 <a name="BackendMainWindowSFML.Functions"></a><a name="Topic437"></a><div class="CTopic TGroup LC">
@@ -26,25 +26,25 @@
 <a name="BackendMainWindowSFML.SyncPositionOffset"></a><a name="Topic202"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SyncPositionOffset</div>
  <div id="NDPrototype202" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">void</span> SyncPositionOffset() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.SyncPositionOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,350);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::SyncPositionOffset</a></p></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.SyncPositionOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,11);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::SyncPositionOffset</a></p></div>
 </div>
 
 <a name="BackendMainWindowSFML.GetPositionOffset"></a><a name="Topic203"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetPositionOffset</div>
  <div id="NDPrototype203" class="NDPrototype"><div class="PSection PPlainSection">glm::ivec2 GetPositionOffset() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.GetPositionOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,351);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::GetPositionOffset</a></p></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.GetPositionOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,12);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::GetPositionOffset</a></p></div>
 </div>
 
 <a name="BackendMainWindowSFML.SetPosition"></a><a name="Topic208"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetPosition</div>
  <div id="NDPrototype208" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">void</span> SetPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">pos</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.SetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,348);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::SetPosition</a></p></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.SetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,7);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::SetPosition</a></p></div>
 </div>
 
 <a name="BackendMainWindowSFML.GetPosition"></a><a name="Topic211"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetPosition</div>
  <div id="NDPrototype211" class="NDPrototype"><div class="PSection PPlainSection">glm::ivec2 GetPosition() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.GetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,349);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::GetPosition</a></p></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.GetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,10);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::GetPosition</a></p></div>
 </div>
 
 <a name="BackendMainWindowSFML.SetSize"></a><a name="Topic215"></a><div class="CTopic TFunction LC">
@@ -62,19 +62,19 @@
 <a name="BackendMainWindowSFML.IsClosed"></a><a name="Topic887"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsClosed</div>
  <div id="NDPrototype887" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> IsClosed() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.IsClosed" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,354);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::IsClosed</a></p></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.IsClosed" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,13);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::IsClosed</a></p></div>
 </div>
 
 <a name="BackendMainWindowSFML.Close"></a><a name="Topic888"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Close</div>
  <div id="NDPrototype888" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">void</span> Close() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.Close" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,355);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::Close</a></p></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.Close" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,14);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::Close</a></p></div>
 </div>
 
 <a name="BackendMainWindowSFML.AbortClosing"></a><a name="Topic889"></a><div class="CTopic TFunction LC">
  <div class="CTitle">AbortClosing</div>
  <div id="NDPrototype889" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">void</span> AbortClosing() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.AbortClosing" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,356);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::AbortClosing</a></p></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp:BackendMainWindowInterface.AbortClosing" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,15);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendMainWindowInterface::AbortClosing</a></p></div>
 </div>
 
 <a name="BackendMainWindowSFML.AddOnCloseEvent"></a><a name="Topic890"></a><div class="CTopic TFunction LC">

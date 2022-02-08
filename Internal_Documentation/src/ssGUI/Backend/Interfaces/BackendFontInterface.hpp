@@ -32,12 +32,15 @@ namespace ssGUI::Backend
             virtual int GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, int charSize) = 0;
             
             //function: GetLineSpacing
+            //Returns how much a line space is based on the font size
             virtual int GetLineSpacing(int charSize) = 0;
             
             //function: GetUnderlineOffset
+            //Gets the vertical offset for underline based on the font size 
             virtual int GetUnderlineOffset(int charSize) = 0;
             
             //function: GetUnderlineThickness
+            //Gets the thickness for underline based on the font size 
             virtual int GetUnderlineThickness(int charSize) = 0;
 
 

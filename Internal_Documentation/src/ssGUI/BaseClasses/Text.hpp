@@ -8,14 +8,56 @@
 #include "ssGUI/Enums/TextAlignmentHorizontal.hpp"
 #include "ssGUI/Enums/TextAlignmentVertical.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include <string>
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
+#include <string>
+#include <locale>
+#include <codecvt>
 
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: Text
+    /*class: Text
+    A class that can show a string with <Font>
+
+    Variables & Constructor:
+    ============================== C++ ==============================
+    protected:
+        std::wstring CurrentText;
+
+        bool RecalculateTextNeeded;
+        std::vector<glm::ivec2> CharactersPosition;
+        std::vector<ssGUI::CharacterInfo> CharactersInfos;
+
+        bool WrappingOverflow;
+        int FontSize;
+        bool MultilineAllowed;
+        ssGUI::Enums::TextWrapping WrappingMode;
+        ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
+        ssGUI::Enums::TextAlignmentVertical VerticalAlignment;
+        ssGUI::Font* CurrentFont;
+
+        int HorizontalPadding;
+        int VerticalPadding;
+        int CharacterSpace;
+        int LineSpace;
+        float TabSize;
+        ssGUI::Font* LastDefaultFont;
+
+        static ssGUI::Font* DefaultFont;
+    =================================================================
+    ============================== C++ ==============================
+    Text::Text() :  CurrentText(), RecalculateTextNeeded(false), CharactersPosition(), 
+                    CharactersInfos(), WrappingOverflow(false), FontSize(20), MultilineAllowed(true), 
+                    WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
+                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFont(nullptr), 
+                    HorizontalPadding(0), VerticalPadding(0), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFont(nullptr)
+    {
+        //AddExtension(new ssGUI::Extensions::Border());
+        SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
+    }
+    =================================================================
+    */
     class Text : public Widget
     {
         private:
@@ -24,7 +66,7 @@ namespace ssGUI
         protected:
             std::wstring CurrentText;
 
-            bool CurrentTextChanged;
+            bool RecalculateTextNeeded;
             std::vector<glm::ivec2> CharactersPosition;
             std::vector<ssGUI::CharacterInfo> CharactersInfos;
 
@@ -41,6 +83,7 @@ namespace ssGUI
             int CharacterSpace;
             int LineSpace;
             float TabSize;
+            ssGUI::Font* LastDefaultFont;
 
             static ssGUI::Font* DefaultFont;
 
@@ -60,6 +103,10 @@ namespace ssGUI
             //function: SetText
             //Sets the text to show
             virtual void SetText(std::wstring text);
+
+            //function: SetText
+            //Sets the text to show
+            virtual void SetText(std::string text);
             
             //function: GetText
             //Gets the text being shown

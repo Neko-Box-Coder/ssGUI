@@ -11,8 +11,21 @@
 //namespace: ssGUI.Backend
 namespace ssGUI::Backend
 {
-    //class: BackendDrawingSFML
-    //For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
+    /*class: BackendDrawingSFML
+    For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
+    
+    Variables & Constructor:
+    ======================== C++ =======================
+    private:
+        int BackendIndex;
+    ====================================================
+    ======================== C++ =======================
+    BackendDrawingSFML::BackendDrawingSFML() : BackendIndex(0)
+    {
+        ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+    }
+    ====================================================
+    */
     class BackendDrawingSFML : public BackendDrawingInterface
     {        
         private:
