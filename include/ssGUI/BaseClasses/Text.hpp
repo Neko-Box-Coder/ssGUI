@@ -156,19 +156,19 @@ namespace ssGUI
             virtual void SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal align);
 
             //function: GetHorizontalAlignment
-            virtual ssGUI::Enums::TextAlignmentHorizontal GetHorizontalAlignment();
+            virtual ssGUI::Enums::TextAlignmentHorizontal GetHorizontalAlignment() const;
 
             //function: SetVerticalAlignment
             virtual void SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical align);
 
             //function: GetVerticalAlignment
-            virtual ssGUI::Enums::TextAlignmentVertical GetVerticalAlignment();
+            virtual ssGUI::Enums::TextAlignmentVertical GetVerticalAlignment() const;
 
             //function: SetFont
             virtual void SetFont(ssGUI::Font* font);
             
             //function: GetFont
-            virtual ssGUI::Font* GetFont();
+            virtual ssGUI::Font* GetFont() const;
 
             //function: SetHorizontalPadding
             //Sets the horizontal padding for the beginning and the end of the text
@@ -176,7 +176,7 @@ namespace ssGUI
 
             //function: GetHorizontalPadding
             //Gets the horizontal padding for the beginning and the end of the text
-            virtual int GetHorizontalPadding();
+            virtual int GetHorizontalPadding() const;
 
             //function: SetVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
@@ -184,7 +184,7 @@ namespace ssGUI
 
             //function: GetVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual int GetVerticalPadding();
+            virtual int GetVerticalPadding() const;
             
             //function: SetCharacterSpace
             //Sets the space between each character

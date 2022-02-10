@@ -29,7 +29,11 @@ namespace ssGUI
         FontSize = other.GetFontSize();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
-        CurrentFont = other.CurrentFont->Clone();
+        HorizontalAlignment = other.GetHorizontalAlignment();
+        VerticalAlignment = other.GetVerticalAlignment();
+        CurrentFont = other.GetFont();
+        HorizontalPadding = other.GetHorizontalPadding();
+        VerticalPadding = other.GetVerticalPadding();
         CharacterSpace = other.GetCharacterSpace();
         LineSpace = other.GetLineSpace();
         TabSize = other.GetTabSize();
@@ -553,7 +557,7 @@ namespace ssGUI
         RecalculateTextNeeded = true;
     }
 
-    ssGUI::Enums::TextAlignmentHorizontal Text::GetHorizontalAlignment()
+    ssGUI::Enums::TextAlignmentHorizontal Text::GetHorizontalAlignment() const
     {
         return HorizontalAlignment;
     }
@@ -564,7 +568,7 @@ namespace ssGUI
         RecalculateTextNeeded = true;
     }
 
-    ssGUI::Enums::TextAlignmentVertical Text::GetVerticalAlignment()
+    ssGUI::Enums::TextAlignmentVertical Text::GetVerticalAlignment() const
     {
         return VerticalAlignment;
     }
@@ -578,7 +582,7 @@ namespace ssGUI
         RecalculateTextNeeded = true;
     }
 
-    ssGUI::Font* Text::GetFont()
+    ssGUI::Font* Text::GetFont() const
     {
         if(CurrentFont == nullptr)
             return DefaultFont;
@@ -592,7 +596,7 @@ namespace ssGUI
         RecalculateTextNeeded = true;
     }
 
-    int Text::GetHorizontalPadding()
+    int Text::GetHorizontalPadding() const
     {
         return HorizontalPadding;
     }
@@ -603,7 +607,7 @@ namespace ssGUI
         RecalculateTextNeeded = true;
     }
 
-    int Text::GetVerticalPadding()
+    int Text::GetVerticalPadding() const
     {
         return VerticalPadding;
     }
@@ -752,7 +756,7 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         Text* temp = new Text(*this);
-        CloneExtensionsAndEventCallbacks(temp);   
+        CloneExtensionsAndEventCallbacks(temp);
         
         if(cloneChildren)
         {
