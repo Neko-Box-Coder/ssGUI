@@ -7,41 +7,6 @@ namespace ssGUI
     {
         CurrentState = other.GetButtonState();
         StateChangedEventCallback = nullptr;
-
-        if(other.IsEventCallbackExist(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME))
-        {
-            StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
-            StateChangedEventCallback->AddEventListener(
-                [](ssGUI::GUIObject* obj)
-                {
-                    ssGUI::Button* btn = static_cast<ssGUI::Button*>(obj);
-                    glm::u8vec4 bgcolor = btn->GetBackgroundColor();
-                    switch(btn->GetButtonState())
-                    {
-                        case ssGUI::Enums::ButtonState::NORMAL:
-                            bgcolor.a = 255;
-                            btn->SetBackgroundColor(bgcolor);
-                            break;
-                        case ssGUI::Enums::ButtonState::HOVER:
-                            bgcolor.a = 200;
-                            btn->SetBackgroundColor(bgcolor);
-                            break;
-                        case ssGUI::Enums::ButtonState::CLICKED:
-                        case ssGUI::Enums::ButtonState::ON_CLICK:
-                        case ssGUI::Enums::ButtonState::CLICKING:
-                            bgcolor.a = 100;
-                            btn->SetBackgroundColor(bgcolor);
-                            break;
-                        case ssGUI::Enums::ButtonState::DISABLED:
-                            bgcolor.a = 50;
-                            btn->SetBackgroundColor(bgcolor);
-                            break;
-                    }
-                }
-            );
-            
-            AddEventCallback(StateChangedEventCallback);
-        }
     }
 
     void Button::SetButtonState(ssGUI::Enums::ButtonState state)
@@ -52,7 +17,8 @@ namespace ssGUI
         CurrentState = state;
 
         //TODO : Set it as optional
-        StateChangedEventCallback->Notify(static_cast<ssGUI::GUIObject*>(this));
+        if(StateChangedEventCallback != nullptr)
+            StateChangedEventCallback->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
     Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
@@ -60,9 +26,9 @@ namespace ssGUI
         SetBackgroundColor(glm::u8vec4(127,127,127,255)); //Gray background colour for button (For now)
         StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
         StateChangedEventCallback->AddEventListener(
-            [](ssGUI::GUIObject* obj)
+            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container)
             {
-                ssGUI::Button* btn = static_cast<ssGUI::Button*>(obj);
+                ssGUI::Button* btn = static_cast<ssGUI::Button*>(src);
                 glm::u8vec4 bgcolor = btn->GetBackgroundColor();
                 switch(btn->GetButtonState())
                 {
@@ -86,7 +52,7 @@ namespace ssGUI
                         break;
                 }
             }
-        );
+        ); 
         
         AddEventCallback(StateChangedEventCallback);
         AddExtension(new ssGUI::Extensions::Border());
@@ -240,7 +206,7 @@ namespace ssGUI
         }
 
         endUpdate:;
-        
+
         for (auto extension : Extensions)
             extension.second->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
@@ -251,7 +217,13 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         Button* temp = new Button(*this);
-        CloneExtensionsAndEventCallbacks(temp);   
+        CloneExtensionsAndEventCallbacks(temp);
+
+        if(temp->IsEventCallbackExist(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME))
+        {
+            temp->StateChangedEventCallback = static_cast<ssGUI::EventCallbacks::ButtonStateChangedEventCallback*>
+                (temp->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME));
+        }
         
         if(cloneChildren)
         {
