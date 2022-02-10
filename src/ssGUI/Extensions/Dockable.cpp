@@ -1055,17 +1055,27 @@ namespace ssGUI::Extensions
 
         if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
         {
-            WindowDragStateChangedEventIndex = event->AddEventListener([&](ssGUI::GUIObject* src)
+            WindowDragStateChangedEventIndex = event->AddEventListener([](ssGUI::GUIObject* src, ssGUI::GUIObject* container)
             {
+                if(!container->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
+                {
+                    DEBUG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    DEBUG_EXIT_PROGRAM();
+                    return;
+                }
+
+                ssGUI::Extensions::Dockable* containerDockable = static_cast<ssGUI::Extensions::Dockable*>
+                        (container->GetExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME));
+                
                 //When the current window started being dragged
                 if(static_cast<ssGUI::Window*>(src)->GetWindowDragState() == ssGUI::Enums::WindowDragState::STARTED)
                 {
-                    OnWindowDragStarted();
+                    containerDockable->OnWindowDragStarted();
                 }
                 //When the current window finished being dragged
                 else if(static_cast<ssGUI::Window*>(src)->GetWindowDragState() == ssGUI::Enums::WindowDragState::ENDED)
                 {
-                    OnWindowDragFinished();
+                    containerDockable->OnWindowDragFinished();
                 }
             });
         }

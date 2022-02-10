@@ -3,10 +3,11 @@
 
 namespace ssGUI::EventCallbacks
 {    
-    BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0)
+    BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0),
+                                                Container(nullptr)
     {}
     
-    int BaseEventCallback::AddEventListener(std::function<void(ssGUI::GUIObject*)> callback)
+    int BaseEventCallback::AddEventListener(std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*)> callback)
     {
         int addedIndex = -1;
         
@@ -47,8 +48,13 @@ namespace ssGUI::EventCallbacks
         for(int i = 0; i < EventListeners.size(); i++)
         {
             if(EventListenersValid[i] == true)
-                EventListeners[i](source);
+                EventListeners[i](source, Container);
         }
+    }
+
+    void BaseEventCallback::BindToObject(ssGUI::GUIObject* bindObj)
+    {
+        Container = bindObj;
     }
 
     std::string BaseEventCallback::GetEventCallbackName() const

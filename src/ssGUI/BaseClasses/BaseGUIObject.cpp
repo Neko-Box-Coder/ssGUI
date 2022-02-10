@@ -290,7 +290,7 @@ namespace ssGUI
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
             
             if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                clonedObj->AddEventCallback(eventCallback.second->Clone(clonedObj, false));
+                clonedObj->AddEventCallback(eventCallback.second->Clone(clonedObj, true));
         }
 
         FUNC_DEBUG_EXIT();
@@ -958,6 +958,7 @@ namespace ssGUI
             return;
 
         EventCallbacks[eventCallback->GetEventCallbackName()] = eventCallback;
+        eventCallback->BindToObject(this);
     }
 
     ssGUI::EventCallbacks::EventCallback* BaseGUIObject::GetEventCallback(std::string eventCallbackName)

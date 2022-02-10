@@ -29,10 +29,11 @@ namespace ssGUI::EventCallbacks
     {
         private:
             //Events
-            std::vector<std::function<void(ssGUI::GUIObject*)>> EventListeners;
+            std::vector<std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*)>> EventListeners;
             std::vector<bool> EventListenersValid;
             std::queue<int> NextFreeIndices;
             int EventListenerCount;
+            ssGUI::GUIObject* Container;
         
         protected:
             BaseEventCallback(BaseEventCallback const & other) = default;
@@ -43,7 +44,7 @@ namespace ssGUI::EventCallbacks
             
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
-            int AddEventListener(std::function<void(ssGUI::GUIObject*)> callback) override;
+            int AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container)> callback) override;
             
             //function: RemoveEventListener
             //See <EventCallback::RemoveEventListener>
@@ -57,6 +58,8 @@ namespace ssGUI::EventCallbacks
             //See <EventCallback::Notify>
             void Notify(ssGUI::GUIObject* source) override;
             
+            void BindToObject(ssGUI::GUIObject* bindObj) override;
+
             //function: GetEventCallbackName
             //See <EventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;

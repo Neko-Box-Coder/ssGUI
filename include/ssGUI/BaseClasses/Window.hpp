@@ -171,11 +171,11 @@ namespace ssGUI
             //function: IsResizing
             virtual bool IsResizing() const;
 
-            //function: AddOnCloseEventListener
+            //function: AddOnCloseEventListener [Deprecated]
             //Proxy function for adding listener and <EventCallbacks::OnWindowCloseEventCallback> to this object 
             virtual int AddOnCloseEventListener(std::function<void()> onClose);
             
-            //function: RemoveOnCloseEventListener
+            //function: RemoveOnCloseEventListener [Deprecated]
             //Proxy function for removing listener from <EventCallbacks::OnWindowCloseEventCallback> on this object 
             virtual void RemoveOnCloseEventListener(int index);
 

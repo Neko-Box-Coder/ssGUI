@@ -25,9 +25,10 @@ namespace ssGUI::EventCallbacks
     int index = EventCallback->AddEventListener
     (
         //source is what *triggered* the callback
-        [](ssGUI::GUIObject* source)
+        //container is the GUI Object that holds this event callback
+        [](ssGUI::GUIObject* source, ssGUI::GUIObject* container)
         {
-            //Do something with source
+            //Do something
         }    
     );
     ===========================================================================*/
@@ -40,9 +41,10 @@ namespace ssGUI::EventCallbacks
 
         public:
             
-            //function: AddEventListener
-            //Adds a listener to this event callback, and returns an index for removing it.
-            virtual int AddEventListener(std::function<void(ssGUI::GUIObject *)> callback) = 0;
+            /*function: AddEventListener
+            Adds a listener to this EventCallback, and returns an index for removing it. 
+            The first argument is the source/cause of the event callback. Second argument is the container of the EventCallback.*/
+            virtual int AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container)> callback) = 0;
             
             //function: RemoveEventListener
             //Removes a listener with the index specified
@@ -56,6 +58,10 @@ namespace ssGUI::EventCallbacks
             //Call this function to trigger this event callback
             virtual void Notify(ssGUI::GUIObject* source) = 0;
             
+            //function: BindToObject
+            //Binds this event callback to a GUI object
+            virtual void BindToObject(ssGUI::GUIObject* bindObj) = 0;
+
             //function: GetEventCallbackName
             //Returns the name of this event callback
             virtual std::string GetEventCallbackName() const = 0;
