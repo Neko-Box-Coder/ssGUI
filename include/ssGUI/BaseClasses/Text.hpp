@@ -10,6 +10,7 @@
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
+#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include <string>
 #include <locale>
 #include <codecvt>

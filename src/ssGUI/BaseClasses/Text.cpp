@@ -76,6 +76,17 @@ namespace ssGUI
     {
         //AddExtension(new ssGUI::Extensions::Border());
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
+
+        ssGUI::EventCallbacks::SizeChangedEventCallback* sizeChangedCallback = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        sizeChangedCallback->AddEventListener
+        (
+            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container)
+            {
+                static_cast<ssGUI::Text*>(src)->RecalculateTextNeeded = true;
+            }
+        );
+
+        AddEventCallback(sizeChangedCallback);
     }
 
     Text::~Text()
@@ -715,9 +726,8 @@ namespace ssGUI
             goto endOfDrawing;
         }
 
-        {
-            //TODO : Add size changed event callback and register it with RecalculateTextNeeded
-            //if(RecalculateTextNeeded)
+        {            
+            if(RecalculateTextNeeded)
                 ComputeCharactersPositionAndSize(); 
             
             //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
