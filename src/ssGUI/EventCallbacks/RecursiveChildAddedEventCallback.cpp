@@ -15,5 +15,5 @@ namespace ssGUI::EventCallbacks
             return new RecursiveChildAddedEventCallback();
     }
 
-    const std::string RecursiveChildAddedEventCallback::EVENT_NAME = "RecursiveChildrenAddedEvent";
+    const std::string RecursiveChildAddedEventCallback::EVENT_NAME = "RecursiveChildAddedEvent";
 }

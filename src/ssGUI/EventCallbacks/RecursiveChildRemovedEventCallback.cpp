@@ -15,5 +15,5 @@ namespace ssGUI::EventCallbacks
             return new RecursiveChildRemovedEventCallback();
     }
 
-    const std::string RecursiveChildRemovedEventCallback::EVENT_NAME = "RecursiveChildrenRemovedEvent";
+    const std::string RecursiveChildRemovedEventCallback::EVENT_NAME = "RecursiveChildRemovedEvent";
 }

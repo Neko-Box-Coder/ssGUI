@@ -1,9 +1,7 @@
-#ifndef RECURSIVE_CHILDREN_ADDED_EVENT_CALLBACK
-#define RECURSIVE_CHILDREN_ADDED_EVENT_CALLBACK
+#ifndef RECURSIVE_CHILD_ADDED_EVENT_CALLBACK
+#define RECURSIVE_CHILD_ADDED_EVENT_CALLBACK
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
-
-//TODO : Rename this to child instead of children
 
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
