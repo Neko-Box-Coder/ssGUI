@@ -9,8 +9,8 @@
 #include "ssGUI/BaseClasses/MainWindow.hpp"
 
 /*
-#include "ssGUI/EventCallbacks/RecursiveChildrenAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildrenRemovedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"*/
 
 //namespace: ssGUI::Extensions

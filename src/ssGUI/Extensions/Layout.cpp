@@ -139,8 +139,8 @@ namespace ssGUI::Extensions
             };
 
             eventCallbackCleanUp(Container, ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME, OnChildAddEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME, ChildAddedEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME, ChildRemovedEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME, ChildAddedEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME, ChildRemovedEventIndex);
             eventCallbackCleanUp(Container, ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME, ChildPositionChangedEventIndex);
         
             for(auto it : MinMaxSizeChangedEventIndices)
@@ -742,8 +742,8 @@ namespace ssGUI::Extensions
             return;
         }
         
-        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME;
-        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME;
+        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME;
+        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
         UpdateChildrenResizeTypes();
 
         FUNC_DEBUG_EXIT();
@@ -766,8 +766,8 @@ namespace ssGUI::Extensions
             return;
         }
 
-        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME;
-        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME;
+        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME;
+        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
         const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
 
         if(update)
@@ -1203,15 +1203,15 @@ namespace ssGUI::Extensions
                 }
             );
 
-        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback::EVENT_NAME;
-        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback::EVENT_NAME;
+        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME;
+        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
         const std::string childPositionChangedEventName = ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME;
 
         if(!Container->IsEventCallbackExist(onChildAddedEventName))
-            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildrenAddedEventCallback());
+            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildAddedEventCallback());
         
         if(!Container->IsEventCallbackExist(onChildRemovedEventName))
-            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildrenRemovedEventCallback());
+            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback());
 
         if(!Container->IsEventCallbackExist(childPositionChangedEventName))
             Container->AddEventCallback(new ssGUI::EventCallbacks::ChildPositionChangedEventCallback());

@@ -6,8 +6,8 @@
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/BaseClasses/Window.hpp"
 #include "ssGUI/BaseClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
-#include "ssGUI/EventCallbacks/RecursiveChildrenAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildrenRemovedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 #include "ssGUI/ssGUITags.hpp"
 

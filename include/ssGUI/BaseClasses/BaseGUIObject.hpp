@@ -3,8 +3,8 @@
 
 #include "ssGUI/BaseClasses/GUIObject.hpp"
 #include "ssGUI/EventCallbacks/OnRecursiveChildAddEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildrenAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildrenRemovedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"

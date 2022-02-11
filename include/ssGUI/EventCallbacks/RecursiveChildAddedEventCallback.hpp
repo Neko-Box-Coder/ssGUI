@@ -1,21 +1,23 @@
-#ifndef RECURSIVE_CHILDREN_REMOVED_EVENT_CALLBACK
-#define RECURSIVE_CHILDREN_REMOVED_EVENT_CALLBACK
+#ifndef RECURSIVE_CHILDREN_ADDED_EVENT_CALLBACK
+#define RECURSIVE_CHILDREN_ADDED_EVENT_CALLBACK
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
+
+//TODO : Rename this to child instead of children
 
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: RecursiveChildrenRemovedEventCallback
-    //This event callback is triggered *after* a child is removed recursively on this GUI object
-    class RecursiveChildrenRemovedEventCallback : public BaseEventCallback
+    //class: RecursiveChildAddedEventCallback
+    //This event callback is triggered *after* a child is paranted recursively on this GUI object
+    class RecursiveChildAddedEventCallback : public BaseEventCallback
     {        
         private:
-            RecursiveChildrenRemovedEventCallback(RecursiveChildrenRemovedEventCallback const&) = default;
-            RecursiveChildrenRemovedEventCallback& operator=(RecursiveChildrenRemovedEventCallback const&) = default;
+            RecursiveChildAddedEventCallback(RecursiveChildAddedEventCallback const &) = default;
+            RecursiveChildAddedEventCallback& operator=(RecursiveChildAddedEventCallback const &) = default;
         
         public:
-            RecursiveChildrenRemovedEventCallback() = default;
+            RecursiveChildAddedEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
