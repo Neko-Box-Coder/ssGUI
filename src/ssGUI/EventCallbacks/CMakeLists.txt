@@ -10,4 +10,5 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/OnObjectDestroyEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/ChildPositionChangedEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/OnRecursiveChildAddEventCallback.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/SizeChangedEventCallback.cpp"
                     )

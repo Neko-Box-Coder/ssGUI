@@ -357,12 +357,20 @@ namespace ssGUI
 
     void BaseGUIObject::SetSize(glm::ivec2 size)
     {
+        glm::ivec2 oriSize = Size;
+        
         size.x = size.x > MaxSize.x ? MaxSize.x : size.x;
         size.y = size.y > MaxSize.y ? MaxSize.y : size.y;
         size.x = size.x < MinSize.x ? MinSize.x : size.x;
         size.y = size.y < MinSize.y ? MinSize.y : size.y;
 
         Size = size;
+
+        if(Size != oriSize)
+        {
+            if(IsEventCallbackExist(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME))
+                GetEventCallback(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME)->Notify(this);
+        }
     }
 
     glm::ivec2 BaseGUIObject::GetMinSize() const
@@ -376,6 +384,13 @@ namespace ssGUI
         MaxSize.x = MinSize.x > MaxSize.x ? MinSize.x : MaxSize.x;
         MaxSize.y = MinSize.y > MaxSize.y ? MinSize.y : MaxSize.y;
 
+        if(MinSize.x < Size.x && MinSize.y < Size.y)
+            SetSize(MinSize);
+        else if(MinSize.x < Size.x)
+            SetSize(glm::ivec2(MinSize.x, Size.y));
+        else if(MinSize.y < Size.y)
+            SetSize(glm::ivec2(Size.x, MinSize.y));
+            
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
             GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(this);
     }
@@ -390,6 +405,13 @@ namespace ssGUI
         MaxSize = maxSize;
         MinSize.x = MaxSize.x < MinSize.x ? MaxSize.x : MinSize.x;
         MinSize.y = MaxSize.y < MinSize.y ? MaxSize.y : MinSize.y;
+
+        if(MaxSize.x > Size.x && MaxSize.y > Size.y)
+            SetSize(MaxSize);
+        else if(MaxSize.x > Size.x)
+            SetSize(glm::ivec2(MaxSize.x, Size.y));
+        else if(MaxSize.y > Size.y)
+            SetSize(glm::ivec2(Size.x, MaxSize.y));
 
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
             GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(this);

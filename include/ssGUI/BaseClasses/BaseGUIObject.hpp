@@ -8,6 +8,7 @@
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "glm/vec4.hpp"
 #include <vector>
 #include <list>
