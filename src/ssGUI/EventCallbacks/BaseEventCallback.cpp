@@ -4,10 +4,10 @@
 namespace ssGUI::EventCallbacks
 {    
     BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0),
-                                                Container(nullptr)
+                                                Container(nullptr), CurrentObjectsReferences()
     {}
     
-    int BaseEventCallback::AddEventListener(std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*)> callback)
+    int BaseEventCallback::AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback)
     {
         int addedIndex = -1;
         
@@ -48,7 +48,7 @@ namespace ssGUI::EventCallbacks
         for(int i = 0; i < EventListeners.size(); i++)
         {
             if(EventListenersValid[i] == true)
-                EventListeners[i](source, Container);
+                EventListeners[i](source, Container, &CurrentObjectsReferences);
         }
     }
 
@@ -57,17 +57,44 @@ namespace ssGUI::EventCallbacks
         Container = bindObj;
     }
 
+    ssGUIObjectIndex BaseEventCallback::AddObjectReference(ssGUI::GUIObject* obj)
+    {
+        return CurrentObjectsReferences.AddObjectReference(obj);
+    }
+
+    ssGUI::GUIObject* BaseEventCallback::GetObjectReference(ssGUIObjectIndex index) const
+    {
+        return CurrentObjectsReferences.GetObjectReference(index);
+    }
+
+    void BaseEventCallback::RemoveObjectReference(ssGUIObjectIndex index)
+    {
+        CurrentObjectsReferences.RemoveObjectReference(index);
+    }
+
+    ObjectsReferences* BaseEventCallback::Internal_GetObjectsReferences()
+    {
+        return &CurrentObjectsReferences;
+    }
+
     std::string BaseEventCallback::GetEventCallbackName() const
     {
         return EVENT_NAME;
     }
 
-    EventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
+    EventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
+        BaseEventCallback* temp;
+        
         if(copyListeners)
-            return new BaseEventCallback(*this);
+            temp = new BaseEventCallback(*this);
         else
-            return new BaseEventCallback();
+            temp = new BaseEventCallback();
+        
+        if(newContainer != nullptr)
+            newContainer->AddEventCallback(temp);
+        
+        return temp;
     }
 
     const std::string BaseEventCallback::EVENT_NAME = "BaseEvent";

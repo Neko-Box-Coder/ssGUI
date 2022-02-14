@@ -7,12 +7,19 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* OnFontChangeEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
+    EventCallback* OnFontChangeEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
+        OnFontChangeEventCallback* temp;
+        
         if(copyListeners)
-            return new OnFontChangeEventCallback(*this);
+            temp = new OnFontChangeEventCallback(*this);
         else
-            return new OnFontChangeEventCallback();
+            temp = new OnFontChangeEventCallback();
+        
+        if(newContainer != nullptr)
+            newContainer->AddEventCallback(temp);
+        
+        return temp;
     }
 
     const std::string OnFontChangeEventCallback::EVENT_NAME = "OnFontChangeEvent";

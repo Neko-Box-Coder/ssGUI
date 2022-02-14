@@ -7,12 +7,19 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
     
-    EventCallback* OnWindowCloseEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
+    EventCallback* OnWindowCloseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
+        OnWindowCloseEventCallback* temp;
+        
         if(copyListeners)
-            return new OnWindowCloseEventCallback(*this);
+            temp = new OnWindowCloseEventCallback(*this);
         else
-            return new OnWindowCloseEventCallback();
+            temp = new OnWindowCloseEventCallback();
+        
+        if(newContainer != nullptr)
+            newContainer->AddEventCallback(temp);
+        
+        return temp;
     }
 
     const std::string OnWindowCloseEventCallback::EVENT_NAME = "OnWindowCloseEvent";

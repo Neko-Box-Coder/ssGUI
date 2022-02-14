@@ -80,7 +80,7 @@ namespace ssGUI
         ssGUI::EventCallbacks::SizeChangedEventCallback* sizeChangedCallback = new ssGUI::EventCallbacks::SizeChangedEventCallback();
         sizeChangedCallback->AddEventListener
         (
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container)
+            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 static_cast<ssGUI::Text*>(src)->RecalculateTextNeeded = true;
             }

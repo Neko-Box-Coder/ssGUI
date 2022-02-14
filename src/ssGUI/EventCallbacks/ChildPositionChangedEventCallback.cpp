@@ -7,12 +7,19 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* ChildPositionChangedEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
+    EventCallback* ChildPositionChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
+        ChildPositionChangedEventCallback* temp;
+        
         if(copyListeners)
-            return new ChildPositionChangedEventCallback(*this);
+            temp = new ChildPositionChangedEventCallback(*this);
         else
-            return new ChildPositionChangedEventCallback();
+            temp = new ChildPositionChangedEventCallback();
+        
+        if(newContainer != nullptr)
+            newContainer->AddEventCallback(temp);
+        
+        return temp;
     }
 
     const std::string ChildPositionChangedEventCallback::EVENT_NAME = "ChildPositionChangedEvent";

@@ -415,7 +415,8 @@ namespace ssGUI
         if(!IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
             AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
         
-        return GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->AddEventListener([onClose](ssGUI::GUIObject*, ssGUI::GUIObject*){onClose();});
+        return GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->
+            AddEventListener([onClose](ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*){onClose();});
     }
     
     void Window::RemoveOnCloseEventListener(int index)

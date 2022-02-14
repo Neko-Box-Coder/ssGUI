@@ -1181,7 +1181,7 @@ namespace ssGUI::Extensions
         OnChildAddEventIndex = static_cast<ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback*>(
             Container->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))->AddEventListener
             (
-                [](ssGUI::GUIObject* child, ssGUI::GUIObject* container)
+                [](ssGUI::GUIObject* child, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
                 {
                     FUNC_DEBUG_ENTRY("OnRecursiveChildAddEventCallback");
                     if(!container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
@@ -1223,7 +1223,7 @@ namespace ssGUI::Extensions
 
         ChildPositionChangedEventIndex = Container->GetEventCallback(childPositionChangedEventName)->AddEventListener
             (
-                [](ssGUI::GUIObject* child, ssGUI::GUIObject* container)
+                [](ssGUI::GUIObject* child, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
                 {                    
                     FUNC_DEBUG_ENTRY("ChildPositionChangedEventCallback");
                     if(!container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))

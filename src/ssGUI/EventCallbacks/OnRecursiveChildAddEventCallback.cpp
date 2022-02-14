@@ -7,12 +7,19 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* OnRecursiveChildAddEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
+    EventCallback* OnRecursiveChildAddEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
+        OnRecursiveChildAddEventCallback* temp;
+        
         if(copyListeners)
-            return new OnRecursiveChildAddEventCallback(*this);
+            temp = new OnRecursiveChildAddEventCallback(*this);
         else
-            return new OnRecursiveChildAddEventCallback();
+            temp = new OnRecursiveChildAddEventCallback();
+        
+        if(newContainer != nullptr)
+            newContainer->AddEventCallback(temp);
+        
+        return temp;
     }
 
     const std::string OnRecursiveChildAddEventCallback::EVENT_NAME = "OnRecursiveChildAddEvent";

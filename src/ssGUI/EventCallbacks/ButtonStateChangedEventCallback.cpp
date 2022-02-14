@@ -7,12 +7,19 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* ButtonStateChangedEventCallback::Clone(ssGUI::GUIObject* container, bool copyListeners)
+    EventCallback* ButtonStateChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
+        ButtonStateChangedEventCallback* temp;
+        
         if(copyListeners)
-            return new ButtonStateChangedEventCallback(*this);
+            temp = new ButtonStateChangedEventCallback(*this);
         else
-            return new ButtonStateChangedEventCallback();
+            temp = new ButtonStateChangedEventCallback();
+        
+        if(newContainer != nullptr)
+            newContainer->AddEventCallback(temp);
+        
+        return temp;
     }
 
     const std::string ButtonStateChangedEventCallback::EVENT_NAME = "ButtonStateChangedEvent";

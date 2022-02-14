@@ -219,7 +219,7 @@ namespace ssGUI
             clonedObjs.push_back(curClonedObj);
         }
 
-        //3. Set ObjectsReferences for both the object itself and extension using the hashmap
+        //3. Set ObjectsReferences for both the object itself, extension and event callbacks using the hashmap
         for(int i = 0; i < clonedObjs.size(); i++)
         {
             auto curClonedObj = clonedObjs[i];
@@ -247,11 +247,30 @@ namespace ssGUI
                 auto curExtensionORindices = curExtensionOR->GetListOfObjectsIndices();
                 for(auto orIndex : curExtensionORindices)
                 {
-                    auto refObj = curObjOR->GetObjectReference(orIndex);
+                    auto refObj = curExtensionOR->GetObjectReference(orIndex);
 
                     //if the referencing object is found to be cloned
                     if(originalObjsIndex.find(refObj) != originalObjsIndex.end())
-                        curObjOR->SetObjectReference(orIndex, clonedObjs[originalObjsIndex[refObj]]);
+                        curExtensionOR->SetObjectReference(orIndex, clonedObjs[originalObjsIndex[refObj]]);
+                }
+            }
+
+            //Fix the object's event callbacks' objects references
+            auto eventCallbackList = curClonedObj->GetListOfEventCallbacks();
+            for(auto eventCallback : eventCallbackList)
+            {
+                auto curEventCallbackOR = eventCallback->Internal_GetObjectsReferences();
+                if(curEventCallbackOR == nullptr)
+                    continue;
+                
+                auto curEventCallbackORindices = curEventCallbackOR->GetListOfObjectsIndices();
+                for(auto orIndex : curEventCallbackORindices)
+                {
+                    auto refObj = curEventCallbackOR->GetObjectReference(orIndex);
+
+                    //if the referencing object is found to be cloned
+                    if(originalObjsIndex.find(refObj) != originalObjsIndex.end())
+                        curEventCallbackOR->SetObjectReference(orIndex, clonedObjs[originalObjsIndex[refObj]]);
                 }
             }
         }
@@ -280,7 +299,7 @@ namespace ssGUI
         for(auto extension : Extensions)
         {
             if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
-                clonedObj->AddExtension(extension.second->Clone(clonedObj));
+                extension.second->Clone(clonedObj);
             else
                 clonedObj->GetExtension(extension.first)->Copy(extension.second);
         }
@@ -290,7 +309,7 @@ namespace ssGUI
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
             
             if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                clonedObj->AddEventCallback(eventCallback.second->Clone(clonedObj, true));
+                eventCallback.second->Clone(clonedObj, true);
         }
 
         FUNC_DEBUG_EXIT();
@@ -1004,6 +1023,16 @@ namespace ssGUI
         auto ecb = EventCallbacks.at(eventCallbackName);
         EventCallbacks.erase(eventCallbackName);
         delete ecb;
+    }
+
+    std::vector<ssGUI::EventCallbacks::EventCallback*> BaseGUIObject::GetListOfEventCallbacks()
+    {
+        std::vector<ssGUI::EventCallbacks::EventCallback*> returnVector = std::vector<ssGUI::EventCallbacks::EventCallback*>();
+        
+        for(auto eventCallback : EventCallbacks)
+            returnVector.push_back(eventCallback.second);
+        
+        return returnVector;
     }
 
     void BaseGUIObject::AddTag(std::string tag)

@@ -138,7 +138,7 @@ namespace ssGUI
             virtual void Internal_RemoveChild(ssGUI::GUIObject* obj) = 0;
 
             //function: GetType
-            //Returns the type of this GUI Object. Note that <Enums::GUIObjectType> is a bit-operated enum class.
+            //Returns the type of this GUI Object. Note that <ssGUI::Enums::GUIObjectType> is a bit-operated enum class.
             virtual ssGUI::Enums::GUIObjectType GetType() const = 0;
 
             //function: GetAnchorType
@@ -264,6 +264,10 @@ namespace ssGUI
             //function: RemoveEventCallback
             //Removes the eventCallback by the name of it
             virtual void RemoveEventCallback(std::string eventCallbackName) = 0;
+
+            //function: GetListOfEventCallbacks
+            //Returns all the event callbacks on the GUI Object
+            virtual std::vector<ssGUI::EventCallbacks::EventCallback*> GetListOfEventCallbacks() = 0;
             
             //function: AddTag
             //Adds a tag to this GUI Object

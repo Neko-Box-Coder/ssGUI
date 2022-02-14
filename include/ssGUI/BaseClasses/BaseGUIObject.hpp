@@ -363,6 +363,10 @@ namespace ssGUI
             //function: RemoveEventCallback
             //See <GUIObject::RemoveEventCallback>
             virtual void RemoveEventCallback(std::string eventCallbackName) override;
+
+            //function: GetListOfEventCallbacks
+            //See <GUIObject::RemoveEventCallback>
+            virtual std::vector<ssGUI::EventCallbacks::EventCallback*> GetListOfEventCallbacks() override;
             
             //function: AddTag
             //See <GUIObject::AddTag>

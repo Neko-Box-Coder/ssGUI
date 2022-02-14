@@ -1055,7 +1055,7 @@ namespace ssGUI::Extensions
 
         if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
         {
-            WindowDragStateChangedEventIndex = event->AddEventListener([](ssGUI::GUIObject* src, ssGUI::GUIObject* container)
+            WindowDragStateChangedEventIndex = event->AddEventListener([](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 if(!container->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
                 {
