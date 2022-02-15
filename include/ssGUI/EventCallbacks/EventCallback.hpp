@@ -19,7 +19,7 @@ namespace ssGUI::EventCallbacks
     EventCallback enables the ablity to act against a certain event. 
 
     In order to add a class's function as a listener to an event callback
-    > int index = EventCallback->AddEventListener(std::bind(&some::class::function, objectPointer, std::placeholders::_1));
+    > int index = EventCallback->AddEventListener(std::bind(&some::class::function, objectPointer, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     
     Alternatively, you can add a lambda as an event listener to an <EventCallback> object.
     =================================== C++ ===================================
@@ -27,7 +27,7 @@ namespace ssGUI::EventCallbacks
     (
         //source is what *triggered* the callback
         //container is the GUI Object that holds this event callback
-        [](ssGUI::GUIObject* source, ssGUI::GUIObject* container)
+        [](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
         {
             //Do something
         }    

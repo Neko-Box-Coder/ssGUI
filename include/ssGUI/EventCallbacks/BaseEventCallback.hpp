@@ -19,9 +19,13 @@ namespace ssGUI::EventCallbacks
         std::vector<bool> EventListenersValid;
         std::queue<int> NextFreeIndices;
         int EventListenerCount;
+        ssGUI::GUIObject* Container;
+
+        ssGUI::ObjectsReferences CurrentObjectsReferences;
     =================================================================
     ============================== C++ ==============================
-    BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0)
+    BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0),
+                                                Container(nullptr), CurrentObjectsReferences()
     {}
     =================================================================
     */
