@@ -47,6 +47,7 @@ namespace ssGUI::EventCallbacks
 
         public:
             BaseEventCallback();
+            ~BaseEventCallback();
             
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
