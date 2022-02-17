@@ -5,6 +5,8 @@
 #include "ssGUI/Extensions/Mask.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
+#include <set>
+#include <map>
 
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
@@ -16,16 +18,15 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-        ssGUIObjectIndex CurrentMask;
+        std::set<ssGUIObjectIndex> TargetMasks;
         ssGUI::GUIObject* Container;
         bool Enabled;
         bool BlockingContainerInput;
 
-        glm::ivec2 LastMaskGlobalPosition;
-        glm::ivec2 LastMaskSize;
+        std::map<ssGUIObjectIndex, glm::ivec2> LastMaskGlobalPosition;
+        std::map<ssGUIObjectIndex, glm::ivec2> LastMaskSize;
         glm::ivec2 LastContainerGlobalPosition;
         glm::ivec2 LastContainerSize;
-        glm::ivec2 LastMainWindowGlobalPosition;
 
         std::vector<glm::ivec2> LastVertices;
         std::vector<glm::ivec2> LastUVs;
@@ -38,25 +39,24 @@ namespace ssGUI::Extensions
         bool AllowCaching;
     =================================================================
     ============================== C++ ==============================
-    MaskEnforcer::MaskEnforcer() : CurrentMask(-1), Container(nullptr), Enabled(true), BlockingContainerInput(false), LastMaskGlobalPosition(), 
+    MaskEnforcer::MaskEnforcer() : TargetMasks(), Container(nullptr), Enabled(true), BlockingContainerInput(false), LastMaskGlobalPosition(), 
                                     LastMaskSize(), LastContainerGlobalPosition(), LastContainerSize(), LastVertices(), LastUVs(),
-                                    LastColours(), LastCounts(), CurrentObjectsReferences(), Cached(false), AllowCaching(false)
+                                    LastColours(), LastCounts(), CurrentObjectsReferences(), Cached(false), AllowCaching(true)
     {}
     =================================================================
     */
     class MaskEnforcer : public Extension
     {
         private:
-            ssGUIObjectIndex CurrentMask;
+            std::set<ssGUIObjectIndex> TargetMasks;
             ssGUI::GUIObject* Container;
             bool Enabled;
             bool BlockingContainerInput;
 
-            glm::ivec2 LastMaskGlobalPosition;
-            glm::ivec2 LastMaskSize;
+            std::map<ssGUIObjectIndex, glm::ivec2> LastMaskGlobalPosition;
+            std::map<ssGUIObjectIndex, glm::ivec2> LastMaskSize;
             glm::ivec2 LastContainerGlobalPosition;
             glm::ivec2 LastContainerSize;
-            glm::ivec2 LastMainWindowGlobalPosition;
 
             std::vector<glm::ivec2> LastVertices;
             std::vector<glm::ivec2> LastUVs;
@@ -78,13 +78,21 @@ namespace ssGUI::Extensions
             MaskEnforcer();
             virtual ~MaskEnforcer() override;
             
-            //function: BindToMaskGUIObject
-            //Binds this extension to a <Mask> extension. maskGUIObj should have <Mask> attached.
-            void BindToMaskGUIObject(ssGUI::GUIObject* maskGUIObj);
+            //function: AddTargetMaskObject
+            //Add a <Mask> extension to mask this object. targetMaskObj should have <Mask> attached.
+            virtual void AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj);
 
-            //function: GetMaskGUIObject
-            //Returns the GUI Object that _should_ have <Mask> attached
-            ssGUI::GUIObject* GetMaskGUIObject();
+            //function: HasTargetMaskObject
+            //Returns true if targetMaskObj is added to this extension
+            virtual bool HasTargetMaskObject(ssGUI::GUIObject* targetMaskObj);
+
+            //function: RemoveTargetMaskObject
+            //Removes targetMaskObj from this extension
+            virtual void RemoveTargetMaskObject(ssGUI::GUIObject* targetMaskObj);
+
+            //function: GetTargetMaskObjects
+            //Returns a list of target mask objects
+            virtual std::vector<ssGUI::GUIObject*> GetTargetMaskObjects();
             
             //function: SetAllowingCaching
             //If true, the masked content will only be calculated only when there's any changes to the size or position or mask (to be changed)
@@ -92,10 +100,10 @@ namespace ssGUI::Extensions
             
             //function: IsAllowingCaching
             //If true, the masked content will only be calculated only when there's any changes to the size or position or mask (to be changed)
-            bool IsAllowingCaching() const;
+            virtual bool IsAllowingCaching() const;
             
             //function: DiscardCache
-            void DiscardCache();
+            virtual void DiscardCache();
         
             //Override from Extension
             //function: SetEnabled

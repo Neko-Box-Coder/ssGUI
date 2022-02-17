@@ -15,6 +15,8 @@
 #include <cmath>
 #include <queue>
 
+//TODO : Change GetMaskContainer to IsMaskContainer instead
+
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
@@ -43,7 +45,7 @@ namespace ssGUI::Extensions
     =================================================================
     ============================== C++ ==============================
     Mask::Mask() :  Container(nullptr), Enabled(true), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
-                    FollowPositionOffset(), FollowSizePadding(), GlobalPosition(), Size(),
+                    FollowPositionOffset(glm::ivec2(1, 1)), FollowSizePadding(glm::ivec2(-2, -2)), GlobalPosition(), Size(),
                     ChildAddedEventIndex(-1), ChildRemovedEventIndex(-1)
     {}
     =================================================================    
