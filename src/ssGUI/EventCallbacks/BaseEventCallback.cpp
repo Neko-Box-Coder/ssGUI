@@ -6,6 +6,11 @@ namespace ssGUI::EventCallbacks
     BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0),
                                                 Container(nullptr), CurrentObjectsReferences()
     {}
+
+    BaseEventCallback::~BaseEventCallback()
+    {
+        CurrentObjectsReferences.CleanUp();
+    }
     
     int BaseEventCallback::AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback)
     {
