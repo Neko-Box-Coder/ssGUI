@@ -153,6 +153,8 @@ namespace ssGUI
             //Sets the visibility of this GUI Object. Note that the logic of this GUI Object will not be called if not visible.
             virtual void SetVisible(bool visible) = 0;
             
+            //TODO : Change IsVisible to IsEnabled
+
             //function: IsVisible
             //Returns the visibility of this GUI Object. Note that the logic of this GUI Object will not be called if not visible.
             virtual bool IsVisible() const = 0;
@@ -280,6 +282,14 @@ namespace ssGUI
             //function: HasTag
             //Returns true if the tag exists on this GUI Object
             virtual bool HasTag(std::string tag) const = 0;
+
+            //function: RedrawObject
+            //Forces the GUI Object to be redrawn. *Do not* call this in <Internal_Draw>.
+            virtual void RedrawObject() = 0;
+
+            //function: IsRedrawNeeded
+            //Returns if the GUI Object needs to be redrawn
+            virtual bool IsRedrawNeeded() const = 0;
             
             //function: Internal_GetObjectsReferences
             //(Internal ssGUI function) Returns the pointer of the ObjectReferences

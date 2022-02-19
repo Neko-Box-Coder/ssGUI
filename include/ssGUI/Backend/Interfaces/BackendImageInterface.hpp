@@ -8,6 +8,7 @@
 namespace ssGUI::Backend
 {
     //class: BackendImageInterface
+    //This allows transferring the image data from the host memory to the gpu memory
     class BackendImageInterface
     {
         private:

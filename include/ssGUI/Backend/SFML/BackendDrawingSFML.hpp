@@ -83,6 +83,11 @@ namespace ssGUI::Backend
             //function: Render
             //See <BackendDrawingInterface::Render>
             virtual void Render(glm::u8vec3 clearColor) override;
+
+            //function: ClearBackBuffer
+            //See <BackendDrawingInterface::ClearBackBuffer>
+            virtual void ClearBackBuffer(glm::u8vec3 clearColor) override;
+
     };
 }
 

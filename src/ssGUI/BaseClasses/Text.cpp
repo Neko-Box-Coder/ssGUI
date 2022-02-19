@@ -104,6 +104,7 @@ namespace ssGUI
             return;
         }
         
+        RedrawObject();
         RecalculateTextNeeded = false;
         WrappingOverflow = false;
         
@@ -494,6 +495,7 @@ namespace ssGUI
     {
         RecalculateTextNeeded = true;
         CurrentText = text;
+        RedrawObject();
     }
 
     void Text::SetText(std::string text)
@@ -502,6 +504,7 @@ namespace ssGUI
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         //CurrentText = text;
         CurrentText = converter.from_bytes(text);
+        RedrawObject();
     }
 
     std::wstring Text::GetText() const
@@ -533,6 +536,7 @@ namespace ssGUI
     {
         FontSize = size;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     int Text::GetFontSize() const
@@ -544,6 +548,7 @@ namespace ssGUI
     {
         MultilineAllowed = multiline;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     bool Text::IsMultilineAllowed() const
@@ -555,6 +560,7 @@ namespace ssGUI
     {
         WrappingMode = wrappingMode;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     ssGUI::Enums::TextWrapping Text::GetWrappingMode() const
@@ -566,6 +572,7 @@ namespace ssGUI
     {
         HorizontalAlignment = align;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     ssGUI::Enums::TextAlignmentHorizontal Text::GetHorizontalAlignment() const
@@ -577,6 +584,7 @@ namespace ssGUI
     {
         VerticalAlignment = align;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     ssGUI::Enums::TextAlignmentVertical Text::GetVerticalAlignment() const
@@ -591,6 +599,7 @@ namespace ssGUI
         
         CurrentFont = font;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     ssGUI::Font* Text::GetFont() const
@@ -605,6 +614,7 @@ namespace ssGUI
     {
         HorizontalPadding = padding;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     int Text::GetHorizontalPadding() const
@@ -616,6 +626,7 @@ namespace ssGUI
     {
         VerticalPadding = padding;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     int Text::GetVerticalPadding() const
@@ -627,6 +638,7 @@ namespace ssGUI
     {
         CharacterSpace = charSpace;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     int Text::GetCharacterSpace() const
@@ -638,6 +650,7 @@ namespace ssGUI
     {
         LineSpace = lineSpace;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
 
     int Text::GetLineSpace() const
@@ -649,6 +662,7 @@ namespace ssGUI
     {
         TabSize = tabSize;
         RecalculateTextNeeded = true;
+        RedrawObject();
     }
     
     float Text::GetTabSize() const
@@ -692,72 +706,83 @@ namespace ssGUI
         {
             LastDefaultFont = GetDefaultFont();
             RecalculateTextNeeded = true;
+            RedrawObject();
         }
-        
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
-        
-        glm::ivec2 drawPos = GetGlobalPosition();
 
-        //TODO: Some optimisation maybe possible
-        //Drawing background
-        DrawingVerticies.push_back(drawPos);
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
-
-        if(GetFont() == nullptr)
+        if(Redraw)
         {
-            DEBUG_LINE();
-            goto endOfDrawing;
-        }
+            DisableRedrawObjectRequest();
 
-        {            
-            if(RecalculateTextNeeded)
-                ComputeCharactersPositionAndSize(); 
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
             
-            //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
+            glm::ivec2 drawPos = GetGlobalPosition();
 
-            for (std::size_t i = 0; i < CurrentText.size(); i++)
+            //TODO: Some optimisation maybe possible
+            //Drawing background
+            DrawingVerticies.push_back(drawPos);
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
+
+            DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, 0));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
+
+            DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, GetSize().y));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
+
+            DrawingVerticies.push_back(drawPos + glm::ivec2(0, GetSize().y));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
+
+            DrawingCounts.push_back(4);
+            DrawingProperties.push_back(ssGUI::DrawingProperty());
+
+            if(GetFont() == nullptr)
             {
-                wchar_t curChar = CurrentText.at(i);
-
-                if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t'))
-                    continue;
-
-                // Add the glyph to the vertices
-                DrawCharacter(drawingInterface, mainWindowP, mainWindowPositionOffset, curChar, drawPos + CharactersPosition[i], CharactersInfos[i]);
+                DEBUG_LINE();
+                goto endOfDrawing;
             }
 
-            //Border
-            //DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
+            {            
+                if(RecalculateTextNeeded)
+                    ComputeCharactersPositionAndSize(); 
+                
+                //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
+
+                for (std::size_t i = 0; i < CurrentText.size(); i++)
+                {
+                    wchar_t curChar = CurrentText.at(i);
+
+                    if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t'))
+                        continue;
+
+                    // Add the glyph to the vertices
+                    DrawCharacter(drawingInterface, mainWindowP, mainWindowPositionOffset, curChar, drawPos + CharactersPosition[i], CharactersInfos[i]);
+                }
+
+                //Border
+                //DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
+            }
+
+            endOfDrawing:;
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+
+            EnableRedrawObjectRequest();
+        
+            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
+            CacheRendering();
+            DrawingVerticies.clear();
+            DrawingUVs.clear();
+            DrawingColours.clear();
+            DrawingCounts.clear();
+            DrawingProperties.clear();
+            Redraw = false;
         }
-
-        endOfDrawing:;
-
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
-
-        drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
-        DrawingVerticies.clear();
-        DrawingUVs.clear();
-        DrawingColours.clear();
-        DrawingCounts.clear();
-        DrawingProperties.clear();
+        else
+            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
 
         FUNC_DEBUG_EXIT();
     }

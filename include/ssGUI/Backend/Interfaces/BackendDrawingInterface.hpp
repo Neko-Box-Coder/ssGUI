@@ -33,9 +33,14 @@ namespace ssGUI::Backend
                                         const std::vector<int>& counts,
                                         const std::vector<ssGUI::DrawingProperty>& properties) = 0;
 
-            //function: Render
-            //Renders every entities that are drawn to the <MainWindow>. If you are using <ssGUIManager>, this will be automatically called.
+            /*function: Render
+            Renders every entity that are drawn to the <MainWindow>. This will automatically clear the back buffer. 
+            If you are using <ssGUIManager>, this will be automatically called.*/
             virtual void Render(glm::u8vec3 clearColor) = 0;
+
+            /*function: ClearBackBuffer
+            Clears the back buffer manually. If you are using <ssGUIManager>, this will be automatically called for caching.*/
+            virtual void ClearBackBuffer(glm::u8vec3 clearColor) = 0;
             
         protected:
             virtual bool DrawShape( const std::vector<glm::ivec2>& vertices, 

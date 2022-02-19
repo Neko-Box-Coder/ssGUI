@@ -1065,6 +1065,8 @@ namespace ssGUI::Extensions
     void Mask::SetFollowContainer(bool followContainer)
     {
         FollowContainer = followContainer;
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     bool Mask::GetFollowContainer() const
@@ -1075,6 +1077,9 @@ namespace ssGUI::Extensions
     void Mask::SetFollowPositionOffset(glm::ivec2 positionOffset)
     {
         FollowPositionOffset = positionOffset;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     glm::ivec2 Mask::GetFollowPositionOffset() const
@@ -1085,6 +1090,9 @@ namespace ssGUI::Extensions
     void Mask::SetFollowSizePadding(glm::ivec2 sizePadding)
     {
         FollowSizePadding = sizePadding;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     glm::ivec2 Mask::GetFollowSizePadding() const
@@ -1094,6 +1102,9 @@ namespace ssGUI::Extensions
 
     void Mask::SetGlobalPosition(glm::ivec2 globalPosition)
     {
+        if(Container != nullptr && GlobalPosition != globalPosition)
+            Container->RedrawObject();
+
         GlobalPosition = globalPosition;
     }
 
@@ -1104,6 +1115,9 @@ namespace ssGUI::Extensions
 
     void Mask::SetSize(glm::ivec2 size)
     {
+        if(Container != nullptr && Size != size)
+            Container->RedrawObject();
+        
         Size = size;
     }
 
@@ -1269,6 +1283,9 @@ namespace ssGUI::Extensions
     void Mask::SetEnabled(bool enabled)
     {
         Enabled = enabled;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     bool Mask::IsEnabled() const

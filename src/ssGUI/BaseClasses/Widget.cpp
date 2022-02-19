@@ -63,41 +63,52 @@ namespace ssGUI
             return;
         }
         
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
-        
-        //Internal_Draw background by default
-        glm::ivec2 drawPosition = GetGlobalPosition();
+        if(Redraw)
+        {
+            DisableRedrawObjectRequest();
 
-        //TODO: Some optimisation maybe possible
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            
+            //Internal_Draw background by default
+            glm::ivec2 drawPosition = GetGlobalPosition();
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            //TODO: Some optimisation maybe possible
+            DrawingVerticies.push_back(drawPosition);
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+            DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            DrawingCounts.push_back(4);
+            DrawingProperties.push_back(ssGUI::DrawingProperty());
 
-        drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
-        DrawingVerticies.clear();
-        DrawingUVs.clear();
-        DrawingColours.clear();
-        DrawingCounts.clear();
-        DrawingProperties.clear();
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+
+            EnableRedrawObjectRequest();
+
+            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
+            CacheRendering();
+            DrawingVerticies.clear();
+            DrawingUVs.clear();
+            DrawingColours.clear();
+            DrawingCounts.clear();
+            DrawingProperties.clear();
+            Redraw = false;
+        }
+        else
+            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
 
         FUNC_DEBUG_EXIT();
     }
@@ -143,9 +154,14 @@ namespace ssGUI
         }
 
         endOfUpdate:;
-
         for(auto extension : ExtensionsUpdateOrder)
             Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        //Check position different for redraw
+        if(GetGlobalPosition() != LastGlobalPosition)
+            RedrawObject();
+
+        LastGlobalPosition = GetGlobalPosition();
 
         FUNC_DEBUG_EXIT();
     }

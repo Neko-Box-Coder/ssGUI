@@ -18,6 +18,8 @@ namespace ssGUI
         HeapAllocated = true;//other.IsHeapAllocated();
         CurrentObjectsReferences = other.CurrentObjectsReferences;
         DestroyEventCalled = other.DestroyEventCalled;
+        Redraw = other.Redraw;
+        AcceptRedrawRequest = other.AcceptRedrawRequest;
         Position = other.GetPosition();
         GlobalPosition = other.GlobalPosition;
         Size = other.GetSize();
@@ -28,7 +30,13 @@ namespace ssGUI
         DrawingUVs = other.DrawingUVs;
         DrawingColours = other.DrawingColours;
         DrawingCounts = other.DrawingCounts;
-        DrawingProperties = std::vector<ssGUI::DrawingProperty>(other.DrawingProperties);
+        DrawingProperties = other.DrawingProperties;
+        LastDrawingVerticies = other.LastDrawingVerticies;
+        LastDrawingUVs = other.LastDrawingUVs;
+        LastDrawingColours = other.LastDrawingColours;
+        LastDrawingCounts = other.LastDrawingCounts;
+        LastDrawingProperties = other.LastDrawingProperties;
+        LastGlobalPosition = other.LastGlobalPosition;
         Extensions = std::unordered_map<std::string, ssGUI::Extensions::Extension*>();
         ExtensionsDrawOrder = std::vector<std::string>();
         ExtensionsUpdateOrder = std::vector<std::string>();
@@ -315,15 +323,34 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
+    void BaseGUIObject::CacheRendering()
+    {
+        LastDrawingVerticies.assign(DrawingVerticies.begin(), DrawingVerticies.end());
+        LastDrawingUVs.assign(DrawingUVs.begin(), DrawingUVs.end());
+        LastDrawingColours.assign(DrawingColours.begin(), DrawingColours.end());
+        LastDrawingCounts.assign(DrawingCounts.begin(), DrawingCounts.end());
+        LastDrawingProperties.assign(DrawingProperties.begin(), DrawingProperties.end());
+    }
+
+    void BaseGUIObject::DisableRedrawObjectRequest()
+    {
+        AcceptRedrawRequest = false;
+    }
+
+    void BaseGUIObject::EnableRedrawObjectRequest()
+    {
+        AcceptRedrawRequest = true;
+    }
 
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
                                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
-                                        CurrentObjectsReferences(), DestroyEventCalled(false), Position(glm::ivec2(0, 0)), 
-                                        GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
+                                        CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), AcceptRedrawRequest(true), 
+                                        Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
                                         MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
-                                        DrawingCounts(), DrawingProperties(), Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), 
-                                        EventCallbacks(), CurrentTags()
+                                        DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
+                                        LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
+                                        ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
     {}
 
     BaseGUIObject::~BaseGUIObject()
@@ -350,6 +377,9 @@ namespace ssGUI
 
     void BaseGUIObject::SetPosition(glm::ivec2 position)
     {
+        if(Position != position)
+            RedrawObject();
+        
         Position = position;
     }
 
@@ -363,6 +393,9 @@ namespace ssGUI
 
     void BaseGUIObject::SetGlobalPosition(glm::ivec2 position)
     {
+        if(GlobalPosition != position)
+            RedrawObject();
+
         GlobalPosition = position;
 
         //Update local position
@@ -389,6 +422,7 @@ namespace ssGUI
         {
             if(IsEventCallbackExist(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME))
                 GetEventCallback(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME)->Notify(this);
+            RedrawObject();
         }
     }
 
@@ -399,15 +433,18 @@ namespace ssGUI
 
     void BaseGUIObject::SetMinSize(glm::ivec2 minSize)
     {
+        if(MinSize != minSize)
+            RedrawObject();
+        
         MinSize = minSize;
         MaxSize.x = MinSize.x > MaxSize.x ? MinSize.x : MaxSize.x;
         MaxSize.y = MinSize.y > MaxSize.y ? MinSize.y : MaxSize.y;
 
-        if(MinSize.x < Size.x && MinSize.y < Size.y)
+        if(Size.x < MinSize.x && Size.y < MinSize.y)
             SetSize(MinSize);
-        else if(MinSize.x < Size.x)
+        else if(Size.x < MinSize.x)
             SetSize(glm::ivec2(MinSize.x, Size.y));
-        else if(MinSize.y < Size.y)
+        else if(Size.y < MinSize.y)
             SetSize(glm::ivec2(Size.x, MinSize.y));
             
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
@@ -421,15 +458,18 @@ namespace ssGUI
 
     void BaseGUIObject::SetMaxSize(glm::ivec2 maxSize)
     {
+        if(MaxSize != maxSize)
+            RedrawObject();
+        
         MaxSize = maxSize;
         MinSize.x = MaxSize.x < MinSize.x ? MaxSize.x : MinSize.x;
         MinSize.y = MaxSize.y < MinSize.y ? MaxSize.y : MinSize.y;
 
-        if(MaxSize.x > Size.x && MaxSize.y > Size.y)
+        if(Size.x > MaxSize.x && Size.y > MaxSize.y)
             SetSize(MaxSize);
-        else if(MaxSize.x > Size.x)
+        else if(Size.x > MaxSize.x)
             SetSize(glm::ivec2(MaxSize.x, Size.y));
-        else if(MaxSize.y > Size.y)
+        else if(Size.y > MaxSize.y)
             SetSize(glm::ivec2(Size.x, MaxSize.y));
 
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
@@ -448,6 +488,8 @@ namespace ssGUI
         #if USE_DEBUG
         DEBUG_LINE("Setting "<<this<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
         #endif
+
+        RedrawObject();
 
         ssGUI::GUIObject* originalParent = nullptr;
         //If setting parent to the same, just need to move this to the end of child
@@ -785,6 +827,7 @@ namespace ssGUI
     void BaseGUIObject::SetVisible(bool visible)
     {
         Visible = visible;
+        RedrawObject();
     }
 
     bool BaseGUIObject::IsVisible() const
@@ -805,6 +848,7 @@ namespace ssGUI
     void BaseGUIObject::SetBackgroundColor(glm::u8vec4 color)
     {
         BackgroundColour = color;
+        RedrawObject();
     }
 
     glm::u8vec4 BaseGUIObject::GetBackgroundColor() const
@@ -887,6 +931,7 @@ namespace ssGUI
         ExtensionsDrawOrder.push_back(extension->GetExtensionName());
         ExtensionsUpdateOrder.push_back(extension->GetExtensionName());
         extension->BindToObject(this);
+        RedrawObject();
     }
 
     ssGUI::Extensions::Extension* BaseGUIObject::GetExtension(std::string extensionName)
@@ -926,6 +971,7 @@ namespace ssGUI
         ExtensionsUpdateOrder.erase(ExtensionsUpdateOrder.begin() + GetExtensionUpdateOrder(extensionName));
         Extensions.erase(extensionName);
         delete targetExtension;
+        RedrawObject();
     }
 
     int BaseGUIObject::GetExtensionsCount() const
@@ -961,6 +1007,8 @@ namespace ssGUI
             std::rotate(ExtensionsDrawOrder.rend() - drawIndex - 1, ExtensionsDrawOrder.rend() - drawIndex, ExtensionsDrawOrder.rend() - order);
         else        
             std::rotate(ExtensionsDrawOrder.begin() + drawIndex, ExtensionsDrawOrder.begin() + drawIndex + 1, ExtensionsDrawOrder.begin() + order + 1);
+        
+        RedrawObject();
     }
 
     int BaseGUIObject::GetExtensionUpdateOrder(std::string extensionName) const
@@ -991,6 +1039,8 @@ namespace ssGUI
             std::rotate(ExtensionsUpdateOrder.rend() - updateIndex - 1, ExtensionsUpdateOrder.rend() - updateIndex, ExtensionsUpdateOrder.rend() - order);
         else        
             std::rotate(ExtensionsUpdateOrder.begin() + updateIndex, ExtensionsUpdateOrder.begin() + updateIndex + 1, ExtensionsUpdateOrder.begin() + order + 1);
+    
+        RedrawObject();
     }
 
     void BaseGUIObject::AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback)
@@ -1000,6 +1050,7 @@ namespace ssGUI
 
         EventCallbacks[eventCallback->GetEventCallbackName()] = eventCallback;
         eventCallback->BindToObject(this);
+        RedrawObject();
     }
 
     ssGUI::EventCallbacks::EventCallback* BaseGUIObject::GetEventCallback(std::string eventCallbackName)
@@ -1023,6 +1074,7 @@ namespace ssGUI
         auto ecb = EventCallbacks.at(eventCallbackName);
         EventCallbacks.erase(eventCallbackName);
         delete ecb;
+        RedrawObject();
     }
 
     std::vector<ssGUI::EventCallbacks::EventCallback*> BaseGUIObject::GetListOfEventCallbacks()
@@ -1052,6 +1104,17 @@ namespace ssGUI
         return CurrentTags.find(tag) != CurrentTags.end();
     }
 
+    void BaseGUIObject::RedrawObject()
+    {
+        if(AcceptRedrawRequest)
+            Redraw = true;
+    }
+
+    bool BaseGUIObject::IsRedrawNeeded() const
+    {
+        return Redraw;
+    }
+
     ObjectsReferences* BaseGUIObject::Internal_GetObjectsReferences()
     {
         return &CurrentObjectsReferences;
@@ -1066,19 +1129,30 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
-        
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        if(Redraw)
+        {
+            DisableRedrawObjectRequest();
+            
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-        drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
-        DrawingVerticies.clear();
-        DrawingUVs.clear();
-        DrawingColours.clear();
-        DrawingCounts.clear();
-        DrawingProperties.clear();
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+
+            EnableRedrawObjectRequest();
+
+            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
+            CacheRendering();
+            DrawingVerticies.clear();
+            DrawingUVs.clear();
+            DrawingColours.clear();
+            DrawingCounts.clear();
+            DrawingProperties.clear();
+            Redraw = false;
+        }
+        else
+            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
 
         FUNC_DEBUG_EXIT();
     }
@@ -1100,6 +1174,12 @@ namespace ssGUI
         for(auto extension : ExtensionsUpdateOrder)
             Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
+        //Check position different for redraw
+        if(GetGlobalPosition() != LastGlobalPosition)
+            RedrawObject();
+
+        LastGlobalPosition = GetGlobalPosition();
+
         FUNC_DEBUG_EXIT();
     }
 

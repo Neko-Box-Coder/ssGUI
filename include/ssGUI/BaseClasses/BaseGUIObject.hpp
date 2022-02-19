@@ -17,6 +17,7 @@
 #include <unordered_map>
 
 //TODO : Maybe replace GUIObject one day with this instead
+//TODO : Add a render function to be called from Internal_Draw instead of laying all the drawing in there
 
 //namespace: ssGUI
 namespace ssGUI
@@ -38,6 +39,8 @@ namespace ssGUI
         bool HeapAllocated;
         ObjectsReferences CurrentObjectsReferences;
         bool DestroyEventCalled;
+        bool Redraw;
+        bool AcceptRedrawRequest;
 
         //Widget transform
         glm::ivec2 Position;
@@ -54,6 +57,14 @@ namespace ssGUI
         std::vector<int> DrawingCounts;
         std::vector<ssGUI::DrawingProperty> DrawingProperties;
 
+        //Cache rendering
+        std::vector<glm::ivec2> LastDrawingVerticies;
+        std::vector<glm::ivec2> LastDrawingUVs;
+        std::vector<glm::u8vec4> LastDrawingColours;
+        std::vector<int> LastDrawingCounts;
+        std::vector<ssGUI::DrawingProperty> LastDrawingProperties;
+        glm::ivec2 LastGlobalPosition;
+
         std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;
         std::vector<std::string> ExtensionsDrawOrder;
         std::vector<std::string> ExtensionsUpdateOrder;
@@ -64,12 +75,13 @@ namespace ssGUI
     ============================== C++ ==============================
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
                                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
-                                        CurrentObjectsReferences(), DestroyEventCalled(false), Position(glm::ivec2(0, 0)), 
-                                        GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
+                                        CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), AcceptRedrawRequest(true), 
+                                        Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
                                         MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
-                                        DrawingCounts(), DrawingProperties(), Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), 
-                                        EventCallbacks(), CurrentTags()
+                                        DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
+                                        LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
+                                        ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
     {}
     =================================================================
     */
@@ -91,6 +103,8 @@ namespace ssGUI
             bool HeapAllocated;
             ObjectsReferences CurrentObjectsReferences;
             bool DestroyEventCalled;
+            bool Redraw;
+            bool AcceptRedrawRequest;
 
             //Widget transform
             glm::ivec2 Position;
@@ -107,6 +121,14 @@ namespace ssGUI
             std::vector<int> DrawingCounts;
             std::vector<ssGUI::DrawingProperty> DrawingProperties;
 
+            //Cache rendering
+            std::vector<glm::ivec2> LastDrawingVerticies;
+            std::vector<glm::ivec2> LastDrawingUVs;
+            std::vector<glm::u8vec4> LastDrawingColours;
+            std::vector<int> LastDrawingCounts;
+            std::vector<ssGUI::DrawingProperty> LastDrawingProperties;
+            glm::ivec2 LastGlobalPosition;
+
             std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;
             std::vector<std::string> ExtensionsDrawOrder;
             std::vector<std::string> ExtensionsUpdateOrder;
@@ -122,6 +144,9 @@ namespace ssGUI
             virtual void NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
             virtual ssGUI::GUIObject* CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot);
             virtual void CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj);
+            virtual void CacheRendering();
+            virtual void DisableRedrawObjectRequest();
+            virtual void EnableRedrawObjectRequest();
 
         public:
             BaseGUIObject();
@@ -379,6 +404,14 @@ namespace ssGUI
             //function: HasTag
             //See <GUIObject::HasTag>
             virtual bool HasTag(std::string tag) const override;
+
+            //function: RedrawObject
+            //See <GUIObject::RedrawObject>
+            virtual void RedrawObject() override;
+
+            //function: IsRedrawNeeded
+            //See <GUIObject::IsRedrawNeeded>
+            virtual bool IsRedrawNeeded() const override;
             
             //function: Internal_GetObjectsReferences
             //See <GUIObject::Internal_GetObjectsReferences>

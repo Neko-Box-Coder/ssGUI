@@ -99,46 +99,57 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        for (auto extension : Extensions)
-            extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
-
         if (!IsVisible())
         {
             FUNC_DEBUG_EXIT();
             return;
         }
 
-        glm::ivec2 drawPosition = GetGlobalPosition();
+        if(Redraw)
+        {
+            DisableRedrawObjectRequest();
 
-        //Background
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            for (auto extension : Extensions)
+                extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            glm::ivec2 drawPosition = GetGlobalPosition();
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            //Background
+            DrawingVerticies.push_back(drawPosition);
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
-        DrawingColours.push_back(GetBackgroundColor());
+            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        for (auto extension : Extensions)
-            extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
+            DrawingUVs.push_back(glm::ivec2());
+            DrawingColours.push_back(GetBackgroundColor());
 
-        drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
-        DrawingVerticies.clear();
-        DrawingUVs.clear();
-        DrawingColours.clear();
-        DrawingCounts.clear();
-        DrawingProperties.clear();
+            DrawingCounts.push_back(4);
+            DrawingProperties.push_back(ssGUI::DrawingProperty());
+
+            for (auto extension : Extensions)
+                extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+        
+            EnableRedrawObjectRequest();
+        
+            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);            
+            CacheRendering();
+            DrawingVerticies.clear();
+            DrawingUVs.clear();
+            DrawingColours.clear();
+            DrawingCounts.clear();
+            DrawingProperties.clear();
+            Redraw = false;
+        }
+        else
+            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
 
         FUNC_DEBUG_EXIT();
     }
@@ -206,9 +217,14 @@ namespace ssGUI
         }
 
         endUpdate:;
-
         for (auto extension : Extensions)
             extension.second->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        //Check position different for redraw
+        if(GetGlobalPosition() != LastGlobalPosition)
+            RedrawObject();
+
+        LastGlobalPosition = GetGlobalPosition();
 
         FUNC_DEBUG_EXIT();
     }

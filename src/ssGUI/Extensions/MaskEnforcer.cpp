@@ -10,25 +10,13 @@ namespace ssGUI::Extensions
         Container = nullptr;
         Enabled = other.IsEnabled();
         BlockingContainerInput = false;
-        LastMaskGlobalPosition = std::map<ssGUIObjectIndex, glm::ivec2>();
-        LastMaskSize = std::map<ssGUIObjectIndex, glm::ivec2>();
-        LastContainerGlobalPosition = glm::ivec2();
-        LastContainerSize = glm::ivec2();
 
-        LastVertices = std::vector<glm::ivec2>();
-        LastUVs = std::vector<glm::ivec2>();
-        LastColours = std::vector<glm::u8vec4>();
-        LastCounts = std::vector<int>();
         CurrentObjectsReferences = other.CurrentObjectsReferences;
-        Cached = false;
-        AllowCaching = other.IsAllowingCaching();
     }
     
     const std::string MaskEnforcer::EXTENSION_NAME = "Mask Enforcer";
     
-    MaskEnforcer::MaskEnforcer() : TargetMasks(), Container(nullptr), Enabled(true), BlockingContainerInput(false), LastMaskGlobalPosition(), 
-                                    LastMaskSize(), LastContainerGlobalPosition(), LastContainerSize(), LastVertices(), LastUVs(),
-                                    LastColours(), LastCounts(), CurrentObjectsReferences(), Cached(false), AllowCaching(true)
+    MaskEnforcer::MaskEnforcer() : TargetMasks(), Container(nullptr), Enabled(true), BlockingContainerInput(false), CurrentObjectsReferences()
     {}
 
     MaskEnforcer::~MaskEnforcer()
@@ -47,7 +35,9 @@ namespace ssGUI::Extensions
         
         ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.AddObjectReference(targetMaskObj);
         TargetMasks.insert(maskObjIndex);
-        DiscardCache();
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     bool MaskEnforcer::HasTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
@@ -58,7 +48,6 @@ namespace ssGUI::Extensions
     
         return TargetMasks.find(index) != TargetMasks.end();
     }
-
 
     void MaskEnforcer::RemoveTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
     {
@@ -71,6 +60,9 @@ namespace ssGUI::Extensions
 
         if(TargetMasks.find(index) != TargetMasks.end())      
             TargetMasks.erase(index);
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     std::vector<ssGUI::GUIObject*> MaskEnforcer::GetTargetMaskObjects()
@@ -87,21 +79,6 @@ namespace ssGUI::Extensions
         }
 
         return returnVec;
-    }
-
-    void MaskEnforcer::SetAllowingCaching(bool allowCaching)
-    {
-        AllowCaching = allowCaching;
-    }
-
-    bool MaskEnforcer::IsAllowingCaching() const
-    {
-        return AllowCaching;
-    }
-
-    void MaskEnforcer::DiscardCache()
-    {
-        Cached = false;
     }
 
     void MaskEnforcer::SetEnabled(bool enabled)
@@ -158,6 +135,9 @@ namespace ssGUI::Extensions
                 }  
             }
 
+            if(!indicesToDelete.empty())
+                Container->RedrawObject();
+
             for(int i = 0; i < indicesToDelete.size(); i++)
             {
                 if(CurrentObjectsReferences.GetObjectReference(indicesToDelete[i]) != nullptr)
@@ -190,70 +170,26 @@ namespace ssGUI::Extensions
             return;
         }
 
-        bool renderNeeded = false;
-        for(std::set<ssGUIObjectIndex>::iterator it = TargetMasks.begin(); it != TargetMasks.end(); it++)
+        if(Container->IsRedrawNeeded())
         {
-            if(CurrentObjectsReferences.GetObjectReference(*it) == nullptr || 
+            for(std::set<ssGUIObjectIndex>::iterator it = TargetMasks.begin(); it != TargetMasks.end(); it++)
+            {
+                if(CurrentObjectsReferences.GetObjectReference(*it) == nullptr || 
                 !CurrentObjectsReferences.GetObjectReference(*it)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
-            {
-                continue;
-            }
-
-            if(!CurrentObjectsReferences.GetObjectReference(*it)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
-                continue;
-
-            ssGUI::Extensions::Mask* currentMask = static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(*it)->
-                GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME));
-
-            //Check cache
-            if(!renderNeeded)
-            {
-                if(!AllowCaching || !Cached)    
-                    renderNeeded = true;
-                else if(LastMaskSize.find(*it) == LastMaskSize.end())
-                    renderNeeded = true;
-                else if(LastMaskSize[*it] != currentMask->GetSize() || LastContainerSize != Container->GetSize() ||
-                    //Check relative distance from the container to the mask
-                    Container->GetGlobalPosition() - currentMask->GetGlobalPosition() != LastContainerGlobalPosition - LastMaskGlobalPosition[*it])
                 {
-                    renderNeeded = true;
+                    continue;
                 }
-            }
 
-            //Render
-            if(renderNeeded)
-            {
-                LastMaskGlobalPosition[*it] = currentMask->GetGlobalPosition();
-                LastMaskSize[*it] = currentMask->GetSize();
-                LastContainerSize = Container->GetSize();
-                LastContainerGlobalPosition = Container->GetGlobalPosition();
+                if(!CurrentObjectsReferences.GetObjectReference(*it)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
+                    continue;
+
+                ssGUI::Extensions::Mask* currentMask = static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(*it)->
+                    GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME));
+
                 currentMask->MaskObject(Container, /*- (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset)*/glm::ivec2());
             }
         }
 
-        //Caching
-        if(AllowCaching && renderNeeded)
-        {
-            LastVertices.assign(Container->Extension_GetDrawingVertices().begin(), Container->Extension_GetDrawingVertices().end());
-            LastUVs.assign(Container->Extension_GetDrawingUVs().begin(), Container->Extension_GetDrawingUVs().end());
-            LastColours.assign(Container->Extension_GetDrawingColours().begin(), Container->Extension_GetDrawingColours().end());
-            LastCounts.assign(Container->Extension_GetDrawingCounts().begin(), Container->Extension_GetDrawingCounts().end());
-
-            Cached = true;
-        }
-        else if(AllowCaching && !renderNeeded)
-        {
-            Container->Extension_GetDrawingVertices().assign(LastVertices.begin(), LastVertices.end());
-            Container->Extension_GetDrawingUVs().assign(LastUVs.begin(), LastUVs.end());
-            Container->Extension_GetDrawingColours().assign(LastColours.begin(), LastColours.end());
-            Container->Extension_GetDrawingCounts().assign(LastCounts.begin(), LastCounts.end());
-
-            glm::ivec2 posDifference = Container->GetGlobalPosition() - LastContainerGlobalPosition;
-        
-            for(int i = 0; i < Container->Extension_GetDrawingVertices().size(); i++)
-                Container->Extension_GetDrawingVertices()[i] += posDifference;
-        }
-        
         FUNC_DEBUG_EXIT();
     }
 
@@ -277,8 +213,6 @@ namespace ssGUI::Extensions
         TargetMasks = maskEnforcer->TargetMasks;
         Enabled = maskEnforcer->IsEnabled();
         CurrentObjectsReferences = maskEnforcer->CurrentObjectsReferences;
-        Cached = false;
-        AllowCaching = maskEnforcer->IsAllowingCaching();
     }
 
     ObjectsReferences* MaskEnforcer::Internal_GetObjectsReferences()

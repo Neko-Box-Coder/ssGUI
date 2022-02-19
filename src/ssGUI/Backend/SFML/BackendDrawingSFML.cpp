@@ -154,8 +154,8 @@ namespace ssGUI::Backend
             return false;
         }
         
-        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
-                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
+            (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
 
         // create an array of 3 vertices that define a triangle primitive
         sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
@@ -173,11 +173,18 @@ namespace ssGUI::Backend
 
     void BackendDrawingSFML::Render(glm::u8vec3 clearColor)
     {
-        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
-                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
+            (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
 
         targetWindow->display();
         targetWindow->clear(sf::Color(clearColor.r, clearColor.g, clearColor.b, 255));        
+    }
 
+    void BackendDrawingSFML::ClearBackBuffer(glm::u8vec3 clearColor)
+    {
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
+            (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+
+        targetWindow->clear(sf::Color(clearColor.r, clearColor.g, clearColor.b, 255));        
     }
 }

@@ -27,8 +27,10 @@ namespace ssGUI::Extensions
     void Border::SetBorderColour(glm::u8vec4 colour)
     {
         BorderColour = colour;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
-    
 
     int Border::GetBorderWidth() const
     {
@@ -38,6 +40,9 @@ namespace ssGUI::Extensions
     void Border::SetBorderWidth(int width)
     {
         BorderWidth = width;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     void Border::DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
@@ -137,6 +142,7 @@ namespace ssGUI::Extensions
     void Border::SetEnabled(bool enabled)
     {
         Enabled = enabled;
+        Container->RedrawObject();
     }
 
     bool Border::IsEnabled() const
@@ -154,7 +160,8 @@ namespace ssGUI::Extensions
         if(IsPreRender || Container == nullptr || Container->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW || !Enabled)
             return;
         
-        DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
+        if(Container->IsRedrawNeeded())
+            DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
     }
     
     std::string Border::GetExtensionName()
@@ -165,6 +172,7 @@ namespace ssGUI::Extensions
     void Border::BindToObject(ssGUI::GUIObject* bindObj)
     {
         Container = bindObj;
+        Container->RedrawObject();
     }
 
     void Border::Copy(ssGUI::Extensions::Extension* extension)
