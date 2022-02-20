@@ -13,6 +13,29 @@ namespace ssGUI::Extensions
 
         CurrentObjectsReferences = other.CurrentObjectsReferences;
     }
+
+    void MaskEnforcer::ConstructRenderInfo()
+    {
+        for(std::set<ssGUIObjectIndex>::iterator it = TargetMasks.begin(); it != TargetMasks.end(); it++)
+        {
+            if(CurrentObjectsReferences.GetObjectReference(*it) == nullptr || 
+            !CurrentObjectsReferences.GetObjectReference(*it)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
+            {
+                continue;
+            }
+
+            if(!CurrentObjectsReferences.GetObjectReference(*it)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
+                continue;
+
+            ssGUI::Extensions::Mask* currentMask = static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(*it)->
+                GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME));
+
+            currentMask->MaskObject(Container, /*- (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset)*/glm::ivec2());
+        }
+    }
+
+    void MaskEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {}
     
     const std::string MaskEnforcer::EXTENSION_NAME = "Mask Enforcer";
     
@@ -171,25 +194,8 @@ namespace ssGUI::Extensions
         }
 
         if(Container->IsRedrawNeeded())
-        {
-            for(std::set<ssGUIObjectIndex>::iterator it = TargetMasks.begin(); it != TargetMasks.end(); it++)
-            {
-                if(CurrentObjectsReferences.GetObjectReference(*it) == nullptr || 
-                !CurrentObjectsReferences.GetObjectReference(*it)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
-                {
-                    continue;
-                }
-
-                if(!CurrentObjectsReferences.GetObjectReference(*it)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
-                    continue;
-
-                ssGUI::Extensions::Mask* currentMask = static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(*it)->
-                    GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME));
-
-                currentMask->MaskObject(Container, /*- (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset)*/glm::ivec2());
-            }
-        }
-
+            ConstructRenderInfo();
+        
         FUNC_DEBUG_EXIT();
     }
 

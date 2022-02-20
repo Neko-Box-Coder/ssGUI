@@ -50,9 +50,13 @@ namespace ssGUI
             virtual ~MainWindow() override;
             
             //function: Render
-            //Renders all the entities drawn on this MainWindow. Called by ssGUIManager normally.
+            //Renders all the entities drawn on this MainWindow. Called by <ssGUIManager> normally.
             virtual void Render();
             
+            //function: ClearBackBuffer
+            //Clears all the entities drawn on this MainWindow
+            virtual void ClearBackBuffer();
+
             //function: GetBackendWindowInterface
             virtual ssGUI::Backend::BackendMainWindowInterface* GetBackendWindowInterface();
             

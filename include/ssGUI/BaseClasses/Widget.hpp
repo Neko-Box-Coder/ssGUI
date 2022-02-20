@@ -34,6 +34,8 @@ namespace ssGUI
         protected:
             Widget(Widget const& other) = default;
 
+            virtual void ConstructRenderInfo() override;
+
         public:
             Widget();
             virtual ~Widget() override;

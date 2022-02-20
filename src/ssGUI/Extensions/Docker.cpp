@@ -9,6 +9,9 @@
 
 namespace ssGUI::Extensions
 {
+    ssGUI::Extensions::Docker* Docker::DefaultGeneratedDockerSettings = nullptr;
+    ssGUI::Extensions::Layout* Docker::DefaultGeneratedLayoutSettings = nullptr;
+
     Docker::Docker(Docker const& other)
     {
         Container = nullptr;
@@ -27,10 +30,12 @@ namespace ssGUI::Extensions
         DockPreivew = nullptr;
         DockTrigger = nullptr;
     }
-    
-    ssGUI::Extensions::Docker* Docker::DefaultGeneratedDockerSettings = nullptr;
-    ssGUI::Extensions::Layout* Docker::DefaultGeneratedLayoutSettings = nullptr;
-    const std::string Docker::EXTENSION_NAME = "Docker";
+
+    void Docker::ConstructRenderInfo()
+    {}
+
+    void Docker::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {}
 
     void Docker::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
@@ -129,6 +134,7 @@ namespace ssGUI::Extensions
         }
     }
 
+    const std::string Docker::EXTENSION_NAME = "Docker";
 
     Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), FloatingDockerColor(glm::u8vec4(127, 127, 127, 255)), UseTriggerPercentage(true),
                         TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
@@ -371,8 +377,7 @@ namespace ssGUI::Extensions
     }
 
     void Docker::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
-    {
-    }
+    {}
 
     std::string Docker::GetExtensionName()
     {

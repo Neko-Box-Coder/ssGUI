@@ -38,6 +38,12 @@ namespace ssGUI::Extensions
         WindowDragStateChangedEventIndex = -1;
     }
 
+    void Dockable::ConstructRenderInfo()
+    {}
+
+    void Dockable::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {}
+
     void Dockable::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
         FUNC_DEBUG_ENTRY();

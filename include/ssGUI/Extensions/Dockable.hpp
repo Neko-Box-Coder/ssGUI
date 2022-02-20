@@ -149,6 +149,9 @@ namespace ssGUI::Extensions
 
             Dockable(Dockable const& other);
 
+            virtual void ConstructRenderInfo() override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            
             virtual void CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color);
 
             virtual void DrawLeftPreview();

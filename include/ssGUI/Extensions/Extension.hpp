@@ -23,6 +23,10 @@ namespace ssGUI::Extensions
     //You cannot attach multiple extensions of the same type to the same GUI Object. If needed, consider attaching to an empty widget/window instead.
     class Extension
     {
+        protected:
+            virtual void ConstructRenderInfo() = 0;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
+
         public:
             virtual ~Extension() = 0;
 

@@ -15,6 +15,12 @@ namespace ssGUI::Extensions
         VerticalPercentageValue = other.GetVerticalPercentage();
     }
 
+    void AdvancedSize::ConstructRenderInfo()
+    {}
+
+    void AdvancedSize::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {}
+
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
     
     AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 

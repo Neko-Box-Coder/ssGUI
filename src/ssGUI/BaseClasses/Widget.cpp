@@ -4,6 +4,32 @@
 
 namespace ssGUI
 {
+    void Widget::ConstructRenderInfo()
+    {
+        //Internal_Draw background by default
+        glm::ivec2 drawPosition = GetGlobalPosition();
+
+        //TODO: Some optimisation maybe possible
+        DrawingVerticies.push_back(drawPosition);
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingCounts.push_back(4);
+        DrawingProperties.push_back(ssGUI::DrawingProperty());
+    }
+    
     Widget::Widget() :  Focused(false), Interactable(true), BlockInput(true) 
     {}
 
@@ -70,28 +96,7 @@ namespace ssGUI
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
             
-            //Internal_Draw background by default
-            glm::ivec2 drawPosition = GetGlobalPosition();
-
-            //TODO: Some optimisation maybe possible
-            DrawingVerticies.push_back(drawPosition);
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            ConstructRenderInfo();
 
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);

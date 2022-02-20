@@ -37,6 +37,8 @@ namespace ssGUI
             ssGUI::Enums::ImageFitting Fitting;
             Image(Image const& other);
 
+            virtual void ConstructRenderInfo() override;
+            
         public:
             Image();
             virtual ~Image() override;

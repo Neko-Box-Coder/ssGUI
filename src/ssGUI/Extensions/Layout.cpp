@@ -2,6 +2,36 @@
 
 namespace ssGUI::Extensions
 {    
+    Layout::Layout(Layout const& other)
+    {
+        FUNC_DEBUG_ENTRY();
+        HorizontalLayout = other.IsHorizontalLayout();
+        PreferredSizeMultipliers = other.PreferredSizeMultipliers;
+        DisableChildrenResizing = other.IsChildrenResizingDisabled();
+        OverrideChildrenResizeTypes = other.GetOverrideChildrenResizeType();
+        UpdateContainerMinMaxSize = other.GetUpdateContainerMinMaxSize();
+        ReverseOrder = other.IsReverseOrder();
+        CoverFullLength = other.IsCoverFullLength();    
+        Container = nullptr;
+        Enabled = other.IsEnabled();
+        Padding = other.GetPadding();
+        Spacing = other.GetSpacing();
+        OnChildAddEventIndex = -1;
+        ChildAddedEventIndex = -1;
+        ChildRemovedEventIndex = -1;
+        ChildPositionChangedEventIndex = -1;
+        CurrentObjectsReferences = other.CurrentObjectsReferences;
+        LastUpdateChildrenSize = other.LastUpdateChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
+        ObjectsToExclude = other.ObjectsToExclude;
+        SpecialObjectsToExclude = other.SpecialObjectsToExclude;
+        OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
+        OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
+        
+        //TODO : Re-add the event listeners
+        MinMaxSizeChangedEventIndices = std::unordered_map<ssGUIObjectIndex, int>();//other.MinMaxSizeChangedEventIndices;
+        FUNC_DEBUG_EXIT();
+    }
+
     void Layout::LayoutChildren(int startPos, int length, std::vector<int>& childrenPos, std::vector<int>& childrenLength, 
                                 std::vector<int>& minChildrenLength, std::vector<int>& maxChildrenLength, int lastChildChangeIndex,
                                 int sizeDiff)
@@ -85,133 +115,6 @@ namespace ssGUI::Extensions
         }
 
         FUNC_DEBUG_EXIT();
-    }
-
-    Layout::Layout(Layout const& other)
-    {
-        FUNC_DEBUG_ENTRY();
-        HorizontalLayout = other.IsHorizontalLayout();
-        PreferredSizeMultipliers = other.PreferredSizeMultipliers;
-        DisableChildrenResizing = other.IsChildrenResizingDisabled();
-        OverrideChildrenResizeTypes = other.GetOverrideChildrenResizeType();
-        UpdateContainerMinMaxSize = other.GetUpdateContainerMinMaxSize();
-        ReverseOrder = other.IsReverseOrder();
-        CoverFullLength = other.IsCoverFullLength();    
-        Container = nullptr;
-        Enabled = other.IsEnabled();
-        Padding = other.GetPadding();
-        Spacing = other.GetSpacing();
-        OnChildAddEventIndex = -1;
-        ChildAddedEventIndex = -1;
-        ChildRemovedEventIndex = -1;
-        ChildPositionChangedEventIndex = -1;
-        CurrentObjectsReferences = other.CurrentObjectsReferences;
-        LastUpdateChildrenSize = other.LastUpdateChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
-        ObjectsToExclude = other.ObjectsToExclude;
-        SpecialObjectsToExclude = other.SpecialObjectsToExclude;
-        OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
-        OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
-        
-        //TODO : Re-add the event listeners
-        MinMaxSizeChangedEventIndices = std::unordered_map<ssGUIObjectIndex, int>();//other.MinMaxSizeChangedEventIndices;
-        FUNC_DEBUG_EXIT();
-    }
-
-    const std::string Layout::EXTENSION_NAME = "Layout";
-
-    Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
-                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
-                        ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
-                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
-    {}
-
-    Layout::~Layout()
-    {
-        if(Container != nullptr)
-        {
-            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName, int removeIndex)
-            {
-                target->GetEventCallback(eventCallbackName)->RemoveEventListener(removeIndex);
-            
-                if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
-                    target->RemoveEventCallback(eventCallbackName);
-            };
-
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME, OnChildAddEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME, ChildAddedEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME, ChildRemovedEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME, ChildPositionChangedEventIndex);
-        
-            for(auto it : MinMaxSizeChangedEventIndices)
-            {
-                ssGUI::GUIObject* obj = CurrentObjectsReferences.GetObjectReference(it.first);
-
-                if(obj != nullptr)
-                    eventCallbackCleanUp(obj, ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME, it.second);
-            }
-        }
-        CurrentObjectsReferences.CleanUp();
-    }
-
-    bool Layout::IsHorizontalLayout() const
-    {
-        return HorizontalLayout;
-    }
-
-    void Layout::SetHorizontalLayout(bool horizontal)
-    {
-        HorizontalLayout = horizontal;
-    }
-
-    void Layout::AddPreferredSizeMultiplier(float sizeMultiplier)
-    {
-        PreferredSizeMultipliers.push_back(sizeMultiplier);
-    }
-
-    void Layout::SetPreferredSizeMultiplier(int index, float sizeMultiplier)
-    {
-        PreferredSizeMultipliers[index] = sizeMultiplier;
-    }
-
-    float Layout::GetPreferredSizeMultiplier(int index) const
-    {
-        return PreferredSizeMultipliers[index];
-    }
-
-    int Layout::GerPreferredSizeMultiplierCount() const
-    {
-        return PreferredSizeMultipliers.size();
-    }
-
-    bool Layout::IsChildrenResizingDisabled() const
-    {
-        return DisableChildrenResizing;
-    }
-
-    void Layout::SetDisableChildrenResizing(bool disableResizing)
-    {
-        DisableChildrenResizing = disableResizing;
-    }
-
-    bool Layout::IsReverseOrder() const
-    {
-        return ReverseOrder;
-    }
-
-    void Layout::SetReverseOrder(bool reverseOrder)
-    {
-        ReverseOrder = reverseOrder;
-    }
-
-    bool Layout::IsCoverFullLength() const
-    {
-        return CoverFullLength;
-    }
-
-    void Layout::SetCoverFullLength(bool fullLength)
-    {
-        CoverFullLength = fullLength;
     }
 
     void Layout::UpdateChildrenResizeTypes()
@@ -725,6 +628,111 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
+    void Layout::ConstructRenderInfo()
+    {}
+
+    void Layout::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {}
+
+    const std::string Layout::EXTENSION_NAME = "Layout";
+
+    Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
+                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
+                        Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
+                        ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
+    {}
+
+    Layout::~Layout()
+    {
+        if(Container != nullptr)
+        {
+            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName, int removeIndex)
+            {
+                target->GetEventCallback(eventCallbackName)->RemoveEventListener(removeIndex);
+            
+                if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
+                    target->RemoveEventCallback(eventCallbackName);
+            };
+
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME, OnChildAddEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME, ChildAddedEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME, ChildRemovedEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME, ChildPositionChangedEventIndex);
+        
+            for(auto it : MinMaxSizeChangedEventIndices)
+            {
+                ssGUI::GUIObject* obj = CurrentObjectsReferences.GetObjectReference(it.first);
+
+                if(obj != nullptr)
+                    eventCallbackCleanUp(obj, ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME, it.second);
+            }
+        }
+        CurrentObjectsReferences.CleanUp();
+    }
+
+    bool Layout::IsHorizontalLayout() const
+    {
+        return HorizontalLayout;
+    }
+
+    void Layout::SetHorizontalLayout(bool horizontal)
+    {
+        HorizontalLayout = horizontal;
+    }
+
+    void Layout::AddPreferredSizeMultiplier(float sizeMultiplier)
+    {
+        PreferredSizeMultipliers.push_back(sizeMultiplier);
+    }
+
+    void Layout::SetPreferredSizeMultiplier(int index, float sizeMultiplier)
+    {
+        PreferredSizeMultipliers[index] = sizeMultiplier;
+    }
+
+    float Layout::GetPreferredSizeMultiplier(int index) const
+    {
+        return PreferredSizeMultipliers[index];
+    }
+
+    int Layout::GerPreferredSizeMultiplierCount() const
+    {
+        return PreferredSizeMultipliers.size();
+    }
+
+    bool Layout::IsChildrenResizingDisabled() const
+    {
+        return DisableChildrenResizing;
+    }
+
+    void Layout::SetDisableChildrenResizing(bool disableResizing)
+    {
+        DisableChildrenResizing = disableResizing;
+    }
+
+    bool Layout::IsReverseOrder() const
+    {
+        return ReverseOrder;
+    }
+
+    void Layout::SetReverseOrder(bool reverseOrder)
+    {
+        ReverseOrder = reverseOrder;
+    }
+
+    bool Layout::IsCoverFullLength() const
+    {
+        return CoverFullLength;
+    }
+
+    void Layout::SetCoverFullLength(bool fullLength)
+    {
+        CoverFullLength = fullLength;
+    }
+
+    
+
     bool Layout::GetOverrideChildrenResizeType() const
     {
         return OverrideChildrenResizeTypes;
@@ -1153,9 +1161,7 @@ namespace ssGUI::Extensions
     }
 
     void Layout::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
-    {
-        //Internal_Draw nothing
-    }
+    {}
 
     std::string Layout::GetExtensionName()
     {

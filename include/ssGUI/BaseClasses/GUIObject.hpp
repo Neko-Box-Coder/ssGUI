@@ -24,6 +24,8 @@ namespace ssGUI
         protected:
             virtual void SyncPosition() = 0;
             virtual void SyncGlobalPosition() = 0;
+            virtual void ConstructRenderInfo() = 0;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
         
         public:
             virtual ~GUIObject() = 0;

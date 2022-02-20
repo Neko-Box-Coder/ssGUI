@@ -69,8 +69,9 @@ namespace ssGUI
         protected:
             Button(Button const& other);
 
+            virtual void ConstructRenderInfo() override;
             virtual void SetButtonState(ssGUI::Enums::ButtonState state);
-        
+            
         public:
             Button();
             virtual ~Button() override;

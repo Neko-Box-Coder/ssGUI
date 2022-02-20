@@ -92,6 +92,7 @@ namespace ssGUI::Extensions
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
             std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
 
+            Layout(Layout const& other);
 
             void LayoutChildren(int startPos, int length, std::vector<int>& childrenPos, std::vector<int>& childrenLength, 
                                 std::vector<int>& minChildrenLength, std::vector<int>& maxChildrenLength, int lastChildChangeIndex,
@@ -114,8 +115,9 @@ namespace ssGUI::Extensions
 
             void AssignPositionsAndSizesToChildren(std::vector<int>& childrenPos, std::vector<int>& childrenSize);
 
+            virtual void ConstructRenderInfo() override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
 
-            Layout(Layout const& other);
 
         public:
             static const std::string EXTENSION_NAME;

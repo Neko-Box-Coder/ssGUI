@@ -79,13 +79,16 @@ namespace ssGUI::Extensions
             static ssGUI::Extensions::Docker* DefaultGeneratedDockerSettings;
             static ssGUI::Extensions::Layout* DefaultGeneratedLayoutSettings;
 
+            Docker(Docker const& other);
+            virtual void ConstructRenderInfo() override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+
             virtual void CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color);
             virtual void DrawPreview();
             virtual void DiscardPreview();
             virtual void DrawTriggerArea();
             virtual void DiscardTriggerArea();
 
-            Docker(Docker const& other);
         public:
             static const std::string EXTENSION_NAME;
 

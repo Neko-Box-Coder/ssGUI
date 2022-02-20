@@ -45,7 +45,7 @@ namespace ssGUI::Extensions
             Container->RedrawObject();
     }
 
-    void Border::DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Border::DrawBorder()
     {        
         FUNC_DEBUG_ENTRY();
         
@@ -139,6 +139,16 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
+    void Border::ConstructRenderInfo()
+    {
+        DrawBorder();
+    }
+
+    void Border::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {
+        
+    }
+
     void Border::SetEnabled(bool enabled)
     {
         Enabled = enabled;
@@ -161,7 +171,7 @@ namespace ssGUI::Extensions
             return;
         
         if(Container->IsRedrawNeeded())
-            DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
+            ConstructRenderInfo();
     }
     
     std::string Border::GetExtensionName()

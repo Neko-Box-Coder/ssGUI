@@ -40,9 +40,54 @@ namespace ssGUI
         LastDefaultFont = other.LastDefaultFont;
     }
 
+    void Text::ConstructRenderInfo()
+    {
+        glm::ivec2 drawPos = GetGlobalPosition();
+
+        //TODO: Some optimisation maybe possible
+        //Drawing background
+        DrawingVerticies.push_back(drawPos);
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPos + glm::ivec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingCounts.push_back(4);
+        DrawingProperties.push_back(ssGUI::DrawingProperty());
+
+        if(GetFont() == nullptr)
+        {
+            DEBUG_LINE();
+            return;
+        }
+
+        if(RecalculateTextNeeded)
+            ComputeCharactersPositionAndSize(); 
+
+        for (std::size_t i = 0; i < CurrentText.size(); i++)
+        {
+            wchar_t curChar = CurrentText.at(i);
+
+            if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t'))
+                continue;
+
+            // Add the glyph to the vertices
+            DrawCharacter(curChar, drawPos + CharactersPosition[i], CharactersInfos[i]);
+        }
+    }
+
     //TODO: Maybe remove drawingInterface as it is not used anywhere?
-    void Text::DrawCharacter(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset,
-                        wchar_t charcterToDraw, glm::ivec2 position, ssGUI::CharacterInfo info)
+    void Text::DrawCharacter(wchar_t charcterToDraw, glm::ivec2 position, ssGUI::CharacterInfo info)
     {
         DrawingVerticies.push_back(position                                 + info.DrawOffset           + glm::ivec2(0, FontSize));
         DrawingVerticies.push_back(position + glm::ivec2(info.Size.x, 0)    + info.DrawOffset           + glm::ivec2(0, FontSize));
@@ -716,57 +761,8 @@ namespace ssGUI
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
             
-            glm::ivec2 drawPos = GetGlobalPosition();
+            ConstructRenderInfo();
 
-            //TODO: Some optimisation maybe possible
-            //Drawing background
-            DrawingVerticies.push_back(drawPos);
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, 0));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPos + glm::ivec2(0, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
-
-            if(GetFont() == nullptr)
-            {
-                DEBUG_LINE();
-                goto endOfDrawing;
-            }
-
-            {            
-                if(RecalculateTextNeeded)
-                    ComputeCharactersPositionAndSize(); 
-                
-                //ssGUI::Backend::BackendFontInterface* fontInterface = GetFont()->GetBackendFontInterface();
-
-                for (std::size_t i = 0; i < CurrentText.size(); i++)
-                {
-                    wchar_t curChar = CurrentText.at(i);
-
-                    if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t'))
-                        continue;
-
-                    // Add the glyph to the vertices
-                    DrawCharacter(drawingInterface, mainWindowP, mainWindowPositionOffset, curChar, drawPos + CharactersPosition[i], CharactersInfos[i]);
-                }
-
-                //Border
-                //DrawBorder(drawingInterface, mainWindowP, mainWindowPositionOffset);
-            }
-
-            endOfDrawing:;
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 

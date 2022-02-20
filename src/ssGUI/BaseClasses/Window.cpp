@@ -250,6 +250,72 @@ namespace ssGUI
 
         FUNC_DEBUG_EXIT();
     }
+
+    void Window::ConstructRenderInfo()
+    {
+        glm::ivec2 drawPosition = GetGlobalPosition();
+
+        //TODO: Some optimisation maybe possible
+
+        //Base window
+        DrawingVerticies.push_back(drawPosition);
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());        //TODO : Caching
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingCounts.push_back(4);
+        DrawingProperties.push_back(ssGUI::DrawingProperty());
+
+        //Title bar 
+        glm::u8vec4 titlebarColor = GetBackgroundColor();
+
+        auto rgbAdder = [](glm::uint8* rgbField, int fieldDifference)->void
+        {
+            if((int)*rgbField + fieldDifference < 0)
+                *rgbField = 0;
+            else if((int)*rgbField + fieldDifference > 255)
+                *rgbField = 255;
+            else
+                *rgbField += fieldDifference;
+        };
+
+        rgbAdder(&titlebarColor.r, TitlebarColorDifference.r);
+        rgbAdder(&titlebarColor.g, TitlebarColorDifference.g);
+        rgbAdder(&titlebarColor.b, TitlebarColorDifference.b);
+        rgbAdder(&titlebarColor.a, TitlebarColorDifference.a);
+
+        DrawingVerticies.push_back(drawPosition);
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(titlebarColor);
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(titlebarColor);
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, TitlebarHeight));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(titlebarColor);
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, TitlebarHeight));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(titlebarColor);
+
+        DrawingCounts.push_back(4);
+        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        
+        // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
+    }
         
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
                        IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), 
@@ -451,6 +517,8 @@ namespace ssGUI
             return;
         }
 
+        //Redraw= true;
+
         if(Redraw)
         {
             DisableRedrawObjectRequest();
@@ -462,68 +530,7 @@ namespace ssGUI
             // std::cout<<"rendering pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
             // std::cout<<"rendering size: "<<GetSize().x<<", "<<GetSize().y<<"\n";
 
-            glm::ivec2 drawPosition = GetGlobalPosition();
-
-            //TODO: Some optimisation maybe possible
-
-            //Base window
-            DrawingVerticies.push_back(drawPosition);
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());        //TODO : Caching
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
-
-            //Title bar 
-            glm::u8vec4 titlebarColor = GetBackgroundColor();
-
-            auto rgbAdder = [](glm::uint8* rgbField, int fieldDifference)->void
-            {
-                if((int)*rgbField + fieldDifference < 0)
-                    *rgbField = 0;
-                else if((int)*rgbField + fieldDifference > 255)
-                    *rgbField = 255;
-                else
-                    *rgbField += fieldDifference;
-            };
-
-            rgbAdder(&titlebarColor.r, TitlebarColorDifference.r);
-            rgbAdder(&titlebarColor.g, TitlebarColorDifference.g);
-            rgbAdder(&titlebarColor.b, TitlebarColorDifference.b);
-            rgbAdder(&titlebarColor.a, TitlebarColorDifference.a);
-
-            DrawingVerticies.push_back(drawPosition);
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(titlebarColor);
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(titlebarColor);
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, TitlebarHeight));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(titlebarColor);
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(0, TitlebarHeight));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(titlebarColor);
-
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
-            
-            // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
+            ConstructRenderInfo();
 
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
@@ -587,6 +594,12 @@ namespace ssGUI
 
         for(auto extension : ExtensionsUpdateOrder)
             Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        //Check position different for redraw
+        if(GetGlobalPosition() != LastGlobalPosition)
+            RedrawObject();
+
+        LastGlobalPosition = GetGlobalPosition();
 
         FUNC_DEBUG_EXIT();
     }

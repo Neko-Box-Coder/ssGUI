@@ -891,6 +891,12 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
+    void Mask::ConstructRenderInfo()
+    {}
+
+    void Mask::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {}
+
     Mask::Mask(Mask const& other)
     {
         Container = nullptr;

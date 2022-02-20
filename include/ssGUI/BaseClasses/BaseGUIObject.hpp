@@ -17,7 +17,6 @@
 #include <unordered_map>
 
 //TODO : Maybe replace GUIObject one day with this instead
-//TODO : Add a render function to be called from Internal_Draw instead of laying all the drawing in there
 
 //namespace: ssGUI
 namespace ssGUI
@@ -140,6 +139,8 @@ namespace ssGUI
 
             virtual void SyncPosition() override;
             virtual void SyncGlobalPosition() override;
+            virtual void ConstructRenderInfo() override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
             //virtual void DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset);
             virtual void NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
             virtual ssGUI::GUIObject* CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot);

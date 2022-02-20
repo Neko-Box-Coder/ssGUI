@@ -90,8 +90,9 @@ namespace ssGUI
 
             Text(Text const& other);
 
-            virtual void DrawCharacter(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset,
-                                        wchar_t charcterToDraw, glm::ivec2 position, ssGUI::CharacterInfo info);
+            virtual void ConstructRenderInfo() override;
+
+            virtual void DrawCharacter(wchar_t charcterToDraw, glm::ivec2 position, ssGUI::CharacterInfo info);
 
         public:
             Text();

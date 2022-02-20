@@ -104,6 +104,9 @@ namespace ssGUI::Extensions
             virtual void AddMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent);
             virtual void RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent);
 
+            virtual void ConstructRenderInfo() override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+
             Mask(Mask const& other);
 
         public:

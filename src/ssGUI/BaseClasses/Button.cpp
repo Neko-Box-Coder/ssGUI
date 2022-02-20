@@ -9,6 +9,31 @@ namespace ssGUI
         StateChangedEventCallback = nullptr;
     }
 
+    void Button::ConstructRenderInfo()
+    {
+        glm::ivec2 drawPosition = GetGlobalPosition();
+
+        //Background
+        DrawingVerticies.push_back(drawPosition);
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::ivec2());
+        DrawingColours.push_back(GetBackgroundColor());
+
+        DrawingCounts.push_back(4);
+        DrawingProperties.push_back(ssGUI::DrawingProperty());
+    }
+
     void Button::SetButtonState(ssGUI::Enums::ButtonState state)
     {
         if(CurrentState == state)
@@ -112,27 +137,7 @@ namespace ssGUI
             for (auto extension : Extensions)
                 extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-            glm::ivec2 drawPosition = GetGlobalPosition();
-
-            //Background
-            DrawingVerticies.push_back(drawPosition);
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-            DrawingUVs.push_back(glm::ivec2());
-            DrawingColours.push_back(GetBackgroundColor());
-
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            ConstructRenderInfo();
 
             for (auto extension : Extensions)
                 extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);

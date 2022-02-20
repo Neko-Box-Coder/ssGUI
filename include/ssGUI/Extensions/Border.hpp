@@ -36,8 +36,10 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* Container;
             bool Enabled;
 
-            virtual void DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset);
-            
+            virtual void DrawBorder();
+            virtual void ConstructRenderInfo() override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+
             Border(Border const& other);
 
         public:

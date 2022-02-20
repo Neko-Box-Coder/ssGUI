@@ -17,6 +17,12 @@ namespace ssGUI::Extensions
         VerticalPercentageValue = other.GetVerticalPercentage();
     }
 
+    void AdvancedPosition::ConstructRenderInfo()
+    {}
+
+    void AdvancedPosition::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {}
+
     const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";
     
     AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 

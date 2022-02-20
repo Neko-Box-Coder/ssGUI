@@ -88,6 +88,8 @@ namespace ssGUI
         protected:
             Window(Window const& other) = default;
 
+            virtual void ConstructRenderInfo() override;
+
         public:
             Window();
             virtual ~Window() override;

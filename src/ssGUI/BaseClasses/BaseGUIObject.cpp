@@ -178,6 +178,16 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
+    void BaseGUIObject::ConstructRenderInfo()
+    {
+        //This should be overriden.
+    }
+
+    void BaseGUIObject::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {
+        //This can be overriden if needed.
+    }
+
     void BaseGUIObject::NotifyAndRemoveOnObjectDestroyEventCallbackIfExist()
     {
         if(DestroyEventCalled)

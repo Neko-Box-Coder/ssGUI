@@ -32,6 +32,11 @@ namespace ssGUI
         BackendDrawing->Render(GetBackgroundColor());
     }
 
+    void MainWindow::ClearBackBuffer()
+    {
+        BackendDrawing->ClearBackBuffer(GetBackgroundColor());
+    }
+
     ssGUI::Backend::BackendMainWindowInterface* MainWindow::GetBackendWindowInterface()
     {
         return BackendMainWindow;
@@ -75,6 +80,8 @@ namespace ssGUI
     //TODO : Refactor this, merge it to sync in update function
     void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {       
+        DisableRedrawObjectRequest();
+        
         for(auto extension : ExtensionsDrawOrder)
             Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
         
@@ -115,8 +122,12 @@ namespace ssGUI
         drawingInterface.DrawShape(cord, color);
         */
 
+        //TODO : Add backend drawing here
+
         for(auto extension : ExtensionsDrawOrder)
             Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+
+        EnableRedrawObjectRequest();
     }   
 
     glm::ivec2 MainWindow::GetPosition() const
