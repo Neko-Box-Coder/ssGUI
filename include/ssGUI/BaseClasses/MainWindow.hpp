@@ -12,6 +12,7 @@ namespace ssGUI
 {
     /*class: MainWindow
     Main Window is the *actual* window. Not to be confused with <Window> which lives inside MainWindow.
+    You should call <GUIObject::RedrawObject> after changing the properties of the MainWindow.
     This class should not be overwritten unless you know what you are doing
     
     Variables & Constructor:
@@ -19,11 +20,13 @@ namespace ssGUI
     private:
         ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;
         ssGUI::Backend::BackendDrawingInterface* BackendDrawing;
+        glm::ivec2 LastSize;
+        int RedrawCount;
 
         uint64_t LastSyncTime;
     =================================================================
     ============================== C++ ==============================
-    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSyncTime(0)
+    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::ivec2(0, 0)), RedrawCount(0), LastSyncTime(0)
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
@@ -37,6 +40,8 @@ namespace ssGUI
         private:
             ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;
             ssGUI::Backend::BackendDrawingInterface* BackendDrawing;
+            glm::ivec2 LastSize;
+            int RedrawCount;
 
             uint64_t LastSyncTime;
             MainWindow& operator=(MainWindow const& other);

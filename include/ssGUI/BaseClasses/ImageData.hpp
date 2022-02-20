@@ -8,6 +8,7 @@
 namespace ssGUI
 {
     /*class: ImageData
+    If you are using <LoadRawFromMemory>, remember to reload it again if there's any changes to the image memory.
     
     Variables & Constructor:
     ============================== C++ ==============================

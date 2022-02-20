@@ -7,12 +7,14 @@ namespace ssGUI
     {
         BackendMainWindow = other.BackendMainWindow->Clone();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+        LastSize = other.LastSize;
+        RedrawCount = other.RedrawCount;
         LastSyncTime = other.LastSyncTime;
         
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
     }
     
-    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSyncTime(0)
+    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::ivec2(0, 0)), RedrawCount(0), LastSyncTime(0)
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
@@ -30,6 +32,7 @@ namespace ssGUI
     void MainWindow::Render()
     {
         BackendDrawing->Render(GetBackgroundColor());
+        Redraw = false;
     }
 
     void MainWindow::ClearBackBuffer()
@@ -82,52 +85,57 @@ namespace ssGUI
     {       
         DisableRedrawObjectRequest();
         
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
-        
-        //Settings that require window to be relaunched -----------------------------------------
-        if(BackendMainWindow->HasTitlebar() != HasTitlebar())
-            BackendMainWindow->SetTitlebar(HasTitlebar());
+        // if(Redraw)
+        // {
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            
+            //Settings that require window to be relaunched -----------------------------------------
+            if(BackendMainWindow->HasTitlebar() != HasTitlebar())
+                BackendMainWindow->SetTitlebar(HasTitlebar());
 
-        bool isResizable = GetResizeType() == ssGUI::Enums::ResizeType::ALL;
+            bool isResizable = GetResizeType() == ssGUI::Enums::ResizeType::ALL;
 
-        if(BackendMainWindow->IsResizable() != isResizable)
-            BackendMainWindow->SetResizable(isResizable);
+            if(BackendMainWindow->IsResizable() != isResizable)
+                BackendMainWindow->SetResizable(isResizable);
 
-        if(BackendMainWindow->HasCloseButton() != IsClosable())
-            BackendMainWindow->SetCloseButton(IsClosable());
+            if(BackendMainWindow->HasCloseButton() != IsClosable())
+                BackendMainWindow->SetCloseButton(IsClosable());
 
-        
-        //Realtime settings -----------------------------------------
+            
+            //Realtime settings -----------------------------------------
 
-        if(BackendMainWindow->IsVisible() != IsVisible())
-            BackendMainWindow->SetVisible(IsVisible());
+            if(BackendMainWindow->IsVisible() != IsVisible())
+                BackendMainWindow->SetVisible(IsVisible());
 
-        //TEST
-        /*
-        std::vector<glm::ivec2> cord;
-        std::vector<glm::u8vec4> color;
+            //TEST
+            /*
+            std::vector<glm::ivec2> cord;
+            std::vector<glm::u8vec4> color;
 
-        
-        cord.push_back(glm::ivec2(1, 0));
-        cord.push_back(glm::ivec2(GetSize().x - 1, 0));
-        cord.push_back(glm::ivec2(GetSize().x - 1, 20));
-        cord.push_back(glm::ivec2(1, 20));
+            
+            cord.push_back(glm::ivec2(1, 0));
+            cord.push_back(glm::ivec2(GetSize().x - 1, 0));
+            cord.push_back(glm::ivec2(GetSize().x - 1, 20));
+            cord.push_back(glm::ivec2(1, 20));
 
-        color.push_back(glm::u8vec4(0, 0, 0, 255));
-        color.push_back(glm::u8vec4(0, 0, 0, 255));
-        color.push_back(glm::u8vec4(0, 0, 0, 255));
-        color.push_back(glm::u8vec4(0, 0, 0, 255));
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
 
-        drawingInterface.DrawShape(cord, color);
-        */
+            drawingInterface.DrawShape(cord, color);
+            */
 
-        //TODO : Add backend drawing here
+            //TODO : Add backend drawing here
 
-        for(auto extension : ExtensionsDrawOrder)
-            Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
 
-        EnableRedrawObjectRequest();
+            EnableRedrawObjectRequest();
+
+        //     Redraw = false;
+        // }
     }   
 
     glm::ivec2 MainWindow::GetPosition() const
@@ -160,6 +168,7 @@ namespace ssGUI
         size.y = size.y < GetMinSize().y ? GetMinSize().y : size.y;
         
         BackendMainWindow->SetSize(size);
+        RedrawObject();
     }
 
     ssGUI::Enums::GUIObjectType MainWindow::GetType() const
@@ -226,6 +235,20 @@ namespace ssGUI
                 BackendMainWindow->SetSize(currentSize);
         }
 
+        //Check size different for redraw
+        if(GetSize() != LastSize)
+        {
+            RedrawObject();
+            RedrawCount = 0;
+        }
+        //Redraw up to 3 frames even when the size is the same to make sure it is properly rendered
+        else if(RedrawCount < 3)
+        {
+            RedrawObject();
+            RedrawCount++;
+        }
+
+        LastSize = GetSize();
 
         // glm::ivec2 currentMousePos = inputInterface.GetCurrentMousePosition();
         // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";

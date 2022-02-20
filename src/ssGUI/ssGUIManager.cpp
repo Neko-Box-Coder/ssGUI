@@ -140,11 +140,12 @@ namespace ssGUI
             return;
         }
 
-        std::list<ssGUI::GUIObject*> objToRender;
-        std::queue<ssGUI::GUIObject*> renderQueue;
 
         for(auto mainWindow : MainWindowPList)
         {
+            std::list<ssGUI::GUIObject*> objToRender;
+            std::list<ssGUI::GUIObject*> renderQueue;
+
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
                 DEBUG_LINE("Invalid object type added to gui manager");
@@ -171,7 +172,7 @@ namespace ssGUI
                 //Internal_Draw the gui object only when it is visible
                 if(currentObjP->IsVisible())
                 {                    
-                    renderQueue.push(currentObjP);
+                    renderQueue.push_back(currentObjP);
 
                     //Add children to draw queue
                     if(currentObjP->GetChildrenCount() > 0)
@@ -186,24 +187,45 @@ namespace ssGUI
                     }
                 }
             }
-            
-            while(!renderQueue.empty())
+
+            //Check if render is needed
+            bool renderNeeded = false;
+
+            if(!currentMainWindowP->IsRedrawNeeded())
+                for(auto it = renderQueue.begin(); it != renderQueue.end(); it++)
+                {
+                    if((*it)->IsRedrawNeeded())
+                    {
+                        renderNeeded = true;
+                        break;
+                    }
+                }
+            else
+                renderNeeded = true;
+
+            //Render if needed
+            if(renderNeeded)
             {
-                ssGUI::GUIObject* currentObjP = renderQueue.front();
+                while(!renderQueue.empty())
+                {
+                    ssGUI::GUIObject* currentObjP = renderQueue.front();
 
-                //Remove current gui object from render queue
-                renderQueue.pop();
+                    //Remove current gui object from render queue
+                    renderQueue.pop_front();
 
-                if(currentObjP->Internal_IsDeleted())
-                    continue;
+                    if(currentObjP->Internal_IsDeleted())
+                        continue;
 
-                (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
-                                                dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
-                                                currentMainWindowP->GetPositionOffset());
+                    (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
+                                                    dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
+                                                    currentMainWindowP->GetPositionOffset());
+                }
+
+                //Draw everything that is displayed on the mainWindow back buffer
+                currentMainWindowP->Render();
             }
-
-            //Internal_Draw everything that is displayed on the mainWindow buffer
-            currentMainWindowP->Render();
+            else
+                currentMainWindowP->ClearBackBuffer();
         }
         FUNC_DEBUG_EXIT();
     }
