@@ -28,7 +28,7 @@ namespace ssGUI
                 #if USE_DEBUG
                 DEBUG_LINE("Adding external dependency to "<<it.second);
                 #endif
-                it.second->Internal_GetObjectsReferences()->AddExternalDependency(this, it.first);
+                it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
             }
             else
             {
@@ -62,7 +62,7 @@ namespace ssGUI
                 #if USE_DEBUG
                 DEBUG_LINE("Adding external dependency to "<<it.second);
                 #endif
-                it.second->Internal_GetObjectsReferences()->AddExternalDependency(this, it.first);
+                it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
             }
             else
             {
@@ -96,7 +96,7 @@ namespace ssGUI
         {
             ObjectsReferencesTable[NextFreeIndex] = obj;
             ReverseObjectsReferencesTable[obj] = NextFreeIndex;
-            obj->Internal_GetObjectsReferences()->AddExternalDependency(this, NextFreeIndex);
+            obj->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, NextFreeIndex);
             return NextFreeIndex++;
         }
         else
@@ -125,11 +125,11 @@ namespace ssGUI
         
         if(ObjectsReferencesTable.find(index) != ObjectsReferencesTable.end() && !CleanedUp)
         {
-            ObjectsReferencesTable[index]->Internal_GetObjectsReferences()->RemoveExternalDependency(this);
+            ObjectsReferencesTable[index]->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);
             ReverseObjectsReferencesTable.erase(ObjectsReferencesTable[index]);
             ObjectsReferencesTable[index] = obj;
             ReverseObjectsReferencesTable[ObjectsReferencesTable[index]] = index;
-            ObjectsReferencesTable[index]->Internal_GetObjectsReferences()->AddExternalDependency(this, index);
+            ObjectsReferencesTable[index]->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, index);
         }
     }
 
@@ -150,12 +150,12 @@ namespace ssGUI
             ReverseObjectsReferencesTable.erase(obj);
 
             if(!internalCleanUp)
-                obj->Internal_GetObjectsReferences()->RemoveExternalDependency(this);
+                obj->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);
         }   
         FUNC_DEBUG_EXIT();
     }
 
-    void ObjectsReferences::AddExternalDependency(ObjectsReferences* dependency, ssGUIObjectIndex index)
+    void ObjectsReferences::Internal_AddExternalDependency(ObjectsReferences* dependency, ssGUIObjectIndex index)
     {
         if(CleanedUp)
             return;
@@ -170,7 +170,7 @@ namespace ssGUI
         ExternalObjectsDependencies[dependency] = index;   
     }
 
-    void ObjectsReferences::RemoveExternalDependency(ObjectsReferences* dependency)
+    void ObjectsReferences::Internal_RemoveExternalDependency(ObjectsReferences* dependency)
     {
         if(CleanedUp)
             return;
@@ -231,7 +231,7 @@ namespace ssGUI
             #if USE_DEBUG
             DEBUG_LINE("Removing external depenency record stored on "<<it.second);
             #endif
-            it.second->Internal_GetObjectsReferences()->RemoveExternalDependency(this);
+            it.second->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);
         }
         
         CleanedUp = true;
