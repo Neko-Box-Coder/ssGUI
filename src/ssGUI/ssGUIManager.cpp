@@ -206,6 +206,10 @@ namespace ssGUI
             //Render if needed
             if(renderNeeded)
             {
+                #if USE_DEBUG
+                    DEBUG_LINE("Rendering");
+                #endif
+
                 while(!renderQueue.empty())
                 {
                     ssGUI::GUIObject* currentObjP = renderQueue.front();
@@ -225,7 +229,13 @@ namespace ssGUI
                 currentMainWindowP->Render();
             }
             else
+            {
+                #if USE_DEBUG
+                    DEBUG_LINE("Caching");
+                #endif
+
                 currentMainWindowP->ClearBackBuffer();
+            }
         }
         FUNC_DEBUG_EXIT();
     }

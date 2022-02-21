@@ -877,7 +877,11 @@ namespace ssGUI
         #endif
 
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        
+
+        //Tell parent to redraw because of missing GUI object
+        if(GetParent() != nullptr)
+            GetParent()->RedrawObject();
+
         SetParent(nullptr);
         CurrentObjectsReferences.CleanUp();
         ObjectDelete = true;

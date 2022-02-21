@@ -783,6 +783,40 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
+    void Text::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {        
+        FUNC_DEBUG_ENTRY();
+        
+        //If it is not visible, don't even update/draw it
+        if(!IsVisible())
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        
+        //Check if default font has changed
+        if(LastDefaultFont != GetDefaultFont())
+        {
+            LastDefaultFont = GetDefaultFont();
+            RecalculateTextNeeded = true;
+            RedrawObject();
+        }
+
+        //Check position different for redraw
+        if(GetGlobalPosition() != LastGlobalPosition)
+            RedrawObject();
+
+        LastGlobalPosition = GetGlobalPosition();
+
+        FUNC_DEBUG_EXIT();
+    }
+
     GUIObject* Text::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
