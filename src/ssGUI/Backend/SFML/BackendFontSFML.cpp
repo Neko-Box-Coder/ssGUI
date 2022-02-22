@@ -42,10 +42,12 @@ namespace ssGUI::Backend
         return info;
     }
 
-    //Current SFML doesn't support checking if a character is supported in font. (At least for stable release) 
     bool BackendFontSFML::IsCharacterSupported(wchar_t charUnicode)
     {
-        return true;
+        if(!SFFontValid)
+            return false;
+
+        return Font.hasGlyph(charUnicode);   
     }
 
     int BackendFontSFML::GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, int charSize)

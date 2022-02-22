@@ -814,6 +814,8 @@ namespace ssGUI
 
         LastGlobalPosition = GetGlobalPosition();
 
+        RedrawObject();
+
         FUNC_DEBUG_EXIT();
     }
 

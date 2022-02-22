@@ -37,6 +37,10 @@ namespace ssGUI
             //function: GetBackendFontInterface
             virtual ssGUI::Backend::BackendFontInterface* GetBackendFontInterface();
 
+            //function: IsCharacterSupported
+            //Returns true if the character is supported by the font
+            virtual bool IsCharacterSupported(wchar_t charUnicode);
+
             //function:GetKerning
             //Kerning represents the drawing position offset when drawn after certain characters. (i.e. AV has a negative kerning for the characte V)
             virtual int GetKerning(uint32_t charUnicode, uint32_t secondCharUnicode, int charSize);

@@ -22,6 +22,11 @@ namespace ssGUI
         return BackendFont;
     }
 
+    bool Font::IsCharacterSupported(wchar_t charUnicode)
+    {
+        return BackendFont->IsCharacterSupported(charUnicode);
+    }
+
     int Font::GetKerning(uint32_t charUnicode, uint32_t secondCharUnicode, int charSize)
     {
         return BackendFont->GetKerning(charUnicode, secondCharUnicode, charSize);
