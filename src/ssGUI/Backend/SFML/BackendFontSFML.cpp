@@ -25,9 +25,9 @@ namespace ssGUI::Backend
         return SFFontValid;
     }
 
-    ssGUI::CharacterInfo BackendFontSFML::GetCharacterInfo(wchar_t charUnicode, int charSize)
+    ssGUI::CharacterRenderInfo BackendFontSFML::GetCharacterRenderInfo(wchar_t charUnicode, int charSize)
     {
-        ssGUI::CharacterInfo info;
+        ssGUI::CharacterRenderInfo info;
 
         if(!SFFontValid)
             return info;
@@ -38,6 +38,7 @@ namespace ssGUI::Backend
         info.DrawOffset = glm::ivec2(glyph.bounds.left, glyph.bounds.top);
         info.Size = glm::ivec2(glyph.textureRect.width, glyph.textureRect.height);
         info.UVOrigin = glm::ivec2(glyph.textureRect.left, glyph.textureRect.top);
+        info.Valid = true;
 
         return info;
     }

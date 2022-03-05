@@ -44,9 +44,9 @@ namespace ssGUI::Backend
             //See <BackendFontInterface::IsValid>
             bool IsValid() override;
             
-            //function: GetCharacterInfo
-            //See <BackendFontInterface::GetCharacterInfo>
-            ssGUI::CharacterInfo GetCharacterInfo(wchar_t charUnicode, int charSize) override;
+            //function: GetCharacterRenderInfo
+            //See <BackendFontInterface::GetCharacterRenderInfo>
+            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, int charSize) override;
             
             //function: IsCharacterSupported
             //See <BackendFontInterface::IsCharacterSupported>

@@ -2,7 +2,7 @@
 #define SSGUI_BACKEND_FONT_INTERFACE
 
 #include <string>
-#include "ssGUI/BaseClasses/CharacterInfo.hpp"
+#include "ssGUI/BaseClasses/CharacterRenderInfo.hpp"
 
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
@@ -21,10 +21,12 @@ namespace ssGUI::Backend
             //Returns true if the font is loaded.
             virtual bool IsValid() = 0;
 
-            //function: GetCharacterInfo
-            virtual ssGUI::CharacterInfo GetCharacterInfo(wchar_t charUnicode, int charSize) = 0;
+            //function: GetCharacterRenderInfo
+            //Gets the rendering infomation of a character
+            virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, int charSize) = 0;
             
             //function: IsCharacterSupported
+            //Returns true if the character is supported
             virtual bool IsCharacterSupported(wchar_t charUnicode) = 0;
             
             //function: GetKerning
