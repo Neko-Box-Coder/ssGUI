@@ -35,6 +35,7 @@ namespace ssGUI::Extensions
         bool Enabled;
         int Padding;
         int Spacing;
+        bool Overflow;
 
         int OnChildAddEventIndex;
         int ChildAddedEventIndex;
@@ -53,7 +54,7 @@ namespace ssGUI::Extensions
     ============================== C++ ==============================
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
                         OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(0), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
+                        Container(nullptr), Enabled(true), Padding(0), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
                         ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
                         ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
     {}
@@ -77,6 +78,7 @@ namespace ssGUI::Extensions
             bool Enabled;
             int Padding;
             int Spacing;
+            bool Overflow;
 
             int OnChildAddEventIndex;
             int ChildAddedEventIndex;
@@ -218,6 +220,16 @@ namespace ssGUI::Extensions
             //function: SetSpacing
             //Spacing between each child
             virtual void SetSpacing(int spacing);
+
+            //function: SetOverflow
+            //Sets if allows the children to overflow the container. 
+            //If true, the layout extension will not try to cover the full length of the container even if it is set so.
+            virtual void SetOverflow(bool overflow);
+
+            //function: SetOverflow
+            //Gets if allows the children to overflow the container. 
+            //If true, the layout extension will not try to cover the full length of the container even if it is set so.
+            virtual bool GetOverflow() const;
 
             //function: ExcludeObject
             //If a GUI Object is excluded, it will be ignored

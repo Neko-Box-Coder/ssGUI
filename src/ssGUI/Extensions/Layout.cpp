@@ -16,6 +16,7 @@ namespace ssGUI::Extensions
         Enabled = other.IsEnabled();
         Padding = other.GetPadding();
         Spacing = other.GetSpacing();
+        Overflow = other.GetOverflow();
         OnChildAddEventIndex = -1;
         ChildAddedEventIndex = -1;
         ChildRemovedEventIndex = -1;
@@ -78,7 +79,7 @@ namespace ssGUI::Extensions
             else
                 currentLength = childrenLength[i];
 
-            if(remainingLength - currentLength < remainingMinLengths - minChildrenLength[i])
+            if(!Overflow && remainingLength - currentLength < remainingMinLengths - minChildrenLength[i])
             {
                 currentLength = remainingLength - (remainingMinLengths - minChildrenLength[i]);
             }
@@ -89,7 +90,7 @@ namespace ssGUI::Extensions
         }
 
         //Reiterate again to cover full length
-        if(CoverFullLength && remainingLength > 0)
+        if(CoverFullLength && remainingLength > 0 && !Overflow)
         {            
             for(int i = childrenLength.size() - 1; i >= 0; i--)
             {
@@ -106,6 +107,7 @@ namespace ssGUI::Extensions
                 }
             }
         }
+
         
         //Calculate position
         for(int i = 0; i < childrenPos.size(); i++)
@@ -638,7 +640,7 @@ namespace ssGUI::Extensions
 
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
                         OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
+                        Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
                         ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
                         ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
     {}
@@ -861,6 +863,16 @@ namespace ssGUI::Extensions
     void Layout::SetSpacing(int spacing)
     {
         Spacing = spacing;
+    }
+
+    void Layout::SetOverflow(bool overflow)
+    {
+        Overflow = overflow;
+    }
+
+    bool Layout::GetOverflow() const
+    {
+        return Overflow;
     }
 
     void Layout::ExcludeObject(ssGUI::GUIObject* obj)
@@ -1267,6 +1279,7 @@ namespace ssGUI::Extensions
         Enabled = layout->IsEnabled();
         Padding = layout->GetPadding();
         Spacing = layout->GetSpacing();
+        Overflow = layout->GetOverflow();
         CurrentObjectsReferences = layout->CurrentObjectsReferences;
     }
 
