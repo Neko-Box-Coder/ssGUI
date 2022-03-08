@@ -121,9 +121,6 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
     };
-
-
-
 }
 
 #endif

@@ -146,7 +146,7 @@ namespace ssGUI::Extensions
 
     void Border::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
     {
-        
+        ConstructRenderInfo();
     }
 
     void Border::SetEnabled(bool enabled)

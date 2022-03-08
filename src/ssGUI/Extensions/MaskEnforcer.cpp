@@ -35,7 +35,9 @@ namespace ssGUI::Extensions
     }
 
     void MaskEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
-    {}
+    {
+        ConstructRenderInfo();
+    }
     
     const std::string MaskEnforcer::EXTENSION_NAME = "Mask Enforcer";
     

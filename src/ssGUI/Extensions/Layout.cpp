@@ -107,7 +107,6 @@ namespace ssGUI::Extensions
                 }
             }
         }
-
         
         //Calculate position
         for(int i = 0; i < childrenPos.size(); i++)
