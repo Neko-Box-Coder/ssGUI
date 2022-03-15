@@ -25,8 +25,7 @@ namespace ssGUI::Backend
             newStyle = sf::Style::None;
 
         sf::ContextSettings settings;
-        if(GetMSAA() > 0)
-            settings.antialiasingLevel = msaa;
+        settings.antialiasingLevel = msaa;
 
         CurrentWindow.create(sf::VideoMode(CurrentWindow.getSize().x, CurrentWindow.getSize().y), GetTitle(), newStyle, settings);
     }
