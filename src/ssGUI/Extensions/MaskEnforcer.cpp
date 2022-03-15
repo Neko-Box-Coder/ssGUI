@@ -109,6 +109,8 @@ namespace ssGUI::Extensions
     void MaskEnforcer::SetEnabled(bool enabled)
     {
         Enabled = enabled;
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     bool MaskEnforcer::IsEnabled() const

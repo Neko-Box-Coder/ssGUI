@@ -152,7 +152,9 @@ namespace ssGUI::Extensions
     void Border::SetEnabled(bool enabled)
     {
         Enabled = enabled;
-        Container->RedrawObject();
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     bool Border::IsEnabled() const
