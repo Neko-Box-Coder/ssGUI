@@ -194,23 +194,33 @@ namespace ssGUI
             virtual bool IsHeapAllocated() const = 0;
         
             //function: Extension_GetDrawingVertices
-            //This function should only be called by <Extension::Draw>.
+            //This returns a list of vertices for all the shapes that will be drawn by this GUI object.
+            //A shape is formed by having the vertices drawn in clockwise direction. Undefined behaviour if they are listed in anti-clockwise direction.
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<glm::ivec2>& Extension_GetDrawingVertices() = 0;
             
             //function: Extension_GetDrawingUVs
-            //This function should only be called by <Extension::Draw>.
+            //This returns the UVs that are mapped to each vertex at the same index location.
+            //If no texture is used, you should still maintain the number of UVs same as the number of vertices.
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<glm::ivec2>& Extension_GetDrawingUVs() = 0;
             
             //function: Extension_GetDrawingColours
-            //This function should only be called by <Extension::Draw>.
+            //This returns the colors that are mapped to each vertex at the same index location.
+            //If texture is used, this essentially affects the tint of the image, with white as no tinting at all.
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<glm::u8vec4>& Extension_GetDrawingColours() = 0;
             
             //function: Extension_GetDrawingCounts
-            //This function should only be called by <Extension::Draw>.
+            //This returns the number of vertices each shape has, with the order same as vertices and others.
+            //So for example if the first value is 4, then the first 4 vertices form a shape. So on and so forth...
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<int>& Extension_GetDrawingCounts() = 0;
             
             //function: Extension_GetDrawingProperties
-            //This function should only be called by <Extension::Draw>.
+            //This returns the property of each shape, mapped to the same index location as <Extension_GetDrawingCounts>.
+            //This indicates if the shape is just a colored shape, an image or font. 
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties() = 0;
             
             //function: AddExtension
