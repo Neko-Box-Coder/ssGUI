@@ -28,6 +28,9 @@ namespace ssGUI
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
         
         public:
+            //TODO : Maybe make this thread safe?
+            inline static std::vector<ssGUI::GUIObject*> ObjsToDelete = std::vector<ssGUI::GUIObject*>();
+
             virtual ~GUIObject() = 0;
 
             //function: GetPosition

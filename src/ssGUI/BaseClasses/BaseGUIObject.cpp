@@ -885,7 +885,7 @@ namespace ssGUI
         SetParent(nullptr);
         CurrentObjectsReferences.CleanUp();
         ObjectDelete = true;
-        ssGUI::ssGUIManager::ObjsToDelete.push_back(this);
+        ObjsToDelete.push_back(this);
 
         for(auto it : Extensions)
            delete it.second;

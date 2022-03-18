@@ -28,17 +28,17 @@ namespace ssGUI
             UpdateObjects();
 
             //Clean up deleted objects
-            if(!ObjsToDelete.empty())
+            if(!ssGUI::GUIObject::ObjsToDelete.empty())
             {
-                for(int i = 0; i < ObjsToDelete.size(); i++)
+                for(int i = 0; i < ssGUI::GUIObject::ObjsToDelete.size(); i++)
                 {
-                    if(ObjsToDelete[i]->Internal_IsDeleted())
+                    if(ssGUI::GUIObject::ObjsToDelete[i]->Internal_IsDeleted())
                     {
-                        if(ObjsToDelete[i]->IsHeapAllocated())
-                           delete ObjsToDelete[i];
+                        if(ssGUI::GUIObject::ObjsToDelete[i]->IsHeapAllocated())
+                           delete ssGUI::GUIObject::ObjsToDelete[i];
                     }
                 }
-                ObjsToDelete = std::vector<ssGUI::GUIObject*>();
+                ssGUI::GUIObject::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
             }
 
             #if DEBUG_STATE 
@@ -115,7 +115,7 @@ namespace ssGUI
 
         for(auto windowP : MainWindowPList)
         {
-            if(static_cast<ssGUI::MainWindow*>(windowP)->IsClosed())
+            if(static_cast<ssGUI::MainWindow*>(windowP)->IsClosed() || windowP->Internal_IsDeleted())
                 windowsToRemoved.push_back(windowP);
         }
         
@@ -368,9 +368,6 @@ namespace ssGUI
     }
 
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;
-
-    std::vector<ssGUI::GUIObject*> ssGUIManager::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
-
 
     ssGUIManager::ssGUIManager() :  BackendInput(), MainWindowPList(), OnUpdateEventListeners(), 
                                     OnUpdateEventListenersValid(), OnUpdateEventListenersNextFreeIndices(),
