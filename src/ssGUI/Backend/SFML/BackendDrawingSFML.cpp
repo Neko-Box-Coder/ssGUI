@@ -12,6 +12,113 @@ namespace ssGUI::Backend
         ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
 
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
+                                        const std::vector<glm::u8vec4>& colours,
+                                        const ssGUI::Backend::BackendFontInterface& font,
+                                        int characterSize)
+    {
+        return DrawShape(vertices, texCoords, colours, 0, vertices.size(), font, characterSize);
+    }
+
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
+                                        const std::vector<glm::u8vec4>& colours,
+                                        const ssGUI::Backend::BackendImageInterface& image)
+    {
+        return DrawShape(vertices, texCoords, colours, 0, vertices.size(), image);
+    }
+
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::u8vec4>& colours)
+    {
+        return DrawShape(vertices, colours, 0, vertices.size());
+    }
+
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
+                                        const std::vector<glm::u8vec4>& colours,
+                                        int startIndex, int endIndex,
+                                        const ssGUI::Backend::BackendFontInterface& font,
+                                        int CharacterSize)
+    {        
+        if(!((ssGUI::Backend::BackendFontSFML&)font).IsValid())
+            return false;
+
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
+                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+        
+        // create an array of 3 vertices that define a triangle primitive
+        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
+
+        for(int i = startIndex; i < endIndex; i++)
+        {
+            outputShape[i - startIndex].position = sf::Vector2f(vertices[i].x, vertices[i].y);//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
+            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
+        }
+
+        targetWindow->draw(outputShape, &((ssGUI::Backend::BackendFontSFML&)font).GetSFMLFont()->getTexture(CharacterSize));
+
+        return true;
+    }
+
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
+                                        const std::vector<glm::u8vec4>& colours,
+                                        int startIndex, int endIndex,
+                                        const ssGUI::Backend::BackendImageInterface& image)
+    {
+        if(((ssGUI::Backend::BackendImageSFML&)image).GetGPUTextureP() == nullptr)
+            return false;
+
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
+                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+        
+        // create an array of 3 vertices that define a triangle primitive
+        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
+
+        for(int i = startIndex; i < endIndex; i++)
+        {
+            outputShape[i - startIndex].position = sf::Vector2f(vertices[i].x, vertices[i].y);//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
+            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
+        }
+
+        targetWindow->draw(outputShape, ((ssGUI::Backend::BackendImageSFML&)image).GetGPUTextureP());
+
+        return true;
+    }
+
+
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::u8vec4>& colours,
+                                        int startIndex, int endIndex)
+    {      
+        if(vertices.size() != colours.size() || vertices.empty())
+        {
+            // std::cout<<"vertices size: "<<vertices.size()<<"\n";
+            // std::cout<<"colours size: "<<colours.size()<<"\n";
+            return false;
+        }
+        
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
+            (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+
+        // create an array of 3 vertices that define a triangle primitive
+        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
+
+        for(int i = startIndex; i < endIndex; i++)
+        {                        
+            outputShape[i - startIndex].position = sf::Vector2f(vertices[i].x, vertices[i].y);//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
+        }
+        
+        targetWindow->draw(outputShape);
+        
+        return true;
+    }
+
     bool BackendDrawingSFML::DrawEntities(  const std::vector<glm::vec2>& vertices, 
                                             const std::vector<glm::vec2>& texCoords,
                                             const std::vector<glm::u8vec4>& colours,
@@ -60,114 +167,6 @@ namespace ssGUI::Backend
                 return false;
         }
 
-        return true;
-    }
-
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
-                                        const ssGUI::Backend::BackendFontInterface& font,
-                                        int characterSize)
-    {
-        return DrawShape(vertices, texCoords, colours, 0, vertices.size(), font, characterSize);
-    }
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
-                                        const ssGUI::Backend::BackendImageInterface& image)
-    {
-        return DrawShape(vertices, texCoords, colours, 0, vertices.size(), image);
-    }
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colours)
-    {
-        return DrawShape(vertices, colours, 0, vertices.size());
-    }
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
-                                        int startIndex, int endIndex,
-                                        const ssGUI::Backend::BackendFontInterface& font,
-                                        int CharacterSize)
-    {        
-        if(!((ssGUI::Backend::BackendFontSFML&)font).IsValid())
-            return false;
-
-        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
-                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
-        
-        // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
-
-        for(int i = startIndex; i < endIndex; i++)
-        {
-            outputShape[i - startIndex].position = targetWindow->mapPixelToCoords(sf::Vector2i(vertices[i].x, vertices[i].y));
-            outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
-        }
-
-        targetWindow->draw(outputShape, &((ssGUI::Backend::BackendFontSFML&)font).GetSFMLFont()->getTexture(CharacterSize));
-
-        return true;
-    }
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
-                                        int startIndex, int endIndex,
-                                        const ssGUI::Backend::BackendImageInterface& image)
-    {
-        if(((ssGUI::Backend::BackendImageSFML&)image).GetGPUTextureP() == nullptr)
-            return false;
-
-        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
-                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
-        
-        // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
-
-        for(int i = startIndex; i < endIndex; i++)
-        {
-            outputShape[i - startIndex].position = targetWindow->mapPixelToCoords(sf::Vector2i(vertices[i].x, vertices[i].y));
-            outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
-        }
-
-        targetWindow->draw(outputShape, ((ssGUI::Backend::BackendImageSFML&)image).GetGPUTextureP());
-
-        return true;
-    }
-
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colours,
-                                        int startIndex, int endIndex)
-    {      
-        if(vertices.size() != colours.size() || vertices.empty())
-        {
-            // std::cout<<"vertices size: "<<vertices.size()<<"\n";
-            // std::cout<<"colours size: "<<colours.size()<<"\n";
-            return false;
-        }
-        
-        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
-            (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
-
-        // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
-
-        for(int i = startIndex; i < endIndex; i++)
-        {                        
-            outputShape[i - startIndex].position = targetWindow->mapPixelToCoords(sf::Vector2i(vertices[i].x, vertices[i].y));
-            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
-        }
-        
-        targetWindow->draw(outputShape);
-        
         return true;
     }
 

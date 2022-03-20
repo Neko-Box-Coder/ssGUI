@@ -253,9 +253,6 @@ namespace ssGUI::Extensions
             }
         }
 
-        DEBUG_LINE();
-        DEBUG_LINE();
-
         drawingVertices.clear();
         drawingUVs.clear();
         drawingColors.clear();
