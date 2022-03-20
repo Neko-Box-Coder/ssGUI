@@ -12,8 +12,8 @@ namespace ssGUI::Backend
         ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
 
-    bool BackendDrawingSFML::DrawEntities(  const std::vector<glm::ivec2>& vertices, 
-                                            const std::vector<glm::ivec2>& texCoords,
+    bool BackendDrawingSFML::DrawEntities(  const std::vector<glm::vec2>& vertices, 
+                                            const std::vector<glm::vec2>& texCoords,
                                             const std::vector<glm::u8vec4>& colours,
                                             const std::vector<int>& counts,
                                             const std::vector<ssGUI::DrawingProperty>& properties)
@@ -64,8 +64,8 @@ namespace ssGUI::Backend
     }
 
 
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                        const std::vector<glm::ivec2>& texCoords,
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colours,
                                         const ssGUI::Backend::BackendFontInterface& font,
                                         int characterSize)
@@ -73,22 +73,22 @@ namespace ssGUI::Backend
         return DrawShape(vertices, texCoords, colours, 0, vertices.size(), font, characterSize);
     }
 
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                        const std::vector<glm::ivec2>& texCoords,
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colours,
                                         const ssGUI::Backend::BackendImageInterface& image)
     {
         return DrawShape(vertices, texCoords, colours, 0, vertices.size(), image);
     }
 
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::ivec2>& vertices, 
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::u8vec4>& colours)
     {
         return DrawShape(vertices, colours, 0, vertices.size());
     }
 
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                        const std::vector<glm::ivec2>& texCoords,
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colours,
                                         int startIndex, int endIndex,
                                         const ssGUI::Backend::BackendFontInterface& font,
@@ -115,8 +115,8 @@ namespace ssGUI::Backend
         return true;
     }
 
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                        const std::vector<glm::ivec2>& texCoords,
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colours,
                                         int startIndex, int endIndex,
                                         const ssGUI::Backend::BackendImageInterface& image)
@@ -143,7 +143,7 @@ namespace ssGUI::Backend
     }
 
 
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::ivec2>& vertices, 
+    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::u8vec4>& colours,
                                         int startIndex, int endIndex)
     {      

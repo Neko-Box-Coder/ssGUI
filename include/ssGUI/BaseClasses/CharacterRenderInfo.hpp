@@ -16,19 +16,19 @@ namespace ssGUI
 
             //var: DrawOffset
             //Offset for getting the top-left corner of the character
-            glm::ivec2 DrawOffset;
+            glm::vec2 DrawOffset;
             
             //var: UVOrigin
             //The uv texture origin for this character
-            glm::ivec2 UVOrigin;
+            glm::vec2 UVOrigin;
             
             //var: Size
             //The texture size corresponding to UVOrigin
-            glm::ivec2 Size;
+            glm::vec2 Size;
 
             //var: RenderPosition
             //This is the position of the bottom-left corner of the character
-            glm::ivec2 RenderPosition;
+            glm::vec2 RenderPosition;
 
             //var: CharacterAtNewline
             //True if this character is on a newline

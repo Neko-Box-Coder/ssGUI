@@ -5,7 +5,7 @@
 
 namespace ssGUI::Extensions
 {
-    bool Mask::IsContained(glm::ivec2 point, glm::ivec2 min, glm::ivec2 max) const
+    bool Mask::IsContained(glm::vec2 point, glm::vec2 min, glm::vec2 max) const
     {
         bool isXIn = point.x >= min.x && point.x <= max.x;
 
@@ -20,7 +20,7 @@ namespace ssGUI::Extensions
         return false;
     }
 
-    bool Mask::GetAxesValues(    glm::ivec2 axis, glm::ivec2 axis2, glm::ivec2 samplePoint, double& axisValue, double& axis2Value)
+    bool Mask::GetAxesValues(glm::vec2 axis, glm::vec2 axis2, glm::vec2 samplePoint, float& axisValue, float& axis2Value)
     {
         /*
         Note: I am not a mathematician and have no idea why this doesn't work.
@@ -87,13 +87,13 @@ namespace ssGUI::Extensions
         //Credit: https://stackoverflow.com/questions/13937782/calculating-the-point-of-intersection-of-two-lines
 
         //Return the multiplier from a to reach intersection of ab and cd
-        auto findIntersectMultiplier = [](glm::ivec2 a, glm::ivec2 b, glm::ivec2 c, glm::ivec2 d) -> double
+        auto findIntersectMultiplier = [](glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 d) -> float
         {
-            int denom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y);
+            float denom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y);
             if(denom == 0)  
                 return 0; 
 
-            return (double)((d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)) / (double)denom;
+            return ((d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)) / denom;
         };
 
         //      |
@@ -105,7 +105,7 @@ namespace ssGUI::Extensions
         //          |
         //          D
         
-        axisValue = findIntersectMultiplier(glm::ivec2(0, 0), axis, samplePoint, samplePoint - axis2);
+        axisValue = findIntersectMultiplier(glm::vec2(0, 0), axis, samplePoint, samplePoint - axis2);
 
         //      B
         // axis2|
@@ -117,16 +117,16 @@ namespace ssGUI::Extensions
         //          
         // 
 
-        axis2Value = findIntersectMultiplier(glm::ivec2(0, 0), axis2, samplePoint, samplePoint - axis);
+        axis2Value = findIntersectMultiplier(glm::vec2(0, 0), axis2, samplePoint, samplePoint - axis);
 
         return true;
     }
 
-    bool Mask::IsAABBOverlap(std::vector<glm::ivec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, glm::ivec2 maskMin, glm::ivec2 maskMax,
-                            glm::ivec2& shapeMin, glm::ivec2& shapeMax)
+    bool Mask::IsAABBOverlap(std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, glm::vec2 maskMin, glm::vec2 maskMax,
+                            glm::vec2& shapeMin, glm::vec2& shapeMax)
     {
-        shapeMin = glm::ivec2(shapeVerticies[shapeOffset]);
-        shapeMax = glm::ivec2(shapeVerticies[shapeOffset]);
+        shapeMin = shapeVerticies[shapeOffset];
+        shapeMax = shapeVerticies[shapeOffset];
         for(int j = shapeOffset + 1; j < shapeOffset + shapeVertexCount; j++)
         {
             if(shapeVerticies[j].x < shapeMin.x)
@@ -148,8 +148,8 @@ namespace ssGUI::Extensions
         return true;
     }
 
-    void Mask::GetIntersections(std::vector<glm::ivec2>& intersections, std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices,
-                                std::vector<glm::ivec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, std::vector<glm::ivec2>& maskVerticies)
+    void Mask::GetIntersections(std::vector<glm::vec2>& intersections, std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices,
+                                std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, std::vector<glm::vec2>& maskVerticies)
     {
         //For each vertices for this shape
         for(int currentShapeVertexIndex = shapeOffset; currentShapeVertexIndex < shapeOffset + shapeVertexCount; currentShapeVertexIndex++)
@@ -158,7 +158,7 @@ namespace ssGUI::Extensions
             //Iterate every line on the mask and see which intersects
             for(int currentMaskIndex = 0; currentMaskIndex < maskVerticies.size(); currentMaskIndex++)
             {
-                glm::ivec2 intersection;
+                glm::vec2 intersection;
                 int nextMaskIndex = GetNextIndex(0, maskVerticies.size(), currentMaskIndex);
                 if(LineToLineIntersection(shapeVerticies[currentShapeVertexIndex], shapeVerticies[nextShapeVertexIndex], 
                                             maskVerticies[currentMaskIndex], maskVerticies[nextMaskIndex], intersection))
@@ -172,19 +172,19 @@ namespace ssGUI::Extensions
         }
     }
 
-    void Mask::FromNewShapeWithIntersections(std::vector<glm::ivec2>& currentShapeVertices, std::vector<glm::ivec2>& currentShapeUVs, 
+    void Mask::FromNewShapeWithIntersections(std::vector<glm::vec2>& currentShapeVertices, std::vector<glm::vec2>& currentShapeUVs, 
                                                 std::vector<glm::u8vec4>& currentShapeColours, std::vector<bool>& currentVertexChanged,
-                                                std::vector<glm::ivec2>& originalVerticies, std::vector<glm::u8vec4>& originalColours,
-                                                std::vector<glm::ivec2>& originalUVs,
-                                                glm::ivec2 maskMin, glm::ivec2 maskMax, int shapeOffset, int shapeVertexCount, 
-                                                std::vector<glm::ivec2>& maskVerticies, std::vector<glm::ivec2>& intersections,
+                                                std::vector<glm::vec2>& originalVerticies, std::vector<glm::u8vec4>& originalColours,
+                                                std::vector<glm::vec2>& originalUVs,
+                                                glm::vec2 maskMin, glm::vec2 maskMax, int shapeOffset, int shapeVertexCount, 
+                                                std::vector<glm::vec2>& maskVerticies, std::vector<glm::vec2>& intersections,
                                                 std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices)
     {
         FUNC_DEBUG_ENTRY();
         
         //Lambda function of adding new vertex infomation
         auto addNewVertexInfo = [&currentShapeVertices, &currentShapeUVs, &currentShapeColours, &currentVertexChanged]
-        (glm::ivec2 newVertex, glm::u8vec4 newColour, bool changed, glm::ivec2 uv = glm::ivec2())
+        (glm::vec2 newVertex, glm::u8vec4 newColour, bool changed, glm::vec2 uv = glm::vec2())
         {
             currentShapeVertices.push_back(newVertex);
             currentShapeUVs.push_back(uv);
@@ -447,8 +447,8 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Mask::SampleNewUVsAndColoursForShapes(std::vector<glm::ivec2>& originalVerticies, std::vector<glm::ivec2>& originalUVs, std::vector<glm::u8vec4>& originalColours,
-                                                std::vector<int>& verticesCount, std::vector<glm::ivec2>& newVertices, std::vector<glm::ivec2>& newUVs, 
+    void Mask::SampleNewUVsAndColoursForShapes(std::vector<glm::vec2>& originalVerticies, std::vector<glm::vec2>& originalUVs, std::vector<glm::u8vec4>& originalColours,
+                                                std::vector<int>& verticesCount, std::vector<glm::vec2>& newVertices, std::vector<glm::vec2>& newUVs, 
                                                 std::vector<glm::u8vec4>& newColours, std::vector<bool>& changed, std::vector<int>& newVerticesCount)
     {
         //Sample the new UVs and colours
@@ -457,7 +457,7 @@ namespace ssGUI::Extensions
 
         for(int shapeIndex = 0; shapeIndex < newVerticesCount.size(); shapeIndex++)
         {
-            std::vector<glm::ivec2> currentShapeVertices;
+            std::vector<glm::vec2> currentShapeVertices;
 
             currentShapeVertices.assign(originalVerticies.begin() + oldOffset, originalVerticies.begin() + oldOffset + verticesCount[shapeIndex]);
             
@@ -472,26 +472,26 @@ namespace ssGUI::Extensions
                     break;
                 
 
-                glm::ivec2 axis = currentShapeVertices[closestIndicies[1]] - currentShapeVertices[closestIndicies[0]];
-                glm::ivec2 axis2 = currentShapeVertices[closestIndicies[2]] - currentShapeVertices[closestIndicies[0]];
-                double axisValue = 0;
-                double axis2Value = 0;
+                glm::vec2 axis = currentShapeVertices[closestIndicies[1]] - currentShapeVertices[closestIndicies[0]];
+                glm::vec2 axis2 = currentShapeVertices[closestIndicies[2]] - currentShapeVertices[closestIndicies[0]];
+                float axisValue = 0;
+                float axis2Value = 0;
 
                 if(!GetAxesValues(axis, axis2, newVertices[vertexIndex] - currentShapeVertices[closestIndicies[0]], axisValue, axis2Value))  
                     break;
 
-                glm::ivec2 uvAxis = originalUVs[oldOffset + closestIndicies[1]] - originalUVs[oldOffset + closestIndicies[0]];
-                glm::ivec2 uvAxis2 = originalUVs[oldOffset + closestIndicies[2]] - originalUVs[oldOffset + closestIndicies[0]];
+                glm::vec2 uvAxis = originalUVs[oldOffset + closestIndicies[1]] - originalUVs[oldOffset + closestIndicies[0]];
+                glm::vec2 uvAxis2 = originalUVs[oldOffset + closestIndicies[2]] - originalUVs[oldOffset + closestIndicies[0]];
                 glm::u8vec4 colourAxis = originalColours[oldOffset + closestIndicies[1]] - originalColours[oldOffset + closestIndicies[0]];
                 glm::u8vec4 colourAxis2 = originalColours[oldOffset + closestIndicies[2]] - originalColours[oldOffset + closestIndicies[0]];
 
-                newUVs[vertexIndex] = glm::dvec2(originalUVs[oldOffset + closestIndicies[0]]) +
-                                        glm::dvec2(uvAxis) * axisValue +
-                                        glm::dvec2(uvAxis2) * axis2Value;
+                newUVs[vertexIndex] = (originalUVs[oldOffset + closestIndicies[0]]) +
+                                        (uvAxis) * axisValue +
+                                        (uvAxis2) * axis2Value;
 
-                newColours[vertexIndex] = glm::dvec4(originalColours[oldOffset + closestIndicies[0]]) +
-                                            glm::dvec4(colourAxis) * axisValue +
-                                            glm::dvec4(colourAxis2) * axis2Value;
+                newColours[vertexIndex] = glm::vec4(originalColours[oldOffset + closestIndicies[0]]) +
+                                            glm::vec4(colourAxis) * axisValue +
+                                            glm::vec4(colourAxis2) * axis2Value;
 
 
             }
@@ -503,15 +503,15 @@ namespace ssGUI::Extensions
 
 
 
-    bool Mask::LineToLineIntersection(  glm::ivec2 linePointA, glm::ivec2 linePointB, 
-                                        glm::ivec2 linePointC, glm::ivec2 linePointD, glm::ivec2& intersection)
+    bool Mask::LineToLineIntersection(  glm::vec2 linePointA, glm::vec2 linePointB, 
+                                        glm::vec2 linePointC, glm::vec2 linePointD, glm::vec2& intersection)
     {
         //AABB check
         //X axis
-        int minX_AB;
-        int maxX_AB;
-        int minX_CD;
-        int maxX_CD;
+        float minX_AB;
+        float maxX_AB;
+        float minX_CD;
+        float maxX_CD;
         if(linePointA.x < linePointB.x)
         {
             minX_AB = linePointA.x;
@@ -538,10 +538,10 @@ namespace ssGUI::Extensions
             return false;
 
         //Y axis
-        int minY_AB;
-        int maxY_AB;
-        int minY_CD;
-        int maxY_CD;
+        float minY_AB;
+        float maxY_AB;
+        float minY_CD;
+        float maxY_CD;
         if(linePointA.y < linePointB.y)
         {
             minY_AB = linePointA.y;
@@ -597,9 +597,9 @@ namespace ssGUI::Extensions
         //Find intersection of AB and CD
         //https://www.codeproject.com/Tips/862988/Find-the-Intersection-Point-of-Two-Line-Segments
 
-        glm::ivec2 ba = linePointB - linePointA;
-        glm::ivec2 dc = linePointD - linePointC;
-        glm::ivec2 ca = linePointC - linePointA;
+        glm::vec2 ba = linePointB - linePointA;
+        glm::vec2 dc = linePointD - linePointC;
+        glm::vec2 ca = linePointC - linePointA;
         
         float ba_cross_dc = glm::cross(glm::vec3(ba, 0), glm::vec3(dc, 0)).z;
         float ca_cross_ba = glm::cross(glm::vec3(ca, 0), glm::vec3(ba, 0)).z;
@@ -618,7 +618,7 @@ namespace ssGUI::Extensions
         float u = ca_cross_ba / ba_cross_dc;
 
         if(t >= 0 && t <= 1 && u >= 0 && u <= 1)
-            intersection = linePointA + glm::ivec2(ba.x * t, ba.y * t);
+            intersection = linePointA + glm::vec2(ba.x * t, ba.y * t);
         else
             return false;
 
@@ -637,7 +637,7 @@ namespace ssGUI::Extensions
         }
     } */
 
-    bool Mask::CheckLinesOverlapping(int minA, int maxA, int minB, int maxB)
+    bool Mask::CheckLinesOverlapping(float minA, float maxA, float minB, float maxB)
     {        
         //[====a====] [====b====]
         if(maxA < minB)
@@ -670,7 +670,7 @@ namespace ssGUI::Extensions
         return endIndex + count - 1 - startIndex;
     } */
 
-    int Mask::GetNextIndex( int indexOffset, int count, int currentIndex )
+    int Mask::GetNextIndex(int indexOffset, int count, int currentIndex)
     {
         if(currentIndex + 1 > indexOffset + count - 1)
             return indexOffset;
@@ -678,7 +678,7 @@ namespace ssGUI::Extensions
         return ++currentIndex;
     }
 
-    int Mask::GetPreviousIndex( int indexOffset, int count, int currentIndex )
+    int Mask::GetPreviousIndex(int indexOffset, int count, int currentIndex)
     {
         if(currentIndex <= indexOffset)
             return indexOffset + count - 1;
@@ -686,7 +686,7 @@ namespace ssGUI::Extensions
         return --currentIndex;
     }
 
-    bool Mask::GetSampleIndicesFromShape(std::vector<glm::ivec2>& vertices, int closestIndices[], glm::ivec2 samplePoint)
+    bool Mask::GetSampleIndicesFromShape(std::vector<glm::vec2>& vertices, int closestIndices[], glm::vec2 samplePoint)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -894,7 +894,7 @@ namespace ssGUI::Extensions
     void Mask::ConstructRenderInfo()
     {}
 
-    void Mask::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Mask::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     Mask::Mask(Mask const& other)
@@ -915,7 +915,7 @@ namespace ssGUI::Extensions
     const std::string Mask::EXTENSION_NAME = "Mask";
 
     Mask::Mask() :  Container(nullptr), Enabled(true), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
-                    FollowPositionOffset(glm::ivec2(1, 1)), FollowSizePadding(glm::ivec2(-2, -2)), GlobalPosition(), Size(),
+                    FollowPositionOffset(glm::vec2(1, 1)), FollowSizePadding(glm::vec2(-2, -2)), GlobalPosition(), Size(),
                     ChildAddedEventIndex(-1), ChildRemovedEventIndex(-1)
     {}
 
@@ -1080,7 +1080,7 @@ namespace ssGUI::Extensions
         return FollowContainer;
     }
 
-    void Mask::SetFollowPositionOffset(glm::ivec2 positionOffset)
+    void Mask::SetFollowPositionOffset(glm::vec2 positionOffset)
     {
         FollowPositionOffset = positionOffset;
 
@@ -1088,12 +1088,12 @@ namespace ssGUI::Extensions
             Container->RedrawObject();
     }
 
-    glm::ivec2 Mask::GetFollowPositionOffset() const
+    glm::vec2 Mask::GetFollowPositionOffset() const
     {
         return FollowPositionOffset;
     }
 
-    void Mask::SetFollowSizePadding(glm::ivec2 sizePadding)
+    void Mask::SetFollowSizePadding(glm::vec2 sizePadding)
     {
         FollowSizePadding = sizePadding;
 
@@ -1101,12 +1101,12 @@ namespace ssGUI::Extensions
             Container->RedrawObject();
     }
 
-    glm::ivec2 Mask::GetFollowSizePadding() const
+    glm::vec2 Mask::GetFollowSizePadding() const
     {
         return FollowSizePadding;
     }
 
-    void Mask::SetGlobalPosition(glm::ivec2 globalPosition)
+    void Mask::SetGlobalPosition(glm::vec2 globalPosition)
     {
         if(Container != nullptr && GlobalPosition != globalPosition)
             Container->RedrawObject();
@@ -1114,12 +1114,12 @@ namespace ssGUI::Extensions
         GlobalPosition = globalPosition;
     }
 
-    glm::ivec2 Mask::GetGlobalPosition() const
+    glm::vec2 Mask::GetGlobalPosition() const
     {
         return GlobalPosition;
     }
 
-    void Mask::SetSize(glm::ivec2 size)
+    void Mask::SetSize(glm::vec2 size)
     {
         if(Container != nullptr && Size != size)
             Container->RedrawObject();
@@ -1127,12 +1127,12 @@ namespace ssGUI::Extensions
         Size = size;
     }
 
-    glm::ivec2 Mask::GetSize() const
+    glm::vec2 Mask::GetSize() const
     {
         return Size;
     }
 
-    bool Mask::IsPointContainedInMask(glm::ivec2 point) const
+    bool Mask::IsPointContainedInMask(glm::vec2 point) const
     {
         return IsContained(point, GetGlobalPosition(), GetGlobalPosition() + GetSize());
     }
@@ -1152,17 +1152,17 @@ namespace ssGUI::Extensions
     }
 
 
-    void Mask::MaskObject(ssGUI::GUIObject* obj, glm::ivec2 renderOffset)
+    void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset)
     {
         FUNC_DEBUG_ENTRY();
         
-        std::vector<glm::ivec2> maskShape;
-        std::vector<glm::ivec2>& originalVerticies = obj->Extension_GetDrawingVertices();
+        std::vector<glm::vec2> maskShape;
+        std::vector<glm::vec2>& originalVerticies = obj->Extension_GetDrawingVertices();
         std::vector<bool> isOriginalVerticesInside;
-        std::vector<glm::ivec2> newVertices;
+        std::vector<glm::vec2> newVertices;
 
-        std::vector<glm::ivec2>& originalUVs = obj->Extension_GetDrawingUVs();
-        std::vector<glm::ivec2> newUVs;
+        std::vector<glm::vec2>& originalUVs = obj->Extension_GetDrawingUVs();
+        std::vector<glm::vec2> newUVs;
 
         std::vector<glm::u8vec4>& originalColours = obj->Extension_GetDrawingColours();
         std::vector<glm::u8vec4> newColours;
@@ -1173,20 +1173,20 @@ namespace ssGUI::Extensions
         std::vector<int> newVerticesCount;
         
         int currentOffset = 0;
-        glm::ivec2 maskMin = GetGlobalPosition() + renderOffset;
-        glm::ivec2 maskMax = maskMin + GetSize();
+        glm::vec2 maskMin = GetGlobalPosition() + renderOffset;
+        glm::vec2 maskMax = maskMin + GetSize();
 
         maskShape.push_back(maskMin);
-        maskShape.push_back(maskMin + glm::ivec2(GetSize().x, 0));
+        maskShape.push_back(maskMin + glm::vec2(GetSize().x, 0));
         maskShape.push_back(maskMax);
-        maskShape.push_back(maskMin + glm::ivec2(0, GetSize().y));
+        maskShape.push_back(maskMin + glm::vec2(0, GetSize().y));
 
         //Iterating each shape
         for(int shapeIndex = 0; shapeIndex < verticesCount.size(); shapeIndex++)
         {
             //Do AABB test for the shape and the mask
-            glm::ivec2 shapeMin;
-            glm::ivec2 shapeMax;
+            glm::vec2 shapeMin;
+            glm::vec2 shapeMax;
             if(!IsAABBOverlap(originalVerticies, currentOffset, verticesCount[shapeIndex], maskMin, maskMax, shapeMin, shapeMax))
             {
                 newVerticesCount.push_back(0);
@@ -1196,7 +1196,7 @@ namespace ssGUI::Extensions
             { //Extra bracket to create scope for the vectors below
 
                 //Find all the intersections (Order of the intersections are not guaranteed)
-                std::vector<glm::ivec2> intersections;
+                std::vector<glm::vec2> intersections;
                 std::vector<int> shapeIntersectIndices;
                 std::vector<int> maskIntersectIndices;
 
@@ -1220,8 +1220,8 @@ namespace ssGUI::Extensions
                 std::cout<<"\n";
                 */
 
-                std::vector<glm::ivec2> currentShapeVertices;
-                std::vector<glm::ivec2> currentShapeUVs;
+                std::vector<glm::vec2> currentShapeVertices;
+                std::vector<glm::vec2> currentShapeUVs;
                 std::vector<glm::u8vec4> currentShapeColours;
                 std::vector<bool> currentVertexChanged;
 
@@ -1230,10 +1230,10 @@ namespace ssGUI::Extensions
                 {
                     //Change the shape into mask
                     currentShapeVertices.push_back(maskMin);
-                    currentShapeVertices.push_back(maskMin + glm::ivec2(GetSize().x, 0));
+                    currentShapeVertices.push_back(maskMin + glm::vec2(GetSize().x, 0));
                     currentShapeVertices.push_back(maskMin + GetSize());
-                    currentShapeVertices.push_back(maskMin + glm::ivec2(0, GetSize().y));
-                    currentShapeUVs.assign(4, glm::ivec2());
+                    currentShapeVertices.push_back(maskMin + glm::vec2(0, GetSize().y));
+                    currentShapeUVs.assign(4, glm::vec2());
                     currentShapeColours.assign(4, originalColours[currentOffset]);
                     currentVertexChanged.assign(4, true);
                 }
@@ -1318,12 +1318,12 @@ namespace ssGUI::Extensions
                 
                 //Position
                 SetGlobalPosition(Container->GetGlobalPosition() + 
-                                    (window->HasTitlebar() ? glm::ivec2(0, window->GetTitlebarHeight()) : glm::ivec2()) +
+                                    (window->HasTitlebar() ? glm::vec2(0, window->GetTitlebarHeight()) : glm::vec2()) +
                                     FollowPositionOffset);
                 
                 //Size
                 SetSize(Container->GetSize() +
-                        (window->HasTitlebar() ? glm::ivec2(0, -window->GetTitlebarHeight()) : glm::ivec2()) +
+                        (window->HasTitlebar() ? glm::vec2(0, -window->GetTitlebarHeight()) : glm::vec2()) +
                         FollowSizePadding);
             }
             else
@@ -1339,7 +1339,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Mask::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::ivec2 mainWindowPositionOffset)
+    void Mask::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //Call mask function
     }

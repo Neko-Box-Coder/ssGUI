@@ -20,13 +20,13 @@ namespace ssGUI
     private:
         ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;
         ssGUI::Backend::BackendDrawingInterface* BackendDrawing;
-        glm::ivec2 LastSize;
+        glm::vec2 LastSize;
         int RedrawCount;
 
         uint64_t LastSyncTime;
     =================================================================
     ============================== C++ ==============================
-    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::ivec2(0, 0)), RedrawCount(0), LastSyncTime(0)
+    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::vec2(0, 0)), RedrawCount(0), LastSyncTime(0)
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
@@ -40,7 +40,7 @@ namespace ssGUI
         private:
             ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;
             ssGUI::Backend::BackendDrawingInterface* BackendDrawing;
-            glm::ivec2 LastSize;
+            glm::vec2 LastSize;
             int RedrawCount;
 
             uint64_t LastSyncTime;
@@ -88,27 +88,27 @@ namespace ssGUI
             
             //function: GetPosition
             //See <GUIObject::GetPosition>
-            virtual glm::ivec2 GetPosition() const override;
+            virtual glm::vec2 GetPosition() const override;
             
             //function: SetPosition
             //See <GUIObject::SetPosition>
-            virtual void SetPosition(glm::ivec2 position) override;
+            virtual void SetPosition(glm::vec2 position) override;
             
             //function: GetGlobalPosition
             //See <GUIObject::GetGlobalPosition>
-            virtual glm::ivec2 GetGlobalPosition() override;
+            virtual glm::vec2 GetGlobalPosition() override;
             
             //function: SetGlobalPosition
             //See <GUIObject::SetGlobalPosition>
-            virtual void SetGlobalPosition(glm::ivec2 position) override;
+            virtual void SetGlobalPosition(glm::vec2 position) override;
             
             //function: GetSize
             //See <GUIObject::GetSize>
-            virtual glm::ivec2 GetSize() const override;
+            virtual glm::vec2 GetSize() const override;
             
             //function: SetSize
             //See <GUIObject::SetSize>
-            virtual void SetSize(glm::ivec2 size) override;
+            virtual void SetSize(glm::vec2 size) override;
 
             //function: GetType
             //See <Window::GetType>
@@ -136,7 +136,7 @@ namespace ssGUI
             
             //function: Internal_Draw
             //This checks for window state before rendering
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
             //See <Window::Internal_Update>

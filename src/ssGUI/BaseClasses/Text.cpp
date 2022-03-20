@@ -125,12 +125,12 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    void Text::DrawCharacter(glm::ivec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details)
+    void Text::DrawCharacter(glm::vec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details)
     {
         if(!info.Valid)
             return;
 
-        glm::ivec2 position = positionOffset + info.RenderPosition;
+        glm::vec2 position = positionOffset + info.RenderPosition;
         ssGUI::Font* targetFont = nullptr;
         
         if(details.FontIndex != -1)
@@ -142,9 +142,9 @@ namespace ssGUI
             return;
         
         DrawingVerticies.push_back(position                                 + info.DrawOffset);
-        DrawingVerticies.push_back(position + glm::ivec2(info.Size.x, 0)    + info.DrawOffset);
+        DrawingVerticies.push_back(position + glm::vec2(info.Size.x, 0)     + info.DrawOffset);
         DrawingVerticies.push_back(position + info.Size                     + info.DrawOffset);
-        DrawingVerticies.push_back(position + glm::ivec2(0, info.Size.y)    + info.DrawOffset);
+        DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y)     + info.DrawOffset);
 
         DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
         DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
@@ -152,9 +152,9 @@ namespace ssGUI
         DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
 
         DrawingUVs.push_back(info.UVOrigin);
-        DrawingUVs.push_back(info.UVOrigin + glm::ivec2(info.Size.x, 0));
+        DrawingUVs.push_back(info.UVOrigin + glm::vec2(info.Size.x, 0));
         DrawingUVs.push_back(info.UVOrigin + info.Size);
-        DrawingUVs.push_back(info.UVOrigin + glm::ivec2(0, info.Size.y));
+        DrawingUVs.push_back(info.UVOrigin + glm::vec2(0, info.Size.y));
 
         DrawingCounts.push_back(4);
         ssGUI::DrawingProperty currentProperty;
@@ -216,7 +216,7 @@ namespace ssGUI
                 (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
             {
                 prevChar = 0;
-                CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                 continue;
             }
             
@@ -242,7 +242,7 @@ namespace ssGUI
                     int characterLength = info.Advance;
 
                     CharactersRenderInfos[i] = info;
-                    CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
 
                     currentWordLength += characterLength;
                 }
@@ -254,7 +254,7 @@ namespace ssGUI
                 {
                     currentWordIndex = i + 1;
                     currentWordLength = 0;
-                    CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                     CharactersRenderInfos[i].Valid = true;
                     
                     drawXPos = GetHorizontalPadding();
@@ -278,7 +278,7 @@ namespace ssGUI
                     currentWordIndex = i + 1;
                     currentLineLength += currentWordLength;
                     currentWordLength = 0;
-                    CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                     int whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                     switch (curChar)
@@ -307,7 +307,7 @@ namespace ssGUI
                 int characterLength = info.Advance;
 
                 CharactersRenderInfos[i] = info;
-                CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
 
                 if(currentLineLength == GetHorizontalPadding() && currentWordLength == 0)
                     CharactersRenderInfos[i].CharacterAtNewline = true;
@@ -325,7 +325,7 @@ namespace ssGUI
         FUNC_DEBUG_ENTRY();
 
         int currentLineLength = GetHorizontalPadding();
-        // glm::ivec2 currentDrawPos = glm::ivec2();
+        // glm::vec2 currentDrawPos = glm::vec2();
         int drawXPos = GetHorizontalPadding();
 
         wchar_t prevChar = 0;
@@ -342,7 +342,7 @@ namespace ssGUI
                 (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
             {
                 prevChar = 0;
-                CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                 continue;
             }
             
@@ -361,7 +361,7 @@ namespace ssGUI
             //If space or tab or newline character, just append
             if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
             {
-                CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                 int whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 switch (curChar)
@@ -391,7 +391,7 @@ namespace ssGUI
                 if(characterLength + GetHorizontalPadding()* 2 > GetSize().x && currentLineLength == 0)
                 {
                     CharactersRenderInfos[i] = info;
-                    CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                     CharactersRenderInfos[i].CharacterAtNewline = true;
 
                     currentLineLength = GetHorizontalPadding();
@@ -408,7 +408,7 @@ namespace ssGUI
                 else
                 {
                     CharactersRenderInfos[i] = info;
-                    CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                     if(currentLineLength == GetHorizontalPadding())
                         CharactersRenderInfos[i].CharacterAtNewline = true;
 
@@ -442,7 +442,7 @@ namespace ssGUI
                 (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
             {
                 prevChar = 0;
-                CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                 continue;
             }
             
@@ -461,7 +461,7 @@ namespace ssGUI
             //If space or tab or newline character, just append
             if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
             {
-                CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
                 int whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 if(nextCharOnNewline)
@@ -495,7 +495,7 @@ namespace ssGUI
                 int characterLength = info.Advance;
 
                 CharactersRenderInfos[i] = info;
-                CharactersRenderInfos[i].RenderPosition = glm::ivec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
 
                 if(nextCharOnNewline)
                 {
@@ -698,24 +698,24 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        glm::ivec2 drawPos = GetGlobalPosition();
+        glm::vec2 drawPos = GetGlobalPosition();
 
         //TODO: Some optimisation maybe possible
         //Drawing background
         DrawingVerticies.push_back(drawPos);
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPos + glm::vec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPos + glm::ivec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPos + glm::vec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPos + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPos + glm::vec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
@@ -903,10 +903,10 @@ namespace ssGUI
         RedrawObject();
     }
 
-    glm::ivec2 Text::GetCharacterGlobalPosition(int index)
+    glm::vec2 Text::GetCharacterGlobalPosition(int index)
     {
         if(index < 0 || index >= CharactersRenderInfos.size())
-            return glm::ivec2();
+            return glm::vec2();
         
         return GetGlobalPosition() + CharactersRenderInfos[index].RenderPosition;
     }
@@ -1157,7 +1157,7 @@ namespace ssGUI
         ssGUI::BaseGUIObject::Delete();
     }
 
-    void Text::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Text::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -1172,12 +1172,12 @@ namespace ssGUI
             DisableRedrawObjectRequest();
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
             
             ConstructRenderInfo();
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             EnableRedrawObjectRequest();
 
@@ -1265,5 +1265,4 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
         return temp;
     }
-
 }

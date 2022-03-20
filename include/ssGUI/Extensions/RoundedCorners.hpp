@@ -64,21 +64,21 @@ namespace ssGUI::Extensions
             RoundedCorners(RoundedCorners const& other);
 
             //Return angle in radians. Positive if clockwise
-            virtual double GetAngle(glm::ivec2 a, glm::ivec2 b);
+            virtual double GetAngle(glm::vec2 a, glm::vec2 b);
             
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
             constexpr double pi() { return std::atan(1)*4; };
             
             //https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
-            virtual glm::dvec3 Barycentric(glm::ivec2 samplePoint, glm::ivec2 a, glm::ivec2 b, glm::ivec2 c);
+            virtual glm::vec3 Barycentric(glm::vec2 samplePoint, glm::vec2 a, glm::vec2 b, glm::vec2 c);
 
-            virtual void PlotArcPoints(glm::ivec2 a, glm::ivec2 b, glm::ivec2 c, std::vector<glm::ivec2>& plottedPoints);
+            virtual void PlotArcPoints(glm::vec2 a, glm::vec2 b, glm::vec2 c, std::vector<glm::vec2>& plottedPoints);
             
             virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts);
             virtual void UpdateVerticesForRounding();
 
             virtual void ConstructRenderInfo() override;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
         public:
             static const std::string EXTENSION_NAME;
@@ -167,7 +167,7 @@ namespace ssGUI::Extensions
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>

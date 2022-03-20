@@ -25,7 +25,7 @@ namespace ssGUI::Extensions
     {
         protected:
             virtual void ConstructRenderInfo() = 0;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
 
         public:
             virtual ~Extension() = 0;
@@ -44,7 +44,7 @@ namespace ssGUI::Extensions
             
             //function: Internal_Draw
             //Renders function called every frame
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
             
             //function: GetExtensionName
             //Returns this extension's name

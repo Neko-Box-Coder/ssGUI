@@ -136,7 +136,7 @@ namespace ssGUI
 
             virtual void AssignSupportedFont();
 
-            virtual void DrawCharacter(glm::ivec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details);
+            virtual void DrawCharacter(glm::vec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details);
             
             virtual void FormatNewlinesCharacters();
 
@@ -210,7 +210,7 @@ namespace ssGUI
 
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
-            virtual glm::ivec2 GetCharacterGlobalPosition(int index);
+            virtual glm::vec2 GetCharacterGlobalPosition(int index);
             
             //function: IsOverflow
             //Returns true if the text is overflowing the text widget
@@ -342,7 +342,7 @@ namespace ssGUI
 
             //function: Internal_Draw
             //See <GUIObject::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             //virtual void Internal_Update(ssGUI::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Update

@@ -63,34 +63,34 @@ namespace ssGUI
             return;
         }
         
-        glm::ivec2 parentGlobalPositon = CurrentObjectsReferences.GetObjectReference(Parent)->GetParent() == nullptr ? 
-                                            glm::ivec2() : CurrentObjectsReferences.GetObjectReference(Parent)->GetGlobalPosition();
-        glm::ivec2 parentSize = CurrentObjectsReferences.GetObjectReference(Parent)->GetSize();
-        glm::ivec2 anchorPosition = parentGlobalPositon;
-        glm::ivec2 anchorDirection = glm::ivec2(1, 1);
-        glm::ivec2 positionOffset = GetSize();
+        glm::vec2 parentGlobalPositon = CurrentObjectsReferences.GetObjectReference(Parent)->GetParent() == nullptr ? 
+                                        glm::vec2() : CurrentObjectsReferences.GetObjectReference(Parent)->GetGlobalPosition();
+        glm::vec2 parentSize = CurrentObjectsReferences.GetObjectReference(Parent)->GetSize();
+        glm::vec2 anchorPosition = parentGlobalPositon;
+        glm::vec2 anchorDirection = glm::vec2(1, 1);
+        glm::vec2 positionOffset = GetSize();
         
         //Find anchor position
         switch(Anchor)
         {
             case ssGUI::Enums::AnchorType::TOP_LEFT:
                 anchorPosition = parentGlobalPositon;
-                positionOffset = glm::ivec2(0, 0);
+                positionOffset = glm::vec2(0, 0);
                 break;
             case ssGUI::Enums::AnchorType::TOP_RIGHT:
-                anchorPosition = parentGlobalPositon + glm::ivec2(parentSize.x, 0);
+                anchorPosition = parentGlobalPositon + glm::vec2(parentSize.x, 0);
                 anchorDirection.x = -1;
-                positionOffset = glm::ivec2(GetSize().x, 0);
+                positionOffset = glm::vec2(GetSize().x, 0);
                 break;
             case ssGUI::Enums::AnchorType::BOTTOM_LEFT:
-                anchorPosition = parentGlobalPositon + glm::ivec2(0, parentSize.y);
+                anchorPosition = parentGlobalPositon + glm::vec2(0, parentSize.y);
                 anchorDirection.y = -1;
-                positionOffset = glm::ivec2(0, GetSize().y);
+                positionOffset = glm::vec2(0, GetSize().y);
                 break;
             case ssGUI::Enums::AnchorType::BOTTOM_RIGHT:
-                anchorPosition = parentGlobalPositon + glm::ivec2(parentSize.x, parentSize.y);
+                anchorPosition = parentGlobalPositon + glm::vec2(parentSize.x, parentSize.y);
                 anchorDirection *= -1;
-                positionOffset = glm::ivec2(GetSize().x, GetSize().y);
+                positionOffset = glm::vec2(GetSize().x, GetSize().y);
                 break;
         }
 
@@ -126,11 +126,11 @@ namespace ssGUI
             return;
         }
         
-        glm::ivec2 parentGlobalPositon = CurrentObjectsReferences.GetObjectReference(Parent)->GetParent() == nullptr ? glm::ivec2() : CurrentObjectsReferences.GetObjectReference(Parent)->GetGlobalPosition();
-        glm::ivec2 parentSize = CurrentObjectsReferences.GetObjectReference(Parent)->GetSize();
-        glm::ivec2 anchorPosition = parentGlobalPositon;
-        glm::ivec2 anchorDirection = glm::ivec2(1, 1);
-        glm::ivec2 positionOffset = GetSize();
+        glm::vec2 parentGlobalPositon = CurrentObjectsReferences.GetObjectReference(Parent)->GetParent() == nullptr ? glm::vec2() : CurrentObjectsReferences.GetObjectReference(Parent)->GetGlobalPosition();
+        glm::vec2 parentSize = CurrentObjectsReferences.GetObjectReference(Parent)->GetSize();
+        glm::vec2 anchorPosition = parentGlobalPositon;
+        glm::vec2 anchorDirection = glm::vec2(1, 1);
+        glm::vec2 positionOffset = GetSize();
 
         // std::cout<<"parent pos:"<<parentGlobalPositon.x<<", "<<parentGlobalPositon.y<<"\n";
         // std::cout<<"parentSize: "<<parentSize.x<<", "<<parentSize.y<<"\n";
@@ -140,22 +140,22 @@ namespace ssGUI
         {
             case ssGUI::Enums::AnchorType::TOP_LEFT:
                 anchorPosition = parentGlobalPositon;
-                positionOffset = glm::ivec2(0, 0);
+                positionOffset = glm::vec2(0, 0);
                 break;
             case ssGUI::Enums::AnchorType::TOP_RIGHT:
-                anchorPosition = parentGlobalPositon + glm::ivec2(parentSize.x, 0);
+                anchorPosition = parentGlobalPositon + glm::vec2(parentSize.x, 0);
                 anchorDirection.x = -1;
-                positionOffset = glm::ivec2(GetSize().x, 0);
+                positionOffset = glm::vec2(GetSize().x, 0);
                 break;
             case ssGUI::Enums::AnchorType::BOTTOM_LEFT:
-                anchorPosition = parentGlobalPositon + glm::ivec2(0, parentSize.y);
+                anchorPosition = parentGlobalPositon + glm::vec2(0, parentSize.y);
                 anchorDirection.y = -1;
-                positionOffset = glm::ivec2(0, GetSize().y);
+                positionOffset = glm::vec2(0, GetSize().y);
                 break;
             case ssGUI::Enums::AnchorType::BOTTOM_RIGHT:
-                anchorPosition = parentGlobalPositon + glm::ivec2(parentSize.x, parentSize.y);
+                anchorPosition = parentGlobalPositon + glm::vec2(parentSize.x, parentSize.y);
                 anchorDirection *= -1;
-                positionOffset = glm::ivec2(GetSize().x, GetSize().y);
+                positionOffset = glm::vec2(GetSize().x, GetSize().y);
                 break;
         }
 
@@ -183,7 +183,7 @@ namespace ssGUI
         //This should be overriden.
     }
 
-    void BaseGUIObject::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void BaseGUIObject::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //This can be overriden if needed.
     }
@@ -355,8 +355,8 @@ namespace ssGUI
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
                                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
                                         CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), AcceptRedrawRequest(true), 
-                                        Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
-                                        MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
+                                        Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), MinSize(glm::vec2(25, 25)),
+                                        MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
                                         DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
                                         LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
@@ -380,12 +380,12 @@ namespace ssGUI
     }
 
     //Below are from GUIObject.hpp
-    glm::ivec2 BaseGUIObject::GetPosition() const
+    glm::vec2 BaseGUIObject::GetPosition() const
     {
         return Position;
     }
 
-    void BaseGUIObject::SetPosition(glm::ivec2 position)
+    void BaseGUIObject::SetPosition(glm::vec2 position)
     {
         if(Position != position)
             RedrawObject();
@@ -393,7 +393,7 @@ namespace ssGUI
         Position = position;
     }
 
-    glm::ivec2 BaseGUIObject::GetGlobalPosition()
+    glm::vec2 BaseGUIObject::GetGlobalPosition()
     {
         //Update global position
         SyncGlobalPosition();
@@ -401,7 +401,7 @@ namespace ssGUI
         return GlobalPosition;
     }
 
-    void BaseGUIObject::SetGlobalPosition(glm::ivec2 position)
+    void BaseGUIObject::SetGlobalPosition(glm::vec2 position)
     {
         if(GlobalPosition != position)
             RedrawObject();
@@ -412,14 +412,14 @@ namespace ssGUI
         SyncPosition();
     }
 
-    glm::ivec2 BaseGUIObject::GetSize() const
+    glm::vec2 BaseGUIObject::GetSize() const
     {
         return Size;
     }
 
-    void BaseGUIObject::SetSize(glm::ivec2 size)
+    void BaseGUIObject::SetSize(glm::vec2 size)
     {
-        glm::ivec2 oriSize = Size;
+        glm::vec2 oriSize = Size;
         
         size.x = size.x > MaxSize.x ? MaxSize.x : size.x;
         size.y = size.y > MaxSize.y ? MaxSize.y : size.y;
@@ -436,12 +436,12 @@ namespace ssGUI
         }
     }
 
-    glm::ivec2 BaseGUIObject::GetMinSize() const
+    glm::vec2 BaseGUIObject::GetMinSize() const
     {
         return MinSize;
     }
 
-    void BaseGUIObject::SetMinSize(glm::ivec2 minSize)
+    void BaseGUIObject::SetMinSize(glm::vec2 minSize)
     {
         if(MinSize != minSize)
             RedrawObject();
@@ -453,20 +453,20 @@ namespace ssGUI
         if(Size.x < MinSize.x && Size.y < MinSize.y)
             SetSize(MinSize);
         else if(Size.x < MinSize.x)
-            SetSize(glm::ivec2(MinSize.x, Size.y));
+            SetSize(glm::vec2(MinSize.x, Size.y));
         else if(Size.y < MinSize.y)
-            SetSize(glm::ivec2(Size.x, MinSize.y));
+            SetSize(glm::vec2(Size.x, MinSize.y));
             
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
             GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(this);
     }
 
-    glm::ivec2 BaseGUIObject::GetMaxSize() const
+    glm::vec2 BaseGUIObject::GetMaxSize() const
     {
         return MaxSize;
     }
 
-    void BaseGUIObject::SetMaxSize(glm::ivec2 maxSize)
+    void BaseGUIObject::SetMaxSize(glm::vec2 maxSize)
     {
         if(MaxSize != maxSize)
             RedrawObject();
@@ -478,9 +478,9 @@ namespace ssGUI
         if(Size.x > MaxSize.x && Size.y > MaxSize.y)
             SetSize(MaxSize);
         else if(Size.x > MaxSize.x)
-            SetSize(glm::ivec2(MaxSize.x, Size.y));
+            SetSize(glm::vec2(MaxSize.x, Size.y));
         else if(Size.y > MaxSize.y)
-            SetSize(glm::ivec2(Size.x, MaxSize.y));
+            SetSize(glm::vec2(Size.x, MaxSize.y));
 
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
             GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(this);
@@ -911,12 +911,12 @@ namespace ssGUI
         return HeapAllocated;
     }
 
-    std::vector<glm::ivec2>& BaseGUIObject::Extension_GetDrawingVertices()
+    std::vector<glm::vec2>& BaseGUIObject::Extension_GetDrawingVertices()
     {
         return DrawingVerticies;
     }
 
-    std::vector<glm::ivec2>& BaseGUIObject::Extension_GetDrawingUVs()
+    std::vector<glm::vec2>& BaseGUIObject::Extension_GetDrawingUVs()
     {
         return DrawingUVs;
     }
@@ -1134,7 +1134,7 @@ namespace ssGUI
         return &CurrentObjectsReferences;
     }
 
-    void BaseGUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void BaseGUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
 
@@ -1149,10 +1149,10 @@ namespace ssGUI
             DisableRedrawObjectRequest();
             
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             EnableRedrawObjectRequest();
 

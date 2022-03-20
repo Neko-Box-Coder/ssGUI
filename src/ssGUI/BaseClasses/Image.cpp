@@ -11,23 +11,23 @@ namespace ssGUI
 
     void Image::ConstructRenderInfo()
     {
-        glm::ivec2 drawPosition = GetGlobalPosition();
+        glm::vec2 drawPosition = GetGlobalPosition();
 
         //Background
         DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
@@ -35,8 +35,8 @@ namespace ssGUI
         
 
         //TODO: The code below can be moved to its own function
-        glm::ivec2 imgDrawPosition = GetGlobalPosition();
-        glm::ivec2 imgSize = ImageData->GetSize();
+        glm::vec2 imgDrawPosition = GetGlobalPosition();
+        glm::vec2 imgSize = ImageData->GetSize();
 
         DrawingColours.push_back(glm::u8vec4(255, 255, 255, 255));
         DrawingColours.push_back(glm::u8vec4(255, 255, 255, 255));
@@ -67,7 +67,7 @@ namespace ssGUI
 
         int showWidth = 0;
         int showHeight = 0;
-        glm::ivec2 showUVOrigin = glm::ivec2();
+        glm::vec2 showUVOrigin = glm::vec2();
         float showLandscapeRatio = 0;
         bool showWholeImg = true;
         //Find out the UVs
@@ -87,9 +87,9 @@ namespace ssGUI
                 imgDrawPosition.y = showWholeImg ? imgDrawPosition.y + (GetSize().y - (float)GetSize().x / showLandscapeRatio) / 2 : imgDrawPosition.y;
 
                 DrawingVerticies.push_back(imgDrawPosition);
-                DrawingVerticies.push_back(imgDrawPosition + glm::ivec2(GetSize().x, 0));
-                DrawingVerticies.push_back(imgDrawPosition + glm::ivec2(GetSize().x, GetSize().x / showLandscapeRatio));
-                DrawingVerticies.push_back(imgDrawPosition + glm::ivec2(0, GetSize().x / showLandscapeRatio));
+                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().x, 0));
+                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().x, GetSize().x / showLandscapeRatio));
+                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(0, GetSize().x / showLandscapeRatio));
 
                 break;
             case ssGUI::Enums::ImageFitting::FIT_VERTICAL:
@@ -106,16 +106,16 @@ namespace ssGUI
                 imgDrawPosition.x = showWholeImg ? imgDrawPosition.x + (GetSize().x - (float)GetSize().y * showLandscapeRatio) / 2 : imgDrawPosition.x;
 
                 DrawingVerticies.push_back(imgDrawPosition);
-                DrawingVerticies.push_back(imgDrawPosition + glm::ivec2(GetSize().y * showLandscapeRatio, 0));
-                DrawingVerticies.push_back(imgDrawPosition + glm::ivec2(GetSize().y * showLandscapeRatio, GetSize().y));
-                DrawingVerticies.push_back(imgDrawPosition + glm::ivec2(0, GetSize().y));
+                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().y * showLandscapeRatio, 0));
+                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().y * showLandscapeRatio, GetSize().y));
+                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(0, GetSize().y));
                 break;
         }
 
         DrawingUVs.push_back(showUVOrigin);
-        DrawingUVs.push_back(showUVOrigin + glm::ivec2(showWidth, 0));
-        DrawingUVs.push_back(showUVOrigin + glm::ivec2(showWidth, showHeight));
-        DrawingUVs.push_back(showUVOrigin + glm::ivec2(0, showHeight));
+        DrawingUVs.push_back(showUVOrigin + glm::vec2(showWidth, 0));
+        DrawingUVs.push_back(showUVOrigin + glm::vec2(showWidth, showHeight));
+        DrawingUVs.push_back(showUVOrigin + glm::vec2(0, showHeight));
 
         DrawingCounts.push_back(4);
         ssGUI::DrawingProperty currentProperty;
@@ -167,7 +167,7 @@ namespace ssGUI
         ssGUI::BaseGUIObject::Delete();
     }
 
-    void Image::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Image::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -182,7 +182,7 @@ namespace ssGUI
             DisableRedrawObjectRequest();
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             if(ImageData == nullptr || !ImageData->IsValid())
             {
@@ -193,7 +193,7 @@ namespace ssGUI
 
             endOfDrawing:;
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
             
             EnableRedrawObjectRequest();
 

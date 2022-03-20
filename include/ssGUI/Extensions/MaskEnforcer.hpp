@@ -23,25 +23,10 @@ namespace ssGUI::Extensions
         bool Enabled;
         bool BlockingContainerInput;
 
-        std::map<ssGUIObjectIndex, glm::ivec2> LastMaskGlobalPosition;
-        std::map<ssGUIObjectIndex, glm::ivec2> LastMaskSize;
-        glm::ivec2 LastContainerGlobalPosition;
-        glm::ivec2 LastContainerSize;
-
-        std::vector<glm::ivec2> LastVertices;
-        std::vector<glm::ivec2> LastUVs;
-        std::vector<glm::u8vec4> LastColours;
-        std::vector<int> LastCounts;
-
         ObjectsReferences CurrentObjectsReferences;
-
-        bool Cached;
-        bool AllowCaching;
     =================================================================
     ============================== C++ ==============================
-    MaskEnforcer::MaskEnforcer() : TargetMasks(), Container(nullptr), Enabled(true), BlockingContainerInput(false), LastMaskGlobalPosition(), 
-                                    LastMaskSize(), LastContainerGlobalPosition(), LastContainerSize(), LastVertices(), LastUVs(),
-                                    LastColours(), LastCounts(), CurrentObjectsReferences(), Cached(false), AllowCaching(true)
+    MaskEnforcer::MaskEnforcer() : TargetMasks(), Container(nullptr), Enabled(true), BlockingContainerInput(false), CurrentObjectsReferences()
     {}
     =================================================================
     */
@@ -60,7 +45,7 @@ namespace ssGUI::Extensions
             MaskEnforcer(MaskEnforcer const& other);
 
             virtual void ConstructRenderInfo() override;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
         
         public:
             static const std::string EXTENSION_NAME;
@@ -95,11 +80,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>

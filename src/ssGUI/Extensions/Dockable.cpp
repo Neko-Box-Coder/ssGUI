@@ -41,7 +41,7 @@ namespace ssGUI::Extensions
     void Dockable::ConstructRenderInfo()
     {}
 
-    void Dockable::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Dockable::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     void Dockable::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
@@ -314,11 +314,11 @@ namespace ssGUI::Extensions
             if(!containerParent->IsChildrenIteratorLast())
             {
                 containerParent->MoveChildrenIteratorNext();
-                glm::ivec2 childSize = containerParent->GetCurrentChild()->GetSize();
+                glm::vec2 childSize = containerParent->GetCurrentChild()->GetSize();
                 if(static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsHorizontalLayout())
-                    containerParent->GetCurrentChild()->SetSize(glm::ivec2(childSize.x + Container->GetSize().x, childSize.y));
+                    containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x + Container->GetSize().x, childSize.y));
                 else
-                    containerParent->GetCurrentChild()->SetSize(glm::ivec2(childSize.x, childSize.y + Container->GetSize().y));                
+                    containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x, childSize.y + Container->GetSize().y));                
             }
         }
 
@@ -414,7 +414,7 @@ namespace ssGUI::Extensions
             childrenHolder->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
         {
             std::vector<ssGUI::GUIObject*> objsToMove;
-            std::vector<glm::ivec2> objsSizes;
+            std::vector<glm::vec2> objsSizes;
             
             childrenHolder->MoveChildrenIteratorToFirst();
             while (!childrenHolder->IsChildrenIteratorEnd())
@@ -674,8 +674,8 @@ namespace ssGUI::Extensions
                 CreateEmptyParentForDocking(dockLayout);
             
             //This inserts the container to the end. Halfing the size for TargetDockObject and Container so they fit the original space
-            TargetDockObject->SetSize(glm::ivec2(TargetDockObject->GetSize().x * 0.5, TargetDockObject->GetSize().y * 0.5));
-            glm::ivec2 newContainerSize = TargetDockObject->GetSize();
+            TargetDockObject->SetSize(glm::vec2(TargetDockObject->GetSize().x * 0.5, TargetDockObject->GetSize().y * 0.5));
+            glm::vec2 newContainerSize = TargetDockObject->GetSize();
             Container->SetParent(TargetDockObject->GetParent());
             Container->SetSize(newContainerSize);
 
@@ -925,14 +925,14 @@ namespace ssGUI::Extensions
                 return;
             }
             
-            glm::ivec2 containerPos = Container->GetGlobalPosition();
-            glm::ivec2 containerSize = Container->GetSize();
+            glm::vec2 containerPos = Container->GetGlobalPosition();
+            glm::vec2 containerSize = Container->GetSize();
             int titleBarOffset = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW ? 
                                     static_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() : 0;
-            glm::ivec2 windowContentSize = Container->GetSize();
+            glm::vec2 windowContentSize = Container->GetSize();
             windowContentSize.y -= titleBarOffset;
             
-            glm::ivec2 triggerSize = IsUseTriggerPercentage() ? glm::ivec2(glm::vec2(windowContentSize) * GetTriggerPercentage()) : glm::ivec2(GetTriggerPixel(), GetTriggerPixel());
+            glm::vec2 triggerSize = IsUseTriggerPercentage() ? glm::vec2(glm::vec2(windowContentSize) * GetTriggerPercentage()) : glm::vec2(GetTriggerPixel(), GetTriggerPixel());
 
             //Inform layout to exclude triggers and previews visual widgets
             ssGUI::Extensions::Layout* containerLayout = Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) ? 
@@ -1038,7 +1038,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Dockable::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Dockable::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
     
     std::string Dockable::GetExtensionName()

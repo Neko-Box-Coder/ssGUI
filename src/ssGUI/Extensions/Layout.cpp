@@ -33,18 +33,18 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Layout::LayoutChildren(int startPos, int length, std::vector<int>& childrenPos, std::vector<int>& childrenLength, 
-                                std::vector<int>& minChildrenLength, std::vector<int>& maxChildrenLength, int lastChildChangeIndex,
-                                int sizeDiff)
+    void Layout::LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
+                                std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
+                                float sizeDiff)
     {        
         FUNC_DEBUG_ENTRY();
         
-        int endPos = startPos + length;
-        int currentPos = IsReverseOrder() ? endPos : startPos;
-        int currentLength = 0;
-        int remainingLength = length;
+        float endPos = startPos + length;
+        float currentPos = IsReverseOrder() ? endPos : startPos;
+        float currentLength = 0;
+        float remainingLength = length;
 
-        int remainingMinLengths = 0;
+        float remainingMinLengths = 0;
         for(auto minLength : minChildrenLength)
             remainingMinLengths += minLength;
 
@@ -101,7 +101,7 @@ namespace ssGUI::Extensions
                 }
                 else
                 {
-                    int lengthIncrease = maxChildrenLength[i] - childrenLength[i];
+                    float lengthIncrease = maxChildrenLength[i] - childrenLength[i];
                     remainingLength -= lengthIncrease;
                     childrenLength[i] += lengthIncrease;
                 }
@@ -243,10 +243,10 @@ namespace ssGUI::Extensions
         
         if(HorizontalLayout)
         {
-            int minSizeTotalX = 0;
-            int maxSizeTotalX = 0;
-            int minMaxY = std::numeric_limits<int>::max();
-            int maxMinY = -1;
+            float minSizeTotalX = 0;
+            float maxSizeTotalX = 0;
+            float minMaxY = std::numeric_limits<float>::max();
+            float maxMinY = -1;
             
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())
@@ -264,13 +264,13 @@ namespace ssGUI::Extensions
                 
                 minSizeTotalX += Container->GetCurrentChild()->GetMinSize().x;
 
-                if(maxSizeTotalX == std::numeric_limits<int>::max())
+                if(maxSizeTotalX == std::numeric_limits<float>::max())
                 {
                     Container->MoveChildrenIteratorNext();
                     continue;
                 }
-                else if(Container->GetCurrentChild()->GetMaxSize().x == std::numeric_limits<int>::max())
-                    maxSizeTotalX = std::numeric_limits<int>::max();
+                else if(Container->GetCurrentChild()->GetMaxSize().x == std::numeric_limits<float>::max())
+                    maxSizeTotalX = std::numeric_limits<float>::max();
                 else
                     maxSizeTotalX += Container->GetCurrentChild()->GetMaxSize().x;
                 
@@ -286,35 +286,35 @@ namespace ssGUI::Extensions
             if(minMaxY < maxMinY)
                 minMaxY = maxMinY;
 
-            int paddingTotalX = GetPadding() * 2;
-            int spacingTotalX = (Container->GetChildrenCount() - ObjectsToExclude.size() - 1) * GetSpacing();
+            float paddingTotalX = GetPadding() * 2;
+            float spacingTotalX = (Container->GetChildrenCount() - ObjectsToExclude.size() - 1) * GetSpacing();
 
             minSizeTotalX += paddingTotalX + spacingTotalX;
-            maxSizeTotalX = maxSizeTotalX == std::numeric_limits<int>::max() ? std::numeric_limits<int>::max() : 
+            maxSizeTotalX = maxSizeTotalX == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() : 
                             maxSizeTotalX + paddingTotalX + spacingTotalX;
 
             if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
             {
-                minMaxY = minMaxY == std::numeric_limits<int>::max() ? std::numeric_limits<int>::max() :
+                minMaxY = minMaxY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
                             minMaxY + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() + GetPadding();
                 maxMinY += dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() + GetPadding();
             }
             else
             {
-                minMaxY = minMaxY == std::numeric_limits<int>::max() ? std::numeric_limits<int>::max() :
+                minMaxY = minMaxY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
                             minMaxY + GetPadding() * 2;
                 maxMinY += GetPadding() * 2;
             }
 
-            Container->SetMinSize(glm::ivec2(minSizeTotalX, maxMinY));
-            Container->SetMaxSize(glm::ivec2(maxSizeTotalX, minMaxY));
+            Container->SetMinSize(glm::vec2(minSizeTotalX, maxMinY));
+            Container->SetMaxSize(glm::vec2(maxSizeTotalX, minMaxY));
         }
         else
         {
-            int minSizeTotalY = 0;
-            int maxSizeTotalY = 0;
-            int minMaxX = std::numeric_limits<int>::max();
-            int maxMinX = -1;
+            float minSizeTotalY = 0;
+            float maxSizeTotalY = 0;
+            float minMaxX = std::numeric_limits<float>::max();
+            float maxMinX = -1;
             
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())   
@@ -332,13 +332,13 @@ namespace ssGUI::Extensions
                 
                 minSizeTotalY += Container->GetCurrentChild()->GetMinSize().y;
 
-                if(maxSizeTotalY == std::numeric_limits<int>::max())
+                if(maxSizeTotalY == std::numeric_limits<float>::max())
                 {
                     Container->MoveChildrenIteratorNext();
                     continue;
                 }
-                else if(Container->GetCurrentChild()->GetMaxSize().y == std::numeric_limits<int>::max())
-                    maxSizeTotalY = std::numeric_limits<int>::max();
+                else if(Container->GetCurrentChild()->GetMaxSize().y == std::numeric_limits<float>::max())
+                    maxSizeTotalY = std::numeric_limits<float>::max();
                 else
                     maxSizeTotalY += Container->GetCurrentChild()->GetMaxSize().y;
                 
@@ -354,25 +354,25 @@ namespace ssGUI::Extensions
             if(minMaxX < maxMinX)
                 minMaxX = maxMinX;
 
-            int paddingTotalY = 0;
+            float paddingTotalY = 0;
             
             if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
                 paddingTotalY = GetPadding() + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight();
             else
                 paddingTotalY = GetPadding() * 2;
 
-            int spacingTotalY = (Container->GetChildrenCount() - ObjectsToExclude.size() - 1) * GetSpacing();
+            float spacingTotalY = (Container->GetChildrenCount() - ObjectsToExclude.size() - 1) * GetSpacing();
 
             minSizeTotalY += paddingTotalY + spacingTotalY;
-            maxSizeTotalY = maxSizeTotalY == std::numeric_limits<int>::max() ? std::numeric_limits<int>::max() : 
+            maxSizeTotalY = maxSizeTotalY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() : 
                             maxSizeTotalY + paddingTotalY + spacingTotalY;
 
-            minMaxX = minMaxX == std::numeric_limits<int>::max() ? std::numeric_limits<int>::max() :
+            minMaxX = minMaxX == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
                             minMaxX + GetPadding() * 2;
             maxMinX += GetPadding() * 2;
 
-            Container->SetMinSize(glm::ivec2(maxMinX, minSizeTotalY));
-            Container->SetMaxSize(glm::ivec2(minMaxX, maxSizeTotalY));
+            Container->SetMinSize(glm::vec2(maxMinX, minSizeTotalY));
+            Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
         }
 
         FUNC_DEBUG_EXIT();
@@ -465,8 +465,8 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Layout::GetAndValidateChildrenDetails(std::vector<int>& childrenPos, std::vector<int>& childrenSize, std::vector<int>& childrenMinSize,
-                                    std::vector<int>& childrenMaxSize, glm::ivec2 containerPos, glm::ivec2 containerSize)
+    void Layout::GetAndValidateChildrenDetails(std::vector<float>& childrenPos, std::vector<float>& childrenSize, std::vector<float>& childrenMinSize,
+                                                std::vector<float>& childrenMaxSize, glm::vec2 containerPos, glm::vec2 containerSize)
     {
         FUNC_DEBUG_ENTRY();
         Container->MoveChildrenIteratorToFirst();
@@ -480,28 +480,28 @@ namespace ssGUI::Extensions
                 continue;
             }
 
-            glm::ivec2 currentPos = Container->GetCurrentChild()->GetGlobalPosition();
-            glm::ivec2 currentSize = Container->GetCurrentChild()->GetSize();
-            glm::ivec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
-            glm::ivec2 currentMaxSize = Container->GetCurrentChild()->GetMaxSize();
+            glm::vec2 currentPos = Container->GetCurrentChild()->GetGlobalPosition();
+            glm::vec2 currentSize = Container->GetCurrentChild()->GetSize();
+            glm::vec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
+            glm::vec2 currentMaxSize = Container->GetCurrentChild()->GetMaxSize();
             
             if(IsHorizontalLayout())
             {
-                int verticalPos = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+                float verticalPos = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
                                     static_cast<ssGUI::Window*>(Container)->HasTitlebar() ? 
                                     containerPos.y + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
                                     containerPos.y + GetPadding();     
 
-                int verticalSize = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+                float verticalSize = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
                                     static_cast<ssGUI::Window*>(Container)->HasTitlebar() ? 
                                     containerSize.y - GetPadding() - dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
                                     containerSize.y - GetPadding() * 2;
 
                 if(currentPos.y != verticalPos)
-                    Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(currentPos.x, verticalPos));
+                    Container->GetCurrentChild()->SetGlobalPosition(glm::vec2(currentPos.x, verticalPos));
             
                 if(currentSize.y != verticalSize)
-                    Container->GetCurrentChild()->SetSize(glm::ivec2(currentSize.x, verticalSize));
+                    Container->GetCurrentChild()->SetSize(glm::vec2(currentSize.x, verticalSize));
 
                 childrenPos.push_back(currentPos.x);
                 childrenSize.push_back(currentSize.x);
@@ -511,10 +511,10 @@ namespace ssGUI::Extensions
             else
             {
                 if(currentPos.x != containerPos.x + GetPadding())
-                    Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(containerPos.x + GetPadding(), currentPos.y));
+                    Container->GetCurrentChild()->SetGlobalPosition(glm::vec2(containerPos.x + GetPadding(), currentPos.y));
             
                 if(currentSize.x != containerSize.x - GetPadding() * 2)
-                    Container->GetCurrentChild()->SetSize(glm::ivec2(containerSize.x - GetPadding() * 2, currentSize.y));
+                    Container->GetCurrentChild()->SetSize(glm::vec2(containerSize.x - GetPadding() * 2, currentSize.y));
 
                 childrenPos.push_back(currentPos.y);
                 childrenSize.push_back(currentSize.y);
@@ -527,7 +527,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Layout::GetLastDifferentChild(std::vector<int>& childrenPos, std::vector<int>& childrenSize, int& sizeDiff, int& lastChildChangeIndex)
+    void Layout::GetLastDifferentChild(std::vector<float>& childrenPos, std::vector<float>& childrenSize, float& sizeDiff, int& lastChildChangeIndex)
     {
         FUNC_DEBUG_ENTRY();
         //There are children added or deleted. No resizing is done
@@ -587,12 +587,12 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Layout::AssignPositionsAndSizesToChildren(std::vector<int>& childrenPos, std::vector<int>& childrenSize)
+    void Layout::AssignPositionsAndSizesToChildren(std::vector<float>& childrenPos, std::vector<float>& childrenSize)
     {
         FUNC_DEBUG_ENTRY();
         int index = 0;
         Container->MoveChildrenIteratorToFirst();
-        LastUpdateChildrenSize = std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
+        LastUpdateChildrenSize = std::unordered_map<ssGUIObjectIndex, glm::vec2>();
         while(!Container->IsChildrenIteratorEnd())
         {
             ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
@@ -603,19 +603,19 @@ namespace ssGUI::Extensions
                 continue;
             }
             
-            glm::ivec2 currentPos = Container->GetCurrentChild()->GetGlobalPosition();
-            glm::ivec2 currentSize = Container->GetCurrentChild()->GetSize();
-            glm::ivec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
+            glm::vec2 currentPos = Container->GetCurrentChild()->GetGlobalPosition();
+            glm::vec2 currentSize = Container->GetCurrentChild()->GetSize();
+            glm::vec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
             
             if(IsHorizontalLayout())
             {
-                Container->GetCurrentChild()->SetSize(glm::ivec2(childrenSize[index], currentSize.y));
-                Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(childrenPos[index], currentPos.y));
+                Container->GetCurrentChild()->SetSize(glm::vec2(childrenSize[index], currentSize.y));
+                Container->GetCurrentChild()->SetGlobalPosition(glm::vec2(childrenPos[index], currentPos.y));
             }
             else
             {
-                Container->GetCurrentChild()->SetSize(glm::ivec2(currentSize.x, childrenSize[index]));
-                Container->GetCurrentChild()->SetGlobalPosition(glm::ivec2(currentPos.x, childrenPos[index]));
+                Container->GetCurrentChild()->SetSize(glm::vec2(currentSize.x, childrenSize[index]));
+                Container->GetCurrentChild()->SetGlobalPosition(glm::vec2(currentPos.x, childrenPos[index]));
             }
             
             //Update ChildrenSize
@@ -632,7 +632,7 @@ namespace ssGUI::Extensions
     void Layout::ConstructRenderInfo()
     {}
 
-    void Layout::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Layout::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     const std::string Layout::EXTENSION_NAME = "Layout";
@@ -1114,19 +1114,19 @@ namespace ssGUI::Extensions
             SyncContainerMinMaxSize();
 
         //Set all children's width and get all children pos and size and min size
-        std::vector<int> childrenPos;
-        std::vector<int> childrenSize;
-        std::vector<int> childrenMinSize;
-        std::vector<int> childrenMaxSize;
+        std::vector<float> childrenPos;
+        std::vector<float> childrenSize;
+        std::vector<float> childrenMinSize;
+        std::vector<float> childrenMaxSize;
 
-        glm::ivec2 containerPos = Container->GetGlobalPosition();
-        glm::ivec2 containerSize = Container->GetSize();
+        glm::vec2 containerPos = Container->GetGlobalPosition();
+        glm::vec2 containerSize = Container->GetSize();
         
         GetAndValidateChildrenDetails(childrenPos, childrenSize, childrenMinSize, childrenMaxSize, containerPos, containerSize);
 
         //Check if size is different from last update (Iterating from back to front so to get the first child with size change)
         int lastChildChangeIndex = -1;
-        int sizeDiff = 0;
+        float sizeDiff = 0;
 
         GetLastDifferentChild(childrenPos, childrenSize, sizeDiff, lastChildChangeIndex);
 
@@ -1171,7 +1171,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Layout::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Layout::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     std::string Layout::GetExtensionName()

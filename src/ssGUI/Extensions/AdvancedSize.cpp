@@ -18,7 +18,7 @@ namespace ssGUI::Extensions
     void AdvancedSize::ConstructRenderInfo()
     {}
 
-    void AdvancedSize::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void AdvancedSize::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
@@ -137,12 +137,12 @@ namespace ssGUI::Extensions
             finalSize.y = GetVerticalPixel();
 
         //Use finalPos
-        Container->SetSize(glm::ivec2(finalSize));
+        Container->SetSize(finalSize);
         
         FUNC_DEBUG_EXIT();
     }
 
-    void AdvancedSize::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void AdvancedSize::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //Nothing to draw
     }

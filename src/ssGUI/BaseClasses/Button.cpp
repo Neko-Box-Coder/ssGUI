@@ -11,23 +11,23 @@ namespace ssGUI
 
     void Button::ConstructRenderInfo()
     {
-        glm::ivec2 drawPosition = GetGlobalPosition();
+        glm::vec2 drawPosition = GetGlobalPosition();
 
         //Background
         DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
@@ -120,7 +120,7 @@ namespace ssGUI
         ssGUI::Widget::SetInteractable(interactable);
     }
 
-    void Button::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Button::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -135,12 +135,12 @@ namespace ssGUI
             DisableRedrawObjectRequest();
 
             for (auto extension : Extensions)
-                extension.second->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                extension.second->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             ConstructRenderInfo();
 
             for (auto extension : Extensions)
-                extension.second->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                extension.second->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
         
             EnableRedrawObjectRequest();
         

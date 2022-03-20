@@ -44,10 +44,10 @@ namespace ssGUI::Extensions
 
         ObjectsReferences CurrentObjectsReferences;
 
-        std::unordered_map<ssGUIObjectIndex, glm::ivec2> LastUpdateChildrenSize;
+        std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
         std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
         std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //note: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
-        std::unordered_map<ssGUIObjectIndex, glm::ivec2> OriginalChildrenSize;
+        std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
         std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
         std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
     =================================================================
@@ -87,18 +87,18 @@ namespace ssGUI::Extensions
 
             ObjectsReferences CurrentObjectsReferences;
 
-            std::unordered_map<ssGUIObjectIndex, glm::ivec2> LastUpdateChildrenSize;
+            std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
             std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
             std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //note: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
-            std::unordered_map<ssGUIObjectIndex, glm::ivec2> OriginalChildrenSize;
+            std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
             std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
 
             Layout(Layout const& other);
 
-            void LayoutChildren(int startPos, int length, std::vector<int>& childrenPos, std::vector<int>& childrenLength, 
-                                std::vector<int>& minChildrenLength, std::vector<int>& maxChildrenLength, int lastChildChangeIndex,
-                                int sizeDiff);
+            void LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
+                                std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
+                                float sizeDiff);
 
             void UpdateChildrenResizeTypes();
 
@@ -110,15 +110,15 @@ namespace ssGUI::Extensions
 
             void DisableChildrenResizingInUpdate();
 
-            void GetAndValidateChildrenDetails(std::vector<int>& childrenPos, std::vector<int>& childrenSize, std::vector<int>& childrenMinSize,
-                                    std::vector<int>& childrenMaxSize, glm::ivec2 containerPos, glm::ivec2 containerSize);
+            void GetAndValidateChildrenDetails(std::vector<float>& childrenPos, std::vector<float>& childrenSize, std::vector<float>& childrenMinSize,
+                                    std::vector<float>& childrenMaxSize, glm::vec2 containerPos, glm::vec2 containerSize);
             
-            void GetLastDifferentChild(std::vector<int>& childrenPos, std::vector<int>& childrenSize, int& sizeDiff, int& lastChildChangeIndex);
+            void GetLastDifferentChild(std::vector<float>& childrenPos, std::vector<float>& childrenSize, float& sizeDiff, int& lastChildChangeIndex);
 
-            void AssignPositionsAndSizesToChildren(std::vector<int>& childrenPos, std::vector<int>& childrenSize);
+            void AssignPositionsAndSizesToChildren(std::vector<float>& childrenPos, std::vector<float>& childrenSize);
 
             virtual void ConstructRenderInfo() override;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
 
         public:
@@ -266,7 +266,7 @@ namespace ssGUI::Extensions
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>

@@ -49,89 +49,89 @@ namespace ssGUI::Extensions
     {        
         FUNC_DEBUG_ENTRY();
         
-        glm::ivec2 drawPosition = Container->GetGlobalPosition();
+        glm::vec2 drawPosition = Container->GetGlobalPosition();
         
         int width = GetBorderWidth();
         glm::u8vec4 colour = GetBorderColour();
 
-        std::vector<glm::ivec2>& drawingVerticies = Container->Extension_GetDrawingVertices();
-        std::vector<glm::ivec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        std::vector<glm::vec2>& drawingVerticies = Container->Extension_GetDrawingVertices();
+        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
         std::vector<glm::u8vec4>& drawingColours = Container->Extension_GetDrawingColours();
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
 
         //Top
-        drawingVerticies.push_back(drawPosition + glm::ivec2(0, -width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x, -width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x, 0));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(0, 0));
+        drawingVerticies.push_back(drawPosition + glm::vec2(0, -width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, -width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, 0));
+        drawingVerticies.push_back(drawPosition + glm::vec2(0, 0));
 
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
 
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
 
         drawingCounts.push_back(4);
         drawingProperties.push_back(ssGUI::DrawingProperty());
 
         //Right
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x, -width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x + width, -width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x + width, Container->GetSize().y + width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x, Container->GetSize().y + width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, -width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x + width, -width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x + width, Container->GetSize().y + width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y + width));
 
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
 
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
 
         drawingCounts.push_back(4);
         drawingProperties.push_back(ssGUI::DrawingProperty());
 
         //Bottom
-        drawingVerticies.push_back(drawPosition + glm::ivec2(0, Container->GetSize().y));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x, Container->GetSize().y));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(Container->GetSize().x, Container->GetSize().y + width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(0, Container->GetSize().y + width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(0, Container->GetSize().y));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y));
+        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y + width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(0, Container->GetSize().y + width));
 
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
 
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
 
         drawingCounts.push_back(4);
         drawingProperties.push_back(ssGUI::DrawingProperty());
 
         //Left
-        drawingVerticies.push_back(drawPosition + glm::ivec2(-width, -width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(0, -width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(0, Container->GetSize().y + width));
-        drawingVerticies.push_back(drawPosition + glm::ivec2(-width, Container->GetSize().y + width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(-width, -width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(0, -width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(0, Container->GetSize().y + width));
+        drawingVerticies.push_back(drawPosition + glm::vec2(-width, Container->GetSize().y + width));
 
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
         drawingColours.push_back(colour);
 
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
-        drawingUVs.push_back(glm::ivec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
+        drawingUVs.push_back(glm::vec2());
 
         drawingCounts.push_back(4);
         drawingProperties.push_back(ssGUI::DrawingProperty()); 
@@ -144,7 +144,7 @@ namespace ssGUI::Extensions
         DrawBorder();
     }
 
-    void Border::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Border::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         ConstructRenderInfo();
     }
@@ -167,7 +167,7 @@ namespace ssGUI::Extensions
         //Do nothing
     }
     
-    void Border::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Border::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         if(IsPreRender || Container == nullptr || Container->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW || !Enabled)
             return;

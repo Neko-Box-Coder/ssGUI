@@ -39,9 +39,9 @@ namespace ssGUI
         bool ResizingLeft;
         bool ResizingRight;
         bool Dragging;
-        glm::ivec2 OnTransformBeginPosition;
-        glm::ivec2 OnTransformBeginSize;
-        glm::ivec2 MouseDownPosition;
+        glm::vec2 OnTransformBeginPosition;
+        glm::vec2 OnTransformBeginSize;
+        glm::vec2 MouseDownPosition;
     =================================================================
     ============================== C++ ==============================
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
@@ -74,15 +74,15 @@ namespace ssGUI
             bool ResizingLeft;
             bool ResizingRight;
             bool Dragging;
-            glm::ivec2 OnTransformBeginPosition;
-            glm::ivec2 OnTransformBeginSize;
-            glm::ivec2 MouseDownPosition;
+            glm::vec2 OnTransformBeginPosition;
+            glm::vec2 OnTransformBeginSize;
+            glm::vec2 MouseDownPosition;
             Window& operator=(Window const& other) = default;
 
             virtual void SetWindowDragState(ssGUI::Enums::WindowDragState dragState);
-            virtual void OnMouseDownUpdate(glm::ivec2 currentMousePos, ssGUI::InputStatus& globalInputStatus);
-            virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::ivec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
-            virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::ivec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
+            virtual void OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& globalInputStatus);
+            virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
+            virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
 
 
         protected:
@@ -191,7 +191,7 @@ namespace ssGUI
 
             //function: Internal_Draw
             //See <GUIObject::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
             //See <GUIObject::Internal_Update>

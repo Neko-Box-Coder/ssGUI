@@ -17,7 +17,7 @@ namespace ssGUI
            GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->Notify(this);
     }
 
-    void Window::OnMouseDownUpdate(glm::ivec2 currentMousePos, ssGUI::InputStatus& globalInputStatus)
+    void Window::OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& globalInputStatus)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -85,20 +85,20 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    void Window::OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::ivec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+    void Window::OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
         FUNC_DEBUG_ENTRY();
         globalInputStatus.MouseInputBlocked = true;
             
-        glm::ivec2 newPos = OnTransformBeginPosition;
+        glm::vec2 newPos = OnTransformBeginPosition;
         if(ResizingLeft || ResizingRight || ResizingTop || ResizingBot)
         {
             //Resize
-            glm::ivec2 newSize = OnTransformBeginSize;
+            glm::vec2 newSize = OnTransformBeginSize;
             if(ResizingTop)
             {
-                newPos += glm::ivec2(0, mouseDelta.y);
-                newSize -= glm::ivec2(0, mouseDelta.y);
+                newPos += glm::vec2(0, mouseDelta.y);
+                newSize -= glm::vec2(0, mouseDelta.y);
 
                 //Bound new pos to prevent moving the window when resizing reaches max or min
                 if(newSize.y < GetMinSize().y)
@@ -108,13 +108,13 @@ namespace ssGUI
             }
             else if(ResizingBot)
             {
-                newSize += glm::ivec2(0, mouseDelta.y);
+                newSize += glm::vec2(0, mouseDelta.y);
             }
             
             if(ResizingLeft)
             {
-                newPos += glm::ivec2(mouseDelta.x, 0);
-                newSize -= glm::ivec2(mouseDelta.x, 0);
+                newPos += glm::vec2(mouseDelta.x, 0);
+                newSize -= glm::vec2(mouseDelta.x, 0);
 
                 //Bound new pos to prevent moving the window when resizing reaches max or min
                 if(newSize.x < GetMinSize().x)
@@ -124,7 +124,7 @@ namespace ssGUI
             }
             else if(ResizingRight)
             {
-                newSize += glm::ivec2(mouseDelta.x, 0);
+                newSize += glm::vec2(mouseDelta.x, 0);
             }
             SetSize(newSize);
         }
@@ -159,7 +159,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::ivec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+    void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -244,34 +244,34 @@ namespace ssGUI
         else
             SetWindowDragState(ssGUI::Enums::WindowDragState::NONE);
 
-        OnTransformBeginSize = glm::ivec2();
-        OnTransformBeginPosition = glm::ivec2();
-        MouseDownPosition = glm::ivec2();
+        OnTransformBeginSize = glm::vec2();
+        OnTransformBeginPosition = glm::vec2();
+        MouseDownPosition = glm::vec2();
 
         FUNC_DEBUG_EXIT();
     }
 
     void Window::ConstructRenderInfo()
     {
-        glm::ivec2 drawPosition = GetGlobalPosition();
+        glm::vec2 drawPosition = GetGlobalPosition();
 
         //TODO: Some optimisation maybe possible
 
         //Base window
         DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::ivec2());        //TODO : Caching
+        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        DrawingUVs.push_back(glm::vec2());        //TODO : Caching
         DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);
@@ -296,19 +296,19 @@ namespace ssGUI
         rgbAdder(&titlebarColor.a, TitlebarColorDifference.a);
 
         DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(titlebarColor);
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(titlebarColor);
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(GetSize().x, TitlebarHeight));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, TitlebarHeight));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(titlebarColor);
 
-        DrawingVerticies.push_back(drawPosition + glm::ivec2(0, TitlebarHeight));
-        DrawingUVs.push_back(glm::ivec2());
+        DrawingVerticies.push_back(drawPosition + glm::vec2(0, TitlebarHeight));
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(titlebarColor);
 
         DrawingCounts.push_back(4);
@@ -507,7 +507,7 @@ namespace ssGUI
         ssGUI::BaseGUIObject::Delete();
     }
 
-    void Window::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Window::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -522,7 +522,7 @@ namespace ssGUI
             DisableRedrawObjectRequest();
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             // std::cout<<"local pos: "<<GetPosition().x<<", "<<GetPosition().y<<"\n";
             // std::cout<<"rendering pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
@@ -531,7 +531,7 @@ namespace ssGUI
             ConstructRenderInfo();
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             EnableRedrawObjectRequest();
         
@@ -564,8 +564,8 @@ namespace ssGUI
         for(auto extension : ExtensionsUpdateOrder)
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
-        glm::ivec2 mouseDelta = currentMousePos - MouseDownPosition;
+        glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+        glm::vec2 mouseDelta = currentMousePos - MouseDownPosition;
 
         // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";
         // std::cout << "current window pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";

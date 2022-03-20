@@ -27,8 +27,8 @@ namespace ssGUI::Backend
 
             //function: DrawEntities
             //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. *Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
-            virtual bool DrawEntities(  const std::vector<glm::ivec2>& vertices, 
-                                        const std::vector<glm::ivec2>& texCoords,
+            virtual bool DrawEntities(  const std::vector<glm::vec2>& vertices, 
+                                        const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colours,
                                         const std::vector<int>& counts,
                                         const std::vector<ssGUI::DrawingProperty>& properties) = 0;
@@ -43,37 +43,37 @@ namespace ssGUI::Backend
             virtual void ClearBackBuffer(glm::u8vec3 clearColor) = 0;
             
         protected:
-            virtual bool DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                    const std::vector<glm::ivec2>& texCoords,
+            virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
+                                    const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colours,
                                     const ssGUI::Backend::BackendFontInterface& font,
                                     int CharacterSize) = 0;
 
-            virtual bool DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                    const std::vector<glm::ivec2>& texCoords,
+            virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
+                                    const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colours,
                                     const ssGUI::Backend::BackendImageInterface& image) = 0;
 
 
-            virtual bool DrawShape( const std::vector<glm::ivec2>& vertices, 
+            virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::u8vec4>& colours) = 0;
 
             //NOTE: End index is exclusive
-            virtual bool DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                    const std::vector<glm::ivec2>& texCoords,
+            virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
+                                    const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colours,
                                     int startIndex, int endIndex,
                                     const ssGUI::Backend::BackendFontInterface& font,
                                     int CharacterSize) = 0;
 
-            virtual bool DrawShape( const std::vector<glm::ivec2>& vertices, 
-                                    const std::vector<glm::ivec2>& texCoords,
+            virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
+                                    const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colours,
                                     int startIndex, int endIndex,
                                     const ssGUI::Backend::BackendImageInterface& image) = 0;
 
 
-            virtual bool DrawShape( const std::vector<glm::ivec2>& vertices, 
+            virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::u8vec4>& colours,
                                     int startIndex, int endIndex) = 0;
 

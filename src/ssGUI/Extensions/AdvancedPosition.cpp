@@ -20,7 +20,7 @@ namespace ssGUI::Extensions
     void AdvancedPosition::ConstructRenderInfo()
     {}
 
-    void AdvancedPosition::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void AdvancedPosition::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";
@@ -265,11 +265,11 @@ namespace ssGUI::Extensions
         }
 
         //Use finalPos
-        Container->SetPosition(glm::ivec2(finalPos));
+        Container->SetPosition(finalPos);
         FUNC_DEBUG_EXIT();
     }
 
-    void AdvancedPosition::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void AdvancedPosition::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //Nothing to draw
     }

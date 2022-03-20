@@ -42,27 +42,27 @@ namespace ssGUI
         bool AcceptRedrawRequest;
 
         //Widget transform
-        glm::ivec2 Position;
-        glm::ivec2 GlobalPosition;
-        glm::ivec2 Size;
-        glm::ivec2 MinSize;
-        glm::ivec2 MaxSize;
+        glm::vec2 Position;
+        glm::vec2 GlobalPosition;
+        glm::vec2 Size;
+        glm::vec2 MinSize;
+        glm::vec2 MaxSize;
         ssGUI::Enums::AnchorType Anchor;
 
         //Rendering
-        std::vector<glm::ivec2> DrawingVerticies;
-        std::vector<glm::ivec2> DrawingUVs;
+        std::vector<glm::vec2> DrawingVerticies;
+        std::vector<glm::vec2> DrawingUVs;
         std::vector<glm::u8vec4> DrawingColours;
         std::vector<int> DrawingCounts;
         std::vector<ssGUI::DrawingProperty> DrawingProperties;
 
         //Cache rendering
-        std::vector<glm::ivec2> LastDrawingVerticies;
-        std::vector<glm::ivec2> LastDrawingUVs;
+        std::vector<glm::vec2> LastDrawingVerticies;
+        std::vector<glm::vec2> LastDrawingUVs;
         std::vector<glm::u8vec4> LastDrawingColours;
         std::vector<int> LastDrawingCounts;
         std::vector<ssGUI::DrawingProperty> LastDrawingProperties;
-        glm::ivec2 LastGlobalPosition;
+        glm::vec2 LastGlobalPosition;
 
         std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;
         std::vector<std::string> ExtensionsDrawOrder;
@@ -75,8 +75,8 @@ namespace ssGUI
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
                                         BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
                                         CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), AcceptRedrawRequest(true), 
-                                        Position(glm::ivec2(0, 0)), GlobalPosition(glm::ivec2(0, 0)), Size(glm::ivec2(50, 50)), MinSize(glm::ivec2(25, 25)),
-                                        MaxSize(glm::ivec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
+                                        Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), MinSize(glm::vec2(25, 25)),
+                                        MaxSize(glm::vec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
                                         DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
                                         LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
@@ -106,27 +106,27 @@ namespace ssGUI
             bool AcceptRedrawRequest;
 
             //Widget transform
-            glm::ivec2 Position;
-            glm::ivec2 GlobalPosition;
-            glm::ivec2 Size;
-            glm::ivec2 MinSize;
-            glm::ivec2 MaxSize;
+            glm::vec2 Position;
+            glm::vec2 GlobalPosition;
+            glm::vec2 Size;
+            glm::vec2 MinSize;
+            glm::vec2 MaxSize;
             ssGUI::Enums::AnchorType Anchor;
 
             //Rendering
-            std::vector<glm::ivec2> DrawingVerticies;
-            std::vector<glm::ivec2> DrawingUVs;
+            std::vector<glm::vec2> DrawingVerticies;
+            std::vector<glm::vec2> DrawingUVs;
             std::vector<glm::u8vec4> DrawingColours;
             std::vector<int> DrawingCounts;
             std::vector<ssGUI::DrawingProperty> DrawingProperties;
 
             //Cache rendering
-            std::vector<glm::ivec2> LastDrawingVerticies;
-            std::vector<glm::ivec2> LastDrawingUVs;
+            std::vector<glm::vec2> LastDrawingVerticies;
+            std::vector<glm::vec2> LastDrawingUVs;
             std::vector<glm::u8vec4> LastDrawingColours;
             std::vector<int> LastDrawingCounts;
             std::vector<ssGUI::DrawingProperty> LastDrawingProperties;
-            glm::ivec2 LastGlobalPosition;
+            glm::vec2 LastGlobalPosition;
 
             std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;
             std::vector<std::string> ExtensionsDrawOrder;
@@ -140,8 +140,8 @@ namespace ssGUI
             virtual void SyncPosition() override;
             virtual void SyncGlobalPosition() override;
             virtual void ConstructRenderInfo() override;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
-            //virtual void DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset);
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            //virtual void DrawBorder(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset);
             virtual void NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
             virtual ssGUI::GUIObject* CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot);
             virtual void CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj);
@@ -156,43 +156,43 @@ namespace ssGUI
             //Below are from GUIObject.hpp
             //function: GetPosition
             //See <GUIObject::GetPosition>
-            virtual glm::ivec2 GetPosition() const override;
+            virtual glm::vec2 GetPosition() const override;
             
             //function: SetPosition
             //See <GUIObject::SetPosition>
-            virtual void SetPosition(glm::ivec2 position) override;
+            virtual void SetPosition(glm::vec2 position) override;
             
             //function: GetGlobalPosition
             //See <GUIObject::GetGlobalPosition>
-            virtual glm::ivec2 GetGlobalPosition() override;    //TODO : SyncGlobalPosition is called so can't be const. Try to turn this to const
+            virtual glm::vec2 GetGlobalPosition() override;    //TODO : SyncGlobalPosition is called so can't be const. Try to turn this to const
             
             //function: SetGlobalPosition
             //See <GUIObject::SetGlobalPosition>
-            virtual void SetGlobalPosition(glm::ivec2 position) override;
+            virtual void SetGlobalPosition(glm::vec2 position) override;
 
             //function: GetSize
             //See <GUIObject::GetSize>
-            virtual glm::ivec2 GetSize() const override;
+            virtual glm::vec2 GetSize() const override;
             
             //function: SetSize
             //See <GUIObject::SetSize>
-            virtual void SetSize(glm::ivec2 size) override;
+            virtual void SetSize(glm::vec2 size) override;
 
             //function: GetMinSize
             //See <GUIObject::GetMinSize>
-            virtual glm::ivec2 GetMinSize() const override;
+            virtual glm::vec2 GetMinSize() const override;
             
             //function: SetMinSize
             //See <GUIObject::SetMinSize>
-            virtual void SetMinSize(glm::ivec2 minSize) override;
+            virtual void SetMinSize(glm::vec2 minSize) override;
 
             //function: GetMaxSize
             //See <GUIObject::GetMaxSize>
-            virtual glm::ivec2 GetMaxSize() const override;
+            virtual glm::vec2 GetMaxSize() const override;
             
             //function: SetMaxSize
             //See <GUIObject::SetMaxSize>
-            virtual void SetMaxSize(glm::ivec2 maxSize) override;
+            virtual void SetMaxSize(glm::vec2 maxSize) override;
 
             //function: GetParent
             //See <GUIObject::GetParent>
@@ -316,11 +316,11 @@ namespace ssGUI
             
             //function: Extension_GetDrawingVertices
             //See <GUIObject::Extension_GetDrawingVertices>
-            virtual std::vector<glm::ivec2>& Extension_GetDrawingVertices() override;
+            virtual std::vector<glm::vec2>& Extension_GetDrawingVertices() override;
             
             //function: Extension_GetDrawingUVs
             //See <GUIObject::Extension_GetDrawingUVs>
-            virtual std::vector<glm::ivec2>& Extension_GetDrawingUVs() override;
+            virtual std::vector<glm::vec2>& Extension_GetDrawingUVs() override;
             
             //function: Extension_GetDrawingColours
             //See <GUIObject::Extension_GetDrawingColours>
@@ -420,7 +420,7 @@ namespace ssGUI
 
             //function: Internal_Draw
             //See <GUIObject::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
             //See <GUIObject::Internal_Update>

@@ -14,7 +14,7 @@ namespace ssGUI
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
     }
     
-    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::ivec2(0, 0)), RedrawCount(0), LastSyncTime(0)
+    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::vec2(0, 0)), RedrawCount(0), LastSyncTime(0)
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
@@ -77,18 +77,18 @@ namespace ssGUI
     
     void MainWindow::Internal_Draw()
     {
-        Internal_Draw(BackendDrawing, this, glm::ivec2());
+        Internal_Draw(BackendDrawing, this, glm::vec2());
     }
 
     //TODO : Refactor this, merge it to sync in update function
-    void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {       
         DisableRedrawObjectRequest();
         
         // if(Redraw)
         // {
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
             
             //Settings that require window to be relaunched -----------------------------------------
             if(BackendMainWindow->HasTitlebar() != HasTitlebar())
@@ -110,14 +110,14 @@ namespace ssGUI
 
             //TEST
             /*
-            std::vector<glm::ivec2> cord;
+            std::vector<glm::vec2> cord;
             std::vector<glm::u8vec4> color;
 
             
-            cord.push_back(glm::ivec2(1, 0));
-            cord.push_back(glm::ivec2(GetSize().x - 1, 0));
-            cord.push_back(glm::ivec2(GetSize().x - 1, 20));
-            cord.push_back(glm::ivec2(1, 20));
+            cord.push_back(glm::vec2(1, 0));
+            cord.push_back(glm::vec2(GetSize().x - 1, 0));
+            cord.push_back(glm::vec2(GetSize().x - 1, 20));
+            cord.push_back(glm::vec2(1, 20));
 
             color.push_back(glm::u8vec4(0, 0, 0, 255));
             color.push_back(glm::u8vec4(0, 0, 0, 255));
@@ -130,37 +130,37 @@ namespace ssGUI
             //TODO : Add backend drawing here
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             EnableRedrawObjectRequest();
 
         //     Redraw = false;
         // }
-    }   
-
-    glm::ivec2 MainWindow::GetPosition() const
-    {
-        return glm::ivec2(0, 0);// BackendMainWindow->GetPosition();
     }
-    void MainWindow::SetPosition(glm::ivec2 position)
+
+    glm::vec2 MainWindow::GetPosition() const
+    {
+        return glm::vec2(0, 0);// BackendMainWindow->GetPosition();
+    }
+    void MainWindow::SetPosition(glm::vec2 position)
     {
         //BackendMainWindow->SetPosition(position);
     }
 
-    glm::ivec2 MainWindow::GetGlobalPosition()
+    glm::vec2 MainWindow::GetGlobalPosition()
     {
-        return glm::ivec2(0, 0);//return BackendMainWindow->GetPosition();
+        return glm::vec2(0, 0);//return BackendMainWindow->GetPosition();
     }
-    void MainWindow::SetGlobalPosition(glm::ivec2 position)
+    void MainWindow::SetGlobalPosition(glm::vec2 position)
     {
         //BackendMainWindow->SetPosition(position);
     }
 
-    glm::ivec2 MainWindow::GetSize() const
+    glm::vec2 MainWindow::GetSize() const
     {
         return BackendMainWindow->GetSize();
     }
-    void MainWindow::SetSize(glm::ivec2 size)
+    void MainWindow::SetSize(glm::vec2 size)
     {
         size.x = size.x > GetMaxSize().x ? GetMaxSize().x : size.x;
         size.y = size.y > GetMaxSize().y ? GetMaxSize().y : size.y;
@@ -203,6 +203,7 @@ namespace ssGUI
         Window::Internal_OnClose();
     }
 
+    //TODO : Add WindowDragStateChangedEvent call
     void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();

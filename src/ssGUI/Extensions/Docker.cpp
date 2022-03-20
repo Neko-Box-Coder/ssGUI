@@ -34,7 +34,7 @@ namespace ssGUI::Extensions
     void Docker::ConstructRenderInfo()
     {}
 
-    void Docker::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Docker::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     void Docker::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
@@ -318,14 +318,14 @@ namespace ssGUI::Extensions
                 return;
             }
             
-            glm::ivec2 containerPos = Container->GetGlobalPosition();
-            glm::ivec2 containerSize = Container->GetSize();
+            glm::vec2 containerPos = Container->GetGlobalPosition();
+            glm::vec2 containerSize = Container->GetSize();
             int titleBarOffset = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW ? 
                                     static_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() : 0;
             containerSize.y -= titleBarOffset;
             
-            glm::ivec2 triggerSize = IsUseTriggerPercentage() ? glm::ivec2(containerSize.x * GetTriggerHorizontalPercentage(), containerSize.y * GetTriggerVerticalPercentage()) : 
-                                        glm::ivec2(GetTriggerHorizontalPixel(), GetTriggerVerticalPixel());
+            glm::vec2 triggerSize = IsUseTriggerPercentage() ? glm::vec2(containerSize.x * GetTriggerHorizontalPercentage(), containerSize.y * GetTriggerVerticalPercentage()) : 
+                                        glm::vec2(GetTriggerHorizontalPixel(), GetTriggerVerticalPixel());
 
             bool previewDrawn = false;
 
@@ -376,7 +376,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Docker::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void Docker::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     std::string Docker::GetExtensionName()

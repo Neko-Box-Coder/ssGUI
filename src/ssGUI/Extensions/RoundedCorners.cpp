@@ -17,7 +17,7 @@ namespace ssGUI::Extensions
     }
 
 
-    double RoundedCorners::GetAngle(glm::ivec2 a, glm::ivec2 b)
+    double RoundedCorners::GetAngle(glm::vec2 a, glm::vec2 b)
     {
         glm::vec3 a3 = glm::vec3(a, 1);
         glm::vec3 b3 = glm::vec3(b, 1);
@@ -25,7 +25,7 @@ namespace ssGUI::Extensions
         return atan2(glm::cross(a3, b3).z, glm::dot(glm::vec2(a), glm::vec2(b)));
     }
 
-    glm::dvec3 RoundedCorners::Barycentric(glm::ivec2 samplePoint, glm::ivec2 a, glm::ivec2 b, glm::ivec2 c)
+    glm::vec3 RoundedCorners::Barycentric(glm::vec2 samplePoint, glm::vec2 a, glm::vec2 b, glm::vec2 c)
     {
         glm::vec2 v0 = b - a;
         glm::vec2 v1 = c - a;
@@ -40,16 +40,16 @@ namespace ssGUI::Extensions
 
         //All points are the same or not valid triangle
         if(denom == 0)
-            return glm::dvec3(0, 0, 0);
+            return glm::vec3(0, 0, 0);
         
-        double v = (double)(d11 * d20 - d01 * d21) / (double)denom;
-        double w = (double)(d00 * d21 - d01 * d20) / (double)denom;
-        double u = 1.0 - v - w;
-        return glm::dvec3(u, v, w);
+        float v = (d11 * d20 - d01 * d21) / denom;
+        float w = (d00 * d21 - d01 * d20) / denom;
+        float u = 1.0 - v - w;
+        return glm::vec3(u, v, w);
     }
 
 
-    void RoundedCorners::PlotArcPoints(glm::ivec2 a, glm::ivec2 b, glm::ivec2 c, std::vector<glm::ivec2>& plottedPoints)
+    void RoundedCorners::PlotArcPoints(glm::vec2 a, glm::vec2 b, glm::vec2 c, std::vector<glm::vec2>& plottedPoints)
     {
         //Let A be previous vertices and B be current and C be next
         int roundRadius = RoundedCornersRadius;
@@ -77,17 +77,17 @@ namespace ssGUI::Extensions
         //Find the rounded corner circle location, let that be CIR
         //https://math.stackexchange.com/questions/797828/calculate-center-of-circle-tangent-to-two-lines-in-space
         glm::dvec2 cird = glm::dvec2(b) + glm::dvec2(midVec) * (roundRadius / sin(angleABC * 0.5)); 
-        glm::ivec2 cir = glm::ivec2(round(cird.x), round(cird.y));
+        glm::vec2 cir = glm::vec2(cird);
 
         //let that be t1(on ab) and t2(on bc)
         //Find the tangent points by using cross porduct to find the perpendicular line on ab and ac 
         //and add it to the circle origin by radius to find t1 and t2.
-        glm::ivec2 t1 = glm::normalize(glm::cross(glm::vec3(ba, 0), glm::vec3(0, 0, -1))) * (float)roundRadius + glm::vec3(cir, 0);
-        glm::ivec2 t2 = glm::normalize(glm::cross(glm::vec3(bc, 0), glm::vec3(0, 0, 1))) * (float)roundRadius + glm::vec3(cir, 0);
+        glm::vec2 t1 = glm::normalize(glm::cross(glm::vec3(ba, 0), glm::vec3(0, 0, -1))) * (float)roundRadius + glm::vec3(cir, 0);
+        glm::vec2 t2 = glm::normalize(glm::cross(glm::vec3(bc, 0), glm::vec3(0, 0, 1))) * (float)roundRadius + glm::vec3(cir, 0);
 
         //Find the angle between CIR --> t1 to CIR --> t2
-        glm::ivec2 cirTot1 = t1 - cir;
-        glm::ivec2 cirTot2 = t2 - cir;
+        glm::vec2 cirTot1 = t1 - cir;
+        glm::vec2 cirTot2 = t2 - cir;
 
         double angleT1CirT2 = GetAngle(cirTot1, cirTot2);
 
@@ -113,7 +113,7 @@ namespace ssGUI::Extensions
             DEBUG_EXIT_PROGRAM();
         }
 
-        glm::ivec2 cirOriginline = glm::ivec2(1, 0);
+        glm::vec2 cirOriginline = glm::vec2(1, 0);
         double originLineToT1Angle = GetAngle(cirOriginline, cirTot1);
         originLineToT1Angle = originLineToT1Angle < 0 ? 2 * pi() + originLineToT1Angle : originLineToT1Angle;
 
@@ -121,11 +121,11 @@ namespace ssGUI::Extensions
         //Using the information with tangent points, angles between them and clockwise information
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        for(int i = 0; i < (int)(roundRadius * 1.5) + 2; i++)
+        for(int i = 0; i < (int)(roundRadius * 1.0) + 2; i++)
         {
-            double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)((int)(roundRadius * 1.5) + 1));
+            double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)((int)(roundRadius * 1.0) + 1));
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)roundRadius;
-            plottedPoints.push_back(glm::ivec2(round(plotPoint.x), round(plotPoint.y)) + cir);
+            plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + cir);
         }
     }
 
@@ -151,7 +151,7 @@ namespace ssGUI::Extensions
         VerticesToRoundPrevVertices.clear();
         VerticesToRoundNextVertices.clear();
 
-        std::vector<glm::ivec2>& drawingVertices = Container->Extension_GetDrawingVertices();
+        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
 
         int startIndex = 0;
@@ -204,20 +204,20 @@ namespace ssGUI::Extensions
 
     void RoundedCorners::ConstructRenderInfo()
     {
-        std::vector<glm::ivec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        std::vector<glm::ivec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
+        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
         std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
 
-        std::vector<glm::ivec2> originalVertices = drawingVertices;
-        std::vector<glm::ivec2> originalUVs = drawingUVs;
+        std::vector<glm::vec2> originalVertices = drawingVertices;
+        std::vector<glm::vec2> originalUVs = drawingUVs;
         std::vector<glm::u8vec4> originalColors = drawingColors;
         std::vector<int> originalCounts = drawingCounts;
         std::vector<ssGUI::DrawingProperty> originalProperties = drawingProperties;
 
-        std::vector<glm::ivec2> newVertices;    //Lists of new vertices as arc
-        std::vector<glm::ivec2> newUVs;         //Associated UVs
+        std::vector<glm::vec2> newVertices;    //Lists of new vertices as arc
+        std::vector<glm::vec2> newUVs;         //Associated UVs
         std::vector<glm::u8vec4> newColors;     //Associated colors
         std::vector<int> newCounts;             //The number vertices per arc
 
@@ -241,15 +241,15 @@ namespace ssGUI::Extensions
             //For each arc points, sample the UV and colors
             for(int j = prevNewVerticesCount; j < newVertices.size(); j++)
             {                
-                glm::dvec3 coord = Barycentric(newVertices[j], drawingVertices[prevIndex], drawingVertices[currentIndex], drawingVertices[nextIndex]);
+                glm::vec3 coord = Barycentric(newVertices[j], drawingVertices[prevIndex], drawingVertices[currentIndex], drawingVertices[nextIndex]);
 
-                newUVs.push_back(glm::dvec2(drawingUVs[prevIndex]) * coord.x + 
-                                glm::dvec2(drawingUVs[currentIndex]) * coord.y + 
-                                glm::dvec2(drawingUVs[nextIndex]) * coord.z);
+                newUVs.push_back((drawingUVs[prevIndex]) * coord.x + 
+                                (drawingUVs[currentIndex]) * coord.y + 
+                                (drawingUVs[nextIndex]) * coord.z);
 
-                newColors.push_back(glm::dvec4(drawingColors[prevIndex]) * coord.x + 
-                                    glm::dvec4(drawingColors[currentIndex]) * coord.y + 
-                                    glm::dvec4(drawingColors[nextIndex]) * coord.z);
+                newColors.push_back(glm::vec4(drawingColors[prevIndex]) * coord.x + 
+                                    glm::vec4(drawingColors[currentIndex]) * coord.y + 
+                                    glm::vec4(drawingColors[nextIndex]) * coord.z);
             }
         }
 
@@ -320,7 +320,7 @@ namespace ssGUI::Extensions
         }
     }
 
-    void RoundedCorners::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void RoundedCorners::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         ConstructRenderInfo();
     }
@@ -446,7 +446,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void RoundedCorners::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void RoundedCorners::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
         
