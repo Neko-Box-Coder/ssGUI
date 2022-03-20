@@ -8,4 +8,5 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/Dockable.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Docker.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/RoundedCorners.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Outline.cpp"
                     )
