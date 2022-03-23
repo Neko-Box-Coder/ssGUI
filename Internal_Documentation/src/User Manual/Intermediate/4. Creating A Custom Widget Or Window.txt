@@ -1,0 +1,235 @@
+Title: Creating A Custom Widget Or Window
+
+Section: Header
+This is the header template for creating a custom widget. Just replace widget with window for custom window.
+(Remove the "//" for the C++ divider for Natural Docs to work properly when parsing)
+
+================================= C++ ===================================
+#ifndef SSGUI_CUSTOM_WIDGET
+#define SSGUI_CUSTOM_WIDGET
+
+#include "ssGUI/BaseClasses/Widget.hpp"
+
+//namespace: ssGUI
+namespace ssGUI
+{
+    /*class: CustomWidget
+    Your class description here.
+
+    Variables & Constructor:
+    //============================== C++ ==============================
+    private:
+        //Your variables go here
+    //=================================================================
+    //============================== C++ ==============================
+    Widget::Widget() :  Focused(false), Interactable(true), BlockInput(true) 
+    {}
+    //=================================================================
+    */
+    class CustomWidget : public Widget
+    {
+        private:
+            //Your variables go here
+
+            CustomWidget& operator=(CustomWidget const& other) = default;
+
+        protected:
+            CustomWidget(CustomWidget const& other);
+
+            virtual void ConstructRenderInfo() override;
+
+        public:
+            CustomWidget();
+            virtual ~CustomWidget() override;
+            
+            //function: GetType
+            //See <Widget::GetType>
+            virtual ssGUI::Enums::GUIObjectType GetType() const override;
+    
+            //function: Delete 
+            //See <Widget::Delete>
+            virtual void Delete() override;
+
+            //function: Internal_Draw
+            //See <Widget::Internal_Draw>
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            
+            //function: Internal_Update
+            //See <Widget::Internal_Update>
+            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            
+            //function: Clone
+            //See <Widget::Clone>
+            virtual GUIObject* Clone(bool cloneChildren) override;
+    };
+}
+
+#endif
+======================================================================
+
+Section: Source
+This is the source template for creating a custom widget. Just replace widget with window for custom window.
+
+================================= C++ ===================================
+#include "ssGUI/BaseClasses/CustomWidget.hpp"
+
+#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+
+namespace ssGUI
+{
+    CustomWidget::CustomWidget(CustomWidget const& other) : BaseGUIObject(other)
+    {
+        //Copy the values here.
+    }
+    
+    //You only need to override this when you are rendering anything.
+    void CustomWidget::ConstructRenderInfo()
+    {
+        //Get the top-left position of the widget 
+        glm::ivec2 drawPosition = GetGlobalPosition();
+
+        //You can do you drawing here.
+        //You can get the rendering details with DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts and DrawingProperties
+    }
+    
+    CustomWidget::CustomWidget()// : [Your variables constructions go here]
+    {}
+
+    CustomWidget::~CustomWidget()
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        //any claen-up put it here
+    }
+
+    //You don't have to override this. If you do want to return your own type, 
+    //just edit the GUIObjectType and return it along with BASE_WIDGET
+    ssGUI::Enums::GUIObjectType CustomWidget::GetType() const
+    {
+        return ssGUI::Enums::GUIObjectType::BASE_WIDGET;
+        //return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::YOUR_OWN_TYPE;
+    }
+
+    //You don't have to override this. But if you have any claen-up put it here as well.
+    void CustomWidget::Delete()
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        ssGUI::Widget::Delete();
+    }
+
+    //You only need to override this when you are rendering anything.
+    void CustomWidget::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    {
+        FUNC_DEBUG_ENTRY();
+        
+        if(!IsVisible())
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+        
+        if(Redraw)
+        {
+            DisableRedrawObjectRequest();
+
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+            
+            ConstructRenderInfo();
+
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+
+            EnableRedrawObjectRequest();
+
+            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
+            CacheRendering();
+            DrawingVerticies.clear();
+            DrawingUVs.clear();
+            DrawingColours.clear();
+            DrawingCounts.clear();
+            DrawingProperties.clear();
+            Redraw = false;
+        }
+        else
+            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
+
+        FUNC_DEBUG_EXIT();
+    }
+
+    //You only need to override this when you need to update the object
+    void CustomWidget::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        FUNC_DEBUG_ENTRY();
+        
+        //If it is not visible, don't even update/draw it
+        if(!IsVisible())
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+        
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        //It will only block when BlockInput flag is true OR is interactable
+        if(!IsBlockInput() || IsInteractable())
+            goto endOfUpdate;
+
+        //Mouse Input blocking
+        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
+            goto endOfUpdate;
+
+        //Mouse Input blocking
+        {
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+
+            bool mouseInWindowBoundX = false;
+            bool mouseInWindowBoundY = false;
+            
+            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+                mouseInWindowBoundX = true;
+
+            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                mouseInWindowBoundY = true;
+            
+            //Input blocking
+            if(mouseInWindowBoundX && mouseInWindowBoundY)
+                windowInputStatus.MouseInputBlocked = true;
+
+            //You can have your logic here
+        }
+
+        endOfUpdate:;
+        for(auto extension : ExtensionsUpdateOrder)
+            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        //Check position different for redraw
+        if(GetGlobalPosition() != LastGlobalPosition)
+            RedrawObject();
+
+        LastGlobalPosition = GetGlobalPosition();
+
+        FUNC_DEBUG_EXIT();
+    }
+
+    //You will always need to override this in order to call the copy constructor
+    GUIObject* CustomWidget::Clone(bool cloneChildren)
+    {
+        FUNC_DEBUG_ENTRY();
+        CustomWidget* temp = new CustomWidget(*this);
+        CloneExtensionsAndEventCallbacks(temp);   
+        
+        if(cloneChildren)
+        {
+            if(CloneChildren(this, temp) == nullptr)
+            {
+                FUNC_DEBUG_EXIT();
+                return nullptr;
+            }
+        }
+
+        FUNC_DEBUG_EXIT();
+        return temp;
+    }
+}
+======================================================================

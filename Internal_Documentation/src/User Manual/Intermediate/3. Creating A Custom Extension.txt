@@ -1,0 +1,243 @@
+Title: Creating A Custom Extension
+
+Section: Header
+
+(Remove the "//" for the C++ divider for Natural Docs to work properly when parsing)
+
+================================== C++ ==================================
+#ifndef SSGUI_CUSTOM_EXTENSION
+#define SSGUI_CUSTOM_EXTENSION
+
+#include "ssGUI/Extensions/Extension.hpp"
+#include "glm/vec2.hpp"
+#include "glm/vec4.hpp"
+
+//namespace: ssGUI::Extensions
+namespace ssGUI::Extensions
+{
+    /*class: CustomExtension
+    [Insert extension summary here]
+
+    Variables & Constructor:
+    //============================== C++ ==============================
+    private:
+        ssGUI::GUIObject* Container;
+        bool Enabled;
+
+        //Some other variables.....
+
+        //ObjectsReferences CurrentObjectsReferences;   //Uncomment this if you need to reference other objects in relation to container
+    //=================================================================
+    //============================== C++ ==============================
+    CustomExtension::CustomExtension() : Container(nullptr), Enabled(true)
+    {}
+    //=================================================================
+    */
+    class CustomExtension : public Extension
+    {
+        private:
+            ssGUI::GUIObject* Container;
+            bool Enabled;
+
+            //Some other variables.....
+
+            //ObjectsReferences CurrentObjectsReferences;   //Uncomment this if you need to reference other objects in relation to container
+            
+            CustomExtension& operator=(CustomExtension const& other);
+
+        protected:
+            CustomExtension(CustomExtension const& other);
+
+            virtual void ConstructRenderInfo() override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+        
+        public:
+            static const std::string EXTENSION_NAME;
+
+            CustomExtension();
+            virtual ~CustomExtension() override;
+        
+            //Override from Extension
+            //function: SetEnabled
+            //See <Extension::SetEnabled>
+            virtual void SetEnabled(bool enabled) override;
+
+            //function: IsEnabled
+            //See <Extension::IsEnabled>
+            virtual bool IsEnabled() const override;
+
+            //function: Internal_Update
+            //See <Extension::Internal_Update>
+            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            
+            //function: Internal_Draw
+            //See <Extension::Internal_Draw>
+            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            
+            //function: GetExtensionName
+            //See <Extension::GetExtensionName>
+            virtual std::string GetExtensionName() override;
+            
+            //function: BindToObject
+            //See <Extension::BindToObject>
+            virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
+
+            //function: Copy
+            //See <Extension::Copy>
+            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+
+            //function: Internal_GetObjectsReferences
+            //See <Extension::Internal_GetObjectsReferences>
+            virtual ObjectsReferences* Internal_GetObjectsReferences() override;
+
+            //function: Clone
+            //See <Extension::Clone>
+            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+    };
+}
+
+#endif
+=========================================================================
+
+Section: Source
+================================== C++ ==================================
+#include "ssGUI/Extensions/CustomExtension.hpp" //Or the location of your custom extension header
+
+#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+
+//Remember to add the .cpp file to the cmake list if you are using cmake
+
+namespace ssGUI::Extensions
+{
+    CustomExtension::CustomExtension(CustomExtension const& other)
+    {
+        Container = nullptr;
+        Enabled = other.IsEnabled();
+
+        //CurrentObjectsReferences = other.CurrentObjectsReferences;
+    }
+
+    void CustomExtension::ConstructRenderInfo()
+    {
+        //Getting all the rendering details from container
+        std::vector<glm::ivec2>& drawingVertices = Container->Extension_GetDrawingVertices();
+        std::vector<glm::ivec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
+        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
+        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+
+        //Do the rendering here....
+    }
+
+    void CustomExtension::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {
+        //If you need the drawingInterface or mainWindow, do it here.
+        
+        //Otherwise just call this
+        ConstructRenderInfo();
+    }
+    
+    //Defining the extension name
+    const std::string CustomExtension::EXTENSION_NAME = "Custom Extension";
+    
+    //Add ObjectsReferences construction if you are using it 
+    CustomExtension::CustomExtension() : Container(nullptr), Enabled(true)
+    {}
+
+    CustomExtension::~CustomExtension()
+    {
+        //Cleaning up things allocated for this extension and ObjectsReferences if you are using it
+
+        //CurrentObjectsReferences.CleanUp();
+    }
+
+    void CustomExtension::SetEnabled(bool enabled)
+    {
+        Enabled = enabled;
+
+        //Redrawing the object if this affects the rendering
+        if(Container != nullptr)
+            Container->RedrawObject();
+    }
+
+    bool CustomExtension::IsEnabled() const
+    {
+        return Enabled;
+    }
+        
+    //Extension methods
+    void CustomExtension::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        FUNC_DEBUG_ENTRY();
+
+        if(!Enabled || Container == nullptr)
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        if(IsPreUpdate)
+        {
+            //Any changes before running the GUI object update
+        }
+
+        if(!IsPreUpdate)
+        {   
+            //Any changes after running the GUI object update
+        }
+
+        FUNC_DEBUG_EXIT();
+    }
+
+    void CustomExtension::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    {        
+        FUNC_DEBUG_ENTRY();
+        
+        if(!Enabled || Container == nullptr || IsPreRender)
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        if(Container->IsRedrawNeeded())
+            ConstructRenderInfo();
+        
+        FUNC_DEBUG_EXIT();
+    }
+
+    std::string CustomExtension::GetExtensionName()
+    {
+        return EXTENSION_NAME;
+    }
+
+    void CustomExtension::BindToObject(ssGUI::GUIObject* bindObj)
+    {
+        Container = bindObj;
+    }
+
+    void CustomExtension::Copy(ssGUI::Extensions::Extension* extension)
+    {
+        if(extension->GetExtensionName() != EXTENSION_NAME)
+            return;
+        
+        ssGUI::Extensions::CustomExtension* customExtension = static_cast<ssGUI::Extensions::CustomExtension*>(extension);
+        
+        Enabled = customExtension->IsEnabled();
+        //CurrentObjectsReferences = maskEnforcer->CurrentObjectsReferences;
+    }
+
+    ObjectsReferences* CustomExtension::Internal_GetObjectsReferences()
+    {
+        //return nullptr;
+        return &CurrentObjectsReferences;
+    }
+
+    Extension* CustomExtension::Clone(ssGUI::GUIObject* newContainer)
+    {
+        CustomExtension* temp = new CustomExtension(*this);
+        if(newContainer != nullptr)
+            newContainer->AddExtension(temp);
+        return temp;
+    }
+}
+=========================================================================
