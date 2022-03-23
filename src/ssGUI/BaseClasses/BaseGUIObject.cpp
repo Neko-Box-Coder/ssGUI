@@ -322,6 +322,13 @@ namespace ssGUI
                 clonedObj->GetExtension(extension.first)->Copy(extension.second);
         }
 
+        //Copy draw and update order
+        for(int i = 0; i < ExtensionsDrawOrder.size(); i++)
+            clonedObj->ChangeExtensionDrawOrder(ExtensionsDrawOrder[i], i);
+        
+        for(int i = 0; i < ExtensionsUpdateOrder.size(); i++)
+            clonedObj->ChangeExtensionUpdateOrder(ExtensionsUpdateOrder[i], i);
+
         for(auto eventCallback : EventCallbacks)
         {
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
