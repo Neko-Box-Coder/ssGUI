@@ -56,8 +56,8 @@ namespace ssGUI::Extensions
 
         //Check if the shortest side is lower than the rounded corner radius.
         //If so, change the radius to that
-        double halfABLength = round(glm::distance(glm::vec2(a),glm::vec2(b))*0.5);    
-        double halfBCLength = round(glm::distance(glm::vec2(c),glm::vec2(b))*0.5);
+        double halfABLength = round(glm::distance(a, b) * 0.5);    
+        double halfBCLength = round(glm::distance(c, b) * 0.5);
 
         if(halfABLength < roundRadius)
             roundRadius = halfABLength;
@@ -67,7 +67,17 @@ namespace ssGUI::Extensions
 
         glm::vec2 ba = a-b;
         glm::vec2 bc = c-b;
-        glm::vec2 midVec = glm::normalize(glm::normalize(ba) + glm::normalize(bc));
+        glm::vec2 nba = glm::normalize(ba);
+        glm::vec2 nbc = glm::normalize(bc);
+
+        //Vertices are either at the same place or on a line
+        if(nba + nbc == glm::vec2())
+        {
+            DEBUG_LINE("Vertices at same place or on a line");
+            return;
+        }
+
+        glm::vec2 midVec = glm::normalize(nba + nbc);
 
         //Find the angle from ba to bc (https://stackoverflow.com/questions/21483999/using-atan2-to-find-angle-between-two-vectors/21486462#21486462)
         //This is in radians
@@ -105,12 +115,14 @@ namespace ssGUI::Extensions
 
         if(invalidAngle)
         {
+            DEBUG_LINE("angleT1CirT2: "<<angleT1CirT2);
             DEBUG_LINE("a: "<<a.x<<", "<<a.y);
             DEBUG_LINE("b: "<<b.x<<", "<<b.y);
             DEBUG_LINE("c: "<<c.x<<", "<<c.y);
             DEBUG_LINE("t1: "<<t1.x<<", "<<t1.y);
             DEBUG_LINE("t2: "<<t2.x<<", "<<t2.y);
             DEBUG_EXIT_PROGRAM();
+            return;
         }
 
         glm::vec2 cirOriginline = glm::vec2(1, 0);
@@ -172,8 +184,24 @@ namespace ssGUI::Extensions
                 if(VerticesToRound[i] < startIndex || VerticesToRound[i] >= endIndex)
                     GetStartEndVertexIndex(VerticesToRound[i], startIndex, endIndex, drawingCounts);
 
-                VerticesToRoundPrevVertices.push_back((VerticesToRound[i] == startIndex ? endIndex - 1 : VerticesToRound[i] - 1));
-                VerticesToRoundNextVertices.push_back((VerticesToRound[i] == endIndex - 1 ? startIndex : VerticesToRound[i] + 1));
+                // VerticesToRoundPrevVertices.push_back((VerticesToRound[i] == startIndex ? endIndex - 1 : VerticesToRound[i] - 1));
+                // VerticesToRoundNextVertices.push_back((VerticesToRound[i] == endIndex - 1 ? startIndex : VerticesToRound[i] + 1));
+
+                int prevIndex = VerticesToRound[i];
+                do
+                {
+                    prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);   
+                }
+                while(drawingVertices[prevIndex] - drawingVertices[VerticesToRound[i]] == glm::vec2());
+                VerticesToRoundPrevVertices.push_back(prevIndex);
+
+                int nextIndex = VerticesToRound[i];
+                do
+                {
+                    nextIndex = (nextIndex == endIndex - 1 ? startIndex : nextIndex + 1);
+                }
+                while(drawingVertices[nextIndex] - drawingVertices[VerticesToRound[i]] == glm::vec2());
+                VerticesToRoundNextVertices.push_back(nextIndex);
             }
         }
         else
@@ -193,10 +221,27 @@ namespace ssGUI::Extensions
                 for(int j = startIndex; j < startIndex + drawingCounts[TargetShapes[i]]; j++)
                 {
                     VerticesToRound.push_back(j);
-                    VerticesToRoundPrevVertices.push_back
-                        (j == startIndex ? startIndex + drawingCounts[TargetShapes[i]] - 1 : j - 1);
-                    VerticesToRoundNextVertices.push_back
-                        (j == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : j + 1);
+
+                    // VerticesToRoundPrevVertices.push_back
+                    //     (j == startIndex ? startIndex + drawingCounts[TargetShapes[i]] - 1 : j - 1);
+                    // VerticesToRoundNextVertices.push_back
+                    //     (j == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : j + 1);
+
+                    int prevIndex = j;
+                    do
+                    {
+                        prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[TargetShapes[i]] - 1 : prevIndex - 1);
+                    }
+                    while(drawingVertices[prevIndex] - drawingVertices[j] == glm::vec2());
+                    VerticesToRoundPrevVertices.push_back(prevIndex);
+
+                    int nextIndex = j;
+                    do
+                    {
+                        nextIndex = (nextIndex == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : nextIndex + 1);
+                    }
+                    while(drawingVertices[nextIndex] - drawingVertices[j] == glm::vec2());
+                    VerticesToRoundNextVertices.push_back(nextIndex);
                 }
             }
         }
@@ -324,7 +369,7 @@ namespace ssGUI::Extensions
 
     const std::string RoundedCorners::EXTENSION_NAME = "Rounded Corners";
 
-    RoundedCorners::RoundedCorners() : Container(nullptr), Enabled(true), RoundedCornersRadius(20), TargetShapes{0}, TargetVertices(), VerticesToRound(), 
+    RoundedCorners::RoundedCorners() : Container(nullptr), Enabled(true), RoundedCornersRadius(10), TargetShapes{0}, TargetVertices(), VerticesToRound(), 
                                         VerticesToRoundPrevVertices(), VerticesToRoundNextVertices()
     {}
 
