@@ -165,11 +165,11 @@ namespace ssGUI
             virtual bool IsVisible() const = 0;
 
             //function: SetUserCreated
-            //Sets the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI extension.
+            //Sets the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.
             virtual void SetUserCreated(bool created) = 0;
 
             //function: IsUserCreated()
-            //Returns the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI extension.
+            //Returns the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.
             virtual bool IsUserCreated() const = 0;
 
             //function: SetBackgroundColor

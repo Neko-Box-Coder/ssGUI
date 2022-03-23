@@ -10,28 +10,32 @@
 
 namespace ssGUI
 {
-    StandardWindow::StandardWindow(StandardWindow const& other)
+    StandardWindow::StandardWindow(StandardWindow const& other) : Window(other)
     {
         HorizontalPadding = other.GetHorizontalPadding();
         VerticalPadding = other.GetVerticalPadding();
-        WindowTitle = nullptr;
-        WindowIcon = nullptr;
-        CloseButton = nullptr;
+        WindowTitle = other.WindowTitle;
+        WindowIcon = other.WindowIcon;
+        CloseButton = other.CloseButton;
     }
 
     void StandardWindow::UpdateTitleText()
     {
+        auto windowTitleObj = CurrentObjectsReferences.GetObjectReference(WindowTitle);
+        if(windowTitleObj == nullptr)
+            return;
+        
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
-        
-        if(!WindowTitle->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            WindowTitle->AddExtension(new ssGUI::Extensions::AdvancedPosition());
-        
-        if(!WindowTitle->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            WindowTitle->AddExtension(new ssGUI::Extensions::AdvancedSize());
 
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(WindowTitle->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(WindowTitle->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+            windowTitleObj->AddExtension(new ssGUI::Extensions::AdvancedPosition());
+        
+        if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+            windowTitleObj->AddExtension(new ssGUI::Extensions::AdvancedSize());
+
+        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
+        as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
         ap->SetHorizontalUsePercentage(true);
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
@@ -46,24 +50,29 @@ namespace ssGUI
         int textHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
         as->SetVerticalPixel(textHeight);
 
-        WindowTitle->SetFontSize(textHeight);
-        WindowTitle->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-        WindowTitle->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+        static_cast<ssGUI::Text*>(windowTitleObj)->SetFontSize(textHeight);
+        static_cast<ssGUI::Text*>(windowTitleObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
+        static_cast<ssGUI::Text*>(windowTitleObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
     }
 
     void StandardWindow::UpdateIconImage()
     {
+        auto windowIconObj = CurrentObjectsReferences.GetObjectReference(WindowIcon);
+        
+        if(windowIconObj == nullptr)
+            return;
+        
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
         
-        if(!WindowIcon->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            WindowIcon->AddExtension(new ssGUI::Extensions::AdvancedPosition());
+        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+            windowIconObj->AddExtension(new ssGUI::Extensions::AdvancedPosition());
         
-        if(!WindowIcon->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            WindowIcon->AddExtension(new ssGUI::Extensions::AdvancedSize());
+        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+            windowIconObj->AddExtension(new ssGUI::Extensions::AdvancedSize());
 
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(WindowIcon->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(WindowIcon->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
+        as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
         ap->SetHorizontalUsePercentage(false);
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
@@ -81,17 +90,22 @@ namespace ssGUI
 
     void StandardWindow::UpdateCloseButton()
     {
+        auto closeButtonObj = CurrentObjectsReferences.GetObjectReference(CloseButton);
+        
+        if(closeButtonObj == nullptr)
+            return;
+        
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
         
-        if(!CloseButton->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            CloseButton->AddExtension(new ssGUI::Extensions::AdvancedPosition());
+        if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+            closeButtonObj->AddExtension(new ssGUI::Extensions::AdvancedPosition());
         
-        if(!CloseButton->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            CloseButton->AddExtension(new ssGUI::Extensions::AdvancedSize());
+        if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+            closeButtonObj->AddExtension(new ssGUI::Extensions::AdvancedSize());
 
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(CloseButton->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(CloseButton->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
+        as = static_cast<ssGUI::Extensions::AdvancedSize*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
         ap->SetHorizontalUsePercentage(false);
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
@@ -107,25 +121,57 @@ namespace ssGUI
         as->SetVerticalPixel(buttonHeight);
     }
 
-    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), WindowTitle(nullptr), WindowIcon(nullptr), CloseButton(nullptr)
-    {
-        ssGUI::Font* font = new ssGUI::Font();
-        font->GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf");
-        
-        WindowTitle = new ssGUI::Text();
-        WindowTitle->SetUserCreated(false);
-        WindowTitle->SetFont(font);
+    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
+    {        
+        WindowTitle = CurrentObjectsReferences.AddObjectReference(new ssGUI::Text());
+        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetUserCreated(false);
+        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetParent(this);
+        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetMinSize(glm::vec2(5, 5));
 
-        //Remove the font and the text object is destroyed as the font is generated
+        // WindowIcon = CurrentObjectsReferences.AddObjectReference(new ssGUI::Image());
+        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetUserCreated(false);
+        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetParent(this);
+        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetMinSize(glm::vec2(5, 5));
+
+        // CloseButton = CurrentObjectsReferences.AddObjectReference(new ssGUI::Button());
+        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetUserCreated(false);
+        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
+        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetParent(this);
+        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetMinSize(glm::vec2(5, 5));
+
+        auto rc = new ssGUI::Extensions::RoundedCorners();
+        rc->ClearTargetShapes();
+        rc->AddTargetVertex(0);
+        rc->AddTargetVertex(1);
+        rc->AddTargetVertex(2);
+        rc->AddTargetVertex(3);
+        rc->AddTargetVertex(4);
+        rc->AddTargetVertex(5);
+
+        AddExtension(rc);
+
+        RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+        SetTitlebarHeight(25);
+
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
-        callback->AddEventListener([font](ssGUI::GUIObject* obj){delete font;});
+        callback->AddEventListener(
+            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+            {
+                auto standardWindow = static_cast<ssGUI::StandardWindow*>(container);
+                auto windowTitleObj = standardWindow->GetWindowTitleObject();
+                auto windowIconObj = standardWindow->GetWindowIconObject();
+                auto closeButtonObj = standardWindow->GetCloseButtonObject();
 
-        WindowIcon = new ssGUI::Image();
-        WindowIcon->SetUserCreated(false);
+                if(windowTitleObj != nullptr && windowTitleObj->GetParent() == container && !windowTitleObj->Internal_IsDeleted())
+                    windowTitleObj->Delete();
+                
+                if(windowIconObj != nullptr && windowIconObj->GetParent() == container && !windowIconObj->Internal_IsDeleted())
+                    windowIconObj->Delete();
 
-        CloseButton = new ssGUI::Button();
-        CloseButton->SetUserCreated(false);
-        CloseButton->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
+                if(closeButtonObj != nullptr && closeButtonObj->GetParent() == container && !closeButtonObj->Internal_IsDeleted())
+                    closeButtonObj->Delete();
+
+            });
 
         UpdateTitleText();
         UpdateIconImage();
@@ -136,71 +182,131 @@ namespace ssGUI
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
         
-        if(!WindowTitle->IsUserCreated())
-            WindowTitle->Delete(true);
 
-        if(!WindowIcon->IsUserCreated())
-            WindowIcon->Delete(true);
+        // if(!WindowTitle->IsUserCreated())
+        //     WindowTitle->Delete(true);
 
-        if(!CloseButton->IsUserCreated())
-            CloseButton->Delete(true);
+        // if(!WindowIcon->IsUserCreated())
+        //     WindowIcon->Delete(true);
+
+        // if(!CloseButton->IsUserCreated())
+        //     CloseButton->Delete(true);
     }
 
     void StandardWindow::SetWindowTitleObject(ssGUI::Text* text)
     {
-        std::wstring oldTitle = WindowTitle->GetText();
+        std::wstring oldTitle = L"";
+        auto oldTitleObj = static_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
+        if(oldTitleObj != nullptr)
+        {
+            oldTitle = oldTitleObj->GetText();
+            if(!oldTitleObj->IsUserCreated())
+                oldTitleObj->Delete();
+            else
+                oldTitleObj->SetParent(nullptr);
+        }
         
-        if(!WindowTitle->IsUserCreated())
-            WindowTitle->Delete(true);
-        else
-            WindowTitle->SetParent(nullptr);
-        
-        if(text->HasTag(ssGUI::Tags::OVERLAY))
+        if(text == nullptr)
+        {
+            WindowTitle = -1;
+            return;
+        }
+
+        text->SetParent(this);
+
+        if(!text->HasTag(ssGUI::Tags::OVERLAY))
             text->AddTag(ssGUI::Tags::OVERLAY);
 
-        WindowTitle = text;
-        WindowTitle->SetText(oldTitle);
+        ssGUIObjectIndex newTextIndex = CurrentObjectsReferences.GetObjectIndex(text);
+
+        if(newTextIndex != -1)
+            WindowTitle = newTextIndex;
+        else
+            WindowTitle = CurrentObjectsReferences.AddObjectReference(text);
+
+        text->SetText(oldTitle);
+
+        UpdateTitleText();
     }
 
     ssGUI::Text* StandardWindow::GetWindowTitleObject() const
     {
-        return WindowTitle;
+        return static_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
     }
 
     void StandardWindow::SetWindowIconObject(ssGUI::Image* image)
     {
-        if(!WindowIcon->IsUserCreated())
-            WindowIcon->Delete(true);
-        else
-            WindowIcon->SetParent(nullptr);
+        auto oldIcon = CurrentObjectsReferences.GetObjectReference(WindowIcon);
         
+        if(oldIcon != nullptr)
+        {
+            if(!oldIcon->IsUserCreated())
+                oldIcon->Delete();
+            else
+                oldIcon->SetParent(nullptr);
+        }
+        
+        if(image == nullptr)
+        {
+            WindowIcon = -1;
+            return;
+        }
+        
+        image->SetParent(this);
+
         if(image->HasTag(ssGUI::Tags::OVERLAY))
             image->AddTag(ssGUI::Tags::OVERLAY);
 
-        WindowIcon = image;
+        ssGUIObjectIndex newIconIndex = CurrentObjectsReferences.GetObjectIndex(image);
+
+        if(newIconIndex != -1)
+            WindowIcon = newIconIndex;
+        else
+            WindowIcon = CurrentObjectsReferences.AddObjectReference(image);
+
+        UpdateIconImage();
     }
     
     ssGUI::Image* StandardWindow::GetWindowIconObject() const
     {
-        return WindowIcon;
+        return static_cast<ssGUI::Image*>(CurrentObjectsReferences.GetObjectReference(WindowIcon));
     }
     
     void StandardWindow::SetCloseButtonObject(ssGUI::Button* button)
     {
-        if(!CloseButton->IsUserCreated())
-            CloseButton->Delete(true);
-        else
-            CloseButton->SetParent(nullptr);
+        auto oldButton = CurrentObjectsReferences.GetObjectReference(CloseButton);
+        if(oldButton != nullptr)
+        {
+            if(!oldButton->IsUserCreated())
+                oldButton->Delete();
+            else
+                oldButton->SetParent(nullptr);
+        }
         
+        if(button == nullptr)
+        {
+            CloseButton = -1;
+            return;
+        }
+        
+        button->SetParent(this);
+
         if(button->HasTag(ssGUI::Tags::OVERLAY))
             button->AddTag(ssGUI::Tags::OVERLAY);
 
-        CloseButton = button;
+        ssGUIObjectIndex newButtonIndex = CurrentObjectsReferences.GetObjectIndex(button);
+
+        if(newButtonIndex != -1)
+            CloseButton = newButtonIndex;
+        else
+            CloseButton = CurrentObjectsReferences.AddObjectReference(button);
+
+        UpdateCloseButton();
     }
     
     ssGUI::Button* StandardWindow::GetCloseButtonObject() const
     {
-        return CloseButton;
+        return static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(CloseButton));
     }
 
     void StandardWindow::SetHorizontalPadding(int padding)
@@ -231,20 +337,37 @@ namespace ssGUI
 
     void StandardWindow::SetTitlebar(bool set)
     {
+        auto windowTitleObj = CurrentObjectsReferences.GetObjectReference(WindowTitle);
+        auto windowIconObj = CurrentObjectsReferences.GetObjectReference(WindowIcon);
+        auto closeButtonObj = CurrentObjectsReferences.GetObjectReference(CloseButton);
+
         if(set)
         {
-            WindowTitle->SetVisible(true);
-            WindowIcon->SetVisible(true);
-            if(IsClosable())
-                CloseButton->SetVisible(true);
-            else
-                CloseButton->SetVisible(false);
+            if(windowTitleObj != nullptr)
+                windowTitleObj->SetVisible(true);
+            
+            if(windowIconObj != nullptr)
+                windowIconObj->SetVisible(true);
+            
+            if(closeButtonObj != nullptr)
+            {
+                if(IsClosable())
+                    closeButtonObj->SetVisible(true);
+                else
+                    closeButtonObj->SetVisible(false);
+            }
+            
         }
         else
         {
-            WindowTitle->SetVisible(false);
-            WindowIcon->SetVisible(false);
-            CloseButton->SetVisible(false);
+            if(windowTitleObj != nullptr)
+                windowTitleObj->SetVisible(false);
+            
+            if(windowIconObj != nullptr)
+                windowIconObj->SetVisible(false);
+            
+            if(closeButtonObj != nullptr)
+                closeButtonObj->SetVisible(false);
         }
         
         Window::SetTitlebar(set);
@@ -253,15 +376,20 @@ namespace ssGUI
     //function: SetClosable
     void StandardWindow::SetClosable(bool closable)
     {
+        auto closeButtonObj = CurrentObjectsReferences.GetObjectReference(CloseButton);
+
+        if(closeButtonObj == nullptr)
+            return;
+
         if(closable)
         {
             if(HasTitlebar())
-                CloseButton->SetVisible(true);
+                closeButtonObj->SetVisible(true);
             else
-                CloseButton->SetVisible(false);
+                closeButtonObj->SetVisible(false);
         }
         else
-            CloseButton->SetVisible(false);
+            closeButtonObj->SetVisible(false);
 
         Window::SetClosable(closable);
     }
@@ -308,25 +436,29 @@ namespace ssGUI
             extension.second->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
     }*/
 
+    void StandardWindow::Delete()
+    {
+        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        ssGUI::Window::Delete();
+    }
+
     //function: Clone
     GUIObject* StandardWindow::Clone(bool cloneChildren)
     {
+        FUNC_DEBUG_ENTRY();
         StandardWindow* temp = new StandardWindow(*this);
+        CloneExtensionsAndEventCallbacks(temp);
 
-        // for(auto extension : Extensions)
-        // {
-        //     if(!temp->IsExtensionExist(extension.second->GetExtensionName()))
-        //         temp->AddExtension(extension.second->Clone(this));
-        // }
+        if(cloneChildren)
+        {
+            if(CloneChildren(this, temp) == nullptr)
+            {
+                FUNC_DEBUG_EXIT();
+                return nullptr;
+            }
+        }
 
-        // for(auto eventCallback : EventCallbacks)
-        // {
-        //     std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
-
-        //     if(!temp->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-        //         temp->AddEventCallback(eventCallback.second->Clone(this, originalObjs, tempVec));
-        // }
-
+        FUNC_DEBUG_EXIT();
         return temp;
     }
 
