@@ -323,6 +323,7 @@ namespace ssGUI
     {       
         AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
         AddExtension(new ssGUI::Extensions::Border());
+        SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     }
 
     Window::~Window()
