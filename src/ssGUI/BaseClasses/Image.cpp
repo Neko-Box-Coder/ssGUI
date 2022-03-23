@@ -5,7 +5,7 @@ namespace ssGUI
 {
     Image::Image(Image const& other) : Widget(other)
     {
-        ImageData = other.ImageData->Clone();
+        ImageData = other.ImageData;
         Fitting = other.GetFitting();
     }
 
