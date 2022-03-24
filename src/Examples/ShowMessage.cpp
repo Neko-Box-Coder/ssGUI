@@ -1,4 +1,3 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"                   //ssGUI debug initialization
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"                     //Includes all the core ssGUI classes
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
@@ -8,7 +7,7 @@ int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::ivec2(450, 125));
+    mainWindow.SetSize(glm::vec2(450, 125));
 
     //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
     ssGUI::Extensions::AdvancedPosition* positionExtension = new ssGUI::Extensions::AdvancedPosition();
@@ -24,7 +23,7 @@ int main()
     
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
-    button.SetSize(glm::ivec2(50, 30));
+    button.SetSize(glm::vec2(50, 30));
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)

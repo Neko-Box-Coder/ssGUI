@@ -1,4 +1,3 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"                   //ssGUI debug initialization
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"                     //Includes all the core ssGUI classes
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
@@ -10,10 +9,9 @@ int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::ivec2(450, 450));
+    mainWindow.SetSize(glm::vec2(450, 450));
 
-    //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = new ssGUI::Extensions::AdvancedPosition();
+    ssGUI::Extensions::AdvancedPosition* positionExtension = ;
 
     //AdvancedSize extension allows sizing a GUI object by percentage.
     ssGUI::Extensions::AdvancedSize* sizeExtension = new ssGUI::Extensions::AdvancedSize();
@@ -24,10 +22,12 @@ int main()
     ssGUI::Window fixedWindow;
     fixedWindow.SetDraggable(false);
     fixedWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
-    fixedWindow.AddExtension(positionExtension);
+
+    //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
+    fixedWindow.AddExtension(new ssGUI::Extensions::AdvancedPosition());
     fixedWindow.AddExtension(sizeExtension);
     fixedWindow.AddExtension(new ssGUI::Extensions::Mask());            //Adding a mask extension for masking the draggable window
-    fixedWindow.SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
+    fixedWindow.SetBackgroundColor(glm::vec4(127, 127, 127, 255));
 
     //Text of showing local and global position for draggableWindow
     ssGUI::Text positionText;
@@ -35,14 +35,13 @@ int main()
     positionText.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
     
     //Second AdvancedPosition extension for the text
-    ssGUI::Extensions::AdvancedPosition* positionExtension2 = 
-        static_cast<ssGUI::Extensions::AdvancedPosition*>(positionExtension->Clone(&positionText));
+    ssGUI::Extensions::AdvancedPosition* positionExtension2 = new ssGUI::Extensions::AdvancedPosition();
     positionExtension2->SetVerticalPercentage(-0.4);
 
     //Draggable window inside the fixed window
     ssGUI::Window draggableWindow;
-    draggableWindow.SetTitlebarColor(glm::ivec4(120, 120, 120, 255));
-    draggableWindow.SetPosition(glm::ivec2(50, 50));
+    draggableWindow.SetTitlebarColor(glm::vec4(120, 120, 120, 255));
+    draggableWindow.SetPosition(glm::vec2(50, 50));
     //draggableWindow.SetAnchorType(ssGUI::Enums::AnchorType::BOTTOM_RIGHT);    //You can uncomment this line to anchor the window to different anchor points
 
     //Add the GUI objects to the main window
