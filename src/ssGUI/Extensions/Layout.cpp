@@ -204,7 +204,7 @@ namespace ssGUI::Extensions
     {
         FUNC_DEBUG_ENTRY();
 
-        if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0)
+        if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0 || !IsCoverFullLength())
         {
             FUNC_DEBUG_EXIT();
             return;
