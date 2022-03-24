@@ -125,7 +125,7 @@ namespace ssGUI
     
     Image::Image() : ImageData(nullptr), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_AREA) 
     {
-        AddExtension(new ssGUI::Extensions::Border());
+        // AddExtension(new ssGUI::Extensions::Border());
     }
 
     Image::~Image()
