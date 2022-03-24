@@ -54,7 +54,8 @@ namespace ssGUI
         rc->AddTargetVertex(5);
 
         AddExtension(rc);
-
+        AddExtension(new ssGUI::Extensions::Dockable());
+        AddExtension(new ssGUI::Extensions::Outline());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 

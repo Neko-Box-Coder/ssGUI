@@ -5,7 +5,8 @@
 #include "ssGUI/BaseClasses/Button.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
-
+#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Outline.hpp"
 
 
 namespace ssGUI
@@ -149,7 +150,8 @@ namespace ssGUI
         rc->AddTargetVertex(5);
 
         AddExtension(rc);
-
+        AddExtension(new ssGUI::Extensions::Dockable());
+        AddExtension(new ssGUI::Extensions::Outline());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 
