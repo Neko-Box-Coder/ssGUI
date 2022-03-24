@@ -79,7 +79,9 @@ namespace ssGUI::Backend
     void BackendMainWindowSFML::SetSize(glm::ivec2 size)
     {
         CurrentWindow.setSize(sf::Vector2u(size.x, size.y));
-        CurrentWindow.setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f((float)size.x, (float)size.y))));
+
+        //View is now set in BackendSystemInputSFML
+        // CurrentWindow.setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f((float)size.x, (float)size.y))));
     }
 
     glm::ivec2 BackendMainWindowSFML::GetSize() const

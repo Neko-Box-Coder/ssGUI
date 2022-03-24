@@ -239,6 +239,8 @@ namespace ssGUI
         //Check size different for redraw
         if(GetSize() != LastSize)
         {
+            //TODO : Add size callback
+            
             RedrawObject();
             RedrawCount = 0;
         }

@@ -87,8 +87,8 @@ namespace ssGUI::Backend
         //Get text input
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
         {
-            sf::Window* sfWindow = static_cast<sf::Window*>(
-                                    ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle());
+            sf::RenderWindow* sfWindow = static_cast<sf::RenderWindow*>(
+                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle());
 
             sf::Event event;
             
@@ -96,6 +96,9 @@ namespace ssGUI::Backend
             {
                 if (event.type == sf::Event::Closed)
                     ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->Close();
+
+                if (event.type == sf::Event::Resized)
+                    sfWindow->setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f((float)sfWindow->getSize().x, (float)sfWindow->getSize().y))));
                 
                 if (event.type == sf::Event::TextEntered)
                     if (event.text.unicode > 31 && event.text.unicode < 128 && event.text.unicode > 160)

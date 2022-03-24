@@ -456,13 +456,14 @@ namespace ssGUI
         MinSize = minSize;
         MaxSize.x = MinSize.x > MaxSize.x ? MinSize.x : MaxSize.x;
         MaxSize.y = MinSize.y > MaxSize.y ? MinSize.y : MaxSize.y;
+        glm::vec2 size = GetSize(); //MainWindow is not updating the Size component therefore need to use GetSize()
 
-        if(Size.x < MinSize.x && Size.y < MinSize.y)
+        if(size.x < MinSize.x && Size.y < MinSize.y)
             SetSize(MinSize);
-        else if(Size.x < MinSize.x)
-            SetSize(glm::vec2(MinSize.x, Size.y));
-        else if(Size.y < MinSize.y)
-            SetSize(glm::vec2(Size.x, MinSize.y));
+        else if(size.x < MinSize.x)
+            SetSize(glm::vec2(MinSize.x, size.y));
+        else if(size.y < MinSize.y)        
+            SetSize(glm::vec2(size.x, MinSize.y));
             
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
             GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(this);
@@ -481,13 +482,14 @@ namespace ssGUI
         MaxSize = maxSize;
         MinSize.x = MaxSize.x < MinSize.x ? MaxSize.x : MinSize.x;
         MinSize.y = MaxSize.y < MinSize.y ? MaxSize.y : MinSize.y;
+        glm::vec2 size = GetSize();
 
-        if(Size.x > MaxSize.x && Size.y > MaxSize.y)
+        if(size.x > MaxSize.x && size.y > MaxSize.y)
             SetSize(MaxSize);
-        else if(Size.x > MaxSize.x)
-            SetSize(glm::vec2(MaxSize.x, Size.y));
-        else if(Size.y > MaxSize.y)
-            SetSize(glm::vec2(Size.x, MaxSize.y));
+        else if(size.x > MaxSize.x)
+            SetSize(glm::vec2(MaxSize.x, size.y));
+        else if(size.y > MaxSize.y)
+            SetSize(glm::vec2(size.x, MaxSize.y));
 
         if(IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
             GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(this);
