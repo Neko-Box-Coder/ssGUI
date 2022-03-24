@@ -48,7 +48,7 @@ namespace ssGUI
 
     Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
     {
-        SetBackgroundColor(glm::u8vec4(127,127,127,255)); //Gray background colour for button (For now)
+        SetBackgroundColor(glm::u8vec4(100,100,100,255)); //Gray background colour for button (For now)
         StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
         StateChangedEventCallback->AddEventListener(
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
