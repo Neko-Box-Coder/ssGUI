@@ -736,7 +736,7 @@ namespace ssGUI
             // Add the glyph to the vertices
             DrawCharacter(drawPos, CharactersRenderInfos[i], CurrentCharacterDetails[i]);
         }
-
+        
         FUNC_DEBUG_EXIT();
     }
     
@@ -1241,8 +1241,6 @@ namespace ssGUI
             RedrawObject();
 
         LastGlobalPosition = GetGlobalPosition();
-
-        RedrawObject();
 
         FUNC_DEBUG_EXIT();
     }
