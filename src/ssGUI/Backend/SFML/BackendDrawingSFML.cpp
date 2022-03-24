@@ -53,7 +53,8 @@ namespace ssGUI::Backend
 
         for(int i = startIndex; i < endIndex; i++)
         {
-            outputShape[i - startIndex].position = sf::Vector2f(vertices[i].x, vertices[i].y);//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
+            outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
             outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
             outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
         }
@@ -80,7 +81,8 @@ namespace ssGUI::Backend
 
         for(int i = startIndex; i < endIndex; i++)
         {
-            outputShape[i - startIndex].position = sf::Vector2f(vertices[i].x, vertices[i].y);//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
+            outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
             outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
             outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
         }
