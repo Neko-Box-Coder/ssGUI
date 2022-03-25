@@ -81,7 +81,7 @@ namespace ssGUI::EventCallbacks
             virtual void RemoveObjectReference(ssGUIObjectIndex index) = 0;
 
             //function: Internal_GetObjectsReferences
-            //Proxy function to <ObjectsReferences::RemoveObjectReference>
+            //(Internal ssGUI function) Returns the <ObjectsReferences> associated with this event callback
             virtual ssGUI::ObjectsReferences* Internal_GetObjectsReferences() = 0;
 
             //function: GetEventCallbackName
