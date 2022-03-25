@@ -33,7 +33,7 @@ _
 **Customization With Extensions.**
 
 ![](Internal_Documentation/ND_Config/Images/Compatible.png)
-**Source Compatible And ABI Compatible (Coming Soon).**
+**Source Compatible Compatible (WIP).**
 
 ![](Internal_Documentation/ND_Config/Images/Independent.png)
 **GUI Code Is Independent From Backend.**
@@ -42,10 +42,10 @@ _
 **Easy Swappable Backends.**
 
 ![](Internal_Documentation/ND_Config/Images/Template.png)
-**Code Templates For Creating Widgets, Windows, Extensions And EventCallbacks (Coming Soon).**
+**Code Templates For Creating Widgets, Windows, Extensions And EventCallbacks.**
 
 ![](Internal_Documentation/ND_Config/Images/Builder.png)
-**GUI Builder (Coming Soon).**
+**GUI Builder (WIP).**
 
 _
 
@@ -132,4 +132,4 @@ SFML:
 _
 
 ## What's the progress status of the current library
-<./WekanBoard/ssGUI.html> (Last Updated: 26/03/2022)
+https://neko-box-coder.github.io/ssGUI/WekanBoard/ssGUI (Last Updated: 26/03/2022)
