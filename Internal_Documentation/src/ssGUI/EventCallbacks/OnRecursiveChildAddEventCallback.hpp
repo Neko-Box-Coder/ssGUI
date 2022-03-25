@@ -23,7 +23,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* container, bool copyListeners) override;
+            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

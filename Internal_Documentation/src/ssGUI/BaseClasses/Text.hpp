@@ -3,13 +3,15 @@
 
 #include "ssGUI/BaseClasses/Font.hpp"
 #include "ssGUI/BaseClasses/Widget.hpp"
-#include "ssGUI/BaseClasses/CharacterInfo.hpp"
+#include "ssGUI/BaseClasses/CharacterDetails.hpp"
+#include "ssGUI/BaseClasses/CharacterRenderInfo.hpp"
 #include "ssGUI/Enums/TextWrapping.hpp"
 #include "ssGUI/Enums/TextAlignmentHorizontal.hpp"
 #include "ssGUI/Enums/TextAlignmentVertical.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
+#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include <string>
 #include <locale>
 #include <codecvt>
@@ -18,7 +20,12 @@
 namespace ssGUI
 {
     /*class: Text
-    A class that can show a string with <Font>
+    A class for showing text with different options such as font size, text alignment, fonts, etc.
+    Text can be added by just setting the text, which is the simplest.
+    
+    If you want the ablitiy to adjust each characters settings such as font, font size, etc. 
+    You can add <ssGUI::CharacterDetails> as OverrideCharacterDetails by setting the object variables.
+    Please note that if you are using OverrideCharacterDetails, text set by <SetText> will be *ignored*.
 
     Variables & Constructor:
     ============================== C++ ==============================
@@ -26,36 +33,71 @@ namespace ssGUI
         std::wstring CurrentText;
 
         bool RecalculateTextNeeded;
-        std::vector<glm::ivec2> CharactersPosition;
-        std::vector<ssGUI::CharacterInfo> CharactersInfos;
+        std::vector<ssGUI::CharacterDetails> OverrideCharactersDetails;
+        std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;
+        std::vector<ssGUI::CharacterDetails> CurrentCharacterDetails;
 
-        bool WrappingOverflow;
+        bool Overflow;
         int FontSize;
         bool MultilineAllowed;
         ssGUI::Enums::TextWrapping WrappingMode;
         ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
-        ssGUI::Enums::TextAlignmentVertical VerticalAlignment;
-        ssGUI::Font* CurrentFont;
+        ssGUI::Enums::TextAlignmentVertical VerticalAlignment;            
+        std::vector<ssGUI::Font*> CurrentFonts;
 
         int HorizontalPadding;
         int VerticalPadding;
         int CharacterSpace;
         int LineSpace;
         float TabSize;
-        ssGUI::Font* LastDefaultFont;
+        std::vector<ssGUI::Font*> LastDefaultFonts;
 
-        static ssGUI::Font* DefaultFont;
+        static std::vector<ssGUI::Font*> DefaultFonts;
     =================================================================
     ============================== C++ ==============================
-    Text::Text() :  CurrentText(), RecalculateTextNeeded(false), CharactersPosition(), 
-                    CharactersInfos(), WrappingOverflow(false), FontSize(20), MultilineAllowed(true), 
+    Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
+                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), MultilineAllowed(true), 
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
-                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFont(nullptr), 
-                    HorizontalPadding(0), VerticalPadding(0), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFont(nullptr)
+                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFonts(), 
+                    HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
-        //AddExtension(new ssGUI::Extensions::Border());
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
+
+        ssGUI::EventCallbacks::SizeChangedEventCallback* sizeChangedCallback = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        sizeChangedCallback->AddEventListener
+        (
+            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            {
+                static_cast<ssGUI::Text*>(src)->RecalculateTextNeeded = true;
+            }
+        );
+
+        AddEventCallback(sizeChangedCallback);
     }
+    =================================================================
+
+    DefaultFonts initialization
+    ============================== C++ ==============================
+    std::vector<ssGUI::Font*> Text::DefaultFonts = []()->std::vector<ssGUI::Font*>
+    {
+        FUNC_DEBUG_ENTRY("LoadDefaultFont");
+
+        std::vector<ssGUI::Font*> defaultFonts;
+
+        auto font = new ssGUI::Font();
+        if(!font->GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
+        {
+            DEBUG_LINE("Failed to load default font");
+            delete font;
+            return defaultFonts;
+        }
+        else
+        {
+            defaultFonts.push_back(font);
+            return defaultFonts;
+        }
+        FUNC_DEBUG_EXIT("LoadDefaultFont");
+    }();    //Brackets at the end to call this lambda, pretty cool.
     =================================================================
     */
     class Text : public Widget
@@ -67,30 +109,48 @@ namespace ssGUI
             std::wstring CurrentText;
 
             bool RecalculateTextNeeded;
-            std::vector<glm::ivec2> CharactersPosition;
-            std::vector<ssGUI::CharacterInfo> CharactersInfos;
+            std::vector<ssGUI::CharacterDetails> OverrideCharactersDetails;
+            std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;
+            std::vector<ssGUI::CharacterDetails> CurrentCharacterDetails;
 
-            bool WrappingOverflow;
+            bool Overflow;
             int FontSize;
             bool MultilineAllowed;
             ssGUI::Enums::TextWrapping WrappingMode;
             ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
-            ssGUI::Enums::TextAlignmentVertical VerticalAlignment;
-            ssGUI::Font* CurrentFont;
+            ssGUI::Enums::TextAlignmentVertical VerticalAlignment;            
+            std::vector<ssGUI::Font*> CurrentFonts;
 
             int HorizontalPadding;
             int VerticalPadding;
             int CharacterSpace;
             int LineSpace;
             float TabSize;
-            ssGUI::Font* LastDefaultFont;
+            std::vector<ssGUI::Font*> LastDefaultFonts;
 
-            static ssGUI::Font* DefaultFont;
+            static std::vector<ssGUI::Font*> DefaultFonts;
 
             Text(Text const& other);
 
-            virtual void DrawCharacter(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset,
-                                        wchar_t charcterToDraw, glm::ivec2 position, ssGUI::CharacterInfo info);
+            virtual void ConstructCharacterDetails();
+
+            virtual void AssignSupportedFont();
+
+            virtual void DrawCharacter(glm::vec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details);
+            
+            virtual void FormatNewlinesCharacters();
+
+            virtual void ConstructRenderInfosForWordWrapping();
+
+            virtual void ConstructRenderInfosForCharacterWrapping();
+
+            virtual void ConstructRenderInfosForNoWrapping();
+
+            virtual void ApplyFontLineSpacing();
+
+            virtual void ApplyTextAlignment();
+
+            virtual void ConstructRenderInfo() override;
 
         public:
             Text();
@@ -116,17 +176,45 @@ namespace ssGUI
             //Gets the number of characters for the text being shown
             virtual int GetCharacterCount() const;
             
+            //function: GetCharacterRenderInfo
+            //Gets the character render info of the character at the index position
+            virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(int index) const;
+
+            //function: SetOverrideCharacterDetails
+            //Sets the override character details of the character at the index position
+            virtual void SetOverrideCharacterDetails(int index, ssGUI::CharacterDetails details);
+
+            //function: GetOverrideCharacterDetails
+            //Gets the override character details of the character at the index position
+            virtual ssGUI::CharacterDetails GetOverrideCharacterDetails(int index) const;
+
+            //function: GetOverrideCharactersDetailsCount
+            //Returns the number of override characater details
+            virtual int GetOverrideCharactersDetailsCount() const;
+
+            //function: AddOverrideCharacterDetails
+            //Add the override character details of the character at the index position
+            virtual void AddOverrideCharacterDetails(int index, ssGUI::CharacterDetails details);
+
+            //function: AddOverrideCharacterDetails
+            //Add the override character details of the character to the end
+            virtual void AddOverrideCharacterDetails(ssGUI::CharacterDetails details);
+
+            //function: RemoveOverrideCharacterDetails
+            //Removes the override character details of the character at the index position
+            virtual void RemoveOverrideCharacterDetails(int index);
+
+            //function: ClearAllOverrideCharacterDetails
+            //Removes all override character details
+            virtual void ClearAllOverrideCharacterDetails();
+
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
-            virtual glm::ivec2 GetCharacterGlobalPosition(int index) const;
+            virtual glm::vec2 GetCharacterGlobalPosition(int index);
             
-            //function: GetCharacterInfo
-            //Gets the info of the character
-            virtual ssGUI::CharacterInfo GetCharacterInfo(int index) const;
-            
-            //function: IsWrappingOverflow
+            //function: IsOverflow
             //Returns true if the text is overflowing the text widget
-            virtual bool IsWrappingOverflow() const;
+            virtual bool IsOverflow() const;
             
             //function: SetFontSize
             //Sets the size of the font being used
@@ -137,11 +225,11 @@ namespace ssGUI
             virtual int GetFontSize() const;
             
             //function: SetMultilineAllowed
-            //If true, the text being shown will be wrapped to multiple lines if needed
+            //If true, newlines will be allowed
             virtual void SetMultilineAllowed(bool multiline);
             
             //function: IsMultilineAllowed
-            //If true, the text being shown will be wrapped to multiple lines if needed
+            //If true, newlines will be allowed
             virtual bool IsMultilineAllowed() const;
             
             //function: SetWrappingMode
@@ -156,19 +244,33 @@ namespace ssGUI
             virtual void SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal align);
 
             //function: GetHorizontalAlignment
-            virtual ssGUI::Enums::TextAlignmentHorizontal GetHorizontalAlignment();
+            virtual ssGUI::Enums::TextAlignmentHorizontal GetHorizontalAlignment() const;
 
             //function: SetVerticalAlignment
             virtual void SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical align);
 
             //function: GetVerticalAlignment
-            virtual ssGUI::Enums::TextAlignmentVertical GetVerticalAlignment();
+            virtual ssGUI::Enums::TextAlignmentVertical GetVerticalAlignment() const;
 
-            //function: SetFont
-            virtual void SetFont(ssGUI::Font* font);
+            //function: AddFont
+            //Adds the font to the end for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
+            virtual void AddFont(ssGUI::Font* font);
+
+            //function: AddFont
+            //Adds the font to the index position for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
+            virtual void AddFont(ssGUI::Font* font, int index);
             
             //function: GetFont
-            virtual ssGUI::Font* GetFont();
+            virtual ssGUI::Font* GetFont(int index) const;
+
+            //function: SetFont
+            virtual void SetFont(ssGUI::Font* font, int index);
+
+            //function: RemoveFont
+            virtual void RemoveFont(int index);
+
+            //function: GetFontsCount
+            virtual int GetFontsCount() const;
 
             //function: SetHorizontalPadding
             //Sets the horizontal padding for the beginning and the end of the text
@@ -176,7 +278,7 @@ namespace ssGUI
 
             //function: GetHorizontalPadding
             //Gets the horizontal padding for the beginning and the end of the text
-            virtual int GetHorizontalPadding();
+            virtual int GetHorizontalPadding() const;
 
             //function: SetVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
@@ -184,7 +286,7 @@ namespace ssGUI
 
             //function: GetVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual int GetVerticalPadding();
+            virtual int GetVerticalPadding() const;
             
             //function: SetCharacterSpace
             //Sets the space between each character
@@ -210,13 +312,25 @@ namespace ssGUI
             //Gets how many space each tab is
             virtual float GetTabSize() const;
 
-            //function: SetDefaultFont
-            //Sets the default font for all text widget
-            static void SetDefaultFont(ssGUI::Font* font);
+            //function: AddDefaultFont
+            //Adds the font to the end of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
+            static void AddDefaultFont(ssGUI::Font* font);
+
+            //function: AddDefaultFont
+            //Adds the font to the index position of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
+            static void AddDefaultFont(ssGUI::Font* font, int index);
 
             //function: GetDefaultFont
-            //Gets the default font for all text widget
-            static ssGUI::Font* GetDefaultFont();
+            static ssGUI::Font* GetDefaultFont(int index);
+
+            //function: SetDefaultFont
+            static void SetDefaultFont(ssGUI::Font* font, int index);
+
+            //function: RemoveDefaultFont
+            static void RemoveDefaultFont(int index);
+
+            //function:GetDefaultFontsCount 
+            static int GetDefaultFontsCount();
             
             //function: GetType
             //See <GUIObject::GetType>
@@ -228,9 +342,13 @@ namespace ssGUI
 
             //function: Internal_Draw
             //See <GUIObject::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             //virtual void Internal_Update(ssGUI::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow, ssGUI::GUIObject* mainWindow) override;
             
+            //function: Internal_Update
+            //See <GUIObject::Internal_Update>
+            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+
             //function: Clone
             //See <GUIObject::Clone>
             virtual GUIObject* Clone(bool cloneChildren) override;

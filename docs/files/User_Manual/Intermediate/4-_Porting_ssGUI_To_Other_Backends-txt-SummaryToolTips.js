@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:User_Manual/Intermediate/4._Porting_ssGUI_To_Other_Backends.txt",{2:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div>"});

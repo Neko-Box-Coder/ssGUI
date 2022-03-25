@@ -29,7 +29,7 @@ namespace ssGUI::Backend
         std::string Title;
         bool IsClosingAborted;
 
-        glm::ivec2 PositionOffset;
+        glm::vec2 PositionOffset;
     ===============================================================
     ============================= C++ =============================
     BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(800, 600), ""), Visible(false), VSync(false), Closed(false),
@@ -55,7 +55,7 @@ namespace ssGUI::Backend
             std::string Title;
             bool IsClosingAborted;
 
-            glm::ivec2 PositionOffset;
+            glm::vec2 PositionOffset;
 
             BackendMainWindowSFML& operator=(BackendMainWindowSFML const& other);
             void ResetWindow(bool resize, bool titlebar, bool canClose, int msaa);

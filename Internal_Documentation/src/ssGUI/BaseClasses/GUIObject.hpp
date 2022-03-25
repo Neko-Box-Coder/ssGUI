@@ -24,50 +24,55 @@ namespace ssGUI
         protected:
             virtual void SyncPosition() = 0;
             virtual void SyncGlobalPosition() = 0;
+            virtual void ConstructRenderInfo() = 0;
+            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
         
         public:
+            //TODO : Maybe make this thread safe?
+            inline static std::vector<ssGUI::GUIObject*> ObjsToDelete = std::vector<ssGUI::GUIObject*>();
+
             virtual ~GUIObject() = 0;
 
             //function: GetPosition
             //Gets the local position against the parent from the anchor point. By default the anchor point is at the top-left corner of the parent.
             //Note that windows excludes title bar from the position calculation. Calling this function on MainWindow object will always return (0, 0)
-            virtual glm::ivec2 GetPosition() const = 0;
+            virtual glm::vec2 GetPosition() const = 0;
             
             //function: SetPosition
             //Sets the local poisition against the parent from the anchor point
-            virtual void SetPosition(glm::ivec2 position) = 0;
+            virtual void SetPosition(glm::vec2 position) = 0;
             
             //function: GetGlobalPosition
             //Gets the global position against the top-left corner of MainWindow it is parented. Title bar is excluded from the position calculation.
-            virtual glm::ivec2 GetGlobalPosition() = 0;         //TODO : See BaseGUIObject.hpp for more details
+            virtual glm::vec2 GetGlobalPosition() = 0;         //TODO : See BaseGUIObject.hpp for more details
             
             //function: SetGlobalPosition
             //Sets the global position against the top-left corner of MainWindow it is parented
-            virtual void SetGlobalPosition(glm::ivec2 position) = 0;
+            virtual void SetGlobalPosition(glm::vec2 position) = 0;
             
             //function: GetSize
             //Gets the size of the GUI Object
-            virtual glm::ivec2 GetSize() const = 0;
+            virtual glm::vec2 GetSize() const = 0;
             
             //function: SetSize
             //Sets the size of the GUI Object
-            virtual void SetSize(glm::ivec2 size) = 0;
+            virtual void SetSize(glm::vec2 size) = 0;
 
             //function: GetMinSize
             //Gets the minimum size of the GUI Object. Setting the size to be below minimum size will set the size to minimum instead.
-            virtual glm::ivec2 GetMinSize() const = 0;
+            virtual glm::vec2 GetMinSize() const = 0;
             
             //function: SetMinSize
             //Sets the minimum size of the GUI Object. Setting minimum size to be negative infinte is possible.
-            virtual void SetMinSize(glm::ivec2 minSize) = 0;
+            virtual void SetMinSize(glm::vec2 minSize) = 0;
 
             //function: GetMaxSize
             //Gets the maximum size of the GUI Object. Setting the size to be above maximum size will set the size to maximum instead.
-            virtual glm::ivec2 GetMaxSize() const = 0;
+            virtual glm::vec2 GetMaxSize() const = 0;
             
             //function: SetMaxSize
             //Sets the maximum size of the GUI Object. Setting maximum size to be infinte is possible.
-            virtual void SetMaxSize(glm::ivec2 maxSize) = 0;
+            virtual void SetMaxSize(glm::vec2 maxSize) = 0;
 
             //function: GetParent
             //Gets the parent of the GUI Object. Nullptr will be returned if there's no parent set.
@@ -138,7 +143,7 @@ namespace ssGUI
             virtual void Internal_RemoveChild(ssGUI::GUIObject* obj) = 0;
 
             //function: GetType
-            //Returns the type of this GUI Object. Note that <Enums::GUIObjectType> is a bit-operated enum class.
+            //Returns the type of this GUI Object. Note that <ssGUI::Enums::GUIObjectType> is a bit-operated enum class.
             virtual ssGUI::Enums::GUIObjectType GetType() const = 0;
 
             //function: GetAnchorType
@@ -153,16 +158,18 @@ namespace ssGUI
             //Sets the visibility of this GUI Object. Note that the logic of this GUI Object will not be called if not visible.
             virtual void SetVisible(bool visible) = 0;
             
+            //TODO : Change IsVisible to IsEnabled
+
             //function: IsVisible
             //Returns the visibility of this GUI Object. Note that the logic of this GUI Object will not be called if not visible.
             virtual bool IsVisible() const = 0;
 
             //function: SetUserCreated
-            //Sets the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI extension.
+            //Sets the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.
             virtual void SetUserCreated(bool created) = 0;
 
             //function: IsUserCreated()
-            //Returns the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI extension.
+            //Returns the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.
             virtual bool IsUserCreated() const = 0;
 
             //function: SetBackgroundColor
@@ -190,23 +197,33 @@ namespace ssGUI
             virtual bool IsHeapAllocated() const = 0;
         
             //function: Extension_GetDrawingVertices
-            //This function should only be called by <Extension::Draw>.
-            virtual std::vector<glm::ivec2>& Extension_GetDrawingVertices() = 0;
+            //This returns a list of vertices for all the shapes that will be drawn by this GUI object.
+            //A shape is formed by having the vertices drawn in clockwise direction. Undefined behaviour if they are listed in anti-clockwise direction.
+            //This function is mainly be called by <Extension::Draw>.
+            virtual std::vector<glm::vec2>& Extension_GetDrawingVertices() = 0;
             
             //function: Extension_GetDrawingUVs
-            //This function should only be called by <Extension::Draw>.
-            virtual std::vector<glm::ivec2>& Extension_GetDrawingUVs() = 0;
+            //This returns the UVs that are mapped to each vertex at the same index location.
+            //If no texture is used, you should still maintain the number of UVs same as the number of vertices.
+            //This function is mainly be called by <Extension::Draw>.
+            virtual std::vector<glm::vec2>& Extension_GetDrawingUVs() = 0;
             
             //function: Extension_GetDrawingColours
-            //This function should only be called by <Extension::Draw>.
+            //This returns the colors that are mapped to each vertex at the same index location.
+            //If texture is used, this essentially affects the tint of the image, with white as no tinting at all.
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<glm::u8vec4>& Extension_GetDrawingColours() = 0;
             
             //function: Extension_GetDrawingCounts
-            //This function should only be called by <Extension::Draw>.
+            //This returns the number of vertices each shape has, with the order same as vertices and others.
+            //So for example if the first value is 4, then the first 4 vertices form a shape. So on and so forth...
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<int>& Extension_GetDrawingCounts() = 0;
             
             //function: Extension_GetDrawingProperties
-            //This function should only be called by <Extension::Draw>.
+            //This returns the property of each shape, mapped to the same index location as <Extension_GetDrawingCounts>.
+            //This indicates if the shape is just a colored shape, an image or font. 
+            //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties() = 0;
             
             //function: AddExtension
@@ -264,6 +281,10 @@ namespace ssGUI
             //function: RemoveEventCallback
             //Removes the eventCallback by the name of it
             virtual void RemoveEventCallback(std::string eventCallbackName) = 0;
+
+            //function: GetListOfEventCallbacks
+            //Returns all the event callbacks on the GUI Object
+            virtual std::vector<ssGUI::EventCallbacks::EventCallback*> GetListOfEventCallbacks() = 0;
             
             //function: AddTag
             //Adds a tag to this GUI Object
@@ -276,6 +297,14 @@ namespace ssGUI
             //function: HasTag
             //Returns true if the tag exists on this GUI Object
             virtual bool HasTag(std::string tag) const = 0;
+
+            //function: RedrawObject
+            //Forces the GUI Object to be redrawn. *Do not* call this in <Internal_Draw>.
+            virtual void RedrawObject() = 0;
+
+            //function: IsRedrawNeeded
+            //Returns if the GUI Object needs to be redrawn
+            virtual bool IsRedrawNeeded() const = 0;
             
             //function: Internal_GetObjectsReferences
             //(Internal ssGUI function) Returns the pointer of the ObjectReferences
@@ -283,7 +312,7 @@ namespace ssGUI
 
             //function: Internal_Draw
             //(Internal ssGUI function) Draw function called by <ssGUIManager>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) = 0;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
             
             //function: Internal_Update
             //(Internal ssGUI function) Update function called by <ssGUIManager>

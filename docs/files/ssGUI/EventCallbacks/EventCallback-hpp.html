@@ -13,20 +13,20 @@
  <div class="NDClassPrototype" id="NDClassPrototype217"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;EventCallbacks</div></div></div>
 </div>
 
-<a name="EventCallback"></a><a name="Topic748"></a><div class="CTopic TClass LC">
+<a name="EventCallback"></a><a name="Topic232"></a><div class="CTopic TClass LC">
  <div class="CTitle">EventCallback</div>
- <div class="NDClassPrototype HasChildren" id="NDClassPrototype748"><div class="CPEntry TClass Current"><div class="CPName">EventCallback</div></div><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/EventCallbacks/BaseEventCallback.hpp:BaseEventCallback" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,232);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">BaseEventCallback</div></a></div>
- <div class="CBody"><p>EventCallback enables the ablity to act against a certain event.</p><p>In order to add a class's function as a listener to an event callback</p><pre>int index = EventCallback-&gt;AddEventListener(std::bind(&amp;some::class::function, objectPointer, std::placeholders::_1));</pre><p>Alternatively, you can add a lambda as an event listener to an <a href="../../../index.html#File:ssGUI/EventCallbacks/EventCallback.hpp:EventCallback" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >EventCallback</a> object.</p><pre><span class="SHKeyword">int</span> index = EventCallback-&gt;AddEventListener<br />(<br />    <span class="SHComment">//source is what *triggered* the callback</span><br />    [](ssGUI::GUIObject* source)<br />    {<br />        <span class="SHComment">//Do something with source</span><br />    }<br />);</pre></div>
+ <div class="NDClassPrototype HasChildren" id="NDClassPrototype232"><div class="CPEntry TClass Current"><div class="CPName">EventCallback</div></div><a class="CPEntry Child TClass" href="../../../index.html#File:ssGUI/EventCallbacks/BaseEventCallback.hpp:BaseEventCallback" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,230);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">BaseEventCallback</div></a></div>
+ <div class="CBody"><p>EventCallback enables the ablity to act against a certain event.</p><p>In order to add a class's function as a listener to an event callback</p><pre>int index = EventCallback-&gt;AddEventListener(std::bind(&amp;some::class::function, objectPointer, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));</pre><p>Alternatively, you can add a lambda as an event listener to an <a href="../../../index.html#File:ssGUI/EventCallbacks/EventCallback.hpp:EventCallback" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,232);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >EventCallback</a> object.</p><pre><span class="SHKeyword">int</span> index = EventCallback-&gt;AddEventListener<br />(<br />    <span class="SHComment">//source is what *triggered* the callback</span><br />    <span class="SHComment">//container is the GUI Object that holds this event callback</span><br />    [](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)<br />    {<br />        <span class="SHComment">//Do something</span><br />    }<br />);</pre></div>
 </div>
 
 <a name="EventCallback.Functions"></a><a name="Topic219"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="EventCallback.AddEventListener"></a><a name="Topic278"></a><div class="CTopic TFunction LC">
+<a name="EventCallback.AddEventListener"></a><a name="Topic1098"></a><div class="CTopic TFunction LC">
  <div class="CTitle">AddEventListener</div>
- <div id="NDPrototype278" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> AddEventListener(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">function</span>&lt;<span class="SHKeyword">void</span>(ssGUI::GUIObject *)&gt;&nbsp;</td><td class="PName last">callback</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
- <div class="CBody"><p>Adds a listener to this event callback, and returns an index for removing it.</p></div>
+ <div id="NDPrototype1098" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> AddEventListener(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">function</span>&lt;<span class="SHKeyword">void</span>(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)&gt;&nbsp;</td><td class="PName last">callback</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Adds a listener to this EventCallback, and returns an index for removing it.</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">src</td><td class="CDLDefinition"><p>GUI Object that triggered the callback</p></td></tr><tr><td class="CDLEntry">container</td><td class="CDLDefinition"><p>GUI Object that contains this eventcallback</p></td></tr><tr><td class="CDLEntry">references</td><td class="CDLDefinition"><p><a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,348);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a> that this event callback has</p></td></tr></table></div>
 </div>
 
 <a name="EventCallback.RemoveEventListener"></a><a name="Topic279"></a><div class="CTopic TFunction LC">
@@ -47,15 +47,45 @@
  <div class="CBody"><p>Call this function to trigger this event callback</p></div>
 </div>
 
+<a name="EventCallback.BindToObject"></a><a name="Topic801"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">BindToObject</div>
+ <div id="NDPrototype801" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> BindToObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">bindObj</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Binds this event callback to a GUI object</p></div>
+</div>
+
+<a name="EventCallback.AddObjectReference"></a><a name="Topic1075"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">AddObjectReference</div>
+ <div id="NDPrototype1075" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> ssGUIObjectIndex AddObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Proxy function to <a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences.AddObjectReference" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,498);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences::AddObjectReference</a></p></div>
+</div>
+
+<a name="EventCallback.GetObjectReference"></a><a name="Topic1076"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetObjectReference</div>
+ <div id="NDPrototype1076" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> ssGUI::GUIObject* GetObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Proxy function to <a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences.GetObjectReference" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,499);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences::GetObjectReference</a></p></div>
+</div>
+
+<a name="EventCallback.RemoveObjectReference"></a><a name="Topic1077"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">RemoveObjectReference</div>
+ <div id="NDPrototype1077" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> RemoveObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Proxy function to <a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences.RemoveObjectReference" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,501);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences::RemoveObjectReference</a></p></div>
+</div>
+
+<a name="EventCallback.Internal_GetObjectsReferences"></a><a name="Topic1078"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Internal_GetObjectsReferences</div>
+ <div id="NDPrototype1078" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::ObjectsReferences* Internal_GetObjectsReferences() = <span class="SHNumber">0</span></div></div>
+ <div class="CBody"><p>Proxy function to <a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences.RemoveObjectReference" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,501);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences::RemoveObjectReference</a></p></div>
+</div>
+
 <a name="EventCallback.GetEventCallbackName"></a><a name="Topic725"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetEventCallbackName</div>
  <div id="NDPrototype725" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::<span class="SHKeyword">string</span> GetEventCallbackName() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
  <div class="CBody"><p>Returns the name of this event callback</p></div>
 </div>
 
-<a name="EventCallback.Clone"></a><a name="Topic726"></a><div class="CTopic TFunction LC last">
+<a name="EventCallback.Clone"></a><a name="Topic1079"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype726" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/EventCallbacks/EventCallback.hpp:EventCallback" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >EventCallback</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">container,</td></tr><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">copyListeners</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div id="NDPrototype1079" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/EventCallbacks/EventCallback.hpp:EventCallback" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,232);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >EventCallback</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">newContainer,</td></tr><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">copyListeners</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
  <div class="CBody"><p>Clone this event callback with the option of copying the listeners</p></div>
 </div>
 

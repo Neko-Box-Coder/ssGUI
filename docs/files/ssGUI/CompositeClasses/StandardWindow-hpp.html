@@ -13,29 +13,98 @@
  <div class="NDClassPrototype" id="NDClassPrototype605"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName">ssGUI</div></div></div>
 </div>
 
-<a name="StandardWindow"></a><a name="Topic606"></a><div class="CTopic TClass LC">
+<a name="StandardWindow"></a><a name="Topic269"></a><div class="CTopic TClass LC">
  <div class="CTitle">StandardWindow</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype606"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,406);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Window</div></a><div class="CPEntry TClass Current"><div class="CPName">StandardWindow</div></div></div>
- <div class="CBody"><p>WIP</p></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype269"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,393);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Window</div></a><div class="CPEntry TClass Current"><div class="CPName">StandardWindow</div></div></div>
+ <div class="CBody"><p>A standard window that contains window icon, title and close button. With addtional visual and funcational extensions added.</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">protected</span>:<br />        <span class="SHKeyword">int</span> HorizontalPadding;<br />        <span class="SHKeyword">int</span> VerticalPadding;<br /><br />        ssGUIObjectIndex WindowTitle;<br />        ssGUIObjectIndex WindowIcon;<br />        ssGUIObjectIndex CloseButton;</pre><pre>StandardWindow::StandardWindow() : HorizontalPadding(<span class="SHNumber">5</span>), VerticalPadding(<span class="SHNumber">5</span>), WindowTitle(<span class="SHNumber">-1</span>), WindowIcon(<span class="SHNumber">-1</span>), CloseButton(<span class="SHNumber">-1</span>)<br />{<br />    WindowTitle = CurrentObjectsReferences.AddObjectReference(<span class="SHKeyword">new</span> ssGUI::Text());<br />    CurrentObjectsReferences.GetObjectReference(WindowTitle)-&gt;SetUserCreated(<span class="SHKeyword">false</span>);<br />    CurrentObjectsReferences.GetObjectReference(WindowTitle)-&gt;SetParent(<span class="SHKeyword">this</span>);<br />    CurrentObjectsReferences.GetObjectReference(WindowTitle)-&gt;SetMinSize(glm::vec2(<span class="SHNumber">5</span>, <span class="SHNumber">5</span>));<br /><br />    <span class="SHComment">// WindowIcon = CurrentObjectsReferences.AddObjectReference(new ssGUI::Image());</span><br />    <span class="SHComment">// CurrentObjectsReferences.GetObjectReference(WindowIcon)-&gt;SetUserCreated(false);</span><br />    <span class="SHComment">// CurrentObjectsReferences.GetObjectReference(WindowIcon)-&gt;SetParent(this);</span><br />    <span class="SHComment">// CurrentObjectsReferences.GetObjectReference(WindowIcon)-&gt;SetMinSize(glm::vec2(5, 5));</span><br /><br />    <span class="SHComment">// CloseButton = CurrentObjectsReferences.AddObjectReference(new ssGUI::Button());</span><br />    <span class="SHComment">// CurrentObjectsReferences.GetObjectReference(CloseButton)-&gt;SetUserCreated(false);</span><br />    <span class="SHComment">// CurrentObjectsReferences.GetObjectReference(CloseButton)-&gt;SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));</span><br />    <span class="SHComment">// CurrentObjectsReferences.GetObjectReference(CloseButton)-&gt;SetParent(this);</span><br />    <span class="SHComment">// CurrentObjectsReferences.GetObjectReference(CloseButton)-&gt;SetMinSize(glm::vec2(5, 5));</span><br /><br />    auto rc = <span class="SHKeyword">new</span> ssGUI::Extensions::RoundedCorners();<br />    rc-&gt;ClearTargetShapes();<br />    rc-&gt;AddTargetVertex(<span class="SHNumber">0</span>);<br />    rc-&gt;AddTargetVertex(<span class="SHNumber">1</span>);<br />    rc-&gt;AddTargetVertex(<span class="SHNumber">2</span>);<br />    rc-&gt;AddTargetVertex(<span class="SHNumber">3</span>);<br />    rc-&gt;AddTargetVertex(<span class="SHNumber">4</span>);<br />    rc-&gt;AddTargetVertex(<span class="SHNumber">5</span>);<br /><br />    AddExtension(rc);<br />    AddExtension(<span class="SHKeyword">new</span> ssGUI::Extensions::Dockable());<br />    AddExtension(<span class="SHKeyword">new</span> ssGUI::Extensions::Outline());<br />    RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);<br />    SetTitlebarHeight(<span class="SHNumber">25</span>);<br /><br />    ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = <span class="SHKeyword">new</span> ssGUI::EventCallbacks::OnObjectDestroyEventCallback();<br />    callback-&gt;AddEventListener(<br />        [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)<br />        {<br />            auto standardWindow = static_cast&lt;ssGUI::StandardWindow*&gt;(container);<br />            auto windowTitleObj = standardWindow-&gt;GetWindowTitleObject();<br />            auto windowIconObj = standardWindow-&gt;GetWindowIconObject();<br />            auto closeButtonObj = standardWindow-&gt;GetCloseButtonObject();<br /><br />            <span class="SHKeyword">if</span>(windowTitleObj != nullptr &amp;&amp; windowTitleObj-&gt;GetParent() == container &amp;&amp; !windowTitleObj-&gt;Internal_IsDeleted())<br />                windowTitleObj-&gt;Delete();<br /><br />            <span class="SHKeyword">if</span>(windowIconObj != nullptr &amp;&amp; windowIconObj-&gt;GetParent() == container &amp;&amp; !windowIconObj-&gt;Internal_IsDeleted())<br />                windowIconObj-&gt;Delete();<br /><br />            <span class="SHKeyword">if</span>(closeButtonObj != nullptr &amp;&amp; closeButtonObj-&gt;GetParent() == container &amp;&amp; !closeButtonObj-&gt;Internal_IsDeleted())<br />                closeButtonObj-&gt;Delete();<br /><br />        });<br /><br />    UpdateTitleText();<br />    UpdateIconImage();<br />    UpdateCloseButton();<br />}</pre></div>
 </div>
 
 <a name="StandardWindow.Functions"></a><a name="Topic685"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="StandardWindow.SetTitlebar"></a><a name="Topic699"></a><div class="CTopic TFunction LC">
+<a name="StandardWindow.SetWindowTitleObject"></a><a name="Topic510"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetWindowTitleObject</div>
+ <div id="NDPrototype510" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetWindowTitleObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">Text*&nbsp;</td><td class="PName last">text</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the window title text object.&nbsp; You can use <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetUserCreated" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1172);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetUserCreated</a> and <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetHeapAllocated" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,660);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetHeapAllocated</a> to allow Standard Window to manage the lifetime of the text object instead.</p></div>
+</div>
+
+<a name="StandardWindow.GetWindowTitleObject"></a><a name="Topic511"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetWindowTitleObject</div>
+ <div id="NDPrototype511" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Text* GetWindowTitleObject() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns the pointer to the window title text object. Nullptr if it doesn't exist</p></div>
+</div>
+
+<a name="StandardWindow.SetWindowIconObject"></a><a name="Topic553"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetWindowIconObject</div>
+ <div id="NDPrototype553" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetWindowIconObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">Image*&nbsp;</td><td class="PName last">image</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the window icon image object.&nbsp; You can use <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetUserCreated" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1172);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetUserCreated</a> and <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetHeapAllocated" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,660);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetHeapAllocated</a> to allow Standard Window to manage the lifetime of the text object instead.</p></div>
+</div>
+
+<a name="StandardWindow.GetWindowIconObject"></a><a name="Topic911"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetWindowIconObject</div>
+ <div id="NDPrototype911" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Image* GetWindowIconObject() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns the pointer to the window icon image object. Nullptr if it doesn't exist</p></div>
+</div>
+
+<a name="StandardWindow.SetCloseButtonObject"></a><a name="Topic912"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetCloseButtonObject</div>
+ <div id="NDPrototype912" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetCloseButtonObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">Button*&nbsp;</td><td class="PName last">button</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the close button object.&nbsp; You can use <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetUserCreated" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1172);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetUserCreated</a> and <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.SetHeapAllocated" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,660);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetHeapAllocated</a> to allow Standard Window to manage the lifetime of the text object instead.</p></div>
+</div>
+
+<a name="StandardWindow.GetCloseButtonObject"></a><a name="Topic913"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetCloseButtonObject</div>
+ <div id="NDPrototype913" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> ssGUI::Button* GetCloseButtonObject() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns the pointer to the close button object. Nullptr if it doesn't exist</p></div>
+</div>
+
+<a name="StandardWindow.SetHorizontalPadding"></a><a name="Topic914"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetHorizontalPadding</div>
+ <div id="NDPrototype914" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalPadding(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">padding</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the horizontal padding for the icon, title and close button objects, in pixels</p></div>
+</div>
+
+<a name="StandardWindow.GetHorizontalPadding"></a><a name="Topic915"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetHorizontalPadding</div>
+ <div id="NDPrototype915" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetHorizontalPadding() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns the horizontal padding for the icon, title and close button objects, in pixels</p></div>
+</div>
+
+<a name="StandardWindow.SetVerticalPadding"></a><a name="Topic916"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetVerticalPadding</div>
+ <div id="NDPrototype916" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalPadding(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">padding</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>Sets the vertical padding for the icon, title and close button objects, in pixels</p></div>
+</div>
+
+<a name="StandardWindow.GetVerticalPadding"></a><a name="Topic917"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetVerticalPadding</div>
+ <div id="NDPrototype917" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetVerticalPadding() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>Returns the vertical padding for the icon, title and close button objects, in pixels</p></div>
+</div>
+
+<a name="StandardWindow.SetTitlebar"></a><a name="Topic948"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetTitlebar</div>
- <div id="NDPrototype699" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetTitlebar(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">set</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype948" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetTitlebar(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">set</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.SetTitlebar" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,459);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::SetTitlebar</a></p></div>
 </div>
 
-<a name="StandardWindow.SetClosable"></a><a name="Topic700"></a><div class="CTopic TFunction LC">
+<a name="StandardWindow.SetClosable"></a><a name="Topic949"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetClosable</div>
- <div id="NDPrototype700" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetClosable(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">closable</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype949" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetClosable(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">closable</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/Window.hpp:Window.SetClosable" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,465);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window::SetClosable</a></p></div>
 </div>
 
-<a name="StandardWindow.GetType"></a><a name="Topic701"></a><div class="CTopic TFunction LC">
+<a name="StandardWindow.GetType"></a><a name="Topic974"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetType</div>
- <div id="NDPrototype701" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Enums/GUIObjectType.hpp:ssGUI.Enums.GUIObjectType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,198);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::GUIObjectType</a> GetType() <span class="SHKeyword">const override</span></div></div>
+ <div id="NDPrototype974" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Enums/GUIObjectType.hpp:ssGUI.Enums.GUIObjectType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,198);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::GUIObjectType</a> GetType() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.GetType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetType</a></p></div>
+</div>
+
+<a name="StandardWindow.Delete"></a><a name="Topic975"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">Delete</div>
+ <div id="NDPrototype975" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Delete() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject.Delete" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,651);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::Delete</a></p></div>
 </div>
 
 <a name="StandardWindow.Internal_Draw"></a><a name="Topic702"></a><div class="CTopic TFunction LC">
@@ -48,9 +117,9 @@
  <div class="CBody"><p>virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus&amp; globalInputStatus, ssGUI::InputStatus&amp; windowInputStatus, ssGUI::GUIObject* mainWindow) override;</p></div>
 </div>
 
-<a name="StandardWindow.Clone"></a><a name="Topic707"></a><div class="CTopic TFunction LC last">
+<a name="StandardWindow.Clone"></a><a name="Topic994"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype707" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,521);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType">vector&lt;<a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,521);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&gt;&amp;&nbsp;</td><td class="PName last">originalObjs,</td></tr><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype994" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/GUIObject.hpp:GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,521);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">cloneChildren</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
 </div>
 
 </body></html>

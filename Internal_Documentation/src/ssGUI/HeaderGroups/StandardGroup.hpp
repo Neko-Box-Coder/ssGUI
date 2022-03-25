@@ -3,7 +3,8 @@
 
 #include "ssGUI/BaseClasses/BaseGUIObject.hpp"
 #include "ssGUI/BaseClasses/Button.hpp"
-#include "ssGUI/BaseClasses/CharacterInfo.hpp"
+#include "ssGUI/BaseClasses/CharacterDetails.hpp"
+#include "ssGUI/BaseClasses/CharacterRenderInfo.hpp"
 #include "ssGUI/BaseClasses/DrawingProperties.hpp"
 #include "ssGUI/BaseClasses/Font.hpp"
 #include "ssGUI/BaseClasses/GUIObject.hpp"

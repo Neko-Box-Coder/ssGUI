@@ -1,0 +1,5 @@
+(exclude curly brackets)
+
+1. replace {style="display: flex;"} with empty in .html
+2. replace {href="http://localhost([^"]*)"} with {href=""} in .html (With regex on)
+3. find {.minicard-wrapper} class in .css and replace {display:flex;} with {display:block};

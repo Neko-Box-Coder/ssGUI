@@ -1,7 +1,5 @@
-**Caution!!!!**
-
-> Incomplete library. There are some core features missing. 
-
+### Note
+> This library is constantly changing until v1.00 . However, feel free to star or bookmark this project.
 
 ## What is ssGUI?
 
@@ -51,61 +49,61 @@ _
 
 _
 
-## How does it look
-[TODO: Insert screenshots]
+## Cool Features
+
+#### Layout:
+
+![](Internal_Documentation/ND_Config/Images/VerticalLayout.gif)
+![](Internal_Documentation/ND_Config/Images/HorizontalLayout.gif)
+![](Internal_Documentation/ND_Config/Images/CompositeLayout.gif)
+
+#### Window Docking:
+![](Internal_Documentation/ND_Config/Images/Docking.gif)
+
+#### Mask:
+![](Internal_Documentation/ND_Config/Images/Mask.gif)
+
+#### And more to come...
 
 _
 
-## Okay, what does it look like in code? (To be changed)
+## Okay, what does it look like in code?
 
 ![](Internal_Documentation/ND_Config/Images/IntroductionExample.gif)
 ```C++
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"                   //ssGUI debug initialization
+#include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
-#include "ssGUI/HeaderGroups/StandardGroup.hpp"                     //Includes all the core ssGUI classes
-#include "ssGUI/Extensions/AdvancedPosition.hpp"
 
 //Readme example
 int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::ivec2(450, 125));
-
-    //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = new ssGUI::Extensions::AdvancedPosition();
-    positionExtension->SetVerticalUsePercentage(false);
+    mainWindow.SetSize(glm::vec2(450, 125));
+    mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
-    text.SetText(L"Click on the button to show the message");
+    text.SetSize(glm::vec2(450, 60));
+    text.SetText("Click on the button to change this text.");
     text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
-    positionExtension->SetVerticalPixel(-30);
-    text.AddExtension(positionExtension);
-    
+
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
-    button.SetSize(glm::ivec2(50, 30));
+    button.SetSize(glm::vec2(50, 30));
+    button.SetPosition(glm::vec2(200, 75));
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
-        [&](ssGUI::GUIObject* src)
+        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
         {
             if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-            {
-                text.SetText(L"(`oωo´)");
-            }
+                text.SetText("Button pressed and this text has changed.");
         }
     );
 
-    //Clone the extension for the button widget
-    ssGUI::Extensions::AdvancedPosition* positionExtension2 = 
-        static_cast<ssGUI::Extensions::AdvancedPosition*>(positionExtension->Clone(&button));
-    positionExtension2->SetVerticalPixel(20);
-
-    //Add the text and button widget to the main window
-    text.SetParent(&mainWindow);
     button.SetParent(&mainWindow);
+    text.SetParent(&mainWindow);
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
@@ -134,4 +132,4 @@ SFML:
 _
 
 ## What's the progress status of the current library
-![](Internal_Documentation/ND_Config/Images/Wekan.png) (Last Updated: 04/02/2022)
+<./WekanBoard/ssGUI.html> (Last Updated: 26/03/2022)

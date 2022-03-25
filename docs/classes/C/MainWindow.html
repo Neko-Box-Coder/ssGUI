@@ -8,20 +8,26 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="Topic348"></a><div class="CTopic TClass LC first">
+<a name="Topic309"></a><div class="CTopic TClass LC first">
  <div class="CTitle">MainWindow</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype348"><a class="CPEntry Parent TClass" href="../../index.html#CClass:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,406);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Window</div></a><div class="CPEntry TClass Current"><div class="CPName">MainWindow</div></div></div>
- <div class="CBody"><p>Main Window is the <b>actual</b> window. Not to be confused with <a href="../../index.html#CClass:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,406);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window</a> which lives inside MainWindow.&nbsp; This class should not be overwritten unless you know what you are doing</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;<br />    ssGUI::Backend::BackendDrawingInterface* BackendDrawing;<br /><br />    uint64_t LastSyncTime;</pre><pre>MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSyncTime(<span class="SHNumber">0</span>)<br />{<br />    BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();<br />    BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();<br /><br />    BackendMainWindow-&gt;AddOnCloseEvent(std::bind(&amp;ssGUI::MainWindow::Internal_OnClose, <span class="SHKeyword">this</span>));<br />}</pre></div>
+ <div class="NDClassPrototype HasParents" id="NDClassPrototype309"><a class="CPEntry Parent TClass" href="../../index.html#CClass:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,393);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Window</div></a><div class="CPEntry TClass Current"><div class="CPName">MainWindow</div></div></div>
+ <div class="CBody"><p>Main Window is the <b>actual</b> window. Not to be confused with <a href="../../index.html#CClass:Window" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,393);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Window</a> which lives inside MainWindow.&nbsp; You should call <a href="../../index.html#CClass:GUIObject:RedrawObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1179);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::RedrawObject</a> after changing the properties of the MainWindow.&nbsp; This class should not be overwritten unless you know what you are doing</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;<br />    ssGUI::Backend::BackendDrawingInterface* BackendDrawing;<br />    glm::vec2 LastSize;<br />    <span class="SHKeyword">int</span> RedrawCount;<br /><br />    uint64_t LastSyncTime;</pre><pre>MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::vec2(<span class="SHNumber">0</span>, <span class="SHNumber">0</span>)), RedrawCount(<span class="SHNumber">0</span>), LastSyncTime(<span class="SHNumber">0</span>)<br />{<br />    BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();<br />    BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();<br /><br />    BackendMainWindow-&gt;AddOnCloseEvent(std::bind(&amp;ssGUI::MainWindow::Internal_OnClose, <span class="SHKeyword">this</span>));<br />}</pre></div>
 </div>
 
 <a name="Functions"></a><a name="Topic490"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="Render"></a><a name="Topic522"></a><div class="CTopic TFunction LC">
+<a name="Render"></a><a name="Topic1162"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Render</div>
- <div id="NDPrototype522" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Render()</div></div>
- <div class="CBody"><p>Renders all the entities drawn on this MainWindow. Called by ssGUIManager normally.</p></div>
+ <div id="NDPrototype1162" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Render()</div></div>
+ <div class="CBody"><p>Renders all the entities drawn on this MainWindow. Called by <a href="../../index.html#CClass:ssGUIManager" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,276);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUIManager</a> normally.</p></div>
+</div>
+
+<a name="ClearBackBuffer"></a><a name="Topic1163"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">ClearBackBuffer</div>
+ <div id="NDPrototype1163" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> ClearBackBuffer()</div></div>
+ <div class="CBody"><p>Clears all the entities drawn on this MainWindow</p></div>
 </div>
 
 <a name="GetBackendWindowInterface"></a><a name="Topic492"></a><div class="CTopic TFunction LC">
@@ -62,40 +68,40 @@
  <div class="CBody"><p>Sets the position of the MainWindow on the screen</p></div>
 </div>
 
-<a name="GetPosition"></a><a name="Topic526"></a><div class="CTopic TFunction LC">
+<a name="GetPosition"></a><a name="Topic1164"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetPosition</div>
- <div id="NDPrototype526" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetPosition() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:GetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,285);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetPosition</a></p></div>
+ <div id="NDPrototype1164" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetPosition() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:GetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,531);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetPosition</a></p></div>
 </div>
 
-<a name="SetPosition"></a><a name="Topic531"></a><div class="CTopic TFunction LC">
+<a name="SetPosition"></a><a name="Topic1165"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetPosition</div>
- <div id="NDPrototype531" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:SetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,613);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetPosition</a></p></div>
+ <div id="NDPrototype1165" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:SetPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,532);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetPosition</a></p></div>
 </div>
 
-<a name="GetGlobalPosition"></a><a name="Topic532"></a><div class="CTopic TFunction LC">
+<a name="GetGlobalPosition"></a><a name="Topic1166"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetGlobalPosition</div>
- <div id="NDPrototype532" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetGlobalPosition() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:GetGlobalPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,614);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetGlobalPosition</a></p></div>
+ <div id="NDPrototype1166" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetGlobalPosition() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:GetGlobalPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,533);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetGlobalPosition</a></p></div>
 </div>
 
-<a name="SetGlobalPosition"></a><a name="Topic533"></a><div class="CTopic TFunction LC">
+<a name="SetGlobalPosition"></a><a name="Topic1167"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetGlobalPosition</div>
- <div id="NDPrototype533" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetGlobalPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:SetGlobalPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,615);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetGlobalPosition</a></p></div>
+ <div id="NDPrototype1167" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetGlobalPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:SetGlobalPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,534);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetGlobalPosition</a></p></div>
 </div>
 
-<a name="GetSize"></a><a name="Topic534"></a><div class="CTopic TFunction LC">
+<a name="GetSize"></a><a name="Topic1168"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetSize</div>
- <div id="NDPrototype534" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetSize() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:GetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,616);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetSize</a></p></div>
+ <div id="NDPrototype1168" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetSize() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:GetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,535);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::GetSize</a></p></div>
 </div>
 
-<a name="SetSize"></a><a name="Topic535"></a><div class="CTopic TFunction LC">
+<a name="SetSize"></a><a name="Topic1169"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetSize</div>
- <div id="NDPrototype535" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:SetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,617);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetSize</a></p></div>
+ <div id="NDPrototype1169" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../index.html#CClass:GUIObject:SetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,543);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject::SetSize</a></p></div>
 </div>
 
 <a name="GetType"></a><a name="Topic536"></a><div class="CTopic TFunction LC">
@@ -134,9 +140,9 @@
  <div class="CBody"><p>This checks for window state before rendering</p></div>
 </div>
 
-<a name="Internal_Draw(2)"></a><a name="Topic543"></a><div class="CTopic TFunction LC">
+<a name="Internal_Draw(2)"></a><a name="Topic1170"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_Draw</div>
- <div id="NDPrototype543" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindowP,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">ivec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div id="NDPrototype1170" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindow,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
  <div class="CBody"><p>This checks for window state before rendering</p></div>
 </div>
 

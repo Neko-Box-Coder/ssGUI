@@ -69,10 +69,6 @@ namespace ssGUI
             void AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP);
 
         public:
-
-            //TODO : Maybe make this thread safe?
-            static std::vector<ssGUI::GUIObject*> ObjsToDelete;
-
             ssGUIManager();
             virtual ~ssGUIManager();
 

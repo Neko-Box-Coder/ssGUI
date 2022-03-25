@@ -29,16 +29,14 @@ namespace ssGUI
     of C and D.
     ==============================================================
     
+    This is a 2-way referencing system to prevent invalid referencing when one of the referencing GUI Objects is deleted. 
+    
+    Development Notes:
     If a GUI Object (Referencer) references another GUI Object (Referencee), 
     then the GUI Object it is referencing (Referencee) will be stored in this class inside the GUI Object (Referencer)
     
     Additionally, the GUI Object that is referencing the other object (Referencer) will be stored in ExternalObjectsDependencies 
-    in the GUI Object which is being referenced (Referencee).
-    
-    This is do so to prevent invalid referencing when one of the referencing GUI Objects is deleted. 
-    In other words, this is a 2-way referencing system.
-    
-    You normally don't need to deal with this
+    in the GUI Object which is being referenced (Referencee).    
     
     Variables & Constructor:
     ============================== C++ ==============================
@@ -93,13 +91,13 @@ namespace ssGUI
             //Removes the referencing GUI Object with the index
             virtual void RemoveObjectReference(ssGUIObjectIndex index, bool internalCleanUp = false);
 
-            //function: AddExternalDependency
-            //Adds the external depending ObjectsReferences
-            virtual void AddExternalDependency(ObjectsReferences* dependency, ssGUIObjectIndex index);
+            //function: Internal_AddExternalDependency
+            //(Internal ssGUI function) Adds the external depending ObjectsReferences
+            virtual void Internal_AddExternalDependency(ObjectsReferences* dependency, ssGUIObjectIndex index);
             
-            //function: RemoveExternalDependency           
-            //Removes the external depending ObjectsReferences
-            virtual void RemoveExternalDependency(ObjectsReferences* dependency);
+            //function: Internal_RemoveExternalDependency           
+            //(Internal ssGUI function) Removes the external depending ObjectsReferences
+            virtual void Internal_RemoveExternalDependency(ObjectsReferences* dependency);
             
             //function: GetObjectIndex
             //Gets the referencing index by the address of the GUI Object. Returns -1 if not found

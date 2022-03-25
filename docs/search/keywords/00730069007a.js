@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("siz",["Variable"],[["Size",,[["CharacterInfo",,,,0,"File:ssGUI/BaseClasses/CharacterInfo.hpp:CharacterInfo.Size","CClass:CharacterInfo:Size"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("siz",["Variable","Class"],[["Size",,[["CharacterRenderInfo",,,,0,"File:ssGUI/BaseClasses/CharacterRenderInfo.hpp:CharacterRenderInfo.Size","CClass:CharacterRenderInfo:Size"]]],["SizeChangedEventCallback",,[[,,,,1,"File:ssGUI/EventCallbacks/SizeChangedEventCallback.hpp:SizeChangedEventCallback","CClass:SizeChangedEventCallback"]]]]);

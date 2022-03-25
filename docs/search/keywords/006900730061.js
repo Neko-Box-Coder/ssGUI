@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("isa",["Function"],[["IsAllowingCaching",,[["MaskEnforcer",,,,0,"File:ssGUI/Extensions/MaskEnforcer.hpp:MaskEnforcer.IsAllowingCaching","CClass:MaskEnforcer:IsAllowingCaching"]]]]);

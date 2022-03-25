@@ -23,7 +23,7 @@ namespace ssGUI
     ============================== C++ ==============================
     Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
     {
-        SetBackgroundColor(glm::u8vec4(127,127,127,255)); //Gray background colour for button (For now)
+        SetBackgroundColor(glm::u8vec4(100,100,100,255)); //Gray background colour for button (For now)
         StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
         StateChangedEventCallback->AddEventListener(
             [](ssGUI::GUIObject* obj)
@@ -69,8 +69,9 @@ namespace ssGUI
         protected:
             Button(Button const& other);
 
+            virtual void ConstructRenderInfo() override;
             virtual void SetButtonState(ssGUI::Enums::ButtonState state);
-        
+            
         public:
             Button();
             virtual ~Button() override;
@@ -101,7 +102,7 @@ namespace ssGUI
             
             //function: Internal_Draw
             //See <Widget::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
             //See <Widget::Internal_Update>
