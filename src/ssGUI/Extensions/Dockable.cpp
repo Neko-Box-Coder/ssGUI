@@ -935,6 +935,8 @@ namespace ssGUI::Extensions
             glm::vec2 triggerSize = IsUseTriggerPercentage() ? glm::vec2(glm::vec2(windowContentSize) * GetTriggerPercentage()) : glm::vec2(GetTriggerPixel(), GetTriggerPixel());
 
             //Inform layout to exclude triggers and previews visual widgets
+
+            //TODO : This is not used anywhere?..
             ssGUI::Extensions::Layout* containerLayout = Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) ? 
                                                             static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME)) : nullptr;
 

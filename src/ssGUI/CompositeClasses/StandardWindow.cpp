@@ -54,6 +54,9 @@ namespace ssGUI
         static_cast<ssGUI::Text*>(windowTitleObj)->SetFontSize(textHeight);
         static_cast<ssGUI::Text*>(windowTitleObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
         static_cast<ssGUI::Text*>(windowTitleObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+
+        if(!windowTitleObj->HasTag(ssGUI::Tags::OVERLAY))
+            windowTitleObj->AddTag(ssGUI::Tags::OVERLAY);
     }
 
     void StandardWindow::UpdateIconImage()
@@ -87,6 +90,9 @@ namespace ssGUI
         as->SetHorizontalPixel(iconHeight);
         as->SetVerticalUsePercentage(false);
         as->SetVerticalPixel(iconHeight);
+
+        if(!windowIconObj->HasTag(ssGUI::Tags::OVERLAY))
+            windowIconObj->AddTag(ssGUI::Tags::OVERLAY);
     }
 
     void StandardWindow::UpdateCloseButton()
@@ -120,10 +126,15 @@ namespace ssGUI
         as->SetHorizontalPixel(buttonHeight);
         as->SetVerticalUsePercentage(false);
         as->SetVerticalPixel(buttonHeight);
+
+        if(!closeButtonObj->HasTag(ssGUI::Tags::OVERLAY))
+            closeButtonObj->AddTag(ssGUI::Tags::OVERLAY);
     }
 
     StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
     {        
+        SetMinSize(glm::vec2(50, 50));
+        
         WindowTitle = CurrentObjectsReferences.AddObjectReference(new ssGUI::Text());
         CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetUserCreated(false);
         CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetParent(this);
@@ -216,9 +227,6 @@ namespace ssGUI
 
         text->SetParent(this);
 
-        if(!text->HasTag(ssGUI::Tags::OVERLAY))
-            text->AddTag(ssGUI::Tags::OVERLAY);
-
         ssGUIObjectIndex newTextIndex = CurrentObjectsReferences.GetObjectIndex(text);
 
         if(newTextIndex != -1)
@@ -256,9 +264,6 @@ namespace ssGUI
         
         image->SetParent(this);
 
-        if(image->HasTag(ssGUI::Tags::OVERLAY))
-            image->AddTag(ssGUI::Tags::OVERLAY);
-
         ssGUIObjectIndex newIconIndex = CurrentObjectsReferences.GetObjectIndex(image);
 
         if(newIconIndex != -1)
@@ -292,9 +297,6 @@ namespace ssGUI
         }
         
         button->SetParent(this);
-
-        if(button->HasTag(ssGUI::Tags::OVERLAY))
-            button->AddTag(ssGUI::Tags::OVERLAY);
 
         ssGUIObjectIndex newButtonIndex = CurrentObjectsReferences.GetObjectIndex(button);
 
