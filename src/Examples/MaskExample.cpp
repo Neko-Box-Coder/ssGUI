@@ -1,7 +1,7 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
-
+#include "ssGUI/CompositeClasses/StandardWindow.hpp"
 
 //Mask test
 int main()
@@ -10,7 +10,7 @@ int main()
     ssGUI::MainWindow mainWindow;
     mainWindow.SetSize(glm::vec2(800, 800));
 
-    ssGUI::Window window;
+    ssGUI::StandardWindow window;
     window.SetSize(glm::vec2(400, 400));
     window.AddExtension(new ssGUI::Extensions::Mask());
 

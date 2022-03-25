@@ -4,6 +4,7 @@
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/CompositeClasses/StandardWindow.hpp"
 #include "ssGUI/Extensions/Docker.hpp"
+#include "ssGUI/Extensions/Dockable.hpp"
 
 //Layout example
 int main()
@@ -11,11 +12,14 @@ int main()
     //Create the main window
     ssGUI::MainWindow mainWindow;
     mainWindow.SetSize(glm::vec2(450, 650));
+    mainWindow.GetBackendWindowInterface()->SetMSAA(8);
 
     ssGUI::Window window;
+    // window.SetTitlebarHeight(25);
     window.SetSize(glm::vec2(300, 600));
     window.SetParent(&mainWindow);
-    window.AddExtension(new ssGUI::Extensions::Layout());
+    // window.AddExtension(new ssGUI::Extensions::Layout());
+    // window.RemoveExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME);
     window.AddExtension(new ssGUI::Extensions::Docker());
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
@@ -29,9 +33,15 @@ int main()
     window4.SetTitlebarColor(glm::u8vec4(127, 127, 255, 255));
     window4.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
 
+    ssGUI::StandardWindow window5;
+    // window5.SetTitlebarColor(glm::u8vec4(127, 127, 127, 255));
+    window5.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
+
+
     window2.SetParent(&window);
     window3.SetParent(&window);
     window4.SetParent(&window);
+    window5.SetParent(&window);
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
