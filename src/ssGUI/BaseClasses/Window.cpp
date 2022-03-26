@@ -318,8 +318,9 @@ namespace ssGUI
     }
         
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), 
-                       ResizingLeft(false), ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), DeleteAfterClosed(true), 
+                       CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
+                       ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
     {       
         AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
         AddExtension(new ssGUI::Extensions::Border());
@@ -345,19 +346,21 @@ namespace ssGUI
                 OnCloseEventListeners[i]();
         }*/
 
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
-        {
-            GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->Notify(this);
-            if(IsClosingAborted)
-            {
-                IsClosingAborted = false;
-                return;
-            }
-        }
+        // if(IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
+        // {
+        //     GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->Notify(this);
+        //     if(IsClosingAborted)
+        //     {
+        //         IsClosingAborted = false;
+        //         return;
+        //     }
+        // }
 
-        Closed = true;
+        // Closed = true;
 
-        SetParent(nullptr);
+        // SetParent(nullptr);
+
+        Internal_OnClose();
     }
 
     void Window::AbortClosing()
@@ -385,6 +388,10 @@ namespace ssGUI
         }
 
         Closed = true;
+
+        SetParent(nullptr);
+
+        Delete();
     }
 
     void Window::SetTitlebar(bool set)
@@ -478,6 +485,16 @@ namespace ssGUI
     bool Window::IsResizing() const
     {
         return ResizingTop || ResizingRight || ResizingBot || ResizingLeft;
+    }
+
+    void Window::SetDeleteAfterClosed(bool deleteAfterClosed)
+    {
+        DeleteAfterClosed = deleteAfterClosed;
+    }
+
+    bool Window::IsDeleteAfterClosed() const
+    {
+        return DeleteAfterClosed;
     }
 
     int Window::AddOnCloseEventListener(std::function<void()> onClose)

@@ -30,6 +30,7 @@ namespace ssGUI
         bool Closed;
         bool IsClosingAborted;
         glm::ivec4 TitlebarColorDifference;
+        bool DeleteAfterClosed;
 
         //Resize/Drag settings
         ssGUI::Enums::WindowDragState CurrentDragState;
@@ -45,11 +46,13 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), 
-                       ResizingLeft(false), ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), DeleteAfterClosed(true), 
+                       CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
+                       ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
     {       
         AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
         AddExtension(new ssGUI::Extensions::Border());
+        SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     }
     =================================================================    
     */
@@ -65,6 +68,7 @@ namespace ssGUI
             bool Closed;
             bool IsClosingAborted;
             glm::ivec4 TitlebarColorDifference;
+            bool DeleteAfterClosed;
 
             //Resize/Drag settings
             ssGUI::Enums::WindowDragState CurrentDragState;
@@ -96,7 +100,7 @@ namespace ssGUI
             
             //function: Close
             //Calling this function will triggers the <ssGUI::EventCallbacks::OnWindowCloseEventCallback> and sets this window's parent to nullptr.
-            //Note that this will not delete this GUI Object. You will have to call it manually.
+            //By default, the window will be deleted automatically after closing. You can change this behaviour by calling <SetDeleteAfterClosed>.
             virtual void Close();
             
             //function: IsClosed
@@ -133,9 +137,11 @@ namespace ssGUI
             virtual glm::u8vec4 GetTitlebarColor() const;
             
             //function: SetResizeType
+            //Sets the resize type of the window. For MainWindow, only <Enums::ResizeType::ALL> or <Enums::ResizeType::NONE> will work.
             virtual void SetResizeType(ssGUI::Enums::ResizeType resizeType);
             
             //function: GetResizeType
+            //Returns the resize type of the window
             virtual ssGUI::Enums::ResizeType GetResizeType() const;
             
             //function: GetResizeHitbox
@@ -168,10 +174,20 @@ namespace ssGUI
             virtual ssGUI::Enums::WindowDragState GetWindowDragState() const;
 
             //fucntion: IsDragging
+            //Returns true if the user is currently dragging the window. Not supporting MainWindow for now.
             virtual bool IsDragging() const;
 
             //function: IsResizing
+            //Returns true if the user is currently resizing the window. Not supporting MainWindow for now.
             virtual bool IsResizing() const;
+
+            //function: SetDeleteAfterClosed
+            //If sets to true, the window will be deleted automatically after being closed
+            virtual void SetDeleteAfterClosed(bool deleteAfterClosed);
+
+            //function: IsDeleteAfterClosed
+            //If returns true, the window will be deleted automatically after being closed
+            virtual bool IsDeleteAfterClosed() const;
 
             //function: AddOnCloseEventListener [Deprecated]
             //Proxy function for adding listener and <EventCallbacks::OnWindowCloseEventCallback> to this object 

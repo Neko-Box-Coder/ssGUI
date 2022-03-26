@@ -262,7 +262,7 @@ namespace ssGUI
                 DEBUG_LINE("Invalid object type added to gui manager");
                 continue;
             }
-            if(static_cast<ssGUI::Window*>(mainWindow)->IsClosed())
+            if(mainWindow->Internal_IsDeleted() || static_cast<ssGUI::Window*>(mainWindow)->IsClosed())
                 continue;
 
             ssGUI::MainWindow* currentMainWindowP = dynamic_cast<ssGUI::MainWindow*>(mainWindow);
