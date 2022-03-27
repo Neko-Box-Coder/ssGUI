@@ -7,7 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: ButtonStateChangedEventCallback
-    //This event callback is triggered *after* the button state has changed
+    //This event callback is triggered *after* the button state has changed. Button(Container) will be the source for triggering this event callback.
     class ButtonStateChangedEventCallback : public BaseEventCallback
     {        
         private:

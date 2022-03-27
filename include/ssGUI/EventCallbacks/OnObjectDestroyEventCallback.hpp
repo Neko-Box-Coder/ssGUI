@@ -7,7 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: OnObjectDestroyEventCallback
-    //This event callback is triggered *before* the GUI object is destroyed
+    //This event callback is triggered *before* the GUI object is destroyed. Container will be the source for triggering this event callback.
     class OnObjectDestroyEventCallback : public BaseEventCallback
     {        
         private:

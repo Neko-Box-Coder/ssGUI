@@ -8,6 +8,7 @@ namespace ssGUI::EventCallbacks
 {
     //class: RecursiveChildAddedEventCallback
     //This event callback is triggered *after* a child is paranted recursively on this GUI object
+    //The child object being added will be the source for triggering this event callback.
     class RecursiveChildAddedEventCallback : public BaseEventCallback
     {        
         private:

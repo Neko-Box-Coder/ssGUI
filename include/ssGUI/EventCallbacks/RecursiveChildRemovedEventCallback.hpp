@@ -8,6 +8,7 @@ namespace ssGUI::EventCallbacks
 {
     //class: RecursiveChildRemovedEventCallback
     //This event callback is triggered *after* a child is removed recursively on this GUI object
+    //The child object being removed will be the source for triggering this event callback.
     class RecursiveChildRemovedEventCallback : public BaseEventCallback
     {        
         private:
