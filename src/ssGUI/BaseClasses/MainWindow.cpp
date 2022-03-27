@@ -169,6 +169,8 @@ namespace ssGUI
         
         BackendMainWindow->SetSize(size);
         RedrawObject();
+
+        //Size changed event callback is done in update to allow user resizing to be captured as well
     }
 
     ssGUI::Enums::GUIObjectType MainWindow::GetType() const
@@ -210,7 +212,6 @@ namespace ssGUI
         
         for(auto extension : ExtensionsUpdateOrder)
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-            
 
         //Update cursor position offset every .5 seconds
         if(inputInterface->GetElapsedTime() - LastSyncTime > 500)
@@ -239,13 +240,16 @@ namespace ssGUI
         //Check size different for redraw
         if(GetSize() != LastSize)
         {
-            //TODO : Add size callback
-            
             RedrawObject();
+
+            if(IsEventCallbackExist(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME))
+                GetEventCallback(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME)->Notify(this);
+
             RedrawCount = 0;
         }
-        //Redraw up to 3 frames even when the size is the same to make sure it is properly rendered
-        else if(RedrawCount < 3)
+        //Seems like a bug but it needs redrawing after changing the size. It might be device independent.
+        //Redraw up to 20 frames even when the size is the same to make sure it is properly rendered
+        else if(RedrawCount < 20)
         {
             RedrawObject();
             RedrawCount++;

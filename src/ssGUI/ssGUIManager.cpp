@@ -192,6 +192,7 @@ namespace ssGUI
             bool renderNeeded = false;
 
             if(!currentMainWindowP->IsRedrawNeeded())
+            {
                 for(auto it = renderQueue.begin(); it != renderQueue.end(); it++)
                 {
                     if((*it)->IsRedrawNeeded())
@@ -200,6 +201,7 @@ namespace ssGUI
                         break;
                     }
                 }
+            }
             else
                 renderNeeded = true;
 
