@@ -1,4 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
@@ -54,6 +55,7 @@ int main()
                 !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
             {
                 DEBUG_LINE(window.Internal_IsDeleted());
+                DEBUG_LINE(button.Internal_IsDeleted());
             }
         }
     );    

@@ -377,13 +377,14 @@ namespace ssGUI
             CurrentObjectsReferences.CleanUp();
             
             NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-            
-            for(auto it : Extensions)
-                delete it.second;
-            
-            for(auto it : EventCallbacks)
-                delete it.second;
         }
+
+        //Only clean up extensions and event callbacks when the GUI Object is destroyed
+        for(auto it : Extensions)
+            delete it.second;
+        
+        for(auto it : EventCallbacks)
+            delete it.second;
     }
 
     //Below are from GUIObject.hpp
@@ -887,6 +888,20 @@ namespace ssGUI
 
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
 
+        //Delete children first
+        std::vector<ssGUI::GUIObject*> childrenToDelete;
+        for(auto childIndex : Children)
+        {
+            ssGUI::GUIObject* child = CurrentObjectsReferences.GetObjectReference(childIndex);
+            if(child != nullptr)
+                childrenToDelete.push_back(child);
+        }
+
+        for(auto child : childrenToDelete)
+        {
+            child->Delete();
+        }
+
         //Tell parent to redraw because of missing GUI object
         if(GetParent() != nullptr)
             GetParent()->RedrawObject();
@@ -895,12 +910,6 @@ namespace ssGUI
         CurrentObjectsReferences.CleanUp();
         ObjectDelete = true;
         ObjsToDelete.push_back(this);
-
-        for(auto it : Extensions)
-           delete it.second;
-        
-        for(auto it : EventCallbacks)
-           delete it.second;
 
         FUNC_DEBUG_EXIT();
     }

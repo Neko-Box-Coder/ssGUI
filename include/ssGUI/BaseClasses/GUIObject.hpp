@@ -182,6 +182,8 @@ namespace ssGUI
 
             //function: Delete
             //Delete the current GUI Object. This will unset the parent of this GUI Object and all it's references.
+            //This will also deletes all of the children GUI Objects. If this is allocated on the heap,
+            //it will be deallocated automiactically. Any referencing to this GUI Object after deleted is undefined. 
             virtual void Delete() = 0;
 
             //function: Internal_IsDeleted
