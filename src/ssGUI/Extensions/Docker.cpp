@@ -29,6 +29,9 @@ namespace ssGUI::Extensions
 
         DockPreivew = nullptr;
         DockTrigger = nullptr;
+
+        ChildRemovedEventIndex = -1;
+        ChildRemoveGuard = false;
     }
 
     void Docker::ConstructRenderInfo()
@@ -134,16 +137,161 @@ namespace ssGUI::Extensions
         }
     }
 
+    int Docker::GetRealChildrenCount(ssGUI::GUIObject* checkObj)
+    {
+        int realChildrenCount = 0;
+        checkObj->MoveChildrenIteratorToFirst();
+        while(!checkObj->IsChildrenIteratorEnd())
+        {
+            auto checkObjChild = checkObj->GetCurrentChild();
+
+            if(!checkObjChild->HasTag(ssGUI::Tags::FLOATING) && !checkObjChild->HasTag(ssGUI::Tags::OVERLAY))
+                realChildrenCount++;
+
+            checkObj->MoveChildrenIteratorNext();
+        }
+
+        return realChildrenCount;
+    }
+
+    void Docker::ChildRemoved(ssGUI::GUIObject* child)
+    {
+        FUNC_DEBUG_ENTRY();
+        
+        if(ChildRemoveGuard ||
+            Container->IsUserCreated() ||
+            !Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        ChildRemoveGuard = true;
+        
+        int realChildrenCount = GetRealChildrenCount(Container);
+
+        if(realChildrenCount > 1)
+        {
+            ChildRemoveGuard = false;
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        //If there's no children left in the docker, remove this.
+        if(realChildrenCount == 0)
+        {
+            //Transfer the rest of the floating or overlay children
+            Container->MoveChildrenIteratorToFirst();
+            while(!Container->IsChildrenIteratorEnd())
+            {
+                auto containerChild = Container->GetCurrentChild();
+                containerChild->SetParent(Container->GetParent());
+                Container->MoveChildrenIteratorNext();
+            }
+            
+            Container->Delete();
+            ChildRemoveGuard = false;
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+        //If there's only 1 child left in the docker
+        else
+        {            
+            Container->MoveChildrenIteratorToFirst();
+            ssGUI::GUIObject* childLeft = nullptr;
+            while (!Container->IsChildrenIteratorEnd())
+            {
+                auto currentChild = Container->GetCurrentChild();
+                // Container->GetCurrentChild()->SetParent(Container);
+                if(!currentChild->HasTag(ssGUI::Tags::FLOATING) && !currentChild->HasTag(ssGUI::Tags::OVERLAY))
+                {
+                    childLeft = currentChild;
+                    break;
+                }    
+                
+                Container->MoveChildrenIteratorNext();
+            }
+            
+            //Set size when transferring child
+            glm::vec2 originalSize = Container->GetSize();
+            glm::vec2 originalPos = Container->GetGlobalPosition();
+            
+            //Check if Docker is floating, if so record/restore global position
+            bool originalDockerIsFloating = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW ? 
+                (static_cast<ssGUI::Window*>(Container)->HasTitlebar()) : false;
+
+            //Transfer the children.
+            {
+                auto containerParent = Container->GetParent();
+
+                if(containerParent != nullptr)
+                {
+                    containerParent->FindChild(Container);
+                    auto posIt = containerParent->GetCurrentChildReferenceIterator();
+                    // posIt++;
+
+                    //Move the only child to the container's parent and restore order
+                    childLeft->SetParent(containerParent);
+                    containerParent->MoveChildrenIteratorToLast();
+                    auto childIt = containerParent->GetCurrentChildReferenceIterator();
+                    containerParent->ChangeChildOrderToAfterPosition(childIt, posIt);
+                }
+
+                //Transfer the rest of the floating or overlay children
+                //NOTE: Might be necessary to maintain order for the overlay or floating children. Not too sure :/
+                Container->MoveChildrenIteratorToFirst();
+                while(!Container->IsChildrenIteratorEnd())
+                {
+                    auto containerChild = Container->GetCurrentChild();
+                    containerChild->SetParent(containerParent);
+                    Container->MoveChildrenIteratorNext();
+                }
+
+                //Remove container because this is now empty docker
+                Container->Delete();
+            }
+
+            //Restore size
+            childLeft->SetSize(originalSize);
+
+            //Restore position if needed
+            if(originalDockerIsFloating)
+            {
+                childLeft->SetGlobalPosition(originalPos);
+
+                //Check childLeft is generated docker. If so, need to make it floatable
+                if(!childLeft->IsUserCreated() && childLeft->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) &&
+                    childLeft->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+                {
+                    static_cast<ssGUI::Window*>(childLeft)->SetTitlebar(true);
+                    static_cast<ssGUI::Window*>(childLeft)->SetResizeType(ssGUI::Enums::ResizeType::ALL);
+                    static_cast<ssGUI::Window*>(childLeft)->SetBackgroundColor(static_cast<ssGUI::Extensions::Docker*>
+                        (childLeft->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
+                    static_cast<ssGUI::Extensions::Border*>(static_cast<ssGUI::Window*>(childLeft)->
+                        GetExtension(ssGUI::Extensions::Border::EXTENSION_NAME))->SetEnabled(true);
+                }
+            }
+        }
+
+        ChildRemoveGuard = false;
+
+        FUNC_DEBUG_EXIT();
+    }
+
     const std::string Docker::EXTENSION_NAME = "Docker";
 
     Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), FloatingDockerColor(glm::u8vec4(127, 127, 127, 255)), UseTriggerPercentage(true),
                         TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
                         TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
-                        DockTrigger(nullptr)
+                        DockTrigger(nullptr), ChildRemovedEventIndex(-1), ChildRemoveGuard(false)
     {}
 
     Docker::~Docker()
-    {}
+    {
+        //Cleanup dock preview and trigger if exist
+        DiscardPreview();
+        DiscardTriggerArea();
+    }
     
     void Docker::SetDefaultGeneratedDockerSettings(ssGUI::Extensions::Docker* defaultDocker)
     {
@@ -421,6 +569,29 @@ namespace ssGUI::Extensions
             if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 Container->AddExtension(new ssGUI::Extensions::Layout());
         }
+
+        if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))    
+            Container->AddEventCallback(new ssGUI::EventCallbacks::ChildRemovedEventCallback());
+
+        ChildRemovedEventIndex = 
+            Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener(
+            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            {
+                if(!container->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+                {
+                    DEBUG_LINE("Failed to find docker extension. Probably something wrong with cloning");
+                    DEBUG_EXIT_PROGRAM();
+                    return;
+                }
+
+                // if(src->HasTag(ssGUI::Tags::FLOATING) || src->HasTag(ssGUI::Tags::OVERLAY))
+                    // return;
+
+                ssGUI::Extensions::Docker* containerDocker = static_cast<ssGUI::Extensions::Docker*>
+                        (container->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
+
+                containerDocker->ChildRemoved(src);
+            });
 
         FUNC_DEBUG_EXIT();
     }

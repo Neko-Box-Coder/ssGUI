@@ -554,11 +554,26 @@ namespace ssGUI
                 }
             }
 
-            //Inform original parent to remove child
-            CurrentObjectsReferences.GetObjectReference(Parent)->Internal_RemoveChild(this);
-            
             //Record original parent
             originalParent = CurrentObjectsReferences.GetObjectReference(Parent);
+            
+            //Send event callback if any object is subscribed to on recursive children remove
+            while (originalParent != nullptr)
+            {
+                if(originalParent == newParent)
+                    break;
+
+                if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::OnRecursiveChildRemoveEventCallback::EVENT_NAME))
+                    originalParent->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildRemoveEventCallback::EVENT_NAME)->Notify(this);
+                
+                originalParent = originalParent->GetParent();
+            }
+
+            //Record original parent again
+            originalParent = CurrentObjectsReferences.GetObjectReference(Parent);
+
+            //Inform original parent to remove child
+            CurrentObjectsReferences.GetObjectReference(Parent)->Internal_RemoveChild(this);
         }
 
         //If the new parent is nullptr, then remove the reference of the original parent and flag it
@@ -578,16 +593,33 @@ namespace ssGUI
             Parent = CurrentObjectsReferences.AddObjectReference(newParent);
         }
 
-        //Send event callback if any object is subscribed to on children removed
-        while (originalParent != nullptr)
+        //Record the parent tree before sending the removed callback as changes can be made to the parenting in event callback notification logic.
+        //This will ensure should the correct objects are notified even their parenting hierarchy is changed during callback,
+        std::vector<ssGUI::GUIObject*> objsToNotify;
+        ssGUI::GUIObject* currentParent = originalParent;
+
+        //Add any objects that are subscribed to recursive child removed
+        while (currentParent != nullptr)
         {
-            if(originalParent == newParent)
+            if(currentParent == newParent)
                 break;
 
-            if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME))
-                originalParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME)->Notify(this);
-            
-            originalParent = originalParent->GetParent();
+            objsToNotify.push_back(currentParent);            
+            currentParent = currentParent->GetParent();
+        }
+
+        //Send event callback if any object is subscribed to child removed
+        if(originalParent != nullptr && originalParent != newParent)
+        {
+            if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))
+                originalParent->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->Notify(this);
+        }
+
+        //Send event callback to objects that are subscribed to recursive child removed
+        for(auto obj : objsToNotify)
+        {
+            if(obj->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME))
+                obj->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME)->Notify(this);
         }
 
         //Exit if this object is parented to nothing
@@ -597,8 +629,8 @@ namespace ssGUI
             return;
         }
 
-        //Send event callback if any object is subscribed to on children add event
-        ssGUI::GUIObject* currentParent = newParent;
+        //Send event callback if any object is subscribed to on recursive child add event
+        currentParent = newParent;
         while (currentParent != nullptr)
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(this))
@@ -620,7 +652,11 @@ namespace ssGUI
         //Update local position
         SetGlobalPosition(GetGlobalPosition());
         
-        //Send event callback if any object is subscribed to children added
+        //Send event callback if any object is subscribed to child added
+        if(newParent->IsEventCallbackExist(ssGUI::EventCallbacks::ChildAddedEventCallback::EVENT_NAME))
+            newParent->GetEventCallback(ssGUI::EventCallbacks::ChildAddedEventCallback::EVENT_NAME)->Notify(this);
+        
+        //Send event callback if any object is subscribed to recursive children added
         currentParent = CurrentObjectsReferences.GetObjectReference(Parent);
         while (currentParent != nullptr)
         {
@@ -635,7 +671,7 @@ namespace ssGUI
                 currentParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME)->Notify(this);    
             
             currentParent = currentParent->GetParent();
-        }        
+        }
 
         FUNC_DEBUG_EXIT();
     }
@@ -882,6 +918,14 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
 
+        //To ensure delete is only called exactly once
+        if(Internal_IsDeleted())
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+        ObjectDelete = true;
+
         #if USE_DEBUG
         DEBUG_LINE(this<<" object is getting deleted");
         #endif
@@ -898,9 +942,7 @@ namespace ssGUI
         }
 
         for(auto child : childrenToDelete)
-        {
             child->Delete();
-        }
 
         //Tell parent to redraw because of missing GUI object
         if(GetParent() != nullptr)
@@ -908,7 +950,6 @@ namespace ssGUI
 
         SetParent(nullptr);
         CurrentObjectsReferences.CleanUp();
-        ObjectDelete = true;
         ObjsToDelete.push_back(this);
 
         FUNC_DEBUG_EXIT();

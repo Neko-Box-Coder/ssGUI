@@ -339,6 +339,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
+    //TODO: This is now handled by docker, maybe delete it at some point
     void Dockable::RemoveUnnecessaryDocker(ssGUI::GUIObject* checkObj)
     {
         FUNC_DEBUG_ENTRY();
@@ -629,7 +630,8 @@ namespace ssGUI::Extensions
             newParent->SetTitlebar(false);
             newParent->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
             newParent->SetResizeType(ssGUI::Enums::ResizeType::NONE);
-            newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+            static_cast<ssGUI::Extensions::Border*>(newParent->GetExtension(ssGUI::Extensions::Border::EXTENSION_NAME))->SetEnabled(false);
+            // newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         }
 
         //Restore order
@@ -646,6 +648,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
+    //TODO: Check top level parent for up coming docking via code feature
     void Dockable::OnWindowDragFinished()
     {                
         FUNC_DEBUG_ENTRY();
@@ -706,46 +709,47 @@ namespace ssGUI::Extensions
         }
         
         reset:
-        if(OriginalParent != nullptr)
-        {
-            ssGUI::GUIObject* parentOfOriginalParent = OriginalParent->GetParent();
+        //TODO: This is now handled by docker, maybe delete it at some point
+        // if(OriginalParent != nullptr)
+        // {
+        //     ssGUI::GUIObject* parentOfOriginalParent = OriginalParent->GetParent();
 
-            //Check if originalParent's child has any unnecessary docker
-            if(!OriginalParent->Internal_IsDeleted() && OriginalParent->GetChildrenCount() == 1)
-            {
-                OriginalParent->MoveChildrenIteratorToFirst();
-                RemoveUnnecessaryDocker(OriginalParent->GetCurrentChild());
-            }
+        //     //Check if originalParent's child has any unnecessary docker
+        //     if(!OriginalParent->Internal_IsDeleted() && OriginalParent->GetChildrenCount() == 1)
+        //     {
+        //         OriginalParent->MoveChildrenIteratorToFirst();
+        //         RemoveUnnecessaryDocker(OriginalParent->GetCurrentChild());
+        //     }
             
-            //Check if originalParent has any unnecessary docker if it doesn't have any child
-            if(OriginalParent->GetChildrenCount() == 0) 
-                RemoveUnnecessaryDocker(OriginalParent);
+        //     //Check if originalParent has any unnecessary docker if it doesn't have any child
+        //     if(OriginalParent->GetChildrenCount() == 0) 
+        //         RemoveUnnecessaryDocker(OriginalParent);
             
-            //Check if originalParent has any unnecessary docker if it is docked
-            else if(parentOfOriginalParent != nullptr && 
-                    parentOfOriginalParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
-            {
-                RemoveUnnecessaryDocker(OriginalParent);
-            }
-            //check if originalParent has any unnecessary docker if it is NOT docked and has 1 or no child
-            else if(OriginalParent->GetChildrenCount() <= 1 && parentOfOriginalParent != nullptr && 
-                    !parentOfOriginalParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
-            {
-                RemoveUnnecessaryDocker(OriginalParent);
-            }
+        //     //Check if originalParent has any unnecessary docker if it is docked
+        //     else if(parentOfOriginalParent != nullptr && 
+        //             parentOfOriginalParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+        //     {
+        //         RemoveUnnecessaryDocker(OriginalParent);
+        //     }
+        //     //check if originalParent has any unnecessary docker if it is NOT docked and has 1 or no child
+        //     else if(OriginalParent->GetChildrenCount() <= 1 && parentOfOriginalParent != nullptr && 
+        //             !parentOfOriginalParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+        //     {
+        //         RemoveUnnecessaryDocker(OriginalParent);
+        //     }
 
-            //Check if the parent of originalParent (and its child) has any unnecessary docker if the originalParent is deleted
-            if(parentOfOriginalParent != nullptr && OriginalParent->Internal_IsDeleted())
-            {
-                if(parentOfOriginalParent->GetChildrenCount() == 1)
-                {
-                    parentOfOriginalParent->MoveChildrenIteratorToFirst();
-                    RemoveUnnecessaryDocker(parentOfOriginalParent->GetCurrentChild());
-                }
+        //     //Check if the parent of originalParent (and its child) has any unnecessary docker if the originalParent is deleted
+        //     if(parentOfOriginalParent != nullptr && OriginalParent->Internal_IsDeleted())
+        //     {
+        //         if(parentOfOriginalParent->GetChildrenCount() == 1)
+        //         {
+        //             parentOfOriginalParent->MoveChildrenIteratorToFirst();
+        //             RemoveUnnecessaryDocker(parentOfOriginalParent->GetCurrentChild());
+        //         }
 
-                RemoveUnnecessaryDocker(parentOfOriginalParent);
-            }
-        }
+        //         RemoveUnnecessaryDocker(parentOfOriginalParent);
+        //     }
+        // }
             
         //Reset docking variables
         OriginalParent = nullptr;
@@ -808,6 +812,12 @@ namespace ssGUI::Extensions
                 Container->RemoveEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME);
             }
         }
+
+        DiscardTriggerAreas();
+        DiscardLeftPreview();
+        DiscardRightPreview();
+        DiscardTopPreview();
+        DiscardBottomPreview();
 
         CurrentObjectsReferences.CleanUp();
     }
@@ -1069,7 +1079,7 @@ namespace ssGUI::Extensions
             {
                 if(!container->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
                 {
-                    DEBUG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    DEBUG_LINE("Failed to find Dockable extension. Probably something wrong with cloning");
                     DEBUG_EXIT_PROGRAM();
                     return;
                 }

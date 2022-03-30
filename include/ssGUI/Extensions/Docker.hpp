@@ -1,6 +1,7 @@
 #ifndef SSGUI_DOCKER
 #define SSGUI_DOCKER
 
+#include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "glm/vec2.hpp"
@@ -76,6 +77,9 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* DockPreivew;
             ssGUI::GUIObject* DockTrigger;
 
+            int ChildRemovedEventIndex;
+            bool ChildRemoveGuard;
+
             static ssGUI::Extensions::Docker* DefaultGeneratedDockerSettings;
             static ssGUI::Extensions::Layout* DefaultGeneratedLayoutSettings;
 
@@ -88,6 +92,9 @@ namespace ssGUI::Extensions
             virtual void DiscardPreview();
             virtual void DrawTriggerArea();
             virtual void DiscardTriggerArea();
+            virtual int GetRealChildrenCount(ssGUI::GUIObject* checkObj);
+
+            virtual void ChildRemoved(ssGUI::GUIObject* child);
 
         public:
             static const std::string EXTENSION_NAME;
@@ -98,8 +105,7 @@ namespace ssGUI::Extensions
             /*function: SetDefaultGeneratedDockerSettings
             Sets the default docker settings for the dockers that are generated (after this call).
             The settings are *copied* and stored locally staticly.
-            Therefore, you should not call this function every frame.
-            */
+            Therefore, you should not call this function every frame.*/
             static void SetDefaultGeneratedDockerSettings(ssGUI::Extensions::Docker* defaultDocker);
 
             //function: GetDefaultGeneratedDockerSettings
@@ -109,8 +115,7 @@ namespace ssGUI::Extensions
             /*function: SetDefaultGeneratedLayoutSettings
             Sets the default layout settings for the layout that are generated (after this call).
             The settings are *copied* and stored locally staticly.
-            Therefore, you should not call this function every frame.
-            */
+            Therefore, you should not call this function every frame.*/
             static void SetDefaultGeneratedLayoutSettings(ssGUI::Extensions::Layout* defaultLayout);
 
             //function: GetDefaultGeneratedLayoutSettings

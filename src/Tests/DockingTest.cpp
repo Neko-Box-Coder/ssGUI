@@ -81,8 +81,12 @@ int main()
     as->SetVerticalUsePercentage(true);
     
     ssGUI::Widget mainWindowWidget;
+    DEBUG_LINE("mainWindowWidget: "<<&mainWindowWidget);
+    mainWindowWidget.AddExtension(docker);
+    auto dockerLayout = static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+    dockerLayout->SetPadding(2);
 
-    mainWindowWidget.AddExtension(new ssGUI::Extensions::Layout());
+    // mainWindowWidget.AddExtension(new ssGUI::Extensions::Layout());
     //static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetPadding(0);
     //static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->
     //    ExcludeObject(window3ObjPtr);
@@ -118,10 +122,15 @@ int main()
             if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
                 !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
             {
-                if(window.GetBackgroundColor().a == 255)
-                    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 127));
-                else
-                    window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
+                // if(window.GetBackgroundColor().a == 255)
+                //     window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 127));
+                // else
+                //     window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
+
+                DEBUG_LINE(&window<<" window parent: "<<window.GetParent());
+                DEBUG_LINE(&window2<<" window2 parent: "<<window2.GetParent());
+                DEBUG_LINE(window3<<" window3 parent: "<<window3->GetParent());
+                DEBUG_LINE(window4<<" window4 parent: "<<window4->GetParent());
             }
         }
     );

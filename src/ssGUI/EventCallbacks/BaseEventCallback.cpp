@@ -50,11 +50,13 @@ namespace ssGUI::EventCallbacks
 
     void BaseEventCallback::Notify(ssGUI::GUIObject* source)
     {
+        FUNC_DEBUG_ENTRY();
         for(int i = 0; i < EventListeners.size(); i++)
         {
             if(EventListenersValid[i] == true)
                 EventListeners[i](source, Container, &CurrentObjectsReferences);
         }
+        FUNC_DEBUG_EXIT();
     }
 
     void BaseEventCallback::BindToObject(ssGUI::GUIObject* bindObj)
