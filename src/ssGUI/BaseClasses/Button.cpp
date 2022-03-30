@@ -134,13 +134,13 @@ namespace ssGUI
         {
             DisableRedrawObjectRequest();
 
-            for (auto extension : Extensions)
-                extension.second->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
+            for (auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             ConstructRenderInfo();
 
-            for (auto extension : Extensions)
-                extension.second->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
+            for (auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
         
             EnableRedrawObjectRequest();
         
@@ -170,8 +170,14 @@ namespace ssGUI
             return;
         }
 
-        for (auto extension : Extensions)
-            extension.second->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for (auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
+            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
 
         //On mouse down
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
@@ -222,8 +228,14 @@ namespace ssGUI
         }
 
         endUpdate:;
-        for (auto extension : Extensions)
-            extension.second->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        for (auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
+            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
 
         //Check position different for redraw
         if(GetGlobalPosition() != LastGlobalPosition)

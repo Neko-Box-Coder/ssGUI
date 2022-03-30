@@ -130,7 +130,13 @@ namespace ssGUI
         }
         
         for(auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
 
         //It will only block when BlockInput flag is true OR is interactable
         if(!IsBlockInput() || IsInteractable())
@@ -160,7 +166,13 @@ namespace ssGUI
 
         endOfUpdate:;
         for(auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
             Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
 
         //Check position different for redraw
         if(GetGlobalPosition() != LastGlobalPosition)

@@ -994,7 +994,6 @@ namespace ssGUI
     {
         if(!IsExtensionExist(extensionName))
             return;
-
         ssGUI::Extensions::Extension* targetExtension = (*Extensions.find(extensionName)).second;
         // ssGUI::ObjectsReferences* ptr = targetExtension->Internal_GetObjectsReferences();
         // if(ptr != nullptr)
@@ -1201,10 +1200,22 @@ namespace ssGUI
         }
 
         for(auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
 
         for(auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
             Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
         
         //Check position different for redraw
         if(GetGlobalPosition() != LastGlobalPosition)

@@ -211,7 +211,13 @@ namespace ssGUI
         FUNC_DEBUG_ENTRY();
         
         for(auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
 
         //Update cursor position offset every .5 seconds
         if(inputInterface->GetElapsedTime() - LastSyncTime > 500)
@@ -265,7 +271,13 @@ namespace ssGUI
         // std::cout<<"\n";
 
         for(auto extension : ExtensionsUpdateOrder)
+        {
+            //Guard against extension being deleted by other extensions
+            if(!IsExtensionExist(extension))
+                continue;
+
             Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        }
 
         FUNC_DEBUG_EXIT();
     }
