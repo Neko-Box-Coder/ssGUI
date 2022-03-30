@@ -23,7 +23,7 @@ namespace ssGUI::Extensions
     bool Mask::GetAxesValues(glm::vec2 axis, glm::vec2 axis2, glm::vec2 samplePoint, float& axisValue, float& axis2Value)
     {
         /*
-        Note: I am not a mathematician and have no idea why this doesn't work.
+        NOTE: I am not a mathematician and have no idea why this doesn't work.
 
         //Find intersection of AB and CD
         //https://www.codeproject.com/Tips/862988/Find-the-Intersection-Point-of-Two-Line-Segments

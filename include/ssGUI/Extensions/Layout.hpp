@@ -46,7 +46,7 @@ namespace ssGUI::Extensions
 
         std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
         std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
-        std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //note: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
+        std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
         std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
         std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
         std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
@@ -89,7 +89,7 @@ namespace ssGUI::Extensions
 
             std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
             std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
-            std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //note: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
+            std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
             std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
             std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;

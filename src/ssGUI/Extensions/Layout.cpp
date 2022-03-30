@@ -28,7 +28,7 @@ namespace ssGUI::Extensions
         OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
         OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
         
-        //TODO : Re-add the event listeners
+        //NOTE : Don't need to re-add the event listeners because this is handled when this is binded to an object
         MinMaxSizeChangedEventIndices = std::unordered_map<ssGUIObjectIndex, int>();//other.MinMaxSizeChangedEventIndices;
         FUNC_DEBUG_EXIT();
     }

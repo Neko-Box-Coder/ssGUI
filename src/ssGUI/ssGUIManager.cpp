@@ -17,15 +17,21 @@ namespace ssGUI
         {
             PollInputs();
 
+            //Clear up any main windows that are closed
+            CheckMainWindowExistence();
+
             //Set cursor default to normal. Save last cursor so don't need to load cursor every frame
             ssGUI::Enums::CursorType lastCursor = BackendInput->GetCursorType();
             BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
 
             #if DEBUG_STATE 
-                std::cout<<"Update\n";
+                DEBUG_LINE("Update");
             #endif
 
             UpdateObjects();
+
+            //Clear up any main windows that are deleted
+            CheckMainWindowExistence();
 
             //Clean up deleted objects
             if(!ssGUI::GUIObject::ObjsToDelete.empty())
@@ -35,18 +41,15 @@ namespace ssGUI
                     if(ssGUI::GUIObject::ObjsToDelete[i]->Internal_IsDeleted())
                     {
                         if(ssGUI::GUIObject::ObjsToDelete[i]->IsHeapAllocated())
-                           delete ssGUI::GUIObject::ObjsToDelete[i];
+                            delete ssGUI::GUIObject::ObjsToDelete[i];
                     }
                 }
                 ssGUI::GUIObject::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
             }
 
             #if DEBUG_STATE 
-                std::cout<<"\nRender\n";
+                DEBUG_LINE("Render");
             #endif
-
-            //Clear up any main windows that are closed
-            CheckMainWindowExistence();
 
             //Dispatch Update event
             FUNC_DEBUG_ENTRY("ssGUIManagerCustomUpdateEvent");
@@ -72,7 +75,7 @@ namespace ssGUI
                 Render();
             
             #if DEBUG_STATE 
-                std::cout<<"\nPost Render\n";
+                DEBUG_LINE("Post Render");
             #endif
 
             //Dispatch Post Rendering Update event
@@ -111,6 +114,8 @@ namespace ssGUI
     
     void ssGUIManager::CheckMainWindowExistence()
     {
+        FUNC_DEBUG_ENTRY();
+        
         std::vector<ssGUI::GUIObject*> windowsToRemoved;
 
         for(auto windowP : MainWindowPList)
@@ -123,6 +128,8 @@ namespace ssGUI
         {
             RemoveGUIObject(windowsToRemoved[i]);
         }
+
+        FUNC_DEBUG_EXIT();
     }
 
     void ssGUIManager::GUIObjectsEventCallback()
