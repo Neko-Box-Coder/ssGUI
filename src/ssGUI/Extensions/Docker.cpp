@@ -140,6 +140,7 @@ namespace ssGUI::Extensions
     int Docker::GetRealChildrenCount(ssGUI::GUIObject* checkObj)
     {
         int realChildrenCount = 0;
+        checkObj->StashChildrenIterator();
         checkObj->MoveChildrenIteratorToFirst();
         while(!checkObj->IsChildrenIteratorEnd())
         {
@@ -150,6 +151,7 @@ namespace ssGUI::Extensions
 
             checkObj->MoveChildrenIteratorNext();
         }
+        checkObj->PopChildrenIterator();
 
         return realChildrenCount;
     }
@@ -180,6 +182,7 @@ namespace ssGUI::Extensions
         //If there's no children left in the docker, remove this.
         if(realChildrenCount == 0)
         {
+            //Don't need to stash children iterator as this will get deleted anyway
             //Transfer the rest of the floating or overlay children
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())
@@ -197,6 +200,7 @@ namespace ssGUI::Extensions
         //If there's only 1 child left in the docker
         else
         {            
+            //Don't need to stash children iterator as this will get deleted anyway
             Container->MoveChildrenIteratorToFirst();
             ssGUI::GUIObject* childLeft = nullptr;
             while (!Container->IsChildrenIteratorEnd())
@@ -226,6 +230,7 @@ namespace ssGUI::Extensions
 
                 if(containerParent != nullptr)
                 {
+                    containerParent->StashChildrenIterator();
                     containerParent->FindChild(Container);
                     auto posIt = containerParent->GetCurrentChildReferenceIterator();
                     // posIt++;
@@ -235,8 +240,10 @@ namespace ssGUI::Extensions
                     containerParent->MoveChildrenIteratorToLast();
                     auto childIt = containerParent->GetCurrentChildReferenceIterator();
                     containerParent->ChangeChildOrderToAfterPosition(childIt, posIt);
+                    containerParent->PopChildrenIterator();
                 }
 
+                //Don't need to stash children iterator as this will get deleted anyway
                 //Transfer the rest of the floating or overlay children
                 //NOTE: Might be necessary to maintain order for the overlay or floating children. Not too sure :/
                 Container->MoveChildrenIteratorToFirst();

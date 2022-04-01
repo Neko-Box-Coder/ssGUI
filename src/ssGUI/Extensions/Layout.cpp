@@ -137,6 +137,7 @@ namespace ssGUI::Extensions
             }
         }
 
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
         {
@@ -196,6 +197,7 @@ namespace ssGUI::Extensions
 
             Container->MoveChildrenIteratorNext();
         }
+        Container->PopChildrenIterator();
 
         FUNC_DEBUG_EXIT();
     }
@@ -211,6 +213,7 @@ namespace ssGUI::Extensions
         }
 
         //Check the number of valid children
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         int validChildrenSize = 0;
         while(!Container->IsChildrenIteratorEnd())
@@ -234,6 +237,7 @@ namespace ssGUI::Extensions
             
             Container->MoveChildrenIteratorNext();
         }
+        Container->PopChildrenIterator();
 
         if(validChildrenSize == 0)
         {
@@ -248,6 +252,7 @@ namespace ssGUI::Extensions
             float minMaxY = std::numeric_limits<float>::max();
             float maxMinY = -1;
             
+            Container->StashChildrenIterator();
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())
             {
@@ -282,6 +287,7 @@ namespace ssGUI::Extensions
                 
                 Container->MoveChildrenIteratorNext();
             }
+            Container->PopChildrenIterator();
 
             if(minMaxY < maxMinY)
                 minMaxY = maxMinY;
@@ -316,6 +322,7 @@ namespace ssGUI::Extensions
             float minMaxX = std::numeric_limits<float>::max();
             float maxMinX = -1;
             
+            Container->StashChildrenIterator();
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())   
             {
@@ -350,6 +357,7 @@ namespace ssGUI::Extensions
 
                 Container->MoveChildrenIteratorNext();
             }
+            Container->PopChildrenIterator();
 
             if(minMaxX < maxMinX)
                 minMaxX = maxMinX;
@@ -414,6 +422,7 @@ namespace ssGUI::Extensions
     void Layout::UpdateExcludedObjects()
     {
         FUNC_DEBUG_ENTRY();
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
         {
@@ -439,12 +448,14 @@ namespace ssGUI::Extensions
             
             Container->MoveChildrenIteratorNext();
         }
+        Container->PopChildrenIterator();
         FUNC_DEBUG_EXIT();
     }
 
     void Layout::DisableChildrenResizingInUpdate()
     {
         FUNC_DEBUG_ENTRY();
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
         {
@@ -462,6 +473,7 @@ namespace ssGUI::Extensions
 
             Container->MoveChildrenIteratorNext();
         }
+        Container->PopChildrenIterator();
         FUNC_DEBUG_EXIT();
     }
 
@@ -469,6 +481,7 @@ namespace ssGUI::Extensions
                                                 std::vector<float>& childrenMaxSize, glm::vec2 containerPos, glm::vec2 containerSize)
     {
         FUNC_DEBUG_ENTRY();
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
         {
@@ -524,6 +537,7 @@ namespace ssGUI::Extensions
 
             Container->MoveChildrenIteratorNext();
         }
+        Container->PopChildrenIterator();
         FUNC_DEBUG_EXIT();
     }
 
@@ -541,6 +555,7 @@ namespace ssGUI::Extensions
 
         int itIndex = childrenPos.size() - 1;
         
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToLast();
         while(!Container->IsChildrenIteratorEnd())
         {
@@ -584,6 +599,7 @@ namespace ssGUI::Extensions
             itIndex--;
             Container->MoveChildrenIteratorPrevious();
         }
+        Container->PopChildrenIterator();
         FUNC_DEBUG_EXIT();
     }
 
@@ -591,6 +607,7 @@ namespace ssGUI::Extensions
     {
         FUNC_DEBUG_ENTRY();
         int index = 0;
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         LastUpdateChildrenSize = std::unordered_map<ssGUIObjectIndex, glm::vec2>();
         while(!Container->IsChildrenIteratorEnd())
@@ -626,6 +643,7 @@ namespace ssGUI::Extensions
             index++;
             Container->MoveChildrenIteratorNext();
         }
+        Container->PopChildrenIterator();
         FUNC_DEBUG_EXIT();
     }
 
@@ -782,6 +800,7 @@ namespace ssGUI::Extensions
         if(update)
         {
             //Iterate each child to see if event callback exists
+            Container->StashChildrenIterator();
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())
             {
@@ -810,12 +829,14 @@ namespace ssGUI::Extensions
 
                 Container->MoveChildrenIteratorNext();
             }
+            Container->PopChildrenIterator();
 
             SyncContainerMinMaxSize();
         }
         else
         {            
             //Iterate each child to see if event callback exists
+            Container->StashChildrenIterator();
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())
             {
@@ -839,6 +860,7 @@ namespace ssGUI::Extensions
 
                 Container->MoveChildrenIteratorNext();
             }
+            Container->PopChildrenIterator();
         }
 
         FUNC_DEBUG_EXIT();
@@ -1091,6 +1113,7 @@ namespace ssGUI::Extensions
         
         //Find number of childrens that are excluded
         int excludeCount = 0;
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
         {
@@ -1100,7 +1123,8 @@ namespace ssGUI::Extensions
 
             Container->MoveChildrenIteratorNext();
         }
-        
+        Container->PopChildrenIterator();
+
         //Check preffered size multipliers length
         if(PreferredSizeMultipliers.size() != Container->GetChildrenCount() - excludeCount)
             PreferredSizeMultipliers.resize(Container->GetChildrenCount() - excludeCount, -1);

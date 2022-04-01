@@ -10,7 +10,8 @@ namespace ssGUI
         Parent = -1;
         Children = std::list<ssGUIObjectIndex>();
         CurrentChild = Children.end();
-        CurrentChildIteratorEnd = true;
+        CurrentChildIteratorFrontEnd = true;
+        CurrentChildIteratorBackEnd = true;
         Visible = other.IsVisible();
         BackgroundColour = other.GetBackgroundColor();
         UserCreated = other.IsUserCreated();
@@ -20,6 +21,7 @@ namespace ssGUI
         DestroyEventCalled = other.DestroyEventCalled;
         Redraw = other.Redraw;
         AcceptRedrawRequest = other.AcceptRedrawRequest;
+        StashedChildIterators = other.StashedChildIterators;
         Position = other.GetPosition();
         GlobalPosition = other.GlobalPosition;
         Size = other.GetSize();
@@ -218,6 +220,7 @@ namespace ssGUI
         do
         {
             ssGUI::GUIObject* curObj = originalObjsToClone[currentIndex];
+            curObj->StashChildrenIterator();
             curObj->MoveChildrenIteratorToFirst();
             while (!curObj->IsChildrenIteratorEnd())
             {
@@ -225,6 +228,7 @@ namespace ssGUI
                 originalObjsIndex[curObj->GetCurrentChild()] = originalObjsToClone.size() - 1;
                 curObj->MoveChildrenIteratorNext();
             }
+            curObj->PopChildrenIterator();
             currentIndex++;
         }
         while (currentIndex < originalObjsToClone.size());
@@ -359,11 +363,11 @@ namespace ssGUI
         AcceptRedrawRequest = true;
     }
 
-    BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
-                                        BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
-                                        CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), AcceptRedrawRequest(true), 
-                                        Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), MinSize(glm::vec2(25, 25)),
-                                        MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
+    BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true), Visible(true),
+                                        CurrentChildIteratorBackEnd(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), 
+                                        ObjectDelete(false), HeapAllocated(false), CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), 
+                                        AcceptRedrawRequest(true), Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), 
+                                        MinSize(glm::vec2(25, 25)), MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
                                         DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
                                         LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
@@ -515,9 +519,11 @@ namespace ssGUI
         //If setting parent to the same, just need to move this to the end of child
         if(Parent != -1 && newParent == CurrentObjectsReferences.GetObjectReference(Parent))
         {
+            StashChildrenIterator();
             auto result = newParent->FindChild(this);
             if(!result)
             {
+                PopChildrenIterator();
                 DEBUG_LINE("Invalid parent detected");
                 DEBUG_EXIT_PROGRAM();
                 return;
@@ -527,6 +533,7 @@ namespace ssGUI
             newParent->MoveChildrenIteratorToLast();
             auto lastIt = newParent->GetCurrentChildReferenceIterator();
             newParent->ChangeChildOrderToAfterPosition(it, lastIt);
+            PopChildrenIterator();
             FUNC_DEBUG_EXIT();
             return;
         }
@@ -683,49 +690,87 @@ namespace ssGUI
 
     void BaseGUIObject::MoveChildrenIteratorToFirst()
     {
-        CurrentChild = Children.begin();
-
         if(GetChildrenCount() == 0)
-            CurrentChildIteratorEnd = true;
-        else
-            CurrentChildIteratorEnd = false;
+        {
+            CurrentChildIteratorFrontEnd = true;
+            CurrentChildIteratorBackEnd = true;
+            return;
+        }
+
+        CurrentChildIteratorFrontEnd = false;
+        CurrentChildIteratorBackEnd = false;
+        CurrentChild = Children.begin();
     }
 
     void BaseGUIObject::MoveChildrenIteratorToLast()
     {
-        CurrentChild = Children.end();
-        
-        if(GetChildrenCount() != 0)
+        if(GetChildrenCount() == 0)
         {
-            CurrentChild--;
-            CurrentChildIteratorEnd = false;
+            CurrentChildIteratorFrontEnd = true;
+            CurrentChildIteratorBackEnd = true;
+            return;
         }
-        else
-            CurrentChildIteratorEnd = true;
+
+        CurrentChild = Children.end();
+        CurrentChild--;
+        CurrentChildIteratorFrontEnd = false;
+        CurrentChildIteratorBackEnd = false;        
     }
 
     void BaseGUIObject::MoveChildrenIteratorNext()
     {
-        if(CurrentChild == Children.end() || CurrentChild == --Children.end() || CurrentChildIteratorEnd)
+        if(GetChildrenCount() == 0)
         {
-            CurrentChildIteratorEnd = true;
+            CurrentChildIteratorFrontEnd = true;
+            CurrentChildIteratorBackEnd = true;
             return;
         }
-
-        CurrentChild++;
-        CurrentChildIteratorEnd = false;
+        
+        //If at front end, move to first element
+        if(CurrentChildIteratorFrontEnd && !CurrentChildIteratorBackEnd)
+        {
+            CurrentChildIteratorFrontEnd = false;
+            CurrentChild = Children.begin();
+        }
+        //If at last element, set back end to true
+        else if(!CurrentChildIteratorFrontEnd && !CurrentChildIteratorBackEnd && CurrentChild == --Children.end())
+        {
+            CurrentChildIteratorFrontEnd = false;
+            CurrentChildIteratorBackEnd = true;
+        }
+        //If not at either end, just move to next child
+        else if(!CurrentChildIteratorFrontEnd && !CurrentChildIteratorBackEnd)
+        {
+            CurrentChild++;
+        }
     }
 
     void BaseGUIObject::MoveChildrenIteratorPrevious()
     {
-        if(CurrentChild == Children.begin() || CurrentChildIteratorEnd)
+        if(GetChildrenCount() == 0)
         {
-            CurrentChildIteratorEnd = true;
+            CurrentChildIteratorFrontEnd = true;
+            CurrentChildIteratorBackEnd = true;
             return;
         }
-        
-        CurrentChild--;
-        CurrentChildIteratorEnd = false;
+
+        //If at back end, move to last element
+        if(!CurrentChildIteratorFrontEnd && CurrentChildIteratorBackEnd)
+        {
+            CurrentChildIteratorBackEnd = false;
+            CurrentChild = --Children.end();
+        }
+        //If at first element, set front end to true
+        else if(!CurrentChildIteratorFrontEnd && !CurrentChildIteratorBackEnd && CurrentChild == Children.begin())
+        {
+            CurrentChildIteratorFrontEnd = true;
+            CurrentChildIteratorBackEnd = false;
+        }
+        //If not at either end, just move to previous child
+        else if(!CurrentChildIteratorFrontEnd && !CurrentChildIteratorBackEnd)
+        {
+            CurrentChild--;
+        }
     }
 
     bool BaseGUIObject::IsChildrenIteratorLast()
@@ -752,7 +797,26 @@ namespace ssGUI
 
     bool BaseGUIObject::IsChildrenIteratorEnd()
     {
-        return CurrentChildIteratorEnd;
+        return CurrentChildIteratorFrontEnd || CurrentChildIteratorBackEnd;
+    }
+
+    void BaseGUIObject::StashChildrenIterator()
+    {
+        StashedChildIterators.push_back(
+            std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>
+            (CurrentChildIteratorFrontEnd, CurrentChildIteratorBackEnd, CurrentChild));
+    }
+
+    void BaseGUIObject::PopChildrenIterator()
+    {
+        if(StashedChildIterators.empty())
+            return;
+        
+        auto poppedTuple = StashedChildIterators.back();
+        CurrentChildIteratorFrontEnd = std::get<0>(poppedTuple);
+        CurrentChildIteratorBackEnd = std::get<1>(poppedTuple);
+        CurrentChild = std::get<2>(poppedTuple);
+        StashedChildIterators.pop_back();
     }
 
     bool BaseGUIObject::FindChild(ssGUI::GUIObject* child)
@@ -779,13 +843,14 @@ namespace ssGUI
         }
 
         CurrentChild = it;
-        CurrentChildIteratorEnd = false;
+        CurrentChildIteratorFrontEnd = false;
+        CurrentChildIteratorBackEnd = false;
         return found;
     }
 
     ssGUI::GUIObject* BaseGUIObject::GetCurrentChild()
     {
-        if(!CurrentChildIteratorEnd)
+        if(!IsChildrenIteratorEnd())
         {
             if(CurrentObjectsReferences.GetObjectReference(*CurrentChild) == nullptr)
             {
@@ -823,8 +888,14 @@ namespace ssGUI
     
     void BaseGUIObject::Internal_AddChild(ssGUI::GUIObject* obj)
     {
+        StashChildrenIterator();
+        
         if(FindChild(obj))
+        {
+            PopChildrenIterator();
             return;
+        }
+        PopChildrenIterator();
 
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.AddObjectReference(obj);
         
@@ -839,26 +910,31 @@ namespace ssGUI
         DEBUG_LINE(this<<" removing child "<<obj);
         #endif
         
+        StashChildrenIterator();
         if(!FindChild(obj))
         {
+            PopChildrenIterator();
             DEBUG_LINE("Remove failed");
             DEBUG_EXIT_PROGRAM();
             return;
         }
         
-        std::list<ssGUIObjectIndex>::iterator it = GetCurrentChildReferenceIterator();
-
-        if(CurrentChild == it)
+        //Go through all stashed child iterators and invalid iterators associated with the child to be removed.
+        for(int i = 0; i < StashedChildIterators.size(); i++)
         {
-            if(Children.size() == 1 || CurrentChild == --Children.end() || CurrentChild == Children.begin())
+            auto curStashedTuple = StashedChildIterators[i];
+            if(CurrentObjectsReferences.GetObjectReference(*(std::get<2>(curStashedTuple))) == obj)
             {
-                CurrentChildIteratorEnd = true;
-                CurrentChild = Children.end();
+                std::get<0>(curStashedTuple) = false;
+                std::get<1>(curStashedTuple) = false;
+                StashedChildIterators[i] = curStashedTuple;
             }
-            else
-                CurrentChild--;
         }
+
+        std::list<ssGUIObjectIndex>::iterator it = GetCurrentChildReferenceIterator();
         Children.remove(*it);
+        PopChildrenIterator();
+
         #if USE_DEBUG
         DEBUG_LINE("Remove success");
         #endif

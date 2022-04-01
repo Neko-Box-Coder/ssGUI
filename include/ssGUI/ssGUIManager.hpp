@@ -66,7 +66,7 @@ namespace ssGUI
             void UpdateCursor();
             
             ssGUI::GUIObject* FindParentWindowP(ssGUI::GUIObject& obj);
-            void AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP);
+            //void AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP);
 
         public:
             ssGUIManager();

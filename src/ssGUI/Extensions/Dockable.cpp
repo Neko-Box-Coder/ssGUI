@@ -310,6 +310,7 @@ namespace ssGUI::Extensions
         //Check if container is docked under docker. If so, set the size for the child after container to fill the gap
         if(containerParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && containerParent->GetChildrenCount() > 1)
         {
+            containerParent->StashChildrenIterator();
             containerParent->FindChild(Container);
             if(!containerParent->IsChildrenIteratorLast())
             {
@@ -320,6 +321,7 @@ namespace ssGUI::Extensions
                 else
                     containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x, childSize.y + Container->GetSize().y));                
             }
+            containerParent->PopChildrenIterator();
         }
 
         //Parent the container to the MainWindow.
@@ -342,221 +344,169 @@ namespace ssGUI::Extensions
     //TODO: This is now handled by docker, maybe delete it at some point
     void Dockable::RemoveUnnecessaryDocker(ssGUI::GUIObject* checkObj)
     {
-        FUNC_DEBUG_ENTRY();
+        // FUNC_DEBUG_ENTRY();
 
-        if(checkObj == nullptr || checkObj->IsUserCreated() || !
-            checkObj->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
-        {
-            FUNC_DEBUG_EXIT();
-            return;
-        }
+        // if(checkObj == nullptr || checkObj->IsUserCreated() || !
+        //     checkObj->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+        // {
+        //     FUNC_DEBUG_EXIT();
+        //     return;
+        // }
         
-        //Delete all empty generated dockers until a docker that holds an actual child/children
-        ssGUI::GUIObject* childrenHolder = checkObj;
-        std::vector<ssGUI::GUIObject*> objsToDelete;
-        while (childrenHolder->GetChildrenCount() <= 1)
-        {   
-            if(childrenHolder->GetChildrenCount() == 1)
-            {
-                childrenHolder->MoveChildrenIteratorToFirst();
+        // //Delete all empty generated dockers until a docker that holds an actual child/children
+        // ssGUI::GUIObject* childrenHolder = checkObj;
+        // std::vector<ssGUI::GUIObject*> objsToDelete;
+        // while (childrenHolder->GetChildrenCount() <= 1)
+        // {   
+        //     if(childrenHolder->GetChildrenCount() == 1)
+        //     {
+        //         childrenHolder->MoveChildrenIteratorToFirst();
 
-                if(childrenHolder->GetCurrentChild()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) &&
-                    !childrenHolder->GetCurrentChild()->IsUserCreated())
-                {
-                    ssGUI::GUIObject* newChildrenHolder = childrenHolder->GetCurrentChild();
-                    newChildrenHolder->SetParent(childrenHolder->GetParent());
-                    newChildrenHolder->SetPosition(childrenHolder->GetPosition());
-                    newChildrenHolder->SetSize(childrenHolder->GetSize());
-                    objsToDelete.push_back(childrenHolder);
-                    childrenHolder = newChildrenHolder;
-                }
-                else 
-                    break;
-            }
-            else
-            {
-                objsToDelete.push_back(childrenHolder);
-                break;
-            }
-        }
+        //         if(childrenHolder->GetCurrentChild()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) &&
+        //             !childrenHolder->GetCurrentChild()->IsUserCreated())
+        //         {
+        //             ssGUI::GUIObject* newChildrenHolder = childrenHolder->GetCurrentChild();
+        //             newChildrenHolder->SetParent(childrenHolder->GetParent());
+        //             newChildrenHolder->SetPosition(childrenHolder->GetPosition());
+        //             newChildrenHolder->SetSize(childrenHolder->GetSize());
+        //             objsToDelete.push_back(childrenHolder);
+        //             childrenHolder = newChildrenHolder;
+        //         }
+        //         else 
+        //             break;
+        //     }
+        //     else
+        //     {
+        //         objsToDelete.push_back(childrenHolder);
+        //         break;
+        //     }
+        // }
         
-        //If the childrenHolder is empty, just clean up empty dockers
-        if(childrenHolder->GetChildrenCount() <= 0)
-            goto cleanUpEmptyDockers;
+        // //If the childrenHolder is empty, just clean up empty dockers
+        // if(childrenHolder->GetChildrenCount() <= 0)
+        //     goto cleanUpEmptyDockers;
         
-        //If the childrenHolder only has 1 child, 
-        //just move the child out of childrenHolder and restore order, size and position.
-        if(childrenHolder->GetChildrenCount() == 1)
-        {
-            childrenHolder->MoveChildrenIteratorToFirst();
-            ssGUI::GUIObject* onlyChild = childrenHolder->GetCurrentChild();
-            onlyChild->SetParent(childrenHolder->GetParent());
+        // //If the childrenHolder only has 1 child, 
+        // //just move the child out of childrenHolder and restore order, size and position.
+        // if(childrenHolder->GetChildrenCount() == 1)
+        // {
+        //     childrenHolder->MoveChildrenIteratorToFirst();
+        //     ssGUI::GUIObject* onlyChild = childrenHolder->GetCurrentChild();
+        //     onlyChild->SetParent(childrenHolder->GetParent());
 
-            //Restore order
-            if(childrenHolder->GetParent() != nullptr)
-            {
-                childrenHolder->GetParent()->FindChild(childrenHolder);
-                std::list<ssGUIObjectIndex>::iterator originalIt = childrenHolder->GetParent()->GetCurrentChildReferenceIterator();
-                childrenHolder->GetParent()->MoveChildrenIteratorToLast();
-                std::list<ssGUIObjectIndex>::iterator lastIt = childrenHolder->GetParent()->GetCurrentChildReferenceIterator();
-                childrenHolder->GetParent()->ChangeChildOrderToAfterPosition(lastIt, originalIt);
-            }
-            //Restore size
-            onlyChild->SetSize(childrenHolder->GetSize());
-            //Restore position
-            onlyChild->SetPosition(childrenHolder->GetPosition());
+        //     //Restore order
+        //     if(childrenHolder->GetParent() != nullptr)
+        //     {
+        //         childrenHolder->GetParent()->FindChild(childrenHolder);
+        //         std::list<ssGUIObjectIndex>::iterator originalIt = childrenHolder->GetParent()->GetCurrentChildReferenceIterator();
+        //         childrenHolder->GetParent()->MoveChildrenIteratorToLast();
+        //         std::list<ssGUIObjectIndex>::iterator lastIt = childrenHolder->GetParent()->GetCurrentChildReferenceIterator();
+        //         childrenHolder->GetParent()->ChangeChildOrderToAfterPosition(lastIt, originalIt);
+        //     }
+        //     //Restore size
+        //     onlyChild->SetSize(childrenHolder->GetSize());
+        //     //Restore position
+        //     onlyChild->SetPosition(childrenHolder->GetPosition());
 
-            objsToDelete.push_back(childrenHolder);
-        }
-        //Check if parent of childrenHolder has docker
-        //If so, transfer the children to it and set the correct layout orientation.
-        else if(childrenHolder->GetParent() != nullptr && 
-            childrenHolder->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) &&
-            childrenHolder->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-        {
-            std::vector<ssGUI::GUIObject*> objsToMove;
-            std::vector<glm::vec2> objsSizes;
+        //     objsToDelete.push_back(childrenHolder);
+        // }
+        // //Check if parent of childrenHolder has docker
+        // //If so, transfer the children to it and set the correct layout orientation.
+        // else if(childrenHolder->GetParent() != nullptr && 
+        //     childrenHolder->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) &&
+        //     childrenHolder->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+        // {
+        //     std::vector<ssGUI::GUIObject*> objsToMove;
+        //     std::vector<glm::vec2> objsSizes;
             
-            childrenHolder->MoveChildrenIteratorToFirst();
-            while (!childrenHolder->IsChildrenIteratorEnd())
-            {
-                objsToMove.push_back(childrenHolder->GetCurrentChild());
-                objsSizes.push_back(childrenHolder->GetCurrentChild()->GetSize());
-                childrenHolder->MoveChildrenIteratorNext();
-            }
+        //     childrenHolder->MoveChildrenIteratorToFirst();
+        //     while (!childrenHolder->IsChildrenIteratorEnd())
+        //     {
+        //         objsToMove.push_back(childrenHolder->GetCurrentChild());
+        //         objsSizes.push_back(childrenHolder->GetCurrentChild()->GetSize());
+        //         childrenHolder->MoveChildrenIteratorNext();
+        //     }
             
-            ssGUI::Extensions::Layout* childrenHolderParentLayout = static_cast<ssGUI::Extensions::Layout*>
-                                                                    (childrenHolder->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        //     ssGUI::Extensions::Layout* childrenHolderParentLayout = static_cast<ssGUI::Extensions::Layout*>
+        //                                                             (childrenHolder->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
 
-            ssGUI::Extensions::Layout* childrenHolderLayout = static_cast<ssGUI::Extensions::Layout*>
-                                                                (childrenHolder->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        //     ssGUI::Extensions::Layout* childrenHolderLayout = static_cast<ssGUI::Extensions::Layout*>
+        //                                                         (childrenHolder->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
 
 
-            //If the only child of childrenHolder's parent is childrenHolder, transfer children
-            if(childrenHolder->GetParent()->GetChildrenCount() == 1)
-            {
-                //Restore sizes
-                for(int i = 0; i < objsToMove.size(); i++)
-                {
-                    objsToMove[i]->SetParent(childrenHolder->GetParent());
-                    objsToMove[i]->SetSize(objsSizes[i]);
-                }
-                //Restore layout settings 
-                if(childrenHolder->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                {
-                    childrenHolderParentLayout->SetHorizontalLayout(childrenHolderLayout->IsHorizontalLayout());
-                    childrenHolderParentLayout->SetReverseOrder(childrenHolderLayout->IsReverseOrder());
-                }
-                objsToDelete.push_back(childrenHolder);
-            }
-            //else if the layout orientation of childrenHolder's parent is the same as childrenHolder, transfer children
-            else if(childrenHolderLayout->IsHorizontalLayout() == childrenHolderParentLayout->IsHorizontalLayout())
-            {
-                //Store order
-                childrenHolder->GetParent()->FindChild(childrenHolder);
-                std::list<ssGUIObjectIndex>::iterator it = childrenHolder->GetParent()->GetCurrentChildReferenceIterator();
+        //     //If the only child of childrenHolder's parent is childrenHolder, transfer children
+        //     if(childrenHolder->GetParent()->GetChildrenCount() == 1)
+        //     {
+        //         //Restore sizes
+        //         for(int i = 0; i < objsToMove.size(); i++)
+        //         {
+        //             objsToMove[i]->SetParent(childrenHolder->GetParent());
+        //             objsToMove[i]->SetSize(objsSizes[i]);
+        //         }
+        //         //Restore layout settings 
+        //         if(childrenHolder->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+        //         {
+        //             childrenHolderParentLayout->SetHorizontalLayout(childrenHolderLayout->IsHorizontalLayout());
+        //             childrenHolderParentLayout->SetReverseOrder(childrenHolderLayout->IsReverseOrder());
+        //         }
+        //         objsToDelete.push_back(childrenHolder);
+        //     }
+        //     //else if the layout orientation of childrenHolder's parent is the same as childrenHolder, transfer children
+        //     else if(childrenHolderLayout->IsHorizontalLayout() == childrenHolderParentLayout->IsHorizontalLayout())
+        //     {
+        //         //Store order
+        //         childrenHolder->GetParent()->FindChild(childrenHolder);
+        //         std::list<ssGUIObjectIndex>::iterator it = childrenHolder->GetParent()->GetCurrentChildReferenceIterator();
 
-                //If both layout are in same order
-                if(childrenHolderLayout->IsReverseOrder() == childrenHolderParentLayout->IsReverseOrder())
-                {
-                    //Restore sizes
-                    for(int i = 0; i < objsToMove.size(); i++)
-                    {
-                        objsToMove[i]->SetParent(childrenHolder->GetParent());
-                        objsToMove[i]->SetSize(objsSizes[i]);
+        //         //If both layout are in same order
+        //         if(childrenHolderLayout->IsReverseOrder() == childrenHolderParentLayout->IsReverseOrder())
+        //         {
+        //             //Restore sizes
+        //             for(int i = 0; i < objsToMove.size(); i++)
+        //             {
+        //                 objsToMove[i]->SetParent(childrenHolder->GetParent());
+        //                 objsToMove[i]->SetSize(objsSizes[i]);
 
-                        //Restore order
-                        childrenHolder->GetParent()->MoveChildrenIteratorToLast();
-                        childrenHolder->GetParent()->ChangeChildOrderToAfterPosition
-                            (childrenHolder->GetParent()->GetCurrentChildReferenceIterator(), it);
+        //                 //Restore order
+        //                 childrenHolder->GetParent()->MoveChildrenIteratorToLast();
+        //                 childrenHolder->GetParent()->ChangeChildOrderToAfterPosition
+        //                     (childrenHolder->GetParent()->GetCurrentChildReferenceIterator(), it);
 
-                        it++;
-                    }
-                }
-                //If both layout are not in same order
-                else
-                {
-                    //Restore sizes
-                    for(int i = objsToMove.size() - 1; i >= 0; i--)
-                    {
-                        objsToMove[i]->SetParent(childrenHolder->GetParent());
-                        objsToMove[i]->SetSize(objsSizes[i]);
+        //                 it++;
+        //             }
+        //         }
+        //         //If both layout are not in same order
+        //         else
+        //         {
+        //             //Restore sizes
+        //             for(int i = objsToMove.size() - 1; i >= 0; i--)
+        //             {
+        //                 objsToMove[i]->SetParent(childrenHolder->GetParent());
+        //                 objsToMove[i]->SetSize(objsSizes[i]);
 
-                        //Restore order
-                        childrenHolder->GetParent()->MoveChildrenIteratorToLast();
-                        childrenHolder->GetParent()->ChangeChildOrderToAfterPosition
-                            (childrenHolder->GetParent()->GetCurrentChildReferenceIterator(), it);
+        //                 //Restore order
+        //                 childrenHolder->GetParent()->MoveChildrenIteratorToLast();
+        //                 childrenHolder->GetParent()->ChangeChildOrderToAfterPosition
+        //                     (childrenHolder->GetParent()->GetCurrentChildReferenceIterator(), it);
 
-                        it++;
-                    }
-                }
+        //                 it++;
+        //             }
+        //         }
 
-                objsToDelete.push_back(childrenHolder);
-            }
-        }
+        //         objsToDelete.push_back(childrenHolder);
+        //     }
+        // }
         
 
-        //Remove empty dockers
-        cleanUpEmptyDockers:;
+        // //Remove empty dockers
+        // cleanUpEmptyDockers:;
         
-        for(auto obj : objsToDelete)
-            obj->Delete();
+        // for(auto obj : objsToDelete)
+        //     obj->Delete();
         
         
-        FUNC_DEBUG_EXIT();
+        // FUNC_DEBUG_EXIT();
     }
-
-    /*
-    void Dockable::RemoveOriginalParentIfNeeded()
-    {
-        FUNC_DEBUG_ENTRY();
-        if(OriginalParent->GetChildrenCount() == 1)
-        {
-            OriginalParent->MoveChildrenIteratorToFirst();
-            ssGUI::GUIObject* child = OriginalParent->GetCurrentChild();
-            
-            //Restore order and size
-            if(OriginalParent->GetParent() != nullptr)
-            {
-                child->SetPosition(OriginalParent->GetPosition());
-                
-                OriginalParent->GetParent()->FindChild(OriginalParent);
-                std::list<ssGUIObjectIndex>::iterator posObjectIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
-                child->SetParent(OriginalParent->GetParent());
-                OriginalParent->GetParent()->MoveChildrenIteratorToLast();
-                std::list<ssGUIObjectIndex>::iterator lastIt = OriginalParent->GetParent()->GetCurrentChildReferenceIterator();
-                child->GetParent()->ChangeChildOrderToBeforePosition(lastIt, posObjectIt);
-                child->SetSize(OriginalParent->GetSize());
-                OriginalParent->Delete();
-                
-                //Check if the child is a docker and if the parent of child now does not have lauout. (Floating)
-                //If so, make the child draggable 
-                if(!child->IsUserCreated() &&
-                    child->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
-                    !child->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                {
-                    ssGUI::Window* childDocker = dynamic_cast<ssGUI::Window*>(child);
-
-                    childDocker->SetTitlebar(true);
-                    childDocker->SetDraggable(true);
-                    childDocker->SetResizeType(ssGUI::Enums::ResizeType::ALL);
-                    childDocker->SetBackgroundColor(static_cast<ssGUI::Extensions::Docker*>(child->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
-                }
-                //Check if the child is a docker and the parent of child now is a docker ot not. 
-                //If so, move the contents of child to the parent recursively
-                else if(!child->IsUserCreated());
-            }
-            else
-            {
-                child->SetParent(OriginalParent->GetParent());   
-                OriginalParent->Delete();
-            }
-        }
-        else
-            OriginalParent->Delete();
-
-        FUNC_DEBUG_EXIT();
-    }*/
 
     void Dockable::FindDockLayout(ssGUI::Extensions::Layout*& dockLayout)
     {
@@ -635,6 +585,7 @@ namespace ssGUI::Extensions
         }
 
         //Restore order
+        TargetDockObject->GetParent()->StashChildrenIterator();
         TargetDockObject->GetParent()->FindChild(TargetDockObject);
         std::list<ssGUIObjectIndex>::iterator dockObjectIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
         TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
@@ -645,6 +596,7 @@ namespace ssGUI::Extensions
         //Setting a new parent from the dock will causes it to revert to original size. 
         //Therefore will need to set the size to match the new parent again.
         TargetDockObject->SetSize(newParent->GetSize());
+        TargetDockObject->GetParent()->PopChildrenIterator();
         FUNC_DEBUG_EXIT();
     }
 
@@ -683,11 +635,13 @@ namespace ssGUI::Extensions
             Container->SetSize(newContainerSize);
 
             //Insert the Container after/before it
+            TargetDockObject->GetParent()->StashChildrenIterator();
             TargetDockObject->GetParent()->FindChild(TargetDockObject);
             std::list<ssGUIObjectIndex>::iterator dockObjectIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
             TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
             std::list<ssGUIObjectIndex>::iterator lastIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
-            
+            TargetDockObject->GetParent()->PopChildrenIterator();
+
             if(!dockLayout->IsReverseOrder())
             {                
                 //Before

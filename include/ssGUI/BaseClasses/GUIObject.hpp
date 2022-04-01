@@ -87,19 +87,23 @@ namespace ssGUI
             virtual int GetChildrenCount() const = 0;
 
             //function: MoveChildrenIteratorToFirst
-            //Moves the children iterator to the first child
+            //Moves the children iterator to the first child. To preserve the current children iterator, use <StashChildrenIterator>.
+            //Please note that if the current children iterator points to a child that is removed then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorToFirst() = 0;
 
             //function: MoveChildrenIteratorToLast
-            //Moves the children iterator to the last child
+            //Moves the children iterator to the last child. To preserve the current children iterator, use <StashChildrenIterator>.
+            //Please note that if the current children iterator points to a child that is removed then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorToLast() = 0;
 
             //function: MoveChildrenIteratorNext
-            //Moves the children iterator to the next child
+            //Moves the children iterator to the next child. To preserve the current children iterator, use <StashChildrenIterator>.
+            //Please note that if the current children iterator points to a child that is removed then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorNext() = 0;
 
             //function: MoveChildrenIteratorPrevious
-            //Moves the children iterator to the previous child
+            //Moves the children iterator to the previous child. To preserve the current children iterator, use <StashChildrenIterator>.
+            //Please note that if the current children iterator points to a child that is removed then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorPrevious() = 0;
 
             //function: IsChildrenIteratorLast
@@ -114,12 +118,27 @@ namespace ssGUI
             //Returns true if the iterator is _beyond_ the first or last child
             virtual bool IsChildrenIteratorEnd() = 0;
 
+            //function: StashChildrenIterator
+            //Stores the current children iterator on the stack. Any modification will not affect the children iterator.
+            //However, if the stashed children iterator points to a child that is removed then the stashed children iterator will be invalid
+            //and <IsChildrenIteratorEnd> will be true when the stashed iterator is restored (popped).
+            virtual void StashChildrenIterator() = 0;
+
+            //function: PopChildrenIterator
+            //Pops the most recent stashed children iterator back to the current children iterator.
+            //Please note that if the stashed children iterator points to a child that is removed then the stashed children iterator will be invalid,
+            //meaning <IsChildrenIteratorEnd> will be true.
+            virtual void PopChildrenIterator() = 0;
+
             //function: FindChild
-            //Returns true if the child is parented to this GUI Object
+            //If a child exists is parented to this GUI Object, this will move the children iterator to it and returns true.
+            //Otherwise, the children iterator is untouched and this will return false.
+            //To preserve the current children iterator, use <StashChildrenIterator>.
             virtual bool FindChild(ssGUI::GUIObject* child) = 0;
 
             //function: GetCurrentChild
-            //Returns the object the childrenIterator is currently on
+            //Returns the object the children iterator is currently pointing to. This will remove nullptr if it is not pointing at any child.
+            //To check if the current children iterator is valid, use <IsChildrenIteratorEnd>.
             virtual ssGUI::GUIObject* GetCurrentChild() = 0;
 
             //function: GetCurrentChildReferenceIterator

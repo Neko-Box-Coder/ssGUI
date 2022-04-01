@@ -147,7 +147,6 @@ namespace ssGUI
             return;
         }
 
-
         for(auto mainWindow : MainWindowPList)
         {
             std::list<ssGUI::GUIObject*> objToRender;
@@ -164,12 +163,14 @@ namespace ssGUI
             currentMainWindowP->Internal_Draw();
 
             //Populate the render queue first
+            currentMainWindowP->StashChildrenIterator();
             currentMainWindowP->MoveChildrenIteratorToFirst();
             while (!currentMainWindowP->IsChildrenIteratorEnd())
             {
                 objToRender.push_back(currentMainWindowP->GetCurrentChild());
                 currentMainWindowP->MoveChildrenIteratorNext();
             }
+            currentMainWindowP->PopChildrenIterator();
 
             while (!objToRender.empty())
             {
@@ -184,6 +185,7 @@ namespace ssGUI
                     //Add children to draw queue
                     if(currentObjP->GetChildrenCount() > 0)
                     {
+                        currentObjP->StashChildrenIterator();
                         //Add children from back to front so that the drawing queue order is front to back
                         currentObjP->MoveChildrenIteratorToLast();
                         while (!currentObjP->IsChildrenIteratorEnd())
@@ -191,6 +193,7 @@ namespace ssGUI
                             objToRender.push_front(currentObjP->GetCurrentChild());
                             currentObjP->MoveChildrenIteratorPrevious();
                         }
+                        currentObjP->PopChildrenIterator();
                     }
                 }
             }
@@ -319,6 +322,7 @@ namespace ssGUI
                     childrenEvaluated.top() = true;
 
                     ssGUI::GUIObject* currentObjP = objToUpdate.top();
+                    currentObjP->StashChildrenIterator();
                     currentObjP->MoveChildrenIteratorToFirst();
                     while (!currentObjP->IsChildrenIteratorEnd())
                     {
@@ -326,6 +330,7 @@ namespace ssGUI
                         childrenEvaluated.push(false);
                         currentObjP->MoveChildrenIteratorNext();
                     }
+                    currentObjP->PopChildrenIterator();
                 }
             }
 
@@ -366,15 +371,15 @@ namespace ssGUI
         return currentParentP;
     }
 
-    void ssGUIManager::AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP)
-    {        
-        targetObj.MoveChildrenIteratorToFirst();
-        while (targetObj.IsChildrenIteratorEnd())
-        {
-            targetObj.GetCurrentChild()->SetParent(newParentP);
-            targetObj.MoveChildrenIteratorNext();
-        }
-    }
+    // void ssGUIManager::AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP)
+    // {        
+    //     targetObj.MoveChildrenIteratorToFirst();
+    //     while (targetObj.IsChildrenIteratorEnd())
+    //     {
+    //         targetObj.GetCurrentChild()->SetParent(newParentP);
+    //         targetObj.MoveChildrenIteratorNext();
+    //     }
+    // }
 
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;
 

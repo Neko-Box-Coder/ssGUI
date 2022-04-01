@@ -796,12 +796,14 @@ namespace ssGUI::Extensions
 
         if(!includeParent)
         {
+            Container->StashChildrenIterator();
             Container->MoveChildrenIteratorToFirst();
             while (!Container->IsChildrenIteratorEnd())
             {
                 children.push(Container->GetCurrentChild());
                 Container->MoveChildrenIteratorNext();
             }
+            Container->PopChildrenIterator();
         }
         else
             children.push(parent);
@@ -825,13 +827,15 @@ namespace ssGUI::Extensions
                     maskEnforcer->AddTargetMaskObject(Container);
             }
 
+            child->StashChildrenIterator();
             child->MoveChildrenIteratorToFirst();
             while (!child->IsChildrenIteratorEnd())
             {
                 children.push(child->GetCurrentChild());   
                 child->MoveChildrenIteratorNext();
             }
-            
+            child->StashChildrenIterator();
+
             children.pop();
         }
 
@@ -851,12 +855,14 @@ namespace ssGUI::Extensions
         std::queue<ssGUI::GUIObject*> children;
         if(!includeParent)
         {            
+            Container->StashChildrenIterator();
             Container->MoveChildrenIteratorToFirst();
             while (!Container->IsChildrenIteratorEnd())
             {
                 children.push(Container->GetCurrentChild());
                 Container->MoveChildrenIteratorNext();
             }
+            Container->PopChildrenIterator();
         }
         else
             children.push(parent);
@@ -878,12 +884,14 @@ namespace ssGUI::Extensions
                         enforcer->RemoveTargetMaskObject(Container);
             }
             
+            child->StashChildrenIterator();
             child->MoveChildrenIteratorToFirst();
             while (!child->IsChildrenIteratorEnd())
             {
                 children.push(child->GetCurrentChild());   
                 child->MoveChildrenIteratorNext();
             }
+            child->PopChildrenIterator();
 
             children.pop();
         }
@@ -944,12 +952,14 @@ namespace ssGUI::Extensions
 
         std::queue<ssGUI::GUIObject*> children;
 
+        Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while (!Container->IsChildrenIteratorEnd())
         {
             children.push(Container->GetCurrentChild());
             Container->MoveChildrenIteratorNext();
         }
+        Container->PopChildrenIterator();
 
         if(MaskChildren)
         {
