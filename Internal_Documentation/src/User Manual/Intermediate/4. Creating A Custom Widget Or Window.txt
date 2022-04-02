@@ -93,12 +93,33 @@ namespace ssGUI
     }
     
     CustomWidget::CustomWidget()// : [Your variables constructions go here]
-    {}
+    {
+        /*//If you have any claen-up need to do when this GUI Object is desttroyed, put it in OnObjectDestroyEventCallback.
+        //So something like:
+        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
+        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
+        {
+            callback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
+                (GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME));
+        }
+        else
+        {
+            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            AddEventCallback(callback);
+        }
+        
+        callback->AddEventListener(
+            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+            {
+                //Do your clean up here.
+            });
+        */
+    }
 
     CustomWidget::~CustomWidget()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        //any claen-up put it here
+        
     }
 
     //You don't have to override this. If you do want to return your own type, 

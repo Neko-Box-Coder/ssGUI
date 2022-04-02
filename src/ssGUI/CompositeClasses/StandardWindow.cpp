@@ -166,7 +166,18 @@ namespace ssGUI
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 
-        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
+        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
+        {
+            callback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
+                (GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME));
+        }
+        else
+        {
+            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            AddEventCallback(callback);
+        }
+        
         callback->AddEventListener(
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
             {
@@ -183,7 +194,6 @@ namespace ssGUI
 
                 if(closeButtonObj != nullptr && closeButtonObj->GetParent() == container && !closeButtonObj->Internal_IsDeleted())
                     closeButtonObj->Delete();
-
             });
 
         UpdateTitleText();

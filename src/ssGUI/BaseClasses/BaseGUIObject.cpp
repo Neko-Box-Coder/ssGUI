@@ -378,9 +378,9 @@ namespace ssGUI
     {
         if(!ObjectDelete)
         {
-            CurrentObjectsReferences.CleanUp();
-            
             NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+            
+            CurrentObjectsReferences.CleanUp();
         }
 
         //Only clean up extensions and event callbacks when the GUI Object is destroyed
