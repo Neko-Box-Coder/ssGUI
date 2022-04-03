@@ -8,7 +8,7 @@ This is the header template for creating a custom widget. Just replace widget wi
 #ifndef SSGUI_CUSTOM_WIDGET
 #define SSGUI_CUSTOM_WIDGET
 
-#include "ssGUI/BaseClasses/Widget.hpp"
+#include "ssGUI/GUIObjectClasses/Widget.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -71,9 +71,9 @@ Section: Source
 This is the source template for creating a custom widget. Just replace widget with window for custom window.
 
 ================================= C++ ===================================
-#include "ssGUI/BaseClasses/CustomWidget.hpp"
+#include "ssGUI/GUIObjectClasses/CustomWidget.hpp"
 
-#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 namespace ssGUI
 {
