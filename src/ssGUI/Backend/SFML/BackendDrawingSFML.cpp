@@ -112,7 +112,7 @@ namespace ssGUI::Backend
 
         for(int i = startIndex; i < endIndex; i++)
         {                        
-            outputShape[i - startIndex].position = sf::Vector2f(vertices[i].x, vertices[i].y);//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
             outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
         }
         

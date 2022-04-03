@@ -133,9 +133,9 @@ namespace ssGUI::Extensions
         //Using the information with tangent points, angles between them and clockwise information
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        for(int i = 0; i < (int)(roundRadius * 1.0) + 2; i++)
+        for(int i = 0; i < (int)(roundRadius * 1.5) + 2; i++)
         {
-            double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)((int)(roundRadius * 1.0) + 1));
+            double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)((int)(roundRadius * 1.5) + 1));
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)roundRadius;
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + cir);
         }
