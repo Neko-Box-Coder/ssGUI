@@ -3,6 +3,7 @@
 
 #include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
+#include "ssGUI/BaseClasses/Window.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
@@ -30,7 +31,6 @@ namespace ssGUI::Extensions
         bool Enabled;
         bool ChildrenDockerUseThisSettings;         //This works by having the child checking if parent has docker or not. Therefore if the docker extension is added after the child being added, this won't work.
 
-        glm::u8vec4 FloatingDockerColor;                //Only applies when the docker is floating. Otherwise it is transparent.
         bool UseTriggerPercentage;
         float TriggerHorizontalPercentage;
         float TriggerVerticalPercentage;
@@ -42,17 +42,16 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* DockPreivew;
         ssGUI::GUIObject* DockTrigger;
 
-        static ssGUI::Extensions::Docker* DefaultGeneratedDockerSettings;
-        static ssGUI::Extensions::Layout* DefaultGeneratedLayoutSettings;
+        static ssGUI::Window* DefaultGeneratedDockerWindow;
     =================================================================
     ============================== C++ ==============================
-    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), FloatingDockerColor(glm::u8vec4(127, 127, 127, 255)), UseTriggerPercentage(true),
+    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), UseTriggerPercentage(true),
                         TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
                         TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
-                        DockTrigger(nullptr)
+                        DockTrigger(nullptr), ChildRemovedEventIndex(-1), ChildRemoveGuard(false)
     {}
-    ssGUI::Extensions::Docker* Docker::DefaultGeneratedDockerSettings = nullptr;
-    ssGUI::Extensions::Layout* Docker::DefaultGeneratedLayoutSettings = nullptr;
+
+    ssGUI::Window* Docker::DefaultGeneratedDockerWindow = nullptr;
     =================================================================
     */
     class Docker : public Extension
@@ -65,7 +64,6 @@ namespace ssGUI::Extensions
             bool Enabled;
             bool ChildrenDockerUseThisSettings;         //This works by having the child checking if parent has docker or not. Therefore if the docker extension is added after the child being added, this won't work.
 
-            glm::u8vec4 FloatingDockerColor;                //Only applies when the docker is floating. Otherwise it is transparent.
             bool UseTriggerPercentage;
             float TriggerHorizontalPercentage;
             float TriggerVerticalPercentage;
@@ -80,8 +78,7 @@ namespace ssGUI::Extensions
             int ChildRemovedEventIndex;
             bool ChildRemoveGuard;
 
-            static ssGUI::Extensions::Docker* DefaultGeneratedDockerSettings;
-            static ssGUI::Extensions::Layout* DefaultGeneratedLayoutSettings;
+            static ssGUI::Window* DefaultGeneratedDockerWindow;
 
             Docker(Docker const& other);
             virtual void ConstructRenderInfo() override;
@@ -101,36 +98,16 @@ namespace ssGUI::Extensions
 
             Docker();
             virtual ~Docker() override;
-            
-            /*function: SetDefaultGeneratedDockerSettings
-            Sets the default docker settings for the dockers that are generated (after this call).
-            The settings are *copied* and stored locally staticly.
-            Therefore, you should not call this function every frame.*/
-            static void SetDefaultGeneratedDockerSettings(ssGUI::Extensions::Docker* defaultDocker);
-
-            //function: GetDefaultGeneratedDockerSettings
-            //Returns the default docker settings. If nullptr is returned, it will use docker default initialization values.
-            static ssGUI::Extensions::Docker* GetDefaultGeneratedDockerSettings();
-
-            /*function: SetDefaultGeneratedLayoutSettings
-            Sets the default layout settings for the layout that are generated (after this call).
-            The settings are *copied* and stored locally staticly.
-            Therefore, you should not call this function every frame.*/
-            static void SetDefaultGeneratedLayoutSettings(ssGUI::Extensions::Layout* defaultLayout);
-
-            //function: GetDefaultGeneratedLayoutSettings
-            //Returns the default layout settings. If nullptr is returned, it will use layout default initialization values.
-            static ssGUI::Extensions::Layout* GetDefaultGeneratedLayoutSettings();
  
-            //function: SetFloatingDockerColor
-            //When a window is docked to a floating dockable window (meaning the window is not docked to anything), a floating docker window will be created.
-            //Floating docker color is the color of that window.
-            virtual void SetFloatingDockerColor(glm::u8vec4 color);
+            /*function: SetDefaultGeneratedDockerWindow
+            Sets the default generated docker window. Set it to nullptr if you want to stop using the one passed it earlier.
+            Do not pass in deleted or invalid pointer.
+            The window will look as it is when floating, but invisible when not floating.*/
+            static void SetDefaultGeneratedDockerWindow(ssGUI::Window* window);
 
-            //function: GetFloatingDockerColor
-            //When a window is docked to a floating dockable window (meaning the window is not docked to anything), a floating docker window will be created.
-            //Floating docker color is the color of that window.
-            virtual glm::u8vec4 GetFloatingDockerColor() const;
+            //function: GetDefaultGeneratedDockerWindow
+            //Returns the default generated docker window. Returns nullptr if it is not set and will just use <ssGUI::Window>. 
+            static ssGUI::Window* GetDefaultGeneratedDockerWindow();
 
             //function: SetChildrenDockerUseThisSettings
             //If true, this will set any docker to use this settings *when it is added as a child*

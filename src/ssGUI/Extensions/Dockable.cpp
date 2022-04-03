@@ -537,7 +537,11 @@ namespace ssGUI::Extensions
     void Dockable::CreateEmptyParentForDocking(ssGUI::Extensions::Layout*& dockLayout)
     {
         FUNC_DEBUG_ENTRY();
-        ssGUI::Window* newParent = new ssGUI::Window();
+        ssGUI::Window* newParent = nullptr;
+        if(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerWindow() == nullptr)
+            newParent = new ssGUI::Window();
+        else
+            newParent = static_cast<ssGUI::Window*>(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerWindow()->Clone(true));
 
         newParent->SetUserCreated(false);
         newParent->SetHeapAllocated(true);
@@ -546,20 +550,30 @@ namespace ssGUI::Extensions
         newParent->SetPosition(TargetDockObject->GetPosition());
         newParent->SetParent(TargetDockObject->GetParent());
 
-        //The docker will automatically create layout extension if not exist
-        newParent->AddExtension(new ssGUI::Extensions::Docker());
-        dockLayout = static_cast<ssGUI::Extensions::Layout*>(newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        //The docker will automatically create docker & layout extension if not exist
+        if(!newParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+        {
+            newParent->AddExtension(new ssGUI::Extensions::Docker());
+            dockLayout = static_cast<ssGUI::Extensions::Layout*>(newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        }
 
-        //Check if the generated docker does not use parent docker or not. If so, use default docker & layout settings if present
+        if(!newParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+            newParent->AddExtension(new ssGUI::Extensions::Layout());
+
+        //Check if the generated docker does not use parent docker & layout or not.
         if(newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) 
-            && !static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsChildrenDockerUseThisSettings()
+            && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsChildrenDockerUseThisSettings()
             && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsEnabled())
         {
-            if(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerSettings() != nullptr)
-                newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->Copy(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerSettings());
+            auto parentDocker = static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
+            newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->Copy(parentDocker);
 
-            if(ssGUI::Extensions::Docker::GetDefaultGeneratedLayoutSettings() != nullptr)
-                newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME)->Copy(ssGUI::Extensions::Docker::GetDefaultGeneratedLayoutSettings());
+            if(newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) 
+                && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsEnabled())
+            {
+                auto parentLayout = static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+                newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME)->Copy(parentLayout);
+            }
         }
         
         //Then change the Layout orientation to the same as the docking orientation
@@ -568,20 +582,39 @@ namespace ssGUI::Extensions
         else
             dockLayout->SetHorizontalLayout(false);
 
-        //Floating
-        //ssGUI::GUIObject* topLevelParent = (TopLevelParent == -1 ? nullptr : CurrentObjectsReferences.GetObjectReference(TopLevelParent));
-        if(!TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
-        {
-            newParent->SetBackgroundColor(static_cast<ssGUI::Extensions::Docker*>(newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
-        }
-        //Non Floating
-        else
+        //If not floating, turn window to invisible
+        if(TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
+            TargetDockObject->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->IsEnabled())
         {
             newParent->SetTitlebar(false);
-            newParent->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
+            auto newBGColor = newParent->GetBackgroundColor();
+            newBGColor.a = 0;
+            newParent->SetBackgroundColor(newBGColor);
             newParent->SetResizeType(ssGUI::Enums::ResizeType::NONE);
-            static_cast<ssGUI::Extensions::Border*>(newParent->GetExtension(ssGUI::Extensions::Border::EXTENSION_NAME))->SetEnabled(false);
+
+            //Disable all extensions except docker, assuming all extensions are enabled by default
+            auto allExtensions = newParent->GetListOfExtensions();
+            for(auto extension : allExtensions)
+            {
+                if(extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME ||
+                    extension->GetExtensionName() == ssGUI::Extensions::Layout::EXTENSION_NAME)
+                {
+                    continue;
+                }
+                
+                extension->SetEnabled(false);
+            }
             // newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+            
+            //Set all the children to be not visible since it is not floating
+            newParent->StashChildrenIterator();
+            newParent->MoveChildrenIteratorToFirst();
+            while(!newParent->IsChildrenIteratorEnd())
+            {
+                newParent->GetCurrentChild()->SetVisible(false);
+                newParent->MoveChildrenIteratorNext();
+            }
+            newParent->PopChildrenIterator();
         }
 
         //Restore order

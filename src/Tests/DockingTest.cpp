@@ -7,6 +7,8 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
+#include "ssGUI/CompositeClasses/StandardWindow.hpp"
+
 
 
 //Docking test
@@ -26,47 +28,40 @@ int main()
     //Creating window
     ssGUI::Window window2;
     DEBUG_LINE("window2: "<<&window2);
-
     window2.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window2.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
     window2.SetSize(glm::ivec2(150, 150));
     window2.SetParent(&mainWindow);
 
-    
-    ssGUI::Window* window3 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
+    ssGUI::Window* window3 = new ssGUI::Window();
     window3->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window3->SetTitlebarColor(glm::u8vec4(255, 255, 255, 255));
     window3->SetSize(glm::ivec2(150, 150));
     window3->SetParent(&mainWindow);
     DEBUG_LINE("window3: "<<&window3);
 
-    ssGUI::GUIObject* window3ObjPtr = window3;
-    DEBUG_LINE("window3 obj ptr: "<<window3ObjPtr);
-
-
-
-    ssGUI::Window* window4 = new ssGUI::Window();//static_cast<ssGUI::Window*>(window2.Clone(false));
+    ssGUI::Window* window4 = new ssGUI::Window();
     window4->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window4->SetSize(glm::ivec2(150, 150));
     window4->SetParent(&mainWindow);
     DEBUG_LINE("window4: "<<&window4);
-
-    
 
     ssGUI::Extensions::Dockable* dock = new ssGUI::Extensions::Dockable();
     ssGUI::Extensions::Dockable* dock2 = new ssGUI::Extensions::Dockable();
     ssGUI::Extensions::Dockable* dock3 = new ssGUI::Extensions::Dockable();
     ssGUI::Extensions::Dockable* dock4 = new ssGUI::Extensions::Dockable();
 
-    
     window.AddExtension(dock);
     window2.AddExtension(dock2);
     window3->AddExtension(dock3);
     window4->AddExtension(dock4);
 
-
     ssGUI::Extensions::Docker* docker = new ssGUI::Extensions::Docker();
     docker->SetChildrenDockerUseThisSettings(true);
+    ssGUI::StandardWindow* defaultStandardWindow = new ssGUI::StandardWindow();
+    defaultStandardWindow->GetWindowTitleObject()->SetText("Docker");
+
+    ssGUI::Extensions::Docker::SetDefaultGeneratedDockerWindow(defaultStandardWindow);
     
     ssGUI::Extensions::AdvancedPosition* ap = new ssGUI::Extensions::AdvancedPosition();
     ssGUI::Extensions::AdvancedSize* as = new ssGUI::Extensions::AdvancedSize();
@@ -102,7 +97,6 @@ int main()
 
     window4->SetParent(&mainWindowWidget);
     dock4->SetTopLevelParent(&mainWindowWidget);
-
 
     mainWindow.MoveChildrenIteratorToLast();
     std::list<ssGUI::ssGUIObjectIndex>::iterator lastIt = mainWindow.GetCurrentChildReferenceIterator();

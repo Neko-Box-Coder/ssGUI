@@ -9,8 +9,7 @@
 
 namespace ssGUI::Extensions
 {
-    ssGUI::Extensions::Docker* Docker::DefaultGeneratedDockerSettings = nullptr;
-    ssGUI::Extensions::Layout* Docker::DefaultGeneratedLayoutSettings = nullptr;
+    ssGUI::Window* Docker::DefaultGeneratedDockerWindow = nullptr;
 
     Docker::Docker(Docker const& other)
     {
@@ -18,7 +17,6 @@ namespace ssGUI::Extensions
         Enabled = other.IsEnabled();
         ChildrenDockerUseThisSettings = other.IsChildrenDockerUseThisSettings();
 
-        FloatingDockerColor = other.GetFloatingDockerColor();                
         UseTriggerPercentage = other.IsUseTriggerPercentage();
         TriggerHorizontalPercentage = other.GetTriggerHorizontalPercentage();
         TriggerVerticalPercentage = other.GetTriggerVerticalPercentage();
@@ -272,10 +270,29 @@ namespace ssGUI::Extensions
                 {
                     static_cast<ssGUI::Window*>(childLeft)->SetTitlebar(true);
                     static_cast<ssGUI::Window*>(childLeft)->SetResizeType(ssGUI::Enums::ResizeType::ALL);
-                    static_cast<ssGUI::Window*>(childLeft)->SetBackgroundColor(static_cast<ssGUI::Extensions::Docker*>
-                        (childLeft->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->GetFloatingDockerColor());
-                    static_cast<ssGUI::Extensions::Border*>(static_cast<ssGUI::Window*>(childLeft)->
-                        GetExtension(ssGUI::Extensions::Border::EXTENSION_NAME))->SetEnabled(true);
+                    auto bgColor = childLeft->GetBackgroundColor();
+                    bgColor.a = 255;
+                    childLeft->SetBackgroundColor(bgColor);
+                    
+                    //Enable all extensions back
+                    auto allExtensions = childLeft->GetListOfExtensions();
+                    for(auto extension : allExtensions)
+                    {
+                        if(extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME)
+                            continue;
+                        
+                        extension->SetEnabled(true);
+                    }
+
+                    //Enable all children back
+                    childLeft->StashChildrenIterator();
+                    childLeft->MoveChildrenIteratorToFirst();
+                    while(!childLeft->IsChildrenIteratorEnd())
+                    {
+                        childLeft->GetCurrentChild()->SetVisible(true);
+                        childLeft->MoveChildrenIteratorNext();
+                    }
+                    childLeft->PopChildrenIterator();
                 }
             }
         }
@@ -287,7 +304,7 @@ namespace ssGUI::Extensions
 
     const std::string Docker::EXTENSION_NAME = "Docker";
 
-    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), FloatingDockerColor(glm::u8vec4(127, 127, 127, 255)), UseTriggerPercentage(true),
+    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), UseTriggerPercentage(true),
                         TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
                         TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
                         DockTrigger(nullptr), ChildRemovedEventIndex(-1), ChildRemoveGuard(false)
@@ -299,35 +316,15 @@ namespace ssGUI::Extensions
         DiscardPreview();
         DiscardTriggerArea();
     }
-    
-    void Docker::SetDefaultGeneratedDockerSettings(ssGUI::Extensions::Docker* defaultDocker)
+
+    void Docker::SetDefaultGeneratedDockerWindow(ssGUI::Window* window)
     {
-        DefaultGeneratedDockerSettings = static_cast<ssGUI::Extensions::Docker*>(defaultDocker->Clone(nullptr));
+        DefaultGeneratedDockerWindow = window;
     }
 
-    ssGUI::Extensions::Docker* Docker::GetDefaultGeneratedDockerSettings()
+    ssGUI::Window* Docker::GetDefaultGeneratedDockerWindow()
     {
-        return DefaultGeneratedDockerSettings;
-    }
-
-    void Docker::SetDefaultGeneratedLayoutSettings(ssGUI::Extensions::Layout* defaultLayout)
-    {
-        DefaultGeneratedLayoutSettings = static_cast<ssGUI::Extensions::Layout*>(defaultLayout->Clone(nullptr));
-    }
-
-    ssGUI::Extensions::Layout* Docker::GetDefaultGeneratedLayoutSettings()
-    {
-        return DefaultGeneratedLayoutSettings;
-    }
-
-    void Docker::SetFloatingDockerColor(glm::u8vec4 color)
-    {
-        FloatingDockerColor = color;
-    }
-
-    glm::u8vec4 Docker::GetFloatingDockerColor() const
-    {
-        return FloatingDockerColor;
+        return DefaultGeneratedDockerWindow;
     }
 
     void Docker::SetChildrenDockerUseThisSettings(bool use)
@@ -613,7 +610,6 @@ namespace ssGUI::Extensions
         Enabled = docker->IsEnabled();
         ChildrenDockerUseThisSettings = docker->IsChildrenDockerUseThisSettings();
 
-        FloatingDockerColor = docker->GetFloatingDockerColor();                
         UseTriggerPercentage = docker->IsUseTriggerPercentage();
         TriggerHorizontalPercentage = docker->GetTriggerHorizontalPercentage();
         TriggerVerticalPercentage = docker->GetTriggerVerticalPercentage();
