@@ -177,24 +177,36 @@ namespace ssGUI
                 ssGUI::GUIObject* currentObjP = objToRender.front();
                 objToRender.pop_front();
 
-                //Internal_Draw the gui object only when it is visible
-                if(currentObjP->IsVisible())
-                {                    
-                    renderQueue.push_back(currentObjP);
-
-                    //Add children to draw queue
-                    if(currentObjP->GetChildrenCount() > 0)
+                //Check if current object's recursive parents are visible
+                auto curParent = currentObjP;
+                bool skipRender = false;
+                while(curParent != nullptr)
+                {
+                    if(!curParent->IsVisible())
                     {
-                        currentObjP->StashChildrenIterator();
-                        //Add children from back to front so that the drawing queue order is front to back
-                        currentObjP->MoveChildrenIteratorToLast();
-                        while (!currentObjP->IsChildrenIteratorEnd())
-                        {
-                            objToRender.push_front(currentObjP->GetCurrentChild());
-                            currentObjP->MoveChildrenIteratorPrevious();
-                        }
-                        currentObjP->PopChildrenIterator();
+                        skipRender = true;
+                        break;
                     }
+                    curParent = curParent->GetParent();
+                }
+
+                if(skipRender)
+                    continue;
+
+                renderQueue.push_back(currentObjP);
+
+                //Add children to draw queue
+                if(currentObjP->GetChildrenCount() > 0)
+                {
+                    currentObjP->StashChildrenIterator();
+                    //Add children from back to front so that the drawing queue order is front to back
+                    currentObjP->MoveChildrenIteratorToLast();
+                    while (!currentObjP->IsChildrenIteratorEnd())
+                    {
+                        objToRender.push_front(currentObjP->GetCurrentChild());
+                        currentObjP->MoveChildrenIteratorPrevious();
+                    }
+                    currentObjP->PopChildrenIterator();
                 }
             }
 
