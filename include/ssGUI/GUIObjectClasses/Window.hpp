@@ -1,7 +1,7 @@
 #ifndef SSGUI_WINDOW
 #define SSGUI_WINDOW
 
-#include "ssGUI/BaseClasses/BaseGUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/BaseGUIObject.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include "ssGUI/Enums/ResizeType.hpp"
 #include "ssGUI/Enums/WindowDragState.hpp"

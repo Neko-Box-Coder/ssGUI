@@ -1,4 +1,4 @@
-#include "ssGUI/BaseClasses/ImageData.hpp"
+#include "ssGUI/DataClasses/ImageData.hpp"
 
 namespace ssGUI
 {

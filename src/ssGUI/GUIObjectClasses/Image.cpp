@@ -1,4 +1,4 @@
-#include "ssGUI/BaseClasses/Image.hpp"
+#include "ssGUI/GUIObjectClasses/Image.hpp"
 
 
 namespace ssGUI

@@ -1,7 +1,7 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
-#include "ssGUI/CompositeClasses/StandardWindow.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
 //Mask test
 int main()

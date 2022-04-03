@@ -1,7 +1,7 @@
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
 
-#include "ssGUI/BaseClasses/MainWindow.hpp"     //For getting cursor in MainWindow space
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp"     //For getting cursor in MainWindow space
 
 namespace ssGUI::Backend
 {

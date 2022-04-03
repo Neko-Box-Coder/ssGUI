@@ -1,6 +1,6 @@
-#include "ssGUI/BaseClasses/BaseGUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/BaseGUIObject.hpp"
 
-#include "ssGUI/BaseClasses/MainWindow.hpp" //This is for getting the MainWindow offset
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //This is for getting the MainWindow offset
 #include "ssGUI/ssGUIManager.hpp" //This is for accessing DeletedObjs
 
 namespace ssGUI

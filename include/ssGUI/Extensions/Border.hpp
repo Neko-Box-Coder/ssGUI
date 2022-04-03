@@ -3,7 +3,7 @@
 
 
 #include "ssGUI/Extensions/Extension.hpp"
-#include "ssGUI/BaseClasses/GUIObject.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject
 #include "glm/vec4.hpp"
 
 //namespace: ssGUI::Extensions

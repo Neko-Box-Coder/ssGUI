@@ -1,5 +1,5 @@
-#include "ssGUI/BaseClasses/Button.hpp"
-#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+#include "ssGUI/GUIObjectClasses/Button.hpp"
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 namespace ssGUI
 {

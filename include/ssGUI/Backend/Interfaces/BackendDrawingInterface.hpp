@@ -3,7 +3,7 @@
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
-#include "ssGUI/BaseClasses/DrawingProperties.hpp"
+#include "ssGUI/DataClasses/DrawingProperties.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 #include "glm/vec4.hpp"

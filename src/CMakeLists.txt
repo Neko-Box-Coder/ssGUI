@@ -13,7 +13,7 @@ configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
 # add the executable
 # add_executable(example ./Examples/PositionSystem.cpp)
-add_executable(example "./Examples/ReadmeExampleV3.cpp")
+add_executable(example "./Tests/DockingTest.cpp")
 
 # For projectconfig.hpp in build folder
 target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")
@@ -59,10 +59,11 @@ endif()
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Backend/SFML")
-add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/BaseClasses")
-add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/CompositeClasses")
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/DataClasses")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/EventCallbacks")
 add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/Extensions")
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/GUIObjectClasses")
+add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/GUIObjectClasses/CompositeClasses")
 
 target_include_directories(ssGUI PUBLIC "${INCLUDE_LOCATION}")
 

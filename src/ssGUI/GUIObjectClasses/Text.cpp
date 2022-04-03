@@ -1,4 +1,4 @@
-#include "ssGUI/BaseClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/Text.hpp"
 
 namespace ssGUI
 {    

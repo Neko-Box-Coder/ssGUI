@@ -1,5 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/CompositeClasses/StandardWindow.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
 
 

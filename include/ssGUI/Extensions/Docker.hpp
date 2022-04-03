@@ -3,7 +3,7 @@
 
 #include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
-#include "ssGUI/BaseClasses/Window.hpp"
+#include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"

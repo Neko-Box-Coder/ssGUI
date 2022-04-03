@@ -5,7 +5,7 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include <functional>
 
-#include "ssGUI/BaseClasses/Window.hpp"
+#include "ssGUI/GUIObjectClasses/Window.hpp"
 
 //namespace: ssGUI
 namespace ssGUI

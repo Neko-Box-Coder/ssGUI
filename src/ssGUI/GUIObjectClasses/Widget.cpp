@@ -1,6 +1,6 @@
-#include "ssGUI/BaseClasses/Widget.hpp"
+#include "ssGUI/GUIObjectClasses/Widget.hpp"
 
-#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 namespace ssGUI
 {

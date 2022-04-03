@@ -1,7 +1,7 @@
-#include "ssGUI/BaseClasses/ObjectsReferences.hpp"
+#include "ssGUI/DataClasses/ObjectsReferences.hpp"
 
 
-#include "ssGUI/BaseClasses/GUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 
 
 namespace ssGUI

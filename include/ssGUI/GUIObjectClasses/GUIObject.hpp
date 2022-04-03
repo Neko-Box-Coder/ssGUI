@@ -11,7 +11,7 @@
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/EventCallbacks/EventCallback.hpp"
-#include "ssGUI/BaseClasses/InputStatus.hpp"
+#include "ssGUI/DataClasses/InputStatus.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 
 //namespace: ssGUI

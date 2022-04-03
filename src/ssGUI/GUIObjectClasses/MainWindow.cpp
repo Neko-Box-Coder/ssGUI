@@ -1,4 +1,4 @@
-#include "ssGUI/BaseClasses/MainWindow.hpp"
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 
 
 namespace ssGUI

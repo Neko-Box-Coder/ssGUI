@@ -2,8 +2,8 @@
 #include <iostream>
 #include "ProjectConfig.hpp"
 #include "ssGUI/ssGUIManager.hpp"
-#include "ssGUI/BaseClasses/Text.hpp"
-#include "ssGUI/BaseClasses/Button.hpp"
+#include "ssGUI/GUIObjectClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/Button.hpp"
 */
 
 
@@ -23,7 +23,7 @@
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/Outline.hpp"
-#include "ssGUI/CompositeClasses/StandardWindow.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
 
 

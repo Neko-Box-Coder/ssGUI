@@ -6,7 +6,7 @@
 #include "ssGUI/HeaderGroups/KeyGroup.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include <vector>
-#include "ssGUI/BaseClasses/KeyPresses.hpp"
+#include "ssGUI/DataClasses/KeyPresses.hpp"
 
 
 //namespace: ssGUI::Backend

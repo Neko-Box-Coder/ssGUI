@@ -1,7 +1,7 @@
 #ifndef SSGUI_EVENT_CALLBACK
 #define SSGUI_EVENT_CALLBACK
 
-#include "ssGUI/BaseClasses/ObjectsReferences.hpp"
+#include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include <functional>
 #include <string>
 #include <vector>

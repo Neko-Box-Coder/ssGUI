@@ -1,6 +1,6 @@
 #include "ssGUI/Extensions/Outline.hpp"
 
-#include "ssGUI/BaseClasses/MainWindow.hpp" //For getting mouse position
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 //Remember to add the .cpp file to the cmake list if you are using cmake
 

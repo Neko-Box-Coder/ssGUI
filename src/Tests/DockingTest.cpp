@@ -7,7 +7,7 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
-#include "ssGUI/CompositeClasses/StandardWindow.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
 
 

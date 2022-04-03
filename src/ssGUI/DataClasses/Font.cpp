@@ -1,4 +1,4 @@
-#include "ssGUI/BaseClasses/Font.hpp"
+#include "ssGUI/DataClasses/Font.hpp"
 
 namespace ssGUI
 {

@@ -1,8 +1,8 @@
-#include "ssGUI/CompositeClasses/StandardWindow.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
-#include "ssGUI/BaseClasses/Text.hpp"
-#include "ssGUI/BaseClasses/Image.hpp"
-#include "ssGUI/BaseClasses/Button.hpp"
+#include "ssGUI/GUIObjectClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/Image.hpp"
+#include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Dockable.hpp"

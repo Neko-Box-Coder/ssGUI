@@ -1,7 +1,7 @@
 #ifndef SSGUI_BASE_GUI_OBJECT
 #define SSGUI_BASE_GUI_OBJECT
 
-#include "ssGUI/BaseClasses/GUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include "ssGUI/EventCallbacks/OnRecursiveChildAddEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
