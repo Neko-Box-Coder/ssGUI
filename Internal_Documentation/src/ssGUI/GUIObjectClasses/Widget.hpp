@@ -1,7 +1,7 @@
 #ifndef SSGUI_WIDGET
 #define SSGUI_WIDGET
 
-#include "ssGUI/BaseClasses/BaseGUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/BaseGUIObject.hpp"
 
 //namespace: ssGUI
 namespace ssGUI

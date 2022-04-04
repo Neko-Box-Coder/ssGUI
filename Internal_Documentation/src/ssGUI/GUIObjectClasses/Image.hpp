@@ -1,8 +1,8 @@
 #ifndef SSGUI_IMAGE
 #define SSGUI_IMAGE
 
-#include "ssGUI/BaseClasses/Widget.hpp"
-#include "ssGUI/BaseClasses/ImageData.hpp"
+#include "ssGUI/GUIObjectClasses/Widget.hpp"
+#include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Enums/ImageFitting.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "SFML/Graphics.hpp"

@@ -1,25 +1,26 @@
-#ifndef ON_OBJECT_DESTROY_EVENT_CALLBACK
-#define ON_OBJECT_DESTROY_EVENT_CALLBACK
+#ifndef CHILD_ADDED_EVENT_CALLBACK
+#define CHILD_ADDED_EVENT_CALLBACK
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: OnObjectDestroyEventCallback
-    //This event callback is triggered *before* the GUI object is destroyed. Container will be the source for triggering this event callback.
-    class OnObjectDestroyEventCallback : public BaseEventCallback
+    //class: ChildAddedEventCallback
+    //This event callback is triggered *after* a child is paranted on this GUI object
+    //The child object being added will be the source for triggering this event callback.
+    class ChildAddedEventCallback : public BaseEventCallback
     {        
         private:
-            OnObjectDestroyEventCallback(OnObjectDestroyEventCallback const &) = default;
-            OnObjectDestroyEventCallback& operator=(OnObjectDestroyEventCallback const &) = default;
+            ChildAddedEventCallback(ChildAddedEventCallback const &) = default;
+            ChildAddedEventCallback& operator=(ChildAddedEventCallback const &) = default;
         
         public:
-            OnObjectDestroyEventCallback() = default;
+            ChildAddedEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
-            virtual std::string GetEventCallbackName() const override;
+            virtual std::string GetEventCallbackName() const override; 
             
             //function: Clone
             //See <BaseEventCallback::Clone>
@@ -30,5 +31,7 @@ namespace ssGUI::EventCallbacks
             static const std::string EVENT_NAME;
     };
 }
+
+
 
 #endif

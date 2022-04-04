@@ -1,7 +1,7 @@
 #ifndef SSGUI_BUTTON
 #define SSGUI_BUTTON
 
-#include "ssGUI/BaseClasses/Widget.hpp"
+#include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/Enums/ButtonState.hpp"

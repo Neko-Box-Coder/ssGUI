@@ -120,8 +120,8 @@ namespace ssGUI::Extensions
     void CustomExtension::ConstructRenderInfo()
     {
         //Getting all the rendering details from container
-        std::vector<glm::ivec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        std::vector<glm::ivec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
+        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
         std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
@@ -129,7 +129,7 @@ namespace ssGUI::Extensions
         //Do the rendering here....
     }
 
-    void CustomExtension::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void CustomExtension::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {
         //If you need the drawingInterface or mainWindow, do it here.
         
@@ -189,7 +189,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void CustomExtension::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset)
+    void CustomExtension::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
         FUNC_DEBUG_ENTRY();
         
@@ -228,8 +228,8 @@ namespace ssGUI::Extensions
 
     ObjectsReferences* CustomExtension::Internal_GetObjectsReferences()
     {
-        //return nullptr;
-        return &CurrentObjectsReferences;
+        return nullptr;
+        //return &CurrentObjectsReferences;
     }
 
     Extension* CustomExtension::Clone(ssGUI::GUIObject* newContainer)

@@ -2,9 +2,9 @@
 #define SSGUI_MANAGER
 
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
-#include "ssGUI/BaseClasses/MainWindow.hpp"
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 #include "ssGUI/Enums/GUIObjectType.hpp"
-#include "ssGUI/BaseClasses/InputStatus.hpp"
+#include "ssGUI/DataClasses/InputStatus.hpp"
 #include "ssGUI/Backend/BackendFactory.hpp"
 
 #include <stack>
@@ -66,7 +66,7 @@ namespace ssGUI
             void UpdateCursor();
             
             ssGUI::GUIObject* FindParentWindowP(ssGUI::GUIObject& obj);
-            void AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP);
+            //void AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP);
 
         public:
             ssGUIManager();

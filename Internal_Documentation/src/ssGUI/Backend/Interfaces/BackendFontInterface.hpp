@@ -2,7 +2,7 @@
 #define SSGUI_BACKEND_FONT_INTERFACE
 
 #include <string>
-#include "ssGUI/BaseClasses/CharacterRenderInfo.hpp"
+#include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
 
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend

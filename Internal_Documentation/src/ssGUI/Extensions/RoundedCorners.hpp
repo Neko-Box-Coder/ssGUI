@@ -5,7 +5,7 @@
 #include "glm/trigonometric.hpp"
 #include "glm/geometric.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
-#include "ssGUI/BaseClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
 
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions

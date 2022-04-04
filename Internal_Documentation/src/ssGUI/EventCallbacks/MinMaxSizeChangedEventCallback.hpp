@@ -7,7 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: MinMaxSizeChangedEventCallback
-    //This event callback is triggered *after* min or max size of a GUI object has changed
+    //This event callback is triggered *after* min or max size of a GUI object has changed. Container will be the source for triggering this event callback.
     class MinMaxSizeChangedEventCallback : public BaseEventCallback
     {        
         private:

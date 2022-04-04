@@ -4,8 +4,8 @@
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/ssGUITags.hpp"
-#include "ssGUI/BaseClasses/MainWindow.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject
-#include "ssGUI/BaseClasses/Widget.hpp"
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject
+#include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "glm/vec4.hpp"
 
 //namespace: ssGUI::Extensions

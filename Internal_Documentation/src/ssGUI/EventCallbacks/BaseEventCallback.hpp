@@ -2,7 +2,7 @@
 #define BASE_EVENT_CALLBACK
 
 #include "ssGUI/EventCallbacks/EventCallback.hpp"
-#include "ssGUI/BaseClasses/GUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include <queue>
 
 //namespace: ssGUI::EventCallbacks

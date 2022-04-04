@@ -2,7 +2,7 @@
 #define SSGUI_STANDARD_WINDOW
 
 #include "ssGUI/Extensions/RoundedCorners.hpp"
-#include "ssGUI/BaseClasses/Window.hpp"
+#include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
 //namespace: ssGUI

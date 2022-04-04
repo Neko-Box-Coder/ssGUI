@@ -7,7 +7,7 @@
 namespace ssGUI::EventCallbacks
 {
     //class: WindowDragStateChangedEventCallback
-    //This event callback is triggered *after* this GUI object (window) drag state is changed
+    //This event callback is triggered *after* this GUI object (window) drag state is changed. Window(Container) will be the source for triggering this event callback.
     class WindowDragStateChangedEventCallback : public BaseEventCallback
     {        
         private:

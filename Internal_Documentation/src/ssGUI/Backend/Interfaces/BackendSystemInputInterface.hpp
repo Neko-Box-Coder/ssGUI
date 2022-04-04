@@ -3,7 +3,7 @@
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 #include <string>
-#include "ssGUI/BaseClasses/KeyPresses.hpp"
+#include "ssGUI/DataClasses/KeyPresses.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include <vector>
 #include "glm/vec2.hpp"

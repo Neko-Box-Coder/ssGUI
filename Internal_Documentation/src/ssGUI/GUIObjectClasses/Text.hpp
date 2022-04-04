@@ -1,10 +1,10 @@
 #ifndef SSGUI_TEXT
 #define SSGUI_TEXT
 
-#include "ssGUI/BaseClasses/Font.hpp"
-#include "ssGUI/BaseClasses/Widget.hpp"
-#include "ssGUI/BaseClasses/CharacterDetails.hpp"
-#include "ssGUI/BaseClasses/CharacterRenderInfo.hpp"
+#include "ssGUI/DataClasses/Font.hpp"
+#include "ssGUI/GUIObjectClasses/Widget.hpp"
+#include "ssGUI/DataClasses/CharacterDetails.hpp"
+#include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
 #include "ssGUI/Enums/TextWrapping.hpp"
 #include "ssGUI/Enums/TextAlignmentHorizontal.hpp"
 #include "ssGUI/Enums/TextAlignmentVertical.hpp"

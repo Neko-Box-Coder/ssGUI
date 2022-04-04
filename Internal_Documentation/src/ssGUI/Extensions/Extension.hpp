@@ -4,8 +4,8 @@
 
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
-#include "ssGUI/BaseClasses/InputStatus.hpp"
-#include "ssGUI/BaseClasses/ObjectsReferences.hpp"
+#include "ssGUI/DataClasses/InputStatus.hpp"
+#include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "glm/vec2.hpp"
 #include <string>

@@ -1,21 +1,22 @@
-#ifndef ON_WINDOW_CLOSE_EVENT_CALLBACK
-#define ON_WINDOW_CLOSE_EVENT_CALLBACK
+#ifndef ON_RECURSIVE_CHILD_REMOVE_EVENT_CALLBACK
+#define ON_RECURSIVE_CHILD_REMOVE_EVENT_CALLBACK
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: OnWindowCloseEventCallback
-    //This event callback is triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
-    class OnWindowCloseEventCallback : public BaseEventCallback
+    //class: OnRecursiveChildRemoveEventCallback
+    //This event callback is triggered *before* a child is removed recursively on this GUI object. 
+    //The child object being removed will be the source for triggering this event callback.
+    class OnRecursiveChildRemoveEventCallback : public BaseEventCallback
     {        
         private:
-            OnWindowCloseEventCallback(OnWindowCloseEventCallback const&) = default;
-            OnWindowCloseEventCallback& operator=(OnWindowCloseEventCallback const&) = default;
+            OnRecursiveChildRemoveEventCallback(OnRecursiveChildRemoveEventCallback const &) = default;
+            OnRecursiveChildRemoveEventCallback& operator=(OnRecursiveChildRemoveEventCallback const &) = default;
         
         public:
-            OnWindowCloseEventCallback() = default;
+            OnRecursiveChildRemoveEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>

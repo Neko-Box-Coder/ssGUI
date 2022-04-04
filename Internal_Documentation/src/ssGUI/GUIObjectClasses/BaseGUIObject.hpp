@@ -1,14 +1,17 @@
 #ifndef SSGUI_BASE_GUI_OBJECT
 #define SSGUI_BASE_GUI_OBJECT
 
-#include "ssGUI/BaseClasses/GUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include "ssGUI/EventCallbacks/OnRecursiveChildAddEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/OnRecursiveChildRemoveEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/ChildAddedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 #include "glm/vec4.hpp"
 #include <vector>
 #include <list>
@@ -30,7 +33,8 @@ namespace ssGUI
         ssGUIObjectIndex Parent;
         std::list<ssGUIObjectIndex> Children;
         std::list<ssGUIObjectIndex>::iterator CurrentChild;
-        bool CurrentChildIteratorEnd;
+        bool CurrentChildIteratorFrontEnd;
+        bool CurrentChildIteratorBackEnd;
         bool Visible;
         glm::u8vec4 BackgroundColour;
         bool UserCreated;
@@ -40,6 +44,7 @@ namespace ssGUI
         bool DestroyEventCalled;
         bool Redraw;
         bool AcceptRedrawRequest;
+        std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;
 
         //Widget transform
         glm::vec2 Position;
@@ -72,11 +77,11 @@ namespace ssGUI
         std::unordered_set<std::string> CurrentTags;
     =================================================================
     ============================== C++ ==============================
-    BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorEnd(true), Visible(true),
-                                        BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), ObjectDelete(false), HeapAllocated(false),
-                                        CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), AcceptRedrawRequest(true), 
-                                        Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), MinSize(glm::vec2(25, 25)),
-                                        MaxSize(glm::vec2(std::numeric_limits<int>::max(), std::numeric_limits<int>::max())),
+    BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true), Visible(true),
+                                        CurrentChildIteratorBackEnd(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), 
+                                        ObjectDelete(false), HeapAllocated(false), CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), 
+                                        AcceptRedrawRequest(true), Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), 
+                                        MinSize(glm::vec2(25, 25)), MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
                                         DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
                                         LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
@@ -87,14 +92,14 @@ namespace ssGUI
     class BaseGUIObject : public GUIObject
     {
         private:
-
             BaseGUIObject& operator=(BaseGUIObject const& other);
 
         protected:
             ssGUIObjectIndex Parent;
             std::list<ssGUIObjectIndex> Children;
             std::list<ssGUIObjectIndex>::iterator CurrentChild;
-            bool CurrentChildIteratorEnd;
+            bool CurrentChildIteratorFrontEnd;
+            bool CurrentChildIteratorBackEnd;
             bool Visible;
             glm::u8vec4 BackgroundColour;
             bool UserCreated;
@@ -104,6 +109,7 @@ namespace ssGUI
             bool DestroyEventCalled;
             bool Redraw;
             bool AcceptRedrawRequest;
+            std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;
 
             //Widget transform
             glm::vec2 Position;
@@ -233,6 +239,14 @@ namespace ssGUI
             //function: IsChildrenIteratorEnd
             //See <GUIObject::IsChildrenIteratorEnd>
             virtual bool IsChildrenIteratorEnd() override;
+
+            //function: StashChildrenIterator
+            //See <GUIObject::StashChildrenIterator>
+            virtual void StashChildrenIterator() override;
+
+            //function: StashChildrenIterator
+            //See <GUIObject::StashChildrenIterator>
+            virtual void PopChildrenIterator() override;
 
             //function: FindChild
             //See <GUIObject::FindChild>

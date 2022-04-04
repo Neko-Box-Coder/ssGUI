@@ -2,7 +2,7 @@
 #define SSGUI_CHARACTER_DETAILS
 
 #include "glm/vec2.hpp"
-#include "ssGUI/BaseClasses/Font.hpp"
+#include "ssGUI/DataClasses/Font.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
