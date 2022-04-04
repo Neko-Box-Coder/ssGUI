@@ -83,16 +83,13 @@ namespace ssGUI::Extensions
                 while(drawingVertices[nextIndex] - drawingVertices[VerticesToOutline[i]] == glm::vec2());
                 VerticesToOutlineNextVertices.push_back(nextIndex);
 
-                if(!SimpleOutline)
+                int nextNextIndex = nextIndex;
+                do
                 {
-                    int nextNextIndex = nextIndex;
-                    do
-                    {
-                        nextNextIndex = (nextNextIndex == endIndex - 1 ? startIndex : nextNextIndex + 1);
-                    }
-                    while(drawingVertices[nextNextIndex] - drawingVertices[nextIndex] == glm::vec2());
-                    VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
+                    nextNextIndex = (nextNextIndex == endIndex - 1 ? startIndex : nextNextIndex + 1);
                 }
+                while(drawingVertices[nextNextIndex] - drawingVertices[nextIndex] == glm::vec2());
+                VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
             }
         }
         else
@@ -128,18 +125,68 @@ namespace ssGUI::Extensions
                     while(drawingVertices[nextIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToOutlineNextVertices.push_back(nextIndex);
 
-                    if(!SimpleOutline)
+                    int nextNextIndex = nextIndex;
+                    do
                     {
-                        int nextNextIndex = nextIndex;
-                        do
-                        {
-                            nextNextIndex = (nextNextIndex == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : nextNextIndex + 1);
-                        }
-                        while(drawingVertices[nextIndex] - drawingVertices[nextNextIndex] == glm::vec2());
-                        VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
+                        nextNextIndex = (nextNextIndex == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : nextNextIndex + 1);
                     }
+                    while(drawingVertices[nextIndex] - drawingVertices[nextNextIndex] == glm::vec2());
+                    VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
                 }
             }
+        }
+    }
+
+    double Outline::GetAngle(glm::vec2 a, glm::vec2 b)
+    {
+        glm::vec3 a3 = glm::vec3(a, 0);
+        glm::vec3 b3 = glm::vec3(b, 0);
+
+        return atan2(glm::cross(a3, b3).z, glm::dot(glm::vec2(a), glm::vec2(b)));
+    }
+
+    void Outline::PlotArc(glm::vec2 start, glm::vec2 end, glm::vec2 circlePos, std::vector<glm::vec2>& plottedPoints)
+    {
+        glm::vec2 cirOriginline = glm::vec2(1, 0);
+        glm::vec2 startDir = (start - circlePos);
+        glm::vec2 endDir = (end - circlePos);
+        double arcRadius = glm::distance(start, circlePos);
+        double startToEndAngle = GetAngle(startDir, endDir);
+
+        bool invalidAngle = false;
+        if(startToEndAngle < 0)
+        {
+            DEBUG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
+            invalidAngle = true;
+        }
+        else if(startToEndAngle > pi())
+        {
+            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            invalidAngle = true;
+        }
+
+        if(invalidAngle)
+        {
+            DEBUG_LINE("startToEndAngle: "<<startToEndAngle);
+            DEBUG_LINE("start: "<<start.x<<", "<<start.y);
+            DEBUG_LINE("end: "<<end.x<<", "<<end.y);
+            DEBUG_LINE("circlePos: "<<circlePos.x<<", "<<circlePos.y);
+            DEBUG_EXIT_PROGRAM();
+            return;
+        }
+
+        double originLineToStartAngle = GetAngle(cirOriginline, startDir);
+        originLineToStartAngle = originLineToStartAngle < 0 ? 2 * pi() + originLineToStartAngle : originLineToStartAngle;
+
+        //https://stackoverflow.com/questions/15525941/find-points-on-circle
+        //Plot the arc
+        //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
+        // DEBUG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1.5) + 2));        
+        for(int i = 0; i < (int)(arcRadius * startToEndAngle * 1.5) + 2; i++)
+        {
+            double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)((int)(arcRadius * startToEndAngle * 1.5) + 1));
+            glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)arcRadius;
+            plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + circlePos);
         }
     }
 
@@ -183,8 +230,8 @@ namespace ssGUI::Extensions
                 nextLine = glm::normalize(nextLine);
 
             glm::vec2 outlinePos1 = glm::vec2();
-            glm::vec2 outlinePos2 = glm::vec2();
 
+            //If not on a straight line
             if(curLine + prevLine != glm::vec2())
             {
                 glm::vec2 normalDir = glm::normalize((curLine + prevLine));
@@ -192,38 +239,52 @@ namespace ssGUI::Extensions
                 if(glm::cross(glm::vec3(normalDir, 0), glm::vec3(curLine, 0)).z < 0)
                     outlinePos1 = -normalDir * (float)OutlineThickness + glm::vec2(curVertex);
                 else
-                    outlinePos1 = normalDir * (float)OutlineThickness + glm::vec2(curVertex);                
+                    outlinePos1 = normalDir * (float)OutlineThickness + glm::vec2(curVertex);
             }
+            //If on a straight line
             else
-            {
                 outlinePos1 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
-            }
+            
+            //Draw first arc
+            glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+            int originalVerticesCount = newVertices.size();
 
-            if(nextLine - curLine != glm::vec2())
+            if(outlinePos1 != outlinePos2)
+                PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
+            else
+                newVertices.push_back(outlinePos1);
+
+            glm::vec2 outlinePos4 = glm::vec2();
+
+            //If not on a straight line
+            if(curLine + prevLine != glm::vec2())
             {
-                glm::vec2 normalDir = glm::normalize((nextLine - curLine));
+                glm::vec2 normalDir = glm::normalize((-curLine + nextLine));
                 
                 if(glm::cross(glm::vec3(normalDir, 0), glm::vec3(nextLine, 0)).z < 0)
-                    outlinePos2  = -normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
+                    outlinePos4 = -normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
                 else
-                    outlinePos2  = normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
+                    outlinePos4 = normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
             }
+            //If on a straight line
             else
-            {
-                outlinePos2 = glm::normalize(glm::cross(glm::vec3(nextLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(nextVertex, 0);
-            }
+                outlinePos4 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
 
-            newVertices.push_back(outlinePos1);
-            newVertices.push_back(outlinePos2);
+            //Draw second arc
+            glm::vec2 outlinePos3 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(nextVertex, 0);
+
+            if(outlinePos3 != outlinePos4)
+                PlotArc(outlinePos3, outlinePos4, nextVertex, newVertices);
+            else
+                newVertices.push_back(outlinePos3);
+
             newVertices.push_back(nextVertex);
             newVertices.push_back(curVertex);
 
-            newColors.push_back(OutlineColor);
-            newColors.push_back(OutlineColor);
-            newColors.push_back(OutlineColor);
-            newColors.push_back(OutlineColor);
+            for(int i = 0; i < newVertices.size() - originalVerticesCount; i++)
+                newColors.push_back(OutlineColor);
 
-            newCounts.push_back(4);
+            newCounts.push_back(newVertices.size() - originalVerticesCount);
         }
 
         // DEBUG_LINE();
@@ -252,27 +313,31 @@ namespace ssGUI::Extensions
         if(drawingCounts.empty())
             return;
 
-        //TODO : only need to fill current, prev and next vertices instead
         UpdateVerticesForOutline();
 
         for(int i = 0; i < VerticesToOutline.size(); i++)
         {
             glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
-
-            glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
             glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
+            glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
+            glm::vec2 nextNextVertex = drawingVertices[VerticesToOutlineNextNextVertices[i]];
 
             glm::vec2 curLine = nextVertex - curVertex;
             glm::vec2 prevLine = prevVertex - curVertex;
+            glm::vec2 nextLine = nextNextVertex - nextVertex;
 
             if(curLine != glm::vec2())
                 curLine = glm::normalize(curLine);
             
             if(prevLine != glm::vec2())
-                prevLine = glm::normalize(prevLine);            
+                prevLine = glm::normalize(prevLine);
+
+            if(nextLine != glm::vec2())
+                nextLine = glm::normalize(nextLine);
 
             glm::vec2 outlinePos1 = glm::vec2();
 
+            //If not on a straight line
             if(curLine + prevLine != glm::vec2())
             {
                 glm::vec2 normalDir = glm::normalize((curLine + prevLine));
@@ -282,17 +347,48 @@ namespace ssGUI::Extensions
                 else
                     outlinePos1 = normalDir * (float)OutlineThickness + glm::vec2(curVertex);
             }
+            //If on a straight line
             else
-            {
                 outlinePos1 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+            
+            //Draw first arc
+            glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+            int originalVerticesCount = newVertices.size();
+
+            if(outlinePos1 != outlinePos2)
+                PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
+            else
+                newVertices.push_back(outlinePos1);
+
+            glm::vec2 outlinePos4 = glm::vec2();
+
+            //If not on a straight line
+            if(curLine + prevLine != glm::vec2())
+            {
+                glm::vec2 normalDir = glm::normalize((-curLine + nextLine));
+                
+                if(glm::cross(glm::vec3(normalDir, 0), glm::vec3(nextLine, 0)).z < 0)
+                    outlinePos4 = -normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
+                else
+                    outlinePos4 = normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
             }
+            //If on a straight line
+            else
+                outlinePos4 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
 
-            newVertices.push_back(outlinePos1);
-            newColors.push_back(OutlineColor);
+            //Draw second arc
+            glm::vec2 outlinePos3 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(nextVertex, 0);
 
+            if(outlinePos3 != outlinePos4)
+                PlotArc(outlinePos3, outlinePos4, nextVertex, newVertices);
+            else
+                newVertices.push_back(outlinePos3);
+
+            for(int i = 0; i < newVertices.size() - originalVerticesCount; i++)
+                newColors.push_back(OutlineColor);
         }
         
-        newCounts.push_back(VerticesToOutline.size());
+        newCounts.push_back(newVertices.size());
 
         drawingVertices.insert(drawingVertices.begin(), newVertices.begin(), newVertices.end());
         drawingColors.insert(drawingColors.begin(), newColors.begin(), newColors.end());
@@ -467,16 +563,6 @@ namespace ssGUI::Extensions
             return;
         }
 
-        if(IsPreUpdate)
-        {
-            //Any changes before running the GUI object update
-        }
-
-        if(!IsPreUpdate)
-        {
-            //Any changes after running the GUI object update
-        }
-
         FUNC_DEBUG_EXIT();
     }
 
@@ -492,12 +578,8 @@ namespace ssGUI::Extensions
 
         if(!SimpleOutline)
         {
-            DEBUG_LINE();
             if(Container->IsRedrawNeeded())
-            {
-        DEBUG_LINE();
                 ConstructRenderInfo();
-            }
         }
         else
         {

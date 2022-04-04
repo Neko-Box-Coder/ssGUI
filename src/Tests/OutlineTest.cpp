@@ -17,12 +17,16 @@ int main()
     widget.SetPosition(glm::ivec2(100, 100));
     widget.SetSize(glm::ivec2(300, 300));
     widget.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
-    widget.AddExtension(new ssGUI::Extensions::RoundedCorners());
+    // widget.AddExtension(new ssGUI::Extensions::RoundedCorners());
 
     // auto widgetClone = widget.Clone(false);
     // widgetClone->SetBackgroundColor(glm::u8vec4(127, 100, 100, 255));
 
-    widget.AddExtension(new ssGUI::Extensions::Outline());
+    auto outline = new ssGUI::Extensions::Outline();
+    outline->SetOutlineThickness(20);
+    // outline->SetSimpleOutline(false);
+    widget.AddExtension(outline);
+    
 
     widget.SetParent(&mainWindow);
     // widgetClone->SetParent(&mainWindow);
