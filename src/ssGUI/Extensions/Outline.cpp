@@ -181,10 +181,10 @@ namespace ssGUI::Extensions
         //https://stackoverflow.com/questions/15525941/find-points-on-circle
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // DEBUG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1.5) + 2));        
-        for(int i = 0; i < (int)(arcRadius * startToEndAngle * 1.5) + 2; i++)
+        // DEBUG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
+        for(int i = 0; i < (int)(arcRadius * startToEndAngle * 1) + 2; i++)
         {
-            double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)((int)(arcRadius * startToEndAngle * 1.5) + 1));
+            double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)((int)(arcRadius * startToEndAngle * 1) + 1));
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)arcRadius;
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + circlePos);
         }

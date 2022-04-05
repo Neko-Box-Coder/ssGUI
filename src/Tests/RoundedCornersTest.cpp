@@ -18,6 +18,7 @@ int main()
     widget.SetSize(glm::ivec2(300, 300));
     widget.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     widget.AddExtension(new ssGUI::Extensions::RoundedCorners());
+    static_cast<ssGUI::Extensions::RoundedCorners*>(widget.GetExtension(ssGUI::Extensions::RoundedCorners::EXTENSION_NAME))->SetRoundedCornersRadius(25);
     widget.SetParent(&mainWindow);
 
     //Create the GUIManager, add the main window and start running

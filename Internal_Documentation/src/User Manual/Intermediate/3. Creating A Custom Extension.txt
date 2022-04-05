@@ -224,6 +224,7 @@ namespace ssGUI::Extensions
         
         Enabled = customExtension->IsEnabled();
         //CurrentObjectsReferences = maskEnforcer->CurrentObjectsReferences;
+        //Copy variables here
     }
 
     ObjectsReferences* CustomExtension::Internal_GetObjectsReferences()
