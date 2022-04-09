@@ -9,8 +9,16 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: CustomExtension
-    [Insert extension summary here]
+    /*class: Outline
+    Outline allows to create a colored outline surrounding the target GUI Object shape/vertices.
+    A GUI Object can be made up of multiple shapes, by default the outline extension outline the first shape of the GUI Object.
+
+    By default(SimpleOutline), the outline is basically a enlarged shape drawn behind the GUI Object (Not the GUI Object shape).
+    However, you can <SetSimpleOutline> to false so this extension will actually draw an outline on the target GUI Object shape,
+    in exchange of the performance / triangless count. 
+
+    You can also target specific vertices of the GUI Object to be outlined. 
+    <SetSimpleOutline> to false might be needed depending on the targeted vertices. 
 
     Variables & Constructor:
     ============================== C++ ==============================
@@ -27,10 +35,13 @@ namespace ssGUI::Extensions
         std::vector<int> VerticesToOutline;
         std::vector<int> VerticesToOutlinePrevVertices;
         std::vector<int> VerticesToOutlineNextVertices;
-        std::vector<int> VerticesToOutlineNextNextVertices;
+        std::vector<int> VerticesToOutlineShapeIndex;
+        std::vector<bool> VerticesToOutlineShapeStartFlag;
     =================================================================
     ============================== C++ ==============================
-    CustomExtension::CustomExtension() : Container(nullptr), Enabled(true)
+    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(true), OutlineColor(glm::u8vec4(0, 0, 0, 255)), 
+                            TargetShapes{0}, TargetVertices(), VerticesToOutline(), VerticesToOutlinePrevVertices(),
+                            VerticesToOutlineNextVertices(), VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
     {}
     =================================================================
     */
@@ -49,14 +60,15 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToOutline;
             std::vector<int> VerticesToOutlinePrevVertices;
             std::vector<int> VerticesToOutlineNextVertices;
-            std::vector<int> VerticesToOutlineNextNextVertices;
+            std::vector<int> VerticesToOutlineShapeIndex;
+            std::vector<bool> VerticesToOutlineShapeStartFlag;
     
             Outline& operator=(Outline const& other);
 
         protected:
             Outline(Outline const& other);
 
-            virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts);
+            virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex);
 
             virtual void UpdateVerticesForOutline();
 
@@ -183,11 +195,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
             //function: GetExtensionName
             //See <Extension::GetExtensionName>

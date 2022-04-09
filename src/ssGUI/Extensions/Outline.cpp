@@ -20,10 +20,11 @@ namespace ssGUI::Extensions
         VerticesToOutline = std::vector<int>();
         VerticesToOutlinePrevVertices = std::vector<int>();
         VerticesToOutlineNextVertices = std::vector<int>();
-        VerticesToOutlineNextNextVertices = std::vector<int>();
+        VerticesToOutlineShapeIndex = std::vector<int>();
+        VerticesToOutlineShapeStartFlag = std::vector<bool>();
     }
 
-    void Outline::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts)
+    void Outline::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex)
     {
         startIndex = 0;
         endIndex = 0;
@@ -32,6 +33,7 @@ namespace ssGUI::Extensions
             if(startIndex + drawingCounts[i] > currentIndex)
             {
                 endIndex = startIndex + drawingCounts[i];
+                shapeIndex = i;
                 break;
             }
             
@@ -44,7 +46,8 @@ namespace ssGUI::Extensions
         VerticesToOutline.clear();
         VerticesToOutlinePrevVertices.clear();
         VerticesToOutlineNextVertices.clear();
-        VerticesToOutlineNextNextVertices.clear();
+        VerticesToOutlineShapeIndex.clear();
+        VerticesToOutlineShapeStartFlag.clear();
 
         std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
@@ -54,42 +57,41 @@ namespace ssGUI::Extensions
         if(!TargetVertices.empty())
         {
             VerticesToOutline = TargetVertices;
+            int shapeIndex = 0;
             for(int i = 0; i < VerticesToOutline.size(); i++)
             {
+                VerticesToOutline[i] += Container->Extension_GetGUIObjectFirstVertexIndex();
+                int currentVertexIndex = VerticesToOutline[i];
+                
                 //Invlaid index check
-                if(VerticesToOutline[i] >= drawingVertices.size())
+                if(currentVertexIndex >= drawingVertices.size())
                 {
                     VerticesToOutline.erase(VerticesToOutline.begin() + i);
                     i--;
                     continue;
                 }
 
-                if(VerticesToOutline[i] < startIndex || VerticesToOutline[i] >= endIndex)
-                    GetStartEndVertexIndex(VerticesToOutline[i], startIndex, endIndex, drawingCounts);
+                if(currentVertexIndex < startIndex || currentVertexIndex >= endIndex)
+                    GetStartEndVertexIndex(currentVertexIndex, startIndex, endIndex, drawingCounts, shapeIndex);
 
-                int prevIndex = VerticesToOutline[i];
+                VerticesToOutlineShapeStartFlag.push_back(currentVertexIndex == startIndex);
+                VerticesToOutlineShapeIndex.push_back(shapeIndex);
+
+                int prevIndex = currentVertexIndex;
                 do
                 {
                     prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);   
                 }
-                while(drawingVertices[prevIndex] - drawingVertices[VerticesToOutline[i]] == glm::vec2());
+                while(drawingVertices[prevIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToOutlinePrevVertices.push_back(prevIndex);
 
-                int nextIndex = VerticesToOutline[i];
+                int nextIndex = currentVertexIndex;
                 do
                 {
                     nextIndex = (nextIndex == endIndex - 1 ? startIndex : nextIndex + 1);
                 }
-                while(drawingVertices[nextIndex] - drawingVertices[VerticesToOutline[i]] == glm::vec2());
+                while(drawingVertices[nextIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToOutlineNextVertices.push_back(nextIndex);
-
-                int nextNextIndex = nextIndex;
-                do
-                {
-                    nextNextIndex = (nextNextIndex == endIndex - 1 ? startIndex : nextNextIndex + 1);
-                }
-                while(drawingVertices[nextNextIndex] - drawingVertices[nextIndex] == glm::vec2());
-                VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
             }
         }
         else
@@ -97,22 +99,26 @@ namespace ssGUI::Extensions
             for(int i = 0; i < TargetShapes.size(); i++)
             {
                 //Invalid index check 
-                if(TargetShapes[i] >= drawingCounts.size())
+                if(TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex() >= drawingCounts.size())
                     continue;
 
                 int startIndex = 0;
-                for(int j = 0; j < TargetShapes[i]; j++)
+                int curShape = TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex();
+                for(int j = 0; j < curShape; j++)
                 {
                     startIndex += drawingCounts[j];
                 }
 
-                for(int j = startIndex; j < startIndex + drawingCounts[TargetShapes[i]]; j++)
+                for(int j = startIndex; j < startIndex + drawingCounts[curShape]; j++)
                 {
                     VerticesToOutline.push_back(j);
+                    
+                    VerticesToOutlineShapeStartFlag.push_back(j == startIndex);
+                    VerticesToOutlineShapeIndex.push_back(curShape);
                     int prevIndex = j;
                     do
                     {
-                        prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[TargetShapes[i]] - 1 : prevIndex - 1);
+                        prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[curShape] - 1 : prevIndex - 1);
                     }
                     while(drawingVertices[prevIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToOutlinePrevVertices.push_back(prevIndex);
@@ -120,18 +126,10 @@ namespace ssGUI::Extensions
                     int nextIndex = j;
                     do
                     {
-                        nextIndex = (nextIndex == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : nextIndex + 1);
+                        nextIndex = (nextIndex == startIndex + drawingCounts[curShape] - 1 ? startIndex : nextIndex + 1);
                     }
                     while(drawingVertices[nextIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToOutlineNextVertices.push_back(nextIndex);
-
-                    int nextNextIndex = nextIndex;
-                    do
-                    {
-                        nextNextIndex = (nextNextIndex == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : nextNextIndex + 1);
-                    }
-                    while(drawingVertices[nextIndex] - drawingVertices[nextNextIndex] == glm::vec2());
-                    VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
                 }
             }
         }
@@ -199,102 +197,123 @@ namespace ssGUI::Extensions
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
 
-        std::vector<glm::vec2> newVertices;    //Lists of new vertices as arc
-        std::vector<glm::u8vec4> newColors;     //Associated colors
-        std::vector<int> newCounts;             //The number vertices per arc
+        //Copy the original vertices infos
+        std::vector<glm::vec2> originalVertices = Container->Extension_GetDrawingVertices();
+        std::vector<glm::vec2> originalUVs = Container->Extension_GetDrawingUVs();
+        std::vector<glm::u8vec4> originalColors = Container->Extension_GetDrawingColours();
+        std::vector<int> originalCounts = Container->Extension_GetDrawingCounts();
+        std::vector<ssGUI::DrawingProperty> originalProperties = Container->Extension_GetDrawingProperties();
+
+        //Vertices infos of the outline
+        std::vector<glm::vec2> newVertices;                             //Lists of new vertices as arc
+        std::vector<int> newCounts;                                     //The number vertices per arc
+        std::unordered_map<int, std::vector<int>> outlinedShapesMap;    //(originalShapeIndex, (list of outline shapes index on newCounts))
 
         if(drawingCounts.empty())
             return;
 
         UpdateVerticesForOutline();
-
+        int lastShapeStartIndex = -1;
+        //For each vertex to be outlined, create a outline shape and store it in the new vertices...
         for(int i = 0; i < VerticesToOutline.size(); i++)
         {
             glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
 
             glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
-            glm::vec2 nextNextVertex = drawingVertices[VerticesToOutlineNextNextVertices[i]];
             glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
 
             glm::vec2 curLine = nextVertex - curVertex;
             glm::vec2 prevLine = prevVertex - curVertex;
-            glm::vec2 nextLine = nextNextVertex - nextVertex;
 
             if(curLine != glm::vec2())
                 curLine = glm::normalize(curLine);
             
             if(prevLine != glm::vec2())
                 prevLine = glm::normalize(prevLine);
-            
-            if(nextLine != glm::vec2())
-                nextLine = glm::normalize(nextLine);
 
-            glm::vec2 outlinePos1 = glm::vec2();
-
-            //If not on a straight line
-            if(curLine + prevLine != glm::vec2())
-            {
-                glm::vec2 normalDir = glm::normalize((curLine + prevLine));
-                
-                if(glm::cross(glm::vec3(normalDir, 0), glm::vec3(curLine, 0)).z < 0)
-                    outlinePos1 = -normalDir * (float)OutlineThickness + glm::vec2(curVertex);
-                else
-                    outlinePos1 = normalDir * (float)OutlineThickness + glm::vec2(curVertex);
-            }
-            //If on a straight line
-            else
-                outlinePos1 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+            glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
             
             //Draw first arc
             glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
             int originalVerticesCount = newVertices.size();
 
             if(outlinePos1 != outlinePos2)
-                PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
-            else
-                newVertices.push_back(outlinePos1);
-
-            glm::vec2 outlinePos4 = glm::vec2();
-
-            //If not on a straight line
-            if(curLine + prevLine != glm::vec2())
             {
-                glm::vec2 normalDir = glm::normalize((-curLine + nextLine));
-                
-                if(glm::cross(glm::vec3(normalDir, 0), glm::vec3(nextLine, 0)).z < 0)
-                    outlinePos4 = -normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
-                else
-                    outlinePos4 = normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
+                PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
+
+                //Outline the corner
+                newVertices.push_back(curVertex);
+                newCounts.push_back(newVertices.size() - originalVerticesCount);
+                outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
             }
-            //If on a straight line
-            else
-                outlinePos4 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
 
-            //Draw second arc
-            glm::vec2 outlinePos3 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(nextVertex, 0);
+            //Link the outline to next outline vertex if possible
+            bool linkingPossible = false;
 
-            if(outlinePos3 != outlinePos4)
-                PlotArc(outlinePos3, outlinePos4, nextVertex, newVertices);
-            else
-                newVertices.push_back(outlinePos3);
+            if(i < VerticesToOutline.size() - 1 && VerticesToOutline[i + 1] == VerticesToOutlineNextVertices[i])
+                linkingPossible = true;
+            else if(lastShapeStartIndex != -1 && VerticesToOutline[lastShapeStartIndex] == VerticesToOutlineNextVertices[i])
+                linkingPossible = true;
 
-            newVertices.push_back(nextVertex);
-            newVertices.push_back(curVertex);
+            if(linkingPossible)
+            {
+                newVertices.push_back(outlinePos2);
+                newVertices.push_back(outlinePos2 + (nextVertex - curVertex));
+                newVertices.push_back(nextVertex);
+                newVertices.push_back(curVertex);
+                
+                newCounts.push_back(4);
+                outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
+            }
 
-            for(int i = 0; i < newVertices.size() - originalVerticesCount; i++)
-                newColors.push_back(OutlineColor);
-
-            newCounts.push_back(newVertices.size() - originalVerticesCount);
+            lastShapeStartIndex = VerticesToOutlineShapeStartFlag[i] ? i : lastShapeStartIndex;
         }
 
-        // DEBUG_LINE();
+        drawingVertices.clear();
+        drawingColors.clear();
+        drawingCounts.clear();
+        drawingUVs.clear();
+        drawingProperties.clear();
 
-        drawingVertices.insert(drawingVertices.end(), newVertices.begin(), newVertices.end());
-        drawingColors.insert(drawingColors.end(), newColors.begin(), newColors.end());
-        drawingCounts.insert(drawingCounts.end(), newCounts.begin(), newCounts.end());
+        int originalShapeIndex = 0;
+        int currentDrawingCounts = 0;
+        //Merge both original vertices and new ones together
+        for(int i = 0; i < originalVertices.size(); i++)
+        {
+            drawingVertices.push_back(originalVertices[i]);
+            drawingColors.push_back(originalColors[i]);
+            drawingUVs.push_back(originalUVs[i]);
 
-        drawingUVs.insert(drawingUVs.end(), drawingVertices.size() - drawingUVs.size(), glm::vec2());
-        drawingProperties.insert(drawingProperties.end(), drawingCounts.size() - drawingProperties.size(), ssGUI::DrawingProperty());
+            currentDrawingCounts++;
+            //Last vertex
+            if(currentDrawingCounts >= originalCounts[originalShapeIndex])
+            {
+                drawingCounts.push_back(originalCounts[originalShapeIndex]);
+                drawingProperties.push_back(originalProperties[originalShapeIndex]);
+
+                //Draw outline if needed
+                if(outlinedShapesMap.find(originalShapeIndex) != outlinedShapesMap.end())
+                {
+                    for(int newShapeIndex : outlinedShapesMap[originalShapeIndex])
+                    {
+                        int startIndex = 0;
+
+                        for(int j = 0; j < newShapeIndex; j++)
+                            startIndex += newCounts[j];
+                        
+                        int endIndex = startIndex + newCounts[newShapeIndex];
+
+                        drawingVertices.insert(drawingVertices.end(), newVertices.begin() + startIndex, newVertices.begin() + endIndex);
+                        drawingColors.insert(drawingColors.end(), newCounts[newShapeIndex], GetOutlineColor());
+                        drawingUVs.insert(drawingUVs.end(), newCounts[newShapeIndex], glm::vec2());
+                        drawingCounts.push_back(newCounts[newShapeIndex]);
+                        drawingProperties.push_back(ssGUI::DrawingProperty());
+                    }
+                }
+
+                originalShapeIndex++;
+            }
+        }
     }
 
     void Outline::ConstructSimpleOutline()
@@ -306,25 +325,21 @@ namespace ssGUI::Extensions
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
 
-        std::vector<glm::vec2> newVertices;    //Lists of new vertices as arc
-        std::vector<glm::u8vec4> newColors;     //Associated colors
+        std::vector<glm::vec2> newVertices;     //Lists of new vertices as arc
         std::vector<int> newCounts;             //The number vertices per arc
 
         if(drawingCounts.empty())
             return;
 
         UpdateVerticesForOutline();
-
         for(int i = 0; i < VerticesToOutline.size(); i++)
         {
             glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
             glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
             glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
-            glm::vec2 nextNextVertex = drawingVertices[VerticesToOutlineNextNextVertices[i]];
 
             glm::vec2 curLine = nextVertex - curVertex;
             glm::vec2 prevLine = prevVertex - curVertex;
-            glm::vec2 nextLine = nextNextVertex - nextVertex;
 
             if(curLine != glm::vec2())
                 curLine = glm::normalize(curLine);
@@ -332,25 +347,8 @@ namespace ssGUI::Extensions
             if(prevLine != glm::vec2())
                 prevLine = glm::normalize(prevLine);
 
-            if(nextLine != glm::vec2())
-                nextLine = glm::normalize(nextLine);
-
-            glm::vec2 outlinePos1 = glm::vec2();
-
-            //If not on a straight line
-            if(curLine + prevLine != glm::vec2())
-            {
-                glm::vec2 normalDir = glm::normalize((curLine + prevLine));
-                
-                if(glm::cross(glm::vec3(normalDir, 0), glm::vec3(curLine, 0)).z < 0)
-                    outlinePos1 = -normalDir * (float)OutlineThickness + glm::vec2(curVertex);
-                else
-                    outlinePos1 = normalDir * (float)OutlineThickness + glm::vec2(curVertex);
-            }
-            //If on a straight line
-            else
-                outlinePos1 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
-            
+            glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+                    
             //Draw first arc
             glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
             int originalVerticesCount = newVertices.size();
@@ -359,43 +357,16 @@ namespace ssGUI::Extensions
                 PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
             else
                 newVertices.push_back(outlinePos1);
-
-            glm::vec2 outlinePos4 = glm::vec2();
-
-            //If not on a straight line
-            if(curLine + prevLine != glm::vec2())
-            {
-                glm::vec2 normalDir = glm::normalize((-curLine + nextLine));
-                
-                if(glm::cross(glm::vec3(normalDir, 0), glm::vec3(nextLine, 0)).z < 0)
-                    outlinePos4 = -normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
-                else
-                    outlinePos4 = normalDir * (float)OutlineThickness + glm::vec2(nextVertex);
-            }
-            //If on a straight line
-            else
-                outlinePos4 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
-
-            //Draw second arc
-            glm::vec2 outlinePos3 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(nextVertex, 0);
-
-            if(outlinePos3 != outlinePos4)
-                PlotArc(outlinePos3, outlinePos4, nextVertex, newVertices);
-            else
-                newVertices.push_back(outlinePos3);
-
-            for(int i = 0; i < newVertices.size() - originalVerticesCount; i++)
-                newColors.push_back(OutlineColor);
         }
         
         newCounts.push_back(newVertices.size());
 
-        drawingVertices.insert(drawingVertices.begin(), newVertices.begin(), newVertices.end());
-        drawingColors.insert(drawingColors.begin(), newColors.begin(), newColors.end());
-        drawingCounts.insert(drawingCounts.begin(), newCounts.begin(), newCounts.end());
+        drawingVertices.insert(drawingVertices.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), newVertices.begin(), newVertices.end());
+        drawingCounts.insert(drawingCounts.begin() + Container->Extension_GetGUIObjectFirstShapeIndex(), newCounts.begin(), newCounts.end());
 
-        drawingUVs.insert(drawingUVs.begin(), drawingVertices.size() - drawingUVs.size(), glm::vec2());
-        drawingProperties.insert(drawingProperties.begin(), drawingCounts.size() - drawingProperties.size(), ssGUI::DrawingProperty());
+        drawingColors.insert(drawingColors.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), drawingVertices.size() - drawingColors.size(), GetOutlineColor());
+        drawingUVs.insert(drawingUVs.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), drawingVertices.size() - drawingUVs.size(), glm::vec2());
+        drawingProperties.insert(drawingProperties.begin() + Container->Extension_GetGUIObjectFirstShapeIndex(), drawingCounts.size() - drawingProperties.size(), ssGUI::DrawingProperty());
     }
 
     void Outline::ConstructRenderInfo()
@@ -417,10 +388,9 @@ namespace ssGUI::Extensions
     //Defining the extension name
     const std::string Outline::EXTENSION_NAME = "Outline";
 
-    //Add ObjectsReferences construction if you are using it
     Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(true), OutlineColor(glm::u8vec4(0, 0, 0, 255)), 
                             TargetShapes{0}, TargetVertices(), VerticesToOutline(), VerticesToOutlinePrevVertices(),
-                            VerticesToOutlineNextVertices(), VerticesToOutlineNextNextVertices()
+                            VerticesToOutlineNextVertices(), VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
     {}
 
     Outline::~Outline()
@@ -553,7 +523,7 @@ namespace ssGUI::Extensions
     }
 
     //Extension methods
-    void Outline::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Outline::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
 
@@ -566,11 +536,11 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Outline::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Outline::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
 
-        if(!Enabled || Container == nullptr || IsPreRender)
+        if(!Enabled || Container == nullptr || isPreRender)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -618,7 +588,8 @@ namespace ssGUI::Extensions
         VerticesToOutline = std::vector<int>();
         VerticesToOutlinePrevVertices = std::vector<int>();
         VerticesToOutlineNextVertices = std::vector<int>();
-        VerticesToOutlineNextNextVertices = std::vector<int>();
+        VerticesToOutlineShapeIndex = std::vector<int>();
+        VerticesToOutlineShapeStartFlag = std::vector<bool>();
     }
 
     ObjectsReferences* Outline::Internal_GetObjectsReferences()

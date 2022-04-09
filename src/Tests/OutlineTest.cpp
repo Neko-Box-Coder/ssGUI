@@ -24,10 +24,14 @@ int main()
 
     auto outline = new ssGUI::Extensions::Outline();
     outline->SetOutlineThickness(20);
+
+    // outline->ClearTargetShapes();
+    // outline->AddTargetVertex(0);
+    // outline->AddTargetVertex(1);
+
     // outline->SetSimpleOutline(false);
     widget.AddExtension(outline);
     
-
     widget.SetParent(&mainWindow);
     // widgetClone->SetParent(&mainWindow);
 
