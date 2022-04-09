@@ -13,6 +13,7 @@ int main()
 
     //Creating an image widget
     ssGUI::Image image;
+    image.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
     image.SetPosition(glm::ivec2(100, 100));
     image.SetSize(glm::ivec2(200, 300));
     image.SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
@@ -20,22 +21,18 @@ int main()
     ssGUI::ImageData data;
     data.LoadFromPath("sd.png");
     image.SetImageData(&data);
-    image.AddExtension(new ssGUI::Extensions::RoundedCorners());
-    static_cast<ssGUI::Extensions::RoundedCorners*>
-        (image.GetExtension(ssGUI::Extensions::RoundedCorners::EXTENSION_NAME))->ClearTargetShapes();
+    auto roundedCornersEx = new ssGUI::Extensions::RoundedCorners();
+    roundedCornersEx->ClearTargetShapes();
     
-    static_cast<ssGUI::Extensions::RoundedCorners*>
-        (image.GetExtension(ssGUI::Extensions::RoundedCorners::EXTENSION_NAME))->SetRoundedCornersRadius(40);
+    roundedCornersEx->SetRoundedCornersRadius(40);
 
-    // static_cast<ssGUI::Extensions::RoundedCorners*>
-    //     (image.GetExtension(ssGUI::Extensions::RoundedCorners::EXTENSION_NAME))->AddTargetShape(1);
+    // roundedCornersEx->AddTargetShape(1);
 
-    static_cast<ssGUI::Extensions::RoundedCorners*>
-        (image.GetExtension(ssGUI::Extensions::RoundedCorners::EXTENSION_NAME))->AddTargetVertex(4);
+    roundedCornersEx->AddTargetVertex(4);
 
-    static_cast<ssGUI::Extensions::RoundedCorners*>
-        (image.GetExtension(ssGUI::Extensions::RoundedCorners::EXTENSION_NAME))->AddTargetVertex(6);
+    roundedCornersEx->AddTargetVertex(6);
 
+    image.AddExtension(roundedCornersEx);
     image.SetParent(&mainWindow);
 
     //Create the GUIManager, add the main window and start running

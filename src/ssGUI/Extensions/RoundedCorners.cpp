@@ -174,34 +174,37 @@ namespace ssGUI::Extensions
             VerticesToRound = TargetVertices;
             for(int i = 0; i < VerticesToRound.size(); i++)
             {
+                VerticesToRound[i] += Container->Extension_GetGUIObjectFirstVertexIndex();
+                int currentVertexIndex = VerticesToRound[i];
+
                 //Invlaid index check
-                if(VerticesToRound[i] >= drawingVertices.size())
+                if(currentVertexIndex >= drawingVertices.size())
                 {
                     VerticesToRound.erase(VerticesToRound.begin() + i);
                     i--;
                     continue;
                 }
 
-                if(VerticesToRound[i] < startIndex || VerticesToRound[i] >= endIndex)
-                    GetStartEndVertexIndex(VerticesToRound[i], startIndex, endIndex, drawingCounts);
+                if(currentVertexIndex < startIndex || currentVertexIndex >= endIndex)
+                    GetStartEndVertexIndex(currentVertexIndex, startIndex, endIndex, drawingCounts);
 
-                // VerticesToRoundPrevVertices.push_back((VerticesToRound[i] == startIndex ? endIndex - 1 : VerticesToRound[i] - 1));
-                // VerticesToRoundNextVertices.push_back((VerticesToRound[i] == endIndex - 1 ? startIndex : VerticesToRound[i] + 1));
+                // VerticesToRoundPrevVertices.push_back((currentVertexIndex == startIndex ? endIndex - 1 : currentVertexIndex - 1));
+                // VerticesToRoundNextVertices.push_back((currentVertexIndex == endIndex - 1 ? startIndex : currentVertexIndex + 1));
 
-                int prevIndex = VerticesToRound[i];
+                int prevIndex = currentVertexIndex;
                 do
                 {
                     prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);   
                 }
-                while(drawingVertices[prevIndex] - drawingVertices[VerticesToRound[i]] == glm::vec2());
+                while(drawingVertices[prevIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToRoundPrevVertices.push_back(prevIndex);
 
-                int nextIndex = VerticesToRound[i];
+                int nextIndex = currentVertexIndex;
                 do
                 {
                     nextIndex = (nextIndex == endIndex - 1 ? startIndex : nextIndex + 1);
                 }
-                while(drawingVertices[nextIndex] - drawingVertices[VerticesToRound[i]] == glm::vec2());
+                while(drawingVertices[nextIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToRoundNextVertices.push_back(nextIndex);
             }
         }
@@ -210,16 +213,17 @@ namespace ssGUI::Extensions
             for(int i = 0; i < TargetShapes.size(); i++)
             {
                 //Invalid index check 
-                if(TargetShapes[i] >= drawingCounts.size())
+                if(TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex() >= drawingCounts.size())
                     continue;
 
                 int startIndex = 0;
-                for(int j = 0; j < TargetShapes[i]; j++)
+                int curShape = TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex();
+                for(int j = 0; j < TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex(); j++)
                 {
                     startIndex += drawingCounts[j];
                 }
 
-                for(int j = startIndex; j < startIndex + drawingCounts[TargetShapes[i]]; j++)
+                for(int j = startIndex; j < startIndex + drawingCounts[curShape]; j++)
                 {
                     VerticesToRound.push_back(j);
 
@@ -231,7 +235,7 @@ namespace ssGUI::Extensions
                     int prevIndex = j;
                     do
                     {
-                        prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[TargetShapes[i]] - 1 : prevIndex - 1);
+                        prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[curShape] - 1 : prevIndex - 1);
                     }
                     while(drawingVertices[prevIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToRoundPrevVertices.push_back(prevIndex);
@@ -239,7 +243,7 @@ namespace ssGUI::Extensions
                     int nextIndex = j;
                     do
                     {
-                        nextIndex = (nextIndex == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : nextIndex + 1);
+                        nextIndex = (nextIndex == startIndex + drawingCounts[curShape] - 1 ? startIndex : nextIndex + 1);
                     }
                     while(drawingVertices[nextIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToRoundNextVertices.push_back(nextIndex);
@@ -476,7 +480,7 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    void RoundedCorners::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void RoundedCorners::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
 
@@ -489,11 +493,11 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void RoundedCorners::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void RoundedCorners::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
         
-        if(!Enabled || Container == nullptr || IsPreRender)
+        if(!Enabled || Container == nullptr || isPreRender)
         {
             FUNC_DEBUG_EXIT();
             return;
