@@ -96,6 +96,8 @@ namespace ssGUI
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
             
+            UpdateGUIObjectVertexAndShapeIndex();
+
             ConstructRenderInfo();
 
             for(auto extension : ExtensionsDrawOrder)

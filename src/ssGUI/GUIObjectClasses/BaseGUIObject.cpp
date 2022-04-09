@@ -33,6 +33,8 @@ namespace ssGUI
         DrawingColours = other.DrawingColours;
         DrawingCounts = other.DrawingCounts;
         DrawingProperties = other.DrawingProperties;
+        GUIObjectShapeIndex = other.GUIObjectShapeIndex;
+        GUIObjectVertexIndex = other.GUIObjectVertexIndex;
         LastDrawingVerticies = other.LastDrawingVerticies;
         LastDrawingUVs = other.LastDrawingUVs;
         LastDrawingColours = other.LastDrawingColours;
@@ -363,15 +365,21 @@ namespace ssGUI
         AcceptRedrawRequest = true;
     }
 
+    void BaseGUIObject::UpdateGUIObjectVertexAndShapeIndex()
+    {
+        GUIObjectShapeIndex = DrawingCounts.size();
+        GUIObjectVertexIndex = DrawingVerticies.size();
+    }
+
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true), Visible(true),
                                         CurrentChildIteratorBackEnd(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), 
                                         ObjectDelete(false), HeapAllocated(false), CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), 
                                         AcceptRedrawRequest(true), Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), 
                                         MinSize(glm::vec2(25, 25)), MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
-                                        DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
-                                        LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
-                                        ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
+                                        DrawingCounts(), DrawingProperties(), GUIObjectShapeIndex(-1), GUIObjectVertexIndex(-1), LastDrawingVerticies(), 
+                                        LastDrawingUVs(), LastDrawingColours(), LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), 
+                                        ExtensionsDrawOrder(), ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
     {}
 
     BaseGUIObject::~BaseGUIObject()
@@ -1071,6 +1079,16 @@ namespace ssGUI
         return DrawingProperties;
     }
 
+    int BaseGUIObject::Extension_GetGUIObjectFirstShapeIndex() const
+    {
+        return GUIObjectShapeIndex;
+    }
+
+    int BaseGUIObject::Extension_GetGUIObjectFirstVertexIndex() const
+    {
+        return GUIObjectVertexIndex;
+    }
+
     void BaseGUIObject::AddExtension(ssGUI::Extensions::Extension* extension)
     {
         if(IsExtensionExist(extension->GetExtensionName()))
@@ -1284,6 +1302,8 @@ namespace ssGUI
             
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
+
+            UpdateGUIObjectVertexAndShapeIndex();
 
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);

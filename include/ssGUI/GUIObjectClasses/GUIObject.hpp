@@ -246,6 +246,14 @@ namespace ssGUI
             //This indicates if the shape is just a colored shape, an image or font. 
             //This function is mainly be called by <Extension::Draw>.
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties() = 0;
+
+            //function: Extension_GetGUIObjectFirstShapeIndex
+            //This returns the first shape index on the GUI Object for extensions
+            virtual int Extension_GetGUIObjectFirstShapeIndex() const = 0;
+
+            //function: Extension_GetGUIObjectFirstVertexIndex
+            //This returns the first vertex index on the GUI Object for extensions
+            virtual int Extension_GetGUIObjectFirstVertexIndex() const = 0;
             
             //function: AddExtension
             //Adds the extension to this GUI Object. Note that the extension *must* be allocated on heap.

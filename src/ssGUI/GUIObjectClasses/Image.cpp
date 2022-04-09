@@ -189,6 +189,8 @@ namespace ssGUI
                 goto endOfDrawing;
             }
 
+            UpdateGUIObjectVertexAndShapeIndex();
+
             ConstructRenderInfo();
 
             endOfDrawing:;

@@ -125,6 +125,8 @@ namespace ssGUI
             std::vector<glm::u8vec4> DrawingColours;
             std::vector<int> DrawingCounts;
             std::vector<ssGUI::DrawingProperty> DrawingProperties;
+            int GUIObjectShapeIndex;
+            int GUIObjectVertexIndex;
 
             //Cache rendering
             std::vector<glm::vec2> LastDrawingVerticies;
@@ -154,6 +156,7 @@ namespace ssGUI
             virtual void CacheRendering();
             virtual void DisableRedrawObjectRequest();
             virtual void EnableRedrawObjectRequest();
+            virtual void UpdateGUIObjectVertexAndShapeIndex();
 
         public:
             BaseGUIObject();
@@ -347,6 +350,14 @@ namespace ssGUI
             //function: Extension_GetDrawingProperties
             //See <GUIObject::Extension_GetDrawingProperties>
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties() override;
+
+            //function: Extension_GetGUIObjectFirstShapeIndex
+            //See <GUIObject::Extension_GetGUIObjectFirstShapeIndex>
+            virtual int Extension_GetGUIObjectFirstShapeIndex() const override;
+
+            //function: Extension_GetGUIObjectFirstVertexIndex
+            //See <GUIObject::Extension_GetGUIObjectFirstVertexIndex>
+            virtual int Extension_GetGUIObjectFirstVertexIndex() const override;
             
             //function: AddExtension
             //See <GUIObject::AddExtension>

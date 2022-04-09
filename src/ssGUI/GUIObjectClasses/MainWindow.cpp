@@ -127,7 +127,7 @@ namespace ssGUI
             drawingInterface.DrawShape(cord, color);
             */
 
-            //TODO : Add backend drawing here
+            UpdateGUIObjectVertexAndShapeIndex();
 
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);

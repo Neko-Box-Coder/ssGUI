@@ -546,6 +546,8 @@ namespace ssGUI
             // std::cout<<"rendering pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
             // std::cout<<"rendering size: "<<GetSize().x<<", "<<GetSize().y<<"\n";
 
+            UpdateGUIObjectVertexAndShapeIndex();
+
             ConstructRenderInfo();
 
             for(auto extension : ExtensionsDrawOrder)
