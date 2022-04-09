@@ -890,11 +890,11 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    void Dockable::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Dockable::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         
-        if(!IsPreUpdate || Container == nullptr || !Enabled)
+        if(!isPreUpdate || Container == nullptr || !Enabled)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -1037,7 +1037,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Dockable::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Dockable::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
     
     std::string Dockable::GetExtensionName()

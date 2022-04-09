@@ -1310,11 +1310,11 @@ namespace ssGUI::Extensions
     }
     
     //Extension methods
-    void Mask::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Mask::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         
-        if(IsPreUpdate || Container == nullptr || !Enabled)
+        if(isPreUpdate || Container == nullptr || !Enabled)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -1349,7 +1349,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Mask::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Mask::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //Call mask function
     }

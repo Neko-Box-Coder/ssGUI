@@ -119,7 +119,7 @@ namespace ssGUI::Extensions
     }
         
     //Extension methods
-    void MaskEnforcer::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void MaskEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
 
@@ -130,7 +130,7 @@ namespace ssGUI::Extensions
         }
 
         //Updating Target Masks and blocking any mouse input outside the mask
-        if(IsPreUpdate)
+        if(isPreUpdate)
         {
             if(Container->GetExtensionDrawOrder(GetExtensionName()) != Container->GetExtensionsCount() - 1)
                 Container->ChangeExtensionDrawOrder(GetExtensionName(), Container->GetExtensionsCount() - 1);
@@ -175,7 +175,7 @@ namespace ssGUI::Extensions
         }
 
         //Check if the mouse input is blocked, if so convert back so it doesn't affect other gui objects
-        if(!IsPreUpdate)
+        if(!isPreUpdate)
         {   
             if(BlockingContainerInput)
             {
@@ -187,11 +187,11 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void MaskEnforcer::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void MaskEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {        
         FUNC_DEBUG_ENTRY();
         
-        if(!Enabled || Container == nullptr || IsPreRender)
+        if(!Enabled || Container == nullptr || isPreRender)
         {
             FUNC_DEBUG_EXIT();
             return;

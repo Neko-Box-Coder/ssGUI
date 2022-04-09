@@ -210,11 +210,11 @@ namespace ssGUI::Extensions
 
         constructSideInfos();
 
-        drawingVertices.insert(drawingVertices.begin(), newVertices.begin(), newVertices.end());
-        drawingColors.insert(drawingColors.begin(), newColors.begin(), newColors.end());
-        drawingUVs.insert(drawingUVs.begin(), newUVs.begin(), newUVs.end());
-        drawingCounts.insert(drawingCounts.begin(), newCounts.begin(), newCounts.end());
-        drawingProperties.insert(drawingProperties.begin(), newProperties.begin(), newProperties.end());
+        drawingVertices.insert(drawingVertices.end(), newVertices.begin(), newVertices.end());
+        drawingColors.insert(drawingColors.end(), newColors.begin(), newColors.end());
+        drawingUVs.insert(drawingUVs.end(), newUVs.begin(), newUVs.end());
+        drawingCounts.insert(drawingCounts.end(), newCounts.begin(), newCounts.end());
+        drawingProperties.insert(drawingProperties.end(), newProperties.begin(), newProperties.end());
     }
 
     void BoxShadow::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
@@ -287,7 +287,7 @@ namespace ssGUI::Extensions
     }
 
     //Extension methods
-    void BoxShadow::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void BoxShadow::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
 
@@ -300,11 +300,11 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void BoxShadow::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void BoxShadow::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
 
-        if(!Enabled || Container == nullptr || IsPreRender)
+        if(!Enabled || Container == nullptr || !isPreRender)
         {
             FUNC_DEBUG_EXIT();
             return;

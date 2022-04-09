@@ -16,7 +16,7 @@ namespace ssGUI::Extensions
     otherwise the extension will draw the box shadow larger than the GUI Object.
 
     Variables & Constructor:
-    //============================== C++ ==============================
+    ============================== C++ ==============================
     private:
         ssGUI::GUIObject* Container;
         bool Enabled;
@@ -25,12 +25,12 @@ namespace ssGUI::Extensions
         glm::vec2 SizeOffset;
         float BlurRadius;
         glm::u8vec4 ShadowColor;
-    //=================================================================
-    //============================== C++ ==============================
+    =================================================================
+    ============================== C++ ==============================
     BoxShadow::BoxShadow() : Container(nullptr), Enabled(true), PositionOffset(glm::vec2(0, 0)), SizeOffset(glm::vec2(10, 10)), 
                                 BlurRadius(20), ShadowColor(glm::u8vec4(0, 0, 0, 127))
     {}
-    //=================================================================
+    =================================================================
     */
     class BoxShadow : public Extension
     {
@@ -108,11 +108,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
             //function: GetExtensionName
             //See <Extension::GetExtensionName>

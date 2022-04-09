@@ -124,13 +124,13 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    void AdvancedPosition::Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void AdvancedPosition::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();        
         //TODO : Cache if parent's global position and size hasn't changed
         
         //This should be done in post update
-        if(IsPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
+        if(isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -269,7 +269,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void AdvancedPosition::Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void AdvancedPosition::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //Nothing to draw
     }
