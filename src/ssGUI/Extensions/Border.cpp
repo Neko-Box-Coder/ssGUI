@@ -6,27 +6,144 @@ namespace ssGUI::Extensions
     Border::Border(Border const& other)
     {
         Container = nullptr;
-        BorderColour = other.GetBorderColour();
-        BorderWidth = other.GetBorderWidth();
         Enabled = other.IsEnabled();
+        BorderColor = other.GetBorderColor();
+        BorderWidth = other.GetBorderWidth();
+        BorderSides = other.BorderSides;
+    }
+
+    void Border::DrawBorder()
+    {        
+        FUNC_DEBUG_ENTRY();
+        
+        glm::vec2 drawPosition = Container->GetGlobalPosition();
+        
+        int width = GetBorderWidth();
+        glm::u8vec4 colour = GetBorderColor();
+
+        std::vector<glm::vec2>& drawingVerticies = Container->Extension_GetDrawingVertices();
+        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        std::vector<glm::u8vec4>& drawingColours = Container->Extension_GetDrawingColours();
+        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
+        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+
+        //Top
+        if(IsBorderTopShowing())
+        {
+            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      0));
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, 0));
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, width));
+            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      width));
+
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+
+            drawingCounts.push_back(4);
+            drawingProperties.push_back(ssGUI::DrawingProperty());
+        }
+
+        //Right
+        if(IsBorderRightShowing())
+        {
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, (IsBorderTopShowing() ? width : 0)));
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x,         (IsBorderTopShowing() ? width : 0)));
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x,         Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+
+            drawingCounts.push_back(4);
+            drawingProperties.push_back(ssGUI::DrawingProperty());
+        }
+
+        //Bottom
+        if(IsBorderBottomShowing())
+        {
+            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y - width));
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y - width));
+            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y));
+            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y));
+
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+
+            drawingCounts.push_back(4);
+            drawingProperties.push_back(ssGUI::DrawingProperty());
+        }
+
+        //Left
+        if(IsBorderLeftShowing())
+        {
+            drawingVerticies.push_back(drawPosition + glm::vec2(0,      IsBorderTopShowing() ? width : 0));
+            drawingVerticies.push_back(drawPosition + glm::vec2(width,  IsBorderTopShowing() ? width : 0));
+            drawingVerticies.push_back(drawPosition + glm::vec2(width,  Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            drawingVerticies.push_back(drawPosition + glm::vec2(0,      Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+            drawingColours.push_back(colour);
+
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+            drawingUVs.push_back(glm::vec2());
+
+            drawingCounts.push_back(4);
+            drawingProperties.push_back(ssGUI::DrawingProperty()); 
+        }
+
+        FUNC_DEBUG_EXIT();
+    }
+
+    void Border::ConstructRenderInfo()
+    {
+        DrawBorder();
+    }
+
+    void Border::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    {
+        ConstructRenderInfo();
     }
     
     const std::string Border::EXTENSION_NAME = "Border";
     
-    Border::Border() : BorderColour(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), Container(nullptr), Enabled(true)
+    Border::Border() : Container(nullptr), Enabled(true), BorderColor(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), BorderSides(15)
     {}
     
     Border::~Border()
     {}
 
-    glm::u8vec4 Border::GetBorderColour() const
+    glm::u8vec4 Border::GetBorderColor() const
     {
-        return BorderColour;
+        return BorderColor;
     }
     
-    void Border::SetBorderColour(glm::u8vec4 colour)
+    void Border::SetBorderColor(glm::u8vec4 colour)
     {
-        BorderColour = colour;
+        BorderColor = colour;
 
         if(Container != nullptr)
             Container->RedrawObject();
@@ -45,109 +162,46 @@ namespace ssGUI::Extensions
             Container->RedrawObject();
     }
 
-    void Border::DrawBorder()
-    {        
-        FUNC_DEBUG_ENTRY();
-        
-        glm::vec2 drawPosition = Container->GetGlobalPosition();
-        
-        int width = GetBorderWidth();
-        glm::u8vec4 colour = GetBorderColour();
-
-        std::vector<glm::vec2>& drawingVerticies = Container->Extension_GetDrawingVertices();
-        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
-        std::vector<glm::u8vec4>& drawingColours = Container->Extension_GetDrawingColours();
-        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
-        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
-
-        //Top
-        drawingVerticies.push_back(drawPosition + glm::vec2(0, -width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, -width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, 0));
-        drawingVerticies.push_back(drawPosition + glm::vec2(0, 0));
-
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-
-        drawingCounts.push_back(4);
-        drawingProperties.push_back(ssGUI::DrawingProperty());
-
-        //Right
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, -width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x + width, -width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x + width, Container->GetSize().y + width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y + width));
-
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-
-        drawingCounts.push_back(4);
-        drawingProperties.push_back(ssGUI::DrawingProperty());
-
-        //Bottom
-        drawingVerticies.push_back(drawPosition + glm::vec2(0, Container->GetSize().y));
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y));
-        drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y + width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(0, Container->GetSize().y + width));
-
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-
-        drawingCounts.push_back(4);
-        drawingProperties.push_back(ssGUI::DrawingProperty());
-
-        //Left
-        drawingVerticies.push_back(drawPosition + glm::vec2(-width, -width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(0, -width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(0, Container->GetSize().y + width));
-        drawingVerticies.push_back(drawPosition + glm::vec2(-width, Container->GetSize().y + width));
-
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-        drawingColours.push_back(colour);
-
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-        drawingUVs.push_back(glm::vec2());
-
-        drawingCounts.push_back(4);
-        drawingProperties.push_back(ssGUI::DrawingProperty()); 
-
-        FUNC_DEBUG_EXIT();
-    }
-
-    void Border::ConstructRenderInfo()
+    void Border::ShowBorderLeft(bool show)
     {
-        DrawBorder();
+        BorderSides = show ? BorderSides | 1 << 0 : BorderSides & (1 << 1 | 1 << 2 | 1 << 3);
     }
 
-    void Border::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Border::ShowBorderTop(bool show)
     {
-        ConstructRenderInfo();
+        BorderSides = show ? BorderSides | 1 << 1 : BorderSides & (1 << 0 | 1 << 2 | 1 << 3);
     }
+
+    void Border::ShowBorderRight(bool show)
+    {
+        BorderSides = show ? BorderSides | 1 << 2 : BorderSides & (1 << 0 | 1 << 1 | 1 << 3);
+    }
+
+    void Border::ShowBorderBottom(bool show)
+    {
+        BorderSides = show ? BorderSides | 1 << 3 : BorderSides & (1 << 0 | 1 << 1 | 1 << 2);
+    }
+
+    bool Border::IsBorderLeftShowing() const
+    {
+        return ((BorderSides & (1 << 0)) > 0);
+    }
+
+    bool Border::IsBorderTopShowing() const
+    {
+        return ((BorderSides & (1 << 1)) > 0);
+    }
+
+    bool Border::IsBorderRightShowing() const
+    {
+        return ((BorderSides & (1 << 2)) > 0);
+    }
+
+    bool Border::IsBorderBottomShowing() const
+    {
+        return ((BorderSides & (1 << 3)) > 0);
+    }
+    
 
     void Border::SetEnabled(bool enabled)
     {
@@ -193,9 +247,10 @@ namespace ssGUI::Extensions
             return;
         
         ssGUI::Extensions::Border* border = static_cast<ssGUI::Extensions::Border*>(extension);
-        BorderColour = border->GetBorderColour();
-        BorderWidth = border->GetBorderWidth();
         Enabled = border->IsEnabled();
+        BorderColor = border->GetBorderColor();
+        BorderWidth = border->GetBorderWidth();
+        BorderSides = border->BorderSides;
     }
 
     ObjectsReferences* Border::Internal_GetObjectsReferences()
