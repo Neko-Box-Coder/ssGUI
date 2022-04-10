@@ -12,7 +12,7 @@ int main()
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetSize(glm::vec2(450, 60));
-    text.SetText("Click on the button to change this text.");
+    text.SetText("Click on the button to show the message");
     text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
 
@@ -25,7 +25,7 @@ int main()
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
         {
             if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText("Button pressed and this text has changed.");
+                text.SetText("(`oωo´)");
         }
     );
 

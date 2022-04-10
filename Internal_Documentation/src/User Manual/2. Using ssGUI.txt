@@ -6,6 +6,11 @@ Title: Using ssGUI
 
 For more details about that, please consult the <SFML tutorial: https://www.sfml-dev.org/tutorials/2.5/#getting-started>.
 
+You must have the SFML in the include directory as well. So this should be able to import the graphics module from SFML.
+=========== C++ ==========
+#include "SFML/Graphics.hpp"
+==========================
+
 SFML 3.0.0 or above is *required*. You can download them on the <Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> page.
 
 _
