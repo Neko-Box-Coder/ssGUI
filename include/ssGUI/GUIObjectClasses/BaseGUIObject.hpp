@@ -271,6 +271,10 @@ namespace ssGUI
             //See <GUIObject::ChangeChildOrderToAfterPosition>
             virtual void ChangeChildOrderToAfterPosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position) override;
 
+            //function: GetListOfChildren
+            //See <GUIObject::GetListOfChildren>
+            virtual std::vector<ssGUI::GUIObject*> GetListOfChildren() const override;
+
             //function: Internal_AddChild
             //See <GUIObject::Internal_AddChild>
             virtual void Internal_AddChild(ssGUI::GUIObject* obj) override;

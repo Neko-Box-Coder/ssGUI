@@ -894,6 +894,22 @@ namespace ssGUI
             GetEventCallback(ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME)->Notify(CurrentObjectsReferences.GetObjectReference(*child));   
     }   
     
+    std::vector<ssGUI::GUIObject*> BaseGUIObject::GetListOfChildren() const
+    {
+        std::vector<ssGUI::GUIObject*> childrenCopy;
+
+        for(auto childIndex : Children)
+        {
+            auto child = CurrentObjectsReferences.GetObjectReference(childIndex);
+            if(child == nullptr)
+                continue;
+
+            childrenCopy.push_back(child);
+        }
+
+        return childrenCopy;
+    }
+
     void BaseGUIObject::Internal_AddChild(ssGUI::GUIObject* obj)
     {
         StashChildrenIterator();

@@ -153,6 +153,10 @@ namespace ssGUI
             //Changes the child's position to be in behind of said position. Use <GetCurrentChildReferenceIterator> to get the iterator.
             virtual void ChangeChildOrderToAfterPosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position) = 0;
 
+            //function: GetListOfChildren
+            //Gets a list of children
+            virtual std::vector<ssGUI::GUIObject*> GetListOfChildren() const = 0;
+
             //function: Internal_AddChild
             //(Internal ssGUI function) Adds the GUI Object to the children record. Use <SetParent> instead for adding or removing child.
             virtual void Internal_AddChild(ssGUI::GUIObject* obj) = 0;

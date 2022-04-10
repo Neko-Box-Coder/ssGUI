@@ -222,7 +222,7 @@ namespace ssGUI::Extensions
         
         Enabled = maskEnforcer->IsEnabled();
         TargetMasks = maskEnforcer->TargetMasks;
-        BlockingContainerInput = MaskEnforcer->BlockingContainerInput;
+        BlockingContainerInput = maskEnforcer->BlockingContainerInput;
         CurrentObjectsReferences = maskEnforcer->CurrentObjectsReferences;
     }
 
