@@ -6,9 +6,9 @@ namespace ssGUI::Extensions
 {
     MaskEnforcer::MaskEnforcer(MaskEnforcer const& other)
     {
-        TargetMasks = other.TargetMasks;
         Container = nullptr;
         Enabled = other.IsEnabled();
+        TargetMasks = other.TargetMasks;
         BlockingContainerInput = false;
 
         CurrentObjectsReferences = other.CurrentObjectsReferences;
@@ -41,7 +41,7 @@ namespace ssGUI::Extensions
     
     const std::string MaskEnforcer::EXTENSION_NAME = "Mask Enforcer";
     
-    MaskEnforcer::MaskEnforcer() : TargetMasks(), Container(nullptr), Enabled(true), BlockingContainerInput(false), CurrentObjectsReferences()
+    MaskEnforcer::MaskEnforcer() : Container(nullptr), Enabled(true), TargetMasks(), BlockingContainerInput(false), CurrentObjectsReferences()
     {}
 
     MaskEnforcer::~MaskEnforcer()
@@ -220,8 +220,9 @@ namespace ssGUI::Extensions
         
         ssGUI::Extensions::MaskEnforcer* maskEnforcer = static_cast<ssGUI::Extensions::MaskEnforcer*>(extension);
         
-        TargetMasks = maskEnforcer->TargetMasks;
         Enabled = maskEnforcer->IsEnabled();
+        TargetMasks = maskEnforcer->TargetMasks;
+        BlockingContainerInput = MaskEnforcer->BlockingContainerInput;
         CurrentObjectsReferences = maskEnforcer->CurrentObjectsReferences;
     }
 

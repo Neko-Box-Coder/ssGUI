@@ -48,6 +48,7 @@ namespace ssGUI::Extensions
         private:
             RoundedCorners& operator=(RoundedCorners const& other);
 
+        protected:
             ssGUI::GUIObject* Container;
             bool Enabled;
 
@@ -59,8 +60,6 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToRoundPrevVertices;
             std::vector<int> VerticesToRoundNextVertices;
 
-
-        protected:
             RoundedCorners(RoundedCorners const& other);
 
             //Return angle in radians. Positive if clockwise

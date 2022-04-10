@@ -17,10 +17,10 @@ namespace ssGUI::Extensions
     
     Variables & Constructor:
     ============================== C++ ==============================
-    private:
-        std::set<ssGUIObjectIndex> TargetMasks;
+    protected:
         ssGUI::GUIObject* Container;
         bool Enabled;
+        std::set<ssGUIObjectIndex> TargetMasks;
         bool BlockingContainerInput;
 
         ObjectsReferences CurrentObjectsReferences;
@@ -33,15 +33,16 @@ namespace ssGUI::Extensions
     class MaskEnforcer : public Extension
     {
         private:
-            std::set<ssGUIObjectIndex> TargetMasks;
-            ssGUI::GUIObject* Container;
-            bool Enabled;
-            bool BlockingContainerInput;
-
-            ObjectsReferences CurrentObjectsReferences;
             MaskEnforcer& operator=(MaskEnforcer const& other);
 
         protected:
+            ssGUI::GUIObject* Container;
+            bool Enabled;
+            std::set<ssGUIObjectIndex> TargetMasks;
+            bool BlockingContainerInput;
+
+            ObjectsReferences CurrentObjectsReferences;
+
             MaskEnforcer(MaskEnforcer const& other);
 
             virtual void ConstructRenderInfo() override;

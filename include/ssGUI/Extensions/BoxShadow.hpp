@@ -17,7 +17,7 @@ namespace ssGUI::Extensions
 
     Variables & Constructor:
     ============================== C++ ==============================
-    private:
+    protected:
         ssGUI::GUIObject* Container;
         bool Enabled;
 
@@ -35,6 +35,9 @@ namespace ssGUI::Extensions
     class BoxShadow : public Extension
     {
         private:
+            BoxShadow& operator=(BoxShadow const& other);
+
+        protected:
             ssGUI::GUIObject* Container;
             bool Enabled;
 
@@ -43,9 +46,6 @@ namespace ssGUI::Extensions
             float BlurRadius;
             glm::u8vec4 ShadowColor;
 
-            BoxShadow& operator=(BoxShadow const& other);
-
-        protected:
             BoxShadow(BoxShadow const& other);
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c

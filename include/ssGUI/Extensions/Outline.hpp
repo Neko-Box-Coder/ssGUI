@@ -22,7 +22,7 @@ namespace ssGUI::Extensions
 
     Variables & Constructor:
     ============================== C++ ==============================
-    private:
+    protected:
         ssGUI::GUIObject* Container;
         bool Enabled;
 
@@ -47,7 +47,10 @@ namespace ssGUI::Extensions
     */
     class Outline : public Extension
     {
-        private:
+        private:    
+            Outline& operator=(Outline const& other);
+
+        protected:
             ssGUI::GUIObject* Container;
             bool Enabled;
 
@@ -62,14 +65,10 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToOutlineNextVertices;
             std::vector<int> VerticesToOutlineShapeIndex;
             std::vector<bool> VerticesToOutlineShapeStartFlag;
-    
-            Outline& operator=(Outline const& other);
 
-        protected:
             Outline(Outline const& other);
 
             virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex);
-
             virtual void UpdateVerticesForOutline();
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
