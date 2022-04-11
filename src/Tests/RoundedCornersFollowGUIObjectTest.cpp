@@ -5,7 +5,6 @@
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
-// Cloning test
 int main()
 {
     ssGUI::MainWindow mainWindow;

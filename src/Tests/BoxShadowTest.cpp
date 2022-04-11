@@ -4,7 +4,6 @@
 #include "ssGUI/Extensions/BoxShadow.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
-// Cloning test
 int main()
 {
     ssGUI::MainWindow mainWindow;

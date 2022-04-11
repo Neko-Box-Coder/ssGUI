@@ -2,9 +2,9 @@
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Shape.hpp"
-#include "ssGUI/Extensions/Outline.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
+//This tests if RemoveGUIObjectShape works
 int main()
 {
     ssGUI::MainWindow mainWindow;
@@ -16,13 +16,13 @@ int main()
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
 
-    auto shapeEx = new ssGUI::Extensions::Shape();
-    shapeEx->AddCircle(glm::vec2(-100, -100), glm::vec2(200, 200), glm::u8vec4(255, 0, 0, 255), true);
-    window.AddExtension(shapeEx);
-    window.RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
-    auto outlineEx = new ssGUI::Extensions::Outline();
-    outlineEx->SetOutlineThickness(10);
-    window.AddExtension(outlineEx);
+    auto shape = new ssGUI::Extensions::Shape();
+    shape->AddAdditionalCircle(glm::vec2(), glm::vec2(150, 150), glm::u8vec4(0, 255, 0, 255), false);
+    shape->AddAdditionalRectangle(glm::vec2(), glm::vec2(100, 100), glm::u8vec4(255, 0, 0, 255), true);
+    shape->RemoveGUIObjectShape(0); //This removes window background
+    shape->RemoveGUIObjectShape(1); //This removes window titlebar
+    shape->RestoreGUIObjectShape(0); //This restores window background
+    window.AddExtension(shape);
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;

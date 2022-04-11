@@ -4,7 +4,6 @@
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
 
-//Clone test 2
 int main()
 {
     //Create the main window

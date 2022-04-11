@@ -4,7 +4,6 @@
 
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
-//Clone test 2
 int main()
 {
     //Create the main window

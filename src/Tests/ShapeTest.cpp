@@ -4,7 +4,6 @@
 #include "ssGUI/Extensions/Shape.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
-// Cloning test
 int main()
 {
     ssGUI::MainWindow mainWindow;
@@ -17,8 +16,8 @@ int main()
     window.SetParent(&mainWindow);
 
     auto shape = new ssGUI::Extensions::Shape();
-    // shape->AddCircle(glm::vec2(), glm::vec2(150, 150), glm::u8vec4(255, 0, 0, 255), true);
-    shape->AddRectangle(glm::vec2(), glm::vec2(150, 150), glm::u8vec4(255, 0, 0, 255), true);
+    // shape->AddAdditionalCircle(glm::vec2(), glm::vec2(150, 150), glm::u8vec4(255, 0, 0, 255), true);
+    shape->AddAdditionalRectangle(glm::vec2(), glm::vec2(150, 150), glm::u8vec4(255, 0, 0, 255), true);
     window.AddExtension(shape);
 
     //Creating ssGUIManager and run it

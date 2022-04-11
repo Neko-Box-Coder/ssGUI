@@ -13,6 +13,50 @@ namespace ssGUI::Extensions
 
         ExtensionPreRender = other.ExtensionPreRender;
         AdditionalShapes = other.AdditionalShapes;
+        GUIObjectShapesToRemove = other.GUIObjectShapesToRemove;
+        NextID = other.NextID;
+    }
+
+    void Shape::ConstructAdditionalPolygon(AdditionalShape& targetShape, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
+    {
+        targetShape.Vertices = vertices;
+        targetShape.Colors = colors;
+        targetShape.BehindGUI = behindGUIObject;
+    }
+
+    void Shape::ConstructAdditionalRectangle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
+    {
+        targetShape.Vertices.clear();
+        targetShape.Colors.clear();
+
+        targetShape.Vertices.push_back(pos);
+        targetShape.Vertices.push_back(pos + glm::vec2(size.x, 0));
+        targetShape.Vertices.push_back(pos + size);
+        targetShape.Vertices.push_back(pos + glm::vec2(0, size.y));
+
+        targetShape.Colors.push_back(color);
+        targetShape.Colors.push_back(color);
+        targetShape.Colors.push_back(color);
+        targetShape.Colors.push_back(color);
+
+        targetShape.BehindGUI = behindGUIObject;
+    }
+
+    void Shape::ConstructAdditionalCircle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
+    {
+        size *= 0.5;
+
+        targetShape.Vertices.clear();
+        targetShape.Colors.clear();
+
+        for(int i = 0; i < (int)(glm::length(size) * 2.f * pi()) + 2; i++)
+        {
+            float angle = 2.f * pi() * ((float)i / (float)((int)(glm::length(size) * 2.f * pi() + 1)));
+            targetShape.Vertices.push_back(glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
+            targetShape.Colors.push_back(color);
+        }
+
+        targetShape.BehindGUI = behindGUIObject;
     }
 
     void Shape::ConstructRenderInfo()
@@ -24,6 +68,7 @@ namespace ssGUI::Extensions
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
         glm::vec2 curPos = Container->GetGlobalPosition();
+
         for(int i = 0; i < AdditionalShapes.size(); i++)
         {
             if(AdditionalShapes[i].BehindGUI != ExtensionPreRender)
@@ -37,6 +82,36 @@ namespace ssGUI::Extensions
             drawingCounts.push_back(AdditionalShapes[i].Vertices.size());
             drawingProperties.push_back(ssGUI::DrawingProperty());
         }
+
+        if(!ExtensionPreRender && !GUIObjectShapesToRemove.empty())
+        {
+            int originalIndex = 0;
+            for(int i = 0; i < drawingCounts.size(); i++)
+            {
+                //For each shape, check if this shape needs to be removed
+                if(GUIObjectShapesToRemove.find(originalIndex - Container->Extension_GetGUIObjectFirstShapeIndex()) 
+                    != GUIObjectShapesToRemove.end())
+                {
+                    int startIndex = 0;
+
+                    for(int j = 0; j < i; j++)
+                        startIndex += drawingCounts[j];
+                    
+                    int endIndex = startIndex + drawingCounts[i];
+
+                    drawingVertices.erase(drawingVertices.begin() + startIndex, drawingVertices.begin() + endIndex);
+                    drawingUVs.erase(drawingUVs.begin() + startIndex, drawingUVs.begin() + endIndex);
+                    drawingColors.erase(drawingColors.begin() + startIndex, drawingColors.begin() + endIndex);
+                    drawingCounts.erase(drawingCounts.begin() + i);
+                    drawingProperties.erase(drawingProperties.begin() + i);
+
+                    i--;
+                }
+
+                //This keeps track of the original index of the shapes even when the shapes are removed
+                originalIndex++;
+            }
+        }
     }
 
     void Shape::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
@@ -48,106 +123,109 @@ namespace ssGUI::Extensions
     //Defining the extension name
     const std::string Shape::EXTENSION_NAME = "Shape";
     
-    //Add ObjectsReferences construction if you are using it 
-    Shape::Shape() : Container(nullptr), Enabled(true), ExtensionPreRender(true), AdditionalShapes()
+    Shape::Shape() : Container(nullptr), Enabled(true), ExtensionPreRender(true), AdditionalShapes(), GUIObjectShapesToRemove(), NextID(0)
     {}
 
     Shape::~Shape()
     {}
 
-    void Shape::AddShape(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
+    int Shape::AddAdditionalPolygon(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
     {
         AdditionalShapes.push_back(AdditionalShape());
-        AdditionalShapes[AdditionalShapes.size() - 1].Vertices = vertices;
-        AdditionalShapes[AdditionalShapes.size() - 1].Colors = colors;
-        AdditionalShapes[AdditionalShapes.size() - 1].BehindGUI = behindGUIObject;
+        ConstructAdditionalPolygon(AdditionalShapes[AdditionalShapes.size() - 1], vertices, colors, behindGUIObject);
+        AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+        return NextID++;
     }
 
-    void Shape::AddShape(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject, int index)
+    int Shape::AddAdditionalPolygon(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject, int index)
     {
         if(index < 0 || index > AdditionalShapes.size())
-            return;
+            return -1;
         
         AdditionalShape additionalShape;
         AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
-
-        AdditionalShapes[index].Vertices = vertices;
-        AdditionalShapes[index].Colors = colors;
-        AdditionalShapes[index].BehindGUI = behindGUIObject;
+        ConstructAdditionalPolygon(AdditionalShapes[index], vertices, colors, behindGUIObject);
+        AdditionalShapes[index].ID = NextID;
+        return NextID++;
     }
 
-    void Shape::AddRectangle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
+    int Shape::AddAdditionalRectangle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
     {
         AdditionalShapes.push_back(AdditionalShape());
-        AdditionalShapes[AdditionalShapes.size() - 1].Vertices.push_back(pos);
-        AdditionalShapes[AdditionalShapes.size() - 1].Vertices.push_back(pos + glm::vec2(size.x, 0));
-        AdditionalShapes[AdditionalShapes.size() - 1].Vertices.push_back(pos + size);
-        AdditionalShapes[AdditionalShapes.size() - 1].Vertices.push_back(pos + glm::vec2(0, size.y));
-
-        AdditionalShapes[AdditionalShapes.size() - 1].Colors.push_back(color);
-        AdditionalShapes[AdditionalShapes.size() - 1].Colors.push_back(color);
-        AdditionalShapes[AdditionalShapes.size() - 1].Colors.push_back(color);
-        AdditionalShapes[AdditionalShapes.size() - 1].Colors.push_back(color);
-
-        AdditionalShapes[AdditionalShapes.size() - 1].BehindGUI = behindGUIObject;
+        ConstructAdditionalRectangle(AdditionalShapes[AdditionalShapes.size() - 1], pos, size, color, behindGUIObject);
+        AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+        return NextID++;
     }
 
-    void Shape::AddRectangle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index)
+    int Shape::AddAdditionalRectangle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index)
     {
         if(index < 0 || index > AdditionalShapes.size())
-            return;
+            return -1;
         
         AdditionalShape additionalShape;
         AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
-
-        AdditionalShapes[index].Vertices.push_back(pos);
-        AdditionalShapes[index].Vertices.push_back(pos + glm::vec2(size.x, 0));
-        AdditionalShapes[index].Vertices.push_back(pos + size);
-        AdditionalShapes[index].Vertices.push_back(pos + glm::vec2(0, size.y));
-
-        AdditionalShapes[index].Colors.push_back(color);
-        AdditionalShapes[index].Colors.push_back(color);
-        AdditionalShapes[index].Colors.push_back(color);
-        AdditionalShapes[index].Colors.push_back(color);
-
-        AdditionalShapes[index].BehindGUI = behindGUIObject;
+        ConstructAdditionalRectangle(AdditionalShapes[index], pos, size, color, behindGUIObject);
+        AdditionalShapes[index].ID = NextID;
+        return NextID++;
     }
 
-    void Shape::AddCircle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
+    int Shape::AddAdditionalCircle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
     {
         AdditionalShapes.push_back(AdditionalShape());
-        size *= 0.5;
+        ConstructAdditionalCircle(AdditionalShapes[AdditionalShapes.size() - 1], pos, size, color, behindGUIObject);
+        AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+        return NextID++;
+    }
 
-        for(int i = 0; i < (int)(glm::length(size) * 2.f * pi()) + 2; i++)
+    int Shape::AddAdditionalCircle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index)
+    {
+        if(index < 0 || index > AdditionalShapes.size())
+            return -1;
+        
+        AdditionalShape additionalShape;
+        AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
+        ConstructAdditionalCircle(AdditionalShapes[index], pos, size, color, behindGUIObject);
+        AdditionalShapes[index].ID = NextID;
+        return NextID++;
+    }
+
+    void Shape::SetAdditionalPolygon(int id, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
+    {
+        for(int i = 0; i < AdditionalShapes.size(); i++)
         {
-            float angle = 2.f * pi() * ((float)i / (float)((int)(glm::length(size) * 2.f * pi() + 1)));
-            AdditionalShapes[AdditionalShapes.size() - 1].Vertices.push_back(glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
-            AdditionalShapes[AdditionalShapes.size() - 1].Colors.push_back(color);
-        }
+            if(AdditionalShapes[i].ID != id)
+                continue;
 
-        AdditionalShapes[AdditionalShapes.size() - 1].BehindGUI = behindGUIObject;
+            ConstructAdditionalPolygon(AdditionalShapes[i], vertices, colors, behindGUIObject);
+            return;
+        }
     }
 
-    void Shape::AddCircle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index)
+    void Shape::SetAdditionalRectangle(int id, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
     {
-        if(index < 0 || index > AdditionalShapes.size())
-            return;
-        
-        AdditionalShape additionalShape;
-        AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
-        size *= 0.5;
-
-        for(int i = 0; i < (int)(glm::length(size) * 2.f * pi()) + 2; i++)
+        for(int i = 0; i < AdditionalShapes.size(); i++)
         {
-            float angle = 2.f * pi() * ((float)i / (float)((int)(glm::length(size) * 2.f * pi() + 1)));
-            AdditionalShapes[index].Vertices.push_back(glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
-            AdditionalShapes[index].Colors.push_back(color);
-        }
+            if(AdditionalShapes[i].ID != id)
+                continue;
 
-        AdditionalShapes[index].BehindGUI = behindGUIObject;
+            ConstructAdditionalRectangle(AdditionalShapes[i], pos, size, color, behindGUIObject);
+            return;
+        }
+    }
+
+    void Shape::SetAdditionalCircle(int id, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
+    {
+        for(int i = 0; i < AdditionalShapes.size(); i++)
+        {
+            if(AdditionalShapes[i].ID != id)
+                continue;
+
+            ConstructAdditionalCircle(AdditionalShapes[i], pos, size, color, behindGUIObject);
+            return;
+        }
     }
     
-    std::vector<glm::vec2>* Shape::GetVertices(int index)
+    std::vector<glm::vec2>* Shape::GetAdditionalShapeVerticesWithIndex(int index)
     {
         if(index < 0 || index > AdditionalShapes.size())
             return nullptr;
@@ -155,7 +233,20 @@ namespace ssGUI::Extensions
         return &AdditionalShapes[index].Vertices;
     }
 
-    std::vector<glm::u8vec4>* Shape::GetColors(int index)
+    std::vector<glm::vec2>* Shape::GetAdditionalShapeVerticesWithID(int id)
+    {
+        for(int i = 0; i < AdditionalShapes.size(); i++)
+        {
+            if(AdditionalShapes[i].ID != id)
+                continue;
+
+            return &AdditionalShapes[i].Vertices;
+        }
+        
+        return nullptr;
+    }
+
+    std::vector<glm::u8vec4>* Shape::GetAdditionalShapeColorsWithIndex(int index)
     {
         if(index < 0 || index > AdditionalShapes.size())
             return nullptr;
@@ -163,12 +254,57 @@ namespace ssGUI::Extensions
         return &AdditionalShapes[index].Colors;
     }
 
-    void Shape::RemoveShape(int index)
+    std::vector<glm::u8vec4>* Shape::GetAdditionalShapeColorsWithID(int id)
+    {
+        for(int i = 0; i < AdditionalShapes.size(); i++)
+        {
+            if(AdditionalShapes[i].ID != id)
+                continue;
+
+            return &AdditionalShapes[i].Colors;
+        }
+        
+        return nullptr;
+    }
+
+    int Shape::GetAdditionalShapesCount() const
+    {
+        return AdditionalShapes.size();
+    }
+
+    void Shape::ClearAllAdditionalShapes()
+    {
+        AdditionalShapes.clear();
+    }
+
+    void Shape::RemoveAdditionalShapeWithIndex(int index)
     {
         if(index < 0 || index > AdditionalShapes.size())
             return;
 
         AdditionalShapes.erase(AdditionalShapes.begin() + index);
+    }
+
+    void Shape::RemoveAdditionalShapeWithID(int id)
+    {
+        for(int i = 0; i < AdditionalShapes.size(); i++)
+        {
+            if(AdditionalShapes[i].ID != id)
+                continue;
+
+            AdditionalShapes.erase(AdditionalShapes.begin() + i);
+        }
+    }
+
+    void Shape::RemoveGUIObjectShape(int index)
+    {
+        GUIObjectShapesToRemove.insert(index);
+    }
+
+    void Shape::RestoreGUIObjectShape(int index)
+    {
+        if(GUIObjectShapesToRemove.find(index) != GUIObjectShapesToRemove.end())
+            GUIObjectShapesToRemove.erase(index);
     }
 
     void Shape::SetEnabled(bool enabled)
@@ -237,6 +373,8 @@ namespace ssGUI::Extensions
         Enabled = Shape->IsEnabled();
         ExtensionPreRender = Shape->ExtensionPreRender;
         AdditionalShapes = Shape->AdditionalShapes;
+        GUIObjectShapesToRemove = Shape->GUIObjectShapesToRemove;
+        NextID = Shape->NextID;
     }
 
     ObjectsReferences* Shape::Internal_GetObjectsReferences()

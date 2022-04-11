@@ -1,7 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 
-//Outline test
 int main()
 {
     //Create the main window

@@ -2,7 +2,7 @@
 #define SSGUI_CONFIG
 
 #include <string>
-
+#include <iostream>
 
 // Overloadable Marco function =======================================================================
 #define CAT( A, B ) A ## B
