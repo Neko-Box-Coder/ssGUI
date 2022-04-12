@@ -312,6 +312,7 @@ namespace ssGUI::Extensions
                 }
 
                 originalShapeIndex++;
+                currentDrawingCounts = 0;
             }
         }
     }
