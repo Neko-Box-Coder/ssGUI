@@ -181,53 +181,56 @@ namespace ssGUI
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
 
-        //On mouse down
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
-        if (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
+        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
         {
-            //User pressing down on button
-            if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
-                currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+            //On mouse down
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+            if (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
             {
-                globalInputStatus.MouseInputBlocked = true;
-                SetButtonState(ssGUI::Enums::ButtonState::ON_CLICK);
-            }
-        }
-        //On mouse hold
-        else if (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-                (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK ||
-                GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
-        {
-            globalInputStatus.MouseInputBlocked = true;
-            if (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
-                SetButtonState(ssGUI::Enums::ButtonState::CLICKING);
-        }
-        //On mouse up
-        else if (!inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-                (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK ||
-                GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
-        {
-            SetButtonState(ssGUI::Enums::ButtonState::CLICKED);
-        }
-        //Otherwise check normal/hover/disabled state
-        else
-        {
-            if(IsInteractable())
-            {
+                //User pressing down on button
                 if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
-                    SetButtonState(ssGUI::Enums::ButtonState::HOVER);
+                    globalInputStatus.MouseInputBlocked = true;
+                    SetButtonState(ssGUI::Enums::ButtonState::ON_CLICK);
                 }
-                else
-                    SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
             }
+            //On mouse hold
+            else if (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
+                    (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK ||
+                    GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
+            {
+                globalInputStatus.MouseInputBlocked = true;
+                if (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
+                    SetButtonState(ssGUI::Enums::ButtonState::CLICKING);
+            }
+            //On mouse up
+            else if (!inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
+                    (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK || GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
+            {
+                SetButtonState(ssGUI::Enums::ButtonState::CLICKED);
+            }
+            //Otherwise check normal/hover/disabled state
             else
             {
-                if (GetButtonState() != ssGUI::Enums::ButtonState::DISABLED)
-                    SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
+                if(IsInteractable())
+                {
+                    if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
+                        currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                    {
+                        globalInputStatus.MouseInputBlocked = true;
+                        SetButtonState(ssGUI::Enums::ButtonState::HOVER);
+                    }
+                    else
+                        SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
+                }
+                else
+                {
+                    if (GetButtonState() != ssGUI::Enums::ButtonState::DISABLED)
+                        SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
+                }
             }
-        }
+        }        
 
         endUpdate:;
         for (auto extension : ExtensionsUpdateOrder)

@@ -35,7 +35,7 @@ namespace ssGUI::Enums
     BUTTON          - Button object type
     BASE_OBJECT     - Base Object type
     STANDARD_WINDOW - Standard window object type (WIP)
-
+    STANDARD_BUTTON - Standard button object type
     */
     enum class GUIObjectType
     {
@@ -46,7 +46,8 @@ namespace ssGUI::Enums
         TEXT =              1 << 4,
         BUTTON =            1 << 5,
         BASE_OBJECT =       1 << 6,
-        STANDARD_WINDOW =   1 << 7
+        STANDARD_WINDOW =   1 << 7,
+        STANDARD_BUTTON =   1 << 8
     };
 
     inline ssGUI::Enums::GUIObjectType operator|(ssGUI::Enums::GUIObjectType a, ssGUI::Enums::GUIObjectType b)
