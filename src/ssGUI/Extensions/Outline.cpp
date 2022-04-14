@@ -154,12 +154,12 @@ namespace ssGUI::Extensions
         bool invalidAngle = false;
         if(startToEndAngle < 0)
         {
-            DEBUG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
+            DEBUG_LINE("anti-clockwise placements of vertices detected. outline failed.");
             invalidAngle = true;
         }
         else if(startToEndAngle > pi())
         {
-            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. outline failed.");
             invalidAngle = true;
         }
 
