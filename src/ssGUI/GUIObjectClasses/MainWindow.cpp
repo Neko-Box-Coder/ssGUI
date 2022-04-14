@@ -19,6 +19,7 @@ namespace ssGUI
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
+        BackendMainWindow->SetMSAA(8);
         SetBackgroundColor(glm::u8vec4(255, 255, 255, 255));
     }
 
