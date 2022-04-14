@@ -18,24 +18,23 @@ namespace ssGUI
 
     Variables & Constructor:
     //============================== C++ ==============================
-    private:
+    protected:
         //Your variables go here
     //=================================================================
     //============================== C++ ==============================
-    Widget::Widget() :  Focused(false), Interactable(true), BlockInput(true) 
+    CustomWidget::CustomWidget() : [Your variables initialization]
     {}
     //=================================================================
     */
     class CustomWidget : public Widget
     {
         private:
-            //Your variables go here
-
             CustomWidget& operator=(CustomWidget const& other) = default;
 
         protected:
-            CustomWidget(CustomWidget const& other);
+            //Your variables go here
 
+            CustomWidget(CustomWidget const& other);
             virtual void ConstructRenderInfo() override;
 
         public:
@@ -77,7 +76,7 @@ This is the source template for creating a custom widget. Just replace widget wi
 
 namespace ssGUI
 {
-    CustomWidget::CustomWidget(CustomWidget const& other) : BaseGUIObject(other)
+    CustomWidget::CustomWidget(CustomWidget const& other) : Widget(other)
     {
         //Copy the values here.
     }
@@ -94,8 +93,9 @@ namespace ssGUI
     
     CustomWidget::CustomWidget()// : [Your variables constructions go here]
     {
-        /*//If you have any claen-up need to do when this GUI Object is desttroyed, put it in OnObjectDestroyEventCallback.
-        //So something like:
+        /*If you have any claen-up need to do when this GUI Object is desttroyed, put it in OnObjectDestroyEventCallback.
+        So something like:
+
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
         if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
         {
@@ -147,12 +147,12 @@ namespace ssGUI
             DisableRedrawObjectRequest();
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
             
             ConstructRenderInfo();
 
             for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindowP, mainWindowPositionOffset);
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             EnableRedrawObjectRequest();
 

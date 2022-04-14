@@ -389,7 +389,7 @@ namespace ssGUI
 
         Closed = true;
 
-        SetParent(nullptr);
+        // SetParent(nullptr);
 
         Delete();
     }

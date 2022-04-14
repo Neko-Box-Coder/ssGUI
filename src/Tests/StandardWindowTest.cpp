@@ -9,11 +9,11 @@ int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    mainWindow.GetBackendWindowInterface()->SetMSAA(8);
+    DEBUG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
 
     ssGUI::StandardWindow sw;
     sw.GetWindowTitleObject()->SetText("Test title");
-    sw.SetSize(glm::vec2(100, 100));
+    sw.SetSize(glm::vec2(200, 200));
     // sw.AddExtension(new ssGUI::Extensions::Dockable());
     // sw.AddExtension(new ssGUI::Extensions::Outline());
     //sw.RemoveExtension(ssGUI::Extensions::RoundedCorners::EXTENSION_NAME);

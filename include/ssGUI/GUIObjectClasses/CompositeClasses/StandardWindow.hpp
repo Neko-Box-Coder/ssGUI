@@ -28,21 +28,85 @@ namespace ssGUI
     ============================== C++ ==============================
     StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
     {        
-        WindowTitle = CurrentObjectsReferences.AddObjectReference(new ssGUI::Text());
-        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetUserCreated(false);
-        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetParent(this);
-        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetMinSize(glm::vec2(5, 5));
+        SetMinSize(glm::vec2(50, 50));
+        
+        auto windowTitle = new ssGUI::Text();
+        windowTitle->SetUserCreated(false);
+        windowTitle->SetHeapAllocated(true);
+        windowTitle->SetParent(this);
+        windowTitle->SetMinSize(glm::vec2(5, 5));
+        windowTitle->SetText("Window");
+        WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
 
-        // WindowIcon = CurrentObjectsReferences.AddObjectReference(new ssGUI::Image());
-        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetUserCreated(false);
-        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetParent(this);
-        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetMinSize(glm::vec2(5, 5));
+        // auto windowIcon = new ssGUI::Image();
+        // windowIcon->SetUserCreated(false);
+        // windowIcon->SetHeapAllocated(true);
+        // windowIcon->SetParent(this);
+        // windowIcon->SetMinSize(glm::vec2(5, 5));
+        // WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
-        // CloseButton = CurrentObjectsReferences.AddObjectReference(new ssGUI::Button());
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetUserCreated(false);
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetParent(this);
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetMinSize(glm::vec2(5, 5));
+        auto closeButton = new ssGUI::Button();
+        closeButton->SetUserCreated(false);
+        closeButton->SetHeapAllocated(true);
+        closeButton->SetParent(this);
+        closeButton->SetMinSize(glm::vec2(5, 5));
+        closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+        auto shapeEx = new ssGUI::Extensions::Shape();
+        shapeEx->RemoveGUIObjectShape(0);
+        int circleId = shapeEx->AddAdditionalCircle(glm::vec2(), closeButton->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+        closeButton->AddExtension(shapeEx);
+
+        auto closeButtonOutline = new ssGUI::Extensions::Outline();
+        closeButtonOutline->SetOutlineThickness(2);
+        closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
+        // closeButtonOutline->ClearTargetShapes();
+        // closeButtonOutline->SetSimpleOutline(false);
+        // closeButtonOutline->AddTargetShape
+        closeButton->AddExtension(closeButtonOutline);
+
+        auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
+        buttonEvent->RemoveEventListener(0);
+        buttonEvent->AddEventListener
+        (
+            [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            {
+                auto closeButtonObj = static_cast<ssGUI::Button*>(src);
+                auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                switch(closeButtonObj->GetButtonState())
+                {
+                    case ssGUI::Enums::ButtonState::NORMAL:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+                        break;
+                    case ssGUI::Enums::ButtonState::HOVER:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 167, 167, 255), false);
+                        break;
+                    case ssGUI::Enums::ButtonState::ON_CLICK:
+                        break;
+                    case ssGUI::Enums::ButtonState::CLICKING:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 207, 207, 255), false);
+                        break;
+                    case ssGUI::Enums::ButtonState::CLICKED:
+                        static_cast<ssGUI::Window*>(src->GetParent())->Close();
+                        break;
+                    case ssGUI::Enums::ButtonState::DISABLED:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 107, 107, 255), false);
+                        break;
+                }
+                
+            }
+        );
+        auto shapeEvent = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        shapeEvent->AddEventListener
+        (
+            [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            {
+                auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                shape->SetAdditionalCircle(circleId, glm::vec2(), src->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+            }
+        );
+
+        closeButton->AddEventCallback(shapeEvent);
+        CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
 
         auto rc = new ssGUI::Extensions::RoundedCorners();
         rc->ClearTargetShapes();
@@ -56,10 +120,22 @@ namespace ssGUI
         AddExtension(rc);
         AddExtension(new ssGUI::Extensions::Dockable());
         AddExtension(new ssGUI::Extensions::Outline());
+        AddExtension(new ssGUI::Extensions::BoxShadow());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 
-        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
+        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
+        {
+            callback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
+                (GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME));
+        }
+        else
+        {
+            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            AddEventCallback(callback);
+        }
+        
         callback->AddEventListener(
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
             {
@@ -68,15 +144,14 @@ namespace ssGUI
                 auto windowIconObj = standardWindow->GetWindowIconObject();
                 auto closeButtonObj = standardWindow->GetCloseButtonObject();
 
-                if(windowTitleObj != nullptr && windowTitleObj->GetParent() == container && !windowTitleObj->Internal_IsDeleted())
+                if(windowTitleObj != nullptr && windowTitleObj->GetParent() != container && !windowTitleObj->Internal_IsDeleted())
                     windowTitleObj->Delete();
                 
-                if(windowIconObj != nullptr && windowIconObj->GetParent() == container && !windowIconObj->Internal_IsDeleted())
+                if(windowIconObj != nullptr && windowIconObj->GetParent() != container && !windowIconObj->Internal_IsDeleted())
                     windowIconObj->Delete();
 
-                if(closeButtonObj != nullptr && closeButtonObj->GetParent() == container && !closeButtonObj->Internal_IsDeleted())
+                if(closeButtonObj != nullptr && closeButtonObj->GetParent() != container && !closeButtonObj->Internal_IsDeleted())
                     closeButtonObj->Delete();
-
             });
 
         UpdateTitleText();

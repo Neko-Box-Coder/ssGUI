@@ -7,7 +7,9 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Dockable.hpp"
 #include "ssGUI/Extensions/Outline.hpp"
-
+#include "ssGUI/Extensions/BoxShadow.hpp"
+#include "ssGUI/Extensions/Shape.hpp"
+#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
 namespace ssGUI
 {
@@ -65,7 +67,10 @@ namespace ssGUI
         
         if(windowIconObj == nullptr)
             return;
-        
+
+        windowIconObj->SetBackgroundColor(glm::u8vec4(255, 255, 255, 0));
+        static_cast<ssGUI::Text*>(windowIconObj)->SetBlockInput(false);
+
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
         
@@ -93,11 +98,18 @@ namespace ssGUI
 
         if(!windowIconObj->HasTag(ssGUI::Tags::OVERLAY))
             windowIconObj->AddTag(ssGUI::Tags::OVERLAY);
+        
+        auto imageData = static_cast<ssGUI::Image*>(windowIconObj)->GetImageData();
+
+        if(imageData == nullptr || !imageData->IsValid())
+            windowIconObj->SetVisible(false);
+        else
+            windowIconObj->SetVisible(true);
     }
 
     void StandardWindow::UpdateCloseButton()
     {
-        auto closeButtonObj = CurrentObjectsReferences.GetObjectReference(CloseButton);
+        auto closeButtonObj = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(CloseButton));
         
         if(closeButtonObj == nullptr)
             return;
@@ -119,9 +131,9 @@ namespace ssGUI
         ap->SetHorizontalPixel(GetHorizontalPadding());
         ap->SetVerticalUsePercentage(false);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
-        ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
+        ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding() + 2);
         
-        int buttonHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
+        int buttonHeight = GetTitlebarHeight() - GetVerticalPadding() * 2 - 4;
         as->SetHorizontalUsePercentage(false);
         as->SetHorizontalPixel(buttonHeight);
         as->SetVerticalUsePercentage(false);
@@ -135,21 +147,83 @@ namespace ssGUI
     {        
         SetMinSize(glm::vec2(50, 50));
         
-        WindowTitle = CurrentObjectsReferences.AddObjectReference(new ssGUI::Text());
-        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetUserCreated(false);
-        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetParent(this);
-        CurrentObjectsReferences.GetObjectReference(WindowTitle)->SetMinSize(glm::vec2(5, 5));
+        auto windowTitle = new ssGUI::Text();
+        windowTitle->SetUserCreated(false);
+        windowTitle->SetHeapAllocated(true);
+        windowTitle->SetParent(this);
+        windowTitle->SetMinSize(glm::vec2(5, 5));
+        windowTitle->SetText("Window");
+        WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
 
-        // WindowIcon = CurrentObjectsReferences.AddObjectReference(new ssGUI::Image());
-        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetUserCreated(false);
-        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetParent(this);
-        // CurrentObjectsReferences.GetObjectReference(WindowIcon)->SetMinSize(glm::vec2(5, 5));
+        // auto windowIcon = new ssGUI::Image();
+        // windowIcon->SetUserCreated(false);
+        // windowIcon->SetHeapAllocated(true);
+        // windowIcon->SetParent(this);
+        // windowIcon->SetMinSize(glm::vec2(5, 5));
+        // WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
-        // CloseButton = CurrentObjectsReferences.AddObjectReference(new ssGUI::Button());
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetUserCreated(false);
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetParent(this);
-        // CurrentObjectsReferences.GetObjectReference(CloseButton)->SetMinSize(glm::vec2(5, 5));
+        auto closeButton = new ssGUI::Button();
+        closeButton->SetUserCreated(false);
+        closeButton->SetHeapAllocated(true);
+        closeButton->SetParent(this);
+        closeButton->SetMinSize(glm::vec2(5, 5));
+        closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+        auto shapeEx = new ssGUI::Extensions::Shape();
+        shapeEx->RemoveGUIObjectShape(0);
+        int circleId = shapeEx->AddAdditionalCircle(glm::vec2(), closeButton->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+        closeButton->AddExtension(shapeEx);
+
+        auto closeButtonOutline = new ssGUI::Extensions::Outline();
+        closeButtonOutline->SetOutlineThickness(2);
+        closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
+        // closeButtonOutline->ClearTargetShapes();
+        // closeButtonOutline->SetSimpleOutline(false);
+        // closeButtonOutline->AddTargetShape
+        closeButton->AddExtension(closeButtonOutline);
+
+        auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
+        buttonEvent->RemoveEventListener(0);
+        buttonEvent->AddEventListener
+        (
+            [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            {
+                auto closeButtonObj = static_cast<ssGUI::Button*>(src);
+                auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                switch(closeButtonObj->GetButtonState())
+                {
+                    case ssGUI::Enums::ButtonState::NORMAL:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+                        break;
+                    case ssGUI::Enums::ButtonState::HOVER:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 167, 167, 255), false);
+                        break;
+                    case ssGUI::Enums::ButtonState::ON_CLICK:
+                        break;
+                    case ssGUI::Enums::ButtonState::CLICKING:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 207, 207, 255), false);
+                        break;
+                    case ssGUI::Enums::ButtonState::CLICKED:
+                        static_cast<ssGUI::Window*>(src->GetParent())->Close();
+                        break;
+                    case ssGUI::Enums::ButtonState::DISABLED:
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 107, 107, 255), false);
+                        break;
+                }
+                
+            }
+        );
+        auto shapeEvent = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        shapeEvent->AddEventListener
+        (
+            [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            {
+                auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                shape->SetAdditionalCircle(circleId, glm::vec2(), src->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+            }
+        );
+
+        closeButton->AddEventCallback(shapeEvent);
+        CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
 
         auto rc = new ssGUI::Extensions::RoundedCorners();
         rc->ClearTargetShapes();
@@ -162,7 +236,10 @@ namespace ssGUI
 
         AddExtension(rc);
         AddExtension(new ssGUI::Extensions::Dockable());
-        AddExtension(new ssGUI::Extensions::Outline());
+        auto windowOutline = new ssGUI::Extensions::Outline();
+        windowOutline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
+        AddExtension(windowOutline);
+        AddExtension(new ssGUI::Extensions::BoxShadow());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 
@@ -186,13 +263,13 @@ namespace ssGUI
                 auto windowIconObj = standardWindow->GetWindowIconObject();
                 auto closeButtonObj = standardWindow->GetCloseButtonObject();
 
-                if(windowTitleObj != nullptr && windowTitleObj->GetParent() == container && !windowTitleObj->Internal_IsDeleted())
+                if(windowTitleObj != nullptr && windowTitleObj->GetParent() != container && !windowTitleObj->Internal_IsDeleted())
                     windowTitleObj->Delete();
                 
-                if(windowIconObj != nullptr && windowIconObj->GetParent() == container && !windowIconObj->Internal_IsDeleted())
+                if(windowIconObj != nullptr && windowIconObj->GetParent() != container && !windowIconObj->Internal_IsDeleted())
                     windowIconObj->Delete();
 
-                if(closeButtonObj != nullptr && closeButtonObj->GetParent() == container && !closeButtonObj->Internal_IsDeleted())
+                if(closeButtonObj != nullptr && closeButtonObj->GetParent() != container && !closeButtonObj->Internal_IsDeleted())
                     closeButtonObj->Delete();
             });
 
@@ -407,48 +484,12 @@ namespace ssGUI
 
         Window::SetClosable(closable);
     }
-    
 
     //function: GetType
     ssGUI::Enums::GUIObjectType StandardWindow::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::WINDOW | ssGUI::Enums::GUIObjectType::STANDARD_WINDOW;
     }
-    
-    /*
-    void Window::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
-    {        
-        //If it is not visible, don't even update/draw it
-        if(!IsVisible())
-            return;
-        
-        for(auto extension : Extensions)
-            extension.second->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(mainWindow);
-        glm::ivec2 mouseDelta = currentMousePos - MouseDownPosition;
-        
-        //Resize
-        //On mouse down
-        if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-            !globalInputStatus.MouseInputBlocked)
-        {
-            OnMouseDownUpdate(currentMousePos, globalInputStatus);
-        }
-        //When the user is resizing or dragging the window
-        else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
-        {
-            OnMouseDragOrResizeUpdate(globalInputStatus, mouseDelta, inputInterface);
-        }
-        //Otherwise show resize cursor if necessary 
-        else
-        {
-            BlockMouseInputAndUpdateCursor(globalInputStatus, currentMousePos, inputInterface);
-        }
-
-        for(auto extension : Extensions)
-            extension.second->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-    }*/
 
     void StandardWindow::Delete()
     {
