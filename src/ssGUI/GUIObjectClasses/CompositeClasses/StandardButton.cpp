@@ -92,7 +92,7 @@ namespace ssGUI
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(container);
-                int buttonReactAmount = 40;
+                int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();
                 switch(btn->GetButtonState())
                 {
@@ -100,9 +100,6 @@ namespace ssGUI
                         btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::HOVER:
-                        // bgcolor.r = bgcolor.r + buttonReactAmount > 255 ? 255 : bgcolor.r + buttonReactAmount;
-                        // bgcolor.g = bgcolor.g + buttonReactAmount > 255 ? 255 : bgcolor.g + buttonReactAmount;
-                        // bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;
                         bgcolor.r = bgcolor.r - buttonReactAmount < 0 ? 0 : bgcolor.r - buttonReactAmount;
                         bgcolor.g = bgcolor.g - buttonReactAmount < 0 ? 0 : bgcolor.g - buttonReactAmount;
                         bgcolor.b = bgcolor.b - buttonReactAmount < 0 ? 0 : bgcolor.b - buttonReactAmount;
