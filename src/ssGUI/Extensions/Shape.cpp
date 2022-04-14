@@ -49,9 +49,9 @@ namespace ssGUI::Extensions
         targetShape.Vertices.clear();
         targetShape.Colors.clear();
 
-        for(int i = 0; i < (int)(glm::length(size) * 2.f * pi()) + 2; i++)
+        for(int i = 0; i < (int)(glm::length(size) * 2.f * pi()); i++)
         {
-            float angle = 2.f * pi() * ((float)i / (float)((int)(glm::length(size) * 2.f * pi() + 1)));
+            float angle = 2.f * pi() * ((float)i / (float)((int)(glm::length(size) * 2.f * pi())));
             targetShape.Vertices.push_back(glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
             targetShape.Colors.push_back(color);
         }
@@ -134,6 +134,10 @@ namespace ssGUI::Extensions
         AdditionalShapes.push_back(AdditionalShape());
         ConstructAdditionalPolygon(AdditionalShapes[AdditionalShapes.size() - 1], vertices, colors, behindGUIObject);
         AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
         return NextID++;
     }
 
@@ -146,6 +150,10 @@ namespace ssGUI::Extensions
         AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
         ConstructAdditionalPolygon(AdditionalShapes[index], vertices, colors, behindGUIObject);
         AdditionalShapes[index].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
         return NextID++;
     }
 
@@ -154,6 +162,10 @@ namespace ssGUI::Extensions
         AdditionalShapes.push_back(AdditionalShape());
         ConstructAdditionalRectangle(AdditionalShapes[AdditionalShapes.size() - 1], pos, size, color, behindGUIObject);
         AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
         return NextID++;
     }
 
@@ -166,6 +178,10 @@ namespace ssGUI::Extensions
         AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
         ConstructAdditionalRectangle(AdditionalShapes[index], pos, size, color, behindGUIObject);
         AdditionalShapes[index].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
         return NextID++;
     }
 
@@ -174,6 +190,10 @@ namespace ssGUI::Extensions
         AdditionalShapes.push_back(AdditionalShape());
         ConstructAdditionalCircle(AdditionalShapes[AdditionalShapes.size() - 1], pos, size, color, behindGUIObject);
         AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
         return NextID++;
     }
 
@@ -186,6 +206,10 @@ namespace ssGUI::Extensions
         AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
         ConstructAdditionalCircle(AdditionalShapes[index], pos, size, color, behindGUIObject);
         AdditionalShapes[index].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
         return NextID++;
     }
 
@@ -197,6 +221,10 @@ namespace ssGUI::Extensions
                 continue;
 
             ConstructAdditionalPolygon(AdditionalShapes[i], vertices, colors, behindGUIObject);
+
+            if(Container != nullptr)
+                Container->RedrawObject();
+
             return;
         }
     }
@@ -209,6 +237,10 @@ namespace ssGUI::Extensions
                 continue;
 
             ConstructAdditionalRectangle(AdditionalShapes[i], pos, size, color, behindGUIObject);
+
+            if(Container != nullptr)
+                Container->RedrawObject();
+
             return;
         }
     }
@@ -221,6 +253,10 @@ namespace ssGUI::Extensions
                 continue;
 
             ConstructAdditionalCircle(AdditionalShapes[i], pos, size, color, behindGUIObject);
+
+            if(Container != nullptr)
+                Container->RedrawObject();
+
             return;
         }
     }
@@ -283,6 +319,9 @@ namespace ssGUI::Extensions
             return;
 
         AdditionalShapes.erase(AdditionalShapes.begin() + index);
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     void Shape::RemoveAdditionalShapeWithID(int id)
@@ -293,18 +332,29 @@ namespace ssGUI::Extensions
                 continue;
 
             AdditionalShapes.erase(AdditionalShapes.begin() + i);
+
+            if(Container != nullptr)
+                Container->RedrawObject();
+
+            return;
         }
     }
 
     void Shape::RemoveGUIObjectShape(int index)
     {
         GUIObjectShapesToRemove.insert(index);
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     void Shape::RestoreGUIObjectShape(int index)
     {
         if(GUIObjectShapesToRemove.find(index) != GUIObjectShapesToRemove.end())
             GUIObjectShapesToRemove.erase(index);
+
+        if(Container != nullptr)
+            Container->RedrawObject();
     }
 
     void Shape::SetEnabled(bool enabled)

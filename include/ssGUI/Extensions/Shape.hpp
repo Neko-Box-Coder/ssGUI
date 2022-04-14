@@ -129,21 +129,29 @@ namespace ssGUI::Extensions
 
             /*function: GetAdditionalShapeVerticesWithIndex
             This returns a pointer to the target shape vertices vector that is at target index stored in this extension.
+            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            Also remember to redraw the GUI Object if changing any vertices.
             Nullptr can be returned if index is invalid. */
             virtual std::vector<glm::vec2>* GetAdditionalShapeVerticesWithIndex(int index);
 
             /*function: GetAdditionalShapeVerticesWithID
             This returns a pointer to the target shape vertices vector with target id in this extension.
+            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            Also remember to redraw the GUI Object if changing any vertices.
             Nullptr can be returned if the id is invalid. */
             virtual std::vector<glm::vec2>* GetAdditionalShapeVerticesWithID(int id);
 
             /*function: GetAdditionalShapeColorsWithIndex
             This returns a pointer to the target shape colors vector that is at target index stored in this extension.
+            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            Also remember to redraw the GUI Object if changing any vertices colors.
             Nullptr can be returned if index is invalid. */
             virtual std::vector<glm::u8vec4>* GetAdditionalShapeColorsWithIndex(int index);
             
             /*function: GetAdditionalShapeColorsWithID
             This returns a pointer to the target shape colors vector with target id in this extension.
+            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            Also remember to redraw the GUI Object if changing any vertices colors.
             Nullptr can be returned if the id is invalid. */
             virtual std::vector<glm::u8vec4>* GetAdditionalShapeColorsWithID(int id);
 
