@@ -61,7 +61,7 @@ namespace ssGUI::Backend
     =================================================================
     */
     class BackendSystemInputSFML : public BackendSystemInputInterface
-    {           
+    {
         private:
             ssGUI::KeyPresses CurrentKeyPresses;
             ssGUI::KeyPresses LastKeyPresses;
@@ -74,12 +74,14 @@ namespace ssGUI::Backend
             ssGUI::Enums::CursorType CurrentCursor;
             std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
 
+            static sf::Image CustomCursorImage;
+            static glm::ivec2 Hotspot;
+
             #if USE_SFML_TIME
                 sf::Clock ElapsedTime;
             #else
                 std::chrono::high_resolution_clock::time_point ElapsedTime;
             #endif
-
 
             template <class T>
             void AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo);
@@ -139,6 +141,14 @@ namespace ssGUI::Backend
             //function: GetCursorType
             //See <BackendSystemInputInterface::GetCursorType>
             ssGUI::Enums::CursorType GetCursorType() const override;
+
+            //function: SetCustomCursor
+            //See <BackendSystemInputInterface::SetCustomCursor>
+            void SetCustomCursor(ssGUI::ImageData* customCursor, glm::vec2 hotspot) override;
+
+            //function: GetCustomCursor
+            //See <BackendSystemInputInterface::GetCustomCursor>
+            void GetCustomCursor(ssGUI::ImageData& customCursor, glm::vec2& hotspot) override;
             
             //function: UpdateCursor
             //See <BackendSystemInputInterface::UpdateCursor>

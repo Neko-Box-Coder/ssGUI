@@ -144,7 +144,7 @@ namespace ssGUI::Backend
     void BackendMainWindowSFML::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
     {
         ssGUI::Backend::BackendImageSFML& castedIcon = (ssGUI::Backend::BackendImageSFML&)iconImage;
-        sf::Image sfImg = (*castedIcon.GetGPUTextureP()).copyToImage();
+        sf::Image sfImg = (*static_cast<sf::Texture*>(castedIcon.GetRawHandle())).copyToImage();
         
         CurrentWindow.setIcon(sfImg.getSize().x, sfImg.getSize().y, sfImg.getPixelsPtr());
     }

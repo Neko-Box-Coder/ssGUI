@@ -21,6 +21,7 @@ namespace ssGUI::Enums
     MOVE                - Move cursor
     HELP                - Help cursor
     NOT_ALLOWED         - Not allowed cursor
+    CUSTOM              - Custom cursor (Will need to set the custom cursor from <BackendSystemInputInterface> first)
     */
     enum class CursorType
     {
@@ -38,7 +39,8 @@ namespace ssGUI::Enums
         RESIZE_BOTTOM_LEFT,
         MOVE,
         HELP,
-        NOT_ALLOWED
+        NOT_ALLOWED,
+        CUSTOM
     };
 }
 

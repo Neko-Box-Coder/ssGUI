@@ -49,11 +49,11 @@ namespace ssGUI
 
             //function: LoadImgFileFromMemory
             //See <BackendImageInterface::LoadImgFileFromMemory>
-            virtual bool LoadImgFileFromMemory(void* dataPtr, std::size_t size);
+            virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size);
 
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            virtual bool LoadRawFromMemory(void* dataPtr, int width, int height);
+            virtual bool LoadRawFromMemory(void const * dataPtr, int width, int height);
 
             //function: GetSize
             //See <BackendImageInterface::GetSize>

@@ -1,10 +1,13 @@
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
-
+#include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"     //For getting cursor in MainWindow space
 
 namespace ssGUI::Backend
 {
+    sf::Image BackendSystemInputSFML::CustomCursorImage = sf::Image();
+    glm::ivec2 BackendSystemInputSFML::Hotspot = glm::ivec2();
+    
     template <class T>
     void BackendSystemInputSFML::AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo)
     {
@@ -250,6 +253,10 @@ namespace ssGUI::Backend
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
                     DEBUG_LINE("Failed to load cursor");
                 break;
+            case ssGUI::Enums::CursorType::CUSTOM:
+                if(CustomCursorImage.getPixelsPtr() != nullptr)
+                    if(!SFMLCursor.loadFromPixels(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize(), sf::Vector2u(Hotspot.x, Hotspot.y)))
+                        DEBUG_LINE("Failed to load cursor");
         }
 
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
@@ -281,6 +288,60 @@ namespace ssGUI::Backend
     ssGUI::Enums::CursorType BackendSystemInputSFML::GetCursorType() const
     {
         return CurrentCursor;
+    }
+
+    void BackendSystemInputSFML::SetCustomCursor(ssGUI::ImageData* customCursor, glm::vec2 hotspot)
+    {
+        if(customCursor == nullptr)
+        {
+            DEBUG_LINE();
+            return;
+        }
+
+        //TODO : Confirm if the SFML library bug is fixed https://github.com/SFML/SFML/issues/2066        
+        CustomCursorImage = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+
+        if(CustomCursorImage.getPixelsPtr() != nullptr)
+        {
+            DEBUG_LINE("CustomCursorImage.size(): "<<CustomCursorImage.getSize().x<<", "<<CustomCursorImage.getSize().y);
+            
+            // uint8_t TempCursor[256] =
+            // {
+            //     255, 0, 0, 255,     255, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,
+            //     255, 0, 0, 255,     255, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,
+            //     0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,
+            //     0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,
+            //     0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,
+            //     0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,
+            //     0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,
+            //     0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255,       0, 0, 0, 255
+            // };
+
+            // if(!SFMLCursor.loadFromPixels(&TempCursor[0], sf::Vector2u(8, 8), sf::Vector2u()))
+            //     DEBUG_LINE("Failed to load cursor");
+
+            if(!SFMLCursor.loadFromPixels(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize(), sf::Vector2u()))
+                DEBUG_LINE("Failed to load cursor");
+        }
+        else
+            DEBUG_LINE("Failed to load cursor");
+    }
+
+    void BackendSystemInputSFML::GetCustomCursor(ssGUI::ImageData& customCursor, glm::vec2& hotspot)
+    {
+        //TODO : Confirm if the SFML library bug is fixed https://github.com/SFML/SFML/issues/2066
+        
+        if(CustomCursorImage.getPixelsPtr() == nullptr)
+            return;
+
+        DEBUG_LINE("CustomCursorImage.size(): "<<CustomCursorImage.getSize().x<<", "<<CustomCursorImage.getSize().y);
+
+        if(!customCursor.LoadRawFromMemory(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize().x, CustomCursorImage.getSize().y))
+        {
+            DEBUG_LINE("Failed to load custom cursor image");
+        }
+        else
+            DEBUG_LINE("Loaded");
     }
 
     uint64_t BackendSystemInputSFML::GetElapsedTime() const

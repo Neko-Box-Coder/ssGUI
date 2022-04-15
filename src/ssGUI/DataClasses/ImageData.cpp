@@ -32,14 +32,14 @@ namespace ssGUI
         return BackendImage->LoadFromPath(path);
     }
 
-    bool ImageData::LoadImgFileFromMemory(void* dataPtr, std::size_t size)
+    bool ImageData::LoadImgFileFromMemory(void const * dataPtr, std::size_t size)
     {
         return BackendImage->LoadImgFileFromMemory(dataPtr, size);
     }
 
-    bool ImageData::LoadRawFromMemory(void* dataPtr, int width, int height)
+    bool ImageData::LoadRawFromMemory(void const * dataPtr, int width, int height)
     {
-        return LoadRawFromMemory(dataPtr, width, height);
+        return BackendImage->LoadRawFromMemory(dataPtr, width, height);
     }
             
     glm::ivec2 ImageData::GetSize() const

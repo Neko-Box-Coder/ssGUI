@@ -14,7 +14,12 @@ namespace ssGUI::Backend
     BackendImageSFML::~BackendImageSFML()
     {}
 
-    sf::Texture* BackendImageSFML::GetGPUTextureP()
+    // sf::Texture* BackendImageSFML::GetGPUTextureP()
+    // {
+    //     return GPUTextureValid ? &GPUTexture : nullptr;
+    // }
+
+    void* BackendImageSFML::GetRawHandle()
     {
         return GPUTextureValid ? &GPUTexture : nullptr;
     }
@@ -22,18 +27,6 @@ namespace ssGUI::Backend
     bool BackendImageSFML::IsValid() const
     {
         return GPUTextureValid;
-    }
-
-    bool BackendImageSFML::LoadImgFileFromMemory(void* dataPtr, std::size_t size)
-    {
-        if(GPUTexture.loadFromMemory(dataPtr, size))
-        {
-            GPUTextureValid = true;
-            return true;
-        }
-        //If fails to load, texture remains unchanged
-        else
-            return false;
     }
 
     bool BackendImageSFML::LoadFromPath(std::string path)
@@ -48,7 +41,19 @@ namespace ssGUI::Backend
             return false;
     }
 
-    bool BackendImageSFML::LoadRawFromMemory(void* dataPtr, int width, int height)
+    bool BackendImageSFML::LoadImgFileFromMemory(void const * dataPtr, std::size_t size)
+    {
+        if(GPUTexture.loadFromMemory(dataPtr, size))
+        {
+            GPUTextureValid = true;
+            return true;
+        }
+        //If fails to load, texture remains unchanged
+        else
+            return false;
+    }
+
+    bool BackendImageSFML::LoadRawFromMemory(void const * dataPtr, int width, int height)
     {
         sf::Image img;
         img.create(width, height, (sf::Uint8*)dataPtr);

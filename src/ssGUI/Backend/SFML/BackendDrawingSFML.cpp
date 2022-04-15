@@ -70,7 +70,7 @@ namespace ssGUI::Backend
                                         int startIndex, int endIndex,
                                         const ssGUI::Backend::BackendImageInterface& image)
     {
-        if(((ssGUI::Backend::BackendImageSFML&)image).GetGPUTextureP() == nullptr)
+        if(!image.IsValid())
             return false;
 
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
@@ -87,7 +87,7 @@ namespace ssGUI::Backend
             outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
         }
 
-        targetWindow->draw(outputShape, ((ssGUI::Backend::BackendImageSFML&)image).GetGPUTextureP());
+        targetWindow->draw(outputShape, (sf::Texture*)(((ssGUI::Backend::BackendImageSFML&)image).GetRawHandle()));
 
         return true;
     }
