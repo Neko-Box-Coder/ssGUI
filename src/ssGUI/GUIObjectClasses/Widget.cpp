@@ -70,7 +70,7 @@ namespace ssGUI
 
     ssGUI::Enums::GUIObjectType Widget::GetType() const
     {
-        return ssGUI::Enums::GUIObjectType::BASE_WIDGET;
+        return ssGUI::Enums::GUIObjectType::WIDGET;
     }
 
     void Widget::Delete()

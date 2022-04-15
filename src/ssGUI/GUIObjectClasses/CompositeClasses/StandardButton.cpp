@@ -178,10 +178,10 @@ namespace ssGUI
     }
 
     //You don't have to override this. If you do want to return your own type, 
-    //just edit the GUIObjectType and return it along with BASE_WIDGET
+    //just edit the GUIObjectType and return it along with WIDGET
     ssGUI::Enums::GUIObjectType StandardButton::GetType() const
     {
-        return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::BUTTON |
+        return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::BUTTON |
             ssGUI::Enums::GUIObjectType::STANDARD_BUTTON;
     }
 

@@ -101,7 +101,7 @@ namespace ssGUI
     //Overriding widget
     ssGUI::Enums::GUIObjectType Button::GetType() const
     {
-        return ssGUI::Enums::GUIObjectType::BUTTON | ssGUI::Enums::GUIObjectType::BASE_WIDGET;
+        return ssGUI::Enums::GUIObjectType::BUTTON | ssGUI::Enums::GUIObjectType::WIDGET;
     }
 
     void Button::Delete()

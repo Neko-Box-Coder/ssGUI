@@ -1148,7 +1148,7 @@ namespace ssGUI
 
     ssGUI::Enums::GUIObjectType Text::GetType() const
     {
-        return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
+        return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
     }
 
     void Text::Delete()

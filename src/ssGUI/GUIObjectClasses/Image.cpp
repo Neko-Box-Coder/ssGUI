@@ -158,7 +158,7 @@ namespace ssGUI
     //Overriding widget
     ssGUI::Enums::GUIObjectType Image::GetType() const
     {
-        return ssGUI::Enums::GUIObjectType::IMAGE | ssGUI::Enums::GUIObjectType::BASE_WIDGET;
+        return ssGUI::Enums::GUIObjectType::IMAGE | ssGUI::Enums::GUIObjectType::WIDGET;
     }
 
     void Image::Delete()

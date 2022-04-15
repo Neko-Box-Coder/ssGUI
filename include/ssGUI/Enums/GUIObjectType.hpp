@@ -8,8 +8,7 @@ namespace ssGUI::Enums
     //This class is a bit enum class. Therefore it can contain multiple enum value at once by using the | operator. For example, for a button is default to:
     //========================= C++ =========================
     //ssGUI::Enums::GUIObjectType type =    ssGUI::Enums::GUIObjectType::BUTTON | 
-    //                                      ssGUI::Enums::GUIObjectType::BASE_WIDGET | 
-    //                                      ssGUI::Enums::GUIObjectType::BASE_OBJECT;
+    //                                      ssGUI::Enums::GUIObjectType::WIDGET;
     //=======================================================
     //
     //If you want to check if a GUI object *is or equal* to a GUI object type, you can just use the == or !=.
@@ -28,7 +27,7 @@ namespace ssGUI::Enums
     /*enum: GUIObjectType
 
     WINDOW          - Window object type. All windows will have this value.
-    BASE_WIDGET     - Base widget object type. All widgets will have this value.
+    WIDGET          - Widget object type. All widgets will have this value.
     MAIN_WINDOW     - Main window object type
     IMAGE           - Image object type
     TEXT            - Text object type
@@ -40,7 +39,7 @@ namespace ssGUI::Enums
     enum class GUIObjectType
     {
         WINDOW =            1 << 0,
-        BASE_WIDGET =       1 << 1,
+        WIDGET =            1 << 1,
         MAIN_WINDOW =       1 << 2,
         IMAGE =             1 << 3,
         TEXT =              1 << 4,
