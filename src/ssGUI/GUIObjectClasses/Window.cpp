@@ -22,7 +22,7 @@ namespace ssGUI
         FUNC_DEBUG_ENTRY();
         
         MouseDownPosition = currentMousePos;
-        OnTransformBeginPosition = GetGlobalPosition();
+        TransformTotalMovedDistance = glm::vec2();
         OnTransformBeginSize = GetSize();
 
         if(GetResizeType() != ssGUI::Enums::ResizeType::NONE)
@@ -89,22 +89,28 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         globalInputStatus.MouseInputBlocked = true;
-            
-        glm::vec2 newPos = OnTransformBeginPosition;
+       
         if(ResizingLeft || ResizingRight || ResizingTop || ResizingBot)
         {
             //Resize
             glm::vec2 newSize = OnTransformBeginSize;
             if(ResizingTop)
             {
-                newPos += glm::vec2(0, mouseDelta.y);
+                glm::vec2 newPos = GetGlobalPosition();
                 newSize -= glm::vec2(0, mouseDelta.y);
 
-                //Bound new pos to prevent moving the window when resizing reaches max or min
                 if(newSize.y < GetMinSize().y)
-                    newPos.y = OnTransformBeginPosition.y + (OnTransformBeginSize.y - GetMinSize().y);
+                    newSize.y = GetMinSize().y;
                 else if(newSize.y > GetMaxSize().y)
-                    newPos.y = OnTransformBeginPosition.y - (GetMaxSize().y - OnTransformBeginSize.y);
+                    newSize.y = GetMaxSize().y;
+
+                float posYDelta = OnTransformBeginSize.y - newSize.y;
+                if(posYDelta - TransformTotalMovedDistance.y != 0)
+                {
+                    newPos.y += posYDelta - TransformTotalMovedDistance.y;
+                    TransformTotalMovedDistance.y = posYDelta;
+                    SetGlobalPosition(newPos);
+                }
             }
             else if(ResizingBot)
             {
@@ -113,14 +119,21 @@ namespace ssGUI
             
             if(ResizingLeft)
             {
-                newPos += glm::vec2(mouseDelta.x, 0);
+                glm::vec2 newPos = GetGlobalPosition();
                 newSize -= glm::vec2(mouseDelta.x, 0);
 
-                //Bound new pos to prevent moving the window when resizing reaches max or min
                 if(newSize.x < GetMinSize().x)
-                    newPos.x = OnTransformBeginPosition.x + (OnTransformBeginSize.x - GetMinSize().x);
+                    newSize.x = GetMinSize().x;
                 else if(newSize.x > GetMaxSize().x)
-                    newPos.x = OnTransformBeginPosition.x - (GetMaxSize().x - OnTransformBeginSize.x);
+                    newSize.x = GetMaxSize().x;
+
+                float posXDelta = OnTransformBeginSize.x - newSize.x;
+                if(posXDelta - TransformTotalMovedDistance.x != 0)
+                {
+                    newPos.x += posXDelta - TransformTotalMovedDistance.x;
+                    TransformTotalMovedDistance.x = posXDelta;
+                    SetGlobalPosition(newPos);
+                }
             }
             else if(ResizingRight)
             {
@@ -128,15 +141,15 @@ namespace ssGUI
             }
             SetSize(newSize);
         }
-            
         //Titlebar Drag
-        if(Dragging)
+        else if(Dragging)
         {
-            newPos += mouseDelta;
+            glm::vec2 newPos = GetGlobalPosition();
+            newPos += mouseDelta - TransformTotalMovedDistance;
+            TransformTotalMovedDistance = mouseDelta;
+            SetGlobalPosition(newPos);
             SetWindowDragState(ssGUI::Enums::WindowDragState::DRAGGING);
         }
-
-        SetGlobalPosition(newPos);
 
         //Updating cursor
         if(ResizingTop && ResizingLeft)
@@ -245,7 +258,7 @@ namespace ssGUI
             SetWindowDragState(ssGUI::Enums::WindowDragState::NONE);
 
         OnTransformBeginSize = glm::vec2();
-        OnTransformBeginPosition = glm::vec2();
+        TransformTotalMovedDistance = glm::vec2();
         MouseDownPosition = glm::vec2();
 
         FUNC_DEBUG_EXIT();
@@ -320,7 +333,7 @@ namespace ssGUI
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
                        IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), DeleteAfterClosed(true), 
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
-                       ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
+                       ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
         AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
         AddExtension(new ssGUI::Extensions::Border());
@@ -487,6 +500,36 @@ namespace ssGUI
         return ResizingTop || ResizingRight || ResizingBot || ResizingLeft;
     }
 
+    ssGUI::WindowResizeDragData Window::GetResizeDragData() const
+    {
+        ssGUI::WindowResizeDragData returnData;
+        returnData.CurrentDragState = CurrentDragState;
+        returnData.ResizingTop = ResizingTop;
+        returnData.ResizingBot = ResizingBot;
+        returnData.ResizingLeft = ResizingLeft;
+        returnData.ResizingRight = ResizingRight;
+        returnData.Dragging = Dragging;
+        returnData.TransformTotalMovedDistance = TransformTotalMovedDistance;
+        returnData.OnTransformBeginSize = OnTransformBeginSize;
+        returnData.MouseDownPosition = MouseDownPosition;
+
+        return returnData;
+    }
+
+    void Window::SetResizeDragData(ssGUI::WindowResizeDragData data)
+    {
+        ssGUI::WindowResizeDragData returnData;
+        CurrentDragState = data.CurrentDragState;
+        ResizingTop = data.ResizingTop;
+        ResizingBot = data.ResizingBot;
+        ResizingLeft = data.ResizingLeft;
+        ResizingRight = data.ResizingRight;
+        Dragging = data.Dragging;
+        TransformTotalMovedDistance = data.TransformTotalMovedDistance;
+        OnTransformBeginSize = data.OnTransformBeginSize;
+        MouseDownPosition = data.MouseDownPosition;
+    }
+
     void Window::SetDeleteAfterClosed(bool deleteAfterClosed)
     {
         DeleteAfterClosed = deleteAfterClosed;
@@ -512,6 +555,15 @@ namespace ssGUI
             return;
         
         GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->RemoveEventListener(index);   
+    }
+
+    void Window::SetBackgroundColor(glm::u8vec4 color)
+    {
+        auto titlebarColor = GetTitlebarColor();
+        BackgroundColour = color;
+        //Reapply titlebar color
+        SetTitlebarColor(titlebarColor);
+        RedrawObject();
     }
 
     ssGUI::Enums::GUIObjectType Window::GetType() const

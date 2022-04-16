@@ -20,8 +20,8 @@ int main()
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
     ssGUI::StandardWindow window2;
-    window2.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
     window2.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
+    window2.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
     ssGUI::StandardWindow window3;
     window3.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
     window3.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));

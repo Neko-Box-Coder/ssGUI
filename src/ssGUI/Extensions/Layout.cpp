@@ -1,5 +1,11 @@
 #include "ssGUI/Extensions/Layout.hpp"
 
+#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
+#include "ssGUI/Extensions/LayoutEnforcer.hpp"
+#include "ssGUI/ssGUITags.hpp"
+
 namespace ssGUI::Extensions
 {    
     Layout::Layout(Layout const& other)
@@ -55,18 +61,29 @@ namespace ssGUI::Extensions
         //Don't need to exclude spacing for the last element, therefore adding it back 
         remainingLength += GetSpacing();
 
-        //Change the child after the last size change child to fit the layout container
+        //Change the children after the last size change child to fit the layout container
         if(lastChildChangeIndex != -1 && ++lastChildChangeIndex <= childrenPos.size() - 2)
         {
-            if(childrenLength[lastChildChangeIndex] - sizeDiff >= minChildrenLength[lastChildChangeIndex] && 
-                childrenLength[lastChildChangeIndex] - sizeDiff <= maxChildrenLength[lastChildChangeIndex])
+            for(int i = lastChildChangeIndex; i < childrenLength.size(); i++)
             {
-                childrenLength[lastChildChangeIndex] -= sizeDiff;
+                if(childrenLength[i] - sizeDiff >= minChildrenLength[i] && 
+                    childrenLength[i] - sizeDiff <= maxChildrenLength[i])
+                {
+                    childrenLength[i] -= sizeDiff;
+                    break;
+                }
+                else if(childrenLength[i] - sizeDiff < minChildrenLength[i])
+                {
+                    sizeDiff -= (childrenLength[i] - minChildrenLength[i]);
+                    childrenLength[i] = minChildrenLength[i];
+
+                }
+                else if(childrenLength[i] - sizeDiff > maxChildrenLength[i])
+                {
+                    sizeDiff -= (childrenLength[i] - maxChildrenLength[i]);
+                    childrenLength[i] = maxChildrenLength[i];
+                }
             }
-            else if(childrenLength[lastChildChangeIndex] - sizeDiff < minChildrenLength[lastChildChangeIndex])
-                childrenLength[lastChildChangeIndex] = minChildrenLength[lastChildChangeIndex];
-            else if(childrenLength[lastChildChangeIndex] - sizeDiff > maxChildrenLength[lastChildChangeIndex])
-                childrenLength[lastChildChangeIndex] = maxChildrenLength[lastChildChangeIndex];
         }
 
         //Calculate length
@@ -544,11 +561,11 @@ namespace ssGUI::Extensions
     void Layout::GetLastDifferentChild(std::vector<float>& childrenPos, std::vector<float>& childrenSize, float& sizeDiff, int& lastChildChangeIndex)
     {
         FUNC_DEBUG_ENTRY();
+        lastChildChangeIndex = -1;
+        sizeDiff = 0;
         //There are children added or deleted. No resizing is done
         if(LastUpdateChildrenSize.size() != childrenPos.size())
         {
-            lastChildChangeIndex = -1;
-            sizeDiff = 0;
             FUNC_DEBUG_EXIT();
             return;
         }
@@ -579,11 +596,25 @@ namespace ssGUI::Extensions
             {
                 if(IsHorizontalLayout() && LastUpdateChildrenSize[childIndex].x != childrenSize[itIndex])
                 {
+                    if(lastChildChangeIndex != -1)
+                    {
+                        lastChildChangeIndex = -1;
+                        sizeDiff = 0;
+                        break;
+                    }
+                    
                     sizeDiff = childrenSize[itIndex] - LastUpdateChildrenSize[childIndex].x;
                     lastChildChangeIndex = itIndex;
                 }
                 else if(!IsHorizontalLayout() && LastUpdateChildrenSize[childIndex].y != childrenSize[itIndex])
                 {
+                    if(lastChildChangeIndex != -1)
+                    {
+                        lastChildChangeIndex = -1;
+                        sizeDiff = 0;
+                        break;
+                    }
+
                     sizeDiff = childrenSize[itIndex] - LastUpdateChildrenSize[childIndex].y;
                     lastChildChangeIndex = itIndex;
                 }                
@@ -1240,6 +1271,9 @@ namespace ssGUI::Extensions
                     //Record the original size if not exists (Can't be done in OnChildAdded as that's after the child being added)
                     if(containerLayout->OriginalChildrenSize.find(childIndex) == containerLayout->OriginalChildrenSize.end())
                         containerLayout->OriginalChildrenSize[childIndex] = child->GetSize();
+
+                    if(!child->IsExtensionExist(ssGUI::Extensions::LayoutEnforcer::EXTENSION_NAME) && child->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+                        child->AddExtension(new ssGUI::Extensions::LayoutEnforcer());
                     FUNC_DEBUG_EXIT("OnRecursiveChildAddEventCallback");
                 }
             );

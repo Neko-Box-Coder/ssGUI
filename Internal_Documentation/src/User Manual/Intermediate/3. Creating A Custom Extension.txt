@@ -176,12 +176,12 @@ namespace ssGUI::Extensions
             return;
         }
 
-        if(IsPreUpdate)
+        if(isPreUpdate)
         {
             //Any changes before running the GUI object update
         }
 
-        if(!IsPreUpdate)
+        if(!isPreUpdate)
         {   
             //Any changes after running the GUI object update
         }
@@ -193,7 +193,7 @@ namespace ssGUI::Extensions
     {        
         FUNC_DEBUG_ENTRY();
         
-        if(!Enabled || Container == nullptr || IsPreRender)
+        if(!Enabled || Container == nullptr || isPreRender)
         {
             FUNC_DEBUG_EXIT();
             return;

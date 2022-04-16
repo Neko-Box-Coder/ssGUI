@@ -4,6 +4,7 @@
 #include "ssGUI/GUIObjectClasses/BaseGUIObject.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include "ssGUI/Enums/ResizeType.hpp"
+#include "ssGUI/DataClasses/WindowResizeDragData.hpp"
 #include "ssGUI/Enums/WindowDragState.hpp"
 #include "ssGUI/EventCallbacks/OnWindowCloseEventCallback.hpp"
 #include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
@@ -40,7 +41,7 @@ namespace ssGUI
         bool ResizingLeft;
         bool ResizingRight;
         bool Dragging;
-        glm::vec2 OnTransformBeginPosition;
+        glm::vec2 TransformTotalMovedDistance;
         glm::vec2 OnTransformBeginSize;
         glm::vec2 MouseDownPosition;
     =================================================================
@@ -48,7 +49,7 @@ namespace ssGUI
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
                        IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), DeleteAfterClosed(true), 
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
-                       ResizingRight(false), Dragging(false), OnTransformBeginPosition(), OnTransformBeginSize(), MouseDownPosition()
+                       ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
         AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
         AddExtension(new ssGUI::Extensions::Border());
@@ -59,6 +60,9 @@ namespace ssGUI
     class Window : public BaseGUIObject
     {
         private:
+            Window& operator=(Window const& other) = default;
+
+        protected:
             //Window status
             bool Titlebar;
             int TitlebarHeight;
@@ -78,20 +82,16 @@ namespace ssGUI
             bool ResizingLeft;
             bool ResizingRight;
             bool Dragging;
-            glm::vec2 OnTransformBeginPosition;
+            glm::vec2 TransformTotalMovedDistance;
             glm::vec2 OnTransformBeginSize;
             glm::vec2 MouseDownPosition;
-            Window& operator=(Window const& other) = default;
 
             virtual void SetWindowDragState(ssGUI::Enums::WindowDragState dragState);
             virtual void OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& globalInputStatus);
             virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
             virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
 
-
-        protected:
             Window(Window const& other) = default;
-
             virtual void ConstructRenderInfo() override;
 
         public:
@@ -181,6 +181,15 @@ namespace ssGUI
             //Returns true if the user is currently resizing the window. Not supporting MainWindow for now.
             virtual bool IsResizing() const;
 
+            //function: GetResizeDragData
+            //Returns the current resize and drag status of the window
+            virtual ssGUI::WindowResizeDragData GetResizeDragData() const;
+
+            //function: SetResizeDragData
+            //Sets the current resize and drag status of the window. 
+            //Only use it if you know what you are doing 
+            virtual void SetResizeDragData(ssGUI::WindowResizeDragData data);
+
             //function: SetDeleteAfterClosed
             //If sets to true, the window will be deleted automatically after being closed
             virtual void SetDeleteAfterClosed(bool deleteAfterClosed);
@@ -197,24 +206,28 @@ namespace ssGUI
             //Proxy function for removing listener from <EventCallbacks::OnWindowCloseEventCallback> on this object 
             virtual void RemoveOnCloseEventListener(int index);
 
+            //function: SetBackgroundColor
+            //See <BaseGUIObject::SetBackgroundColor>
+            virtual void SetBackgroundColor(glm::u8vec4 color) override;
+
             //function: GetType
-            //See <GUIObject::GetType>
+            //See <BaseGUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
             
             //function: Delete 
-            //See <GUIObject::Delete>
+            //See <BaseGUIObject::Delete>
             virtual void Delete() override;
 
             //function: Internal_Draw
-            //See <GUIObject::Internal_Draw>
+            //See <BaseGUIObject::Internal_Draw>
             virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: Internal_Update
-            //See <GUIObject::Internal_Update>
+            //See <BaseGUIObject::Internal_Update>
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Clone
-            //See <GUIObject::Clone>
+            //See <BaseGUIObject::Clone>
             virtual GUIObject* Clone(bool cloneChildren) override;
     };
 }
