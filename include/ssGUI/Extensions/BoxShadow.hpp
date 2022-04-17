@@ -34,6 +34,9 @@ namespace ssGUI::Extensions
     */
     class BoxShadow : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             BoxShadow& operator=(BoxShadow const& other);
 
@@ -46,7 +49,13 @@ namespace ssGUI::Extensions
             float BlurRadius;
             glm::u8vec4 ShadowColor;
 
+            BoxShadow();
+            virtual ~BoxShadow() override;
             BoxShadow(BoxShadow const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
             constexpr double pi() { return std::atan(1)*4; };
@@ -62,8 +71,6 @@ namespace ssGUI::Extensions
         public:
             static const std::string EXTENSION_NAME;
 
-            BoxShadow();
-            virtual ~BoxShadow() override;
 
             //function: SetPositionOffset
             //Sets the position offset of the box shadow from the GUI Object position
@@ -132,7 +139,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual BoxShadow* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

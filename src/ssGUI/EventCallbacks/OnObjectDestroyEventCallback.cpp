@@ -7,7 +7,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* OnObjectDestroyEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    OnObjectDestroyEventCallback* OnObjectDestroyEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         OnObjectDestroyEventCallback* temp;
         

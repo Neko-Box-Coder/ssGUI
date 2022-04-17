@@ -16,17 +16,17 @@ int main()
     window.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
-    ssGUI::Extensions::Dockable* dock = new ssGUI::Extensions::Dockable();
+    ssGUI::Extensions::Dockable* dock = ssGUI::Factory::Create<ssGUI::Extensions::Dockable>();
     window.AddExtension(dock);
 
     //Creating window
     auto window2 = window.Clone(false);
     static_cast<ssGUI::Window*>(window2)->SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));    
 
-    ssGUI::Extensions::Docker* docker = new ssGUI::Extensions::Docker();
+    auto docker = ssGUI::Factory::Create<ssGUI::Extensions::Docker>();
     docker->SetChildrenDockerUseThisSettings(false);
     
-    ssGUI::Extensions::Border* bor = new ssGUI::Extensions::Border();
+    auto bor = ssGUI::Factory::Create<ssGUI::Extensions::Border>();
     
     ssGUI::Widget mainWindowWidget;
 
@@ -36,7 +36,7 @@ int main()
     mainWindowWidget.SetMinSize(glm::vec2(200, 200));
     mainWindowWidget.SetParent(&mainWindow);
 
-    auto layout = new ssGUI::Extensions::Layout();
+    auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
     layout->SetCoverFullLength(false);
     layout->SetHorizontalLayout(true);
     mainWindow.AddExtension(layout);

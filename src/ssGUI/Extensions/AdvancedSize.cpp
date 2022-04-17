@@ -2,6 +2,13 @@
 
 namespace ssGUI::Extensions
 {
+    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
+                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
+                                    VerticalPercentageValue(0.2), OverrideDefaultSize(true)
+    {}
+
+    AdvancedSize::~AdvancedSize()
+    {}
 
     AdvancedSize::AdvancedSize(AdvancedSize const& other)
     {
@@ -22,14 +29,6 @@ namespace ssGUI::Extensions
     {}
 
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
-    
-    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
-                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
-                                    VerticalPercentageValue(0.2), OverrideDefaultSize(true)
-    {}
-
-    AdvancedSize::~AdvancedSize()
-    {}
 
     void AdvancedSize::SetHorizontalUsePercentage(bool percentage)
     {
@@ -177,7 +176,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* AdvancedSize::Clone(ssGUI::GUIObject* newContainer)
+    AdvancedSize* AdvancedSize::Clone(ssGUI::GUIObject* newContainer)
     {
         AdvancedSize* temp = new AdvancedSize(*this);
         if(newContainer != nullptr)

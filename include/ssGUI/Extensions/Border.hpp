@@ -30,6 +30,9 @@ namespace ssGUI::Extensions
     */
     class Border : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             Border& operator=(Border const& other);
         
@@ -46,13 +49,16 @@ namespace ssGUI::Extensions
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
+            Border();
+            virtual ~Border() override;
             Border(Border const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
         public:
             static const std::string EXTENSION_NAME;
-
-            Border();
-            virtual ~Border() override;
             
             //function: GetBorderColor
             virtual glm::u8vec4 GetBorderColor() const;
@@ -125,7 +131,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Border* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

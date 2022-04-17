@@ -283,7 +283,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* MainWindow::Clone(bool cloneChildren)
+    MainWindow* MainWindow::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         MainWindow* temp = new MainWindow(*this);

@@ -14,6 +14,36 @@ namespace ssGUI::Extensions
     ssGUI::GUIObject* Dockable::TargetDockObject = nullptr;
     Dockable::DockSide Dockable::TargetDockSide = Dockable::DockSide::NONE;
     
+    Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(-1), CurrentObjectsReferences(), UseTriggerPercentage(true), 
+                            TriggerPercentage(0.25f), TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
+                            ContainerIsDocking(false), DockPreivewTop(nullptr), DockPreivewRight(nullptr), DockPreivewBottom(nullptr), DockPreivewLeft(nullptr),
+                            DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr), WindowDragStateChangedEventIndex(-1)
+    {}
+    
+    Dockable::~Dockable()
+    {
+        if(WindowDragStateChangedEventIndex != -1 && Container != nullptr && 
+            Container->IsEventCallbackExist(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME))
+        {
+            Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->
+                RemoveEventListener(WindowDragStateChangedEventIndex);
+            
+            if(Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->
+                GetEventListenerCount() == 0)
+            {
+                Container->RemoveEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME);
+            }
+        }
+
+        DiscardTriggerAreas();
+        DiscardLeftPreview();
+        DiscardRightPreview();
+        DiscardTopPreview();
+        DiscardBottomPreview();
+
+        CurrentObjectsReferences.CleanUp();
+    }
+
     Dockable::Dockable(Dockable const& other)
     {
         Container = nullptr;
@@ -57,8 +87,8 @@ namespace ssGUI::Extensions
             static_cast<ssGUI::Widget*>((*widget))->SetInteractable(false);
             static_cast<ssGUI::Widget*>((*widget))->SetBlockInput(false);
 
-            ssGUI::Extensions::AdvancedPosition* ap = new ssGUI::Extensions::AdvancedPosition();
-            ssGUI::Extensions::AdvancedSize* as = new ssGUI::Extensions::AdvancedSize(); 
+            auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+            auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>(); 
 
             (*widget)->AddExtension(ap);
             (*widget)->AddExtension(as);
@@ -553,12 +583,12 @@ namespace ssGUI::Extensions
         //The docker will automatically create docker & layout extension if not exist
         if(!newParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
         {
-            newParent->AddExtension(new ssGUI::Extensions::Docker());
+            newParent->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Docker>());
             dockLayout = static_cast<ssGUI::Extensions::Layout*>(newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
         }
 
         if(!newParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-            newParent->AddExtension(new ssGUI::Extensions::Layout());
+            newParent->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
 
         //Check if the generated docker does not use parent docker & layout or not.
         if(newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) 
@@ -778,36 +808,6 @@ namespace ssGUI::Extensions
     }
     
     const std::string Dockable::EXTENSION_NAME = "Dockable";
-
-    Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(-1), CurrentObjectsReferences(), UseTriggerPercentage(true), 
-                            TriggerPercentage(0.25f), TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
-                            ContainerIsDocking(false), DockPreivewTop(nullptr), DockPreivewRight(nullptr), DockPreivewBottom(nullptr), DockPreivewLeft(nullptr),
-                            DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr), WindowDragStateChangedEventIndex(-1)
-    {}
-    
-    Dockable::~Dockable()
-    {
-        if(WindowDragStateChangedEventIndex != -1 && Container != nullptr && 
-            Container->IsEventCallbackExist(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME))
-        {
-            Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->
-                RemoveEventListener(WindowDragStateChangedEventIndex);
-            
-            if(Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->
-                GetEventListenerCount() == 0)
-            {
-                Container->RemoveEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME);
-            }
-        }
-
-        DiscardTriggerAreas();
-        DiscardLeftPreview();
-        DiscardRightPreview();
-        DiscardTopPreview();
-        DiscardBottomPreview();
-
-        CurrentObjectsReferences.CleanUp();
-    }
 
     void Dockable::SetTriggerPercentage(float percentage)
     {
@@ -1056,7 +1056,7 @@ namespace ssGUI::Extensions
             event = Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME);
         else
         {
-            event = new ssGUI::EventCallbacks::WindowDragStateChangedEventCallback();
+            event = ssGUI::Factory::Create<ssGUI::EventCallbacks::WindowDragStateChangedEventCallback>();
             Container->AddEventCallback(event);
         }
 
@@ -1111,7 +1111,7 @@ namespace ssGUI::Extensions
         return &CurrentObjectsReferences;
     }
 
-    Extension* Dockable::Clone(ssGUI::GUIObject* newContainer)
+    Dockable* Dockable::Clone(ssGUI::GUIObject* newContainer)
     {
         Dockable* temp = new Dockable(*this);
         if(newContainer != nullptr)

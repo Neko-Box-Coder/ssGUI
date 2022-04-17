@@ -8,6 +8,41 @@
 
 namespace ssGUI::Extensions
 {    
+    Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
+                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
+                        Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
+                        ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
+    {}
+
+    Layout::~Layout()
+    {
+        if(Container != nullptr)
+        {
+            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName, int removeIndex)
+            {
+                target->GetEventCallback(eventCallbackName)->RemoveEventListener(removeIndex);
+            
+                if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
+                    target->RemoveEventCallback(eventCallbackName);
+            };
+
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME, OnChildAddEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME, ChildAddedEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME, ChildRemovedEventIndex);
+            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME, ChildPositionChangedEventIndex);
+        
+            for(auto it : MinMaxSizeChangedEventIndices)
+            {
+                ssGUI::GUIObject* obj = CurrentObjectsReferences.GetObjectReference(it.first);
+
+                if(obj != nullptr)
+                    eventCallbackCleanUp(obj, ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME, it.second);
+            }
+        }
+        CurrentObjectsReferences.CleanUp();
+    }    
+    
     Layout::Layout(Layout const& other)
     {
         FUNC_DEBUG_ENTRY();
@@ -686,41 +721,6 @@ namespace ssGUI::Extensions
 
     const std::string Layout::EXTENSION_NAME = "Layout";
 
-    Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
-                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
-                        ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
-                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
-    {}
-
-    Layout::~Layout()
-    {
-        if(Container != nullptr)
-        {
-            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName, int removeIndex)
-            {
-                target->GetEventCallback(eventCallbackName)->RemoveEventListener(removeIndex);
-            
-                if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
-                    target->RemoveEventCallback(eventCallbackName);
-            };
-
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME, OnChildAddEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME, ChildAddedEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME, ChildRemovedEventIndex);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME, ChildPositionChangedEventIndex);
-        
-            for(auto it : MinMaxSizeChangedEventIndices)
-            {
-                ssGUI::GUIObject* obj = CurrentObjectsReferences.GetObjectReference(it.first);
-
-                if(obj != nullptr)
-                    eventCallbackCleanUp(obj, ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME, it.second);
-            }
-        }
-        CurrentObjectsReferences.CleanUp();
-    }
-
     bool Layout::IsHorizontalLayout() const
     {
         return HorizontalLayout;
@@ -847,10 +847,7 @@ namespace ssGUI::Extensions
                     currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
                 if(!Container->GetCurrentChild()->IsEventCallbackExist(onMinMaxSizeChangedEventName))
-                {
-                    Container->GetCurrentChild()->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
-                        new ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback()));
-                }
+                    Container->GetCurrentChild()->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>());
 
                 if(MinMaxSizeChangedEventIndices.find(currentChildIndex) == MinMaxSizeChangedEventIndices.end())
                 {
@@ -999,10 +996,7 @@ namespace ssGUI::Extensions
             
             //Add MinMax size changed callback
             if(!child->IsEventCallbackExist(onMinMaxSizeChangedEventName))
-            {
-                child->AddEventCallback(static_cast<ssGUI::EventCallbacks::EventCallback*>(
-                    new ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback()));
-            }
+                child->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>());
             
             if(MinMaxSizeChangedEventIndices.find(childIndex) == MinMaxSizeChangedEventIndices.end())
             {
@@ -1248,7 +1242,7 @@ namespace ssGUI::Extensions
             SetUpdateContainerMinMaxSize(true);
 
         if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))
-            Container->AddEventCallback(new ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback());
+            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback>());
 
         OnChildAddEventIndex = static_cast<ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback*>(
             Container->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))->AddEventListener
@@ -1273,7 +1267,7 @@ namespace ssGUI::Extensions
                         containerLayout->OriginalChildrenSize[childIndex] = child->GetSize();
 
                     if(!child->IsExtensionExist(ssGUI::Extensions::LayoutEnforcer::EXTENSION_NAME) && child->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
-                        child->AddExtension(new ssGUI::Extensions::LayoutEnforcer());
+                        child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::LayoutEnforcer>());
                     FUNC_DEBUG_EXIT("OnRecursiveChildAddEventCallback");
                 }
             );
@@ -1283,13 +1277,13 @@ namespace ssGUI::Extensions
         const std::string childPositionChangedEventName = ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME;
 
         if(!Container->IsEventCallbackExist(onChildAddedEventName))
-            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildAddedEventCallback());
+            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>());
         
         if(!Container->IsEventCallbackExist(onChildRemovedEventName))
-            Container->AddEventCallback(new ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback());
+            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>());
 
         if(!Container->IsEventCallbackExist(childPositionChangedEventName))
-            Container->AddEventCallback(new ssGUI::EventCallbacks::ChildPositionChangedEventCallback());
+            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>());
 
         ChildAddedEventIndex = Container->GetEventCallback(onChildAddedEventName)->AddEventListener(
             std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1));
@@ -1345,7 +1339,7 @@ namespace ssGUI::Extensions
         return &CurrentObjectsReferences;
     }
 
-    Extension* Layout::Clone(ssGUI::GUIObject* newContainer)
+    Layout* Layout::Clone(ssGUI::GUIObject* newContainer)
     {
         Layout* temp = new Layout(*this);
         if(newContainer != nullptr)

@@ -15,7 +15,7 @@ int main()
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
 
-    window.AddExtension(new ssGUI::Extensions::BoxShadow());
+    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>());
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;

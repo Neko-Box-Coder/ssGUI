@@ -66,7 +66,7 @@ int main()
 
     text.SetParent(&mainWindow);
 
-    text.AddExtension(new ssGUI::Extensions::Border());
+    text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;

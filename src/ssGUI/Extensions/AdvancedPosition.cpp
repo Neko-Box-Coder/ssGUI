@@ -2,7 +2,15 @@
 
 namespace ssGUI::Extensions
 {
+    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
+                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalUsePercentage(true),
+                                            VerticalUsePercentage(true), HorizontalPixelValue(0), VerticalPixelValue(0),
+                                            HorizontalPercentageValue(0), VerticalPercentageValue(0)
+    {}
 
+    AdvancedPosition::~AdvancedPosition()
+    {}
+    
     AdvancedPosition::AdvancedPosition(AdvancedPosition const& other)
     {
         Container = nullptr;
@@ -25,14 +33,7 @@ namespace ssGUI::Extensions
 
     const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";
     
-    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalUsePercentage(true),
-                                            VerticalUsePercentage(true), HorizontalPixelValue(0), VerticalPixelValue(0),
-                                            HorizontalPercentageValue(0), VerticalPercentageValue(0)
-    {}
-
-    AdvancedPosition::~AdvancedPosition()
-    {}
+    
 
     void AdvancedPosition::SetHorizontalAnchor(HorizontalAnchor anchor)
     {
@@ -306,7 +307,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* AdvancedPosition::Clone(ssGUI::GUIObject* newContainer)
+    AdvancedPosition* AdvancedPosition::Clone(ssGUI::GUIObject* newContainer)
     {
         AdvancedPosition* temp = new AdvancedPosition(*this);
         if(newContainer != nullptr)

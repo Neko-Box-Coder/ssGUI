@@ -8,6 +8,12 @@
 
 namespace ssGUI::Extensions
 {
+    LayoutEnforcer::LayoutEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false)
+    {}
+
+    LayoutEnforcer::~LayoutEnforcer()
+    {}
+    
     LayoutEnforcer::LayoutEnforcer(LayoutEnforcer const& other)
     {
         Container = nullptr;
@@ -25,12 +31,6 @@ namespace ssGUI::Extensions
     
     //Defining the extension name
     const std::string LayoutEnforcer::EXTENSION_NAME = "Layout Enforcer";
-    
-    LayoutEnforcer::LayoutEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false)
-    {}
-
-    LayoutEnforcer::~LayoutEnforcer()
-    {}
 
     void LayoutEnforcer::SetEnabled(bool enabled)
     {
@@ -258,7 +258,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* LayoutEnforcer::Clone(ssGUI::GUIObject* newContainer)
+    LayoutEnforcer* LayoutEnforcer::Clone(ssGUI::GUIObject* newContainer)
     {
         LayoutEnforcer* temp = new LayoutEnforcer(*this);
         if(newContainer != nullptr)

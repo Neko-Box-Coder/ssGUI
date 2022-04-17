@@ -1,6 +1,7 @@
 #ifndef SSGUI_EVENT_CALLBACK
 #define SSGUI_EVENT_CALLBACK
 
+#include "ssGUI/Factory.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include <functional>
 #include <string>
@@ -35,13 +36,19 @@ namespace ssGUI::EventCallbacks
     ===========================================================================*/
     class EventCallback
     {
+        public:
+            friend class ssGUI::Factory;
+
         protected:
+            EventCallback() = default;
             EventCallback(EventCallback const &) = default;
             EventCallback& operator=(EventCallback const &) = default;
-            EventCallback() = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
         public:
-            
             /*function: AddEventListener
 
             Adds a listener to this EventCallback, and returns an index for removing it.

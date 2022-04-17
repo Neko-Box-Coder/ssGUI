@@ -45,6 +45,9 @@ namespace ssGUI::Extensions
     */
     class RoundedCorners : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             RoundedCorners& operator=(RoundedCorners const& other);
 
@@ -60,7 +63,13 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToRoundPrevVertices;
             std::vector<int> VerticesToRoundNextVertices;
 
+            RoundedCorners();
+            virtual ~RoundedCorners() override;
             RoundedCorners(RoundedCorners const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             //Return angle in radians. Positive if clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
@@ -81,9 +90,6 @@ namespace ssGUI::Extensions
 
         public:
             static const std::string EXTENSION_NAME;
-
-            RoundedCorners();
-            virtual ~RoundedCorners() override;
 
             //function: SetRoundedCornersRadius
             //Sets the radius for the rounded corners. Note that it will use the largest possible radius if this is not available.
@@ -185,7 +191,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual RoundedCorners* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

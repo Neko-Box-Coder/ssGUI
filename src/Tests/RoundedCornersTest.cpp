@@ -18,7 +18,7 @@ int main()
     widget.SetSize(glm::ivec2(300, 300));
     widget.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
 
-    auto roundedCornersEx = new ssGUI::Extensions::RoundedCorners();
+    auto roundedCornersEx = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
     roundedCornersEx->SetRoundedCornersRadius(25);
 
     roundedCornersEx->ClearTargetShapes();

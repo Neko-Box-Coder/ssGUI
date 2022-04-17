@@ -38,6 +38,9 @@ namespace ssGUI::Extensions
     */
     class Shape : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             Shape& operator=(Shape const& other);
 
@@ -58,7 +61,13 @@ namespace ssGUI::Extensions
             std::unordered_set<int> GUIObjectShapesToRemove;
             int NextID;
 
+            Shape();
+            virtual ~Shape() override;
             Shape(Shape const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
             constexpr double pi() { return std::atan(1)*4; };
@@ -72,9 +81,6 @@ namespace ssGUI::Extensions
         
         public:
             static const std::string EXTENSION_NAME;
-
-            Shape();
-            virtual ~Shape() override;
 
             /*function: AddAdditionalPolygon
             Adding additional polygon in addition to GUI Object. 
@@ -214,7 +220,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Shape* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

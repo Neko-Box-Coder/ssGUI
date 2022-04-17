@@ -32,6 +32,9 @@ namespace ssGUI::Extensions
     */
     class MaskEnforcer : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             MaskEnforcer& operator=(MaskEnforcer const& other);
 
@@ -43,16 +46,19 @@ namespace ssGUI::Extensions
 
             ObjectsReferences CurrentObjectsReferences;
 
+            MaskEnforcer();
+            virtual ~MaskEnforcer() override;
             MaskEnforcer(MaskEnforcer const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
         
         public:
             static const std::string EXTENSION_NAME;
-
-            MaskEnforcer();
-            virtual ~MaskEnforcer() override;
             
             //function: AddTargetMaskObject
             //Add a <Mask> extension to mask this object. targetMaskObj should have <Mask> attached.
@@ -105,7 +111,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual MaskEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

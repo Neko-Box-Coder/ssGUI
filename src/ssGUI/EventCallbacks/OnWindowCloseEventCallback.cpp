@@ -7,7 +7,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
     
-    EventCallback* OnWindowCloseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    OnWindowCloseEventCallback* OnWindowCloseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         OnWindowCloseEventCallback* temp;
         

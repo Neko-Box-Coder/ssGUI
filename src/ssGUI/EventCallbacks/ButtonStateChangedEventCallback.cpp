@@ -7,7 +7,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* ButtonStateChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    ButtonStateChangedEventCallback* ButtonStateChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         ButtonStateChangedEventCallback* temp;
         

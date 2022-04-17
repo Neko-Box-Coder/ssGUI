@@ -10,12 +10,19 @@ namespace ssGUI::EventCallbacks
     //This event callback is triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
     class OnWindowCloseEventCallback : public BaseEventCallback
     {        
-        private:
+        public:
+            friend class ssGUI::Factory;
+        
+        protected:
+            OnWindowCloseEventCallback() = default;
             OnWindowCloseEventCallback(OnWindowCloseEventCallback const&) = default;
             OnWindowCloseEventCallback& operator=(OnWindowCloseEventCallback const&) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
         
         public:
-            OnWindowCloseEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
@@ -23,7 +30,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual OnWindowCloseEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

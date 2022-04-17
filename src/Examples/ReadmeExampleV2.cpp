@@ -12,13 +12,13 @@ int main()
     mainWindow.SetSize(glm::vec2(450, 125));
 
     //Adds a layout extension to the main window to allow GUI objects to be stacked next to each other
-    ssGUI::Extensions::Layout* layoutExtension = new ssGUI::Extensions::Layout();
+    ssGUI::Extensions::Layout* layoutExtension = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
     layoutExtension->SetHorizontalLayout(false);
     layoutExtension->SetSpacing(10);
     mainWindow.AddExtension(layoutExtension);
 
     //AdvancedPosition extension allows a GUI Object to be centered.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = new ssGUI::Extensions::AdvancedPosition();
+    ssGUI::Extensions::AdvancedPosition* positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
     positionExtension->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
     positionExtension->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);    
 

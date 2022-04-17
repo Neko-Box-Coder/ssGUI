@@ -32,10 +32,10 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedSize* as;
 
         if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            windowTitleObj->AddExtension(new ssGUI::Extensions::AdvancedPosition());
+            windowTitleObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
         
         if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            windowTitleObj->AddExtension(new ssGUI::Extensions::AdvancedSize());
+            windowTitleObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
@@ -75,10 +75,10 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedSize* as;
         
         if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            windowIconObj->AddExtension(new ssGUI::Extensions::AdvancedPosition());
+            windowIconObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
         
         if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            windowIconObj->AddExtension(new ssGUI::Extensions::AdvancedSize());
+            windowIconObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
@@ -118,10 +118,10 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedSize* as;
         
         if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            closeButtonObj->AddExtension(new ssGUI::Extensions::AdvancedPosition());
+            closeButtonObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
         
         if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            closeButtonObj->AddExtension(new ssGUI::Extensions::AdvancedSize());
+            closeButtonObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
@@ -168,12 +168,12 @@ namespace ssGUI
         closeButton->SetParent(this);
         closeButton->SetMinSize(glm::vec2(5, 5));
         closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
-        auto shapeEx = new ssGUI::Extensions::Shape();
+        auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
         shapeEx->RemoveGUIObjectShape(0);
         int circleId = shapeEx->AddAdditionalCircle(glm::vec2(), closeButton->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
         closeButton->AddExtension(shapeEx);
 
-        auto closeButtonOutline = new ssGUI::Extensions::Outline();
+        auto closeButtonOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         closeButtonOutline->SetOutlineThickness(2);
         closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
         // closeButtonOutline->ClearTargetShapes();
@@ -212,7 +212,7 @@ namespace ssGUI
                 
             }
         );
-        auto shapeEvent = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        auto shapeEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         shapeEvent->AddEventListener
         (
             [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
@@ -225,7 +225,7 @@ namespace ssGUI
         closeButton->AddEventCallback(shapeEvent);
         CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
 
-        auto rc = new ssGUI::Extensions::RoundedCorners();
+        auto rc = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
         rc->ClearTargetShapes();
         rc->AddTargetVertex(0);
         rc->AddTargetVertex(1);
@@ -235,11 +235,11 @@ namespace ssGUI
         rc->AddTargetVertex(5);
 
         AddExtension(rc);
-        AddExtension(new ssGUI::Extensions::Dockable());
-        auto windowOutline = new ssGUI::Extensions::Outline();
+        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Dockable>());
+        auto windowOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         windowOutline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         AddExtension(windowOutline);
-        AddExtension(new ssGUI::Extensions::BoxShadow());
+        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 
@@ -251,7 +251,7 @@ namespace ssGUI
         }
         else
         {
-            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
             AddEventCallback(callback);
         }
         
@@ -498,7 +498,7 @@ namespace ssGUI
     }
 
     //function: Clone
-    GUIObject* StandardWindow::Clone(bool cloneChildren)
+    StandardWindow* StandardWindow::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         StandardWindow* temp = new StandardWindow(*this);

@@ -1,7 +1,7 @@
 #ifndef SSGUI_EXTENSION
 #define SSGUI_EXTENSION
 
-
+#include "ssGUI/Factory.hpp"
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
@@ -9,6 +9,7 @@
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "glm/vec2.hpp"
 #include <string>
+#include <type_traits>
 
 namespace ssGUI
 {
@@ -17,18 +18,32 @@ namespace ssGUI
 
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
-{   
+{
     //class: Extension
     //Extension provides additional functionality to a GUI object, without the need to create a new type of GUI object.
     //You cannot attach multiple extensions of the same type to the same GUI Object. If needed, consider attaching to an empty widget/window instead.
     class Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         protected:
+            Extension() = default;
+            Extension(Extension const &) = default;
+            Extension& operator=(Extension const &) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
             virtual void ConstructRenderInfo() = 0;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
 
         public:
             virtual ~Extension() = 0;
+
+            //virtual Extension* Create() = 0;
+
+            //virtual Extension* Dispose() = 0;
 
             //function: SetEnabled
             //If false, this extension is disabled and will not provide and functionality
@@ -69,5 +84,7 @@ namespace ssGUI::Extensions
 
     inline Extension::~Extension(){}   //Pure virtual destructor needs to be defined
 }
+
+
 
 #endif

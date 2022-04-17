@@ -22,7 +22,7 @@ int main()
     // auto widgetClone = widget.Clone(false);
     // widgetClone->SetBackgroundColor(glm::u8vec4(127, 100, 100, 255));
 
-    auto outline = new ssGUI::Extensions::Outline();
+    auto outline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
     outline->SetOutlineThickness(20);
 
     // outline->ClearTargetShapes();

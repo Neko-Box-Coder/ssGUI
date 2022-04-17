@@ -13,7 +13,7 @@ int main()
     // mainWindow.GetBackendWindowInterface()->SetMSAA(8);
 
     //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = new ssGUI::Extensions::AdvancedPosition();
+    auto positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
     positionExtension->SetVerticalUsePercentage(false);
 
     //Create a text widget and set the respective properties
@@ -51,7 +51,7 @@ int main()
 
     ssGUI::Window window;
     window.SetSize(glm::ivec2(100, 100));
-    window.AddExtension(new ssGUI::Extensions::Dockable());
+    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Dockable>());
 
     //Add the text and button widget to the main window
     text.SetParent(&window);

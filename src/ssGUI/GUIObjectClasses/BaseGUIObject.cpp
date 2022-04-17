@@ -393,10 +393,10 @@ namespace ssGUI
 
         //Only clean up extensions and event callbacks when the GUI Object is destroyed
         for(auto it : Extensions)
-            delete it.second;
+            ssGUI::Factory::Dispose(it.second);
         
         for(auto it : EventCallbacks)
-            delete it.second;
+            ssGUI::Factory::Dispose(it.second);
     }
 
     //Below are from GUIObject.hpp
@@ -1152,7 +1152,7 @@ namespace ssGUI
         ExtensionsDrawOrder.erase(ExtensionsDrawOrder.begin() + GetExtensionDrawOrder(extensionName));
         ExtensionsUpdateOrder.erase(ExtensionsUpdateOrder.begin() + GetExtensionUpdateOrder(extensionName));
         Extensions.erase(extensionName);
-        delete targetExtension;
+        ssGUI::Factory::Dispose(targetExtension);
         RedrawObject();
     }
 
@@ -1255,7 +1255,7 @@ namespace ssGUI
 
         auto ecb = EventCallbacks.at(eventCallbackName);
         EventCallbacks.erase(eventCallbackName);
-        delete ecb;
+        ssGUI::Factory::Dispose(ecb);
         RedrawObject();
     }
 
@@ -1379,7 +1379,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* BaseGUIObject::Clone(bool cloneChildren)
+    BaseGUIObject* BaseGUIObject::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         BaseGUIObject* temp = new BaseGUIObject(*this);

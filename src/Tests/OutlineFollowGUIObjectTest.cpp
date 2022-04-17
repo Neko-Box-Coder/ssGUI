@@ -16,11 +16,11 @@ int main()
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
 
-    auto shapeEx = new ssGUI::Extensions::Shape();
+    auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
     shapeEx->AddCircle(glm::vec2(-100, -100), glm::vec2(200, 200), glm::u8vec4(255, 0, 0, 255), true);
     window.AddExtension(shapeEx);
     window.RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
-    auto outlineEx = new ssGUI::Extensions::Outline();
+    auto outlineEx = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
     outlineEx->SetOutlineThickness(10);
     window.AddExtension(outlineEx);
 

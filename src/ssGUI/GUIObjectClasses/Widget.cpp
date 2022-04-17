@@ -185,7 +185,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* Widget::Clone(bool cloneChildren)
+    Widget* Widget::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         Widget* temp = new Widget(*this);

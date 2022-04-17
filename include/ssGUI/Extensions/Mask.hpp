@@ -52,6 +52,9 @@ namespace ssGUI::Extensions
     */
     class Mask : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             Mask& operator=(Mask const& other);
         
@@ -107,13 +110,16 @@ namespace ssGUI::Extensions
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
+            Mask();
+            virtual ~Mask() override;
             Mask(Mask const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
         public:
             static const std::string EXTENSION_NAME;
-
-            Mask();
-            virtual ~Mask() override;
 
             //function: SetMaskChildren
             //If true, this will add <MaskEnforcer> automatically to the children
@@ -220,7 +226,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Mask* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

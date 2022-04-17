@@ -59,7 +59,7 @@ namespace ssGUI
             
             //function: Clone
             //See <Widget::Clone>
-            virtual GUIObject* Clone(bool cloneChildren) override;
+            virtual CustomWidget* Clone(bool cloneChildren) override;
     };
 }
 
@@ -240,7 +240,7 @@ namespace ssGUI
     }
 
     //You will always need to override this in order to call the copy constructor
-    GUIObject* CustomWidget::Clone(bool cloneChildren)
+    CustomWidget* CustomWidget::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         CustomWidget* temp = new CustomWidget(*this);

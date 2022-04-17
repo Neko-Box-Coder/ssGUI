@@ -814,7 +814,7 @@ namespace ssGUI::Extensions
 
             if(!child->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
             {
-                ssGUI::Extensions::MaskEnforcer* enforcer = new MaskEnforcer();
+                auto enforcer = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();
                 enforcer->AddTargetMaskObject(Container);
                 child->AddExtension(enforcer);
             }
@@ -905,23 +905,6 @@ namespace ssGUI::Extensions
     void Mask::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
-    Mask::Mask(Mask const& other)
-    {
-        Container = nullptr;
-        Enabled = other.IsEnabled();
-        MaskChildren = other.GetMaskChildren();
-        MaskContainer = other.GetMaskContainer();
-        FollowContainer = other.GetFollowContainer();
-        FollowPositionOffset = other.GetFollowPositionOffset();
-        FollowSizePadding = other.GetFollowSizePadding();
-        GlobalPosition = other.GetGlobalPosition();
-        Size = other.GetSize();
-        ChildAddedEventIndex = -1;
-        ChildRemovedEventIndex = -1;
-    }
-
-    const std::string Mask::EXTENSION_NAME = "Mask";
-
     Mask::Mask() :  Container(nullptr), Enabled(true), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
                     FollowPositionOffset(glm::vec2(1, 1)), FollowSizePadding(glm::vec2(-2, -2)), GlobalPosition(), Size(),
                     ChildAddedEventIndex(-1), ChildRemovedEventIndex(-1)
@@ -943,6 +926,23 @@ namespace ssGUI::Extensions
             eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME, ChildRemovedEventIndex);
         }
     } 
+
+    Mask::Mask(Mask const& other)
+    {
+        Container = nullptr;
+        Enabled = other.IsEnabled();
+        MaskChildren = other.GetMaskChildren();
+        MaskContainer = other.GetMaskContainer();
+        FollowContainer = other.GetFollowContainer();
+        FollowPositionOffset = other.GetFollowPositionOffset();
+        FollowSizePadding = other.GetFollowSizePadding();
+        GlobalPosition = other.GetGlobalPosition();
+        Size = other.GetSize();
+        ChildAddedEventIndex = -1;
+        ChildRemovedEventIndex = -1;
+    }
+
+    const std::string Mask::EXTENSION_NAME = "Mask";
 
     void Mask::SetMaskChildren(bool maskChildren)
     {
@@ -975,7 +975,7 @@ namespace ssGUI::Extensions
             }
             else
             {
-                ssGUI::EventCallbacks::RecursiveChildAddedEventCallback* event = new ssGUI::EventCallbacks::RecursiveChildAddedEventCallback();
+                auto event = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
                 Container->AddEventCallback(event);
 
                 ChildAddedEventIndex = event->AddEventListener(std::bind(&ssGUI::Extensions::Mask::Internal_OnRecursiveChildAdded, 
@@ -993,7 +993,7 @@ namespace ssGUI::Extensions
             }
             else
             {
-                ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback* event = new ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback();
+                auto event = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>();
                 Container->AddEventCallback(event);
 
                 ChildRemovedEventIndex = event->AddEventListener(std::bind(&ssGUI::Extensions::Mask::Internal_OnRecursiveChildRemoved, 
@@ -1043,7 +1043,7 @@ namespace ssGUI::Extensions
         {
             if(!Container->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
             {
-                ssGUI::Extensions::MaskEnforcer* enforcer = new MaskEnforcer();
+                auto enforcer = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();
                 enforcer->AddTargetMaskObject(Container);
                 Container->AddExtension(enforcer);
             }
@@ -1387,7 +1387,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* Mask::Clone(ssGUI::GUIObject* newContainer)
+    Mask* Mask::Clone(ssGUI::GUIObject* newContainer)
     {
         Mask* temp = new Mask(*this);
         if(newContainer != nullptr)

@@ -145,7 +145,7 @@ namespace ssGUI
     
             //function: Clone
             //See <Window::Clone>
-            virtual GUIObject* Clone(bool cloneChildren) override;
+            virtual MainWindow* Clone(bool cloneChildren) override;
 
     };
 }

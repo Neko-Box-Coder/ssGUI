@@ -25,10 +25,11 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
-    guiManager.GetBackendInputInterface()->SetCustomCursor(&img);
+    guiManager.GetBackendInputInterface()->SetCustomCursor(&img, glm::vec2());
     
     ssGUI::ImageData imagedata;
-    guiManager.GetBackendInputInterface()->GetCustomCursor(imagedata);
+    glm::vec2 hotspot;
+    guiManager.GetBackendInputInterface()->GetCustomCursor(imagedata, &hotspot);
     DEBUG_LINE("cursor2: "<<imagedata.IsValid());
 
     guiManager.AddOnUpdateEventListener

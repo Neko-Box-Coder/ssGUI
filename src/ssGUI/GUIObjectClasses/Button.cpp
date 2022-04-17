@@ -49,7 +49,7 @@ namespace ssGUI
     Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
     {
         SetBackgroundColor(glm::u8vec4(100,100,100,255)); //Gray background colour for button (For now)
-        StateChangedEventCallback = new ssGUI::EventCallbacks::ButtonStateChangedEventCallback();
+        StateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         StateChangedEventCallback->AddEventListener(
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
@@ -80,7 +80,7 @@ namespace ssGUI
         ); 
         
         AddEventCallback(StateChangedEventCallback);
-        AddExtension(new ssGUI::Extensions::Border());
+        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
     }
 
     Button::~Button()
@@ -253,7 +253,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* Button::Clone(bool cloneChildren)
+    Button* Button::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         Button* temp = new Button(*this);

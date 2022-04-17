@@ -12,7 +12,7 @@ int main()
     // mainWindow.GetBackendWindowInterface()->SetMSAA(8);
 
     //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = new ssGUI::Extensions::AdvancedPosition();
+    ssGUI::Extensions::AdvancedPosition* positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
     positionExtension->SetVerticalUsePercentage(false);
     
     //Create a button and set an event callback to change the text when it is clicked

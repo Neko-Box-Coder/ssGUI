@@ -21,7 +21,7 @@ int main()
     ssGUI::ImageData data;
     data.LoadFromPath("sd.png");
     image.SetImageData(&data);
-    auto roundedCornersEx = new ssGUI::Extensions::RoundedCorners();
+    auto roundedCornersEx = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
     roundedCornersEx->ClearTargetShapes();
     
     roundedCornersEx->SetRoundedCornersRadius(40);

@@ -59,6 +59,9 @@ namespace ssGUI::Extensions
     */
     class Layout : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             Layout& operator=(Layout const& other);
         
@@ -92,6 +95,12 @@ namespace ssGUI::Extensions
             std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
 
             Layout(Layout const& other);
+            Layout();
+            virtual ~Layout() override;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             void LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
                                 std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
@@ -120,9 +129,6 @@ namespace ssGUI::Extensions
 
         public:
             static const std::string EXTENSION_NAME;
-
-            Layout();
-            virtual ~Layout() override;
 
             //function: IsHorizontalLayout
             virtual bool IsHorizontalLayout() const;
@@ -283,7 +289,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Layout* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

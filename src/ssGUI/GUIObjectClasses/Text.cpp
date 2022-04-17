@@ -748,7 +748,7 @@ namespace ssGUI
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
 
-        ssGUI::EventCallbacks::SizeChangedEventCallback* sizeChangedCallback = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
@@ -1257,7 +1257,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* Text::Clone(bool cloneChildren)
+    Text* Text::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         Text* temp = new Text(*this);

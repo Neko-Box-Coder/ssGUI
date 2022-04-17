@@ -6,6 +6,14 @@
 
 namespace ssGUI::Extensions
 {
+    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(true), OutlineColor(glm::u8vec4(0, 0, 0, 255)), 
+                            TargetShapes{0}, TargetVertices(), VerticesToOutline(), VerticesToOutlinePrevVertices(),
+                            VerticesToOutlineNextVertices(), VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
+    {}
+
+    Outline::~Outline()
+    {}
+    
     Outline::Outline(Outline const& other)
     {
         Container = nullptr;
@@ -389,14 +397,6 @@ namespace ssGUI::Extensions
     //Defining the extension name
     const std::string Outline::EXTENSION_NAME = "Outline";
 
-    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(true), OutlineColor(glm::u8vec4(0, 0, 0, 255)), 
-                            TargetShapes{0}, TargetVertices(), VerticesToOutline(), VerticesToOutlinePrevVertices(),
-                            VerticesToOutlineNextVertices(), VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
-    {}
-
-    Outline::~Outline()
-    {}
-
     void Outline::SetOutlineThickness(int thickness)
     {
         OutlineThickness = thickness;
@@ -598,7 +598,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* Outline::Clone(ssGUI::GUIObject* newContainer)
+    Outline* Outline::Clone(ssGUI::GUIObject* newContainer)
     {
         Outline* temp = new Outline(*this);
         if(newContainer != nullptr)

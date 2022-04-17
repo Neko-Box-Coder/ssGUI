@@ -35,6 +35,9 @@ namespace ssGUI::Extensions
     */
     class CustomExtension : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             ssGUI::GUIObject* Container;
             bool Enabled;
@@ -46,7 +49,13 @@ namespace ssGUI::Extensions
             CustomExtension& operator=(CustomExtension const& other);
 
         protected:
+            CustomExtension();
+            virtual ~CustomExtension() override;
             CustomExtension(CustomExtension const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
@@ -54,9 +63,6 @@ namespace ssGUI::Extensions
         public:
             static const std::string EXTENSION_NAME;
 
-            CustomExtension();
-            virtual ~CustomExtension() override;
-        
             //Override from Extension
             //function: SetEnabled
             //See <Extension::SetEnabled>
@@ -92,7 +98,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual CustomExtension* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 
@@ -109,6 +115,17 @@ Section: Source
 
 namespace ssGUI::Extensions
 {
+    //Add ObjectsReferences construction if you are using it 
+    CustomExtension::CustomExtension() : Container(nullptr), Enabled(true)
+    {}
+
+    CustomExtension::~CustomExtension()
+    {
+        //Cleaning up things allocated for this extension and ObjectsReferences if you are using it
+
+        //CurrentObjectsReferences.CleanUp();
+    }
+    
     CustomExtension::CustomExtension(CustomExtension const& other)
     {
         Container = nullptr;
@@ -139,17 +156,6 @@ namespace ssGUI::Extensions
     
     //Defining the extension name
     const std::string CustomExtension::EXTENSION_NAME = "Custom Extension";
-    
-    //Add ObjectsReferences construction if you are using it 
-    CustomExtension::CustomExtension() : Container(nullptr), Enabled(true)
-    {}
-
-    CustomExtension::~CustomExtension()
-    {
-        //Cleaning up things allocated for this extension and ObjectsReferences if you are using it
-
-        //CurrentObjectsReferences.CleanUp();
-    }
 
     void CustomExtension::SetEnabled(bool enabled)
     {
@@ -233,7 +239,7 @@ namespace ssGUI::Extensions
         //return &CurrentObjectsReferences;
     }
 
-    Extension* CustomExtension::Clone(ssGUI::GUIObject* newContainer)
+    CustomExtension* CustomExtension::Clone(ssGUI::GUIObject* newContainer)
     {
         CustomExtension* temp = new CustomExtension(*this);
         if(newContainer != nullptr)

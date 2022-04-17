@@ -21,7 +21,7 @@ int main()
     ssGUI::Text text;
     text.SetPosition(glm::ivec2(75, 25));
     text.SetSize(glm::ivec2(500, 300));
-    text.AddExtension(new ssGUI::Extensions::Border());
+    text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
     //text.SetFont(&font);
     text.SetFontSize(20);
     // text.SetText(L"これは非常に長い日本語の文章です~~~~~");

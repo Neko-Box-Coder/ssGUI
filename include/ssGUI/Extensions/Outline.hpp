@@ -47,6 +47,9 @@ namespace ssGUI::Extensions
     */
     class Outline : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:    
             Outline& operator=(Outline const& other);
 
@@ -66,7 +69,13 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToOutlineShapeIndex;
             std::vector<bool> VerticesToOutlineShapeStartFlag;
 
+            Outline();
+            virtual ~Outline() override;
             Outline(Outline const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex);
             virtual void UpdateVerticesForOutline();
@@ -89,8 +98,6 @@ namespace ssGUI::Extensions
         public:
             static const std::string EXTENSION_NAME;
 
-            Outline();
-            virtual ~Outline() override;
 
             //function: SetOutlineThickness
             //Sets the thickness of the outline, in pixel
@@ -218,7 +225,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Outline* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

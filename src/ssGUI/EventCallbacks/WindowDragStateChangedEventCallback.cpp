@@ -7,7 +7,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* WindowDragStateChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    WindowDragStateChangedEventCallback* WindowDragStateChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         WindowDragStateChangedEventCallback* temp;
         

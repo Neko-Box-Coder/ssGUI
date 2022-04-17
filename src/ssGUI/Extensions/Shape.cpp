@@ -6,6 +6,12 @@
 
 namespace ssGUI::Extensions
 {
+    Shape::Shape() : Container(nullptr), Enabled(true), ExtensionPreRender(true), AdditionalShapes(), GUIObjectShapesToRemove(), NextID(0)
+    {}
+
+    Shape::~Shape()
+    {}
+    
     Shape::Shape(Shape const& other)
     {
         Container = nullptr;
@@ -123,12 +129,6 @@ namespace ssGUI::Extensions
     //Defining the extension name
     const std::string Shape::EXTENSION_NAME = "Shape";
     
-    Shape::Shape() : Container(nullptr), Enabled(true), ExtensionPreRender(true), AdditionalShapes(), GUIObjectShapesToRemove(), NextID(0)
-    {}
-
-    Shape::~Shape()
-    {}
-
     int Shape::AddAdditionalPolygon(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
     {
         AdditionalShapes.push_back(AdditionalShape());
@@ -432,7 +432,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* Shape::Clone(ssGUI::GUIObject* newContainer)
+    Shape* Shape::Clone(ssGUI::GUIObject* newContainer)
     {
         Shape* temp = new Shape(*this);
         if(newContainer != nullptr)

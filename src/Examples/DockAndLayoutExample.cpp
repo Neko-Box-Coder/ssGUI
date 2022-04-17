@@ -20,7 +20,7 @@ int main()
     window.SetParent(&mainWindow);
     // window.AddExtension(new ssGUI::Extensions::Layout());
     // window.RemoveExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME);
-    window.AddExtension(new ssGUI::Extensions::Docker());
+    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Docker>());
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
     ssGUI::StandardWindow window2;

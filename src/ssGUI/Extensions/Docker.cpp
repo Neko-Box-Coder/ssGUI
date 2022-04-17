@@ -11,6 +11,19 @@ namespace ssGUI::Extensions
 {
     ssGUI::Window* Docker::DefaultGeneratedDockerWindow = nullptr;
 
+    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), UseTriggerPercentage(true),
+                        TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
+                        TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
+                        DockTrigger(nullptr), ChildRemovedEventIndex(-1), ChildRemoveGuard(false)
+    {}
+
+    Docker::~Docker()
+    {
+        //Cleanup dock preview and trigger if exist
+        DiscardPreview();
+        DiscardTriggerArea();
+    }
+
     Docker::Docker(Docker const& other)
     {
         Container = nullptr;
@@ -51,8 +64,8 @@ namespace ssGUI::Extensions
             static_cast<ssGUI::Widget*>((*widget))->SetInteractable(false);
             static_cast<ssGUI::Widget*>((*widget))->SetBlockInput(false);
 
-            ssGUI::Extensions::AdvancedPosition* ap = new ssGUI::Extensions::AdvancedPosition();
-            ssGUI::Extensions::AdvancedSize* as = new ssGUI::Extensions::AdvancedSize(); 
+            auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+            auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>(); 
 
             (*widget)->AddExtension(ap);
             (*widget)->AddExtension(as);
@@ -304,19 +317,6 @@ namespace ssGUI::Extensions
 
     const std::string Docker::EXTENSION_NAME = "Docker";
 
-    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), UseTriggerPercentage(true),
-                        TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
-                        TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
-                        DockTrigger(nullptr), ChildRemovedEventIndex(-1), ChildRemoveGuard(false)
-    {}
-
-    Docker::~Docker()
-    {
-        //Cleanup dock preview and trigger if exist
-        DiscardPreview();
-        DiscardTriggerArea();
-    }
-
     void Docker::SetDefaultGeneratedDockerWindow(ssGUI::Window* window)
     {
         DefaultGeneratedDockerWindow = window;
@@ -564,18 +564,18 @@ namespace ssGUI::Extensions
                     parentLayout->Clone(Container);            
             }
             else if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                Container->AddExtension(new ssGUI::Extensions::Layout());
+                Container->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
         }
         //Otherwise we generate layout extension if there isn't one
         else
         {            
             //Check if there's a layout extension for container
             if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                Container->AddExtension(new ssGUI::Extensions::Layout());
+                Container->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
         }
 
         if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))    
-            Container->AddEventCallback(new ssGUI::EventCallbacks::ChildRemovedEventCallback());
+            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildRemovedEventCallback>());
 
         ChildRemovedEventIndex = 
             Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener(
@@ -624,7 +624,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* Docker::Clone(ssGUI::GUIObject* newContainer)
+    Docker* Docker::Clone(ssGUI::GUIObject* newContainer)
     {
         Docker* temp = new Docker(*this);
         if(newContainer != nullptr)

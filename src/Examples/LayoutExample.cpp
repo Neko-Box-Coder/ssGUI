@@ -15,8 +15,8 @@ int main()
     ssGUI::Window window;
     window.SetSize(glm::vec2(300, 600));
     window.SetParent(&mainWindow);
-    window.AddExtension(new ssGUI::Extensions::Layout());
-    window.AddExtension(new ssGUI::Extensions::Docker());
+    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Docker>());
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
     ssGUI::StandardWindow window2;

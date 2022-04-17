@@ -6,6 +6,13 @@
 
 namespace ssGUI::Extensions
 {
+    BoxShadow::BoxShadow() : Container(nullptr), Enabled(true), PositionOffset(glm::vec2(0, 0)), SizeOffset(glm::vec2(10, 10)), 
+                                BlurRadius(20), ShadowColor(glm::u8vec4(0, 0, 0, 127))
+    {}
+
+    BoxShadow::~BoxShadow()
+    {}
+
     BoxShadow::BoxShadow(BoxShadow const& other)
     {
         Container = nullptr;
@@ -225,13 +232,6 @@ namespace ssGUI::Extensions
     //Defining the extension name
     const std::string BoxShadow::EXTENSION_NAME = "Box Shadow";
 
-    BoxShadow::BoxShadow() : Container(nullptr), Enabled(true), PositionOffset(glm::vec2(0, 0)), SizeOffset(glm::vec2(10, 10)), 
-                                BlurRadius(20), ShadowColor(glm::u8vec4(0, 0, 0, 127))
-    {}
-
-    BoxShadow::~BoxShadow()
-    {}
-
     void BoxShadow::SetPositionOffset(glm::vec2 offset)
     {
         PositionOffset = offset;
@@ -345,7 +345,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* BoxShadow::Clone(ssGUI::GUIObject* newContainer)
+    BoxShadow* BoxShadow::Clone(ssGUI::GUIObject* newContainer)
     {
         BoxShadow* temp = new BoxShadow(*this);
         if(newContainer != nullptr)

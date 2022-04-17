@@ -11,12 +11,19 @@ namespace ssGUI::EventCallbacks
     //The child object being removed will be the source for triggering this event callback.
     class ChildRemovedEventCallback : public BaseEventCallback
     {        
-        private:
+        public:
+            friend class ssGUI::Factory;
+        
+        protected:
+            ChildRemovedEventCallback() = default;
             ChildRemovedEventCallback(ChildRemovedEventCallback const&) = default;
             ChildRemovedEventCallback& operator=(ChildRemovedEventCallback const&) = default;
-        
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
+
         public:
-            ChildRemovedEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
@@ -24,7 +31,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual ChildRemovedEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

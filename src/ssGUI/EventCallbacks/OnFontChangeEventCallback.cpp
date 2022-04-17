@@ -7,7 +7,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* OnFontChangeEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    OnFontChangeEventCallback* OnFontChangeEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         OnFontChangeEventCallback* temp;
         

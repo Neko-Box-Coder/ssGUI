@@ -45,6 +45,9 @@ namespace ssGUI::Extensions
     */
     class AdvancedSize : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             AdvancedSize& operator=(AdvancedSize const& other);
         
@@ -63,16 +66,19 @@ namespace ssGUI::Extensions
 
             bool OverrideDefaultSize;
 
+            AdvancedSize();
+            virtual ~AdvancedSize() override;
             AdvancedSize(AdvancedSize const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
         public:
             static const std::string EXTENSION_NAME;
-
-            AdvancedSize();
-            virtual ~AdvancedSize() override;
 
             //function: SetHorizontalUsePercentage
             virtual void SetHorizontalUsePercentage(bool percentage);
@@ -149,7 +155,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual AdvancedSize* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

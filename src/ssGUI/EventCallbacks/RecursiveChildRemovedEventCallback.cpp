@@ -7,7 +7,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* RecursiveChildRemovedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    RecursiveChildRemovedEventCallback* RecursiveChildRemovedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         RecursiveChildRemovedEventCallback* temp;
         

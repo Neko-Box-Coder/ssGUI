@@ -31,6 +31,9 @@ namespace ssGUI::EventCallbacks
     */
     class BaseEventCallback : public EventCallback
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             //Events
             std::vector<std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*)>> EventListeners;
@@ -42,13 +45,16 @@ namespace ssGUI::EventCallbacks
             ssGUI::ObjectsReferences CurrentObjectsReferences;
         
         protected:
-            BaseEventCallback(BaseEventCallback const & other) = default;
-            BaseEventCallback& operator=(BaseEventCallback const & other) = default;
-
-        public:
             BaseEventCallback();
             ~BaseEventCallback();
-            
+            BaseEventCallback(BaseEventCallback const & other) = default;
+            BaseEventCallback& operator=(BaseEventCallback const & other) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
+
+        public:
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
             virtual int AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) override;
@@ -71,15 +77,15 @@ namespace ssGUI::EventCallbacks
 
             //function: AddObjectReference
             //See <EventCallback::AddObjectReference>
-            virtual ssGUIObjectIndex AddObjectReference(ssGUI::GUIObject* obj) override;
+            virtual ssGUI::ssGUIObjectIndex AddObjectReference(ssGUI::GUIObject* obj) override;
 
             //function: GetObjectReference
             //See <EventCallback::GetObjectReference>
-            virtual ssGUI::GUIObject* GetObjectReference(ssGUIObjectIndex index) const override;
+            virtual ssGUI::GUIObject* GetObjectReference(ssGUI::ssGUIObjectIndex index) const override;
 
             //function: RemoveObjectReference
             //See <EventCallback::RemoveObjectReference>
-            virtual void RemoveObjectReference(ssGUIObjectIndex index) override;
+            virtual void RemoveObjectReference(ssGUI::ssGUIObjectIndex index) override;
 
             //function: Internal_GetObjectsReferences
             //Returns all the referenced GUI Objects. If nullptr is returned, this extension is not referencing any GUI Object (exception for container).
@@ -91,7 +97,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <EventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual BaseEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
 
             //const: EVENT_NAME
             //This is what you use in order to get the EventCallback that is added to the GUIObject

@@ -3,6 +3,12 @@
 
 namespace ssGUI::Extensions
 {
+    Border::Border() : Container(nullptr), Enabled(true), BorderColor(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), BorderSides(15)
+    {}
+    
+    Border::~Border()
+    {}
+
     Border::Border(Border const& other)
     {
         Container = nullptr;
@@ -130,12 +136,6 @@ namespace ssGUI::Extensions
     
     const std::string Border::EXTENSION_NAME = "Border";
     
-    Border::Border() : Container(nullptr), Enabled(true), BorderColor(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), BorderSides(15)
-    {}
-    
-    Border::~Border()
-    {}
-
     glm::u8vec4 Border::GetBorderColor() const
     {
         return BorderColor;
@@ -258,7 +258,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* Border::Clone(ssGUI::GUIObject* newContainer)
+    Border* Border::Clone(ssGUI::GUIObject* newContainer)
     {
         Border* temp = new Border(*this);
         if(newContainer != nullptr)

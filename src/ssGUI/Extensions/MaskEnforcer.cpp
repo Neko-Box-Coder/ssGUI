@@ -4,6 +4,14 @@
 
 namespace ssGUI::Extensions
 {
+    MaskEnforcer::MaskEnforcer() : Container(nullptr), Enabled(true), TargetMasks(), BlockingContainerInput(false), CurrentObjectsReferences()
+    {}
+
+    MaskEnforcer::~MaskEnforcer()
+    {
+        CurrentObjectsReferences.CleanUp();
+    }
+    
     MaskEnforcer::MaskEnforcer(MaskEnforcer const& other)
     {
         Container = nullptr;
@@ -40,15 +48,7 @@ namespace ssGUI::Extensions
     }
     
     const std::string MaskEnforcer::EXTENSION_NAME = "Mask Enforcer";
-    
-    MaskEnforcer::MaskEnforcer() : Container(nullptr), Enabled(true), TargetMasks(), BlockingContainerInput(false), CurrentObjectsReferences()
-    {}
-
-    MaskEnforcer::~MaskEnforcer()
-    {
-        CurrentObjectsReferences.CleanUp();
-    }
-    
+        
     void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
     {        
         if(CurrentObjectsReferences.IsObjectReferenceExist(targetMaskObj))
@@ -231,7 +231,7 @@ namespace ssGUI::Extensions
         return &CurrentObjectsReferences;
     }
 
-    Extension* MaskEnforcer::Clone(ssGUI::GUIObject* newContainer)
+    MaskEnforcer* MaskEnforcer::Clone(ssGUI::GUIObject* newContainer)
     {
         MaskEnforcer* temp = new MaskEnforcer(*this);
         if(newContainer != nullptr)

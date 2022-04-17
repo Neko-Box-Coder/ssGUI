@@ -84,7 +84,7 @@ namespace ssGUI
             
             //function: Clone
             //See <GUIObject::Clone>
-            virtual GUIObject* Clone(bool cloneChildren) override;
+            virtual Widget* Clone(bool cloneChildren) override;
     };
 }
 

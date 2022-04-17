@@ -28,6 +28,9 @@ namespace ssGUI::Extensions
     */
     class LayoutEnforcer : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             ssGUI::GUIObject* Container;
             bool Enabled;
@@ -38,7 +41,13 @@ namespace ssGUI::Extensions
             LayoutEnforcer& operator=(LayoutEnforcer const& other);
 
         protected:
+            LayoutEnforcer();
+            virtual ~LayoutEnforcer() override;
             LayoutEnforcer(LayoutEnforcer const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
@@ -46,9 +55,6 @@ namespace ssGUI::Extensions
         public:
             static const std::string EXTENSION_NAME;
 
-            LayoutEnforcer();
-            virtual ~LayoutEnforcer() override;
-        
             //Override from Extension
             //function: SetEnabled
             //See <Extension::SetEnabled>
@@ -84,7 +90,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual LayoutEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

@@ -335,8 +335,8 @@ namespace ssGUI
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
                        ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
-        AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
-        AddExtension(new ssGUI::Extensions::Border());
+        AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnWindowCloseEventCallback>());
+        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
         SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     }
 
@@ -543,7 +543,7 @@ namespace ssGUI
     int Window::AddOnCloseEventListener(std::function<void()> onClose)
     {
         if(!IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
-            AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
+            AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnWindowCloseEventCallback>());
         
         return GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->
             AddEventListener([onClose](ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*){onClose();});
@@ -686,7 +686,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* Window::Clone(bool cloneChildren)
+    Window* Window::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         Window* temp = new Window(*this);

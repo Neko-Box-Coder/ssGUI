@@ -7,7 +7,7 @@ int main()
 {
     ssGUI::MainWindow mainWindow;
 
-    ssGUI::EventCallbacks::RecursiveChildAddedEventCallback* callback = new ssGUI::EventCallbacks::RecursiveChildAddedEventCallback();
+    auto callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
     callback->AddEventListener(
         [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs) 
         {

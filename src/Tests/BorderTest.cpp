@@ -14,7 +14,7 @@ int main()
     widget.SetSize(glm::ivec2(300, 300));
     widget.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
 
-    auto border = new ssGUI::Extensions::Border();
+    auto border = ssGUI::Factory::Create<ssGUI::Extensions::Border>();
     border->SetBorderWidth(20);
     border->SetBorderColor(glm::u8vec4(0, 0, 0, 127));
     // border->ShowBorderTop(false);

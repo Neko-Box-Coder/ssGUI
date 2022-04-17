@@ -252,7 +252,7 @@ namespace ssGUI
             //virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Clone
-            virtual GUIObject* Clone(bool cloneChildren) override;
+            virtual StandardWindow* Clone(bool cloneChildren) override;
     };
 }
 

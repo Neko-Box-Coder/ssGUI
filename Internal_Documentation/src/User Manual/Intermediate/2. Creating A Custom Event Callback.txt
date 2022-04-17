@@ -21,12 +21,19 @@ namespace ssGUI::EventCallbacks
     //This event callback is triggered *after* "some event" has happened
     class SomeEventHappenedEventCallback : public BaseEventCallback
     {        
-        private:
+        public:
+            friend class ssGUI::Factory;
+        
+        protected:
+            SomeEventHappenedEventCallback() = default;
             SomeEventHappenedEventCallback(SomeEventHappenedEventCallback const &) = default;
             SomeEventHappenedEventCallback& operator=(SomeEventHappenedEventCallback const &) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
         
         public:
-            SomeEventHappenedEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
@@ -34,7 +41,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual SomeEventHappenedEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>
@@ -58,7 +65,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* SomeEventHappenedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    SomeEventHappenedEventCallback* SomeEventHappenedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         SomeEventHappenedEventCallback* temp;
         

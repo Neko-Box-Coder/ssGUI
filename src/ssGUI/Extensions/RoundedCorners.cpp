@@ -4,6 +4,13 @@
 
 namespace ssGUI::Extensions
 {
+    RoundedCorners::RoundedCorners() : Container(nullptr), Enabled(true), RoundedCornersRadius(10), TargetShapes{0}, TargetVertices(), VerticesToRound(), 
+                                        VerticesToRoundPrevVertices(), VerticesToRoundNextVertices()
+    {}
+
+    RoundedCorners::~RoundedCorners()
+    {}
+    
     RoundedCorners::RoundedCorners(RoundedCorners const& other)
     {
         Container = nullptr;
@@ -15,7 +22,6 @@ namespace ssGUI::Extensions
         VerticesToRoundPrevVertices = other.VerticesToRoundPrevVertices;
         VerticesToRoundNextVertices = other.VerticesToRoundNextVertices;
     }
-
 
     double RoundedCorners::GetAngle(glm::vec2 a, glm::vec2 b)
     {
@@ -374,13 +380,6 @@ namespace ssGUI::Extensions
 
     const std::string RoundedCorners::EXTENSION_NAME = "Rounded Corners";
 
-    RoundedCorners::RoundedCorners() : Container(nullptr), Enabled(true), RoundedCornersRadius(10), TargetShapes{0}, TargetVertices(), VerticesToRound(), 
-                                        VerticesToRoundPrevVertices(), VerticesToRoundNextVertices()
-    {}
-
-    RoundedCorners::~RoundedCorners()
-    {}
-
     void RoundedCorners::SetRoundedCornersRadius(int radius)
     {
         RoundedCornersRadius = radius;
@@ -540,7 +539,7 @@ namespace ssGUI::Extensions
         return nullptr;
     }
 
-    Extension* RoundedCorners::Clone(ssGUI::GUIObject* newContainer)
+    RoundedCorners* RoundedCorners::Clone(ssGUI::GUIObject* newContainer)
     {
         RoundedCorners* temp = new RoundedCorners(*this);
         if(newContainer != nullptr)

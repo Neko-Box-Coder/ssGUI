@@ -15,7 +15,7 @@ int main()
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
 
-    auto shape = new ssGUI::Extensions::Shape();
+    auto shape = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
     // shape->AddAdditionalCircle(glm::vec2(), glm::vec2(150, 150), glm::u8vec4(255, 0, 0, 255), true);
     shape->AddAdditionalRectangle(glm::vec2(), glm::vec2(150, 150), glm::u8vec4(255, 0, 0, 255), true);
     window.AddExtension(shape);

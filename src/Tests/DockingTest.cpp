@@ -46,27 +46,27 @@ int main()
     window4->SetParent(&mainWindow);
     DEBUG_LINE("window4: "<<&window4);
 
-    ssGUI::Extensions::Dockable* dock = new ssGUI::Extensions::Dockable();
-    ssGUI::Extensions::Dockable* dock2 = new ssGUI::Extensions::Dockable();
-    ssGUI::Extensions::Dockable* dock3 = new ssGUI::Extensions::Dockable();
-    ssGUI::Extensions::Dockable* dock4 = new ssGUI::Extensions::Dockable();
+    ssGUI::Extensions::Dockable* dock = ssGUI::Factory::Create<ssGUI::Extensions::Dockable>();
+    ssGUI::Extensions::Dockable* dock2 = ssGUI::Factory::Create<ssGUI::Extensions::Dockable>();
+    ssGUI::Extensions::Dockable* dock3 = ssGUI::Factory::Create<ssGUI::Extensions::Dockable>();
+    ssGUI::Extensions::Dockable* dock4 = ssGUI::Factory::Create<ssGUI::Extensions::Dockable>();
 
     window.AddExtension(dock);
     window2.AddExtension(dock2);
     window3->AddExtension(dock3);
     window4->AddExtension(dock4);
 
-    ssGUI::Extensions::Docker* docker = new ssGUI::Extensions::Docker();
+    ssGUI::Extensions::Docker* docker = ssGUI::Factory::Create<ssGUI::Extensions::Docker>();
     docker->SetChildrenDockerUseThisSettings(true);
     ssGUI::StandardWindow* defaultStandardWindow = new ssGUI::StandardWindow();
     defaultStandardWindow->GetWindowTitleObject()->SetText("Docker");
 
     ssGUI::Extensions::Docker::SetDefaultGeneratedDockerWindow(defaultStandardWindow);
     
-    ssGUI::Extensions::AdvancedPosition* ap = new ssGUI::Extensions::AdvancedPosition();
-    ssGUI::Extensions::AdvancedSize* as = new ssGUI::Extensions::AdvancedSize();
-    ssGUI::Extensions::Border* bor = new ssGUI::Extensions::Border();
-    ssGUI::Extensions::Mask* mask = new ssGUI::Extensions::Mask();
+    ssGUI::Extensions::AdvancedPosition* ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+    ssGUI::Extensions::AdvancedSize* as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
+    ssGUI::Extensions::Border* bor = ssGUI::Factory::Create<ssGUI::Extensions::Border>();
+    ssGUI::Extensions::Mask* mask = ssGUI::Factory::Create<ssGUI::Extensions::Mask>();
 
     ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
     ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
@@ -131,6 +131,8 @@ int main()
 
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
+
+    delete DefaultGeneratedDockerWindow;
 
     return 0;
 }

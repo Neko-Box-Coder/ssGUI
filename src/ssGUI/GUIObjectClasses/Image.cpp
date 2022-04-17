@@ -214,7 +214,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    GUIObject* Image::Clone(bool cloneChildren)
+    Image* Image::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         Image* temp = new Image(*this);

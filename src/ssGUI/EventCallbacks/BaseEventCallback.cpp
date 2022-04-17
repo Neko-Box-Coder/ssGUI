@@ -89,7 +89,7 @@ namespace ssGUI::EventCallbacks
         return EVENT_NAME;
     }
 
-    EventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    BaseEventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
         BaseEventCallback* temp;
         

@@ -19,7 +19,7 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedSize* as;
         
         if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            buttonTextObj->AddExtension(new ssGUI::Extensions::AdvancedSize());
+            buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
@@ -39,15 +39,15 @@ namespace ssGUI
         //Add visual extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
-        auto boxShadow = new ssGUI::Extensions::BoxShadow();
+        auto boxShadow = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
         boxShadow->SetShadowColor(glm::u8vec4(0, 0, 0, 127));
         AddExtension(boxShadow);
 
-        auto roundedCorners = new ssGUI::Extensions::RoundedCorners();
+        auto roundedCorners = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
         roundedCorners->SetRoundedCornersRadius(5);
         AddExtension(roundedCorners);
 
-        auto outline = new ssGUI::Extensions::Outline();
+        auto outline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         outline->SetSimpleOutline(false);
         outline->SetOutlineColor(glm::u8vec4(255, 255, 255, 255));
         outline->SetOutlineThickness(2);
@@ -72,7 +72,7 @@ namespace ssGUI
         }
         else
         {
-            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
             AddEventCallback(callback);
         }
         
@@ -193,7 +193,7 @@ namespace ssGUI
     }
 
     //You will always need to override this in order to call the copy constructor
-    GUIObject* StandardButton::Clone(bool cloneChildren)
+    StandardButton* StandardButton::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
         StandardButton* temp = new StandardButton(*this);
