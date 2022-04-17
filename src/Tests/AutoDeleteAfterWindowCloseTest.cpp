@@ -12,13 +12,13 @@ int main()
     // mainWindow.GetBackendWindowInterface()->SetMSAA(8);
 
     //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+    auto positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
     positionExtension->SetVerticalUsePercentage(false);
     
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
     button.SetSize(glm::ivec2(50, 30));
-    button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
+    button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
         [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
         {
@@ -30,8 +30,7 @@ int main()
     );
     
     //Clone the extension for the button widget
-    ssGUI::Extensions::AdvancedPosition* positionExtension2 = 
-        static_cast<ssGUI::Extensions::AdvancedPosition*>(positionExtension->Clone(&button));
+    auto positionExtension2 = positionExtension->Clone(&button);
     positionExtension2->SetVerticalPixel(20);
 
     ssGUI::Window window;

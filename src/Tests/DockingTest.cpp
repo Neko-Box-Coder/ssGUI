@@ -78,7 +78,9 @@ int main()
     ssGUI::Widget mainWindowWidget;
     DEBUG_LINE("mainWindowWidget: "<<&mainWindowWidget);
     mainWindowWidget.AddExtension(docker);
-    auto dockerLayout = static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+    // auto dockerLayout = static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+    auto dockerLayout = mainWindowWidget.GetAnyExtension<ssGUI::Extensions::Layout>();
+
     dockerLayout->SetPadding(2);
 
     // mainWindowWidget.AddExtension(new ssGUI::Extensions::Layout());
@@ -132,7 +134,7 @@ int main()
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
 
-    delete DefaultGeneratedDockerWindow;
+    delete ssGUI::Extensions::Docker::GetDefaultGeneratedDockerWindow();
 
     return 0;
 }
