@@ -151,10 +151,6 @@ namespace ssGUI
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
-    
-            //function: Delete 
-            //See <Widget::Delete>
-            virtual void Delete() override;
 
             //function: Internal_Draw
             //See <Widget::Internal_Draw>

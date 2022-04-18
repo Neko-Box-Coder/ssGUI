@@ -64,16 +64,6 @@ namespace ssGUI
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
-            //function: Delete 
-            //See <Widget::Delete>
-            virtual void Delete() override;
-
-            //function: Internal_Draw
-            //See <Widget::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
-
-            //virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow) override;
-
             //function: Clone
             //See <Widget::Clone>
             virtual Image* Clone(bool cloneChildren) override;

@@ -190,6 +190,7 @@ namespace ssGUI
     void BaseGUIObject::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //This can be overriden if needed.
+        ConstructRenderInfo();
     }
 
     void BaseGUIObject::NotifyAndRemoveOnObjectDestroyEventCallbackIfExist()
@@ -1320,6 +1321,8 @@ namespace ssGUI
                 Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             UpdateGUIObjectVertexAndShapeIndex();
+
+            ConstructRenderInfo(drawingInterface, mainWindow, mainWindowPositionOffset);
 
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);

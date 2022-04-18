@@ -44,15 +44,7 @@ namespace ssGUI
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
-    
-            //function: Delete 
-            //See <Widget::Delete>
-            virtual void Delete() override;
 
-            //function: Internal_Draw
-            //See <Widget::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
-            
             //function: Internal_Update
             //See <Widget::Internal_Update>
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
@@ -104,7 +96,7 @@ namespace ssGUI
         }
         else
         {
-            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
             AddEventCallback(callback);
         }
         
@@ -119,7 +111,6 @@ namespace ssGUI
     CustomWidget::~CustomWidget()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        
     }
 
     //You don't have to override this. If you do want to return your own type, 
@@ -128,47 +119,6 @@ namespace ssGUI
     {
         return ssGUI::Enums::GUIObjectType::BASE_WIDGET;
         //return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::YOUR_OWN_TYPE;
-    }
-
-    //You don't have to override this. But if you have any claen-up put it here as well.
-    void CustomWidget::Delete()
-    {
-        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        ssGUI::Widget::Delete();
-    }
-
-    //You only need to override this when you are rendering anything.
-    void CustomWidget::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
-    {
-        FUNC_DEBUG_ENTRY();
-        
-        if(Redraw)
-        {
-            DisableRedrawObjectRequest();
-
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
-            
-            ConstructRenderInfo();
-
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
-
-            EnableRedrawObjectRequest();
-
-            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
-            CacheRendering();
-            DrawingVerticies.clear();
-            DrawingUVs.clear();
-            DrawingColours.clear();
-            DrawingCounts.clear();
-            DrawingProperties.clear();
-            Redraw = false;
-        }
-        else
-            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
-
-        FUNC_DEBUG_EXIT();
     }
 
     //You only need to override this when you need to update the object

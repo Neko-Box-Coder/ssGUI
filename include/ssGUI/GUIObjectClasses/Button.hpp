@@ -91,19 +91,11 @@ namespace ssGUI
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
-
-            //function: Delete 
-            //See <Widget::Delete>
-            virtual void Delete() override;
             
             //function: SetInteractable
             //See <Widget::SetInteractable>
             virtual void SetInteractable(bool interactable) override;
-            
-            //function: Internal_Draw
-            //See <Widget::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
-            
+
             //function: Internal_Update
             //See <Widget::Internal_Update>
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface *inputInterface, ssGUI::InputStatus &globalInputStatus, ssGUI::InputStatus &windowInputStatus, ssGUI::GUIObject* mainWindow) override;

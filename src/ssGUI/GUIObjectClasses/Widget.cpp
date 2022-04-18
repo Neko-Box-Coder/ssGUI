@@ -73,53 +73,6 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::WIDGET;
     }
 
-    void Widget::Delete()
-    {
-        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        ssGUI::BaseGUIObject::Delete();
-    }
-
-    void Widget::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
-    {
-        FUNC_DEBUG_ENTRY();
-        
-        if(!IsVisible())
-        {
-            FUNC_DEBUG_EXIT();
-            return;
-        }
-        
-        if(Redraw)
-        {
-            DisableRedrawObjectRequest();
-
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
-            
-            UpdateGUIObjectVertexAndShapeIndex();
-
-            ConstructRenderInfo();
-
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
-
-            EnableRedrawObjectRequest();
-
-            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
-            CacheRendering();
-            DrawingVerticies.clear();
-            DrawingUVs.clear();
-            DrawingColours.clear();
-            DrawingCounts.clear();
-            DrawingProperties.clear();
-            Redraw = false;
-        }
-        else
-            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
-
-        FUNC_DEBUG_EXIT();
-    }
-
     void Widget::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();

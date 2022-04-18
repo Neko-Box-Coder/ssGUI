@@ -240,10 +240,6 @@ namespace ssGUI
             //function: GetType
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
-            
-            //function: Delete
-            //See <GUIObject::Delete>
-            virtual void Delete() override;
 
             //function: Internal_Draw
             //virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;

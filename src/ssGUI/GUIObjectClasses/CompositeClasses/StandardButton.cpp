@@ -185,13 +185,6 @@ namespace ssGUI
             ssGUI::Enums::GUIObjectType::STANDARD_BUTTON;
     }
 
-    //You don't have to override this. But if you have any claen-up put it here as well.
-    void StandardButton::Delete()
-    {
-        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        ssGUI::Button::Delete();
-    }
-
     //You will always need to override this in order to call the copy constructor
     StandardButton* StandardButton::Clone(bool cloneChildren)
     {

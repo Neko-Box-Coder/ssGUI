@@ -161,59 +161,6 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::IMAGE | ssGUI::Enums::GUIObjectType::WIDGET;
     }
 
-    void Image::Delete()
-    {
-        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        ssGUI::BaseGUIObject::Delete();
-    }
-
-    void Image::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
-    {
-        FUNC_DEBUG_ENTRY();
-        
-        if(!IsVisible())
-        {
-            FUNC_DEBUG_EXIT();
-            return;
-        }
-
-        if(Redraw)
-        {
-            DisableRedrawObjectRequest();
-
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
-
-            if(ImageData == nullptr || !ImageData->IsValid())
-            {
-                goto endOfDrawing;
-            }
-
-            UpdateGUIObjectVertexAndShapeIndex();
-
-            ConstructRenderInfo();
-
-            endOfDrawing:;
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
-            
-            EnableRedrawObjectRequest();
-
-            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
-            CacheRendering();
-            DrawingVerticies.clear();
-            DrawingUVs.clear();
-            DrawingColours.clear();
-            DrawingCounts.clear();
-            DrawingProperties.clear();
-            Redraw = false;
-        }
-        else
-            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
-
-        FUNC_DEBUG_EXIT();
-    }
-
     Image* Image::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();

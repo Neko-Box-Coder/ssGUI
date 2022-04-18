@@ -491,12 +491,6 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::WINDOW | ssGUI::Enums::GUIObjectType::STANDARD_WINDOW;
     }
 
-    void StandardWindow::Delete()
-    {
-        NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        ssGUI::Window::Delete();
-    }
-
     //function: Clone
     StandardWindow* StandardWindow::Clone(bool cloneChildren)
     {
