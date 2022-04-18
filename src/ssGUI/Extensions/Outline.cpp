@@ -117,6 +117,9 @@ namespace ssGUI::Extensions
                     startIndex += drawingCounts[j];
                 }
 
+                if(drawingCounts[curShape] <= 2)
+                    continue;
+
                 for(int j = startIndex; j < startIndex + drawingCounts[curShape]; j++)
                 {
                     VerticesToOutline.push_back(j);

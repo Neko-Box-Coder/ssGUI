@@ -1,7 +1,7 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Outline.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
-
+#include "ssGUI/Extensions/Shape.hpp"
 
 
 //Outline test
@@ -28,8 +28,15 @@ int main()
     // outline->ClearTargetShapes();
     // outline->AddTargetVertex(0);
     // outline->AddTargetVertex(1);
-
     // outline->SetSimpleOutline(false);
+
+    // auto illegalShape = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+    // illegalShape->RemoveGUIObjectShape(0);
+    // std::vector<glm::vec2> illegalVertices = {glm::vec2(0, 0), glm::vec2(1, 0)};
+    // std::vector<glm::u8vec4> illegalColors = {glm::u8vec4(0, 0, 0, 255), glm::u8vec4(0, 0, 0, 255)};
+    // illegalShape->AddAdditionalPolygon(illegalVertices, illegalColors, false);
+    // widget.AddExtension(illegalShape);
+
     widget.AddExtension(outline);
     
     widget.SetParent(&mainWindow);
