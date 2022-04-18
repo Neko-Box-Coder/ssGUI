@@ -62,6 +62,10 @@ namespace ssGUI::EventCallbacks
             //function: RemoveEventListener
             //See <EventCallback::RemoveEventListener>
             virtual void RemoveEventListener(int index) override;
+
+            //function: ClearEventListeners
+            //See <EventCallback::ClearEventListeners>
+            virtual void ClearEventListeners() override;
             
             //function: GetEventListenerCount
             //See <EventCallback::GetEventListenerCount>

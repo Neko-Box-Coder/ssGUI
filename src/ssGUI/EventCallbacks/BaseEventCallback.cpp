@@ -43,6 +43,14 @@ namespace ssGUI::EventCallbacks
         EventListenerCount--;
     }
 
+    void BaseEventCallback::ClearEventListeners()
+    {
+        EventListeners.clear();
+        EventListenersValid.clear();
+        NextFreeIndices = std::queue<int>();
+        EventListenerCount = 0;
+    }
+
     int BaseEventCallback::GetEventListenerCount() const
     {
         return EventListenerCount;
