@@ -48,6 +48,7 @@ namespace ssGUI
 
     Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
     {
+        SetSize(glm::vec2(25, 25));
         SetBackgroundColor(glm::u8vec4(100,100,100,255)); //Gray background colour for button (For now)
         StateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         StateChangedEventCallback->AddEventListener(
@@ -65,12 +66,12 @@ namespace ssGUI
                         bgcolor.a = 200;
                         btn->SetBackgroundColor(bgcolor);
                         break;
-                    case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::ON_CLICK:
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.a = 100;
                         btn->SetBackgroundColor(bgcolor);
                         break;
+                    case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::DISABLED:
                         bgcolor.a = 50;
                         btn->SetBackgroundColor(bgcolor);

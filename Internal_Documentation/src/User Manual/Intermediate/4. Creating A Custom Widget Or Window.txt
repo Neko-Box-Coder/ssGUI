@@ -77,7 +77,7 @@ namespace ssGUI
     void CustomWidget::ConstructRenderInfo()
     {
         //Get the top-left position of the widget 
-        glm::ivec2 drawPosition = GetGlobalPosition();
+        glm::vec2 drawPosition = GetGlobalPosition();
 
         //You can do you drawing here.
         //You can get the rendering details with DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts and DrawingProperties
@@ -114,11 +114,11 @@ namespace ssGUI
     }
 
     //You don't have to override this. If you do want to return your own type, 
-    //just edit the GUIObjectType and return it along with BASE_WIDGET
+    //just edit the GUIObjectType and return it along with WIDGET
     ssGUI::Enums::GUIObjectType CustomWidget::GetType() const
     {
-        return ssGUI::Enums::GUIObjectType::BASE_WIDGET;
-        //return ssGUI::Enums::GUIObjectType::BASE_WIDGET | ssGUI::Enums::GUIObjectType::YOUR_OWN_TYPE;
+        return ssGUI::Enums::GUIObjectType::WIDGET;
+        //return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::YOUR_OWN_TYPE;
     }
 
     //You only need to override this when you need to update the object
