@@ -41,7 +41,10 @@ int main()
         details.Character = s[i];
         
         if(i >= 10 && i <= 13)
+        {
+            details.CharacterColor = glm::u8vec4(0, 0, 255, 255);
             details.FontIndex = 1;
+        }
         else
             details.FontIndex = 0;
 

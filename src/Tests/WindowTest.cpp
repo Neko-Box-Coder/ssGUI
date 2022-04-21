@@ -28,7 +28,6 @@ int main()
                 red %= 255;
                 bgColor.r = red;
                 window.SetBackgroundColor(bgColor);
-                DEBUG_LINE("bgColor: "<<(int)bgColor.r<<", "<<(int)bgColor.g<<", "<<(int)bgColor.b);
             }
         }
     );

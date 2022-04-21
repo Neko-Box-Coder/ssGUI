@@ -39,6 +39,7 @@ namespace ssGUI
 
         bool Overflow;
         int FontSize;
+        glm::u8vec4 TextColor;
         bool MultilineAllowed;
         ssGUI::Enums::TextWrapping WrappingMode;
         ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
@@ -56,14 +57,14 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
-                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), MultilineAllowed(true), 
-                    WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
-                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFonts(), 
-                    HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
+                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), TextColor(glm::u8vec4(0, 0, 0, 255)), 
+                    MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
+                    HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
+                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
 
-        ssGUI::EventCallbacks::SizeChangedEventCallback* sizeChangedCallback = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
@@ -115,6 +116,7 @@ namespace ssGUI
 
             bool Overflow;
             int FontSize;
+            glm::u8vec4 TextColor;
             bool MultilineAllowed;
             ssGUI::Enums::TextWrapping WrappingMode;
             ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
@@ -223,6 +225,14 @@ namespace ssGUI
             //function: GetFontSize
             //Returns the size of the font being used
             virtual int GetFontSize() const;
+
+            //function: SetTextColor
+            //Sets the text color being used
+            virtual void SetTextColor(glm::u8vec4 color);
+
+            //function: GetTextColor
+            //Gets the text color being used
+            virtual glm::u8vec4 GetTextColor() const;
             
             //function: SetMultilineAllowed
             //If true, newlines will be allowed

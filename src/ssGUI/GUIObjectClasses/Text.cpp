@@ -32,6 +32,7 @@ namespace ssGUI
         CurrentCharacterDetails = other.CurrentCharacterDetails;
         Overflow = other.Overflow;
         FontSize = other.GetFontSize();
+        TextColor = other.GetTextColor();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
         HorizontalAlignment = other.GetHorizontalAlignment();
@@ -62,6 +63,7 @@ namespace ssGUI
                 ssGUI::CharacterDetails detail;
                 detail.Character = CurrentText[i];
                 detail.FontSize = GetFontSize();
+                detail.CharacterColor = GetTextColor();
                 CurrentCharacterDetails.push_back(detail);
             }
         }
@@ -146,10 +148,10 @@ namespace ssGUI
         DrawingVerticies.push_back(position + info.Size                     + info.DrawOffset);
         DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y)     + info.DrawOffset);
 
-        DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
-        DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
-        DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
-        DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+        DrawingColours.push_back(details.CharacterColor);
+        DrawingColours.push_back(details.CharacterColor);
+        DrawingColours.push_back(details.CharacterColor);
+        DrawingColours.push_back(details.CharacterColor);
 
         DrawingUVs.push_back(info.UVOrigin);
         DrawingUVs.push_back(info.UVOrigin + glm::vec2(info.Size.x, 0));
@@ -741,10 +743,10 @@ namespace ssGUI
     }
     
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
-                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), MultilineAllowed(true), 
-                    WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
-                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFonts(), 
-                    HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
+                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), TextColor(glm::u8vec4(0, 0, 0, 255)), 
+                    MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
+                    HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
+                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
 
@@ -927,6 +929,17 @@ namespace ssGUI
     {
         return FontSize;
     }
+
+    void Text::SetTextColor(glm::u8vec4 color)
+    {
+        TextColor = color;
+        RedrawObject();
+    }
+
+    glm::u8vec4 Text::GetTextColor() const
+    {
+        return TextColor;
+    } 
 
     void Text::SetMultilineAllowed(bool multiline)
     {
