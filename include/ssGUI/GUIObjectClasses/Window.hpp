@@ -21,7 +21,7 @@ namespace ssGUI
 
     Variables & Constructor:
     ============================== C++ ==============================
-    private:
+    protected:
         //Window status
         bool Titlebar;
         int TitlebarHeight;
@@ -31,6 +31,7 @@ namespace ssGUI
         bool Closed;
         bool IsClosingAborted;
         glm::ivec4 TitlebarColorDifference;
+        bool AdaptiveTitlebarColor;
         bool DeleteAfterClosed;
 
         //Resize/Drag settings
@@ -47,13 +48,15 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), DeleteAfterClosed(true), 
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), 
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
                        ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
-        AddEventCallback(new ssGUI::EventCallbacks::OnWindowCloseEventCallback());
-        AddExtension(new ssGUI::Extensions::Border());
+        AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnWindowCloseEventCallback>());
+        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        SetAdaptiveTitlebarColor(true);
         SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
+        SetAdaptiveTitlebarColor(false);
     }
     =================================================================    
     */
@@ -72,6 +75,7 @@ namespace ssGUI
             bool Closed;
             bool IsClosingAborted;
             glm::ivec4 TitlebarColorDifference;
+            bool AdaptiveTitlebarColor;
             bool DeleteAfterClosed;
 
             //Resize/Drag settings
@@ -135,6 +139,14 @@ namespace ssGUI
 
             //function: GetTitlebarColor
             virtual glm::u8vec4 GetTitlebarColor() const;
+
+            //function: SetAdaptiveTitlebarColor
+            //Sets if the titlebar color "adapts" to the background color dynamically
+            virtual void SetAdaptiveTitlebarColor(bool adaptive);
+
+            //function: IsAdaptiveTitlebarColor
+            //Returns if the titlebar "adapts" to the background color dynamically
+            virtual bool IsAdaptiveTitlebarColor() const;
             
             //function: SetResizeType
             //Sets the resize type of the window. For MainWindow, only <Enums::ResizeType::ALL> or <Enums::ResizeType::NONE> will work.

@@ -331,13 +331,15 @@ namespace ssGUI
     }
         
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), DeleteAfterClosed(true), 
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), 
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
                        ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
         AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnWindowCloseEventCallback>());
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        SetAdaptiveTitlebarColor(true);
         SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
+        SetAdaptiveTitlebarColor(false);
     }
 
     Window::~Window()
@@ -352,27 +354,6 @@ namespace ssGUI
 
     void Window::Close()
     {
-        /*
-        for(int i = 0; i < OnCloseEventListeners.size(); i++)
-        {
-            if(OnCloseEventListenersValid[i])
-                OnCloseEventListeners[i]();
-        }*/
-
-        // if(IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
-        // {
-        //     GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->Notify(this);
-        //     if(IsClosingAborted)
-        //     {
-        //         IsClosingAborted = false;
-        //         return;
-        //     }
-        // }
-
-        // Closed = true;
-
-        // SetParent(nullptr);
-
         Internal_OnClose();
     }
 
@@ -383,13 +364,6 @@ namespace ssGUI
 
     void Window::Internal_OnClose()
     {        
-        /*
-        for(int i = 0; i < OnCloseEventListeners.size(); i++)
-        {
-            if(OnCloseEventListenersValid[i])
-                OnCloseEventListeners[i]();
-        }*/
-
         if(IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
         {
             GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->Notify(this);
@@ -401,8 +375,6 @@ namespace ssGUI
         }
 
         Closed = true;
-
-        // SetParent(nullptr);
 
         Delete();
     }
@@ -438,6 +410,16 @@ namespace ssGUI
     glm::u8vec4 Window::GetTitlebarColor() const
     {
         return static_cast<glm::u8vec4>(static_cast<glm::ivec4>(GetBackgroundColor()) + TitlebarColorDifference);
+    }
+
+    void Window::SetAdaptiveTitlebarColor(bool adaptive)
+    {
+        AdaptiveTitlebarColor = adaptive;
+    }
+
+    bool Window::IsAdaptiveTitlebarColor() const
+    {
+        return AdaptiveTitlebarColor;
     }
 
     void Window::SetResizeType(ssGUI::Enums::ResizeType resizeType)
@@ -559,10 +541,15 @@ namespace ssGUI
 
     void Window::SetBackgroundColor(glm::u8vec4 color)
     {
-        auto titlebarColor = GetTitlebarColor();
-        BackgroundColour = color;
-        //Reapply titlebar color
-        SetTitlebarColor(titlebarColor);
+        if(AdaptiveTitlebarColor)
+            BackgroundColour = color;
+        else
+        {
+            auto titlebarColor = GetTitlebarColor();
+            BackgroundColour = color;
+            //Reapply titlebar color
+            SetTitlebarColor(titlebarColor);
+        }
         RedrawObject();
     }
 
