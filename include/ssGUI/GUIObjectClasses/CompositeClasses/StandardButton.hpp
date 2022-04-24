@@ -18,30 +18,31 @@ namespace ssGUI
     ============================== C++ ==============================
     protected:
         ssGUIObjectIndex ButtonText;
-        glm::u8vec4 ButtonColor;
+        bool AdaptiveButtonTextColor;
+        glm::ivec4 ButtonTextColorDifference;
+        bool AdaptiveButtonTextContrast;
     =================================================================
     ============================== C++ ==============================
-    StandardButton::StandardButton() : ButtonText(-1), ButtonColor(glm::u8vec4(255, 255, 255, 255))
+    StandardButton::StandardButton() : ButtonText(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), AdaptiveButtonTextContrast(true)
     {
         SetMinSize(glm::vec2(50, 50));
 
         //Add visual extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
-        auto boxShadow = new ssGUI::Extensions::BoxShadow();
+        auto boxShadow = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
         boxShadow->SetShadowColor(glm::u8vec4(0, 0, 0, 127));
         AddExtension(boxShadow);
 
-        auto roundedCorners = new ssGUI::Extensions::RoundedCorners();
+        auto roundedCorners = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
         roundedCorners->SetRoundedCornersRadius(5);
         AddExtension(roundedCorners);
 
-        auto outline = new ssGUI::Extensions::Outline();
+        auto outline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         outline->SetSimpleOutline(false);
-        outline->SetOutlineColor(glm::u8vec4(255, 255, 255, 255));
+        outline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         outline->SetOutlineThickness(2);
         AddExtension(outline);
-        SetBackgroundColor(ButtonColor);
 
         //Add button text
         auto buttonText = new ssGUI::Text();
@@ -49,8 +50,9 @@ namespace ssGUI
         buttonText->SetHeapAllocated(true);
         buttonText->SetParent(this);
         buttonText->SetMinSize(glm::vec2(5, 5));
-        //TODO : Change text color
+        buttonText->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         ButtonText = CurrentObjectsReferences.AddObjectReference(buttonText);
+        SetAdaptiveButtonTextColor(true);   //Update the text color
 
         //Add button text clean-up
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
@@ -61,7 +63,7 @@ namespace ssGUI
         }
         else
         {
-            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
             AddEventCallback(callback);
         }
         
@@ -81,7 +83,7 @@ namespace ssGUI
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(container);
-                int buttonReactAmount = 40;
+                int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();
                 switch(btn->GetButtonState())
                 {
@@ -94,7 +96,6 @@ namespace ssGUI
                         bgcolor.b = bgcolor.b - buttonReactAmount < 0 ? 0 : bgcolor.b - buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
                         break;
-                    case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::ON_CLICK:
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.r = bgcolor.r - buttonReactAmount * 2 < 0 ? 0 : bgcolor.r - buttonReactAmount * 2;
@@ -102,6 +103,7 @@ namespace ssGUI
                         bgcolor.b = bgcolor.b - buttonReactAmount * 2 < 0 ? 0 : bgcolor.b - buttonReactAmount * 2;
                         btn->SetBackgroundColor(bgcolor);
                         break;
+                    case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::DISABLED:
                         bgcolor.r = bgcolor.r + buttonReactAmount < 0 ? 0 : bgcolor.r - buttonReactAmount * 3;
                         bgcolor.g = bgcolor.g + buttonReactAmount < 0 ? 0 : bgcolor.g - buttonReactAmount * 3;
@@ -111,6 +113,7 @@ namespace ssGUI
                 }
             }); 
 
+        SetBackgroundColor(GetButtonColor());
         UpdateButtonText();
     }
     =================================================================
@@ -122,7 +125,9 @@ namespace ssGUI
 
         protected:
             ssGUIObjectIndex ButtonText;
-            glm::u8vec4 ButtonColor;
+            bool AdaptiveButtonTextColor;
+            glm::ivec4 ButtonTextColorDifference;
+            bool AdaptiveButtonTextContrast;
 
             StandardButton(StandardButton const& other);
 
@@ -140,26 +145,40 @@ namespace ssGUI
             //Gets the text object, by default it will be generated
             virtual ssGUI::Text* GetButtonTextObject() const;
 
+            //function: SetAdaptiveButtonTextColor
+            //Sets if the button text color "adapts" to the button color dynamically.
+            //You need to call this function after setting the button text color to update the color difference stored here.
+            virtual void SetAdaptiveButtonTextColor(bool adaptive);
+
+            //function: IsAdaptiveButtonTextColor
+            //Returns if the button text color "adapts" to the button color dynamically
+            virtual bool IsAdaptiveButtonTextColor() const;
+
+            //function: SetAdaptiveButtonTextContrast
+            //Sets if the button text color is opposite to the button color
+            virtual void SetAdaptiveButtonTextContrast(bool contrast);
+
+            //function: IsAdaptiveButtonTextContrast
+            //Returns if the button text color is opposite to the button color
+            virtual bool IsAdaptiveButtonTextContrast() const;
+
+            //function: SetAdaptiveButtonTextColorDifference
+            //Sets the button text color difference to button color manually (ButtonTextColor - ButtonColor)
+            //This is normally set automatically when you call <SetAdaptiveButtonTextColor>
+            virtual void SetAdaptiveButtonTextColorDifference(glm::ivec4 difference);
+
+            //function: GetAdaptiveButtonTextColorDifference
+            //Gets the button text color difference to button color (ButtonTextColor - ButtonColor)
+            virtual glm::ivec4 GetAdaptiveButtonTextColorDifference() const;
+
             //function: SetButtonColor
-            //Sets the button color that can be referenced from the ButtonStateChangedEventCallback
-            virtual void SetButtonColor(glm::u8vec4 color);
-            
-            //function: GetButtonColor
-            //Gets the button color that can be referenced from the ButtonStateChangedEventCallback
-            virtual glm::u8vec4 GetButtonColor();
+            //See <Button::SetButtonColor>
+            virtual void SetButtonColor(glm::u8vec4 color) override;
             
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
-            //function: Internal_Draw
-            //See <Widget::Internal_Draw>
-            //virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
-            
-            //function: Internal_Update
-            //See <Widget::Internal_Update>
-            //virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
-            
             //function: Clone
             //See <Widget::Clone>
             virtual StandardButton* Clone(bool cloneChildren) override;

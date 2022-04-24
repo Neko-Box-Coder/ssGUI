@@ -7,7 +7,9 @@ namespace ssGUI
     StandardButton::StandardButton(StandardButton const& other) : Button(other)
     {
         ButtonText = other.ButtonText;
-        ButtonColor = other.ButtonColor;
+        AdaptiveButtonTextColor = other.IsAdaptiveButtonTextColor();
+        ButtonTextColorDifference = other.GetAdaptiveButtonTextColorDifference();
+        AdaptiveButtonTextContrast = other.IsAdaptiveButtonTextContrast();
     }
     
     void StandardButton::UpdateButtonText()
@@ -32,7 +34,7 @@ namespace ssGUI
         static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
     }
 
-    StandardButton::StandardButton() : ButtonText(-1), ButtonColor(glm::u8vec4(255, 255, 255, 255))
+    StandardButton::StandardButton() : ButtonText(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), AdaptiveButtonTextContrast(true)
     {
         SetMinSize(glm::vec2(50, 50));
 
@@ -49,10 +51,9 @@ namespace ssGUI
 
         auto outline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         outline->SetSimpleOutline(false);
-        outline->SetOutlineColor(glm::u8vec4(255, 255, 255, 255));
+        outline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         outline->SetOutlineThickness(2);
         AddExtension(outline);
-        SetBackgroundColor(ButtonColor);
 
         //Add button text
         auto buttonText = new ssGUI::Text();
@@ -60,8 +61,9 @@ namespace ssGUI
         buttonText->SetHeapAllocated(true);
         buttonText->SetParent(this);
         buttonText->SetMinSize(glm::vec2(5, 5));
-        //TODO : Change text color
+        buttonText->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         ButtonText = CurrentObjectsReferences.AddObjectReference(buttonText);
+        SetAdaptiveButtonTextColor(true);   //Update the text color
 
         //Add button text clean-up
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
@@ -105,7 +107,6 @@ namespace ssGUI
                         bgcolor.b = bgcolor.b - buttonReactAmount < 0 ? 0 : bgcolor.b - buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
                         break;
-                    case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::ON_CLICK:
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.r = bgcolor.r - buttonReactAmount * 2 < 0 ? 0 : bgcolor.r - buttonReactAmount * 2;
@@ -113,6 +114,7 @@ namespace ssGUI
                         bgcolor.b = bgcolor.b - buttonReactAmount * 2 < 0 ? 0 : bgcolor.b - buttonReactAmount * 2;
                         btn->SetBackgroundColor(bgcolor);
                         break;
+                    case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::DISABLED:
                         bgcolor.r = bgcolor.r + buttonReactAmount < 0 ? 0 : bgcolor.r - buttonReactAmount * 3;
                         bgcolor.g = bgcolor.g + buttonReactAmount < 0 ? 0 : bgcolor.g - buttonReactAmount * 3;
@@ -122,6 +124,7 @@ namespace ssGUI
                 }
             }); 
 
+        SetBackgroundColor(GetButtonColor());
         UpdateButtonText();
     }
 
@@ -162,19 +165,96 @@ namespace ssGUI
 
         UpdateButtonText();
     }
+
     ssGUI::Text* StandardButton::GetButtonTextObject() const
     {
         return static_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(ButtonText));
     }
 
+    void StandardButton::SetAdaptiveButtonTextColor(bool adaptive)
+    {
+        if(CurrentObjectsReferences.GetObjectReference(ButtonText) == nullptr)
+            return;
+
+        AdaptiveButtonTextColor = adaptive;
+        auto buttonTextObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(ButtonText));
+        SetAdaptiveButtonTextColorDifference(buttonTextObj->GetTextColor() - GetButtonColor());
+
+        SetButtonColor(GetButtonColor());   //Setting the button color to trigger the event callback
+    }
+
+    bool StandardButton::IsAdaptiveButtonTextColor() const
+    {
+        return AdaptiveButtonTextColor;
+    }
+
+    void StandardButton::SetAdaptiveButtonTextContrast(bool contrast)
+    {
+        AdaptiveButtonTextContrast = contrast;
+
+        if(CurrentObjectsReferences.GetObjectReference(ButtonText) == nullptr)
+            return;
+
+        SetButtonColor(GetButtonColor());   //Setting the button color to trigger the event callback
+    }
+
+    bool StandardButton::IsAdaptiveButtonTextContrast() const
+    {
+        return AdaptiveButtonTextContrast;
+    }
+
+    void StandardButton::SetAdaptiveButtonTextColorDifference(glm::ivec4 difference)
+    {
+        ButtonTextColorDifference = difference;
+    }
+
+    glm::ivec4 StandardButton::GetAdaptiveButtonTextColorDifference() const
+    {
+        return ButtonTextColorDifference;
+    }
+
     void StandardButton::SetButtonColor(glm::u8vec4 color)
     {
-        ButtonColor = color;
-    }
-    
-    glm::u8vec4 StandardButton::GetButtonColor()
-    {
-        return ButtonColor;
+        Button::SetButtonColor(color);
+                    
+        if(GetButtonTextObject() == nullptr)
+            return;
+
+        if(!IsAdaptiveButtonTextColor())
+        {
+            GetButtonTextObject()->RedrawObject();
+            return;    
+        }
+
+        glm::ivec4 textResult = (glm::ivec4)color + GetAdaptiveButtonTextColorDifference();
+
+        if(IsAdaptiveButtonTextContrast())
+        {
+            if(textResult.r < 0 || textResult.r > 255)
+                textResult.r = color.r - ButtonTextColorDifference.r;
+            
+            if(textResult.g < 0 || textResult.g > 255)
+                textResult.g = color.g - ButtonTextColorDifference.g;
+
+            if(textResult.b < 0 || textResult.b > 255)
+                textResult.b = color.b - ButtonTextColorDifference.b;
+        
+            textResult.a = textResult.a < 0 ? 0 : textResult.a;
+            textResult.a = textResult.a > 255 ? 255 : textResult.a;
+        }
+        else
+        {
+            textResult.r = textResult.r < 0 ? 0 : textResult.r;
+            textResult.r = textResult.r > 255 ? 255 : textResult.r;
+            textResult.g = textResult.g < 0 ? 0 : textResult.g;
+            textResult.g = textResult.g > 255 ? 255 : textResult.g;
+            textResult.b = textResult.b > 255 ? 255 : textResult.b;
+            textResult.b = textResult.b < 0 ? 0 : textResult.b;
+            textResult.a = textResult.a < 0 ? 0 : textResult.a;
+            textResult.a = textResult.a > 255 ? 255 : textResult.a;
+        }
+
+        GetButtonTextObject()->SetTextColor((glm::u8vec4)textResult);
     }
 
     //You don't have to override this. If you do want to return your own type, 

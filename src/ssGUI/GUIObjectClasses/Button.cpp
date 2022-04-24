@@ -7,6 +7,7 @@ namespace ssGUI
     {
         CurrentState = other.GetButtonState();
         StateChangedEventCallback = nullptr;
+        ButtonColor = other.GetButtonColor();
     }
 
     void Button::ConstructRenderInfo()
@@ -46,35 +47,34 @@ namespace ssGUI
             StateChangedEventCallback->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
-    Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr)
+    Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr), ButtonColor(glm::u8vec4(100, 100, 100, 255))
     {
         SetSize(glm::vec2(25, 25));
-        SetBackgroundColor(glm::u8vec4(100,100,100,255)); //Gray background colour for button (For now)
         StateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         StateChangedEventCallback->AddEventListener(
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(src);
-                glm::u8vec4 bgcolor = btn->GetBackgroundColor();
+                glm::u8vec4 btnColor = btn->GetButtonColor();
                 switch(btn->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
-                        bgcolor.a = 255;
-                        btn->SetBackgroundColor(bgcolor);
+                        btnColor.a = 255;
+                        btn->SetBackgroundColor(btnColor);
                         break;
                     case ssGUI::Enums::ButtonState::HOVER:
-                        bgcolor.a = 200;
-                        btn->SetBackgroundColor(bgcolor);
+                        btnColor.a = 200;
+                        btn->SetBackgroundColor(btnColor);
                         break;
                     case ssGUI::Enums::ButtonState::ON_CLICK:
                     case ssGUI::Enums::ButtonState::CLICKING:
-                        bgcolor.a = 100;
-                        btn->SetBackgroundColor(bgcolor);
+                        btnColor.a = 100;
+                        btn->SetBackgroundColor(btnColor);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::DISABLED:
-                        bgcolor.a = 50;
-                        btn->SetBackgroundColor(bgcolor);
+                        btnColor.a = 50;
+                        btn->SetBackgroundColor(btnColor);
                         break;
                 }
             }
@@ -82,6 +82,7 @@ namespace ssGUI
         
         AddEventCallback(StateChangedEventCallback);
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        SetBackgroundColor(GetButtonColor());
     }
 
     Button::~Button()
@@ -97,6 +98,17 @@ namespace ssGUI
     ssGUI::Enums::ButtonState Button::GetButtonState() const
     {
         return CurrentState;
+    }
+
+    void Button::SetButtonColor(glm::u8vec4 color)
+    {
+        ButtonColor = color;
+        SetBackgroundColor(GetButtonColor());
+    }
+    
+    glm::u8vec4 Button::GetButtonColor() const
+    {
+        return ButtonColor;
     }
 
     //Overriding widget

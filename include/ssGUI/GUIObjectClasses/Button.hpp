@@ -62,11 +62,13 @@ namespace ssGUI
     class Button : public Widget
     {
         private:
-            ssGUI::Enums::ButtonState CurrentState;
-            ssGUI::EventCallbacks::ButtonStateChangedEventCallback* StateChangedEventCallback;
             Button& operator=(Button const& other);
         
         protected:
+            ssGUI::Enums::ButtonState CurrentState;
+            ssGUI::EventCallbacks::ButtonStateChangedEventCallback* StateChangedEventCallback;
+            glm::u8vec4 ButtonColor;
+            
             Button(Button const& other);
 
             virtual void ConstructRenderInfo() override;
@@ -83,6 +85,14 @@ namespace ssGUI
             
             //function: GetButtonState
             virtual ssGUI::Enums::ButtonState GetButtonState() const;
+
+            //function: SetButtonColor
+            //Sets the button color that can be referenced from the ButtonStateChangedEventCallback
+            virtual void SetButtonColor(glm::u8vec4 color);
+            
+            //function: GetButtonColor
+            //Gets the button color that can be referenced from the ButtonStateChangedEventCallback
+            virtual glm::u8vec4 GetButtonColor() const;
 
             //TODO : Programmically triggering button method
             //TODO : Programmically triggering button with GUI method

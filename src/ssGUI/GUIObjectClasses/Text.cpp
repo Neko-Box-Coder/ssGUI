@@ -933,6 +933,7 @@ namespace ssGUI
     void Text::SetTextColor(glm::u8vec4 color)
     {
         TextColor = color;
+        RecalculateTextNeeded = true;   //Setting text color requires reconstruction of character details
         RedrawObject();
     }
 

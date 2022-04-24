@@ -17,6 +17,10 @@ namespace ssGUI
     {
         HorizontalPadding = other.GetHorizontalPadding();
         VerticalPadding = other.GetVerticalPadding();
+        AdaptiveTitleColor = other.IsAdaptiveTitleColor();
+        TitleColorDifference = other.GetAdaptiveTitleColorDifference();
+        AdaptiveTitleContrast = other.IsAdaptiveTitleContrast();
+
         WindowTitle = other.WindowTitle;
         WindowIcon = other.WindowIcon;
         CloseButton = other.CloseButton;
@@ -24,7 +28,7 @@ namespace ssGUI
 
     void StandardWindow::UpdateTitleText()
     {
-        auto windowTitleObj = CurrentObjectsReferences.GetObjectReference(WindowTitle);
+        auto windowTitleObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
         if(windowTitleObj == nullptr)
             return;
         
@@ -37,8 +41,8 @@ namespace ssGUI
         if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
             windowTitleObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ap = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap->SetHorizontalUsePercentage(true);
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
@@ -53,9 +57,9 @@ namespace ssGUI
         int textHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
         as->SetVerticalPixel(textHeight);
 
-        static_cast<ssGUI::Text*>(windowTitleObj)->SetFontSize(textHeight);
-        static_cast<ssGUI::Text*>(windowTitleObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-        static_cast<ssGUI::Text*>(windowTitleObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+        windowTitleObj->SetFontSize(textHeight);
+        windowTitleObj->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
+        windowTitleObj->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
 
         if(!windowTitleObj->HasTag(ssGUI::Tags::OVERLAY))
             windowTitleObj->AddTag(ssGUI::Tags::OVERLAY);
@@ -143,17 +147,21 @@ namespace ssGUI
             closeButtonObj->AddTag(ssGUI::Tags::OVERLAY);
     }
 
-    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
+    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), AdaptiveTitleColor(true), TitleColorDifference(0, 0, 0, 0), AdaptiveTitleContrast(true), 
+                                        WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
     {        
         SetMinSize(glm::vec2(50, 50));
         
+        //Setup title
         auto windowTitle = new ssGUI::Text();
         windowTitle->SetUserCreated(false);
         windowTitle->SetHeapAllocated(true);
         windowTitle->SetParent(this);
         windowTitle->SetMinSize(glm::vec2(5, 5));
         windowTitle->SetText("Window");
+        windowTitle->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
+        SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
 
         // auto windowIcon = new ssGUI::Image();
         // windowIcon->SetUserCreated(false);
@@ -162,25 +170,27 @@ namespace ssGUI
         // windowIcon->SetMinSize(glm::vec2(5, 5));
         // WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
+        //Setup button
         auto closeButton = new ssGUI::Button();
         closeButton->SetUserCreated(false);
         closeButton->SetHeapAllocated(true);
         closeButton->SetParent(this);
         closeButton->SetMinSize(glm::vec2(5, 5));
         closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+
+        //Change button shape to circle
         auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
         shapeEx->RemoveGUIObjectShape(0);
         int circleId = shapeEx->AddAdditionalCircle(glm::vec2(), closeButton->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
         closeButton->AddExtension(shapeEx);
 
+        //Add outline to button
         auto closeButtonOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         closeButtonOutline->SetOutlineThickness(2);
         closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
-        // closeButtonOutline->ClearTargetShapes();
-        // closeButtonOutline->SetSimpleOutline(false);
-        // closeButtonOutline->AddTargetShape
         closeButton->AddExtension(closeButtonOutline);
 
+        //Setup button event
         auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
         buttonEvent->RemoveEventListener(0);
         buttonEvent->AddEventListener
@@ -212,6 +222,8 @@ namespace ssGUI
                 
             }
         );
+
+        //Update button's shape size when button's size is changed
         auto shapeEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         shapeEvent->AddEventListener
         (
@@ -221,10 +233,10 @@ namespace ssGUI
                 shape->SetAdditionalCircle(circleId, glm::vec2(), src->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
-
         closeButton->AddEventCallback(shapeEvent);
         CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
 
+        //Add rounded corners to window
         auto rc = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
         rc->ClearTargetShapes();
         rc->AddTargetVertex(0);
@@ -233,16 +245,22 @@ namespace ssGUI
         rc->AddTargetVertex(3);
         rc->AddTargetVertex(4);
         rc->AddTargetVertex(5);
-
         AddExtension(rc);
+
+        //Make window dockable
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Dockable>());
+        
+        //Add outline to window
         auto windowOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         windowOutline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         AddExtension(windowOutline);
+
+        //Add shadow to window
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 
+        //Clean up sub-components when this is deleted
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
         if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
         {
@@ -281,22 +299,12 @@ namespace ssGUI
     StandardWindow::~StandardWindow()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        
-
-        // if(!WindowTitle->IsUserCreated())
-        //     WindowTitle->Delete(true);
-
-        // if(!WindowIcon->IsUserCreated())
-        //     WindowIcon->Delete(true);
-
-        // if(!CloseButton->IsUserCreated())
-        //     CloseButton->Delete(true);
     }
 
     void StandardWindow::SetWindowTitleObject(ssGUI::Text* text)
     {
         std::wstring oldTitle = L"";
-        auto oldTitleObj = static_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
+        auto oldTitleObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
         if(oldTitleObj != nullptr)
         {
             oldTitle = oldTitleObj->GetText();
@@ -323,6 +331,7 @@ namespace ssGUI
 
         text->SetText(oldTitle);
 
+        SetAdaptiveTitleColor(IsAdaptiveTitleColor());      //resetting it here so that eventcallback is added
         UpdateTitleText();
     }
 
@@ -426,6 +435,92 @@ namespace ssGUI
         return VerticalPadding;
     }
 
+    void StandardWindow::SetAdaptiveTitleColor(bool adaptive)
+    {
+        if(CurrentObjectsReferences.GetObjectReference(WindowTitle) == nullptr)
+            return;
+
+        AdaptiveTitleColor = adaptive;
+        auto titleObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
+        SetAdaptiveTitleColorDifference(titleObj->GetTextColor() - GetTitlebarColor());
+
+        SetTitlebarColor(GetTitlebarColor());   //Setting the titlebar color to trigger the event callback
+    }
+
+    bool StandardWindow::IsAdaptiveTitleColor() const
+    {
+        return AdaptiveTitleColor;
+    }
+
+    void StandardWindow::SetAdaptiveTitleContrast(bool contrast)
+    {
+        AdaptiveTitleContrast = contrast;
+
+        if(CurrentObjectsReferences.GetObjectReference(WindowTitle) == nullptr)
+            return;
+
+        SetTitlebarColor(GetTitlebarColor());   //Setting the titlebar color to trigger the event callback
+    }
+
+    bool StandardWindow::IsAdaptiveTitleContrast() const
+    {
+        return AdaptiveTitleContrast;
+    }
+
+    void StandardWindow::SetAdaptiveTitleColorDifference(glm::ivec4 difference)
+    {
+        TitleColorDifference = difference;
+    }
+
+    glm::ivec4 StandardWindow::GetAdaptiveTitleColorDifference() const
+    {
+        return TitleColorDifference;
+    }
+
+    void StandardWindow::SetTitlebarColor(glm::u8vec4 color)
+    {
+        Window::SetTitlebarColor(color);
+                    
+        if(GetWindowTitleObject() == nullptr)
+            return;
+
+        if(!IsAdaptiveTitleColor())
+        {
+            GetWindowTitleObject()->RedrawObject();
+            return;    
+        }
+        
+        glm::ivec4 titleResult = (glm::ivec4)GetTitlebarColor() + GetAdaptiveTitleColorDifference();
+
+        if(IsAdaptiveTitleContrast())
+        {
+            if(titleResult.r < 0 || titleResult.r > 255)
+                titleResult.r = GetTitlebarColor().r - TitleColorDifference.r;
+            
+            if(titleResult.g < 0 || titleResult.g > 255)
+                titleResult.g = GetTitlebarColor().g - TitleColorDifference.g;
+
+            if(titleResult.b < 0 || titleResult.b > 255)
+                titleResult.b = GetTitlebarColor().b - TitleColorDifference.b;
+        
+            titleResult.a = titleResult.a < 0 ? 0 : titleResult.a;
+            titleResult.a = titleResult.a > 255 ? 255 : titleResult.a;
+        }
+        else
+        {
+            titleResult.r = titleResult.r < 0 ? 0 : titleResult.r;
+            titleResult.r = titleResult.r > 255 ? 255 : titleResult.r;
+            titleResult.g = titleResult.g < 0 ? 0 : titleResult.g;
+            titleResult.g = titleResult.g > 255 ? 255 : titleResult.g;
+            titleResult.b = titleResult.b > 255 ? 255 : titleResult.b;
+            titleResult.b = titleResult.b < 0 ? 0 : titleResult.b;
+            titleResult.a = titleResult.a < 0 ? 0 : titleResult.a;
+            titleResult.a = titleResult.a > 255 ? 255 : titleResult.a;
+        }
+
+        GetWindowTitleObject()->SetTextColor((glm::u8vec4)titleResult);
+    }
+
     void StandardWindow::SetTitlebar(bool set)
     {
         auto windowTitleObj = CurrentObjectsReferences.GetObjectReference(WindowTitle);
@@ -447,7 +542,6 @@ namespace ssGUI
                 else
                     closeButtonObj->SetVisible(false);
             }
-            
         }
         else
         {

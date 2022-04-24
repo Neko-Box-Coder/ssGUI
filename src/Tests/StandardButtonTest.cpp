@@ -27,6 +27,32 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
+
+    guiManager.AddOnUpdateEventListener
+    (
+        [&]()
+        {
+            auto backendInput = guiManager.GetBackendInputInterface();
+            if(backendInput->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+                !backendInput->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            {
+                auto buttonColor = glm::ivec4(button.GetButtonColor());
+                buttonColor.r += 20;
+                buttonColor.g += 20;
+                buttonColor.b += 20;
+
+                if(buttonColor.r > 255)
+                    buttonColor.r = 0;
+                if(buttonColor.g > 255)
+                    buttonColor.g = 0;
+                if(buttonColor.b > 255)
+                    buttonColor.b = 0;
+                
+                button.SetButtonColor(glm::u8vec4(buttonColor));
+            }
+        }
+    );
+
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
 

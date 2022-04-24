@@ -18,25 +18,32 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-            int HorizontalPadding;
-            int VerticalPadding;
-
-            ssGUIObjectIndex WindowTitle;
-            ssGUIObjectIndex WindowIcon;
-            ssGUIObjectIndex CloseButton;
+        int HorizontalPadding;
+        int VerticalPadding;
+        bool AdaptiveTitleColor;
+        glm::ivec4 TitleColorDifference;
+        bool AdaptiveTitleContrast;
+        
+        ssGUIObjectIndex WindowTitle;
+        ssGUIObjectIndex WindowIcon;
+        ssGUIObjectIndex CloseButton;
     =================================================================
     ============================== C++ ==============================
-    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
+    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), AdaptiveTitleColor(true), TitleColorDifference(0, 0, 0, 0), AdaptiveTitleContrast(true), 
+                                        WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
     {        
         SetMinSize(glm::vec2(50, 50));
         
+        //Setup title
         auto windowTitle = new ssGUI::Text();
         windowTitle->SetUserCreated(false);
         windowTitle->SetHeapAllocated(true);
         windowTitle->SetParent(this);
         windowTitle->SetMinSize(glm::vec2(5, 5));
         windowTitle->SetText("Window");
+        windowTitle->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
+        SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
 
         // auto windowIcon = new ssGUI::Image();
         // windowIcon->SetUserCreated(false);
@@ -45,25 +52,27 @@ namespace ssGUI
         // windowIcon->SetMinSize(glm::vec2(5, 5));
         // WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
+        //Setup button
         auto closeButton = new ssGUI::Button();
         closeButton->SetUserCreated(false);
         closeButton->SetHeapAllocated(true);
         closeButton->SetParent(this);
         closeButton->SetMinSize(glm::vec2(5, 5));
         closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
-        auto shapeEx = new ssGUI::Extensions::Shape();
+
+        //Change button shape to circle
+        auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
         shapeEx->RemoveGUIObjectShape(0);
         int circleId = shapeEx->AddAdditionalCircle(glm::vec2(), closeButton->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
         closeButton->AddExtension(shapeEx);
 
-        auto closeButtonOutline = new ssGUI::Extensions::Outline();
+        //Add outline to button
+        auto closeButtonOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         closeButtonOutline->SetOutlineThickness(2);
         closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
-        // closeButtonOutline->ClearTargetShapes();
-        // closeButtonOutline->SetSimpleOutline(false);
-        // closeButtonOutline->AddTargetShape
         closeButton->AddExtension(closeButtonOutline);
 
+        //Setup button event
         auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
         buttonEvent->RemoveEventListener(0);
         buttonEvent->AddEventListener
@@ -95,7 +104,9 @@ namespace ssGUI
                 
             }
         );
-        auto shapeEvent = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+
+        //Update button's shape size when button's size is changed
+        auto shapeEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         shapeEvent->AddEventListener
         (
             [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
@@ -104,11 +115,11 @@ namespace ssGUI
                 shape->SetAdditionalCircle(circleId, glm::vec2(), src->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
-
         closeButton->AddEventCallback(shapeEvent);
         CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
 
-        auto rc = new ssGUI::Extensions::RoundedCorners();
+        //Add rounded corners to window
+        auto rc = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
         rc->ClearTargetShapes();
         rc->AddTargetVertex(0);
         rc->AddTargetVertex(1);
@@ -116,14 +127,22 @@ namespace ssGUI
         rc->AddTargetVertex(3);
         rc->AddTargetVertex(4);
         rc->AddTargetVertex(5);
-
         AddExtension(rc);
-        AddExtension(new ssGUI::Extensions::Dockable());
-        AddExtension(new ssGUI::Extensions::Outline());
-        AddExtension(new ssGUI::Extensions::BoxShadow());
+
+        //Make window dockable
+        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Dockable>());
+        
+        //Add outline to window
+        auto windowOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+        windowOutline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
+        AddExtension(windowOutline);
+
+        //Add shadow to window
+        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
         SetTitlebarHeight(25);
 
+        //Clean up sub-components when this is deleted
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
         if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
         {
@@ -132,7 +151,7 @@ namespace ssGUI
         }
         else
         {
-            callback = new ssGUI::EventCallbacks::OnObjectDestroyEventCallback();
+            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
             AddEventCallback(callback);
         }
         
@@ -168,7 +187,10 @@ namespace ssGUI
         protected:
             int HorizontalPadding;
             int VerticalPadding;
-
+            bool AdaptiveTitleColor;
+            glm::ivec4 TitleColorDifference;
+            bool AdaptiveTitleContrast;
+            
             ssGUIObjectIndex WindowTitle;
             ssGUIObjectIndex WindowIcon;
             ssGUIObjectIndex CloseButton;
@@ -228,6 +250,36 @@ namespace ssGUI
             //function: GetVerticalPadding
             //Returns the vertical padding for the icon, title and close button objects, in pixels
             virtual int GetVerticalPadding() const;
+
+            //function: SetAdaptiveTitleColor
+            //Sets if the title text color "adapts" to the titlebar color dynamically.
+            //You need to call this function after setting the title text color to update the color difference stored here.
+            virtual void SetAdaptiveTitleColor(bool adaptive);
+
+            //function: SetAdaptiveTitleColor
+            //Returns if the title text color "adapts" to the titlebar color dynamically
+            virtual bool IsAdaptiveTitleColor() const;
+
+            //function: SetAdaptiveTitleContrast
+            //Sets if the title text color is opposite to the titlebar color
+            virtual void SetAdaptiveTitleContrast(bool contrast);
+
+            //function: IsAdaptiveTitleContrast
+            //Returns if the title text color is opposite to the titlebar color
+            virtual bool IsAdaptiveTitleContrast() const;
+
+            //function: SetAdaptiveTitleColorDifference
+            //Sets the title text color difference to titlebar color manually (TitleTextColor - TitlebarColor)
+            //This is normally set automatically when you call <SetAdaptiveTitleColor>
+            virtual void SetAdaptiveTitleColorDifference(glm::ivec4 difference);
+
+            //function: GetAdaptiveTitleColorDifference
+            //Gets the title text color difference to titlebar color (TitleTextColor - TitlebarColor)
+            virtual glm::ivec4 GetAdaptiveTitleColorDifference() const;
+
+            //function: SetTitlebarColor
+            //See <Window::SetTitlebarColor>
+            virtual void SetTitlebarColor(glm::u8vec4 color) override;
 
             //function: SetTitlebar
             //See <Window::SetTitlebar>
