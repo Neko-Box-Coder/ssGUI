@@ -550,6 +550,10 @@ namespace ssGUI
             //Reapply titlebar color
             SetTitlebarColor(titlebarColor);
         }
+
+        if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>())
+            GetAnyEventCallback<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>()->Notify(this);
+
         RedrawObject();
     }
 

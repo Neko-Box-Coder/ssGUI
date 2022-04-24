@@ -14,4 +14,5 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/SizeChangedEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/ChildAddedEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/ChildRemovedEventCallback.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/BackgroundColorChangedEventCallback.cpp"
                     )

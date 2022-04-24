@@ -34,7 +34,6 @@ namespace ssGUI::EventCallbacks
             static void operator delete[](void* p)      {free(p);};
         
         public:
-            
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
             virtual std::string GetEventCallbackName() const override;

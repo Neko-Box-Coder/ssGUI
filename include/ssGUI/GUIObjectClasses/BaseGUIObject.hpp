@@ -12,6 +12,7 @@
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/BackgroundColorChangedEventCallback.hpp"
 #include "glm/vec4.hpp"
 #include <vector>
 #include <list>

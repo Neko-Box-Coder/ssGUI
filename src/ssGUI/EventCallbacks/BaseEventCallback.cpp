@@ -37,6 +37,9 @@ namespace ssGUI::EventCallbacks
 
     void BaseEventCallback::RemoveEventListener(int index)
     {
+        if(index < 0 || index >= EventListenersValid.size() || EventListenersValid[index] == false)
+            return;
+        
         EventListenersValid[index] = false;
         NextFreeIndices.push(index);
 

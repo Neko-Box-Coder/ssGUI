@@ -1005,6 +1005,8 @@ namespace ssGUI
     void BaseGUIObject::SetBackgroundColor(glm::u8vec4 color)
     {
         BackgroundColour = color;
+        if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>())
+            GetAnyEventCallback<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>()->Notify(this);
         RedrawObject();
     }
 
