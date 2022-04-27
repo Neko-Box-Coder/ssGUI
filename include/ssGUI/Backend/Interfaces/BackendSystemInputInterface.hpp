@@ -61,12 +61,12 @@ namespace ssGUI::Backend
             //function: SetCustomCursor
             //Sets the custom cursor image and hotspot.
             //The image data of customCursor is copied so it is fine to dispose it if needed.
-            virtual void SetCustomCursor(ssGUI::ImageData* customCursor, glm::vec2 hotspot) = 0;
+            virtual void SetCustomCursor(ssGUI::ImageData* customCursor, glm::ivec2 cursorSize, glm::ivec2 hotspot) = 0;
 
             //function: GetCustomCursor
             //Copies the custom cursor image to customCursor and returns hotspot of cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCustomCursor(ssGUI::ImageData& customCursor, glm::vec2& hotspot) = 0;
+            virtual void GetCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) = 0;
 
             //function: UpdateCursor
             //Updates the cursor. This needs to be called after a new cursor is set.

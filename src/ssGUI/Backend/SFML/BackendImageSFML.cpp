@@ -14,11 +14,6 @@ namespace ssGUI::Backend
     BackendImageSFML::~BackendImageSFML()
     {}
 
-    // sf::Texture* BackendImageSFML::GetGPUTextureP()
-    // {
-    //     return GPUTextureValid ? &GPUTexture : nullptr;
-    // }
-
     void* BackendImageSFML::GetRawHandle()
     {
         return GPUTextureValid ? &GPUTexture : nullptr;
@@ -31,7 +26,7 @@ namespace ssGUI::Backend
 
     bool BackendImageSFML::LoadFromPath(std::string path)
     {
-        if(GPUTexture.loadFromFile(path))
+        if(GPUTexture.loadFromFile(std::filesystem::path(path)))
         {
             GPUTextureValid = true;
             return true;
