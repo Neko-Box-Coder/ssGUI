@@ -78,6 +78,7 @@ namespace ssGUI::Extensions
 
     void BoxShadow::ConstructRenderInfo()
     {
+        FUNC_DEBUG_ENTRY();
         //Getting all the rendering details from container
         std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
@@ -222,6 +223,7 @@ namespace ssGUI::Extensions
         drawingUVs.insert(drawingUVs.end(), newUVs.begin(), newUVs.end());
         drawingCounts.insert(drawingCounts.end(), newCounts.begin(), newCounts.end());
         drawingProperties.insert(drawingProperties.end(), newProperties.begin(), newProperties.end());
+        FUNC_DEBUG_EXIT();
     }
 
     void BoxShadow::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)

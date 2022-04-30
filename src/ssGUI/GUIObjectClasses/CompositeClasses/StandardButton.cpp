@@ -14,9 +14,13 @@ namespace ssGUI
     
     void StandardButton::UpdateButtonText()
     {
+        FUNC_DEBUG_ENTRY();
         auto buttonTextObj = CurrentObjectsReferences.GetObjectReference(ButtonText);
         if(buttonTextObj == nullptr)
+        {
+            FUNC_DEBUG_EXIT();
             return;
+        }
         
         ssGUI::Extensions::AdvancedSize* as;
         
@@ -32,10 +36,12 @@ namespace ssGUI
 
         static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
         static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+        FUNC_DEBUG_EXIT();
     }
 
     StandardButton::StandardButton() : ButtonText(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), AdaptiveButtonTextContrast(true)
     {
+        FUNC_DEBUG_ENTRY();
         SetMinSize(glm::vec2(50, 50));
 
         //Add visual extensions
@@ -126,6 +132,8 @@ namespace ssGUI
 
         SetBackgroundColor(GetButtonColor());
         UpdateButtonText();
+        
+        FUNC_DEBUG_EXIT();
     }
 
     StandardButton::~StandardButton()

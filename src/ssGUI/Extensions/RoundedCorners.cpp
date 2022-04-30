@@ -166,6 +166,7 @@ namespace ssGUI::Extensions
 
     void RoundedCorners::UpdateVerticesForRounding()
     {
+        FUNC_DEBUG_ENTRY();
         VerticesToRound.clear();
         VerticesToRoundPrevVertices.clear();
         VerticesToRoundNextVertices.clear();
@@ -259,10 +260,12 @@ namespace ssGUI::Extensions
                 }
             }
         }
+        FUNC_DEBUG_EXIT();
     }
 
     void RoundedCorners::ConstructRenderInfo()
     {
+        FUNC_DEBUG_ENTRY();
         std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
         std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
@@ -281,7 +284,10 @@ namespace ssGUI::Extensions
         std::vector<int> newCounts;             //The number vertices per arc
 
         if(drawingCounts.empty())
+        {
+            FUNC_DEBUG_EXIT();
             return;
+        }
 
         UpdateVerticesForRounding();
 
@@ -374,6 +380,7 @@ namespace ssGUI::Extensions
                 drawingProperties.push_back(originalProperties[shapeIndex]);
             }
         }
+        FUNC_DEBUG_EXIT();
     }
 
     void RoundedCorners::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
