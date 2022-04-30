@@ -19,7 +19,7 @@ int main()
     image.SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
 
     ssGUI::ImageData data;
-    data.LoadFromPath("sd.png");
+    data.LoadFromPath("Resources/sd.png");
     image.SetImageData(&data);
     auto roundedCornersEx = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
     roundedCornersEx->ClearTargetShapes();

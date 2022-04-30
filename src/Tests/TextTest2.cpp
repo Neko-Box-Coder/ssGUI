@@ -10,12 +10,12 @@ int main()
     //Loading the font
     ssGUI::Font font;
     ssGUI::Font font2;
-    if(font.GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
+    if(font.GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
        std::cout<<"font loaded\n";
-    // if(font2.GetBackendFontInterface()->LoadFromPath("SourceHanSansJP-Normal.otf"))
+    // if(font2.GetBackendFontInterface()->LoadFromPath("Resources/SourceHanSansJP-Normal.otf"))
     //    std::cout<<"font loaded\n";
 
-    if(font2.GetBackendFontInterface()->LoadFromPath("NotoSans-Bold.ttf"))
+    if(font2.GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Bold.ttf"))
        std::cout<<"font loaded\n";
 
     //Create a text widget and set the respective properties

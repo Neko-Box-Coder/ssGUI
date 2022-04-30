@@ -16,8 +16,13 @@ int main()
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
 
+    ssGUI::Button button;
+    button.SetPosition(glm::vec2(200, 200));
+    button.SetParent(&mainWindow);
+
     ssGUI::ImageData img;
-    if(!img.LoadFromPath("CustomCursor.png"))
+    if(!img.LoadFromPath("Resources/CustomCursor.png"))           //https://www.pngwing.com/en/free-png-zgwrc
+    // if(!img.LoadFromPath("Resources/BlueCursor.png"))          //https://www.subpng.com/png-ttdxzq/
     {
         DEBUG_LINE("Failed to load");
         return 0;
@@ -25,7 +30,8 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
-    guiManager.GetBackendInputInterface()->SetCustomCursor(&img, glm::ivec2(13, 20), glm::ivec2());
+    guiManager.GetBackendInputInterface()->SetCustomCursor(&img, glm::ivec2(13, 20), glm::ivec2(3, 3));         //Custom cursor
+    // guiManager.GetBackendInputInterface()->SetCustomCursor(&img, glm::ivec2(200, 200), glm::ivec2(23, 55));    //Blue cursor
     
     ssGUI::ImageData imagedata;
     glm::ivec2 hotspot;

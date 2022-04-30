@@ -9,7 +9,7 @@ namespace ssGUI
         std::vector<ssGUI::Font*> defaultFonts;
 
         auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromPath("NotoSans-Regular.ttf"))
+        if(!font->GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
         {
             DEBUG_LINE("Failed to load default font");
             delete font;

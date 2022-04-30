@@ -11,6 +11,8 @@ namespace ssGUI::Backend
     template <class T>
     void BackendSystemInputSFML::AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo)
     {
+        FUNC_DEBUG_ENTRY();
+
         for(int i = 0; i < elementsToAdd.size(); i++)
         {
             if(std::find_if(vectorAddTo.begin(), vectorAddTo.end(), [&elementsToAdd, i](T key){return elementsToAdd[i] == key;}) 
@@ -19,11 +21,15 @@ namespace ssGUI::Backend
                 vectorAddTo.push_back(elementsToAdd[i]);
             }
         }
+
+        FUNC_DEBUG_EXIT();
     }
 
     template <class T>
     void BackendSystemInputSFML::RemoveExistElements(std::vector<T>& elementsToRemove, std::vector<T>& vectorRemoveFrom)
     {
+        FUNC_DEBUG_ENTRY();
+        
         for(int i = 0; i < elementsToRemove.size(); i++)
         {
             typename std::vector<T>::iterator foundElement =
@@ -32,28 +38,35 @@ namespace ssGUI::Backend
             if(foundElement != vectorRemoveFrom.end())
                 vectorRemoveFrom.erase(foundElement);
         }
+
+        FUNC_DEBUG_EXIT();
     }
 
     void BackendSystemInputSFML::FetchKeysPressed(ssGUI::KeyPresses keysPressedDown)
     {
+        FUNC_DEBUG_ENTRY();
         AddNonExistElements<ssGUI::Enums::FunctionKey>(keysPressedDown.FunctionKey, CurrentKeyPresses.FunctionKey);
         AddNonExistElements<ssGUI::Enums::LetterKey>(keysPressedDown.LetterKey, CurrentKeyPresses.LetterKey);
         AddNonExistElements<ssGUI::Enums::NumberKey>(keysPressedDown.NumberKey, CurrentKeyPresses.NumberKey);
         AddNonExistElements<ssGUI::Enums::SymbolKey>(keysPressedDown.SymbolKey, CurrentKeyPresses.SymbolKey);
         AddNonExistElements<ssGUI::Enums::SystemKey>(keysPressedDown.SystemKey, CurrentKeyPresses.SystemKey);
+        FUNC_DEBUG_EXIT();
     }
 
     void BackendSystemInputSFML::FetchKeysReleased(ssGUI::KeyPresses keysReleased)
     {
+        FUNC_DEBUG_ENTRY();
         RemoveExistElements<ssGUI::Enums::FunctionKey>(keysReleased.FunctionKey, CurrentKeyPresses.FunctionKey);
         RemoveExistElements<ssGUI::Enums::LetterKey>(keysReleased.LetterKey, CurrentKeyPresses.LetterKey);
         RemoveExistElements<ssGUI::Enums::NumberKey>(keysReleased.NumberKey, CurrentKeyPresses.NumberKey);
         RemoveExistElements<ssGUI::Enums::SymbolKey>(keysReleased.SymbolKey, CurrentKeyPresses.SymbolKey);
         RemoveExistElements<ssGUI::Enums::SystemKey>(keysReleased.SystemKey, CurrentKeyPresses.SystemKey);
+        FUNC_DEBUG_EXIT();
     }
 
     void BackendSystemInputSFML::ResizeBilinear(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
     {
+        FUNC_DEBUG_ENTRY();
         const uint8_t* a;
         const uint8_t* b;
         const uint8_t* c;
@@ -131,7 +144,7 @@ namespace ssGUI::Backend
                 else
                     alpha = *(d + 3);
 
-                // Ya = Aa(1-w)(1-h) + Ba(w)(1-h) + Ca(h)(1-w) + Da(wh)
+                //Ya = Aa(1-w)(1-h) + Ba(w)(1-h) + Ca(h)(1-w) + Da(wh)
                 // alpha = *(a + 3) * inverseWidthAndHight + 
                 //         *(b + 3) * widthAndInverseHeight +
                 //         *(c + 3) * heightAndInverseWidth + 
@@ -147,6 +160,7 @@ namespace ssGUI::Backend
                 offset++;
             }
         }
+        FUNC_DEBUG_EXIT();
     }
 
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
@@ -174,6 +188,7 @@ namespace ssGUI::Backend
 
     void BackendSystemInputSFML::UpdateInput(/*std::vector<ssGUI::Backend::BackendMainWindowInterface*>& mainWindows*/)
     {
+        FUNC_DEBUG_ENTRY();
         InputText.clear();
         
         //Set last key presses and mouse buttons
@@ -230,6 +245,7 @@ namespace ssGUI::Backend
         CurrentMousePosition = glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
 
         //TODO: Get Mouse scroll
+        FUNC_DEBUG_EXIT();
     }
 
     const ssGUI::KeyPresses& BackendSystemInputSFML::GetLastKeyPresses()
@@ -289,6 +305,7 @@ namespace ssGUI::Backend
 
     void BackendSystemInputSFML::UpdateCursor()
     {
+        FUNC_DEBUG_ENTRY();
         switch (CurrentCursor)
         {
             case ssGUI::Enums::CursorType::NONE:
@@ -373,6 +390,7 @@ namespace ssGUI::Backend
                 static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(true);
             }
         }
+        FUNC_DEBUG_EXIT();
     }
 
     //Supported cursor type natively: https://www.sfml-dev.org/documentation/2.5.1/classsf_1_1Cursor.php#ad41999c8633c2fbaa2364e379c1ab25b
@@ -387,23 +405,133 @@ namespace ssGUI::Backend
         return CurrentCursor;
     }
 
-    //TODO : Find a way to resize image, and retrieve it as well potentially
     void BackendSystemInputSFML::SetCustomCursor(ssGUI::ImageData* customCursor, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
+        FUNC_DEBUG_ENTRY();
         if(customCursor == nullptr)
         {
             CustomCursorImage = sf::Image();
+            FUNC_DEBUG_EXIT();
             return;
         }
 
         if(customCursor->GetSize() == cursorSize)
             CustomCursorImage = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
         else
-        {
-            auto tempCursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
-            uint8_t newCursor[cursorSize.x * cursorSize.y * 4];
-            ResizeBilinear(tempCursorImg.getPixelsPtr(), customCursor->GetSize().x, customCursor->GetSize().y, newCursor, cursorSize.x, cursorSize.y);
-            CustomCursorImage.create(cursorSize.x, cursorSize.y, newCursor);
+        {            
+            //Original cursor image
+            auto oriCursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+
+            //temporary image pointers for resizing
+            uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
+            uint8_t* cursorPtr1 = new uint8_t[1];
+            uint8_t* cursorPtrArr[] = {cursorPtr, cursorPtr1};
+
+            //Flag for indicating which pointer has just been populated
+            int populatedImg = 0;
+
+            //Populate the first temporary image pointer
+            for(int i = 0; i < oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4; i++)
+                cursorPtr[i] = (*(oriCursorImg.getPixelsPtr() + i));
+
+            //Record the current image size
+            glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
+
+            //Resize width until the new cursor size is within 2x or 0.5x
+            while ((currentCursorSize.x > cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
+                    (currentCursorSize.x < cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
+            {
+                delete[] cursorPtrArr[(populatedImg + 1) % 2];
+                
+                //Enlarging
+                if(currentCursorSize.x > cursorSize.x)
+                {
+                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
+
+                    ResizeBilinear
+                    (
+                        cursorPtrArr[populatedImg], 
+                        currentCursorSize.x, 
+                        currentCursorSize.y,
+                        cursorPtrArr[(populatedImg + 1) % 2],
+                        currentCursorSize.x * 2,
+                        currentCursorSize.y
+                    );
+
+                    currentCursorSize.x *= 2;
+                }
+                //Reducing
+                else
+                {
+                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
+
+                    ResizeBilinear
+                    (
+                        cursorPtrArr[populatedImg], 
+                        currentCursorSize.x, 
+                        currentCursorSize.y,
+                        cursorPtrArr[(populatedImg + 1) % 2],
+                        currentCursorSize.x * 0.5,
+                        currentCursorSize.y
+                    );
+
+                    currentCursorSize.x *= 0.5;
+                }
+
+                populatedImg = (populatedImg + 1) % 2;
+            }
+            
+            //Resize height until the new cursor size is within 2x or 0.5x
+            while ((currentCursorSize.y > cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
+                    (currentCursorSize.y < cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
+            {
+                delete[] cursorPtrArr[(populatedImg + 1) % 2];
+                
+                //Enlarging
+                if(currentCursorSize.y > cursorSize.y)
+                {
+                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
+
+                    ResizeBilinear
+                    (
+                        cursorPtrArr[populatedImg], 
+                        currentCursorSize.x, 
+                        currentCursorSize.y,
+                        cursorPtrArr[(populatedImg + 1) % 2],
+                        currentCursorSize.x,
+                        currentCursorSize.y * 2
+                    );
+
+                    currentCursorSize.y *= 2;
+                }
+                //Reducing
+                else
+                {
+                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
+
+                    ResizeBilinear
+                    (
+                        cursorPtrArr[populatedImg],
+                        currentCursorSize.x, 
+                        currentCursorSize.y,
+                        cursorPtrArr[(populatedImg + 1) % 2],
+                        currentCursorSize.x,
+                        currentCursorSize.y * 0.5
+                    );
+
+                    currentCursorSize.y *= 0.5;
+                }
+
+                populatedImg = (populatedImg + 1) % 2;
+            }
+
+            //Do the final round of resizing
+            cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
+            ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
+            CustomCursorImage.create(cursorSize.x, cursorSize.y, cursorPtrArr[(populatedImg + 1) % 2]);
+
+            delete[] cursorPtr;
+            delete[] cursorPtr1;
         }
         
         if(CustomCursorImage.getPixelsPtr() != nullptr)
@@ -415,6 +543,8 @@ namespace ssGUI::Backend
         }
         else
             DEBUG_LINE("Failed to load cursor");
+
+        FUNC_DEBUG_EXIT();
     }
 
     void BackendSystemInputSFML::GetCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)

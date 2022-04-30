@@ -190,6 +190,8 @@ namespace ssGUI
             bool AdaptiveTitleColor;
             glm::ivec4 TitleColorDifference;
             bool AdaptiveTitleContrast;
+            bool AutoFontSize;
+            float FontSizeMultiplier;
             
             ssGUIObjectIndex WindowTitle;
             ssGUIObjectIndex WindowIcon;
@@ -214,6 +216,22 @@ namespace ssGUI
             //function: GetWindowTitleObject
             //Returns the pointer to the window title text object. Nullptr if it doesn't exist
             virtual ssGUI::Text* GetWindowTitleObject() const;
+
+            //function: SetAutoFontSize
+            //Set is the font size controlled automatically by the titlebar height
+            virtual void SetAutoFontSize(bool autoSize);
+
+            //function: IsAutoFontSize
+            //Returns is the font size controlled automatically by the titlebar height
+            virtual bool IsAutoFontSize() const;
+
+            //function: SetAutoFontSizeMultiplier
+            //Set the font size multiplier to have a finer adjustment over it
+            virtual void SetAutoFontSizeMultiplier(float multiplier);
+
+            //function: SetAutoFontSizeMultiplier
+            //Gets the font size multiplier to have a finer adjustment over it
+            virtual float GetAutoFontSizeMultiplier() const;
 
             /*function: SetWindowIconObject
             Sets the window icon image object.
