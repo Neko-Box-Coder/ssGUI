@@ -11,14 +11,12 @@ namespace ssGUI::Extensions
 {
     /*class: Outline
     Outline allows to create a colored outline surrounding the target GUI Object shape/vertices.
+
     A GUI Object can be made up of multiple shapes, by default the outline extension outline the first shape of the GUI Object.
 
-    By default(SimpleOutline), the outline is basically a enlarged shape drawn behind the GUI Object (Not the GUI Object shape).
-    However, you can <SetSimpleOutline> to false so this extension will actually draw an outline on the target GUI Object shape,
-    in exchange of the performance / triangless count. 
+    By default, the outline is drawn inside the shape. This however can be set by <SetInnerOutline>.
 
-    You can also target specific vertices of the GUI Object to be outlined. 
-    <SetSimpleOutline> to false might be needed depending on the targeted vertices. 
+    You can also target specific vertices of the GUI Object to be outlined (<AddTargetVertex>), in which case <AddTargetShape> will be overriden and ignored.
 
     Variables & Constructor:
     ============================== C++ ==============================
@@ -28,6 +26,7 @@ namespace ssGUI::Extensions
 
         int OutlineThickness;
         bool SimpleOutline;
+        bool InnerOutline;
         glm::u8vec4 OutlineColor;
         std::vector<int> TargetShapes;
         std::vector<int> TargetVertices;
@@ -35,13 +34,15 @@ namespace ssGUI::Extensions
         std::vector<int> VerticesToOutline;
         std::vector<int> VerticesToOutlinePrevVertices;
         std::vector<int> VerticesToOutlineNextVertices;
+        std::vector<int> VerticesToOutlineNextNextVertices;
         std::vector<int> VerticesToOutlineShapeIndex;
         std::vector<bool> VerticesToOutlineShapeStartFlag;
     =================================================================
     ============================== C++ ==============================
-    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(true), OutlineColor(glm::u8vec4(0, 0, 0, 255)), 
-                            TargetShapes{0}, TargetVertices(), VerticesToOutline(), VerticesToOutlinePrevVertices(),
-                            VerticesToOutlineNextVertices(), VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
+    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(false), InnerOutline(true), 
+                            OutlineColor(glm::u8vec4(0, 0, 0, 255)), TargetShapes{0}, TargetVertices(), VerticesToOutline(), 
+                            VerticesToOutlinePrevVertices(), VerticesToOutlineNextVertices(), VerticesToOutlineNextNextVertices(), 
+                            VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
     {}
     =================================================================
     */
@@ -59,6 +60,7 @@ namespace ssGUI::Extensions
 
             int OutlineThickness;
             bool SimpleOutline;
+            bool InnerOutline;
             glm::u8vec4 OutlineColor;
             std::vector<int> TargetShapes;
             std::vector<int> TargetVertices;
@@ -66,6 +68,7 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToOutline;
             std::vector<int> VerticesToOutlinePrevVertices;
             std::vector<int> VerticesToOutlineNextVertices;
+            std::vector<int> VerticesToOutlineNextNextVertices;
             std::vector<int> VerticesToOutlineShapeIndex;
             std::vector<bool> VerticesToOutlineShapeStartFlag;
 
@@ -88,7 +91,7 @@ namespace ssGUI::Extensions
 
             virtual void PlotArc(glm::vec2 start, glm::vec2 end, glm::vec2 circlePos, std::vector<glm::vec2>& plottedPoints);
 
-            virtual void ConstructComplexOutline();
+            virtual void ConstructComplexOutline(bool isInner);
 
             virtual void ConstructSimpleOutline();
 
@@ -98,7 +101,6 @@ namespace ssGUI::Extensions
         public:
             static const std::string EXTENSION_NAME;
 
-
             //function: SetOutlineThickness
             //Sets the thickness of the outline, in pixel
             virtual void SetOutlineThickness(int thickness);
@@ -107,20 +109,30 @@ namespace ssGUI::Extensions
             //Returns the thickness of the outline, in pixel
             virtual int GetOutlineThickness() const;
 
+            //function: SetInnerOutline
+            //Sets if the outlines are drawn inside the shape or not
+            virtual void SetInnerOutline(bool inner);
+
+            //function: IsInnerOutline
+            //Returns if the outlines are drawn inside the shape or not
+            virtual bool IsInnerOutline() const;
+
             /*function: SetSimpleOutline
-            Sets if it uses simple outline drawing or not.
+            Sets if it uses simple outline drawing or not. Note this has no effect if <IsInnerOutline> is true.
 
             If true, the outline will basically be a slightly larger version of the GUI object
             drawn behind the GUI object.
+
             If false, each two vertices of the GUI object will generate 2 more outline vertices and form a new shape it.
             This will generate a lot more shapes than the simple version.*/
             virtual void SetSimpleOutline(bool simpleOutline);
 
             /*function: IsSimpleOutline
-            Returns if it uses simple outline drawing or not.
+            Returns if it uses simple outline drawing or not. Note this has no effect if <IsInnerOutline> is true.
 
             If true, the outline will basically be a slightly larger version of the GUI object
             drawn behind the GUI object.
+
             If false, each two vertices of the GUI object will generate 2 more outline vertices and form a new shape it.
             This will generate a lot more shapes than the simple version.*/
             virtual bool IsSimpleOutline() const;

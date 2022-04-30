@@ -21,6 +21,7 @@ int main()
     window.AddExtension(shapeEx);
     window.RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
     auto outlineEx = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+    outlineEx->SetInnerOutline(false);
     outlineEx->SetOutlineThickness(10);
     window.AddExtension(outlineEx);
 
