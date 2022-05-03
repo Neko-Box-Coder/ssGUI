@@ -135,21 +135,21 @@ namespace ssGUI::Backend
 
                 // alpha element
                 //Using nearest neighbour for alpha otherwise it will show the color for pixels we are sampling that have 0 alpha
-                if(inverseWidthAndHight > 0.25)
-                    alpha = *(a + 3);
-                else if(widthAndInverseHeight > 0.25)
-                    alpha = *(b + 3);
-                else if(heightAndInverseWidth > 0.25)
-                    alpha = *(c + 3);
-                else
-                    alpha = *(d + 3);
+                // if(inverseWidthAndHight > 0.25)
+                //     alpha = *(a + 3);
+                // else if(widthAndInverseHeight > 0.25)
+                //     alpha = *(b + 3);
+                // else if(heightAndInverseWidth > 0.25)
+                //     alpha = *(c + 3);
+                // else
+                //     alpha = *(d + 3);
 
                 //Ya = Aa(1-w)(1-h) + Ba(w)(1-h) + Ca(h)(1-w) + Da(wh)
-                // alpha = *(a + 3) * inverseWidthAndHight + 
-                //         *(b + 3) * widthAndInverseHeight +
-                //         *(c + 3) * heightAndInverseWidth + 
-                //         *(d + 3) * widthHeight;
-                
+                alpha = *(a + 3) * inverseWidthAndHight + 
+                        *(b + 3) * widthAndInverseHeight +
+                        *(c + 3) * heightAndInverseWidth + 
+                        *(d + 3) * widthHeight;
+                                
                 //DEBUG_LINE("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
 
                 // range is 0 to 255 thus bitwise AND with 0xff

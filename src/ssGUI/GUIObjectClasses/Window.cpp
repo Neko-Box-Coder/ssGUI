@@ -64,6 +64,14 @@ namespace ssGUI
             return;
         }
             
+        //Input blocking
+        if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
+            currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+        {
+            globalInputStatus.MouseInputBlocked = true;
+            SetParent(GetParent());
+        }
+
         if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
             currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + TitlebarHeight &&
             IsDraggable())
@@ -73,13 +81,6 @@ namespace ssGUI
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
             FUNC_DEBUG_EXIT();
             return;
-        }
-
-        //Input blocking
-        if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
-            currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
-        {
-            globalInputStatus.MouseInputBlocked = true;   
         }
 
         FUNC_DEBUG_EXIT();
