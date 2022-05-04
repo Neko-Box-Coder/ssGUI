@@ -212,7 +212,9 @@ namespace ssGUI
 
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
-            virtual glm::vec2 GetCharacterGlobalPosition(int index);
+            //If topLeftCorner is true, this will return the top-left corner of the character,
+            //Otherwise this will return the left-most position of the character on the horizontal line.
+            virtual glm::vec2 GetCharacterGlobalPosition(int index, bool topLeftCorner);
             
             //function: IsOverflow
             //Returns true if the text is overflowing the text widget

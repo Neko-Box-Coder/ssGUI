@@ -291,7 +291,10 @@ namespace ssGUI
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
 
-        //Title bar 
+        //Title bar
+        if(!HasTitlebar())
+            return;
+
         glm::u8vec4 titlebarColor = GetBackgroundColor();
 
         auto rgbAdder = [](glm::uint8* rgbField, int fieldDifference)->void

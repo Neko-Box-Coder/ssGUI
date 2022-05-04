@@ -905,12 +905,15 @@ namespace ssGUI
         RedrawObject();
     }
 
-    glm::vec2 Text::GetCharacterGlobalPosition(int index)
+    glm::vec2 Text::GetCharacterGlobalPosition(int index, bool topLeftCorner)
     {
         if(index < 0 || index >= CharactersRenderInfos.size())
             return glm::vec2();
         
-        return GetGlobalPosition() + CharactersRenderInfos[index].RenderPosition;
+        return GetGlobalPosition() + 
+                (topLeftCorner ? 
+                CharactersRenderInfos[index].RenderPosition + CharactersRenderInfos[index].DrawOffset :
+                CharactersRenderInfos[index].RenderPosition);
     }
 
     bool Text::IsOverflow() const
