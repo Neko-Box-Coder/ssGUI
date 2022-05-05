@@ -172,7 +172,7 @@ namespace ssGUI
                                         AutoFontSize(true), FontSizeMultiplier(0.8), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
     {        
         FUNC_DEBUG_ENTRY();
-        SetMinSize(glm::vec2(50, 50));
+        SetMinSize(glm::vec2(100, 100));
         
         //Setup title
         auto windowTitle = new ssGUI::Text();
@@ -184,6 +184,7 @@ namespace ssGUI
         windowTitle->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
+        SetAdaptiveTitleColorDifference(glm::ivec4(255, 255, 255, 0));
 
         auto windowIcon = new ssGUI::Image();
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
@@ -546,7 +547,6 @@ namespace ssGUI
         }
         
         glm::ivec4 titleResult = (glm::ivec4)GetTitlebarColor() + GetAdaptiveTitleColorDifference();
-
         if(IsAdaptiveTitleContrast())
         {
             if(titleResult.r < 0 || titleResult.r > 255)
@@ -558,6 +558,12 @@ namespace ssGUI
             if(titleResult.b < 0 || titleResult.b > 255)
                 titleResult.b = GetTitlebarColor().b - TitleColorDifference.b;
         
+            titleResult.r = titleResult.r < 0 ? 0 : titleResult.r;
+            titleResult.r = titleResult.r > 255 ? 255 : titleResult.r;
+            titleResult.g = titleResult.g < 0 ? 0 : titleResult.g;
+            titleResult.g = titleResult.g > 255 ? 255 : titleResult.g;
+            titleResult.b = titleResult.b > 255 ? 255 : titleResult.b;
+            titleResult.b = titleResult.b < 0 ? 0 : titleResult.b;
             titleResult.a = titleResult.a < 0 ? 0 : titleResult.a;
             titleResult.a = titleResult.a > 255 ? 255 : titleResult.a;
         }

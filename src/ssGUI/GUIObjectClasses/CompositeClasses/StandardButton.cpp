@@ -247,6 +247,12 @@ namespace ssGUI
             if(textResult.b < 0 || textResult.b > 255)
                 textResult.b = color.b - ButtonTextColorDifference.b;
         
+            textResult.r = textResult.r < 0 ? 0 : textResult.r;
+            textResult.r = textResult.r > 255 ? 255 : textResult.r;
+            textResult.g = textResult.g < 0 ? 0 : textResult.g;
+            textResult.g = textResult.g > 255 ? 255 : textResult.g;
+            textResult.b = textResult.b > 255 ? 255 : textResult.b;
+            textResult.b = textResult.b < 0 ? 0 : textResult.b;
             textResult.a = textResult.a < 0 ? 0 : textResult.a;
             textResult.a = textResult.a > 255 ? 255 : textResult.a;
         }

@@ -99,10 +99,6 @@ namespace ssGUI
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
     
-            //function: Internal_Update
-            //See <Widget::Internal_Update>
-            // virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
-            
             //function: Clone
             //See <Widget::Clone>
             virtual Checkbox* Clone(bool cloneChildren) override;

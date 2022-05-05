@@ -29,10 +29,11 @@ namespace ssGUI
         ssGUIObjectIndex CloseButton;
     =================================================================
     ============================== C++ ==============================
-    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(5), AdaptiveTitleColor(true), TitleColorDifference(0, 0, 0, 0), AdaptiveTitleContrast(true), 
-                                        WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
+    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(4), AdaptiveTitleColor(true), TitleColorDifference(0, 0, 0, 0), AdaptiveTitleContrast(true), 
+                                        AutoFontSize(true), FontSizeMultiplier(0.8), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
     {        
-        SetMinSize(glm::vec2(50, 50));
+        FUNC_DEBUG_ENTRY();
+        SetMinSize(glm::vec2(100, 100));
         
         //Setup title
         auto windowTitle = new ssGUI::Text();
@@ -44,13 +45,19 @@ namespace ssGUI
         windowTitle->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
+        SetAdaptiveTitleColorDifference(glm::ivec4(255, 255, 255, 0));
 
-        // auto windowIcon = new ssGUI::Image();
-        // windowIcon->SetUserCreated(false);
-        // windowIcon->SetHeapAllocated(true);
-        // windowIcon->SetParent(this);
-        // windowIcon->SetMinSize(glm::vec2(5, 5));
-        // WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
+        auto windowIcon = new ssGUI::Image();
+        windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
+        windowIcon->SetUserCreated(false);
+        windowIcon->SetHeapAllocated(true);
+        windowIcon->SetParent(this);
+        windowIcon->SetMinSize(glm::vec2(5, 5));
+        WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
+
+        auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+        data->LoadFromPath("Resources/WindowIcon.png");
+        windowIcon->SetImageData(data);
 
         //Setup button
         auto closeButton = new ssGUI::Button();
@@ -68,8 +75,9 @@ namespace ssGUI
 
         //Add outline to button
         auto closeButtonOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
-        closeButtonOutline->SetOutlineThickness(2);
+        closeButtonOutline->SetOutlineThickness(4);
         closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
+        closeButton->SetButtonColor(glm::u8vec4(255, 127, 127, 255));
         closeButton->AddExtension(closeButtonOutline);
 
         //Setup button event
@@ -81,24 +89,29 @@ namespace ssGUI
             {
                 auto closeButtonObj = static_cast<ssGUI::Button*>(src);
                 auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                int amount = 60;
                 switch(closeButtonObj->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
-                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), 
+                            closeButtonObj->GetButtonColor() + glm::u8vec4(0, 0, 0, 0), false);
                         break;
                     case ssGUI::Enums::ButtonState::HOVER:
-                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 167, 167, 255), false);
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), 
+                            closeButtonObj->GetButtonColor() + glm::u8vec4(0, amount, amount, 0), false);
                         break;
                     case ssGUI::Enums::ButtonState::ON_CLICK:
                         break;
                     case ssGUI::Enums::ButtonState::CLICKING:
-                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 207, 207, 255), false);
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), 
+                            closeButtonObj->GetButtonColor() + glm::u8vec4(0, amount * 2, amount * 2, 0), false);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
                         static_cast<ssGUI::Window*>(src->GetParent())->Close();
                         break;
                     case ssGUI::Enums::ButtonState::DISABLED:
-                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), glm::u8vec4(255, 107, 107, 255), false);
+                        shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), 
+                            closeButtonObj->GetButtonColor() + glm::u8vec4(0, -amount, -amount, 0), false);
                         break;
                 }
                 
@@ -140,7 +153,7 @@ namespace ssGUI
         //Add shadow to window
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>());
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
-        SetTitlebarHeight(25);
+        SetTitlebarHeight(26);
 
         //Clean up sub-components when this is deleted
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
@@ -176,6 +189,8 @@ namespace ssGUI
         UpdateTitleText();
         UpdateIconImage();
         UpdateCloseButton();
+
+        FUNC_DEBUG_EXIT();
     }
     =================================================================
     */
@@ -311,12 +326,6 @@ namespace ssGUI
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
-            //function: Internal_Draw
-            //virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::ivec2 mainWindowPositionOffset) override;
-            
-            //function: Internal_Update
-            //virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
-            
             //function: Clone
             virtual StandardWindow* Clone(bool cloneChildren) override;
     };
