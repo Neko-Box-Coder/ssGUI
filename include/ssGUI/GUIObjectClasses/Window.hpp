@@ -33,6 +33,7 @@ namespace ssGUI
         glm::ivec4 TitlebarColorDifference;
         bool AdaptiveTitlebarColor;
         bool DeleteAfterClosed;
+        bool OnTopWhenDragged;
 
         //Resize/Drag settings
         ssGUI::Enums::WindowDragState CurrentDragState;
@@ -48,7 +49,7 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), 
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), OnTopWhenDragged(true),
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
                        ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
@@ -77,6 +78,7 @@ namespace ssGUI
             glm::ivec4 TitlebarColorDifference;
             bool AdaptiveTitlebarColor;
             bool DeleteAfterClosed;
+            bool OnTopWhenDragged;
 
             //Resize/Drag settings
             ssGUI::Enums::WindowDragState CurrentDragState;
@@ -209,6 +211,10 @@ namespace ssGUI
             //function: IsDeleteAfterClosed
             //If returns true, the window will be deleted automatically after being closed
             virtual bool IsDeleteAfterClosed() const;
+
+            virtual void SetOnTopWhenDragged(bool top);
+
+            virtual bool IsOnTopWhenDragged() const;
 
             //function: AddOnCloseEventListener [Deprecated]
             //Proxy function for adding listener and <EventCallbacks::OnWindowCloseEventCallback> to this object 

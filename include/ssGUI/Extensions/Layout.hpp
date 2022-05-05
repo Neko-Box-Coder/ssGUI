@@ -23,7 +23,7 @@ namespace ssGUI::Extensions
         bool HorizontalLayout;
         std::vector<float> PreferredSizeMultipliers;
         bool DisableChildrenResizing;
-        bool OverrideChildrenResizeTypes;
+        bool OverrideChildrenResizeTypesAndOnTop;
 
         bool UpdateContainerMinMaxSize;
         bool ReverseOrder;
@@ -46,14 +46,16 @@ namespace ssGUI::Extensions
         std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
         std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
         std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
+        std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
         std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
     =================================================================
     ============================== C++ ==============================
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
-                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
+                        OverrideChildrenResizeTypesAndOnTop(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
                         Container(nullptr), Enabled(true), Padding(0), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
                         ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
-                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), OriginalChildrenOnTop(),
+                        MinMaxSizeChangedEventIndices()
     {}
     =================================================================
     */
@@ -69,7 +71,7 @@ namespace ssGUI::Extensions
             bool HorizontalLayout;
             std::vector<float> PreferredSizeMultipliers;
             bool DisableChildrenResizing;
-            bool OverrideChildrenResizeTypes;
+            bool OverrideChildrenResizeTypesAndOnTop;
 
             bool UpdateContainerMinMaxSize;
             bool ReverseOrder;
@@ -92,6 +94,7 @@ namespace ssGUI::Extensions
             std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
             std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
+            std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
             std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
 
             Layout(Layout const& other);
@@ -106,7 +109,7 @@ namespace ssGUI::Extensions
                                 std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
                                 float sizeDiff);
 
-            void UpdateChildrenResizeTypes();
+            void UpdateChildrenResizeTypesAndOnTop();
 
             void SyncContainerMinMaxSize();
 
@@ -190,13 +193,13 @@ namespace ssGUI::Extensions
             */
             virtual void SetCoverFullLength(bool fullLength);
 
-            //function: GetOverrideChildrenResizeType
+            //function: IsOverrideChildrenResizeTypeAndOnTop
             //If true, if will override the window children's resize type. This should normally be true.
-            virtual bool GetOverrideChildrenResizeType() const;
+            virtual bool IsOverrideChildrenResizeTypeAndOnTop() const;
             
-            //function: SetOverrideChildrenResizeType
+            //function: SetOverrideChildrenResizeTypeAndOnTop
             //If true, if will override the window children's resize type. This should normally be true.
-            virtual void SetOverrideChildrenResizeType(bool override);
+            virtual void SetOverrideChildrenResizeTypeAndOnTop(bool override);
 
             //function: GetUpdateContainerMinMaxSize
             //If true, this will update the container's min max size to match the children's total min max size. This should normally be true.

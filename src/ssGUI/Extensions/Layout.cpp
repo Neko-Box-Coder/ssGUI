@@ -9,10 +9,11 @@
 namespace ssGUI::Extensions
 {    
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
-                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
+                        OverrideChildrenResizeTypesAndOnTop(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
                         Container(nullptr), Enabled(true), Padding(0/*5*/), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
                         ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
-                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), OriginalChildrenOnTop(),
+                        MinMaxSizeChangedEventIndices()
     {}
 
     Layout::~Layout()
@@ -49,7 +50,7 @@ namespace ssGUI::Extensions
         HorizontalLayout = other.IsHorizontalLayout();
         PreferredSizeMultipliers = other.PreferredSizeMultipliers;
         DisableChildrenResizing = other.IsChildrenResizingDisabled();
-        OverrideChildrenResizeTypes = other.GetOverrideChildrenResizeType();
+        OverrideChildrenResizeTypesAndOnTop = other.IsOverrideChildrenResizeTypeAndOnTop();
         UpdateContainerMinMaxSize = other.GetUpdateContainerMinMaxSize();
         ReverseOrder = other.IsReverseOrder();
         CoverFullLength = other.IsCoverFullLength();    
@@ -68,6 +69,7 @@ namespace ssGUI::Extensions
         SpecialObjectsToExclude = other.SpecialObjectsToExclude;
         OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
         OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
+        OriginalChildrenOnTop = other.OriginalChildrenOnTop;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
         
         //NOTE : Don't need to re-add the event listeners because this is handled when this is binded to an object
         MinMaxSizeChangedEventIndices = std::unordered_map<ssGUIObjectIndex, int>();//other.MinMaxSizeChangedEventIndices;
@@ -170,7 +172,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void Layout::UpdateChildrenResizeTypes()
+    void Layout::UpdateChildrenResizeTypesAndOnTop()
     {
         FUNC_DEBUG_ENTRY();
         
@@ -178,15 +180,6 @@ namespace ssGUI::Extensions
         {
             FUNC_DEBUG_EXIT();
             return;
-        }
-        
-        if(GetOverrideChildrenResizeType())
-        {
-            if(DisableChildrenResizing)
-            {
-                FUNC_DEBUG_EXIT();
-                return;
-            }
         }
 
         Container->StashChildrenIterator();
@@ -213,11 +206,14 @@ namespace ssGUI::Extensions
 
             ssGUI::Window* windowP = dynamic_cast<ssGUI::Window*>(Container->GetCurrentChild());
             
-            //Recording original resize type and override it
-            if(GetOverrideChildrenResizeType())
+            //Recording original resize type and isOnTop and override it
+            if(IsOverrideChildrenResizeTypeAndOnTop())
             {
                 if(OriginalChildrenResizeType.find(currentChildIndex) == OriginalChildrenResizeType.end())
+                {
                     OriginalChildrenResizeType[currentChildIndex] = windowP->GetResizeType();
+                    OriginalChildrenOnTop[currentChildIndex] = windowP->IsOnTopWhenDragged();
+                }
                 
                 if(HorizontalLayout)
                 {
@@ -237,14 +233,18 @@ namespace ssGUI::Extensions
                 //last element
                 if(Container->IsChildrenIteratorLast())
                     windowP->SetResizeType(ssGUI::Enums::ResizeType::NONE);
+
+                windowP->SetOnTopWhenDragged(false);
             }
             
             //Restoring original resize type
-            if(!GetOverrideChildrenResizeType() && OriginalChildrenResizeType.find(currentChildIndex) != OriginalChildrenResizeType.end())
+            if(!IsOverrideChildrenResizeTypeAndOnTop() && OriginalChildrenResizeType.find(currentChildIndex) != OriginalChildrenResizeType.end())
             {                
                 windowP->SetResizeType(OriginalChildrenResizeType[currentChildIndex]);
+                windowP->SetOnTopWhenDragged(OriginalChildrenOnTop[currentChildIndex]);
 
                 OriginalChildrenResizeType.erase(currentChildIndex);
+                OriginalChildrenOnTop.erase(currentChildIndex);
             }
 
             Container->MoveChildrenIteratorNext();
@@ -783,16 +783,16 @@ namespace ssGUI::Extensions
 
     
 
-    bool Layout::GetOverrideChildrenResizeType() const
+    bool Layout::IsOverrideChildrenResizeTypeAndOnTop() const
     {
-        return OverrideChildrenResizeTypes;
+        return OverrideChildrenResizeTypesAndOnTop;
     }
 
-    void Layout::SetOverrideChildrenResizeType(bool override)
+    void Layout::SetOverrideChildrenResizeTypeAndOnTop(bool override)
     {
         FUNC_DEBUG_ENTRY();
         
-        OverrideChildrenResizeTypes = override;
+        OverrideChildrenResizeTypesAndOnTop = override;
         
         if(Container == nullptr)
         {
@@ -802,7 +802,7 @@ namespace ssGUI::Extensions
         
         const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME;
         const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
-        UpdateChildrenResizeTypes();
+        UpdateChildrenResizeTypesAndOnTop();
 
         FUNC_DEBUG_EXIT();
     }
@@ -986,8 +986,8 @@ namespace ssGUI::Extensions
             return;
         }
 
-        if(GetOverrideChildrenResizeType())
-            UpdateChildrenResizeTypes();
+        if(IsOverrideChildrenResizeTypeAndOnTop())
+            UpdateChildrenResizeTypesAndOnTop();
         
         if(GetUpdateContainerMinMaxSize())
         {
@@ -1049,11 +1049,14 @@ namespace ssGUI::Extensions
             return;
         }
 
-        //Restore resize type if it is recorded
+        //Restore resize type and OnTop if it is recorded
         if(OriginalChildrenResizeType.find(childIndex) != OriginalChildrenResizeType.end())
         {
             static_cast<ssGUI::Window*>(child)->SetResizeType(OriginalChildrenResizeType[childIndex]);
             OriginalChildrenResizeType.erase(childIndex);
+
+            static_cast<ssGUI::Window*>(child)->SetOnTopWhenDragged(OriginalChildrenOnTop[childIndex]);
+            OriginalChildrenOnTop.erase(childIndex);
         }
 
         //Remove MinMax size changed callbacks
@@ -1070,8 +1073,8 @@ namespace ssGUI::Extensions
         if(GetUpdateContainerMinMaxSize())
             SyncContainerMinMaxSize();
 
-        if(GetOverrideChildrenResizeType())
-            UpdateChildrenResizeTypes();
+        if(IsOverrideChildrenResizeTypeAndOnTop())
+            UpdateChildrenResizeTypesAndOnTop();
 
         if(OriginalChildrenSize.find(childIndex) != OriginalChildrenSize.end())
         {
@@ -1235,8 +1238,8 @@ namespace ssGUI::Extensions
         Container = bindObj;
 
         //By default, layout extension will override children resize type and will also update container min max size
-        if(GetOverrideChildrenResizeType())
-            SetOverrideChildrenResizeType(true);
+        if(IsOverrideChildrenResizeTypeAndOnTop())
+            SetOverrideChildrenResizeTypeAndOnTop(true);
         
         if(GetUpdateContainerMinMaxSize())
             SetUpdateContainerMinMaxSize(true);
@@ -1305,8 +1308,8 @@ namespace ssGUI::Extensions
                     ssGUI::Extensions::Layout* containerLayout = static_cast<ssGUI::Extensions::Layout*>
                         (container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
 
-                    if(containerLayout->GetOverrideChildrenResizeType())
-                        containerLayout->UpdateChildrenResizeTypes();
+                    if(containerLayout->IsOverrideChildrenResizeTypeAndOnTop())
+                        containerLayout->UpdateChildrenResizeTypesAndOnTop();
                     FUNC_DEBUG_EXIT("ChildPositionChangedEventCallback");
                 }
             );
@@ -1323,7 +1326,7 @@ namespace ssGUI::Extensions
         HorizontalLayout = layout->IsHorizontalLayout();
         PreferredSizeMultipliers = layout->PreferredSizeMultipliers;
         DisableChildrenResizing = layout->IsChildrenResizingDisabled();
-        OverrideChildrenResizeTypes = layout->GetOverrideChildrenResizeType();
+        OverrideChildrenResizeTypesAndOnTop = layout->IsOverrideChildrenResizeTypeAndOnTop();
         UpdateContainerMinMaxSize = layout->GetUpdateContainerMinMaxSize();
         ReverseOrder = layout->IsReverseOrder();
         CoverFullLength = layout->IsCoverFullLength();    

@@ -68,8 +68,7 @@ namespace ssGUI
         if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
             currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
         {
-            globalInputStatus.MouseInputBlocked = true;
-            SetParent(GetParent());
+            globalInputStatus.MouseInputBlocked = true;                
         }
 
         if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
@@ -79,6 +78,9 @@ namespace ssGUI
             Dragging = true;
             globalInputStatus.MouseInputBlocked = true;
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
+
+            if(IsOnTopWhenDragged())
+                SetParent(GetParent());
             FUNC_DEBUG_EXIT();
             return;
         }
@@ -335,7 +337,7 @@ namespace ssGUI
     }
         
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), 
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), OnTopWhenDragged(true),
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
                        ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
@@ -524,6 +526,16 @@ namespace ssGUI
     bool Window::IsDeleteAfterClosed() const
     {
         return DeleteAfterClosed;
+    }
+
+    void Window::SetOnTopWhenDragged(bool top)
+    {
+        OnTopWhenDragged = top;
+    }
+
+    bool Window::IsOnTopWhenDragged() const
+    {
+        return OnTopWhenDragged;
     }
 
     int Window::AddOnCloseEventListener(std::function<void()> onClose)
