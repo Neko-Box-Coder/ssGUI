@@ -24,7 +24,7 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* Container;
         bool Enabled;
 
-        int OutlineThickness;
+        float OutlineThickness;
         bool SimpleOutline;
         bool InnerOutline;
         glm::u8vec4 OutlineColor;
@@ -39,7 +39,7 @@ namespace ssGUI::Extensions
         std::vector<bool> VerticesToOutlineShapeStartFlag;
     =================================================================
     ============================== C++ ==============================
-    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(false), InnerOutline(true), 
+    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1.1), SimpleOutline(false), InnerOutline(true), 
                             OutlineColor(glm::u8vec4(0, 0, 0, 255)), TargetShapes{0}, TargetVertices(), VerticesToOutline(), 
                             VerticesToOutlinePrevVertices(), VerticesToOutlineNextVertices(), VerticesToOutlineNextNextVertices(), 
                             VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
@@ -58,7 +58,7 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* Container;
             bool Enabled;
 
-            int OutlineThickness;
+            float OutlineThickness;
             bool SimpleOutline;
             bool InnerOutline;
             glm::u8vec4 OutlineColor;
@@ -103,11 +103,11 @@ namespace ssGUI::Extensions
 
             //function: SetOutlineThickness
             //Sets the thickness of the outline, in pixel
-            virtual void SetOutlineThickness(int thickness);
+            virtual void SetOutlineThickness(float thickness);
 
             //function: GetOutlineThickness
             //Returns the thickness of the outline, in pixel
-            virtual int GetOutlineThickness() const;
+            virtual float GetOutlineThickness() const;
 
             //function: SetInnerOutline
             //Sets if the outlines are drawn inside the shape or not

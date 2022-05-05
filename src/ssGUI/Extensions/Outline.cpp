@@ -6,7 +6,7 @@
 
 namespace ssGUI::Extensions
 {
-    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1), SimpleOutline(false), InnerOutline(true), 
+    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1.1), SimpleOutline(false), InnerOutline(true), 
                             OutlineColor(glm::u8vec4(0, 0, 0, 255)), TargetShapes{0}, TargetVertices(), VerticesToOutline(), 
                             VerticesToOutlinePrevVertices(), VerticesToOutlineNextVertices(), VerticesToOutlineNextNextVertices(), 
                             VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
@@ -276,10 +276,10 @@ namespace ssGUI::Extensions
                 if(prevLine != glm::vec2())
                     prevLine = glm::normalize(prevLine);
 
-                glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+                glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
                 
                 //Draw first arc
-                glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+                glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
                 int originalVerticesCount = newVertices.size();
 
                 if(outlinePos1 != outlinePos2)
@@ -337,9 +337,9 @@ namespace ssGUI::Extensions
                 if(nextLine != glm::vec2())
                     nextLine = glm::normalize(nextLine);
 
-                glm::vec2 outlinePos1 = glm::normalize(curLine + prevLine) * (float)OutlineThickness + curVertex;
+                glm::vec2 outlinePos1 = glm::normalize(curLine + prevLine) * OutlineThickness + curVertex;
                 
-                glm::vec2 outlinePos2 = glm::normalize(-curLine + nextLine) * (float)OutlineThickness + nextVertex;
+                glm::vec2 outlinePos2 = glm::normalize(-curLine + nextLine) * OutlineThickness + nextVertex;
 
                 //Link the outline to next outline vertex if possible
                 bool linkingPossible = false;
@@ -461,10 +461,10 @@ namespace ssGUI::Extensions
             if(prevLine != glm::vec2())
                 prevLine = glm::normalize(prevLine);
 
-            glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+            glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
                     
             //Draw first arc
-            glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * (float)OutlineThickness + glm::vec3(curVertex, 0);
+            glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
             int originalVerticesCount = newVertices.size();
 
             if(outlinePos1 != outlinePos2)
@@ -508,14 +508,14 @@ namespace ssGUI::Extensions
     //Defining the extension name
     const std::string Outline::EXTENSION_NAME = "Outline";
 
-    void Outline::SetOutlineThickness(int thickness)
+    void Outline::SetOutlineThickness(float thickness)
     {
         OutlineThickness = thickness;
         if(Container != nullptr)
             Container->RedrawObject();
     }
 
-    int Outline::GetOutlineThickness() const
+    float Outline::GetOutlineThickness() const
     {
         return OutlineThickness;
     }
