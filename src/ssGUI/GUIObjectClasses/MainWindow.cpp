@@ -196,6 +196,8 @@ namespace ssGUI
 
     void MainWindow::Internal_OnClose()
     {
+        DEBUG_LINE("Main Window closing");
+        
         //Forwarding signal to window
         Window::Internal_OnClose();
     }
