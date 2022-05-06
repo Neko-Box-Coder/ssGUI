@@ -320,16 +320,17 @@ namespace ssGUI::Extensions
                     currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
                 minSizeTotalX += Container->GetCurrentChild()->GetMinSize().x;
+                if(!Container->IsChildrenIteratorLast())
+                    minSizeTotalX += GetSpacing();
 
-                if(maxSizeTotalX == std::numeric_limits<float>::max())
+                //Don't need to do anything if maxSizeTotalX is max
+                if(maxSizeTotalX != std::numeric_limits<float>::max())
                 {
-                    Container->MoveChildrenIteratorNext();
-                    continue;
+                    if(Container->GetCurrentChild()->GetMaxSize().x == std::numeric_limits<float>::max())
+                        maxSizeTotalX = std::numeric_limits<float>::max();
+                    else
+                        maxSizeTotalX += Container->GetCurrentChild()->GetMaxSize().x;
                 }
-                else if(Container->GetCurrentChild()->GetMaxSize().x == std::numeric_limits<float>::max())
-                    maxSizeTotalX = std::numeric_limits<float>::max();
-                else
-                    maxSizeTotalX += Container->GetCurrentChild()->GetMaxSize().x;
                 
                 if(Container->GetCurrentChild()->GetMaxSize().y < minMaxY)
                     minMaxY = Container->GetCurrentChild()->GetMaxSize().y;
@@ -351,7 +352,7 @@ namespace ssGUI::Extensions
             maxSizeTotalX = maxSizeTotalX == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() : 
                             maxSizeTotalX + paddingTotalX + spacingTotalX;
 
-            if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+            if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && dynamic_cast<ssGUI::Window*>(Container)->HasTitlebar())
             {
                 minMaxY = minMaxY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
                             minMaxY + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() + GetPadding();
@@ -390,16 +391,17 @@ namespace ssGUI::Extensions
                     currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
                 minSizeTotalY += Container->GetCurrentChild()->GetMinSize().y;
+                if(!Container->IsChildrenIteratorLast())
+                    minSizeTotalY += GetSpacing();
 
-                if(maxSizeTotalY == std::numeric_limits<float>::max())
+                //Don't need to do anything if maxSizeTotalY is max
+                if(maxSizeTotalY != std::numeric_limits<float>::max())
                 {
-                    Container->MoveChildrenIteratorNext();
-                    continue;
+                    if(Container->GetCurrentChild()->GetMaxSize().y == std::numeric_limits<float>::max())
+                        maxSizeTotalY = std::numeric_limits<float>::max();
+                    else
+                        maxSizeTotalY += Container->GetCurrentChild()->GetMaxSize().y;
                 }
-                else if(Container->GetCurrentChild()->GetMaxSize().y == std::numeric_limits<float>::max())
-                    maxSizeTotalY = std::numeric_limits<float>::max();
-                else
-                    maxSizeTotalY += Container->GetCurrentChild()->GetMaxSize().y;
                 
                 if(Container->GetCurrentChild()->GetMaxSize().x < minMaxX)
                     minMaxX = Container->GetCurrentChild()->GetMaxSize().x;
@@ -1161,9 +1163,9 @@ namespace ssGUI::Extensions
         if(DisableChildrenResizing)
             DisableChildrenResizingInUpdate();
         
-        //TODO : Probably don't need this as events will sort this out
-        if(UpdateContainerMinMaxSize)
-            SyncContainerMinMaxSize();
+        //TODO : Probably don't need this as events will sort this out, need awhile to test to make sure.
+        // if(UpdateContainerMinMaxSize)
+        //     SyncContainerMinMaxSize();
 
         //Set all children's width and get all children pos and size and min size
         std::vector<float> childrenPos;
