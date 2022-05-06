@@ -622,19 +622,22 @@ namespace ssGUI::Extensions
             newParent->SetBackgroundColor(newBGColor);
             newParent->SetResizeType(ssGUI::Enums::ResizeType::NONE);
 
-            //Disable all extensions except docker, assuming all extensions are enabled by default
-            auto allExtensions = newParent->GetListOfExtensions();
-            for(auto extension : allExtensions)
+            //Disable all extensions except docker, assuming all extensions are enabled by default (When default is not overriden)
+            if(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerWindow() == nullptr)
             {
-                if(extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME ||
-                    extension->GetExtensionName() == ssGUI::Extensions::Layout::EXTENSION_NAME)
+                auto allExtensions = newParent->GetListOfExtensions();
+                for(auto extension : allExtensions)
                 {
-                    continue;
+                    if(extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME ||
+                        extension->GetExtensionName() == ssGUI::Extensions::Layout::EXTENSION_NAME)
+                    {
+                        continue;
+                    }
+                    
+                    extension->SetEnabled(false);
                 }
-                
-                extension->SetEnabled(false);
+                // newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
             }
-            // newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
             
             //Set all the children to be not visible since it is not floating
             newParent->StashChildrenIterator();
