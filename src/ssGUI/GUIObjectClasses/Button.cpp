@@ -6,7 +6,6 @@ namespace ssGUI
     Button::Button(Button const& other) : Widget(other)
     {
         CurrentState = other.GetButtonState();
-        StateChangedEventCallback = nullptr;
         ButtonColor = other.GetButtonColor();
     }
 
@@ -43,15 +42,15 @@ namespace ssGUI
         CurrentState = state;
 
         //TODO : Set it as optional
-        if(StateChangedEventCallback != nullptr)
-            StateChangedEventCallback->Notify(static_cast<ssGUI::GUIObject*>(this));
+        if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>())
+            GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
-    Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), StateChangedEventCallback(nullptr), ButtonColor(glm::u8vec4(100, 100, 100, 255))
+    Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), ButtonColor(glm::u8vec4(100, 100, 100, 255))
     {
         SetSize(glm::vec2(25, 25));
-        StateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
-        StateChangedEventCallback->AddEventListener(
+        auto stateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        stateChangedEventCallback->AddEventListener(
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(src);
@@ -80,7 +79,7 @@ namespace ssGUI
             }
         ); 
         
-        AddEventCallback(StateChangedEventCallback);
+        AddEventCallback(stateChangedEventCallback);
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
         SetBackgroundColor(GetButtonColor());
     }
@@ -224,12 +223,6 @@ namespace ssGUI
         FUNC_DEBUG_ENTRY();
         Button* temp = new Button(*this);
         CloneExtensionsAndEventCallbacks(temp);
-
-        if(temp->IsEventCallbackExist(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME))
-        {
-            temp->StateChangedEventCallback = static_cast<ssGUI::EventCallbacks::ButtonStateChangedEventCallback*>
-                (temp->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME));
-        }
         
         if(cloneChildren)
         {

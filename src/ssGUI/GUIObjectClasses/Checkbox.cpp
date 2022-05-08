@@ -70,6 +70,7 @@ namespace ssGUI
                         btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::ON_CLICK:
+                        break;
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.a = 100;
                         btn->SetBackgroundColor(bgcolor);
