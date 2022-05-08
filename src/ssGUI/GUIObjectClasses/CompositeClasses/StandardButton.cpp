@@ -42,7 +42,7 @@ namespace ssGUI
     StandardButton::StandardButton() : ButtonText(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), AdaptiveButtonTextContrast(true)
     {
         FUNC_DEBUG_ENTRY();
-        SetMinSize(glm::vec2(50, 50));
+        SetSize(glm::vec2(50, 50));
 
         //Add visual extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
@@ -114,6 +114,7 @@ namespace ssGUI
                         btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::ON_CLICK:
+                        break;
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.r = bgcolor.r - buttonReactAmount * 2 < 0 ? 0 : bgcolor.r - buttonReactAmount * 2;
                         bgcolor.g = bgcolor.g - buttonReactAmount * 2 < 0 ? 0 : bgcolor.g - buttonReactAmount * 2;
@@ -121,6 +122,7 @@ namespace ssGUI
                         btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
+                        break;
                     case ssGUI::Enums::ButtonState::DISABLED:
                         bgcolor.r = bgcolor.r + buttonReactAmount < 0 ? 0 : bgcolor.r - buttonReactAmount * 3;
                         bgcolor.g = bgcolor.g + buttonReactAmount < 0 ? 0 : bgcolor.g - buttonReactAmount * 3;
