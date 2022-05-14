@@ -69,12 +69,10 @@ namespace ssGUI::Extensions
         int endIndex = drawingCounts[0];
         if(!TargetVertices.empty())
         {
-            VerticesToOutline = TargetVertices;
             int shapeIndex = 0;
-            for(int i = 0; i < VerticesToOutline.size(); i++)
+            for(int i = 0; i < TargetVertices.size(); i++)
             {
-                VerticesToOutline[i] += Container->Extension_GetGUIObjectFirstVertexIndex();
-                int currentVertexIndex = VerticesToOutline[i];
+                int currentVertexIndex = VerticesToOutline[i] + Container->Extension_GetGUIObjectFirstVertexIndex();
                 
                 //Invlaid index check
                 if(currentVertexIndex >= drawingVertices.size())
@@ -87,29 +85,64 @@ namespace ssGUI::Extensions
                 if(currentVertexIndex < startIndex || currentVertexIndex >= endIndex)
                     GetStartEndVertexIndex(currentVertexIndex, startIndex, endIndex, drawingCounts, shapeIndex);
 
+                //Shape size check
+                if(endIndex - startIndex < 2)
+                    continue;
+
+                VerticesToOutline.push_back(currentVertexIndex);
                 VerticesToOutlineShapeStartFlag.push_back(currentVertexIndex == startIndex);
                 VerticesToOutlineShapeIndex.push_back(shapeIndex);
 
                 int prevIndex = currentVertexIndex;
+                int loopCount = 0;
                 do
                 {
-                    prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);   
+                    prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);
+                    loopCount++;
+                    if(loopCount > endIndex - startIndex + 1)
+                    {
+                        DEBUG_LINE("Failed to construct outline");
+                        VerticesToOutline.clear();
+                        VerticesToOutlinePrevVertices.clear();
+                        VerticesToOutlineNextVertices.clear();
+                        return;
+                    }
                 }
                 while(drawingVertices[prevIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToOutlinePrevVertices.push_back(prevIndex);
 
                 int nextIndex = currentVertexIndex;
+                loopCount = 0;
                 do
                 {
                     nextIndex = (nextIndex == endIndex - 1 ? startIndex : nextIndex + 1);
+                    loopCount++;
+                    if(loopCount > endIndex - startIndex + 1)
+                    {
+                        DEBUG_LINE("Failed to construct outline");
+                        VerticesToOutline.clear();
+                        VerticesToOutlinePrevVertices.clear();
+                        VerticesToOutlineNextVertices.clear();
+                        return;
+                    }
                 }
                 while(drawingVertices[nextIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToOutlineNextVertices.push_back(nextIndex);
 
                 int nextNextIndex = nextIndex;
+                loopCount = 0;
                 do
                 {
                     nextNextIndex = (nextNextIndex == endIndex - 1 ? startIndex : nextNextIndex + 1);
+                    loopCount++;
+                    if(loopCount > endIndex - startIndex + 1)
+                    {
+                        DEBUG_LINE("Failed to construct outline");
+                        VerticesToOutline.clear();
+                        VerticesToOutlinePrevVertices.clear();
+                        VerticesToOutlineNextVertices.clear();
+                        return;
+                    }
                 }
                 while(drawingVertices[nextNextIndex] - drawingVertices[nextIndex] == glm::vec2());
                 VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
@@ -123,8 +156,13 @@ namespace ssGUI::Extensions
                 if(TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex() >= drawingCounts.size())
                     continue;
 
-                int startIndex = 0;
                 int curShape = TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex();
+                
+                //Shape size check
+                if(drawingCounts[curShape] < 3)
+                    continue;
+                
+                int startIndex = 0;
                 for(int j = 0; j < curShape; j++)
                 {
                     startIndex += drawingCounts[j];
@@ -140,25 +178,55 @@ namespace ssGUI::Extensions
                     VerticesToOutlineShapeStartFlag.push_back(j == startIndex);
                     VerticesToOutlineShapeIndex.push_back(curShape);
                     int prevIndex = j;
+                    int loopCount = 0;
                     do
                     {
                         prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[curShape] - 1 : prevIndex - 1);
+                        loopCount++;
+                        if(loopCount > drawingCounts[curShape])
+                        {
+                            DEBUG_LINE("Failed to construct outline");
+                            VerticesToOutline.clear();
+                            VerticesToOutlinePrevVertices.clear();
+                            VerticesToOutlineNextVertices.clear();
+                            return;
+                        }
                     }
                     while(drawingVertices[prevIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToOutlinePrevVertices.push_back(prevIndex);
 
                     int nextIndex = j;
+                    loopCount = 0;
                     do
                     {
                         nextIndex = (nextIndex == startIndex + drawingCounts[curShape] - 1 ? startIndex : nextIndex + 1);
+                        loopCount++;
+                        if(loopCount > drawingCounts[curShape])
+                        {
+                            DEBUG_LINE("Failed to construct rounded corner");
+                            VerticesToOutline.clear();
+                            VerticesToOutlinePrevVertices.clear();
+                            VerticesToOutlineNextVertices.clear();
+                            return;
+                        }
                     }
                     while(drawingVertices[nextIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToOutlineNextVertices.push_back(nextIndex);
 
                     int nextNextIndex = nextIndex;
+                    loopCount = 0;
                     do
                     {
                         nextNextIndex = (nextNextIndex == startIndex + drawingCounts[curShape] - 1 ? startIndex : nextNextIndex + 1);
+                        loopCount++;
+                        if(loopCount > drawingCounts[curShape])
+                        {
+                            DEBUG_LINE("Failed to construct rounded corner");
+                            VerticesToOutline.clear();
+                            VerticesToOutlinePrevVertices.clear();
+                            VerticesToOutlineNextVertices.clear();
+                            return;
+                        }
                     }
                     while(drawingVertices[nextNextIndex] - drawingVertices[nextIndex] == glm::vec2());
                     VerticesToOutlineNextNextVertices.push_back(nextNextIndex);
@@ -174,6 +242,75 @@ namespace ssGUI::Extensions
         glm::vec3 b3 = glm::vec3(b, 0);
 
         return atan2(glm::cross(a3, b3).z, glm::dot(glm::vec2(a), glm::vec2(b)));
+    }
+
+    bool Outline::FindInnerOutlinesIntersection(glm::vec2 curVertex, glm::vec2 prevVertex, glm::vec2 nextVertex, float outlineThickness, glm::vec2& intersection)
+    {
+        /*
+                                        │ (p) prevVertex
+                                        │
+ Interseection of 2 outlines            │
+                  (i)   (Opposite)      │
+                   ┌────────────────────┤ (b)
+                   │\_                  │
+                   │  \_                │
+                   │    \_              │
+                   │      \_            │
+                   │        \_          │ (Adjacent)
+                   │          \_        │
+                   │            \_      │
+                   │              \_    │
+                   │                \_  │
+                   ├─┐                \_│
+           ────────┴─┴──────────────────┘(c)
+nextVertex (n)    (a)                   curVertex 
+                                                                                                                        ▲
+            The goal of this method is to find the intersection when 2 outlines meet each other (i)                     │
+            Given that we know the 3 vertices (p, c, n), and can calculate the direction of the outline (◄── i - b and  │ i - a, they are both the same distance)
+            If we know the distance of bc (b-c), we can calculate where (i) is. (Since b is on pc, we know the direction of it just not the distance)
+            We can use trigonometry to find out the distance of bc, if we find out the angle of ∠pci.
+
+            So the final expression would be (Adjacent) = (Opposite) / tan(|∠pci|).
+        */
+
+        if(nextVertex - curVertex == glm::vec2() || prevVertex - curVertex == glm::vec2())
+        {
+            if(nextVertex - curVertex == glm::vec2() && prevVertex - curVertex == glm::vec2())
+                intersection = curVertex;
+            else if(nextVertex - curVertex == glm::vec2())
+                intersection = glm::vec2(glm::normalize(glm::cross(glm::vec3(curVertex - prevVertex, 0), glm::vec3(0, 0, -1)))) * outlineThickness + curVertex;
+
+            return true;
+        }
+
+        auto lineAngle = std::abs(GetAngle(prevVertex - curVertex, nextVertex - curVertex)) * 0.5;
+        if(lineAngle < 0)
+        {
+            DEBUG_LINE("anti-clockwise placements of vertices detected. inner outline failed.");
+            return false;
+        }
+        else if(lineAngle > pi() * 0.5)
+        {
+            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. inner outline failed.");
+            return false;
+        }
+        else if(pi() * 0.5 - lineAngle < 0.001)
+        {
+            intersection = glm::vec2(glm::normalize(glm::cross(glm::vec3(curVertex - prevVertex, 0), glm::vec3(0, 0, -1)))) * outlineThickness + curVertex;
+            return true;
+        }
+        else if(lineAngle < 0.01)
+        {
+            intersection = glm::normalize((nextVertex - curVertex) + (prevVertex - curVertex)) * outlineThickness + curVertex;
+            return true;
+        }
+
+        float tanAngle = tan(lineAngle);
+        float adjacent = outlineThickness / tanAngle;
+        intersection = glm::vec2(glm::normalize(glm::cross(glm::vec3(curVertex - prevVertex, 0), glm::vec3(0, 0, -1)))) * outlineThickness + 
+            curVertex + glm::normalize(prevVertex - curVertex) * adjacent;
+        
+        return true;
     }
 
     void Outline::PlotArc(glm::vec2 start, glm::vec2 end, glm::vec2 circlePos, std::vector<glm::vec2>& plottedPoints)
@@ -224,7 +361,6 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    //TODO : add option for inner outline
     void Outline::ConstructComplexOutline(bool isInner)
     {        
         FUNC_DEBUG_ENTRY();
@@ -324,22 +460,20 @@ namespace ssGUI::Extensions
                 glm::vec2 nextNextVertex = drawingVertices[VerticesToOutlineNextNextVertices[i]];
                 glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
 
-                glm::vec2 curLine = nextVertex - curVertex;
-                glm::vec2 nextLine = nextNextVertex - nextVertex;
-                glm::vec2 prevLine = prevVertex - curVertex;
-
-                if(curLine != glm::vec2())
-                    curLine = glm::normalize(curLine);
+                glm::vec2 outlinePos1;
+                glm::vec2 outlinePos2;
                 
-                if(prevLine != glm::vec2())
-                    prevLine = glm::normalize(prevLine);
-
-                if(nextLine != glm::vec2())
-                    nextLine = glm::normalize(nextLine);
-
-                glm::vec2 outlinePos1 = glm::normalize(curLine + prevLine) * OutlineThickness + curVertex;
+                if(!FindInnerOutlinesIntersection(curVertex, prevVertex, nextVertex, GetOutlineThickness(), outlinePos1))
+                {
+                    FUNC_DEBUG_EXIT();
+                    return;
+                }
                 
-                glm::vec2 outlinePos2 = glm::normalize(-curLine + nextLine) * OutlineThickness + nextVertex;
+                if(!FindInnerOutlinesIntersection(nextVertex, curVertex, nextNextVertex, GetOutlineThickness(), outlinePos2))
+                {
+                    FUNC_DEBUG_EXIT();
+                    return;
+                }
 
                 //Link the outline to next outline vertex if possible
                 bool linkingPossible = false;
