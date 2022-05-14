@@ -6,7 +6,7 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: ChildRemovedEventCallback
+    //class: ssGUI::EventCallbacks::ChildRemovedEventCallback
     //This event callback is triggered *after* a child is removed on this GUI object
     //The child object being removed will be the source for triggering this event callback.
     class ChildRemovedEventCallback : public BaseEventCallback

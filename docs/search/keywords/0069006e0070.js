@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("inp",["Class"],[["InputStatus",,[[,,,,0,"File:ssGUI/BaseClasses/InputStatus.hpp:InputStatus","CClass:InputStatus"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("inp",["Class"],[["InputStatus",,[["ssGUI",,,,0,"File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus","CClass:ssGUI.InputStatus"]]]]);

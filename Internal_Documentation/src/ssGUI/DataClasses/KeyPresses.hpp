@@ -8,7 +8,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: KeyPresses
+    //class: ssGUI::KeyPresses
     class KeyPresses
     {
         public:

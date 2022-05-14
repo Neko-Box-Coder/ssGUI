@@ -8,84 +8,83 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI.Backend"></a><a name="Topic299"></a><div class="CTopic TClass LC first">
+<a name="ssGUI.Backend"></a><a name="Topic389"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div>
- <div class="NDClassPrototype" id="NDClassPrototype299"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype389"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div></div></div>
 </div>
 
-<a name="BackendFontSFML"></a><a name="Topic355"></a><div class="CTopic TClass LC">
- <div class="CTitle">BackendFontSFML</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype355"><a class="CPEntry Parent TClass" href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,400);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">BackendFontInterface</div></a><div class="CPEntry TClass Current"><div class="CPName">BackendFontSFML</div></div></div>
- <div class="CBody"><p>For functions explainations, please see <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,400);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface</a>. Normally you don't need to deal with this class</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    sf::Font Font;<br />    <span class="SHKeyword">bool</span> SFFontValid;</pre><pre>BackendFontSFML::BackendFontSFML() : Font(), SFFontValid(<span class="SHKeyword">false</span>)<br />{<br />}</pre></div>
+<a name="ssGUI.Backend.BackendFontSFML"></a><a name="Topic355"></a><div class="CTopic TClass LC">
+ <div class="CTitle"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendFontSFML</div>
+ <div class="CBody"><p>For functions explainations, please see <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,380);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface</a>. Normally you don't need to deal with this class</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    sf::Font Font;<br />    <span class="SHKeyword">bool</span> SFFontValid;</pre><pre>BackendFontSFML::BackendFontSFML() : Font(), SFFontValid(<span class="SHKeyword">false</span>)<br />{<br />}</pre></div>
 </div>
 
-<a name="BackendFontSFML.Functions"></a><a name="Topic301"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Backend.BackendFontSFML.Functions"></a><a name="Topic356"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="BackendFontSFML.GetSFMLFont"></a><a name="Topic302"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.GetSFMLFont"></a><a name="Topic357"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetSFMLFont</div>
- <div id="NDPrototype302" class="NDPrototype"><div class="PSection PPlainSection">sf::Font* GetSFMLFont()</div></div>
+ <div id="NDPrototype357" class="NDPrototype"><div class="PSection PPlainSection">sf::Font* GetSFMLFont()</div></div>
  <div class="CBody"><p>Gets the pointer of sf::font object</p></div>
 </div>
 
-<a name="BackendFontSFML.IsValid"></a><a name="Topic317"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.IsValid"></a><a name="Topic358"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsValid</div>
- <div id="NDPrototype317" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> IsValid() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.IsValid" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,402);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::IsValid</a></p></div>
+ <div id="NDPrototype358" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> IsValid() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.IsValid" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,382);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::IsValid</a></p></div>
 </div>
 
-<a name="BackendFontSFML.GetCharacterRenderInfo"></a><a name="Topic663"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.GetCharacterRenderInfo"></a><a name="Topic359"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetCharacterRenderInfo</div>
- <div id="NDPrototype663" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters">ssGUI::CharacterRenderInfo GetCharacterRenderInfo(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.GetCharacterRenderInfo" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,397);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetCharacterRenderInfo</a></p></div>
+ <div id="NDPrototype359" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><a href="../../../../index.html#File:ssGUI/DataClasses/CharacterRenderInfo.hpp:ssGUI.CharacterRenderInfo" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,567);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::CharacterRenderInfo</a> GetCharacterRenderInfo(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.GetCharacterRenderInfo" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,383);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetCharacterRenderInfo</a></p></div>
 </div>
 
-<a name="BackendFontSFML.IsCharacterSupported"></a><a name="Topic319"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.IsCharacterSupported"></a><a name="Topic360"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsCharacterSupported</div>
- <div id="NDPrototype319" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> IsCharacterSupported(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.IsCharacterSupported" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,398);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::IsCharacterSupported</a></p></div>
+ <div id="NDPrototype360" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> IsCharacterSupported(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.IsCharacterSupported" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,384);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::IsCharacterSupported</a></p></div>
 </div>
 
-<a name="BackendFontSFML.GetKerning"></a><a name="Topic320"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.GetKerning"></a><a name="Topic368"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetKerning</div>
- <div id="NDPrototype320" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetKerning(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">secondCharUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.GetKerning" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,756);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetKerning</a></p></div>
+ <div id="NDPrototype368" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetKerning(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">secondCharUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.GetKerning" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,385);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetKerning</a></p></div>
 </div>
 
-<a name="BackendFontSFML.GetLineSpacing"></a><a name="Topic321"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.GetLineSpacing"></a><a name="Topic369"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetLineSpacing</div>
- <div id="NDPrototype321" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetLineSpacing(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.GetLineSpacing" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,349);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetLineSpacing</a></p></div>
+ <div id="NDPrototype369" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetLineSpacing(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.GetLineSpacing" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,386);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetLineSpacing</a></p></div>
 </div>
 
-<a name="BackendFontSFML.GetUnderlineOffset"></a><a name="Topic337"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.GetUnderlineOffset"></a><a name="Topic370"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetUnderlineOffset</div>
- <div id="NDPrototype337" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetUnderlineOffset(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.GetUnderlineOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,350);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetUnderlineOffset</a></p></div>
+ <div id="NDPrototype370" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetUnderlineOffset(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.GetUnderlineOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,387);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetUnderlineOffset</a></p></div>
 </div>
 
-<a name="BackendFontSFML.GetUnderlineThickness"></a><a name="Topic413"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.GetUnderlineThickness"></a><a name="Topic371"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetUnderlineThickness</div>
- <div id="NDPrototype413" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetUnderlineThickness(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.GetUnderlineThickness" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,351);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetUnderlineThickness</a></p></div>
+ <div id="NDPrototype371" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">int</span> GetUnderlineThickness(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.GetUnderlineThickness" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,388);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::GetUnderlineThickness</a></p></div>
 </div>
 
-<a name="BackendFontSFML.LoadFromPath"></a><a name="Topic428"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.LoadFromPath"></a><a name="Topic372"></a><div class="CTopic TFunction LC">
  <div class="CTitle">LoadFromPath</div>
- <div id="NDPrototype428" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadFromPath(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">path</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.LoadFromPath" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,409);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::LoadFromPath</a> SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42</p></div>
+ <div id="NDPrototype372" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadFromPath(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">path</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.LoadFromPath" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,443);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::LoadFromPath</a> SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42</p></div>
 </div>
 
-<a name="BackendFontSFML.LoadFromMemory"></a><a name="Topic451"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendFontSFML.LoadFromMemory"></a><a name="Topic373"></a><div class="CTopic TFunction LC">
  <div class="CTitle">LoadFromMemory</div>
- <div id="NDPrototype451" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">void</span>*&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">lengthInBytes</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:BackendFontInterface.LoadFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,410);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::LoadFromMemory</a> SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42</p></div>
+ <div id="NDPrototype373" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">void</span>*&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">lengthInBytes</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface.LoadFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,444);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendFontInterface::LoadFromMemory</a> SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42</p></div>
 </div>
 
-<a name="BackendFontSFML.Clone"></a><a name="Topic312"></a><div class="CTopic TFunction LC last">
+<a name="ssGUI.Backend.BackendFontSFML.Clone"></a><a name="Topic375"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype312" class="NDPrototype"><div class="PSection PPlainSection">ssGUI::Backend::BackendFontInterface* Clone() <span class="SHKeyword">override</span></div></div>
+ <div id="NDPrototype375" class="NDPrototype"><div class="PSection PPlainSection"><a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendFontInterface.hpp:ssGUI.Backend.BackendFontInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,380);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface</a>* Clone() <span class="SHKeyword">override</span></div></div>
 </div>
 
 </body></html>

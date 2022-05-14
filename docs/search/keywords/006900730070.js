@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("isp",["Function"],[["IsPointContainedInMask",,[["Mask",,,,0,"File:ssGUI/Extensions/Mask.hpp:Mask.IsPointContainedInMask","CClass:Mask:IsPointContainedInMask"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("isp",["Function"],[["IsPointContainedInMask",,[["ssGUI::Extensions::Mask",,,,0,"File:ssGUI/Extensions/Mask.hpp:ssGUI.Extensions.Mask.IsPointContainedInMask","CClass:ssGUI.Extensions.Mask:IsPointContainedInMask"]]]]);

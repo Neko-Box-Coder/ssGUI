@@ -19,7 +19,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: ssGUIManager
+    /*class: ssGUI::ssGUIManager
     This manages all the GUI Objects, system input, update and render order, etc...
     There's should only be 1 instance of ssGUIManager.
 

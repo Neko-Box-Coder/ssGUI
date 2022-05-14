@@ -8,7 +8,7 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    /*class: BaseEventCallback
+    /*class: ssGUI::EventCallbacks::BaseEventCallback
     Implementation class for <EventCallback>
     
     Variables & Constructor:

@@ -13,7 +13,7 @@ namespace ssGUI::Extensions
 {
     class Layout;
     
-    //class: Docker
+    //class: ssGUI::Extensions::Docker
     /* This extensions can either be added explictly or generated automatically.
     
     In the case of being generated Automactically:
@@ -56,6 +56,9 @@ namespace ssGUI::Extensions
     */
     class Docker : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             Docker& operator=(Docker const& other);
 
@@ -80,7 +83,14 @@ namespace ssGUI::Extensions
 
             static ssGUI::Window* DefaultGeneratedDockerWindow;
 
+            Docker();
+            virtual ~Docker() override;
             Docker(Docker const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
+
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
@@ -95,9 +105,6 @@ namespace ssGUI::Extensions
 
         public:
             static const std::string EXTENSION_NAME;
-
-            Docker();
-            virtual ~Docker() override;
  
             /*function: SetDefaultGeneratedDockerWindow
             Sets the default generated docker window. Set it to nullptr if you want to stop using the one passed it earlier.
@@ -170,11 +177,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -194,7 +201,7 @@ namespace ssGUI::Extensions
             
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Docker* Clone(ssGUI::GUIObject* newContainer) override;
     };
 
 

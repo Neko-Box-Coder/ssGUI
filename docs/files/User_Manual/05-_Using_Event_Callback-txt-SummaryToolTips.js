@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("File:User_Manual/05._Using_Event_Callback.txt",{11:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">In order to react to any event, an ssGUI::EventCallbacks::EventCallback can be used by attaching it to the target GUI object you want to listen to.</div></div>"});

@@ -7,7 +7,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendImageInterface
+    //class: ssGUI::Backend::BackendImageInterface
     //This allows transferring the image data from the host memory to the gpu memory
     class BackendImageInterface
     {
@@ -17,6 +17,11 @@ namespace ssGUI::Backend
         
         public:
             BackendImageInterface(){}
+
+            //function: GetRawHandle
+            //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr 
+            virtual void* GetRawHandle() = 0;
+
             //function: IsValid
             //Returns true if image is loaded
             virtual bool IsValid() const = 0;
@@ -27,20 +32,17 @@ namespace ssGUI::Backend
 
             //function: LoadImgFileFromMemory
             //Please see <BackendImageSFML::LoadImgFileFromMemory> for supported image format.
-            virtual bool LoadImgFileFromMemory(void* dataPtr, std::size_t size) = 0;
+            virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size) = 0;
 
             //function: LoadRawFromMemory
             //This loads an image in memory in the format of 32-bits rgba.
-            virtual bool LoadRawFromMemory(void* dataPtr, int width, int height) = 0;
+            virtual bool LoadRawFromMemory(void const * dataPtr, int width, int height) = 0;
             
             //function: GetSize
             virtual glm::ivec2 GetSize() const = 0;
 
             //function: Clone
             virtual BackendImageInterface* Clone() = 0;
-
-            //TODO : Add GetRawHandle()
-
     };
 }
 

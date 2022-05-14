@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("pop",["Function"],[["PopChildrenIterator",,[["ssGUI::GUIObject",,,,0,"File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject.PopChildrenIterator","CClass:ssGUI.GUIObject:PopChildrenIterator"]]]]);

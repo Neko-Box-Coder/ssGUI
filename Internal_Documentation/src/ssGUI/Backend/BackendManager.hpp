@@ -9,7 +9,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    /*class: BackendManager
+    /*class: ssGUI::Backend::BackendManager
     Backend manager allows backend objects to communicate to each other, without reference each other. Normally you don't need to deal with this class
     
     Variables & Constructor:

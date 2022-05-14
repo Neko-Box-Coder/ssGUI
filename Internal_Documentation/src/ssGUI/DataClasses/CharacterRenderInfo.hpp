@@ -6,7 +6,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //struct: CharacterRenderInfo
+    //struct: ssGUI::CharacterRenderInfo
     struct CharacterRenderInfo
     {
         public:
@@ -27,7 +27,8 @@ namespace ssGUI
             glm::vec2 Size;
 
             //var: RenderPosition
-            //This is the position of the bottom-left corner of the character
+            //This is the left-most position of the character on the horizontal line. 
+            //To get the top-left corner of the character, add <DrawOffset> to this 
             glm::vec2 RenderPosition;
 
             //var: CharacterAtNewline

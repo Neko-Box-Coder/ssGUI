@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("isi",["Function"],[["IsInteractable",,[["Widget",,,,0,"File:ssGUI/BaseClasses/Widget.hpp:Widget.IsInteractable","CClass:Widget:IsInteractable"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("isi",["Function"],[["IsInnerOutline",,[["ssGUI::Extensions::Outline",,,,0,"File:ssGUI/Extensions/Outline.hpp:ssGUI.Extensions.Outline.IsInnerOutline","CClass:ssGUI.Extensions.Outline:IsInnerOutline"]]],["IsInteractable",,[["ssGUI::Widget",,,,0,"File:ssGUI/GUIObjectClasses/Widget.hpp:ssGUI.Widget.IsInteractable","CClass:ssGUI.Widget:IsInteractable"]]]]);

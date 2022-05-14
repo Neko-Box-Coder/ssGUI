@@ -19,7 +19,7 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendSystemInputInterface
+    //class: ssGUI::Backend::BackendSystemInputInterface
     class BackendSystemInputInterface
     {   
         private:

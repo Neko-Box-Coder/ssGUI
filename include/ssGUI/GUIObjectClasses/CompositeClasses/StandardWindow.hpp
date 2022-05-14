@@ -12,7 +12,7 @@ namespace ssGUI
     class Button;
     class Image;
 
-    /*class: StandardWindow
+    /*class: ssGUI::StandardWindow
     A standard window that contains window icon, title and close button. With addtional visual and funcational extensions added.
 
     Variables & Constructor:
@@ -302,12 +302,12 @@ namespace ssGUI
             virtual bool IsAdaptiveTitleContrast() const;
 
             //function: SetAdaptiveTitleColorDifference
-            //Sets the title text color difference to titlebar color manually (TitleTextColor - TitlebarColor)
+            //Sets the title text color difference to titlebar color manually (TitleTextColor-TitlebarColor)
             //This is normally set automatically when you call <SetAdaptiveTitleColor>
             virtual void SetAdaptiveTitleColorDifference(glm::ivec4 difference);
 
             //function: GetAdaptiveTitleColorDifference
-            //Gets the title text color difference to titlebar color (TitleTextColor - TitlebarColor)
+            //Gets the title text color difference to titlebar color (TitleTextColor-TitlebarColor)
             virtual glm::ivec4 GetAdaptiveTitleColorDifference() const;
 
             //function: SetTitlebarColor

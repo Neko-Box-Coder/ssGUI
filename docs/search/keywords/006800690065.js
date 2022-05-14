@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("hie",["Section"],[["Hierarchy",,[[,"GUI Object Hierarchy",,,0,"File:User_Manual/6_GUI_Object_Hierarchy.txt:GUI_Object_Hierarchy"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("hie",["Section"],[["Hierarchy",,[[,"GUI Object Hierarchy",,,0,"File:User_Manual/06__GUI_Object_Hierarchy.txt:GUI_Object_Hierarchy"]]]]);

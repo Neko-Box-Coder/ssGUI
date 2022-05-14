@@ -16,7 +16,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: AdvancedPosition
+    /*class: ssGUI::Extensions::AdvancedPosition
     This extension allows extra option for positioning a GUI Object
     
     Variables & Constructor:

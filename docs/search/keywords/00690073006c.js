@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("isl",["Function"],[["IsLetterKeyPresent",,[["KeyPresses",,,,0,"File:ssGUI/BaseClasses/KeyPresses.hpp:KeyPresses.IsLetterKeyPresent","CClass:KeyPresses:IsLetterKeyPresent"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("isl",["Function"],[["IsLetterKeyPresent",,[["ssGUI::KeyPresses",,,,0,"File:ssGUI/DataClasses/KeyPresses.hpp:ssGUI.KeyPresses.IsLetterKeyPresent","CClass:ssGUI.KeyPresses:IsLetterKeyPresent"]]]]);

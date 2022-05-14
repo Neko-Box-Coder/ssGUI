@@ -16,7 +16,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: AdvancedSize
+    /*class: ssGUI::Extensions::AdvancedSize
     This extension allows extra option for sizing a GUI Object
     
     Variables & Constructor:

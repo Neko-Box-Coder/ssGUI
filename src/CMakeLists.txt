@@ -12,8 +12,8 @@ project(example VERSION 1.0)
 configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
 # add the executable
-# add_executable(example ./Examples/ImageExample.cpp)
-add_executable(example "./Tests/CustomCursorTest.cpp")
+add_executable(example ./Examples/DockAndLayoutExample.cpp)
+# add_executable(example "./Tests/LayoutTest.cpp")
 
 # For projectconfig.hpp in build folder
 target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")
@@ -67,9 +67,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/GUIObjectClasses/CompositeClasses"
 
 target_include_directories(ssGUI PUBLIC "${INCLUDE_LOCATION}")
 
-# Copy Default font
-# file(   COPY "${PROJECT_SOURCE_DIR}/NotoSans-Regular.ttf"
-#         DESTINATION "${PROJECT_BINARY_DIR}") 
+# Copy resources 
 file(   COPY "${PROJECT_SOURCE_DIR}/Resources"
         DESTINATION "${PROJECT_BINARY_DIR}") 
 # ==========================================================

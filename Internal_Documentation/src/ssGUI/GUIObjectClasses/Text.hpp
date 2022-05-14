@@ -19,7 +19,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: Text
+    /*class: ssGUI::Text
     A class for showing text with different options such as font size, text alignment, fonts, etc.
     Text can be added by just setting the text, which is the simplest.
     
@@ -39,6 +39,7 @@ namespace ssGUI
 
         bool Overflow;
         int FontSize;
+        glm::u8vec4 TextColor;
         bool MultilineAllowed;
         ssGUI::Enums::TextWrapping WrappingMode;
         ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
@@ -56,14 +57,14 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
-                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), MultilineAllowed(true), 
-                    WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
-                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), CurrentFonts(), 
-                    HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
+                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), TextColor(glm::u8vec4(0, 0, 0, 255)), 
+                    MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
+                    HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
+                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
 
-        ssGUI::EventCallbacks::SizeChangedEventCallback* sizeChangedCallback = new ssGUI::EventCallbacks::SizeChangedEventCallback();
+        auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
@@ -115,6 +116,7 @@ namespace ssGUI
 
             bool Overflow;
             int FontSize;
+            glm::u8vec4 TextColor;
             bool MultilineAllowed;
             ssGUI::Enums::TextWrapping WrappingMode;
             ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
@@ -210,7 +212,9 @@ namespace ssGUI
 
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
-            virtual glm::vec2 GetCharacterGlobalPosition(int index);
+            //If topLeftCorner is true, this will return the top-left corner of the character,
+            //Otherwise this will return the left-most position of the character on the horizontal line.
+            virtual glm::vec2 GetCharacterGlobalPosition(int index, bool topLeftCorner);
             
             //function: IsOverflow
             //Returns true if the text is overflowing the text widget
@@ -223,6 +227,14 @@ namespace ssGUI
             //function: GetFontSize
             //Returns the size of the font being used
             virtual int GetFontSize() const;
+
+            //function: SetTextColor
+            //Sets the text color being used
+            virtual void SetTextColor(glm::u8vec4 color);
+
+            //function: GetTextColor
+            //Gets the text color being used
+            virtual glm::u8vec4 GetTextColor() const;
             
             //function: SetMultilineAllowed
             //If true, newlines will be allowed
@@ -335,23 +347,14 @@ namespace ssGUI
             //function: GetType
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
-            
-            //function: Delete 
-            //See <GUIObject::Delete>
-            virtual void Delete() override;
 
-            //function: Internal_Draw
-            //See <GUIObject::Internal_Draw>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
-            //virtual void Internal_Update(ssGUI::BackendSystemInputInterface& inputInterface, bool& blockAllInput, bool& blockInputInWindow, ssGUI::GUIObject* mainWindow) override;
-            
             //function: Internal_Update
             //See <GUIObject::Internal_Update>
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
             //function: Clone
             //See <GUIObject::Clone>
-            virtual GUIObject* Clone(bool cloneChildren) override;
+            virtual Text* Clone(bool cloneChildren) override;
 
     };
 }

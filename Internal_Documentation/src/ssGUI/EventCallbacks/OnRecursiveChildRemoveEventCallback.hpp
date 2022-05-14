@@ -3,7 +3,7 @@
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
-//namespace: ssGUI::EventCallbacks
+//namespace: ssGUI::EventCallbacks::ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
     //class: OnRecursiveChildRemoveEventCallback
@@ -11,12 +11,19 @@ namespace ssGUI::EventCallbacks
     //The child object being removed will be the source for triggering this event callback.
     class OnRecursiveChildRemoveEventCallback : public BaseEventCallback
     {        
-        private:
+        public:
+            friend class ssGUI::Factory;
+        
+        protected:
+            OnRecursiveChildRemoveEventCallback() = default;
             OnRecursiveChildRemoveEventCallback(OnRecursiveChildRemoveEventCallback const &) = default;
             OnRecursiveChildRemoveEventCallback& operator=(OnRecursiveChildRemoveEventCallback const &) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
         
         public:
-            OnRecursiveChildRemoveEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
@@ -24,7 +31,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual OnRecursiveChildRemoveEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

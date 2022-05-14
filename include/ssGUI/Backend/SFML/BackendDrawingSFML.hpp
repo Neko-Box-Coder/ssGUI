@@ -12,7 +12,7 @@
 //namespace: ssGUI.Backend
 namespace ssGUI::Backend
 {
-    /*class: BackendDrawingSFML
+    /*class: ssGUI::Backend::BackendDrawingSFML
     For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:

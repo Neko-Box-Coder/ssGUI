@@ -10,7 +10,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: RoundedCorners
+    /*class: ssGUI::Extensions::RoundedCorners
     This extension rounds the corner of the selected shapes or vertices on the GUI object. This works best with anti-aliasing.
 
     You should get familiar with <GUIObject::Extension_GetDrawingVertices>, <GUIObject::Extension_GetDrawingUVs>, <GUIObject::Extension_GetDrawingColours>, 

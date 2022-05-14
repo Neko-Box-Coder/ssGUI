@@ -15,7 +15,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendDrawingInterface
+    //class: ssGUI::Backend::BackendDrawingInterface
     class BackendDrawingInterface
     {
         private:

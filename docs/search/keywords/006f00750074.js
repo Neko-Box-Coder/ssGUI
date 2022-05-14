@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("out",["Class"],[["Outline",,[["ssGUI::Extensions",,,,0,"File:ssGUI/Extensions/Outline.hpp:ssGUI.Extensions.Outline","CClass:ssGUI.Extensions.Outline"]]]]);

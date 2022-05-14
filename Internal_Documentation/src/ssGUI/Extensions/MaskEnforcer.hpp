@@ -11,16 +11,16 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: MaskEnforcer
+    /*class: ssGUI::Extensions::MaskEnforcer
     This extension masks the container by calling <Mask::MaskObject> that is linked to this extension.
     Normally you should not add this extension manually. You should manage objects to be masked via <Mask>.
     
     Variables & Constructor:
     ============================== C++ ==============================
-    private:
-        std::set<ssGUIObjectIndex> TargetMasks;
+    protected:
         ssGUI::GUIObject* Container;
         bool Enabled;
+        std::set<ssGUIObjectIndex> TargetMasks;
         bool BlockingContainerInput;
 
         ObjectsReferences CurrentObjectsReferences;
@@ -32,26 +32,33 @@ namespace ssGUI::Extensions
     */
     class MaskEnforcer : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
-            std::set<ssGUIObjectIndex> TargetMasks;
-            ssGUI::GUIObject* Container;
-            bool Enabled;
-            bool BlockingContainerInput;
-
-            ObjectsReferences CurrentObjectsReferences;
             MaskEnforcer& operator=(MaskEnforcer const& other);
 
         protected:
+            ssGUI::GUIObject* Container;
+            bool Enabled;
+            std::set<ssGUIObjectIndex> TargetMasks;
+            bool BlockingContainerInput;
+
+            ObjectsReferences CurrentObjectsReferences;
+
+            MaskEnforcer();
+            virtual ~MaskEnforcer() override;
             MaskEnforcer(MaskEnforcer const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
         
         public:
             static const std::string EXTENSION_NAME;
-
-            MaskEnforcer();
-            virtual ~MaskEnforcer() override;
             
             //function: AddTargetMaskObject
             //Add a <Mask> extension to mask this object. targetMaskObj should have <Mask> attached.
@@ -80,11 +87,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -104,7 +111,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual MaskEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

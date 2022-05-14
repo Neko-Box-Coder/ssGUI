@@ -21,7 +21,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendFactory
+    //class: ssGUI::Backend::BackendFactory
     //BackendFactory is used to create backend objects without referencing the actual backend by using interfaces.
     class BackendFactory
     {

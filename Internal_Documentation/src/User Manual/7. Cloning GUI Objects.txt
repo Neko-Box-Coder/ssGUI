@@ -1,3 +1,0 @@
-Title: Cloning GUI Objects
-
-[TODO]

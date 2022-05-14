@@ -8,7 +8,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: Font
+    /*class: ssGUI::Font
     
     Variables & Constructor:
     ============================== C++ ==============================

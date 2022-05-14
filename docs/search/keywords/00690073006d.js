@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("ism",["Function"],[["IsMultilineAllowed",,[["Text",,,,0,"File:ssGUI/BaseClasses/Text.hpp:Text.IsMultilineAllowed","CClass:Text:IsMultilineAllowed"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("ism",["Function"],[["IsMultilineAllowed",,[["ssGUI::Text",,,,0,"File:ssGUI/GUIObjectClasses/Text.hpp:ssGUI.Text.IsMultilineAllowed","CClass:ssGUI.Text:IsMultilineAllowed"]]]]);

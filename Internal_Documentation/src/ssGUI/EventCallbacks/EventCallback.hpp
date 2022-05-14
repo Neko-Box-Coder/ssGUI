@@ -1,6 +1,7 @@
 #ifndef SSGUI_EVENT_CALLBACK
 #define SSGUI_EVENT_CALLBACK
 
+#include "ssGUI/Factory.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include <functional>
 #include <string>
@@ -15,7 +16,7 @@ namespace ssGUI
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    /*class: EventCallback
+    /*class: ssGUI::EventCallbacks::EventCallback
     EventCallback enables the ablity to act against a certain event. 
 
     In order to add a class's function as a listener to an event callback
@@ -35,13 +36,19 @@ namespace ssGUI::EventCallbacks
     ===========================================================================*/
     class EventCallback
     {
+        public:
+            friend class ssGUI::Factory;
+
         protected:
+            EventCallback() = default;
             EventCallback(EventCallback const &) = default;
             EventCallback& operator=(EventCallback const &) = default;
-            EventCallback() = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
         public:
-            
             /*function: AddEventListener
 
             Adds a listener to this EventCallback, and returns an index for removing it.
@@ -55,6 +62,10 @@ namespace ssGUI::EventCallbacks
             //function: RemoveEventListener
             //Removes a listener with the index specified
             virtual void RemoveEventListener(int index) = 0;
+
+            //function: ClearEventListeners
+            //Clears all event listeners
+            virtual void ClearEventListeners() = 0;
             
             //function: GetEventListenerCount
             //Returns the number of event listeners

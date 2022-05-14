@@ -13,7 +13,7 @@ namespace ssGUI::Extensions
 {
     class Layout;
     
-    //class: Docker
+    //class: ssGUI::Extensions::Docker
     /* This extensions can either be added explictly or generated automatically.
     
     In the case of being generated Automactically:

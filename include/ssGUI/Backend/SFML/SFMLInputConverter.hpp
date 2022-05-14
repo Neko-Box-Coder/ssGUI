@@ -12,7 +12,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: SFMLInputConverter
+    //class: ssGUI::Backend::SFMLInputConverter
     //This class converts SFML events into ssGUI events. Normally you don't need to deal with this class.
     class SFMLInputConverter
     {

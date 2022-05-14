@@ -6,16 +6,23 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: WindowDragStateChangedEventCallback
+    //class: ssGUI::EventCallbacks::WindowDragStateChangedEventCallback
     //This event callback is triggered *after* this GUI object (window) drag state is changed. Window(Container) will be the source for triggering this event callback.
     class WindowDragStateChangedEventCallback : public BaseEventCallback
-    {        
-        private:
+    {
+        public:
+            friend class ssGUI::Factory;
+
+        protected:
+            WindowDragStateChangedEventCallback() = default;
             WindowDragStateChangedEventCallback(WindowDragStateChangedEventCallback const &) = default;
             WindowDragStateChangedEventCallback& operator=(WindowDragStateChangedEventCallback const &) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
         
         public:
-            WindowDragStateChangedEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
@@ -23,7 +30,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual WindowDragStateChangedEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

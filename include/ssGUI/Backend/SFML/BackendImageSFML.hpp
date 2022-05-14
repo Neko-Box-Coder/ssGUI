@@ -8,7 +8,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    /*class: BackendImageSFML
+    /*class: ssGUI::Backend::BackendImageSFML
     For functions explainations, please see <BackendImageInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:

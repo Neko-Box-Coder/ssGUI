@@ -11,7 +11,7 @@ namespace ssGUI
 
     class GUIObject;
     
-    /*class: ObjectsReferences
+    /*class: ssGUI::ObjectsReferences
     The purpose of this class is to track references between each GUI Objects. 
     So when cloning happens, the cloned version of the GUI Objects will be referenced (if present) instead of the original GUI Objects. 
     

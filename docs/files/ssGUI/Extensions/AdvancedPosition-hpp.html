@@ -8,151 +8,150 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI.Extensions"></a><a name="Topic739"></a><div class="CTopic TClass LC first">
+<a name="ssGUI.Extensions"></a><a name="Topic1059"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div>
- <div class="NDClassPrototype" id="NDClassPrototype739"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype1059"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div></div></div>
 </div>
 
-<a name="AdvancedPosition"></a><a name="Topic782"></a><div class="CTopic TClass LC">
- <div class="CTitle">AdvancedPosition</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype782"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Extension</div></a><div class="CPEntry TClass Current"><div class="CPName">AdvancedPosition</div></div></div>
+<a name="ssGUI.Extensions.AdvancedPosition"></a><a name="Topic898"></a><div class="CTopic TClass LC">
+ <div class="CTitle"><span class="Qualifier">ssGUI::&#8203;Extensions::</span>&#8203;AdvancedPosition</div>
  <div class="CBody"><p>This extension allows extra option for positioning a GUI Object</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">protected</span>:<br />    ssGUI::GUIObject* Container;<br />    <span class="SHKeyword">bool</span> Enabled;<br /><br />    HorizontalAnchor CurrentHorizontal;<br />    VerticalAnchor CurrentVertical;<br /><br />    <span class="SHKeyword">bool</span> HorizontalUsePercentage;<br />    <span class="SHKeyword">bool</span> VerticalUsePercentage;<br /><br />    <span class="SHKeyword">int</span> HorizontalPixelValue;<br />    <span class="SHKeyword">int</span> VerticalPixelValue;<br /><br />    <span class="SHKeyword">float</span> HorizontalPercentageValue;<br />    <span class="SHKeyword">float</span> VerticalPercentageValue;</pre><pre>AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(<span class="SHKeyword">true</span>), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER),<br />                                        CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalUsePercentage(<span class="SHKeyword">true</span>),<br />                                        VerticalUsePercentage(<span class="SHKeyword">true</span>), HorizontalPixelValue(<span class="SHNumber">0</span>), VerticalPixelValue(<span class="SHNumber">0</span>),<br />                                        HorizontalPercentageValue(<span class="SHNumber">0</span>), VerticalPercentageValue(<span class="SHNumber">0</span>)<br />{}</pre></div>
 </div>
 
-<a name="AdvancedPosition.Functions"></a><a name="Topic741"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Extensions.AdvancedPosition.Functions"></a><a name="Topic899"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="AdvancedPosition.SetHorizontalAnchor"></a><a name="Topic714"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetHorizontalAnchor"></a><a name="Topic900"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetHorizontalAnchor</div>
- <div id="NDPrototype714" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalAnchor(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">HorizontalAnchor&nbsp;</td><td class="PName last">anchor</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype900" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalAnchor(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">HorizontalAnchor&nbsp;</td><td class="PName last">anchor</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="AdvancedPosition.GetHorizontalAnchor"></a><a name="Topic715"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.GetHorizontalAnchor"></a><a name="Topic901"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetHorizontalAnchor</div>
- <div id="NDPrototype715" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> HorizontalAnchor GetHorizontalAnchor() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype901" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> HorizontalAnchor GetHorizontalAnchor() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="AdvancedPosition.SetVerticalAnchor"></a><a name="Topic716"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetVerticalAnchor"></a><a name="Topic902"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetVerticalAnchor</div>
- <div id="NDPrototype716" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalAnchor(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">VerticalAnchor&nbsp;</td><td class="PName last">anchor</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype902" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalAnchor(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">VerticalAnchor&nbsp;</td><td class="PName last">anchor</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="AdvancedPosition.GetVerticalAnchor"></a><a name="Topic734"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.GetVerticalAnchor"></a><a name="Topic903"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetVerticalAnchor</div>
- <div id="NDPrototype734" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> VerticalAnchor GetVerticalAnchor() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype903" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> VerticalAnchor GetVerticalAnchor() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="AdvancedPosition.SetHorizontalUsePercentage"></a><a name="Topic735"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetHorizontalUsePercentage"></a><a name="Topic904"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetHorizontalUsePercentage</div>
- <div id="NDPrototype735" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalUsePercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype904" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalUsePercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="AdvancedPosition.IsHorizontalUsePercentage"></a><a name="Topic736"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.IsHorizontalUsePercentage"></a><a name="Topic905"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsHorizontalUsePercentage</div>
- <div id="NDPrototype736" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsHorizontalUsePercentage() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype905" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsHorizontalUsePercentage() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="AdvancedPosition.SetVerticalUsePercentage"></a><a name="Topic737"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetVerticalUsePercentage"></a><a name="Topic906"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetVerticalUsePercentage</div>
- <div id="NDPrototype737" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalUsePercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype906" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalUsePercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="AdvancedPosition.IsVerticalUsePercentage"></a><a name="Topic738"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.IsVerticalUsePercentage"></a><a name="Topic907"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsVerticalUsePercentage</div>
- <div id="NDPrototype738" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsVerticalUsePercentage() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype907" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsVerticalUsePercentage() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="AdvancedPosition.SetHorizontalPixel"></a><a name="Topic787"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetHorizontalPixel"></a><a name="Topic908"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetHorizontalPixel</div>
- <div id="NDPrototype787" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalPixel(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">pixel</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype908" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalPixel(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">pixel</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="AdvancedPosition.GetHorizontalPixel"></a><a name="Topic793"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.GetHorizontalPixel"></a><a name="Topic909"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetHorizontalPixel</div>
- <div id="NDPrototype793" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetHorizontalPixel() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype909" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetHorizontalPixel() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="AdvancedPosition.SetVerticalPixel"></a><a name="Topic794"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetVerticalPixel"></a><a name="Topic910"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetVerticalPixel</div>
- <div id="NDPrototype794" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalPixel(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">pixel</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype910" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalPixel(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">pixel</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="AdvancedPosition.GetVerticalPixel"></a><a name="Topic795"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.GetVerticalPixel"></a><a name="Topic911"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetVerticalPixel</div>
- <div id="NDPrototype795" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetVerticalPixel() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype911" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetVerticalPixel() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="AdvancedPosition.SetHorizontalPercentage"></a><a name="Topic796"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetHorizontalPercentage"></a><a name="Topic912"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetHorizontalPercentage</div>
- <div id="NDPrototype796" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalPercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype912" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetHorizontalPercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>0 = 0%, 1 = 100%. This can go below 0 or over 1</p></div>
 </div>
 
-<a name="AdvancedPosition.GetHorizontalPercentage"></a><a name="Topic797"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.GetHorizontalPercentage"></a><a name="Topic913"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetHorizontalPercentage</div>
- <div id="NDPrototype797" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">float</span> GetHorizontalPercentage() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype913" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">float</span> GetHorizontalPercentage() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>0 = 0%, 1 = 100%. This can go below 0 or over 1</p></div>
 </div>
 
-<a name="AdvancedPosition.SetVerticalPercentage"></a><a name="Topic875"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.SetVerticalPercentage"></a><a name="Topic914"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetVerticalPercentage</div>
- <div id="NDPrototype875" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalPercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype914" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetVerticalPercentage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td><td class="PName last">percentage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>0 = 0%, 1 = 100%. This can go below 0 or over 1</p></div>
 </div>
 
-<a name="AdvancedPosition.GetVerticalPercentage"></a><a name="Topic876"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.GetVerticalPercentage"></a><a name="Topic915"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetVerticalPercentage</div>
- <div id="NDPrototype876" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">float</span> GetVerticalPercentage() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype915" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">float</span> GetVerticalPercentage() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>0 = 0%, 1 = 100%. This can go below 0 or over 1</p></div>
 </div>
 
-<a name="AdvancedPosition.IsEnabled"></a><a name="Topic877"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.IsEnabled"></a><a name="Topic916"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsEnabled</div>
- <div id="NDPrototype877" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsEnabled() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.IsEnabled" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,810);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::IsEnabled</a></p></div>
+ <div id="NDPrototype916" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsEnabled() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.IsEnabled" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1219);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::IsEnabled</a></p></div>
 </div>
 
-<a name="AdvancedPosition.Internal_Update"></a><a name="Topic971"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.Internal_Update"></a><a name="Topic917"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_Update</div>
- <div id="NDPrototype971" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreUpdate,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendSystemInputInterface*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">windowInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindow</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Internal_Update" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,812);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Update</a></p></div>
+ <div id="NDPrototype917" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">isPreUpdate,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp:ssGUI.Backend.BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,362);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp:ssGUI.Backend.BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,362);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface</a>*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >InputStatus</a>&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >InputStatus</a>&amp;&nbsp;</td><td class="PName last">windowInputStatus,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">mainWindow</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Update" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1220);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Update</a></p></div>
 </div>
 
-<a name="AdvancedPosition.Internal_Draw"></a><a name="Topic561"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.Internal_Draw"></a><a name="Topic918"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_Draw</div>
- <div id="NDPrototype561" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreRender,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindow,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,593);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Draw</a></p></div>
+ <div id="NDPrototype918" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">isPreRender,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp:ssGUI.Backend.BackendDrawingInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,415);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp:ssGUI.Backend.BackendDrawingInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,415);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendDrawingInterface</a>*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">mainWindow,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1222);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Draw</a></p></div>
 </div>
 
-<a name="AdvancedPosition.GetExtensionName"></a><a name="Topic998"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.GetExtensionName"></a><a name="Topic919"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetExtensionName</div>
- <div id="NDPrototype998" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::<span class="SHKeyword">string</span> GetExtensionName() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.GetExtensionName" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,814);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::GetExtensionName</a></p></div>
+ <div id="NDPrototype919" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::<span class="SHKeyword">string</span> GetExtensionName() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.GetExtensionName" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1223);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::GetExtensionName</a></p></div>
 </div>
 
-<a name="AdvancedPosition.BindToObject"></a><a name="Topic999"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.BindToObject"></a><a name="Topic920"></a><div class="CTopic TFunction LC">
  <div class="CTitle">BindToObject</div>
- <div id="NDPrototype999" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> BindToObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">bindObj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.BindToObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,815);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::BindToObject</a></p></div>
+ <div id="NDPrototype920" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> BindToObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">bindObj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.BindToObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1224);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::BindToObject</a></p></div>
 </div>
 
-<a name="AdvancedPosition.Copy"></a><a name="Topic1000"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.Copy"></a><a name="Topic921"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Copy</div>
- <div id="NDPrototype1000" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Copy(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Extensions::</td><td class="PType">Extension*&nbsp;</td><td class="PName last">extension</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Copy" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,816);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Copy</a></p></div>
+ <div id="NDPrototype921" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Copy(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1216);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1216);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>*&nbsp;</td><td class="PName last">extension</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Copy" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1225);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Copy</a></p></div>
 </div>
 
-<a name="AdvancedPosition.Internal_GetObjectsReferences"></a><a name="Topic1001"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.AdvancedPosition.Internal_GetObjectsReferences"></a><a name="Topic922"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_GetObjectsReferences</div>
- <div id="NDPrototype1001" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,348);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>* Internal_GetObjectsReferences() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Internal_GetObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1073);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_GetObjectsReferences</a></p></div>
+ <div id="NDPrototype922" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/DataClasses/ObjectsReferences.hpp:ssGUI.ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,514);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>* Internal_GetObjectsReferences() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_GetObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1226);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_GetObjectsReferences</a></p></div>
 </div>
 
-<a name="AdvancedPosition.Clone"></a><a name="Topic1002"></a><div class="CTopic TFunction LC last">
+<a name="ssGUI.Extensions.AdvancedPosition.Clone"></a><a name="Topic1031"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype1002" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1074);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Clone</a></p></div>
+ <div id="NDPrototype1031" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Extensions/AdvancedPosition.hpp:ssGUI.Extensions.AdvancedPosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,898);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >AdvancedPosition</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1227);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Clone</a></p></div>
 </div>
 
 </body></html>

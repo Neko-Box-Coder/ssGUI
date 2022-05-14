@@ -13,7 +13,7 @@ namespace ssGUI::Extensions
 {       
     class Layout;
     
-    /*class: Dockable
+    /*class: ssGUI::Extensions::Dockable
     This extension allows this GUI Object (window) to be docked to other GUI Objects. 
     
     Trigger areas are areas that the cursor (when dragging another window) can enter to trigger a docking preview and action.
@@ -101,6 +101,9 @@ namespace ssGUI::Extensions
     */
     class Dockable : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             Dockable& operator=(Dockable const& other);
         
@@ -147,7 +150,13 @@ namespace ssGUI::Extensions
             static ssGUI::GUIObject* TargetDockObject;          //Target Dockable Object to dock next to. This can be a docker as well. (This is NOT the object being docked)
             static Dockable::DockSide TargetDockSide;
 
+            Dockable();
+            virtual ~Dockable() override;
             Dockable(Dockable const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
@@ -178,9 +187,6 @@ namespace ssGUI::Extensions
 
         public:
             static const std::string EXTENSION_NAME;
-
-            Dockable();
-            virtual ~Dockable() override;
 
             //Allow docker to see if it is global dock mode or not
             friend class Docker;
@@ -236,11 +242,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -260,7 +266,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Dockable* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

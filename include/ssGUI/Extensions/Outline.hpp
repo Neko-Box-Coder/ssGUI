@@ -9,7 +9,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: Outline
+    /*class: ssGUI::Extensions::Outline
     Outline allows to create a colored outline surrounding the target GUI Object shape/vertices.
 
     A GUI Object can be made up of multiple shapes, by default the outline extension outline the first shape of the GUI Object.

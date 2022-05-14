@@ -22,7 +22,7 @@
 //namespace ssGUI::Backend
 namespace ssGUI::Backend
 {
-    /*class: BackendSystemInputSFML
+    /*class: ssGUI::Backend::BackendSystemInputSFML
     For functions explainations, please see <BackendSystemInputInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:

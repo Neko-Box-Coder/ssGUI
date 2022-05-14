@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("File:User_Manual/02._Using_ssGUI.txt",{2:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">1. Before importing ssGUI, you should have the chosen backend (only SFML for now) working first.</div></div>"});

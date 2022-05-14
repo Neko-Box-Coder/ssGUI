@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/7._Cloning_GUI_Objects.txt","7. Cloning GUI Objects.txt");NDSummary.OnSummaryLoaded("File:User_Manual/7._Cloning_GUI_Objects.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[3,0,0,"Cloning GUI Objects","Cloning_GUI_Objects"]]);

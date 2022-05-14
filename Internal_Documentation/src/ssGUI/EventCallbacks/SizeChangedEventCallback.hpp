@@ -6,16 +6,23 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: SizeChangedEventCallback
+    //class: ssGUI::EventCallbacks::SizeChangedEventCallback
     //This event callback is triggered *after* this GUI object's size has changed. Container will be the source for triggering this event callback.
     class SizeChangedEventCallback : public BaseEventCallback
     {        
-        private:
+        public:
+            friend class ssGUI::Factory;
+
+        protected:
+            SizeChangedEventCallback() = default;
             SizeChangedEventCallback(SizeChangedEventCallback const&) = default;
             SizeChangedEventCallback& operator=(SizeChangedEventCallback const&) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
         
         public:
-            SizeChangedEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
@@ -23,7 +30,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual SizeChangedEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

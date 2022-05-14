@@ -25,8 +25,8 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: BaseGUIObject
-    This is the implementation class for <GUIObject>. See <GUIObject> for more details about the functions
+    /*class: ssGUI::BaseGUIObject
+    This is the implementation class for <ssGUI::GUIObject>. See <ssGUI::GUIObject> for more details about the functions
     
     Variables & Constructor:
     ============================== C++ ==============================

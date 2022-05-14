@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.Factory","Factory");NDSummary.OnSummaryLoaded("CClass:ssGUI.Factory",[["C/C++","C"]],[["Classes","Class"],["Functions","Function"],["Groups","Group"]],[[783,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;Factory"],[784,0,2,"Functions","Functions"],[785,0,1,"Create","Create"],[786,0,1,"Dispose","Dispose"]]);

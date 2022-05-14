@@ -6,7 +6,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //struct: CharacterRenderInfo
+    //struct: ssGUI::CharacterRenderInfo
     struct CharacterRenderInfo
     {
         public:

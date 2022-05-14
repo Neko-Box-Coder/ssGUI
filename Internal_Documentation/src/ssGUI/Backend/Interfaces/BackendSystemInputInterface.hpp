@@ -12,13 +12,14 @@ namespace ssGUI
 {
     class GUIObject;
     class MainWindow;
+    class ImageData;
 }
 
 
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendSystemInputInterface
+    //class: ssGUI::Backend::BackendSystemInputInterface
     class BackendSystemInputInterface
     {   
         private:
@@ -56,6 +57,16 @@ namespace ssGUI::Backend
             virtual void SetCursorType(ssGUI::Enums::CursorType cursorType) = 0;
             //function: GetCursorType
             virtual ssGUI::Enums::CursorType GetCursorType() const = 0;
+
+            //function: SetCustomCursor
+            //Sets the custom cursor image and hotspot.
+            //The image data of customCursor is copied so it is fine to dispose it if needed.
+            virtual void SetCustomCursor(ssGUI::ImageData* customCursor, glm::ivec2 cursorSize, glm::ivec2 hotspot) = 0;
+
+            //function: GetCustomCursor
+            //Copies the custom cursor image to customCursor and returns hotspot of cursor.
+            //customCursor & hotspot are unchanged if there's no custom cursor.
+            virtual void GetCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) = 0;
 
             //function: UpdateCursor
             //Updates the cursor. This needs to be called after a new cursor is set.

@@ -10,7 +10,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendMainWindowInterface
+    //class: ssGUI::Backend::BackendMainWindowInterface
     class BackendMainWindowInterface
     {
         private:

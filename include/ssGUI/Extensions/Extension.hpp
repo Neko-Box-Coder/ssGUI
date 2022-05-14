@@ -19,7 +19,7 @@ namespace ssGUI
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    //class: Extension
+    //class: ssGUI::Extensions::Extension
     //Extension provides additional functionality to a GUI object, without the need to create a new type of GUI object.
     //You cannot attach multiple extensions of the same type to the same GUI Object. If needed, consider attaching to an empty widget/window instead.
     class Extension

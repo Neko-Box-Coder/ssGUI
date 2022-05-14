@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("rou",["Class"],[["RoundedCorners",,[[,,,,0,"File:ssGUI/Extensions/RoundedCorners.hpp:RoundedCorners","CClass:RoundedCorners"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("rou",["Class"],[["RoundedCorners",,[["ssGUI::Extensions",,,,0,"File:ssGUI/Extensions/RoundedCorners.hpp:ssGUI.Extensions.RoundedCorners","CClass:ssGUI.Extensions.RoundedCorners"]]]]);

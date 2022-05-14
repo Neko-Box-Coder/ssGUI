@@ -8,53 +8,58 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI.Backend"></a><a name="Topic468"></a><div class="CTopic TClass LC first">
+<a name="ssGUI.Backend"></a><a name="Topic379"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div>
- <div class="NDClassPrototype" id="NDClassPrototype468"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype379"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div></div></div>
 </div>
 
-<a name="BackendImageInterface"></a><a name="Topic318"></a><div class="CTopic TClass LC">
- <div class="CTitle">BackendImageInterface</div>
- <div class="NDClassPrototype HasChildren" id="NDClassPrototype318"><div class="CPEntry TClass Current"><div class="CPName">BackendImageInterface</div></div><a class="CPEntry Child TClass" href="../../../../index.html#File:ssGUI/Backend/SFML/BackendImageSFML.hpp:BackendImageSFML" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,392);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName">BackendImageSFML</div></a></div>
+<a name="ssGUI.Backend.BackendImageInterface"></a><a name="Topic434"></a><div class="CTopic TClass LC">
+ <div class="CTitle"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendImageInterface</div>
  <div class="CBody"><p>This allows transferring the image data from the host memory to the gpu memory</p></div>
 </div>
 
-<a name="BackendImageInterface.Functions"></a><a name="Topic470"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Backend.BackendImageInterface.Functions"></a><a name="Topic435"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="BackendImageInterface.IsValid"></a><a name="Topic471"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageInterface.GetRawHandle"></a><a name="Topic436"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetRawHandle</div>
+ <div id="NDPrototype436" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span>* GetRawHandle() = <span class="SHNumber">0</span></div></div>
+ <div class="CBody"><p>Returns the actual backend handle if the image data is valid. Otherwise returns nullptr</p></div>
+</div>
+
+<a name="ssGUI.Backend.BackendImageInterface.IsValid"></a><a name="Topic437"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsValid</div>
- <div id="NDPrototype471" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsValid() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
+ <div id="NDPrototype437" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsValid() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
  <div class="CBody"><p>Returns true if image is loaded</p></div>
 </div>
 
-<a name="BackendImageInterface.LoadFromPath"></a><a name="Topic472"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageInterface.LoadFromPath"></a><a name="Topic438"></a><div class="CTopic TFunction LC">
  <div class="CTitle">LoadFromPath</div>
- <div id="NDPrototype472" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadFromPath(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">path</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
- <div class="CBody"><p>Please see <a href="../../../../index.html#File:ssGUI/Backend/SFML/BackendImageSFML.hpp:BackendImageSFML.LoadFromPath" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,334);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageSFML::LoadFromPath</a> for supported image format.</p></div>
+ <div id="NDPrototype438" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadFromPath(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">path</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Please see <a href="../../../../index.html#File:ssGUI/Backend/SFML/BackendImageSFML.hpp:ssGUI.Backend.BackendImageSFML.LoadFromPath" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,578);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageSFML::LoadFromPath</a> for supported image format.</p></div>
 </div>
 
-<a name="BackendImageInterface.LoadImgFileFromMemory"></a><a name="Topic473"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageInterface.LoadImgFileFromMemory"></a><a name="Topic439"></a><div class="CTopic TFunction LC">
  <div class="CTitle">LoadImgFileFromMemory</div>
- <div id="NDPrototype473" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadImgFileFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">void</span>*&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PModifierQualifier first">std::</td><td class="PType">size_t&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
- <div class="CBody"><p>Please see <a href="../../../../index.html#File:ssGUI/Backend/SFML/BackendImageSFML.hpp:BackendImageSFML.LoadImgFileFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,333);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageSFML::LoadImgFileFromMemory</a> for supported image format.</p></div>
+ <div id="NDPrototype439" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadImgFileFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">void</span> <span class="SHKeyword">const</span> *&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PModifierQualifier first">std::</td><td class="PType">size_t&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div class="CBody"><p>Please see <a href="../../../../index.html#File:ssGUI/Backend/SFML/BackendImageSFML.hpp:ssGUI.Backend.BackendImageSFML.LoadImgFileFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,579);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageSFML::LoadImgFileFromMemory</a> for supported image format.</p></div>
 </div>
 
-<a name="BackendImageInterface.LoadRawFromMemory"></a><a name="Topic474"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageInterface.LoadRawFromMemory"></a><a name="Topic440"></a><div class="CTopic TFunction LC">
  <div class="CTitle">LoadRawFromMemory</div>
- <div id="NDPrototype474" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadRawFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">void</span>*&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">width,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">height</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
+ <div id="NDPrototype440" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadRawFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">void</span> <span class="SHKeyword">const</span> *&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">width,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">height</td></tr></table></td><td class="PAfterParameters">) = <span class="SHNumber">0</span></td></tr></table></div></div>
  <div class="CBody"><p>This loads an image in memory in the format of 32-bits rgba.</p></div>
 </div>
 
-<a name="BackendImageInterface.GetSize"></a><a name="Topic475"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageInterface.GetSize"></a><a name="Topic441"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetSize</div>
- <div id="NDPrototype475" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetSize() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
+ <div id="NDPrototype441" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::ivec2 GetSize() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
 </div>
 
-<a name="BackendImageInterface.Clone"></a><a name="Topic476"></a><div class="CTopic TFunction LC last">
+<a name="ssGUI.Backend.BackendImageInterface.Clone"></a><a name="Topic442"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype476" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,318);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface</a>* Clone() = <span class="SHNumber">0</span></div></div>
+ <div id="NDPrototype442" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,434);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface</a>* Clone() = <span class="SHNumber">0</span></div></div>
 </div>
 
 </body></html>

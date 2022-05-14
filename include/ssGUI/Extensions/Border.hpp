@@ -9,7 +9,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {   
-    /*class: Border
+    /*class: ssGUI::Extensions::Border
     Draws a border according to the *size* of the GUI Object
     
     Variables & Constructor:

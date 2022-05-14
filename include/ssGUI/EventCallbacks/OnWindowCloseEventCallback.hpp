@@ -6,7 +6,7 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: OnWindowCloseEventCallback
+    //class: ssGUI::EventCallbacks::OnWindowCloseEventCallback
     //This event callback is triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
     class OnWindowCloseEventCallback : public BaseEventCallback
     {        

@@ -11,7 +11,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: Image
+    /*class: ssGUI::Image
     A class that can show the content of <ImageData>
 
     Variables & Constructor:

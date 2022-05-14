@@ -6,16 +6,23 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: OnObjectDestroyEventCallback
+    //class: ssGUI::EventCallbacks::OnObjectDestroyEventCallback
     //This event callback is triggered *before* the GUI object is destroyed. Container will be the source for triggering this event callback.
     class OnObjectDestroyEventCallback : public BaseEventCallback
     {        
-        private:
+        public:
+            friend class ssGUI::Factory;
+        
+        protected:
+            OnObjectDestroyEventCallback() = default;
             OnObjectDestroyEventCallback(OnObjectDestroyEventCallback const &) = default;
             OnObjectDestroyEventCallback& operator=(OnObjectDestroyEventCallback const &) = default;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
         
         public:
-            OnObjectDestroyEventCallback() = default;
             
             //function: GetEventCallbackName
             //See <BaseEventCallback::GetEventCallbackName>
@@ -23,7 +30,7 @@ namespace ssGUI::EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual OnObjectDestroyEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

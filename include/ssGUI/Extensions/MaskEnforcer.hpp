@@ -11,7 +11,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: MaskEnforcer
+    /*class: ssGUI::Extensions::MaskEnforcer
     This extension masks the container by calling <Mask::MaskObject> that is linked to this extension.
     Normally you should not add this extension manually. You should manage objects to be masked via <Mask>.
     

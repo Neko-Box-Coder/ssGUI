@@ -1,3 +1,0 @@
-Title: GUI Object Hierarchy
-
-[TODO]

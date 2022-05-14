@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("def",["Variable"],[["DefaultFontIndex",,[["CharacterDetails",,,,0,"File:ssGUI/BaseClasses/CharacterDetails.hpp:CharacterDetails.DefaultFontIndex","CClass:CharacterDetails:DefaultFontIndex"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("def",["Variable"],[["DefaultFontIndex",,[["ssGUI::CharacterDetails",,,,0,"File:ssGUI/DataClasses/CharacterDetails.hpp:ssGUI.CharacterDetails.DefaultFontIndex","CClass:ssGUI.CharacterDetails:DefaultFontIndex"]]]]);

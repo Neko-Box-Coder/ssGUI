@@ -2,12 +2,13 @@
 #define SSGUI_CHARACTER_DETAILS
 
 #include "glm/vec2.hpp"
+#include "glm/vec4.hpp"
 #include "ssGUI/DataClasses/Font.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
 {
-    //struct: CharacterDetails
+    //struct: ssGUI::CharacterDetails
     struct CharacterDetails
     {
         public:
@@ -26,6 +27,10 @@ namespace ssGUI
             //var: FontSize
             //The font size of the character
             int FontSize = 20;
+
+            //var: CharacterColor
+            //The color of the character
+            glm::u8vec4 CharacterColor = glm::u8vec4(0, 0, 0, 255);
     };
 }
 

@@ -11,7 +11,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: Layout
+    /*class: ssGUI::Extensions::Layout
     This extensions allows the children of this GUI object to be positioned and sized in a row or column fashion.
     
     The size and resize type (window) will be recorded when a child is being added, 

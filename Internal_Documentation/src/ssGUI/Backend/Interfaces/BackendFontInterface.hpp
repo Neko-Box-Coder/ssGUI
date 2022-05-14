@@ -7,7 +7,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    //class: BackendFontInterface
+    //class: ssGUI::Backend::BackendFontInterface
     class BackendFontInterface
     {   
         private:

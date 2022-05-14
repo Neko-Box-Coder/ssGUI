@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:DrawingProperty","DrawingProperty");NDSummary.OnSummaryLoaded("CClass:DrawingProperty",[["C/C++","C"]],[["Groups","Group"],["Structs","Struct"],["Variables","Variable"]],[[303,0,1,"DrawingProperty"],[514,0,0,"Variables","Variables"],[515,0,2,"fontP","fontP"],[516,0,2,"characterSize","characterSize"],[517,0,2,"imageP","imageP"]]);

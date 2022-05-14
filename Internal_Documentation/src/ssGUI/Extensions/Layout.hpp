@@ -6,15 +6,12 @@
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
-#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
-#include "ssGUI/ssGUITags.hpp"
+
 
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: Layout
+    /*class: ssGUI::Extensions::Layout
     This extensions allows the children of this GUI object to be positioned and sized in a row or column fashion.
     
     The size and resize type (window) will be recorded when a child is being added, 
@@ -26,7 +23,7 @@ namespace ssGUI::Extensions
         bool HorizontalLayout;
         std::vector<float> PreferredSizeMultipliers;
         bool DisableChildrenResizing;
-        bool OverrideChildrenResizeTypes;
+        bool OverrideChildrenResizeTypesAndOnTop;
 
         bool UpdateContainerMinMaxSize;
         bool ReverseOrder;
@@ -49,19 +46,24 @@ namespace ssGUI::Extensions
         std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
         std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
         std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
+        std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
         std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
     =================================================================
     ============================== C++ ==============================
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
-                        OverrideChildrenResizeTypes(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
+                        OverrideChildrenResizeTypesAndOnTop(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
                         Container(nullptr), Enabled(true), Padding(0), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
                         ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
-                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), MinMaxSizeChangedEventIndices()
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), OriginalChildrenOnTop(),
+                        MinMaxSizeChangedEventIndices()
     {}
     =================================================================
     */
     class Layout : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             Layout& operator=(Layout const& other);
         
@@ -69,7 +71,7 @@ namespace ssGUI::Extensions
             bool HorizontalLayout;
             std::vector<float> PreferredSizeMultipliers;
             bool DisableChildrenResizing;
-            bool OverrideChildrenResizeTypes;
+            bool OverrideChildrenResizeTypesAndOnTop;
 
             bool UpdateContainerMinMaxSize;
             bool ReverseOrder;
@@ -92,15 +94,22 @@ namespace ssGUI::Extensions
             std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
             std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
+            std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
             std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
 
             Layout(Layout const& other);
+            Layout();
+            virtual ~Layout() override;
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             void LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
                                 std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
                                 float sizeDiff);
 
-            void UpdateChildrenResizeTypes();
+            void UpdateChildrenResizeTypesAndOnTop();
 
             void SyncContainerMinMaxSize();
 
@@ -123,9 +132,6 @@ namespace ssGUI::Extensions
 
         public:
             static const std::string EXTENSION_NAME;
-
-            Layout();
-            virtual ~Layout() override;
 
             //function: IsHorizontalLayout
             virtual bool IsHorizontalLayout() const;
@@ -187,13 +193,13 @@ namespace ssGUI::Extensions
             */
             virtual void SetCoverFullLength(bool fullLength);
 
-            //function: GetOverrideChildrenResizeType
+            //function: IsOverrideChildrenResizeTypeAndOnTop
             //If true, if will override the window children's resize type. This should normally be true.
-            virtual bool GetOverrideChildrenResizeType() const;
+            virtual bool IsOverrideChildrenResizeTypeAndOnTop() const;
             
-            //function: SetOverrideChildrenResizeType
+            //function: SetOverrideChildrenResizeTypeAndOnTop
             //If true, if will override the window children's resize type. This should normally be true.
-            virtual void SetOverrideChildrenResizeType(bool override);
+            virtual void SetOverrideChildrenResizeTypeAndOnTop(bool override);
 
             //function: GetUpdateContainerMinMaxSize
             //If true, this will update the container's min max size to match the children's total min max size. This should normally be true.
@@ -262,11 +268,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -286,7 +292,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Layout* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

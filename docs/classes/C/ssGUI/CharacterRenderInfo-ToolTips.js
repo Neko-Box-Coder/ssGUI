@@ -1,0 +1,1 @@
+﻿NDContentPage.OnToolTipsLoaded({570:"<div class=\"NDToolTip TVariable LC\"><div id=\"NDPrototype570\" class=\"NDPrototype\"><div class=\"PSection PPlainSection\">glm::vec2 DrawOffset</div></div><div class=\"TTSummary\">Offset for getting the top-left corner of the character</div></div>"});

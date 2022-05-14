@@ -7,7 +7,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    /*class: BackendFontSFML
+    /*class: ssGUI::Backend::BackendFontSFML
     For functions explainations, please see <BackendFontInterface>. Normally you don't need to deal with this class
 
     Variables & Constructor:

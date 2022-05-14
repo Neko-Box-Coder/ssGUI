@@ -8,60 +8,64 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI.Backend"></a><a name="Topic313"></a><div class="CTopic TClass LC first">
+<a name="ssGUI.Backend"></a><a name="Topic403"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div>
- <div class="NDClassPrototype" id="NDClassPrototype313"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype403"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Backend</div></div></div>
 </div>
 
-<a name="BackendImageSFML"></a><a name="Topic392"></a><div class="CTopic TClass LC">
- <div class="CTitle">BackendImageSFML</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype392"><a class="CPEntry Parent TClass" href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,318);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">BackendImageInterface</div></a><div class="CPEntry TClass Current"><div class="CPName">BackendImageSFML</div></div></div>
- <div class="CBody"><p>For functions explainations, please see <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,318);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface</a>. Normally you don't need to deal with this class</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    sf::Texture GPUTexture;<br />    <span class="SHKeyword">bool</span> GPUTextureValid;</pre><pre>BackendImageSFML::BackendImageSFML() : GPUTexture(), GPUTextureValid(<span class="SHKeyword">false</span>)<br />{}</pre></div>
+<a name="ssGUI.Backend.BackendImageSFML"></a><a name="Topic563"></a><div class="CTopic TClass LC">
+ <div class="CTitle"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendImageSFML</div>
+ <div class="CBody"><p>For functions explainations, please see <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,434);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface</a>. Normally you don't need to deal with this class</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">private</span>:<br />    sf::Texture GPUTexture;<br />    <span class="SHKeyword">bool</span> GPUTextureValid;</pre><pre>BackendImageSFML::BackendImageSFML() : GPUTexture(), GPUTextureValid(<span class="SHKeyword">false</span>)<br />{}</pre></div>
 </div>
 
-<a name="BackendImageSFML.Functions"></a><a name="Topic315"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Backend.BackendImageSFML.Functions"></a><a name="Topic564"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="BackendImageSFML.GetGPUTextureP"></a><a name="Topic316"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageSFML.GetGPUTextureP"></a><a name="Topic565"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetGPUTextureP</div>
- <div id="NDPrototype316" class="NDPrototype"><div class="PSection PPlainSection">sf::Texture* GetGPUTextureP()</div></div>
- <div class="CBody"><p>Gets the SFML Texture object</p></div>
+ <div class="CBody"><p>Gets the SFML Texture object sf::Texture* GetGPUTextureP();</p></div>
 </div>
 
-<a name="BackendImageSFML.IsValid"></a><a name="Topic332"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageSFML.GetRawHandle"></a><a name="Topic573"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetRawHandle</div>
+ <div id="NDPrototype573" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">void</span>* GetRawHandle() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface.GetRawHandle" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,436);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::GetRawHandle</a></p></div>
+</div>
+
+<a name="ssGUI.Backend.BackendImageSFML.IsValid"></a><a name="Topic577"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsValid</div>
- <div id="NDPrototype332" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> IsValid() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface.IsValid" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,471);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::IsValid</a></p></div>
+ <div id="NDPrototype577" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> IsValid() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface.IsValid" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,437);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::IsValid</a></p></div>
 </div>
 
-<a name="BackendImageSFML.LoadImgFileFromMemory"></a><a name="Topic333"></a><div class="CTopic TFunction LC">
- <div class="CTitle">LoadImgFileFromMemory</div>
- <div id="NDPrototype333" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadImgFileFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">void</span>*&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PModifierQualifier first">std::</td><td class="PType">size_t&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface.LoadImgFileFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,473);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::LoadImgFileFromMemory</a> The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.</p></div>
-</div>
-
-<a name="BackendImageSFML.LoadFromPath"></a><a name="Topic334"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageSFML.LoadFromPath"></a><a name="Topic578"></a><div class="CTopic TFunction LC">
  <div class="CTitle">LoadFromPath</div>
- <div id="NDPrototype334" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadFromPath(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">path</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface.LoadFromPath" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,472);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::LoadFromPath</a> The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.</p></div>
+ <div id="NDPrototype578" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadFromPath(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">path</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface.LoadFromPath" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,438);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::LoadFromPath</a> The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.</p></div>
 </div>
 
-<a name="BackendImageSFML.LoadRawFromMemory"></a><a name="Topic335"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageSFML.LoadImgFileFromMemory"></a><a name="Topic579"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">LoadImgFileFromMemory</div>
+ <div id="NDPrototype579" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadImgFileFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">void</span> <span class="SHKeyword">const</span> *&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PModifierQualifier first">std::</td><td class="PType">size_t&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface.LoadImgFileFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,439);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::LoadImgFileFromMemory</a> The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.</p></div>
+</div>
+
+<a name="ssGUI.Backend.BackendImageSFML.LoadRawFromMemory"></a><a name="Topic580"></a><div class="CTopic TFunction LC">
  <div class="CTitle">LoadRawFromMemory</div>
- <div id="NDPrototype335" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadRawFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">void</span>*&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">width,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">height</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface.LoadRawFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,474);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::LoadRawFromMemory</a></p></div>
+ <div id="NDPrototype580" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">bool</span> LoadRawFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">void</span> <span class="SHKeyword">const</span> *&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">width,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">height</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface.LoadRawFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,440);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::LoadRawFromMemory</a></p></div>
 </div>
 
-<a name="BackendImageSFML.GetSize"></a><a name="Topic336"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Backend.BackendImageSFML.GetSize"></a><a name="Topic581"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetSize</div>
- <div id="NDPrototype336" class="NDPrototype"><div class="PSection PPlainSection">glm::ivec2 GetSize() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:BackendImageInterface.GetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,475);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::GetSize</a></p></div>
+ <div id="NDPrototype581" class="NDPrototype"><div class="PSection PPlainSection">glm::ivec2 GetSize() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface.GetSize" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,441);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendImageInterface::GetSize</a></p></div>
 </div>
 
-<a name="BackendImageSFML.Clone"></a><a name="Topic322"></a><div class="CTopic TFunction LC last">
+<a name="ssGUI.Backend.BackendImageSFML.Clone"></a><a name="Topic605"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype322" class="NDPrototype"><div class="PSection PPlainSection">ssGUI::Backend::BackendImageInterface* Clone() <span class="SHKeyword">override</span></div></div>
+ <div id="NDPrototype605" class="NDPrototype"><div class="PSection PPlainSection"><a href="../../../../index.html#File:ssGUI/Backend/Interfaces/BackendImageInterface.hpp:ssGUI.Backend.BackendImageInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,434);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendImageInterface</a>* Clone() <span class="SHKeyword">override</span></div></div>
 </div>
 
 </body></html>

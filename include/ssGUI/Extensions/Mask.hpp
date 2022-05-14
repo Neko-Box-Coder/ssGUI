@@ -20,7 +20,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: Mask
+    /*class: ssGUI::Extensions::Mask
     Mask extension serves 2 purposes:
     - Provides function to mask GUI Objects
     - Manages <MaskEnforcer> that actually uses the function in this extension to mask the GUI objects that the <MaskEnforcer> attached to.

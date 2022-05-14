@@ -11,7 +11,7 @@
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
 {
-    /*class: BackendMainWindowSFML
+    /*class: ssGUI::Backend::BackendMainWindowSFML
     For functions explainations, please see <BackendMainWindowInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:

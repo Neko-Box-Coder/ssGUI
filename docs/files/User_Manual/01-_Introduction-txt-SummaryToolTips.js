@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("File:User_Manual/01._Introduction.txt",{});

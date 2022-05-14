@@ -40,9 +40,5 @@
 .editorconfig
 
 builds/
-v0.9/
-
 Internal_Documentation/ND_Config/Working\ Data
-v0.91.00/
-
-v0.90.00/
+v0.*/

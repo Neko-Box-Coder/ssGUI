@@ -19,7 +19,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: Text
+    /*class: ssGUI::Text
     A class for showing text with different options such as font size, text alignment, fonts, etc.
     Text can be added by just setting the text, which is the simplest.
     

@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/2._Using_ssGUI.txt","2. Using ssGUI.txt");NDSummary.OnSummaryLoaded("File:User_Manual/2._Using_ssGUI.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[281,0,0,"Using ssGUI","Using_ssGUI"]]);

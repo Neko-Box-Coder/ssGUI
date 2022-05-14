@@ -1,5 +1,7 @@
 (exclude curly brackets)
 
 1. replace {style="display: flex;"} with empty in .html
-2. replace {href="http://localhost([^"]*)"} with {href=""} in .html (With regex on)
-3. find {.minicard-wrapper} class in .css and replace {display:flex;} with {display:block};
+2. replace {href="http://localhost([^"]*)"} with empty in .html (With regex on)
+3. Remove .js
+4. find {.minicard-wrapper} class in .css and replace {display:flex;} with {display:block};
+5. Remove whole div with id {header-quick-access}

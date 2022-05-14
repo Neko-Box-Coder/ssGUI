@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("onf",["Class"],[["OnFontChangeEventCallback",,[[,,,,0,"File:ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp:OnFontChangeEventCallback","CClass:OnFontChangeEventCallback"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("onf",["Class"],[["OnFontChangeEventCallback",,[["ssGUI::EventCallbacks",,,,0,"File:ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp:ssGUI.EventCallbacks.OnFontChangeEventCallback","CClass:ssGUI.EventCallbacks.OnFontChangeEventCallback"]]]]);

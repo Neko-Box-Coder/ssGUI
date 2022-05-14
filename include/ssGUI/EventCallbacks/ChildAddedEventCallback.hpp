@@ -6,7 +6,7 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: ChildAddedEventCallback
+    //class: ssGUI::EventCallbacks::ChildAddedEventCallback
     //This event callback is triggered *after* a child is paranted on this GUI object
     //The child object being added will be the source for triggering this event callback.
     class ChildAddedEventCallback : public BaseEventCallback

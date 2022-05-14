@@ -4,7 +4,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: InputStatus
+    //class: ssGUI::InputStatus
     class InputStatus
     {
         public:

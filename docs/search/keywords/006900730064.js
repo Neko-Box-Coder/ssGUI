@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("isd",["Function"],[["IsDraggable",,[["Window",,,,0,"File:ssGUI/BaseClasses/Window.hpp:Window.IsDraggable","CClass:Window:IsDraggable"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("isd",["Function"],[["IsDeleteAfterClosed",,[["ssGUI::Window",,,,0,"File:ssGUI/GUIObjectClasses/Window.hpp:ssGUI.Window.IsDeleteAfterClosed","CClass:ssGUI.Window:IsDeleteAfterClosed"]]],["IsDraggable",,[["ssGUI::Window",,,,0,"File:ssGUI/GUIObjectClasses/Window.hpp:ssGUI.Window.IsDraggable","CClass:ssGUI.Window:IsDraggable"]]]]);

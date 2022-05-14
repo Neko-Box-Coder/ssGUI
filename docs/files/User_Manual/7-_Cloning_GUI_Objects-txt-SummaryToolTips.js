@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:User_Manual/7._Cloning_GUI_Objects.txt",{3:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">[TODO]</div></div>"});

@@ -8,87 +8,126 @@
 
 <body onload="NDLoader.OnLoad('Content');" class="NDPage NDContentPage">
 
-<a name="ssGUI.Extensions"></a><a name="Topic786"></a><div class="CTopic TClass LC first">
+<a name="ssGUI.Extensions"></a><a name="Topic1007"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div>
- <div class="NDClassPrototype" id="NDClassPrototype786"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype1007"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Extensions</div></div></div>
 </div>
 
-<a name="Border"></a><a name="Topic487"></a><div class="CTopic TClass LC">
- <div class="CTitle">Border</div>
- <div class="NDClassPrototype HasParents" id="NDClassPrototype487"><a class="CPEntry Parent TClass" href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPModifiers"><span class="SHKeyword">public</span></div><div class="CPName">Extension</div></a><div class="CPEntry TClass Current"><div class="CPName">Border</div></div></div>
- <div class="CBody"><p>Draws a border according to the <b>size</b> of the GUI Object</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">protected</span>:<br />    glm::u8vec4 BorderColour;<br />    <span class="SHKeyword">int</span> BorderWidth;<br />    ssGUI::GUIObject* Container;<br />    <span class="SHKeyword">bool</span> Enabled;</pre><pre>Border::Border() : BorderColour(glm::u8vec4(<span class="SHNumber">0</span>, <span class="SHNumber">0</span>, <span class="SHNumber">0</span>, <span class="SHNumber">255</span>)), BorderWidth(<span class="SHNumber">1</span>), Container(nullptr), Enabled(<span class="SHKeyword">true</span>)<br />{}</pre></div>
+<a name="ssGUI.Extensions.Border"></a><a name="Topic692"></a><div class="CTopic TClass LC">
+ <div class="CTitle"><span class="Qualifier">ssGUI::&#8203;Extensions::</span>&#8203;Border</div>
+ <div class="CBody"><p>Draws a border according to the <b>size</b> of the GUI Object</p><div class="CHeading">Variables &amp; Constructor</div><pre><span class="SHKeyword">protected</span>:<br />    ssGUI::GUIObject* Container;<br />    <span class="SHKeyword">bool</span> Enabled;<br />    glm::u8vec4 BorderColor;<br />    <span class="SHKeyword">int</span> BorderWidth;<br /><br />    <span class="SHComment">//TODO : Maybe change to private enum class. Just too lazy to do it atm :P</span><br />    int8_t BorderSides;     <span class="SHComment">//(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])</span></pre><pre>Border::Border() : Container(nullptr), Enabled(<span class="SHKeyword">true</span>), BorderColor(glm::u8vec4(<span class="SHNumber">0</span>, <span class="SHNumber">0</span>, <span class="SHNumber">0</span>, <span class="SHNumber">255</span>)), BorderWidth(<span class="SHNumber">1</span>), BorderSides(<span class="SHNumber">15</span>)<br />{}</pre></div>
 </div>
 
-<a name="Border.Functions"></a><a name="Topic788"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Extensions.Border.Functions"></a><a name="Topic693"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="Border.GetBorderColour"></a><a name="Topic789"></a><div class="CTopic TFunction LC">
- <div class="CTitle">GetBorderColour</div>
- <div id="NDPrototype789" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::u8vec4 GetBorderColour() <span class="SHKeyword">const</span></div></div>
+<a name="ssGUI.Extensions.Border.GetBorderColor"></a><a name="Topic694"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetBorderColor</div>
+ <div id="NDPrototype694" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::u8vec4 GetBorderColor() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="Border.SetBorderColour"></a><a name="Topic790"></a><div class="CTopic TFunction LC">
- <div class="CTitle">SetBorderColour</div>
- <div id="NDPrototype790" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetBorderColour(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">u8vec4&nbsp;</td><td class="PName last">colour</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+<a name="ssGUI.Extensions.Border.SetBorderColor"></a><a name="Topic695"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">SetBorderColor</div>
+ <div id="NDPrototype695" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetBorderColor(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">u8vec4&nbsp;</td><td class="PName last">colour</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="Border.GetBorderWidth"></a><a name="Topic791"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.GetBorderWidth"></a><a name="Topic696"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetBorderWidth</div>
- <div id="NDPrototype791" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetBorderWidth() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype696" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetBorderWidth() <span class="SHKeyword">const</span></div></div>
 </div>
 
-<a name="Border.SetBorderWidth"></a><a name="Topic792"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.SetBorderWidth"></a><a name="Topic697"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetBorderWidth</div>
- <div id="NDPrototype792" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetBorderWidth(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">width</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype697" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetBorderWidth(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">width</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
 </div>
 
-<a name="Border.IsEnabled"></a><a name="Topic482"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.ShowBorderLeft"></a><a name="Topic698"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">ShowBorderLeft</div>
+ <div id="NDPrototype698" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> ShowBorderLeft(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">show</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.ShowBorderTop"></a><a name="Topic699"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">ShowBorderTop</div>
+ <div id="NDPrototype699" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> ShowBorderTop(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">show</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.ShowBorderRight"></a><a name="Topic700"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">ShowBorderRight</div>
+ <div id="NDPrototype700" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> ShowBorderRight(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">show</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.ShowBorderBottom"></a><a name="Topic1093"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">ShowBorderBottom</div>
+ <div id="NDPrototype1093" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> ShowBorderBottom(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">show</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.IsBorderLeftShowing"></a><a name="Topic1094"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">IsBorderLeftShowing</div>
+ <div id="NDPrototype1094" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsBorderLeftShowing() <span class="SHKeyword">const</span></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.IsBorderTopShowing"></a><a name="Topic1095"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">IsBorderTopShowing</div>
+ <div id="NDPrototype1095" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsBorderTopShowing() <span class="SHKeyword">const</span></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.IsBorderRightShowing"></a><a name="Topic1146"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">IsBorderRightShowing</div>
+ <div id="NDPrototype1146" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsBorderRightShowing() <span class="SHKeyword">const</span></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.IsBorderBottomShowing"></a><a name="Topic1147"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">IsBorderBottomShowing</div>
+ <div id="NDPrototype1147" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsBorderBottomShowing() <span class="SHKeyword">const</span></div></div>
+</div>
+
+<a name="ssGUI.Extensions.Border.IsEnabled"></a><a name="Topic1148"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsEnabled</div>
- <div id="NDPrototype482" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsEnabled() <span class="SHKeyword">const override</span></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.IsEnabled" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,810);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::IsEnabled</a></p></div>
+ <div id="NDPrototype1148" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsEnabled() <span class="SHKeyword">const override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.IsEnabled" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1219);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::IsEnabled</a></p></div>
 </div>
 
-<a name="Border.Internal_Update"></a><a name="Topic483"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.Internal_Update"></a><a name="Topic1149"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_Update</div>
- <div id="NDPrototype483" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreUpdate,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendSystemInputInterface*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">InputStatus&amp;&nbsp;</td><td class="PName last">windowInputStatus,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindow</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Internal_Update" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,812);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Update</a></p></div>
+ <div id="NDPrototype1149" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Update(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">isPreUpdate,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp:ssGUI.Backend.BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,362);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp:ssGUI.Backend.BackendSystemInputInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,362);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendSystemInputInterface</a>*&nbsp;</td><td class="PName last">inputInterface,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >InputStatus</a>&amp;&nbsp;</td><td class="PName last">globalInputStatus,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/DataClasses/InputStatus.hpp:ssGUI.InputStatus" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,748);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >InputStatus</a>&amp;&nbsp;</td><td class="PName last">windowInputStatus,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">mainWindow</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Update" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1220);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Update</a></p></div>
 </div>
 
-<a name="Border.Internal_Draw"></a><a name="Topic606"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.Internal_Draw"></a><a name="Topic1150"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_Draw</div>
- <div id="NDPrototype606" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">IsPreRender,</td></tr><tr><td class="PModifierQualifier first">ssGUI::Backend::</td><td class="PType">BackendDrawingInterface*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">mainWindow,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,593);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Draw</a></p></div>
+ <div id="NDPrototype1150" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_Draw(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">isPreRender,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp:ssGUI.Backend.BackendDrawingInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,415);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp:ssGUI.Backend.BackendDrawingInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,415);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >BackendDrawingInterface</a>*&nbsp;</td><td class="PName last">drawingInterface,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">mainWindow,</td></tr><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">mainWindowPositionOffset</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1222);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_Draw</a></p></div>
 </div>
 
-<a name="Border.GetExtensionName"></a><a name="Topic485"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.GetExtensionName"></a><a name="Topic1151"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetExtensionName</div>
- <div id="NDPrototype485" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::<span class="SHKeyword">string</span> GetExtensionName() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.GetExtensionName" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,814);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::GetExtensionName</a></p></div>
+ <div id="NDPrototype1151" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::<span class="SHKeyword">string</span> GetExtensionName() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.GetExtensionName" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1223);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::GetExtensionName</a></p></div>
 </div>
 
-<a name="Border.BindToObject"></a><a name="Topic491"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.BindToObject"></a><a name="Topic1152"></a><div class="CTopic TFunction LC">
  <div class="CTitle">BindToObject</div>
- <div id="NDPrototype491" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> BindToObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">bindObj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.BindToObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,815);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::BindToObject</a></p></div>
+ <div id="NDPrototype1152" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> BindToObject(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">bindObj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.BindToObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1224);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::BindToObject</a></p></div>
 </div>
 
-<a name="Border.Copy"></a><a name="Topic727"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.Copy"></a><a name="Topic1153"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Copy</div>
- <div id="NDPrototype727" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Copy(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::Extensions::</td><td class="PType">Extension*&nbsp;</td><td class="PName last">extension</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Copy" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,816);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Copy</a></p></div>
+ <div id="NDPrototype1153" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Copy(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1216);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1216);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>*&nbsp;</td><td class="PName last">extension</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Copy" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1225);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Copy</a></p></div>
 </div>
 
-<a name="Border.Internal_GetObjectsReferences"></a><a name="Topic728"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Extensions.Border.Internal_GetObjectsReferences"></a><a name="Topic1154"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_GetObjectsReferences</div>
- <div id="NDPrototype728" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/BaseClasses/ObjectsReferences.hpp:ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,348);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>* Internal_GetObjectsReferences() <span class="SHKeyword">override</span></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Internal_GetObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1073);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_GetObjectsReferences</a></p></div>
+ <div id="NDPrototype1154" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/DataClasses/ObjectsReferences.hpp:ssGUI.ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,514);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>* Internal_GetObjectsReferences() <span class="SHKeyword">override</span></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_GetObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1226);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Internal_GetObjectsReferences</a></p></div>
 </div>
 
-<a name="Border.Clone"></a><a name="Topic729"></a><div class="CTopic TFunction LC last">
+<a name="ssGUI.Extensions.Border.Clone"></a><a name="Topic1155"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype729" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,653);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">ssGUI::</td><td class="PType">GUIObject*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
- <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:Extension.Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1074);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Clone</a></p></div>
+ <div id="NDPrototype1155" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#File:ssGUI/Extensions/Border.hpp:ssGUI.Extensions.Border" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,692);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Border</a>* Clone(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,642);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">newContainer</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">override</span></td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#File:ssGUI/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Clone" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1227);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension::Clone</a></p></div>
 </div>
 
 </body></html>

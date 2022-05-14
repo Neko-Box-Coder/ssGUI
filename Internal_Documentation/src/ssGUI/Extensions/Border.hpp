@@ -9,56 +9,92 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {   
-    /*class: Border
+    /*class: ssGUI::Extensions::Border
     Draws a border according to the *size* of the GUI Object
     
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        glm::u8vec4 BorderColour;
-        int BorderWidth;
         ssGUI::GUIObject* Container;
         bool Enabled;
+        glm::u8vec4 BorderColor;
+        int BorderWidth;
+
+        //TODO : Maybe change to private enum class. Just too lazy to do it atm :P
+        int8_t BorderSides;     //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
     =================================================================
     ============================== C++ ==============================
-    Border::Border() : BorderColour(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), Container(nullptr), Enabled(true)
+    Border::Border() : Container(nullptr), Enabled(true), BorderColor(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), BorderSides(15)
     {}
     =================================================================
     */
     class Border : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+        
         private:
             Border& operator=(Border const& other);
         
         protected:
-            glm::u8vec4 BorderColour;
-            int BorderWidth;
             ssGUI::GUIObject* Container;
             bool Enabled;
+            glm::u8vec4 BorderColor;
+            int BorderWidth;
+
+            //TODO : Maybe change to private enum class. Just too lazy to do it atm :P
+            int8_t BorderSides;     //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
 
             virtual void DrawBorder();
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
+            Border();
+            virtual ~Border() override;
             Border(Border const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
         public:
             static const std::string EXTENSION_NAME;
-
-            Border();
-            virtual ~Border() override;
             
-            //function: GetBorderColour
-            virtual glm::u8vec4 GetBorderColour() const;
+            //function: GetBorderColor
+            virtual glm::u8vec4 GetBorderColor() const;
             
-            //function: SetBorderColour
-            virtual void SetBorderColour(glm::u8vec4 colour);
+            //function: SetBorderColor
+            virtual void SetBorderColor(glm::u8vec4 colour);
             
             //function: GetBorderWidth
             virtual int GetBorderWidth() const;
             
             //function: SetBorderWidth
             virtual void SetBorderWidth(int width);
+
+            //function: ShowBorderLeft
+            virtual void ShowBorderLeft(bool show);
+
+            //function: ShowBorderTop
+            virtual void ShowBorderTop(bool show);
+
+            //function: ShowBorderRight
+            virtual void ShowBorderRight(bool show);
+
+            //function: ShowBorderBottom
+            virtual void ShowBorderBottom(bool show);
+
+            //function: IsBorderLeftShowing
+            virtual bool IsBorderLeftShowing() const;
+
+            //function: IsBorderTopShowing
+            virtual bool IsBorderTopShowing() const;
+
+            //function: IsBorderRightShowing
+            virtual bool IsBorderRightShowing() const;
+
+            //function: IsBorderBottomShowing
+            virtual bool IsBorderBottomShowing() const;
 
             //Override from Extension
             //function: SetEnabled           
@@ -71,11 +107,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -95,7 +131,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Border* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

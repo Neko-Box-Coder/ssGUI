@@ -18,7 +18,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //class: GUIObject
+    //class: ssGUI::GUIObject
     //Base class for all GUI Objects
     class GUIObject
     {       

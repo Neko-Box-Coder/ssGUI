@@ -9,7 +9,7 @@
 # ------------------------------------------------------------------------
 
 Title: Super Simple GUI Library (ssGUI)
-Subtitle: To get started, press the "Files" button on the left panel. Press again to go back to root menu.
+Subtitle: To get started, press the "Menu" button on the left panel. Press again to go back to root menu.
 
 Copyright: Created by NekoBox
 

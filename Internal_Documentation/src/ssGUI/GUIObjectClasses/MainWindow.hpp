@@ -10,8 +10,8 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: MainWindow
-    Main Window is the *actual* window. Not to be confused with <Window> which lives inside MainWindow.
+    /*class: ssGUI::MainWindow
+    Main Window is the *actual* window. Not to be confused with <ssGUI::Window> which lives inside MainWindow.
     You should call <GUIObject::RedrawObject> after changing the properties of the MainWindow.
     This class should not be overwritten unless you know what you are doing
     
@@ -30,8 +30,9 @@ namespace ssGUI
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
-        
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
+        BackendMainWindow->SetMSAA(8);
+        SetBackgroundColor(glm::u8vec4(255, 255, 255, 255));
     }
     =================================================================
     */
@@ -55,7 +56,7 @@ namespace ssGUI
             virtual ~MainWindow() override;
             
             //function: Render
-            //Renders all the entities drawn on this MainWindow. Called by <ssGUIManager> normally.
+            //Renders all the entities drawn on this MainWindow. Called by <ssGUI::ssGUIManager> normally.
             virtual void Render();
             
             //function: ClearBackBuffer
@@ -113,10 +114,6 @@ namespace ssGUI
             //function: GetType
             //See <Window::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
-            
-            //function: Delete 
-            //See <Window::Delete>
-            virtual void Delete() override;
 
             //function: Close
             //See <Window::Close>
@@ -144,7 +141,7 @@ namespace ssGUI
     
             //function: Clone
             //See <Window::Clone>
-            virtual GUIObject* Clone(bool cloneChildren) override;
+            virtual MainWindow* Clone(bool cloneChildren) override;
 
     };
 }

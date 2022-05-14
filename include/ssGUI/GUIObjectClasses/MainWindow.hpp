@@ -10,8 +10,8 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: MainWindow
-    Main Window is the *actual* window. Not to be confused with <Window> which lives inside MainWindow.
+    /*class: ssGUI::MainWindow
+    Main Window is the *actual* window. Not to be confused with <ssGUI::Window> which lives inside MainWindow.
     You should call <GUIObject::RedrawObject> after changing the properties of the MainWindow.
     This class should not be overwritten unless you know what you are doing
     
@@ -56,7 +56,7 @@ namespace ssGUI
             virtual ~MainWindow() override;
             
             //function: Render
-            //Renders all the entities drawn on this MainWindow. Called by <ssGUIManager> normally.
+            //Renders all the entities drawn on this MainWindow. Called by <ssGUI::ssGUIManager> normally.
             virtual void Render();
             
             //function: ClearBackBuffer

@@ -16,7 +16,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: AdvancedSize
+    /*class: ssGUI::Extensions::AdvancedSize
     This extension allows extra option for sizing a GUI Object
     
     Variables & Constructor:
@@ -45,6 +45,9 @@ namespace ssGUI::Extensions
     */
     class AdvancedSize : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             AdvancedSize& operator=(AdvancedSize const& other);
         
@@ -63,16 +66,19 @@ namespace ssGUI::Extensions
 
             bool OverrideDefaultSize;
 
+            AdvancedSize();
+            virtual ~AdvancedSize() override;
             AdvancedSize(AdvancedSize const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
         public:
             static const std::string EXTENSION_NAME;
-
-            AdvancedSize();
-            virtual ~AdvancedSize() override;
 
             //function: SetHorizontalUsePercentage
             virtual void SetHorizontalUsePercentage(bool percentage);
@@ -125,11 +131,11 @@ namespace ssGUI::Extensions
             
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -149,7 +155,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual AdvancedSize* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

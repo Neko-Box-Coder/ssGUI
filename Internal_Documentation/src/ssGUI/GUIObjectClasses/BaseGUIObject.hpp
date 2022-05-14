@@ -12,6 +12,7 @@
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/BackgroundColorChangedEventCallback.hpp"
 #include "glm/vec4.hpp"
 #include <vector>
 #include <list>
@@ -24,8 +25,8 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: BaseGUIObject
-    This is the implementation class for <GUIObject>. See <GUIObject> for more details about the functions
+    /*class: ssGUI::BaseGUIObject
+    This is the implementation class for <ssGUI::GUIObject>. See <ssGUI::GUIObject> for more details about the functions
     
     Variables & Constructor:
     ============================== C++ ==============================
@@ -125,6 +126,8 @@ namespace ssGUI
             std::vector<glm::u8vec4> DrawingColours;
             std::vector<int> DrawingCounts;
             std::vector<ssGUI::DrawingProperty> DrawingProperties;
+            int GUIObjectShapeIndex;
+            int GUIObjectVertexIndex;
 
             //Cache rendering
             std::vector<glm::vec2> LastDrawingVerticies;
@@ -154,6 +157,7 @@ namespace ssGUI
             virtual void CacheRendering();
             virtual void DisableRedrawObjectRequest();
             virtual void EnableRedrawObjectRequest();
+            virtual void UpdateGUIObjectVertexAndShapeIndex();
 
         public:
             BaseGUIObject();
@@ -268,6 +272,10 @@ namespace ssGUI
             //See <GUIObject::ChangeChildOrderToAfterPosition>
             virtual void ChangeChildOrderToAfterPosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position) override;
 
+            //function: GetListOfChildren
+            //See <GUIObject::GetListOfChildren>
+            virtual std::vector<ssGUI::GUIObject*> GetListOfChildren() const override;
+
             //function: Internal_AddChild
             //See <GUIObject::Internal_AddChild>
             virtual void Internal_AddChild(ssGUI::GUIObject* obj) override;
@@ -347,6 +355,14 @@ namespace ssGUI
             //function: Extension_GetDrawingProperties
             //See <GUIObject::Extension_GetDrawingProperties>
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties() override;
+
+            //function: Extension_GetGUIObjectFirstShapeIndex
+            //See <GUIObject::Extension_GetGUIObjectFirstShapeIndex>
+            virtual int Extension_GetGUIObjectFirstShapeIndex() const override;
+
+            //function: Extension_GetGUIObjectFirstVertexIndex
+            //See <GUIObject::Extension_GetGUIObjectFirstVertexIndex>
+            virtual int Extension_GetGUIObjectFirstVertexIndex() const override;
             
             //function: AddExtension
             //See <GUIObject::AddExtension>
@@ -442,7 +458,7 @@ namespace ssGUI
 
             //function: Clone
             //See <GUIObject::Clone>
-            virtual GUIObject* Clone(bool cloneChildren) override;
+            virtual BaseGUIObject* Clone(bool cloneChildren) override;
 
     };
 }

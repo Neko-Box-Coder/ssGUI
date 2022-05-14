@@ -3,7 +3,7 @@
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
-//namespace: ssGUI::EventCallbacks
+//namespace: ssGUI::EventCallbacks::ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
     //class: OnRecursiveChildRemoveEventCallback

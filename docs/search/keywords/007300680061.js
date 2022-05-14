@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("sha",["Class"],[["Shape",,[["ssGUI::Extensions",,,,0,"File:ssGUI/Extensions/Shape.hpp:ssGUI.Extensions.Shape","CClass:ssGUI.Extensions.Shape"]]]]);

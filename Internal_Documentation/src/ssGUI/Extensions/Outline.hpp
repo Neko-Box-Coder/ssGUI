@@ -9,17 +9,24 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: CustomExtension
-    [Insert extension summary here]
+    /*class: ssGUI::Extensions::Outline
+    Outline allows to create a colored outline surrounding the target GUI Object shape/vertices.
+
+    A GUI Object can be made up of multiple shapes, by default the outline extension outline the first shape of the GUI Object.
+
+    By default, the outline is drawn inside the shape. This however can be set by <SetInnerOutline>.
+
+    You can also target specific vertices of the GUI Object to be outlined (<AddTargetVertex>), in which case <AddTargetShape> will be overriden and ignored.
 
     Variables & Constructor:
     ============================== C++ ==============================
-    private:
+    protected:
         ssGUI::GUIObject* Container;
         bool Enabled;
 
-        int OutlineThickness;
+        float OutlineThickness;
         bool SimpleOutline;
+        bool InnerOutline;
         glm::u8vec4 OutlineColor;
         std::vector<int> TargetShapes;
         std::vector<int> TargetVertices;
@@ -28,20 +35,32 @@ namespace ssGUI::Extensions
         std::vector<int> VerticesToOutlinePrevVertices;
         std::vector<int> VerticesToOutlineNextVertices;
         std::vector<int> VerticesToOutlineNextNextVertices;
+        std::vector<int> VerticesToOutlineShapeIndex;
+        std::vector<bool> VerticesToOutlineShapeStartFlag;
     =================================================================
     ============================== C++ ==============================
-    CustomExtension::CustomExtension() : Container(nullptr), Enabled(true)
+    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1.1), SimpleOutline(false), InnerOutline(true), 
+                            OutlineColor(glm::u8vec4(0, 0, 0, 255)), TargetShapes{0}, TargetVertices(), VerticesToOutline(), 
+                            VerticesToOutlinePrevVertices(), VerticesToOutlineNextVertices(), VerticesToOutlineNextNextVertices(), 
+                            VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
     {}
     =================================================================
     */
     class Outline : public Extension
     {
-        private:
+        public:
+            friend class ssGUI::Factory;
+        
+        private:    
+            Outline& operator=(Outline const& other);
+
+        protected:
             ssGUI::GUIObject* Container;
             bool Enabled;
 
-            int OutlineThickness;
+            float OutlineThickness;
             bool SimpleOutline;
+            bool InnerOutline;
             glm::u8vec4 OutlineColor;
             std::vector<int> TargetShapes;
             std::vector<int> TargetVertices;
@@ -50,17 +69,31 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToOutlinePrevVertices;
             std::vector<int> VerticesToOutlineNextVertices;
             std::vector<int> VerticesToOutlineNextNextVertices;
-    
-            Outline& operator=(Outline const& other);
+            std::vector<int> VerticesToOutlineShapeIndex;
+            std::vector<bool> VerticesToOutlineShapeStartFlag;
 
-        protected:
+            Outline();
+            virtual ~Outline() override;
             Outline(Outline const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
-            virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts);
-
+            virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex);
             virtual void UpdateVerticesForOutline();
 
-            virtual void ConstructComplexOutline();
+            //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
+            constexpr double pi() { return std::atan(1)*4; };
+
+            //Return angle in radians. Positive if angle between a and b is anti-clockwise
+            virtual double GetAngle(glm::vec2 a, glm::vec2 b);
+
+            virtual bool FindInnerOutlinesIntersection(glm::vec2 curVertex, glm::vec2 prevVertex, glm::vec2 nextVertex, float outlineThickness, glm::vec2& intersection);
+
+            virtual void PlotArc(glm::vec2 start, glm::vec2 end, glm::vec2 circlePos, std::vector<glm::vec2>& plottedPoints);
+
+            virtual void ConstructComplexOutline(bool isInner);
 
             virtual void ConstructSimpleOutline();
 
@@ -70,31 +103,38 @@ namespace ssGUI::Extensions
         public:
             static const std::string EXTENSION_NAME;
 
-            Outline();
-            virtual ~Outline() override;
-
             //function: SetOutlineThickness
             //Sets the thickness of the outline, in pixel
-            virtual void SetOutlineThickness(int thickness);
+            virtual void SetOutlineThickness(float thickness);
 
             //function: GetOutlineThickness
             //Returns the thickness of the outline, in pixel
-            virtual int GetOutlineThickness() const;
+            virtual float GetOutlineThickness() const;
+
+            //function: SetInnerOutline
+            //Sets if the outlines are drawn inside the shape or not
+            virtual void SetInnerOutline(bool inner);
+
+            //function: IsInnerOutline
+            //Returns if the outlines are drawn inside the shape or not
+            virtual bool IsInnerOutline() const;
 
             /*function: SetSimpleOutline
-            Sets if it uses simple outline drawing or not.
+            Sets if it uses simple outline drawing or not. Note this has no effect if <IsInnerOutline> is true.
 
             If true, the outline will basically be a slightly larger version of the GUI object
             drawn behind the GUI object.
+
             If false, each two vertices of the GUI object will generate 2 more outline vertices and form a new shape it.
             This will generate a lot more shapes than the simple version.*/
             virtual void SetSimpleOutline(bool simpleOutline);
 
             /*function: IsSimpleOutline
-            Returns if it uses simple outline drawing or not.
+            Returns if it uses simple outline drawing or not. Note this has no effect if <IsInnerOutline> is true.
 
             If true, the outline will basically be a slightly larger version of the GUI object
             drawn behind the GUI object.
+
             If false, each two vertices of the GUI object will generate 2 more outline vertices and form a new shape it.
             This will generate a lot more shapes than the simple version.*/
             virtual bool IsSimpleOutline() const;
@@ -175,11 +215,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -199,7 +239,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Outline* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

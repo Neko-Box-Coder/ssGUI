@@ -15,7 +15,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: Window
+    /*class: ssGUI::Window
     A base classes for any window GUI Object (including <MainWindow>). By itself, it can be used as a window that's inside <MainWindow>. 
     By default, it can be resized or move by a cursor.
 

@@ -7,7 +7,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: ImageData
+    /*class: ssGUI::ImageData
     If you are using <LoadRawFromMemory>, remember to reload it again if there's any changes to the image memory.
     
     Variables & Constructor:
@@ -44,19 +44,19 @@ namespace ssGUI
             virtual bool IsValid() const;
 
             //function: LoadFromPath
-            //See <BackendImageInterface::LoadFromPath>
+            //See <ssGUI::Backend::BackendImageInterface::LoadFromPath>
             virtual bool LoadFromPath(std::string path);
 
             //function: LoadImgFileFromMemory
-            //See <BackendImageInterface::LoadImgFileFromMemory>
-            virtual bool LoadImgFileFromMemory(void* dataPtr, std::size_t size);
+            //See <ssGUI::Backend::BackendImageInterface::LoadImgFileFromMemory>
+            virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size);
 
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            virtual bool LoadRawFromMemory(void* dataPtr, int width, int height);
+            virtual bool LoadRawFromMemory(void const * dataPtr, int width, int height);
 
             //function: GetSize
-            //See <BackendImageInterface::GetSize>
+            //See <ssGUI::Backend::BackendImageInterface::GetSize>
             virtual glm::ivec2 GetSize() const;
 
             //function: Clone

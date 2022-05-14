@@ -6,7 +6,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: Widget
+    /*class: ssGUI::Widget
     A base class for any interactable or non-window GUI objects
 
     Variables & Constructor:

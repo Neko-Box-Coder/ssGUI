@@ -6,7 +6,7 @@
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: SizeChangedEventCallback
+    //class: ssGUI::EventCallbacks::SizeChangedEventCallback
     //This event callback is triggered *after* this GUI object's size has changed. Container will be the source for triggering this event callback.
     class SizeChangedEventCallback : public BaseEventCallback
     {        

@@ -6,14 +6,14 @@
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #include "ssGUI/Backend/SFML/SFMLInputConverter.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "glm/vec2.hpp"
+#include "SFML/Window/Keyboard.hpp"
+#include "SFML/Window/Mouse.hpp"
 #include <unordered_set>
 #include <memory>
 #include <string>
 #include <algorithm>
-#include "glm/vec2.hpp"
-#include "SFML/Window/Keyboard.hpp"
-#include "SFML/Window/Mouse.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 
 #if !USE_SFML_TIME
     #include <chrono>
@@ -22,7 +22,7 @@
 //namespace ssGUI::Backend
 namespace ssGUI::Backend
 {
-    /*class: BackendSystemInputSFML
+    /*class: ssGUI::Backend::BackendSystemInputSFML
     For functions explainations, please see <BackendSystemInputInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:
@@ -61,7 +61,7 @@ namespace ssGUI::Backend
     =================================================================
     */
     class BackendSystemInputSFML : public BackendSystemInputInterface
-    {           
+    {
         private:
             ssGUI::KeyPresses CurrentKeyPresses;
             ssGUI::KeyPresses LastKeyPresses;
@@ -74,12 +74,15 @@ namespace ssGUI::Backend
             ssGUI::Enums::CursorType CurrentCursor;
             std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
 
+            //TODO: Do these need to be static?...
+            static sf::Image CustomCursorImage;
+            static glm::ivec2 Hotspot;
+
             #if USE_SFML_TIME
                 sf::Clock ElapsedTime;
             #else
                 std::chrono::high_resolution_clock::time_point ElapsedTime;
             #endif
-
 
             template <class T>
             void AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo);
@@ -89,6 +92,10 @@ namespace ssGUI::Backend
 
             void FetchKeysPressed(ssGUI::KeyPresses keysPressedDown);
             void FetchKeysReleased(ssGUI::KeyPresses keysReleased);
+
+            //http://tech-algorithm.com/articles/bilinear-image-scaling/
+            //https://stackoverflow.com/questions/21514075/bilinear-re-sizing-with-c-and-vector-of-rgba-pixels
+            void ResizeBilinear(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2);
         
         public:
             BackendSystemInputSFML();
@@ -139,6 +146,14 @@ namespace ssGUI::Backend
             //function: GetCursorType
             //See <BackendSystemInputInterface::GetCursorType>
             ssGUI::Enums::CursorType GetCursorType() const override;
+
+            //function: SetCustomCursor
+            //See <BackendSystemInputInterface::SetCustomCursor>
+            void SetCustomCursor(ssGUI::ImageData* customCursor, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
+
+            //function: GetCustomCursor
+            //See <BackendSystemInputInterface::GetCustomCursor>
+            void GetCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) override;
             
             //function: UpdateCursor
             //See <BackendSystemInputInterface::UpdateCursor>

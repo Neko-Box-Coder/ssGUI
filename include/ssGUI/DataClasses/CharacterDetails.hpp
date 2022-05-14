@@ -8,7 +8,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    //struct: CharacterDetails
+    //struct: ssGUI::CharacterDetails
     struct CharacterDetails
     {
         public:

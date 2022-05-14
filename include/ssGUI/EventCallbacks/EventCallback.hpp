@@ -16,7 +16,7 @@ namespace ssGUI
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    /*class: EventCallback
+    /*class: ssGUI::EventCallbacks::EventCallback
     EventCallback enables the ablity to act against a certain event. 
 
     In order to add a class's function as a listener to an event callback

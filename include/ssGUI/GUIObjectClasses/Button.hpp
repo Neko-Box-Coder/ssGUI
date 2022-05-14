@@ -11,7 +11,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-    /*class: Button
+    /*class: ssGUI::Button
     A class that provides on click functionality when being clicked by the cursor.
     
     Variables & Constructor:

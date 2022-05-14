@@ -1,5 +1,5 @@
 ### Note
-> This library is constantly changing until v1.00 . However, feel free to star or bookmark this project.
+> This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
 ## What is ssGUI?
 
@@ -51,17 +51,21 @@ _
 
 ## Cool Features
 
-#### Layout:
+#### Window Docking & Auto Layout:
 
-![](Internal_Documentation/ND_Config/Images/VerticalLayout.gif)
-![](Internal_Documentation/ND_Config/Images/HorizontalLayout.gif)
-![](Internal_Documentation/ND_Config/Images/CompositeLayout.gif)
-
-#### Window Docking:
-![](Internal_Documentation/ND_Config/Images/Docking.gif)
+![](Internal_Documentation/ND_Config/Images/DockingAndLayout.gif)
 
 #### Mask:
 ![](Internal_Documentation/ND_Config/Images/Mask.gif)
+
+#### Text Alignment:
+![](Internal_Documentation/ND_Config/Images/TextAlignment.gif)
+
+#### Text Character Level Customization:
+![](Internal_Documentation/ND_Config/Images/CharAdjust.gif)
+
+#### Extension To Provide Modularity:
+![](Internal_Documentation/ND_Config/Images/ExtensionExample.gif)
 
 #### And more to come...
 
@@ -79,26 +83,26 @@ int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::vec2(450, 125));
+    mainWindow.SetSize(glm::vec2(450, 110));
     mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
-    text.SetSize(glm::vec2(450, 60));
-    text.SetText("Click on the button to change this text.");
+    text.SetSize(glm::vec2(450, 45));
+    text.SetText("Click on the button to show the message");
     text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
 
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
     button.SetSize(glm::vec2(50, 30));
-    button.SetPosition(glm::vec2(200, 75));
+    button.SetPosition(glm::vec2(200, 60));
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
         {
             if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText("Button pressed and this text has changed.");
+                text.SetText("(`oωo´)");
         }
     );
 
@@ -118,6 +122,7 @@ _
 
 ## Licenses:
 This project is under Apache-2.0 License.
+Licenses for resoureces used by testing and examples are stored as "Credits.txt" under the same folder.
 
 GLM:
 - The Happy Bunny License or MIT License
@@ -132,4 +137,4 @@ SFML:
 _
 
 ## What's the progress status of the current library
-https://neko-box-coder.github.io/ssGUI/WekanBoard/ssGUI (Last Updated: 26/03/2022)
+https://neko-box-coder.github.io/ssGUI/WekanBoard/ssGUI (Last Updated: 14/05/2022)

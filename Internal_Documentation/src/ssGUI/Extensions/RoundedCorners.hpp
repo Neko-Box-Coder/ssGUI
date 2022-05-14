@@ -10,7 +10,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: RoundedCorners
+    /*class: ssGUI::Extensions::RoundedCorners
     This extension rounds the corner of the selected shapes or vertices on the GUI object. This works best with anti-aliasing.
 
     You should get familiar with <GUIObject::Extension_GetDrawingVertices>, <GUIObject::Extension_GetDrawingUVs>, <GUIObject::Extension_GetDrawingColours>, 
@@ -45,9 +45,13 @@ namespace ssGUI::Extensions
     */
     class RoundedCorners : public Extension
     {
+        public:
+            friend class ssGUI::Factory;
+
         private:
             RoundedCorners& operator=(RoundedCorners const& other);
 
+        protected:
             ssGUI::GUIObject* Container;
             bool Enabled;
 
@@ -59,11 +63,15 @@ namespace ssGUI::Extensions
             std::vector<int> VerticesToRoundPrevVertices;
             std::vector<int> VerticesToRoundNextVertices;
 
-
-        protected:
+            RoundedCorners();
+            virtual ~RoundedCorners() override;
             RoundedCorners(RoundedCorners const& other);
+            static void* operator new(size_t size)      {return ::operator new(size);};
+            static void* operator new[](size_t size)    {return ::operator new(size);};
+            static void operator delete(void* p)        {free(p);};
+            static void operator delete[](void* p)      {free(p);};
 
-            //Return angle in radians. Positive if clockwise
+            //Return angle in radians. Positive if angle between a and b is anti-clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
             
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
@@ -82,9 +90,6 @@ namespace ssGUI::Extensions
 
         public:
             static const std::string EXTENSION_NAME;
-
-            RoundedCorners();
-            virtual ~RoundedCorners() override;
 
             //function: SetRoundedCornersRadius
             //Sets the radius for the rounded corners. Note that it will use the largest possible radius if this is not available.
@@ -151,7 +156,6 @@ namespace ssGUI::Extensions
             //Clears all the vertexIndex entries in this extension
             virtual void ClearTargetVertices();
 
-
             //Override from Extension
             //function: SetEnabled
             //See <Extension::SetEnabled>
@@ -163,11 +167,11 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool IsPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool IsPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
@@ -187,7 +191,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual RoundedCorners* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

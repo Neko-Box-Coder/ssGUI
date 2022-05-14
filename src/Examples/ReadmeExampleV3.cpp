@@ -6,12 +6,12 @@ int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::vec2(450, 125));
+    mainWindow.SetSize(glm::vec2(450, 110));
     mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
-    text.SetSize(glm::vec2(450, 60));
+    text.SetSize(glm::vec2(450, 45));
     text.SetText("Click on the button to show the message");
     text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
@@ -19,7 +19,7 @@ int main()
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
     button.SetSize(glm::vec2(50, 30));
-    button.SetPosition(glm::vec2(200, 75));
+    button.SetPosition(glm::vec2(200, 60));
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
