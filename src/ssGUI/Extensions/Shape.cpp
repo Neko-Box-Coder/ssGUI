@@ -58,7 +58,7 @@ namespace ssGUI::Extensions
         for(int i = 0; i < (int)(glm::length(size) * 2.f * pi()); i++)
         {
             float angle = 2.f * pi() * ((float)i / (float)((int)(glm::length(size) * 2.f * pi())));
-            targetShape.Vertices.push_back(glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
+            targetShape.Vertices.push_back(pos + glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
             targetShape.Colors.push_back(color);
         }
 

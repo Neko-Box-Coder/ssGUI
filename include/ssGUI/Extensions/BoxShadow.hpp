@@ -60,7 +60,7 @@ namespace ssGUI::Extensions
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
             constexpr double pi() { return std::atan(1)*4; };
 
-            //Return angle in radians. Positive if clockwise
+            //Return angle in radians. Positive if angle between a and b is anti-clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
 
             virtual void PlotArc(glm::vec2 start, glm::vec2 end, glm::vec2 circlePos, std::vector<glm::vec2>& plottedPoints);

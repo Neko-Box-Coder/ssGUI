@@ -22,70 +22,7 @@ namespace ssGUI::Extensions
 
     bool Mask::GetAxesValues(glm::vec2 axis, glm::vec2 axis2, glm::vec2 samplePoint, float& axisValue, float& axis2Value)
     {
-        /*
-        NOTE: I am not a mathematician and have no idea why this doesn't work.
-
-        //Find intersection of AB and CD
-        //https://www.codeproject.com/Tips/862988/Find-the-Intersection-Point-of-Two-Line-Segments
-
-
-        //Finding axisValue for samplePoint
-    
-        //      |
-        //      |
-        //axis 2|   x samplePoint (C)
-        //      |   |
-        //      |___|_________
-        //      A   | axis     B             
-        //          |
-        //          D
-
-        glm::ivec2 ba = axis;
-        glm::ivec2 dc = samplePoint - axis2;
-        glm::ivec2 ca = samplePoint;
-
-        float ba_cross_dc = glm::cross(glm::vec3(ba, 0), glm::vec3(dc, 0)).z;
-        float ca_cross_ba = glm::cross(glm::vec3(ca, 0), glm::vec3(ba, 0)).z;
-        float ca_cross_dc = glm::cross(glm::vec3(ca, 0), glm::vec3(dc, 0)).z;
-
-        if(ba_cross_dc == 0)
-            return false;
-        
-        //TODO: Add checks for reaching max limit
-        axisValue = ca_cross_dc / ba_cross_dc;
-        
-        return true;
-
-        //Finding axis2Value for samplePoint
-
-
-        //      B
-        // axis2|
-        //      |
-        //D-----|---x samplePoint (C)
-        //      |   
-        //      |____________
-        //      A    axis                  
-        //          
-        // 
-
-        ba = axis2;
-        dc = samplePoint - axis;
-
-        ba_cross_dc = glm::cross(glm::vec3(ba, 0), glm::vec3(dc, 0)).z;
-        ca_cross_ba = glm::cross(glm::vec3(ca, 0), glm::vec3(ba, 0)).z;
-        ca_cross_dc = glm::cross(glm::vec3(ca, 0), glm::vec3(dc, 0)).z;
-
-        if(ba_cross_dc == 0)
-            return false;
-
-        axis2Value = ca_cross_dc / ba_cross_dc;
-
-        return true;
-        */
-
         //Credit: https://stackoverflow.com/questions/13937782/calculating-the-point-of-intersection-of-two-lines
-
         //Return the multiplier from a to reach intersection of ab and cd
         auto findIntersectMultiplier = [](glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 d) -> float
         {
@@ -96,26 +33,27 @@ namespace ssGUI::Extensions
             return ((d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)) / denom;
         };
 
-        //      |
-        //      |
-        //axis 2|   x samplePoint (C)
-        //      |   |
-        //      |___|_________
-        //      A   | axis     B             
-        //          |
+        // (The two axes can be at any angle, but CD is always perpendcular to the axis we are projecting to)
+
+        //      │
+        //      │
+        //axis 2│   x samplePoint (C)
+        //      │   │
+        //      └───┼───────────
+        //      A   │ axis     B             
+        //          │
         //          D
         
         axisValue = findIntersectMultiplier(glm::vec2(0, 0), axis, samplePoint, samplePoint - axis2);
 
         //      B
-        // axis2|
-        //      |
-        //D-----|---x samplePoint (C)
-        //      |   
-        //      |____________
+        // axis2│
+        //      │
+        //D─────┼───x samplePoint (C)
+        //      │   
+        //      └────────────
         //      A    axis                  
         //          
-        // 
 
         axis2Value = findIntersectMultiplier(glm::vec2(0, 0), axis2, samplePoint, samplePoint - axis);
 
@@ -413,14 +351,14 @@ namespace ssGUI::Extensions
                 //Special Case check:
                 /*
                             Mask
-                            v
-                        +-------+
-                    +---+-------+---+
-                    |   |///////|   |
-                    |   |///////|   |
-                    |   +-------+   |
-                    |               | <-- Shape
-                    +---------------+
+                            ▼
+                        ┌───────┐
+                    ┌───┼───────┼───┐
+                    │   │///////│   │
+                    │   │///////│   │
+                    │   └───────┘   │
+                    │               │ ◄── Shape
+                    └───────────────┘
 
                 */
                 if(currentShapeVertexIndex == shapeOffset + shapeVertexCount - 1 &&
