@@ -127,6 +127,7 @@ namespace ssGUI::Extensions
             DEBUG_LINE("c: "<<c.x<<", "<<c.y);
             DEBUG_LINE("t1: "<<t1.x<<", "<<t1.y);
             DEBUG_LINE("t2: "<<t2.x<<", "<<t2.y);
+            DEBUG_LINE("cir: "<<cir.x<<", "<<cir.y);
             DEBUG_EXIT_PROGRAM();
             return;
         }
@@ -140,9 +141,12 @@ namespace ssGUI::Extensions
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
         // DEBUG_LINE("points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
-        for(int i = 0; i < (int)(roundRadius * angleT1CirT2 * 1) + 2; i++)
+        int minSamples = 10;
+        int sampleCount = (int)(roundRadius * angleT1CirT2 * 1) + 2;
+        int finalSampleCount = sampleCount < 10 ? minSamples : sampleCount;
+        for(int i = 1; i < finalSampleCount; i++)
         {
-            double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)((int)(roundRadius * angleT1CirT2 * 1) + 1));
+            double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)finalSampleCount);
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)roundRadius;
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + cir);
         }
@@ -178,11 +182,9 @@ namespace ssGUI::Extensions
         int endIndex = drawingCounts[0];
         if(!TargetVertices.empty())
         {
-            VerticesToRound = TargetVertices;
-            for(int i = 0; i < VerticesToRound.size(); i++)
+            for(int i = 0; i < TargetVertices.size(); i++)
             {
-                VerticesToRound[i] += Container->Extension_GetGUIObjectFirstVertexIndex();
-                int currentVertexIndex = VerticesToRound[i];
+                int currentVertexIndex = TargetVertices[i] + Container->Extension_GetGUIObjectFirstVertexIndex();
 
                 //Invlaid index check
                 if(currentVertexIndex >= drawingVertices.size())
@@ -195,21 +197,43 @@ namespace ssGUI::Extensions
                 if(currentVertexIndex < startIndex || currentVertexIndex >= endIndex)
                     GetStartEndVertexIndex(currentVertexIndex, startIndex, endIndex, drawingCounts);
 
-                // VerticesToRoundPrevVertices.push_back((currentVertexIndex == startIndex ? endIndex - 1 : currentVertexIndex - 1));
-                // VerticesToRoundNextVertices.push_back((currentVertexIndex == endIndex - 1 ? startIndex : currentVertexIndex + 1));
+                //Shape size check
+                if(endIndex - startIndex < 2)
+                    continue;
 
+                VerticesToRound.push_back(currentVertexIndex);
                 int prevIndex = currentVertexIndex;
+                int loopCount = 0;
                 do
                 {
-                    prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);   
+                    prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);
+                    loopCount++;
+                    if(loopCount > endIndex - startIndex + 1)
+                    {
+                        DEBUG_LINE("Failed to construct rounded corner");
+                        VerticesToRound.clear();
+                        VerticesToRoundPrevVertices.clear();
+                        VerticesToRoundNextVertices.clear();
+                        return;
+                    }
                 }
                 while(drawingVertices[prevIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToRoundPrevVertices.push_back(prevIndex);
 
                 int nextIndex = currentVertexIndex;
+                loopCount = 0;
                 do
                 {
                     nextIndex = (nextIndex == endIndex - 1 ? startIndex : nextIndex + 1);
+                    loopCount++;
+                    if(loopCount > endIndex - startIndex + 1)
+                    {
+                        DEBUG_LINE("Failed to construct rounded corner");
+                        VerticesToRound.clear();
+                        VerticesToRoundPrevVertices.clear();
+                        VerticesToRoundNextVertices.clear();
+                        return;
+                    }
                 }
                 while(drawingVertices[nextIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
                 VerticesToRoundNextVertices.push_back(nextIndex);
@@ -223,8 +247,13 @@ namespace ssGUI::Extensions
                 if(TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex() >= drawingCounts.size())
                     continue;
 
-                int startIndex = 0;
                 int curShape = TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex();
+
+                //Shape size check
+                if(drawingCounts[curShape] < 3)
+                    continue;
+
+                int startIndex = 0;
                 for(int j = 0; j < TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex(); j++)
                 {
                     startIndex += drawingCounts[j];
@@ -237,23 +266,38 @@ namespace ssGUI::Extensions
                 {
                     VerticesToRound.push_back(j);
 
-                    // VerticesToRoundPrevVertices.push_back
-                    //     (j == startIndex ? startIndex + drawingCounts[TargetShapes[i]] - 1 : j - 1);
-                    // VerticesToRoundNextVertices.push_back
-                    //     (j == startIndex + drawingCounts[TargetShapes[i]] - 1 ? startIndex : j + 1);
-
                     int prevIndex = j;
+                    int loopCount = 0;
                     do
                     {
                         prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[curShape] - 1 : prevIndex - 1);
+                        loopCount++;
+                        if(loopCount > drawingCounts[curShape])
+                        {
+                            DEBUG_LINE("Failed to construct rounded corner");
+                            VerticesToRound.clear();
+                            VerticesToRoundPrevVertices.clear();
+                            VerticesToRoundNextVertices.clear();
+                            return;
+                        }
                     }
                     while(drawingVertices[prevIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToRoundPrevVertices.push_back(prevIndex);
 
                     int nextIndex = j;
+                    loopCount = 0;
                     do
                     {
                         nextIndex = (nextIndex == startIndex + drawingCounts[curShape] - 1 ? startIndex : nextIndex + 1);
+                        loopCount++;
+                        if(loopCount > drawingCounts[curShape])
+                        {
+                            DEBUG_LINE("Failed to construct rounded corner");
+                            VerticesToRound.clear();
+                            VerticesToRoundPrevVertices.clear();
+                            VerticesToRoundNextVertices.clear();
+                            return;
+                        }
                     }
                     while(drawingVertices[nextIndex] - drawingVertices[j] == glm::vec2());
                     VerticesToRoundNextVertices.push_back(nextIndex);
