@@ -35,9 +35,15 @@ namespace ssGUI::Backend
         glm::ivec2 LastMousePosition;
         std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;
         std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;
+        std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;
+        std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;
         sf::Cursor SFMLCursor;
         ssGUI::Enums::CursorType CurrentCursor;
         std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
+
+        //TODO: Do these need to be static?...
+        static sf::Image CustomCursorImage;
+        static glm::ivec2 Hotspot;
 
         #if USE_SFML_TIME
             sf::Clock ElapsedTime;
@@ -47,10 +53,14 @@ namespace ssGUI::Backend
     =================================================================
     ============================== C++ ==============================
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
-                                            CurrentMouseButtons(), LastMouseButtons(), SFMLCursor(), CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
-                                            CursorMappedWindow(), ElapsedTime()
+                                            CurrentMouseButtons(), LastMouseButtons(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
+                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime()
     {
-        SFMLCursor.loadFromSystem(sf::Cursor::Arrow);
+        if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
+        {
+            DEBUG_LINE("Failed to load cursor!");
+            DEBUG_EXIT_PROGRAM();
+        }
 
         #if !USE_SFML_TIME
             ElapsedTime = std::chrono::high_resolution_clock::now();
@@ -70,6 +80,8 @@ namespace ssGUI::Backend
             glm::ivec2 LastMousePosition;
             std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;
             std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;
+            std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;
+            std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;
             sf::Cursor SFMLCursor;
             ssGUI::Enums::CursorType CurrentCursor;
             std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
@@ -90,8 +102,8 @@ namespace ssGUI::Backend
             template <class T>
             void RemoveExistElements(std::vector<T>& elementsToRemove, std::vector<T>& vectorRemoveFrom);
 
-            void FetchKeysPressed(ssGUI::KeyPresses keysPressedDown);
-            void FetchKeysReleased(ssGUI::KeyPresses keysReleased);
+            void FetchKeysPressed(ssGUI::KeyPresses keysPressedDown, ssGUI::KeyPresses& destinationKeyPresses);
+            void FetchKeysReleased(ssGUI::KeyPresses keysReleased, ssGUI::KeyPresses& destinationKeyPresses);
 
             //http://tech-algorithm.com/articles/bilinear-image-scaling/
             //https://stackoverflow.com/questions/21514075/bilinear-re-sizing-with-c-and-vector-of-rgba-pixels
@@ -123,7 +135,7 @@ namespace ssGUI::Backend
             
             //function: SetMousePosition
             //See <BackendSystemInputInterface::SetMousePosition>
-            void SetMousePosition(glm::ivec2 position) override;          
+            void SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow) override;          
 
             //function: GetLastMouseButton
             //See <BackendSystemInputInterface::GetLastMouseButton>
@@ -133,11 +145,17 @@ namespace ssGUI::Backend
             //See <BackendSystemInputInterface::GetCurrentMouseButton>
             bool GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const override;
 
+            //function: GetLastRealtimeInputs
+            //See <BackendSystemInputInterface::GetLastRealtimeInputs>
+            std::vector<ssGUI::RealtimeInputInfo> const & GetLastRealtimeInputs() const override;
+            
+            //function: GetCurrentRealtimeInputs
+            //See <BackendSystemInputInterface::GetCurrentRealtimeInputs>
+            std::vector<ssGUI::RealtimeInputInfo> const & GetCurrentRealtimeInputs() const override;
+
             //function: GetTextInput
             //See <BackendSystemInputInterface::GetTextInput>
             std::wstring GetTextInput() const override;
-
-            //sf::Cursor* GetSFMLCursor();
             
             //function: SetCursorType
             //See <BackendSystemInputInterface::SetCursorType>
