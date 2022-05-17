@@ -236,39 +236,26 @@ namespace ssGUI
             return;    
         }
 
-        glm::ivec4 textResult = (glm::ivec4)color + GetAdaptiveButtonTextColorDifference();
+        glm::ivec4 textResult;
 
         if(IsAdaptiveButtonTextContrast())
         {
-            if(textResult.r < 0 || textResult.r > 255)
-                textResult.r = color.r - ButtonTextColorDifference.r;
-            
-            if(textResult.g < 0 || textResult.g > 255)
-                textResult.g = color.g - ButtonTextColorDifference.g;
-
-            if(textResult.b < 0 || textResult.b > 255)
-                textResult.b = color.b - ButtonTextColorDifference.b;
-        
-            textResult.r = textResult.r < 0 ? 0 : textResult.r;
-            textResult.r = textResult.r > 255 ? 255 : textResult.r;
-            textResult.g = textResult.g < 0 ? 0 : textResult.g;
-            textResult.g = textResult.g > 255 ? 255 : textResult.g;
-            textResult.b = textResult.b > 255 ? 255 : textResult.b;
-            textResult.b = textResult.b < 0 ? 0 : textResult.b;
-            textResult.a = textResult.a < 0 ? 0 : textResult.a;
-            textResult.a = textResult.a > 255 ? 255 : textResult.a;
+            float averageButtonColor = (GetButtonColor().r + GetButtonColor().g + GetButtonColor().b)/3;
+            float averageTextDiffColor = (GetAdaptiveButtonTextColorDifference().r + GetAdaptiveButtonTextColorDifference().g + GetAdaptiveButtonTextColorDifference().b)/3;
+            int contrastFactor = averageButtonColor + averageTextDiffColor > 255 ? -1 : 1; 
+            textResult = (glm::ivec4)GetButtonColor() + GetAdaptiveButtonTextColorDifference() * contrastFactor;
         }
         else
-        {
-            textResult.r = textResult.r < 0 ? 0 : textResult.r;
-            textResult.r = textResult.r > 255 ? 255 : textResult.r;
-            textResult.g = textResult.g < 0 ? 0 : textResult.g;
-            textResult.g = textResult.g > 255 ? 255 : textResult.g;
-            textResult.b = textResult.b > 255 ? 255 : textResult.b;
-            textResult.b = textResult.b < 0 ? 0 : textResult.b;
-            textResult.a = textResult.a < 0 ? 0 : textResult.a;
-            textResult.a = textResult.a > 255 ? 255 : textResult.a;
-        }
+            textResult = (glm::ivec4)color + GetAdaptiveButtonTextColorDifference();
+
+        textResult.r = textResult.r < 0 ? 0 : textResult.r;
+        textResult.r = textResult.r > 255 ? 255 : textResult.r;
+        textResult.g = textResult.g < 0 ? 0 : textResult.g;
+        textResult.g = textResult.g > 255 ? 255 : textResult.g;
+        textResult.b = textResult.b > 255 ? 255 : textResult.b;
+        textResult.b = textResult.b < 0 ? 0 : textResult.b;
+        textResult.a = textResult.a < 0 ? 0 : textResult.a;
+        textResult.a = textResult.a > 255 ? 255 : textResult.a;
 
         GetButtonTextObject()->SetTextColor((glm::u8vec4)textResult);
     }

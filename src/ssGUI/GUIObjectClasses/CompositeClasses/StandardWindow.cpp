@@ -184,7 +184,7 @@ namespace ssGUI
         windowTitle->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
-        SetAdaptiveTitleColorDifference(glm::ivec4(255, 255, 255, 0));
+        SetAdaptiveTitleColorDifference(glm::ivec4(150, 150, 150, 0));
 
         auto windowIcon = new ssGUI::Image();
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
@@ -546,38 +546,25 @@ namespace ssGUI
             return;    
         }
         
-        glm::ivec4 titleResult = (glm::ivec4)GetTitlebarColor() + GetAdaptiveTitleColorDifference();
+        glm::ivec4 titleResult;
         if(IsAdaptiveTitleContrast())
         {
-            if(titleResult.r < 0 || titleResult.r > 255)
-                titleResult.r = GetTitlebarColor().r - TitleColorDifference.r;
-            
-            if(titleResult.g < 0 || titleResult.g > 255)
-                titleResult.g = GetTitlebarColor().g - TitleColorDifference.g;
-
-            if(titleResult.b < 0 || titleResult.b > 255)
-                titleResult.b = GetTitlebarColor().b - TitleColorDifference.b;
-        
-            titleResult.r = titleResult.r < 0 ? 0 : titleResult.r;
-            titleResult.r = titleResult.r > 255 ? 255 : titleResult.r;
-            titleResult.g = titleResult.g < 0 ? 0 : titleResult.g;
-            titleResult.g = titleResult.g > 255 ? 255 : titleResult.g;
-            titleResult.b = titleResult.b > 255 ? 255 : titleResult.b;
-            titleResult.b = titleResult.b < 0 ? 0 : titleResult.b;
-            titleResult.a = titleResult.a < 0 ? 0 : titleResult.a;
-            titleResult.a = titleResult.a > 255 ? 255 : titleResult.a;
+            float averageTitlebarColor = (GetTitlebarColor().r + GetTitlebarColor().g + GetTitlebarColor().b)/3;
+            float averageTitleDiffColor = (GetAdaptiveTitleColorDifference().r + GetAdaptiveTitleColorDifference().g + GetAdaptiveTitleColorDifference().b)/3;
+            int contrastFactor = averageTitlebarColor + averageTitleDiffColor > 255 ? -1 : 1; 
+            titleResult = (glm::ivec4)GetTitlebarColor() + GetAdaptiveTitleColorDifference() * contrastFactor;
         }
         else
-        {
-            titleResult.r = titleResult.r < 0 ? 0 : titleResult.r;
-            titleResult.r = titleResult.r > 255 ? 255 : titleResult.r;
-            titleResult.g = titleResult.g < 0 ? 0 : titleResult.g;
-            titleResult.g = titleResult.g > 255 ? 255 : titleResult.g;
-            titleResult.b = titleResult.b > 255 ? 255 : titleResult.b;
-            titleResult.b = titleResult.b < 0 ? 0 : titleResult.b;
-            titleResult.a = titleResult.a < 0 ? 0 : titleResult.a;
-            titleResult.a = titleResult.a > 255 ? 255 : titleResult.a;
-        }
+            titleResult = (glm::ivec4)GetTitlebarColor() + GetAdaptiveTitleColorDifference();
+
+        titleResult.r = titleResult.r < 0 ? 0 : titleResult.r;
+        titleResult.r = titleResult.r > 255 ? 255 : titleResult.r;
+        titleResult.g = titleResult.g < 0 ? 0 : titleResult.g;
+        titleResult.g = titleResult.g > 255 ? 255 : titleResult.g;
+        titleResult.b = titleResult.b > 255 ? 255 : titleResult.b;
+        titleResult.b = titleResult.b < 0 ? 0 : titleResult.b;
+        titleResult.a = titleResult.a < 0 ? 0 : titleResult.a;
+        titleResult.a = titleResult.a > 255 ? 255 : titleResult.a;
 
         GetWindowTitleObject()->SetTextColor((glm::u8vec4)titleResult);
     }
