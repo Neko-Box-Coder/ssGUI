@@ -3,9 +3,10 @@
 
 
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/GUIObjectClasses/Window.hpp"
+#include "ssGUI/DataClasses/ImageData.hpp"
 #include <functional>
 
-#include "ssGUI/GUIObjectClasses/Window.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -69,46 +70,95 @@ namespace ssGUI
             //function: GetBackendDrawingInterface
             virtual ssGUI::Backend::BackendDrawingInterface* GetBackendDrawingInterface();
             
-            //function: IsFocused
-            virtual bool IsFocused() const;
-            
-            //function: SetFocus
-            virtual void SetFocus(bool focus);
-            
-            //function: GetPositionOffset
-            //Returns the distance between the top-left corner of the MainWindow and top-left corner of the MainWindow content.
-            virtual glm::ivec2 GetPositionOffset() const;
-
             //function: GetDisplayPosition
-            //Returns the position of the MainWindow on the screen
+            //See <BackendMainWindowInterface::GetDisplayPosition>
             virtual glm::ivec2 GetDisplayPosition() const;
 
             //function: SetDisplayPosition
-            //Sets the position of the MainWindow on the screen
+            //See <BackendMainWindowInterface::SetDisplayPosition>
             virtual void SetDisplayPosition(glm::ivec2 pos);
+
+            //function: GetPositionOffset
+            //See <BackendMainWindowInterface::GetPositionOffset>
+            virtual glm::ivec2 GetPositionOffset() const;
+
+            //function: SetTitle
+            //See <BackendMainWindowInterface::IsVSync>
+            virtual void SetTitle(std::wstring title);
+            //function: GetTitle
+            //See <BackendMainWindowInterface::IsVSync>
+            virtual std::wstring GetTitle() const;
+
+            //function: SetIcon
+            //See <BackendMainWindowInterface::SetIcon>
+            virtual void SetIcon(ssGUI::ImageData& iconImage);
+
+            //function: SetVSync
+            //See <BackendMainWindowInterface::SetVSync>
+            virtual void SetVSync(bool vSync);
+            
+            //function: IsVSync
+            //See <BackendMainWindowInterface::IsVSync>
+            virtual bool IsVSync() const;
+
+            //function: IsFocused
+            //See <BackendMainWindowInterface::IsFocused>
+            virtual bool IsFocused() const;
+            
+            //function: SetFocus
+            //See <BackendMainWindowInterface::SetFocus>
+            virtual void SetFocus(bool focus);
+            
+            //function: SetMSAA
+            //See <BackendMainWindowInterface::SetMSAA>
+            virtual void SetMSAA(int level);
+
+            //function: GetMSAA
+            //See <BackendMainWindowInterface::GetMSAA>
+            virtual int GetMSAA() const;
+
+            //function: SetWindowMode
+            //See <BackendMainWindowInterface::SetWindowMode>
+            virtual void SetWindowMode(ssGUI::Enums::WindowMode WindowMode);
+
+            //function: GetWindowMode
+            //See <BackendMainWindowInterface::GetWindowMode>
+            virtual ssGUI::Enums::WindowMode GetWindowMode() const;
+
+            //function: SetVisible
+            //See <BackendMainWindowInterface::SetVisible>
+            virtual void SetVisible(bool visible) override;
+            
+            //function: IsVisible
+            //See <BackendMainWindowInterface::IsVisible>
+            virtual bool IsVisible() const override;
             
             //function: GetPosition
+            //This will always return (0, 0). To get the main window's position on the monitor, see <GetDisplayPosition>
             //See <GUIObject::GetPosition>
             virtual glm::vec2 GetPosition() const override;
             
             //function: SetPosition
+            //This will not set the position of the main window, to do that, see <SetDisplayPosition>
             //See <GUIObject::SetPosition>
             virtual void SetPosition(glm::vec2 position) override;
             
             //function: GetGlobalPosition
+            //This will always return (0, 0). To get the main window's position on the monitor, see <GetDisplayPosition>
             //See <GUIObject::GetGlobalPosition>
             virtual glm::vec2 GetGlobalPosition() override;
             
             //function: SetGlobalPosition
+            //This will not set the position of the main window, to do that, see <SetDisplayPosition>
             //See <GUIObject::SetGlobalPosition>
             virtual void SetGlobalPosition(glm::vec2 position) override;
             
             //function: GetSize
-            //See <GUIObject::GetSize>
+            //See <BackendMainWindowInterface::GetSize>
             virtual glm::vec2 GetSize() const override;
             
             //function: SetSize
-            //See <GUIObject::SetSize>
+            //See <BackendMainWindowInterface::SetSize>
             virtual void SetSize(glm::vec2 size) override;
 
             //function: GetType

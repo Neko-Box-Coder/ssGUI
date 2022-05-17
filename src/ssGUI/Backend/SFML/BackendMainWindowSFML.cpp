@@ -4,25 +4,27 @@ namespace ssGUI::Backend
 {
     BackendMainWindowSFML::BackendMainWindowSFML(BackendMainWindowSFML const& other) : 
         CurrentWindow(sf::VideoMode(other.CurrentWindow.getSize().x, other.CurrentWindow.getSize().y), other.GetTitle()), 
-        Visible(other.IsVisible()), VSync(other.IsVSync()), Closed(other.IsClosed()), Titlebar(other.HasTitlebar()), 
+        Visible(other.IsVisible()), VSync(other.IsVSync()), Closed(other.IsClosed()), CurrentWindowMode(other.GetWindowMode()), Titlebar(other.HasTitlebar()), 
         Resizable(other.IsResizable()), CloseButton(other.HasCloseButton()), Title(other.GetTitle()), IsClosingAborted(other.IsClosingAborted),
         PositionOffset(other.GetPositionOffset())
     {
         //TODO : finish backend copy constructor and assignment and clone function
     }
     
-    void BackendMainWindowSFML::ResetWindow(bool resize, bool titlebar, bool canClose, int msaa)
+    void BackendMainWindowSFML::ResetWindow(ssGUI::Enums::WindowMode mode, bool resize, bool titlebar, bool canClose, int msaa)
     {
         int newStyle = 0;
 
-        if(titlebar)
+        if(mode == ssGUI::Enums::WindowMode::NORMAL && titlebar)
         {
             newStyle = sf::Style::Titlebar;
             newStyle |= resize ? sf::Style::Resize : newStyle;
             newStyle |= canClose ? sf::Style::Close : newStyle;
         }
-        else
+        else if(mode != ssGUI::Enums::WindowMode::FULLSCREEN)
             newStyle = sf::Style::None;
+        else
+            newStyle = sf::Style::Fullscreen;
 
         sf::ContextSettings settings;
         settings.antialiasingLevel = msaa;
@@ -48,9 +50,9 @@ namespace ssGUI::Backend
         */
     }
 
-    BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(800, 600), ""), Visible(false), VSync(false), Closed(false),
-                                                        Titlebar(true), Resizable(true), CloseButton(true), Title(), IsClosingAborted(false), 
-                                                        PositionOffset()
+    BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(800, 600), ""), Visible(true), VSync(false), Closed(false),
+                                                        CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL), Titlebar(true), Resizable(true), 
+                                                        CloseButton(true), Title(), IsClosingAborted(false), PositionOffset()
     {
         ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
@@ -130,13 +132,13 @@ namespace ssGUI::Backend
         OnCloseCallback[index] = nullptr;
     }
 
-    void BackendMainWindowSFML::SetTitle(std::string title)
+    void BackendMainWindowSFML::SetTitle(std::wstring title)
     {
-        std::string Title = title;
+        Title = title;
         CurrentWindow.setTitle(Title);
     }
 
-    std::string BackendMainWindowSFML::GetTitle() const
+    std::wstring BackendMainWindowSFML::GetTitle() const
     {
         return Title;
     }
@@ -188,40 +190,51 @@ namespace ssGUI::Backend
 
     void BackendMainWindowSFML::SetMSAA(int level)
     {
-        ResetWindow(IsResizable(), HasTitlebar(), HasCloseButton(), level);
+        ResetWindow(GetWindowMode(), IsResizable(), HasTitlebar(), HasCloseButton(), level);
     }
 
     void BackendMainWindowSFML::SetTitlebar(bool titlebar)
     {
-        ResetWindow(IsResizable(), titlebar, HasCloseButton(), GetMSAA());
+        ResetWindow(GetWindowMode(), IsResizable(), titlebar, HasCloseButton(), GetMSAA());
         Titlebar = titlebar;
     }
 
     bool BackendMainWindowSFML::HasTitlebar() const
     {
-        return Titlebar;
+        return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? Titlebar : false;
     }
 
     void BackendMainWindowSFML::SetResizable(bool resizable)
     {
-        ResetWindow(resizable, HasTitlebar(), HasCloseButton(), GetMSAA());
+        ResetWindow(GetWindowMode(), resizable, HasTitlebar(), HasCloseButton(), GetMSAA());
         Resizable = resizable;
     }
 
     bool BackendMainWindowSFML::IsResizable() const
     {
-        return Resizable;
+        return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? Resizable : false;
     }
 
     void BackendMainWindowSFML::SetCloseButton(bool closeButton)
     {
-        ResetWindow(IsResizable(), HasTitlebar(), closeButton, GetMSAA());
+        ResetWindow(GetWindowMode(), IsResizable(), HasTitlebar(), closeButton, GetMSAA());
         CloseButton = closeButton;
     }
 
     bool BackendMainWindowSFML::HasCloseButton() const
     {
-        return CloseButton;
+        return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? CloseButton : false;
+    }
+
+    void BackendMainWindowSFML::SetWindowMode(ssGUI::Enums::WindowMode WindowMode)
+    {
+        ResetWindow(WindowMode, IsResizable(), HasTitlebar(), HasCloseButton(), GetMSAA());
+        CurrentWindowMode = WindowMode;
+    }
+
+    ssGUI::Enums::WindowMode BackendMainWindowSFML::GetWindowMode() const
+    {
+        return CurrentWindowMode;
     }
 
     void* BackendMainWindowSFML::GetRawHandle()

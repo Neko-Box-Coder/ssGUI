@@ -22,19 +22,20 @@ namespace ssGUI::Backend
         bool Visible;
         bool VSync;
         bool Closed;
+        ssGUI::Enums::WindowMode CurrentWindowMode;
 
         bool Titlebar;
         bool Resizable;
         bool CloseButton;
-        std::string Title;
+        std::wstring Title;
         bool IsClosingAborted;
 
         glm::vec2 PositionOffset;
     ===============================================================
     ============================= C++ =============================
-    BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(800, 600), ""), Visible(false), VSync(false), Closed(false),
-                                                        Titlebar(true), Resizable(true), CloseButton(true), Title(), IsClosingAborted(false), 
-                                                        PositionOffset()
+    BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(800, 600), ""), Visible(true), VSync(false), Closed(false),
+                                                        CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL), Titlebar(true), Resizable(true), 
+                                                        CloseButton(true), Title(), IsClosingAborted(false), PositionOffset()
     {
         ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
@@ -48,17 +49,18 @@ namespace ssGUI::Backend
             bool Visible;
             bool VSync;
             bool Closed;
+            ssGUI::Enums::WindowMode CurrentWindowMode;
 
             bool Titlebar;
             bool Resizable;
             bool CloseButton;
-            std::string Title;
+            std::wstring Title;
             bool IsClosingAborted;
 
             glm::vec2 PositionOffset;
 
             BackendMainWindowSFML& operator=(BackendMainWindowSFML const& other);
-            void ResetWindow(bool resize, bool titlebar, bool canClose, int msaa);
+            void ResetWindow(ssGUI::Enums::WindowMode mode, bool resize, bool titlebar, bool canClose, int msaa);
         
         protected:
             BackendMainWindowSFML(BackendMainWindowSFML const& other);
@@ -114,11 +116,11 @@ namespace ssGUI::Backend
 
             //function: SetTitle
             //See <BackendMainWindowInterface::SetTitle>
-            void SetTitle(std::string title) override;
+            void SetTitle(std::wstring title) override;
             
             //function: GetTitle
             //See <BackendMainWindowInterface::GetTitle>
-            std::string GetTitle() const override;
+            std::wstring GetTitle() const override;
             
             //function: SetIcon
             //See <BackendMainWindowInterface::SetIcon>
@@ -156,7 +158,6 @@ namespace ssGUI::Backend
             //See <BackendMainWindowInterface::SetMSAA>
             void SetMSAA(int level) override;
 
-            
             //function: SetTitlebar
             //See <BackendMainWindowInterface::SetTitlebar>
             //Setting title bar will cause window to be reloaded
@@ -175,7 +176,6 @@ namespace ssGUI::Backend
             //See <BackendMainWindowInterface::IsResizable>
             bool IsResizable() const override;
 
-            
             //function: SetCloseButton
             //See <BackendMainWindowInterface::SetCloseButton>
             //Setting close button will cause window to be reloaded
@@ -185,9 +185,16 @@ namespace ssGUI::Backend
             //See <BackendMainWindowInterface::HasCloseButton>
             bool HasCloseButton() const override;
 
+            //function: SetWindowMode
+            //See <BackendMainWindowInterface::SetWindowMode>
+            void SetWindowMode(ssGUI::Enums::WindowMode WindowMode) override;
+
+            //function: GetWindowMode
+            //See <BackendMainWindowInterface::GetWindowMode>
+            ssGUI::Enums::WindowMode GetWindowMode() const override;
+
             //function: Clone
             ssGUI::Backend::BackendMainWindowInterface* Clone() override;
-
             
             //function: GetRawHandle
             //This returns sf::RenderWindow object

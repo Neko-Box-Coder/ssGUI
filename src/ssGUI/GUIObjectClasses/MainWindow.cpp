@@ -51,6 +51,46 @@ namespace ssGUI
         return BackendDrawing;
     }
     
+    glm::ivec2 MainWindow::GetDisplayPosition() const
+    {
+        return BackendMainWindow->GetPosition();
+    }
+
+    void MainWindow::SetDisplayPosition(glm::ivec2 pos)
+    {
+        BackendMainWindow->SetPosition(pos);
+    }
+
+    glm::ivec2 MainWindow::GetPositionOffset() const
+    {
+        return BackendMainWindow->GetPositionOffset();
+    }
+
+    void MainWindow::SetTitle(std::wstring title)
+    {
+        BackendMainWindow->SetTitle(title);
+    }
+
+    std::wstring MainWindow::GetTitle() const
+    {
+        return BackendMainWindow->GetTitle();
+    }
+
+    void MainWindow::SetIcon(ssGUI::ImageData& iconImage)
+    {
+        BackendMainWindow->SetIcon(*(iconImage.GetBackendImageInterface()));
+    }
+
+    void MainWindow::SetVSync(bool vSync)
+    {
+        BackendMainWindow->SetVSync(vSync);
+    }
+
+    bool MainWindow::IsVSync() const
+    {
+        return BackendMainWindow->IsVSync();
+    }
+
     bool MainWindow::IsFocused() const
     {
         return BackendMainWindow->IsFocused();
@@ -61,82 +101,34 @@ namespace ssGUI
         BackendMainWindow->SetFocus(focus);
     }
 
-    glm::ivec2 MainWindow::GetPositionOffset() const
+    void MainWindow::SetMSAA(int level)
     {
-        return BackendMainWindow->GetPositionOffset();
+        BackendMainWindow->SetMSAA(level);
     }
 
-    glm::ivec2 MainWindow::GetDisplayPosition() const
+    int MainWindow::GetMSAA() const
     {
-        return BackendMainWindow->GetPosition();
+        return BackendMainWindow->GetMSAA();
     }
 
-    void MainWindow::SetDisplayPosition(glm::ivec2 pos)
+    void MainWindow::SetWindowMode(ssGUI::Enums::WindowMode WindowMode)
     {
-        BackendMainWindow->SetPosition(pos);
-    }
-    
-    void MainWindow::Internal_Draw()
-    {
-        Internal_Draw(BackendDrawing, this, glm::vec2());
+        BackendMainWindow->SetWindowMode(WindowMode);
     }
 
-    //TODO : Refactor this, merge it to sync in update function
-    void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
-    {       
-        DisableRedrawObjectRequest();
-        
-        // if(Redraw)
-        // {
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
-            
-            //Settings that require window to be relaunched -----------------------------------------
-            if(BackendMainWindow->HasTitlebar() != HasTitlebar())
-                BackendMainWindow->SetTitlebar(HasTitlebar());
+    ssGUI::Enums::WindowMode MainWindow::GetWindowMode() const
+    {
+        return BackendMainWindow->GetWindowMode();
+    }
 
-            bool isResizable = GetResizeType() == ssGUI::Enums::ResizeType::ALL;
+    void MainWindow::SetVisible(bool visible)
+    {
+        BackendMainWindow->SetVisible(visible);
+    }
 
-            if(BackendMainWindow->IsResizable() != isResizable)
-                BackendMainWindow->SetResizable(isResizable);
-
-            if(BackendMainWindow->HasCloseButton() != IsClosable())
-                BackendMainWindow->SetCloseButton(IsClosable());
-
-            
-            //Realtime settings -----------------------------------------
-
-            if(BackendMainWindow->IsVisible() != IsVisible())
-                BackendMainWindow->SetVisible(IsVisible());
-
-            //TEST
-            /*
-            std::vector<glm::vec2> cord;
-            std::vector<glm::u8vec4> color;
-
-            
-            cord.push_back(glm::vec2(1, 0));
-            cord.push_back(glm::vec2(GetSize().x - 1, 0));
-            cord.push_back(glm::vec2(GetSize().x - 1, 20));
-            cord.push_back(glm::vec2(1, 20));
-
-            color.push_back(glm::u8vec4(0, 0, 0, 255));
-            color.push_back(glm::u8vec4(0, 0, 0, 255));
-            color.push_back(glm::u8vec4(0, 0, 0, 255));
-            color.push_back(glm::u8vec4(0, 0, 0, 255));
-
-            drawingInterface.DrawShape(cord, color);
-            */
-
-            UpdateGUIObjectVertexAndShapeIndex();
-
-            for(auto extension : ExtensionsDrawOrder)
-                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
-
-            EnableRedrawObjectRequest();
-
-        //     Redraw = false;
-        // }
+    bool MainWindow::IsVisible() const
+    {
+        return BackendMainWindow->IsVisible();
     }
 
     glm::vec2 MainWindow::GetPosition() const
@@ -200,6 +192,70 @@ namespace ssGUI
         
         //Forwarding signal to window
         Window::Internal_OnClose();
+    }
+
+    void MainWindow::Internal_Draw()
+    {
+        Internal_Draw(BackendDrawing, this, glm::vec2());
+    }
+
+    //TODO : Refactor this, merge it to sync in update function
+    void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    {       
+        DisableRedrawObjectRequest();
+        
+        // if(Redraw)
+        // {
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(true, drawingInterface, mainWindow, mainWindowPositionOffset);
+            
+            //TODO: Move these to its own set get functions
+            //Settings that require window to be relaunched -----------------------------------------
+            if(BackendMainWindow->HasTitlebar() != HasTitlebar())
+                BackendMainWindow->SetTitlebar(HasTitlebar());
+
+            bool isResizable = GetResizeType() == ssGUI::Enums::ResizeType::ALL;
+
+            if(BackendMainWindow->IsResizable() != isResizable)
+                BackendMainWindow->SetResizable(isResizable);
+
+            if(BackendMainWindow->HasCloseButton() != IsClosable())
+                BackendMainWindow->SetCloseButton(IsClosable());
+
+            
+            //Realtime settings -----------------------------------------
+
+            if(BackendMainWindow->IsVisible() != IsVisible())
+                BackendMainWindow->SetVisible(IsVisible());
+
+            //TEST
+            /*
+            std::vector<glm::vec2> cord;
+            std::vector<glm::u8vec4> color;
+
+            
+            cord.push_back(glm::vec2(1, 0));
+            cord.push_back(glm::vec2(GetSize().x - 1, 0));
+            cord.push_back(glm::vec2(GetSize().x - 1, 20));
+            cord.push_back(glm::vec2(1, 20));
+
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
+            color.push_back(glm::u8vec4(0, 0, 0, 255));
+
+            drawingInterface.DrawShape(cord, color);
+            */
+
+            UpdateGUIObjectVertexAndShapeIndex();
+
+            for(auto extension : ExtensionsDrawOrder)
+                Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
+
+            EnableRedrawObjectRequest();
+
+        //     Redraw = false;
+        // }
     }
 
     //TODO : Add WindowDragStateChangedEvent call
