@@ -268,12 +268,12 @@ namespace ssGUI
             //Gets the extension by the name of it. Nullptr will be returned if not found.
             virtual ssGUI::Extensions::Extension* GetExtension(std::string extensionName) = 0;
 
-            template <typename T>
             //function: GetAnyExtension
             //Generic version of <GetExtension>. 
             //It has to be a different name as template function doesn't support inheritance.
             //If it had the same name, the derived version of GetExtension will "hide" the generic version of it
             //and will just throw an error saying the template function is not found.
+            template <typename T>
             T* GetAnyExtension()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
@@ -289,10 +289,10 @@ namespace ssGUI
             //Returns true if the extension exists on this GUI Object
             virtual bool IsExtensionExist(std::string extensionName) const = 0;
 
-            template <typename T>
             //function: IsAnyExtensionExist
             //Generic version of <IsExtensionExist>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             bool IsAnyExtensionExist()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
@@ -304,10 +304,10 @@ namespace ssGUI
             //Removes the extension by the name of it
             virtual void RemoveExtension(std::string extensionName) = 0;
 
-            template <typename T>
             //function: RemoveAnyExtension
             //Generic version of <RemoveExtension>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             void RemoveAnyExtension()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
@@ -323,10 +323,10 @@ namespace ssGUI
             //Returns the draw order of the extension by the name of it
             virtual int GetExtensionDrawOrder(std::string extensionName) const = 0;
 
-            template <typename T>
             //function: GetAnyExtensionDrawOrder
             //Generic version of <GetExtensionDrawOrder>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             int GetAnyExtensionDrawOrder()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
@@ -338,10 +338,10 @@ namespace ssGUI
             //Changes the draw order of the extension by the name of it
             virtual void ChangeExtensionDrawOrder(std::string extensionName, int order) = 0;
 
-            template <typename T>
             //function: ChangeAnyExtensionDrawOrder
             //Generic version of <ChangeExtensionDrawOrder>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             void ChangeAnyExtensionDrawOrder(int order)
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
@@ -353,10 +353,10 @@ namespace ssGUI
             //Returns the update order of the extension by the name of it
             virtual int GetExtensionUpdateOrder(std::string extensionName) const = 0;
 
-            template <typename T>
             //function: GetAnyExtensionUpdateOrder
             //Generic version of <GetExtensionUpdateOrder>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             int GetAnyExtensionUpdateOrder()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
@@ -368,10 +368,10 @@ namespace ssGUI
             //Changes the update order of the extension by the name of it
             virtual void ChangeExtensionUpdateOrder(std::string extensionName, int order) = 0;
 
-            template <typename T>
             //function: ChangeAnyExtensionUpdateOrder
             //Generic version of <ChangeExtensionUpdateOrder>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             void ChangeAnyExtensionUpdateOrder(int order)
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
@@ -387,10 +387,10 @@ namespace ssGUI
             //Gets the eventCallback by the name of it
             virtual ssGUI::EventCallbacks::EventCallback* GetEventCallback(std::string eventCallbackName) = 0;
 
-            template <typename T>
             //function: GetAnyEventCallback
             //Generic version of <GetEventCallback>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             T* GetAnyEventCallback()
             {
                 static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value);
@@ -402,10 +402,10 @@ namespace ssGUI
             //Returns true if the eventCallback exists on this GUI Object
             virtual bool IsEventCallbackExist(std::string eventCallbackName) const = 0;
 
-            template <typename T>
             //function: IsAnyEventCallbackExist
             //Generic version of <IsEventCallbackExist>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             bool IsAnyEventCallbackExist()
             {
                 static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value);
@@ -417,10 +417,10 @@ namespace ssGUI
             //Removes the eventCallback by the name of it
             virtual void RemoveEventCallback(std::string eventCallbackName) = 0;
 
-            template <typename T>
             //function: RemoveAnyEventCallback
             //Generic version of <RemoveEventCallback>. 
             //Reason for not having the same name can be found in <GetAnyExtension>
+            template <typename T>
             void RemoveAnyEventCallback()
             {
                 static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value);

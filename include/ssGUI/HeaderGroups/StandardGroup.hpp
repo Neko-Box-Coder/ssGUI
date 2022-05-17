@@ -1,6 +1,7 @@
 #ifndef SSGUI_STANDARD_GROUP
 #define SSGUI_STANDARD_GROUP
 
+#include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/DataClasses/CharacterDetails.hpp"
 #include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
 #include "ssGUI/DataClasses/DrawingProperties.hpp"

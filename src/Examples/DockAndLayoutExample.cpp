@@ -12,7 +12,6 @@ int main()
     //Create the main window
     ssGUI::MainWindow mainWindow;
     mainWindow.SetSize(glm::vec2(450, 650));
-    mainWindow.GetBackendWindowInterface()->SetMSAA(8);
 
     ssGUI::Window window;
     // window.SetTitlebarHeight(25);

@@ -10,16 +10,18 @@ namespace ssGUI
     class Factory
     {
         public:
-            template<typename T> 
             //function: Create
+            //Creates the object on the heap
+            template<typename T> 
             static T* Create()
             {
                 //static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
                 return new T();
             };
 
-            template<typename T>
             //function: Dispose
+            //Delete the object allocated on the heap
+            template<typename T>
             static void Dispose(T* extension)
             {
                 //static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
