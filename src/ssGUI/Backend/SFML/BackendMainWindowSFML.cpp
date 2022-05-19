@@ -178,10 +178,30 @@ namespace ssGUI::Backend
         return CurrentWindow.hasFocus();
     }
 
-    void BackendMainWindowSFML::SetFocus(bool focus)
+    void BackendMainWindowSFML::SetFocus(bool focus, bool externalByUser)
     {
-        CurrentWindow.requestFocus();
-    } 
+        if(externalByUser)
+        {
+            for(int i = 0; i < ExternalFocusChangedCallback.size(); i++)
+            {
+                if(ExternalFocusChangedCallback[i] != nullptr)
+                    ExternalFocusChangedCallback[i](focus);
+            }
+        }
+        else if(focus)
+            CurrentWindow.requestFocus();
+    }
+
+    int BackendMainWindowSFML::AddFocusChangedByUserEvent(std::function<void(bool focused)> func)
+    {
+        ExternalFocusChangedCallback.push_back(func);
+        return ExternalFocusChangedCallback.size() - 1;
+    }
+
+    void BackendMainWindowSFML::RemoveFocusChangedByUserEvent(int index)
+    {
+        ExternalFocusChangedCallback[index] = nullptr;
+    }
 
     int BackendMainWindowSFML::GetMSAA() const
     {

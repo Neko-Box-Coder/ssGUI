@@ -19,6 +19,7 @@ namespace ssGUI
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
+        BackendMainWindow->AddFocusChangedByUserEvent(std::bind(&ssGUI::MainWindow::Internal_FocusChanged, this, std::placeholders::_1));
         BackendMainWindow->SetMSAA(8);
         SetBackgroundColor(glm::u8vec4(255, 255, 255, 255));
     }
@@ -98,7 +99,9 @@ namespace ssGUI
     
     void MainWindow::SetFocus(bool focus)
     {
-        BackendMainWindow->SetFocus(focus);
+        bool originalFocus = IsFocused();
+        
+        BackendMainWindow->SetFocus(focus, false);
     }
 
     void MainWindow::SetMSAA(int level)
@@ -119,6 +122,17 @@ namespace ssGUI
     ssGUI::Enums::WindowMode MainWindow::GetWindowMode() const
     {
         return BackendMainWindow->GetWindowMode();
+    }
+
+    void MainWindow::Internal_FocusChanged(bool focused)
+    {
+        if(focused)
+            RedrawObject();
+        
+        if(focused && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusedEventCallback>())
+            GetAnyEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>()->Notify(this);
+        else if(!focused && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>())
+            GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>()->Notify(this);
     }
 
     void MainWindow::SetVisible(bool visible)

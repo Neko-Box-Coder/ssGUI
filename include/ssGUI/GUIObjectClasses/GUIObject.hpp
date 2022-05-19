@@ -204,6 +204,14 @@ namespace ssGUI
             //Gets the background color of this GUI Object.
             virtual glm::u8vec4 GetBackgroundColor() const = 0;
 
+            //function: IsFocused
+            //Return if this GUI Object is focused
+            virtual bool IsFocused() const = 0;
+            
+            //function: SetFocus
+            //Set this GUI Object to be focused
+            virtual void SetFocus(bool focus) = 0;
+
             //function: Delete
             //Delete the current GUI Object. This will unset the parent of this GUI Object and all it's references.
             //This will also deletes all of the children GUI Objects. If this is allocated on the heap,

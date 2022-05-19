@@ -15,4 +15,6 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/ChildAddedEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/ChildRemovedEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/BackgroundColorChangedEventCallback.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/FocusedEventCallback.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/FocusLostEventCallback.cpp"
                     )

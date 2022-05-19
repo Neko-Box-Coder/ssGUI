@@ -13,6 +13,8 @@
 #include "ssGUI/EventCallbacks/ChildAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/BackgroundColorChangedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 #include "glm/vec4.hpp"
 #include <vector>
 #include <list>
@@ -46,6 +48,7 @@ namespace ssGUI
         bool Redraw;
         bool AcceptRedrawRequest;
         std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;
+        bool Focused;
 
         //Widget transform
         glm::vec2 Position;
@@ -81,12 +84,13 @@ namespace ssGUI
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true), Visible(true),
                                         CurrentChildIteratorBackEnd(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), 
                                         ObjectDelete(false), HeapAllocated(false), CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), 
-                                        AcceptRedrawRequest(true), Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(50, 50)), 
-                                        MinSize(glm::vec2(25, 25)), MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
+                                        AcceptRedrawRequest(true), StashedChildIterators(), Focused(false), Position(glm::vec2(0, 0)), 
+                                        GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(150, 150)), MinSize(glm::vec2(25, 25)), 
+                                        MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
-                                        DrawingCounts(), DrawingProperties(), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
-                                        LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), ExtensionsDrawOrder(), 
-                                        ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
+                                        DrawingCounts(), DrawingProperties(), GUIObjectShapeIndex(-1), GUIObjectVertexIndex(-1), LastDrawingVerticies(), 
+                                        LastDrawingUVs(), LastDrawingColours(), LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), 
+                                        Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
     {}
     =================================================================
     */
@@ -111,6 +115,7 @@ namespace ssGUI
             bool Redraw;
             bool AcceptRedrawRequest;
             std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;
+            bool Focused;
 
             //Widget transform
             glm::vec2 Position;
@@ -319,6 +324,14 @@ namespace ssGUI
             //function: GetBackgroundColor
             //See <GUIObject::GetBackgroundColor>
             virtual glm::u8vec4 GetBackgroundColor() const override;
+
+            //function: IsFocused
+            //See <GUIObject::IsFocused>
+            virtual bool IsFocused() const override;
+            
+            //function: SetFocus
+            //See <GUIObject::SetFocus>
+            virtual void SetFocus(bool focus) override;
 
             //function: Delete 
             //See <GUIObject::Delete>

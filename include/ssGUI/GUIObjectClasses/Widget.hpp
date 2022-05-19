@@ -13,12 +13,11 @@ namespace ssGUI
     ============================== C++ ==============================
     private:
         //Widget status
-        bool Focused;
         bool Interactable;
         bool BlockInput;
     =================================================================
     ============================== C++ ==============================
-    Widget::Widget() :  Focused(false), Interactable(true), BlockInput(true) 
+    Widget::Widget() : Interactable(true), BlockInput(true) 
     {}
     =================================================================
     */
@@ -26,7 +25,6 @@ namespace ssGUI
     {
         private:
             //Widget status
-            bool Focused;
             bool Interactable;
             bool BlockInput;
             Widget& operator=(Widget const& other) = default;
@@ -39,12 +37,6 @@ namespace ssGUI
         public:
             Widget();
             virtual ~Widget() override;
-            
-            //function: IsFocused
-            virtual bool IsFocused() const;
-            
-            //function: SetFocus
-            virtual void SetFocus(bool focus);
             
             //function: IsInteractable
             virtual bool IsInteractable() const;

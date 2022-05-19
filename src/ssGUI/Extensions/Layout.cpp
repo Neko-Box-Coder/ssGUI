@@ -212,7 +212,7 @@ namespace ssGUI::Extensions
                 if(OriginalChildrenResizeType.find(currentChildIndex) == OriginalChildrenResizeType.end())
                 {
                     OriginalChildrenResizeType[currentChildIndex] = windowP->GetResizeType();
-                    OriginalChildrenOnTop[currentChildIndex] = windowP->IsOnTopWhenDragged();
+                    OriginalChildrenOnTop[currentChildIndex] = windowP->IsOnTopWhenFocused();
                 }
                 
                 if(HorizontalLayout)
@@ -234,14 +234,14 @@ namespace ssGUI::Extensions
                 if(Container->IsChildrenIteratorLast())
                     windowP->SetResizeType(ssGUI::Enums::ResizeType::NONE);
 
-                windowP->SetOnTopWhenDragged(false);
+                windowP->SetOnTopWhenFocused(false);
             }
             
             //Restoring original resize type
             if(!IsOverrideChildrenResizeTypeAndOnTop() && OriginalChildrenResizeType.find(currentChildIndex) != OriginalChildrenResizeType.end())
             {                
                 windowP->SetResizeType(OriginalChildrenResizeType[currentChildIndex]);
-                windowP->SetOnTopWhenDragged(OriginalChildrenOnTop[currentChildIndex]);
+                windowP->SetOnTopWhenFocused(OriginalChildrenOnTop[currentChildIndex]);
 
                 OriginalChildrenResizeType.erase(currentChildIndex);
                 OriginalChildrenOnTop.erase(currentChildIndex);
@@ -1057,7 +1057,7 @@ namespace ssGUI::Extensions
             static_cast<ssGUI::Window*>(child)->SetResizeType(OriginalChildrenResizeType[childIndex]);
             OriginalChildrenResizeType.erase(childIndex);
 
-            static_cast<ssGUI::Window*>(child)->SetOnTopWhenDragged(OriginalChildrenOnTop[childIndex]);
+            static_cast<ssGUI::Window*>(child)->SetOnTopWhenFocused(OriginalChildrenOnTop[childIndex]);
             OriginalChildrenOnTop.erase(childIndex);
         }
 

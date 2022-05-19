@@ -57,7 +57,7 @@ namespace ssGUI::Backend
             virtual void AbortClosing() = 0;
 
             //function: AddOnCloseEvent
-            ///Adds the function to be called when the main window closes. Returns an index that can be used to remove the function for being called.
+            //Adds the function to be called when the main window closes. Returns an index that can be used to remove the function for being called.
             virtual int AddOnCloseEvent(std::function<void()> func) = 0;
 
             //function: RemoveOnCloseEvent
@@ -93,12 +93,22 @@ namespace ssGUI::Backend
             virtual bool IsVSync() const = 0;
 
             //function: SetFocus
-            //Sets the main window to be focused, essentially bring it to the front
-            virtual void SetFocus(bool focus) = 0;
+            //Sets if the main window to be focused.
+            //If true, it essentially bring it to the front
+            //If false, it will deselect the main window if supported (SFML not supported)
+            virtual void SetFocus(bool focus, bool externalByUser) = 0;
             
             //function: IsFocused
             //Returns if the main window is focused. If not focused, some inputs will not be captured.
             virtual bool IsFocused() const = 0;
+
+            //function: AddFocusChangedByUserEvent
+            //Adds the function to be called when the main window gained or lost focus. Returns an index that can be used to remove the function for being called.
+            virtual int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) = 0;
+
+            //function: RemoveFocusChangedByUserEvent
+            //Removes the function to be called when the main window gained or lost focus
+            virtual void RemoveFocusChangedByUserEvent(int index) = 0;
 
             //function: SetMSAA
             //Sets the main window's anti aliasing level

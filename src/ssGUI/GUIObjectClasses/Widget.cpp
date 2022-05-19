@@ -30,22 +30,12 @@ namespace ssGUI
         DrawingProperties.push_back(ssGUI::DrawingProperty());
     }
     
-    Widget::Widget() :  Focused(false), Interactable(true), BlockInput(true) 
+    Widget::Widget() : Interactable(true), BlockInput(true) 
     {}
 
     Widget::~Widget()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-    }
-
-    bool Widget::IsFocused() const
-    {
-        return Focused;
-    }
-
-    void Widget::SetFocus(bool focus)
-    {
-        Focused = focus;
     }
 
     bool Widget::IsInteractable() const
@@ -94,7 +84,7 @@ namespace ssGUI
         }
 
         //It will only block when BlockInput flag is true OR is interactable
-        if(!IsBlockInput() || IsInteractable())
+        if(!IsBlockInput())
             goto endOfUpdate;
 
         //Mouse Input blocking

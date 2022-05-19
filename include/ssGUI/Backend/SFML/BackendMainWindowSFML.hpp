@@ -19,6 +19,7 @@ namespace ssGUI::Backend
     private:
         sf::RenderWindow CurrentWindow;
         std::vector<std::function<void()>> OnCloseCallback;
+        std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;
         bool Visible;
         bool VSync;
         bool Closed;
@@ -46,6 +47,7 @@ namespace ssGUI::Backend
         private:
             sf::RenderWindow CurrentWindow;
             std::vector<std::function<void()>> OnCloseCallback;
+            std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;
             bool Visible;
             bool VSync;
             bool Closed;
@@ -148,7 +150,15 @@ namespace ssGUI::Backend
             
             //function: SetFocus
             //See <BackendMainWindowInterface::SetFocus>
-            void SetFocus(bool focus) override; 
+            void SetFocus(bool focus, bool externalByUser) override;
+
+            //function:AddFocusChangedByUserEvent 
+            //See <BackendMainWindowInterface::AddFocusChangedByUserEvent>
+            int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) override;
+
+            //function: RemoveFocusChangedByUserEvent
+            //See <BackendMainWindowInterface::RemoveFocusChangedByUserEvent>
+            void RemoveFocusChangedByUserEvent(int index) override;
 
             //function: GetMSAA
             //See <BackendMainWindowInterface::GetMSAA>

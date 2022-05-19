@@ -100,14 +100,6 @@ namespace ssGUI
             //function: IsVSync
             //See <BackendMainWindowInterface::IsVSync>
             virtual bool IsVSync() const;
-
-            //function: IsFocused
-            //See <BackendMainWindowInterface::IsFocused>
-            virtual bool IsFocused() const;
-            
-            //function: SetFocus
-            //See <BackendMainWindowInterface::SetFocus>
-            virtual void SetFocus(bool focus);
             
             //function: SetMSAA
             //See <BackendMainWindowInterface::SetMSAA>
@@ -125,6 +117,10 @@ namespace ssGUI
             //See <BackendMainWindowInterface::GetWindowMode>
             virtual ssGUI::Enums::WindowMode GetWindowMode() const;
 
+            //function: Internal_FocusChanged
+            //(Internal ssGUI function) You should not be calling this function normally.
+            virtual void Internal_FocusChanged(bool focused);
+
             //function: SetVisible
             //See <BackendMainWindowInterface::SetVisible>
             virtual void SetVisible(bool visible) override;
@@ -132,6 +128,14 @@ namespace ssGUI
             //function: IsVisible
             //See <BackendMainWindowInterface::IsVisible>
             virtual bool IsVisible() const override;
+
+            //function: IsFocused
+            //See <BackendMainWindowInterface::IsFocused>
+            virtual bool IsFocused() const override;
+            
+            //function: SetFocus
+            //See <BackendMainWindowInterface::SetFocus>
+            virtual void SetFocus(bool focus) override;
             
             //function: GetPosition
             //This will always return (0, 0). To get the main window's position on the monitor, see <GetDisplayPosition>

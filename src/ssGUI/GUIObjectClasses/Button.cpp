@@ -146,6 +146,14 @@ namespace ssGUI
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
 
+        //It will only block when BlockInput flag is true
+        if(!IsBlockInput())
+            goto endOfUpdate;
+
+        //Mouse Input blocking
+        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
+            goto endOfUpdate;
+
         if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
         {
             //On mouse down
@@ -157,6 +165,7 @@ namespace ssGUI
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
                     globalInputStatus.MouseInputBlocked = true;
+                    SetFocus(true);
                     SetButtonState(ssGUI::Enums::ButtonState::ON_CLICK);
                 }
             }
@@ -166,6 +175,7 @@ namespace ssGUI
                     GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
             {
                 globalInputStatus.MouseInputBlocked = true;
+                SetFocus(true);
                 if (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
                     SetButtonState(ssGUI::Enums::ButtonState::CLICKING);
             }
@@ -199,7 +209,7 @@ namespace ssGUI
             }
         }        
 
-        endUpdate:;
+        endOfUpdate:;
         for (auto extension : ExtensionsUpdateOrder)
         {
             //Guard against extension being deleted by other extensions

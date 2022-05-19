@@ -56,34 +56,36 @@ namespace ssGUI
             }
         }
         
-        //Titlebar Drag
+        //Resize
         if(ResizingBot || ResizingLeft || ResizingRight || ResizingTop)
         {
             globalInputStatus.MouseInputBlocked = true;
+            SetFocus(true);
             FUNC_DEBUG_EXIT();
             return;
         }
             
-        //Input blocking
-        if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
-            currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
-        {
-            globalInputStatus.MouseInputBlocked = true;                
-        }
-
+        //Titlebar drag
         if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
             currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + TitlebarHeight &&
             IsDraggable())
         {
             Dragging = true;
             globalInputStatus.MouseInputBlocked = true;
+            SetFocus(true);
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
-
-            if(IsOnTopWhenDragged())
-                SetParent(GetParent());
+            
             FUNC_DEBUG_EXIT();
             return;
         }
+        //Input blocking
+        if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
+            currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+        {
+            globalInputStatus.MouseInputBlocked = true;                
+            SetFocus(true);
+        }
+
 
         FUNC_DEBUG_EXIT();
     }
@@ -194,7 +196,6 @@ namespace ssGUI
             //Input blocking
             if(mouseInWindowBoundX && mouseInWindowBoundY)
                 globalInputStatus.MouseInputBlocked = true;
-            
             
             //Updating cursor
             bool canResizeTop = false;
@@ -337,7 +338,7 @@ namespace ssGUI
     }
         
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), OnTopWhenDragged(true),
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), OnTopWhenFocused(true),
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
                        ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
@@ -528,14 +529,14 @@ namespace ssGUI
         return DeleteAfterClosed;
     }
 
-    void Window::SetOnTopWhenDragged(bool top)
+    void Window::SetOnTopWhenFocused(bool top)
     {
-        OnTopWhenDragged = top;
+        OnTopWhenFocused = top;
     }
 
-    bool Window::IsOnTopWhenDragged() const
+    bool Window::IsOnTopWhenFocused() const
     {
-        return OnTopWhenDragged;
+        return OnTopWhenFocused;
     }
 
     int Window::AddOnCloseEventListener(std::function<void()> onClose)
@@ -553,6 +554,14 @@ namespace ssGUI
             return;
         
         GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->RemoveEventListener(index);   
+    }
+
+    void Window::SetFocus(bool focus)
+    {
+        if(focus && IsOnTopWhenFocused())
+            SetParent(GetParent());
+
+        BaseGUIObject::SetFocus(focus);
     }
 
     void Window::SetBackgroundColor(glm::u8vec4 color)

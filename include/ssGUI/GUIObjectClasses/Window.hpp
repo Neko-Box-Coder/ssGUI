@@ -33,7 +33,7 @@ namespace ssGUI
         glm::ivec4 TitlebarColorDifference;
         bool AdaptiveTitlebarColor;
         bool DeleteAfterClosed;
-        bool OnTopWhenDragged;
+        bool OnTopWhenFocused;
 
         //Resize/Drag settings
         ssGUI::Enums::WindowDragState CurrentDragState;
@@ -49,7 +49,7 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
-                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), OnTopWhenDragged(true),
+                       IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), OnTopWhenFocused(true),
                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE), ResizeHitbox(5), ResizingTop(false), ResizingBot(false), ResizingLeft(false), 
                        ResizingRight(false), Dragging(false), TransformTotalMovedDistance(), OnTransformBeginSize(), MouseDownPosition()
     {       
@@ -78,7 +78,7 @@ namespace ssGUI
             glm::ivec4 TitlebarColorDifference;
             bool AdaptiveTitlebarColor;
             bool DeleteAfterClosed;
-            bool OnTopWhenDragged;
+            bool OnTopWhenFocused;
 
             //Resize/Drag settings
             ssGUI::Enums::WindowDragState CurrentDragState;
@@ -212,9 +212,13 @@ namespace ssGUI
             //If returns true, the window will be deleted automatically after being closed
             virtual bool IsDeleteAfterClosed() const;
 
-            virtual void SetOnTopWhenDragged(bool top);
+            //function: SetOnTopWhenFocused
+            //Set if the window will be on top when focused, meaning it will be the last child if true
+            virtual void SetOnTopWhenFocused(bool top);
 
-            virtual bool IsOnTopWhenDragged() const;
+            //function: IsOnTopWhenFocused
+            //Returns if the window will be on top when focused, meaning it will be the last child if true
+            virtual bool IsOnTopWhenFocused() const;
 
             //function: AddOnCloseEventListener [Deprecated]
             //Proxy function for adding listener and <EventCallbacks::OnWindowCloseEventCallback> to this object 
@@ -223,6 +227,10 @@ namespace ssGUI
             //function: RemoveOnCloseEventListener [Deprecated]
             //Proxy function for removing listener from <EventCallbacks::OnWindowCloseEventCallback> on this object 
             virtual void RemoveOnCloseEventListener(int index);
+
+            //function: SetFocus
+            //See <BaseGUIObject::SetFocus>
+            virtual void SetFocus(bool focus) override;
 
             //function: SetBackgroundColor
             //See <BaseGUIObject::SetBackgroundColor>

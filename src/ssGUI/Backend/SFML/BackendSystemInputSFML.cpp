@@ -250,6 +250,20 @@ namespace ssGUI::Backend
                     continue;
                 }
 
+                if(event.type == sf::Event::GainedFocus)
+                {
+                    ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->SetFocus(true, true);
+                    CurrentInputInfos.push_back(curInfo);
+                    continue;
+                }
+
+                if(event.type == sf::Event::LostFocus)
+                {
+                    ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->SetFocus(false, true);
+                    CurrentInputInfos.push_back(curInfo);
+                    continue;
+                }
+
                 if (event.type == sf::Event::Resized)
                 {
                     sfWindow->setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f((float)sfWindow->getSize().x, (float)sfWindow->getSize().y))));

@@ -22,6 +22,7 @@ namespace ssGUI
         Redraw = other.Redraw;
         AcceptRedrawRequest = other.AcceptRedrawRequest;
         StashedChildIterators = other.StashedChildIterators;
+        Focused = false;
         Position = other.GetPosition();
         GlobalPosition = other.GlobalPosition;
         Size = other.GetSize();
@@ -375,12 +376,13 @@ namespace ssGUI
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true), Visible(true),
                                         CurrentChildIteratorBackEnd(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), 
                                         ObjectDelete(false), HeapAllocated(false), CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), 
-                                        AcceptRedrawRequest(true), Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(150, 150)), 
-                                        MinSize(glm::vec2(25, 25)), MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
+                                        AcceptRedrawRequest(true), StashedChildIterators(), Focused(false), Position(glm::vec2(0, 0)), 
+                                        GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(150, 150)), MinSize(glm::vec2(25, 25)), 
+                                        MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
                                         DrawingCounts(), DrawingProperties(), GUIObjectShapeIndex(-1), GUIObjectVertexIndex(-1), LastDrawingVerticies(), 
-                                        LastDrawingUVs(), LastDrawingColours(), LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), Extensions(), 
-                                        ExtensionsDrawOrder(), ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
+                                        LastDrawingUVs(), LastDrawingColours(), LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), 
+                                        Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
     {}
 
     BaseGUIObject::~BaseGUIObject()
@@ -595,8 +597,39 @@ namespace ssGUI
         //If the new parent is nullptr, then remove the reference of the original parent and flag it
         if (newParent == nullptr)
         {
-            // if(Parent != -1)
-            //     CurrentObjectsReferences.RemoveObjectReference(Parent);
+            //If this object is focused, remove focus for all objects
+            if(IsFocused())
+            {
+                //Get root parent
+                if(originalParent != nullptr)
+                {
+                    auto rootParent = originalParent;
+                    while (rootParent != nullptr)
+                    {
+                        if(rootParent->GetParent() == nullptr)
+                            break;
+                        
+                        rootParent = rootParent->GetParent();
+                    }
+                    
+                    if(rootParent->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+                    {
+                        rootParent->StashChildrenIterator();
+                        rootParent->MoveChildrenIteratorToFirst();
+                        while (!rootParent->IsChildrenIteratorEnd())
+                        {
+                            if(rootParent->GetCurrentChild()->IsFocused() && rootParent->GetCurrentChild() != this)
+                                rootParent->GetCurrentChild()->SetFocus(false);
+                            rootParent->MoveChildrenIteratorNext();
+                        }
+                        rootParent->PopChildrenIterator();
+                    }
+                    else
+                    {
+                        rootParent->SetFocus(false);
+                    }
+                }
+            }
             
             Parent = -1;
         }
@@ -667,6 +700,10 @@ namespace ssGUI
         
         //Update local position
         SetGlobalPosition(GetGlobalPosition());
+
+        //Update focus status for recursive parent objects if this object is focused
+        if(IsFocused())
+            SetFocus(true);
         
         //Send event callback if any object is subscribed to child added
         if(newParent->IsEventCallbackExist(ssGUI::EventCallbacks::ChildAddedEventCallback::EVENT_NAME))
@@ -1014,6 +1051,52 @@ namespace ssGUI
     {
         //std::cout<<"GetBackgroundColor: "<<BackgroundColour.r<<","<<BackgroundColour.g<<","<<BackgroundColour.b<<","<<BackgroundColour.a<<"\n";
         return BackgroundColour;
+    }
+
+    bool BaseGUIObject::IsFocused() const
+    {
+        return Focused;
+    }
+
+    void BaseGUIObject::SetFocus(bool focus)
+    {
+        auto disableChildrenFocus = [this](ssGUI::GUIObject* searchObj)
+        {
+            searchObj->StashChildrenIterator();
+            searchObj->MoveChildrenIteratorToFirst();
+            while (!searchObj->IsChildrenIteratorEnd())
+            {
+                if(searchObj->GetCurrentChild()->IsFocused() && searchObj->GetCurrentChild() != this)
+                    searchObj->GetCurrentChild()->SetFocus(false);
+                searchObj->MoveChildrenIteratorNext();
+            }
+            searchObj->PopChildrenIterator();
+        };
+        
+        bool originalFocus = Focused;
+        Focused = focus;
+        
+        if(focus != originalFocus)
+        {
+            if(focus && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusedEventCallback>())
+                GetAnyEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>()->Notify(this);
+            else if(!focus && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>())
+                GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>()->Notify(this);
+        }
+
+        if(focus)
+        {
+            auto currentParent = GetParent();
+            //Set the focus of other children from the parent to be false
+            if(currentParent != nullptr)
+                disableChildrenFocus(currentParent);
+
+            //Set all recursive parents' focus to true
+            if (currentParent != nullptr)
+                currentParent->SetFocus(true);
+        }
+        else
+            disableChildrenFocus(this);
     }
 
     void BaseGUIObject::Delete()
