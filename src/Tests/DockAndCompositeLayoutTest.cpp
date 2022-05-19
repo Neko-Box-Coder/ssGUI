@@ -45,6 +45,32 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
+
+    guiManager.AddOnUpdateEventListener
+    (
+        [&]()
+        {
+            ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
+            
+            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            {
+                auto obj = window2.GetParent();
+                auto obj2 = window5.GetParent();
+                DEBUG_LINE("window: "<<&window);
+                DEBUG_LINE("window2: "<<&window2);
+                DEBUG_LINE("window3: "<<&window3);
+                DEBUG_LINE("window4: "<<&window4);
+                DEBUG_LINE("window5: "<<&window5);
+
+                DEBUG_LINE("window2 parent: "<<obj);
+                DEBUG_LINE("window5 parent: "<<obj2);
+                DEBUG_LINE("window2 parent min size: "<<obj->GetMinSize().x<<", "<<obj->GetMinSize().y);
+                DEBUG_LINE("window5 parent min size2: "<<obj2->GetMinSize().x<<", "<<obj2->GetMinSize().y);
+            }
+        }
+    );
+
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;

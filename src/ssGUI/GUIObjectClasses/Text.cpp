@@ -1,4 +1,5 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 namespace ssGUI
 {    
@@ -749,6 +750,8 @@ namespace ssGUI
                     CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
+        SetBlockInput(false);
+        SetInteractable(false);
 
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
@@ -1188,6 +1191,33 @@ namespace ssGUI
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
 
+        //It will only block when BlockInput flag is true OR is interactable
+        if(!IsBlockInput())
+            goto endOfUpdate;
+
+        //Mouse Input blocking
+        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
+            goto endOfUpdate;
+
+        //Mouse Input blocking
+        {
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+
+            bool mouseInWindowBoundX = false;
+            bool mouseInWindowBoundY = false;
+            
+            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+                mouseInWindowBoundX = true;
+
+            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                mouseInWindowBoundY = true;
+            
+            //Input blocking and set focus
+            if(mouseInWindowBoundX && mouseInWindowBoundY)
+                windowInputStatus.MouseInputBlocked = true;
+        }
+
+        endOfUpdate:
         for(auto extension : ExtensionsUpdateOrder)
         {
             //Guard against extension being deleted by other extensions
