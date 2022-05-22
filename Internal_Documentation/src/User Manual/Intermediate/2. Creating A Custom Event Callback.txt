@@ -17,7 +17,7 @@ Section: Header
 //namespace: ssGUI::EventCallbacks
 namespace ssGUI::EventCallbacks
 {
-    //class: SomeEventHappenedEventCallback
+    //class: ssGUI::EventCallbacks::SomeEventHappenedEventCallback
     //This event callback is triggered *after* "some event" has happened
     class SomeEventHappenedEventCallback : public BaseEventCallback
     {        

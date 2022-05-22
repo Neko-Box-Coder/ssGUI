@@ -15,7 +15,7 @@ Section: Header
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: CustomExtension
+    /*class: ssGUI::Extensions::CustomExtension
     [Insert extension summary here]
 
     Variables & Constructor:
