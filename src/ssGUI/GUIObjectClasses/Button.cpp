@@ -119,9 +119,9 @@ namespace ssGUI
     void Button::SetInteractable(bool interactable)
     {
         if(interactable)
-            CurrentState = ssGUI::Enums::ButtonState::NORMAL;
+            SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
         else
-            CurrentState = ssGUI::Enums::ButtonState::DISABLED;
+            SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
 
         ssGUI::Widget::SetInteractable(interactable);
     }
@@ -146,15 +146,7 @@ namespace ssGUI
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
 
-        //It will only block when BlockInput flag is true
-        if(!IsBlockInput())
-            goto endOfUpdate;
-
-        //Mouse Input blocking
-        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
-            goto endOfUpdate;
-
-        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
+        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked && IsBlockInput() && IsInteractable())
         {
             //On mouse down
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
@@ -187,27 +179,28 @@ namespace ssGUI
             {
                 SetButtonState(ssGUI::Enums::ButtonState::CLICKED);
             }
-            //Otherwise check normal/hover/disabled state
+            //Otherwise check normal/hover state
             else
             {
-                if(IsInteractable())
+                if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
+                    currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
-                    if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
-                        currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
-                    {
-                        globalInputStatus.MouseInputBlocked = true;
-                        SetButtonState(ssGUI::Enums::ButtonState::HOVER);
-                    }
-                    else
-                        SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
+                    globalInputStatus.MouseInputBlocked = true;
+                    SetButtonState(ssGUI::Enums::ButtonState::HOVER);
                 }
                 else
-                {
-                    if (GetButtonState() != ssGUI::Enums::ButtonState::DISABLED)
-                        SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
-                }
+                    SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
             }
-        }        
+        }
+        else if(IsInteractable())
+        {
+            SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
+        }
+        else
+        {
+            if (GetButtonState() != ssGUI::Enums::ButtonState::DISABLED)
+                SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
+        }
 
         endOfUpdate:;
         for (auto extension : ExtensionsUpdateOrder)

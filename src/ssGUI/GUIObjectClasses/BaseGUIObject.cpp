@@ -12,7 +12,7 @@ namespace ssGUI
         CurrentChild = Children.end();
         CurrentChildIteratorFrontEnd = true;
         CurrentChildIteratorBackEnd = true;
-        Visible = other.IsVisible();
+        Visible = other.IsSelfVisible();
         BackgroundColour = other.GetBackgroundColor();
         UserCreated = other.IsUserCreated();
         ObjectDelete = other.Internal_IsDeleted();
@@ -1026,6 +1026,25 @@ namespace ssGUI
 
     bool BaseGUIObject::IsVisible() const
     {
+        if(!IsSelfVisible())
+            return false;
+        else
+        {
+            auto currentParent = GetParent();
+            while (currentParent != nullptr)
+            {
+                if(!currentParent->IsSelfVisible())
+                    return false;
+
+                currentParent = currentParent->GetParent();   
+            }
+            
+            return true;
+        }
+    }
+
+    bool BaseGUIObject::IsSelfVisible() const
+    {
         return Visible;
     }
 
@@ -1060,22 +1079,51 @@ namespace ssGUI
 
     void BaseGUIObject::SetFocus(bool focus)
     {
-        auto disableChildrenFocus = [this](ssGUI::GUIObject* searchObj)
+        FUNC_DEBUG_ENTRY();
+        
+        auto disableChildrenFocus = [this](ssGUI::GUIObject* searchParent)
         {
-            searchObj->StashChildrenIterator();
-            searchObj->MoveChildrenIteratorToFirst();
-            while (!searchObj->IsChildrenIteratorEnd())
+            std::vector<ssGUI::GUIObject*> objsToDisableFocus;
+            
+            searchParent->StashChildrenIterator();
+            searchParent->MoveChildrenIteratorToFirst();
+            while (!searchParent->IsChildrenIteratorEnd())
             {
-                if(searchObj->GetCurrentChild()->IsFocused() && searchObj->GetCurrentChild() != this)
-                    searchObj->GetCurrentChild()->SetFocus(false);
-                searchObj->MoveChildrenIteratorNext();
+                if(searchParent->GetCurrentChild()->IsFocused() && searchParent->GetCurrentChild() != this)
+                    objsToDisableFocus.push_back(searchParent->GetCurrentChild());
+                searchParent->MoveChildrenIteratorNext();
             }
-            searchObj->PopChildrenIterator();
+            searchParent->PopChildrenIterator();
+
+            if(objsToDisableFocus.empty())
+                return;
+
+            //Populate the list with GUI objects for setting focus false
+            int lastObjsCheckIndex = 0;
+            do
+            {
+                auto curObj = objsToDisableFocus[lastObjsCheckIndex];
+                curObj->StashChildrenIterator();
+                curObj->MoveChildrenIteratorToFirst();
+                while (!curObj->IsChildrenIteratorEnd())
+                {
+                    if(curObj->GetCurrentChild()->IsFocused())
+                        objsToDisableFocus.push_back(curObj->GetCurrentChild());
+                    curObj->MoveChildrenIteratorNext();
+                }
+                curObj->PopChildrenIterator();
+                lastObjsCheckIndex++;
+            }
+            while (lastObjsCheckIndex < objsToDisableFocus.size());
+            
+            //Set the GUI objects focus to false
+            for(int i = 0; i < objsToDisableFocus.size(); i++)
+                objsToDisableFocus[i]->Internal_SetSelfFocus(false);
         };
         
         bool originalFocus = Focused;
         Focused = focus;
-        
+
         if(focus != originalFocus)
         {
             if(focus && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusedEventCallback>())
@@ -1092,11 +1140,31 @@ namespace ssGUI
                 disableChildrenFocus(currentParent);
 
             //Set all recursive parents' focus to true
-            if (currentParent != nullptr)
-                currentParent->SetFocus(true);
+            while(currentParent != nullptr)
+            {
+                currentParent->Internal_SetSelfFocus(true);
+                currentParent = currentParent->GetParent();
+            }
         }
-        else
-            disableChildrenFocus(this);
+        
+        //Set the focus of the children of this GUI object to be false
+        disableChildrenFocus(this);
+
+        FUNC_DEBUG_EXIT();
+    }
+
+    void BaseGUIObject::Internal_SetSelfFocus(bool focus)
+    {
+        bool originalFocus = Focused;
+        Focused = focus;
+
+        if(focus != originalFocus)
+        {
+            if(focus && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusedEventCallback>())
+                GetAnyEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>()->Notify(this);
+            else if(!focus && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>())
+                GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>()->Notify(this);
+        }
     }
 
     void BaseGUIObject::Delete()
@@ -1393,10 +1461,12 @@ namespace ssGUI
 
         if(!IsVisible())
         {
+            Redraw = false;
             FUNC_DEBUG_EXIT();
             return;
         }
 
+        Redraw = true;
         if(Redraw)
         {
             DisableRedrawObjectRequest();

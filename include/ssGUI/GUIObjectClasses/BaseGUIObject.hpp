@@ -309,6 +309,8 @@ namespace ssGUI
             //See <GUIObject::IsVisible>
             virtual bool IsVisible() const override;
 
+            virtual bool IsSelfVisible() const override;
+
             //function: SetUserCreated
             //See <GUIObject::SetUserCreated>
             virtual void SetUserCreated(bool created) override;
@@ -332,6 +334,10 @@ namespace ssGUI
             //function: SetFocus
             //See <GUIObject::SetFocus>
             virtual void SetFocus(bool focus) override;
+
+            //function: Internal_SetSelfFocus
+            //See <GUIObject::Internal_SetSelfFocus>
+            virtual void Internal_SetSelfFocus(bool focus) override;
 
             //function: Delete 
             //See <GUIObject::Delete>

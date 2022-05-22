@@ -188,6 +188,8 @@ namespace ssGUI
             //Returns the visibility of this GUI Object. Note that the logic of this GUI Object will not be called if not visible.
             virtual bool IsVisible() const = 0;
 
+            virtual bool IsSelfVisible() const = 0;
+
             //function: SetUserCreated
             //Sets the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.
             virtual void SetUserCreated(bool created) = 0;
@@ -211,6 +213,10 @@ namespace ssGUI
             //function: SetFocus
             //Set this GUI Object to be focused
             virtual void SetFocus(bool focus) = 0;
+
+            //function: Internal_SetSelfFocus
+            //(Internal ssGUI function) Set the focus of the GUI object without affect any other GUI object
+            virtual void Internal_SetSelfFocus(bool focus) = 0;
 
             //function: Delete
             //Delete the current GUI Object. This will unset the parent of this GUI Object and all it's references.

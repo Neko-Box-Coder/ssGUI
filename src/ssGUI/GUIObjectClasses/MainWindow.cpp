@@ -140,7 +140,7 @@ namespace ssGUI
         BackendMainWindow->SetVisible(visible);
     }
 
-    bool MainWindow::IsVisible() const
+    bool MainWindow::IsSelfVisible() const
     {
         return BackendMainWindow->IsVisible();
     }
@@ -329,6 +329,34 @@ namespace ssGUI
         }
 
         LastSize = GetSize();
+
+        //Apply focus
+        if(!windowInputStatus.MouseInputBlocked && !globalInputStatus.MouseInputBlocked)
+        {
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(this);
+
+            bool mouseInWindowBoundX = false;
+            bool mouseInWindowBoundY = false;
+            
+            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+                mouseInWindowBoundX = true;
+
+            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                mouseInWindowBoundY = true;
+            
+            //Input blocking
+            if(mouseInWindowBoundX && mouseInWindowBoundY)
+                windowInputStatus.MouseInputBlocked = true;
+
+            //If mouse click on this, set focus
+            if(mouseInWindowBoundX && mouseInWindowBoundY &&
+                ((inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
+            {
+                BaseGUIObject::SetFocus(true);
+            }
+        }
 
         // glm::ivec2 currentMousePos = inputInterface.GetCurrentMousePosition();
         // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";

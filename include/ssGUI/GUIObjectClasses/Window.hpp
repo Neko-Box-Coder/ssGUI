@@ -232,6 +232,10 @@ namespace ssGUI
             //See <BaseGUIObject::SetFocus>
             virtual void SetFocus(bool focus) override;
 
+            //function: Internal_SetSelfFocus
+            //See <BaseGUIObject::Internal_SetSelfFocus>
+            virtual void Internal_SetSelfFocus(bool focus) override;
+
             //function: SetBackgroundColor
             //See <BaseGUIObject::SetBackgroundColor>
             virtual void SetBackgroundColor(glm::u8vec4 color) override;

@@ -564,6 +564,14 @@ namespace ssGUI
         BaseGUIObject::SetFocus(focus);
     }
 
+    void Window::Internal_SetSelfFocus(bool focus)
+    {
+        if(focus && IsOnTopWhenFocused())
+            SetParent(GetParent());
+        
+        BaseGUIObject::Internal_SetSelfFocus(focus);
+    }
+
     void Window::SetBackgroundColor(glm::u8vec4 color)
     {
         if(AdaptiveTitlebarColor)

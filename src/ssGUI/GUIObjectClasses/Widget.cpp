@@ -83,7 +83,7 @@ namespace ssGUI
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
 
-        //It will only block when BlockInput flag is true OR is interactable
+        //It will only block when BlockInput flag is true
         if(!IsBlockInput())
             goto endOfUpdate;
 
@@ -107,6 +107,15 @@ namespace ssGUI
             //Input blocking
             if(mouseInWindowBoundX && mouseInWindowBoundY)
                 windowInputStatus.MouseInputBlocked = true;
+
+            //If mouse click on this, set focus
+            if(mouseInWindowBoundX && mouseInWindowBoundY &&
+                ((inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
+            {
+                SetFocus(true);    
+            }
         }
 
         endOfUpdate:;
