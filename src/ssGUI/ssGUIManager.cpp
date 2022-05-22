@@ -24,6 +24,15 @@ namespace ssGUI
             ssGUI::Enums::CursorType lastCursor = BackendInput->GetCursorType();
             BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
 
+            //Dispatch Update event
+            FUNC_DEBUG_ENTRY("ssGUIManagerCustomUpdateEvent");
+            for(int i = 0; i < OnUpdateEventListeners.size(); i++)
+            {                
+                if(OnUpdateEventListenersValid[i])
+                    OnUpdateEventListeners[i]();
+            }
+            FUNC_DEBUG_EXIT("ssGUIManagerCustomUpdateEvent");
+
             #if DEBUG_STATE 
                 DEBUG_LINE("Update");
             #endif
@@ -51,14 +60,14 @@ namespace ssGUI
                 DEBUG_LINE("Render");
             #endif
 
-            //Dispatch Update event
-            FUNC_DEBUG_ENTRY("ssGUIManagerCustomUpdateEvent");
-            for(int i = 0; i < OnUpdateEventListeners.size(); i++)
-            {                
-                if(OnUpdateEventListenersValid[i])
-                    OnUpdateEventListeners[i]();
-            }
-            FUNC_DEBUG_EXIT("ssGUIManagerCustomUpdateEvent");
+            // //Dispatch Update event
+            // FUNC_DEBUG_ENTRY("ssGUIManagerCustomUpdateEvent");
+            // for(int i = 0; i < OnUpdateEventListeners.size(); i++)
+            // {                
+            //     if(OnUpdateEventListenersValid[i])
+            //         OnUpdateEventListeners[i]();
+            // }
+            // FUNC_DEBUG_EXIT("ssGUIManagerCustomUpdateEvent");
 
             //Dispatch Custom Rendering event
             if(IsCustomRendering)
@@ -149,15 +158,17 @@ namespace ssGUI
 
         for(auto mainWindow : MainWindowPList)
         {
-            std::list<ssGUI::GUIObject*> objToRender;
-            std::list<ssGUI::GUIObject*> renderQueue;
-
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
                 DEBUG_LINE("Invalid object type added to gui manager");
                 continue;
             }
 
+            if(!mainWindow->IsVisible())
+                continue;
+
+            std::list<ssGUI::GUIObject*> objToRender;
+            std::list<ssGUI::GUIObject*> renderQueue;
             ssGUI::MainWindow* currentMainWindowP = dynamic_cast<ssGUI::MainWindow*>(mainWindow);
 
             currentMainWindowP->Internal_Draw();
@@ -176,23 +187,6 @@ namespace ssGUI
             {
                 ssGUI::GUIObject* currentObjP = objToRender.front();
                 objToRender.pop_front();
-
-                //Check if current object's recursive parents are visible
-                auto curParent = currentObjP;
-                bool skipRender = false;
-                while(curParent != nullptr)
-                {
-                    if(!curParent->IsVisible())
-                    {
-                        skipRender = true;
-                        break;
-                    }
-                    curParent = curParent->GetParent();
-                }
-
-                if(skipRender)
-                    continue;
-
                 renderQueue.push_back(currentObjP);
 
                 //Add children to draw queue
