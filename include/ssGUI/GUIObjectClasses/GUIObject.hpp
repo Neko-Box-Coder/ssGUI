@@ -18,6 +18,8 @@
 //namespace: ssGUI
 namespace ssGUI
 {
+    class Menu;
+    
     //class: ssGUI::GUIObject
     //Base class for all GUI Objects
     class GUIObject
@@ -465,6 +467,14 @@ namespace ssGUI
             //function: IsRedrawNeeded
             //Returns if the GUI Object needs to be redrawn
             virtual bool IsRedrawNeeded() const = 0;
+
+            //function: RegisterRightClickMenu
+            //Register this GUI Object to a menu that can be triggered by right click 
+            virtual void RegisterRightClickMenu(ssGUI::Menu* menu) = 0;
+
+            //function: ClearRightClickMenu
+            //Clears the right click menu
+            virtual void ClearRightClickMenu() = 0;
             
             //function: Internal_GetObjectsReferences
             //(Internal ssGUI function) Returns the pointer of the ObjectReferences

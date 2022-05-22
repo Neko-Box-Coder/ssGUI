@@ -87,6 +87,8 @@ namespace ssGUI
         if(!IsBlockInput())
             goto endOfUpdate;
 
+        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
         //Mouse Input blocking
         if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
             goto endOfUpdate;

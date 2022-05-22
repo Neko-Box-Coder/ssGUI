@@ -149,6 +149,8 @@ namespace ssGUI
 
             std::unordered_set<std::string> CurrentTags;
 
+            ssGUI::Menu* RightClickMenu;
+
             BaseGUIObject(BaseGUIObject const& other);
 
             virtual void SyncPosition() override;
@@ -163,6 +165,7 @@ namespace ssGUI
             virtual void DisableRedrawObjectRequest();
             virtual void EnableRedrawObjectRequest();
             virtual void UpdateGUIObjectVertexAndShapeIndex();
+            virtual void CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow);
 
         public:
             BaseGUIObject();
@@ -462,6 +465,14 @@ namespace ssGUI
             //function: IsRedrawNeeded
             //See <GUIObject::IsRedrawNeeded>
             virtual bool IsRedrawNeeded() const override;
+
+            //function: RegisterRightClickMenu
+            //See <GUIObject::RegisterRightClickMenu>
+            virtual void RegisterRightClickMenu(ssGUI::Menu* menu);
+
+            //function: ClearRightClickMenu
+            //See <GUIObject::ClearRightClickMenu>
+            virtual void ClearRightClickMenu();
             
             //function: Internal_GetObjectsReferences
             //See <GUIObject::Internal_GetObjectsReferences>

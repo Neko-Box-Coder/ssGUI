@@ -146,6 +146,8 @@ namespace ssGUI
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
 
+        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
         if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked && IsBlockInput() && IsInteractable())
         {
             //On mouse down

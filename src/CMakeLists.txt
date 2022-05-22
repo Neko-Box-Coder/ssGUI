@@ -12,8 +12,8 @@ project(example VERSION 1.0)
 configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
 # add the executable
-add_executable(example ./Examples/DockAndLayoutExample.cpp)
-# add_executable(example "./Tests/LayoutTest.cpp")
+# add_executable(example ./Examples/DockAndLayoutExample.cpp)
+add_executable(example "./Tests/MenuTest.cpp")
 
 # For projectconfig.hpp in build folder
 target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")

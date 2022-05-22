@@ -46,7 +46,9 @@ namespace ssGUI::Enums
         BUTTON =            1 << 5,
         BASE_OBJECT =       1 << 6,
         STANDARD_WINDOW =   1 << 7,
-        STANDARD_BUTTON =   1 << 8
+        STANDARD_BUTTON =   1 << 8,
+        MENU =              1 << 9,
+        MENU_ITEM =         1 << 10
     };
 
     inline ssGUI::Enums::GUIObjectType operator|(ssGUI::Enums::GUIObjectType a, ssGUI::Enums::GUIObjectType b)

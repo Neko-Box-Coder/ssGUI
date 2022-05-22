@@ -557,7 +557,7 @@ namespace ssGUI
     }
 
     void Window::SetFocus(bool focus)
-    {
+    {       
         if(focus && IsOnTopWhenFocused())
             SetParent(GetParent());
 
@@ -614,6 +614,8 @@ namespace ssGUI
 
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
+
+        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
         glm::vec2 mouseDelta = currentMousePos - MouseDownPosition;

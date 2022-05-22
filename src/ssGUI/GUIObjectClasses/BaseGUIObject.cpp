@@ -1,7 +1,8 @@
 #include "ssGUI/GUIObjectClasses/BaseGUIObject.hpp"
 
-#include "ssGUI/GUIObjectClasses/MainWindow.hpp" //This is for getting the MainWindow offset
-#include "ssGUI/ssGUIManager.hpp" //This is for accessing DeletedObjs
+#include "ssGUI/GUIObjectClasses/MainWindow.hpp"    //This is for getting the MainWindow offset
+#include "ssGUI/ssGUIManager.hpp"                   //This is for accessing DeletedObjs
+#include "ssGUI/GUIObjectClasses/Menu.hpp"          //This is for spawning right click menu
 
 namespace ssGUI
 {    
@@ -47,6 +48,7 @@ namespace ssGUI
         ExtensionsUpdateOrder = std::vector<std::string>();
         EventCallbacks = std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*>();
         CurrentTags = other.CurrentTags;// std::unordered_set<std::string>();
+        RightClickMenu = other.RightClickMenu;
 
         SetParent(other.GetParent()); //Note : Reason of using SetParent is to inform the parent to add this as a child
     }
@@ -373,6 +375,32 @@ namespace ssGUI
         GUIObjectVertexIndex = DrawingVerticies.size();
     }
 
+    void BaseGUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked || RightClickMenu == nullptr)
+            return;
+        
+        //Mouse Input blocking
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+
+        bool mouseInWindowBoundX = false;
+        bool mouseInWindowBoundY = false;
+        
+        if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+            mouseInWindowBoundX = true;
+
+        if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+            mouseInWindowBoundY = true;
+        
+        //Input blocking
+        if(mouseInWindowBoundX && mouseInWindowBoundY && (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT)))
+        {
+            globalInputStatus.MouseInputBlocked = true;
+            RightClickMenu->SetMenuTarget(this);
+            RightClickMenu->SpawnMenu(currentMousePos);
+        }
+    }
+
     BaseGUIObject::BaseGUIObject() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true), Visible(true),
                                         CurrentChildIteratorBackEnd(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), UserCreated(true), 
                                         ObjectDelete(false), HeapAllocated(false), CurrentObjectsReferences(), DestroyEventCalled(false), Redraw(true), 
@@ -382,7 +410,7 @@ namespace ssGUI
                                         Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), DrawingVerticies(), DrawingUVs(), DrawingColours(), 
                                         DrawingCounts(), DrawingProperties(), GUIObjectShapeIndex(-1), GUIObjectVertexIndex(-1), LastDrawingVerticies(), 
                                         LastDrawingUVs(), LastDrawingColours(), LastDrawingCounts(), LastDrawingProperties(), LastGlobalPosition(), 
-                                        Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags()
+                                        Extensions(), ExtensionsDrawOrder(), ExtensionsUpdateOrder(), EventCallbacks(), CurrentTags(), RightClickMenu(nullptr)
     {}
 
     BaseGUIObject::~BaseGUIObject()
@@ -1455,6 +1483,16 @@ namespace ssGUI
         return &CurrentObjectsReferences;
     }
 
+    void BaseGUIObject::RegisterRightClickMenu(ssGUI::Menu* menu)
+    {
+        RightClickMenu = menu;
+    }
+
+    void BaseGUIObject::ClearRightClickMenu()
+    {
+        RightClickMenu = nullptr;
+    }
+
     void BaseGUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         FUNC_DEBUG_ENTRY();
@@ -1517,6 +1555,8 @@ namespace ssGUI
 
             Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
+
+        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         for(auto extension : ExtensionsUpdateOrder)
         {

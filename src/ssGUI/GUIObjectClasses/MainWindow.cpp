@@ -330,6 +330,8 @@ namespace ssGUI
 
         LastSize = GetSize();
 
+        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
         //Apply focus
         if(!windowInputStatus.MouseInputBlocked && !globalInputStatus.MouseInputBlocked)
         {
