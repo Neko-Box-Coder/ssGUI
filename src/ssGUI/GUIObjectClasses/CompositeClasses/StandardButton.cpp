@@ -124,10 +124,15 @@ namespace ssGUI
                     case ssGUI::Enums::ButtonState::CLICKED:
                         break;
                     case ssGUI::Enums::ButtonState::DISABLED:
-                        bgcolor.r = bgcolor.r + buttonReactAmount < 0 ? 0 : bgcolor.r - buttonReactAmount * 3;
-                        bgcolor.g = bgcolor.g + buttonReactAmount < 0 ? 0 : bgcolor.g - buttonReactAmount * 3;
-                        bgcolor.b = bgcolor.b + buttonReactAmount < 0 ? 0 : bgcolor.b - buttonReactAmount * 3;
+                        bgcolor.r = bgcolor.r + buttonReactAmount > 255 ? 255 : bgcolor.r + buttonReactAmount;
+                        bgcolor.g = bgcolor.g + buttonReactAmount > 255 ? 255 : bgcolor.g + buttonReactAmount;
+                        bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
+                        auto textColor = btn->GetButtonTextObject()->GetTextColor();
+                        textColor.r = (uint8_t)(textColor.r + buttonReactAmount * 4 & 255);
+                        textColor.g = (uint8_t)(textColor.g + buttonReactAmount * 4 & 255);
+                        textColor.b = (uint8_t)(textColor.b + buttonReactAmount * 4 & 255);
+                        btn->GetButtonTextObject()->SetTextColor(textColor);
                         break;
                 }
             }); 
@@ -260,15 +265,12 @@ namespace ssGUI
         GetButtonTextObject()->SetTextColor((glm::u8vec4)textResult);
     }
 
-    //You don't have to override this. If you do want to return your own type, 
-    //just edit the GUIObjectType and return it along with WIDGET
     ssGUI::Enums::GUIObjectType StandardButton::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::BUTTON |
             ssGUI::Enums::GUIObjectType::STANDARD_BUTTON;
     }
 
-    //You will always need to override this in order to call the copy constructor
     StandardButton* StandardButton::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
