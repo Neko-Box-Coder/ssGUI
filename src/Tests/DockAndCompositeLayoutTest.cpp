@@ -1,6 +1,7 @@
 
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
+#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
 #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 #include "ssGUI/Extensions/Docker.hpp"

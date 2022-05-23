@@ -92,11 +92,12 @@ namespace ssGUI::Extensions
 
             (*widget)->AddExtension(ap);
             (*widget)->AddExtension(as);
+            (*widget)->AddTag(ssGUI::Tags::OVERLAY);
+            (*widget)->SetBackgroundColor(color);
         }
         
-        (*widget)->AddTag(ssGUI::Tags::OVERLAY);
-        (*widget)->SetParent(Container);
-        (*widget)->SetBackgroundColor(color);
+        if((*widget)->GetParent() != Container)
+            (*widget)->SetParent(Container);
 
         FUNC_DEBUG_EXIT();
     }
