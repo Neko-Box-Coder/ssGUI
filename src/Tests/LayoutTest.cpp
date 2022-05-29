@@ -15,8 +15,8 @@ int main()
     window.SetSize(glm::vec2(400, 400));
     window.SetParent(&mainWindow);
     auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
-    // layout->SetHorizontalLayout(true);
-    layout->SetReverseOrder(true);
+    layout->SetHorizontalLayout(true);
+    // layout->SetReverseOrder(true);
     window.AddExtension(layout);
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     

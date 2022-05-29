@@ -102,7 +102,7 @@ namespace ssGUI::Extensions
             //If the resizing is going towards the other direction, reset the resize state for the window
             if(targetResizeAmount == 0 || (diff > 0 && targetResizeAmount < 0) || (diff < 0 && targetResizeAmount > 0))
             {
-                ContainerStartPos = Container->GetPosition();
+                ContainerStartPos = Container->GetGlobalPosition();
                 ContainerStartSize = Container->GetSize();
                 auto temp = resizeData;
                 temp.MouseDownPosition = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow));
@@ -196,7 +196,7 @@ namespace ssGUI::Extensions
             if(!ContainerResizeStarted)
             {
                 ContainerResizeStarted = true;
-                ContainerStartPos = Container->GetPosition();
+                ContainerStartPos = Container->GetGlobalPosition();
                 ContainerStartSize = Container->GetSize();
                 FUNC_DEBUG_EXIT();
                 return;
@@ -210,7 +210,7 @@ namespace ssGUI::Extensions
                     inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).x;
                 
                 float containerResizedAmount = Container->GetSize().x - resizeData.OnTransformBeginSize.x; 
-                float othersResizedAmount = (ContainerStartPos.x + ContainerStartSize.x) - (Container->GetPosition().x + Container->GetSize().x);
+                float othersResizedAmount = (ContainerStartPos.x + ContainerStartSize.x) - (Container->GetGlobalPosition().x + Container->GetSize().x);
                 resizeLambda(targetResizeAmount, containerResizedAmount, othersResizedAmount, resizeData, true);
             }
             //Resizing right
@@ -221,7 +221,7 @@ namespace ssGUI::Extensions
                     resizeData.MouseDownPosition.x;
                 
                 float containerResizedAmount = Container->GetSize().x - resizeData.OnTransformBeginSize.x; 
-                float othersResizedAmount = Container->GetPosition().x - ContainerStartPos.x;
+                float othersResizedAmount = Container->GetGlobalPosition().x - ContainerStartPos.x;
                 resizeLambda(targetResizeAmount, containerResizedAmount, othersResizedAmount, resizeData, true);
             }
         }
@@ -234,7 +234,7 @@ namespace ssGUI::Extensions
             if(!ContainerResizeStarted)
             {
                 ContainerResizeStarted = true;
-                ContainerStartPos = Container->GetPosition();
+                ContainerStartPos = Container->GetGlobalPosition();
                 ContainerStartSize = Container->GetSize();
             }
             
@@ -246,7 +246,7 @@ namespace ssGUI::Extensions
                     inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).y;
                 
                 float containerResizedAmount = Container->GetSize().y - resizeData.OnTransformBeginSize.y; 
-                float othersResizedAmount = ContainerStartPos.y - Container->GetPosition().y;
+                float othersResizedAmount = ContainerStartPos.y - Container->GetGlobalPosition().y;
 
                 resizeLambda(targetResizeAmount, containerResizedAmount, othersResizedAmount, resizeData, false);
             }
@@ -258,7 +258,7 @@ namespace ssGUI::Extensions
                     resizeData.MouseDownPosition.y;
                 
                 float containerResizedAmount = Container->GetSize().y - resizeData.OnTransformBeginSize.y; 
-                float othersResizedAmount = Container->GetPosition().y - ContainerStartPos.y;
+                float othersResizedAmount = Container->GetGlobalPosition().y - ContainerStartPos.y;
 
                 resizeLambda(targetResizeAmount, containerResizedAmount, othersResizedAmount, resizeData, false);
             }
