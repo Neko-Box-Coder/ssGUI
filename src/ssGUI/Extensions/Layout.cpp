@@ -3,7 +3,7 @@
 #include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
-#include "ssGUI/Extensions/LayoutEnforcer.hpp"
+#include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
 namespace ssGUI::Extensions
@@ -1271,8 +1271,8 @@ namespace ssGUI::Extensions
                     if(containerLayout->OriginalChildrenSize.find(childIndex) == containerLayout->OriginalChildrenSize.end())
                         containerLayout->OriginalChildrenSize[childIndex] = child->GetSize();
 
-                    if(!child->IsExtensionExist(ssGUI::Extensions::LayoutEnforcer::EXTENSION_NAME) && child->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
-                        child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::LayoutEnforcer>());
+                    if(!child->IsExtensionExist(ssGUI::Extensions::WindowLayoutItemEnforcer::EXTENSION_NAME) && child->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+                        child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::WindowLayoutItemEnforcer>());
                     FUNC_DEBUG_EXIT("OnRecursiveChildAddEventCallback");
                 }
             );

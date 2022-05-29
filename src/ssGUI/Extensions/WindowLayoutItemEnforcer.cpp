@@ -1,4 +1,4 @@
-#include "ssGUI/Extensions/LayoutEnforcer.hpp"
+#include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 
 
@@ -8,14 +8,14 @@
 
 namespace ssGUI::Extensions
 {
-    LayoutEnforcer::LayoutEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false),
+    WindowLayoutItemEnforcer::WindowLayoutItemEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false),
                                         LastContainerSize()
     {}
 
-    LayoutEnforcer::~LayoutEnforcer()
+    WindowLayoutItemEnforcer::~WindowLayoutItemEnforcer()
     {}
     
-    LayoutEnforcer::LayoutEnforcer(LayoutEnforcer const& other)
+    WindowLayoutItemEnforcer::WindowLayoutItemEnforcer(WindowLayoutItemEnforcer const& other)
     {
         Container = nullptr;
         Enabled = other.IsEnabled();
@@ -24,16 +24,16 @@ namespace ssGUI::Extensions
         ContainerResizeStarted = other.ContainerResizeStarted;
     }
 
-    void LayoutEnforcer::ConstructRenderInfo()
+    void WindowLayoutItemEnforcer::ConstructRenderInfo()
     {}
 
-    void LayoutEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void WindowLayoutItemEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {}
     
     //Defining the extension name
-    const std::string LayoutEnforcer::EXTENSION_NAME = "Layout Enforcer";
+    const std::string WindowLayoutItemEnforcer::EXTENSION_NAME = "Layout Enforcer";
 
-    void LayoutEnforcer::SetEnabled(bool enabled)
+    void WindowLayoutItemEnforcer::SetEnabled(bool enabled)
     {
         Enabled = enabled;
 
@@ -42,13 +42,13 @@ namespace ssGUI::Extensions
             Container->RedrawObject();
     }
 
-    bool LayoutEnforcer::IsEnabled() const
+    bool WindowLayoutItemEnforcer::IsEnabled() const
     {
         return Enabled;
     }
         
     //Extension methods
-    void LayoutEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void WindowLayoutItemEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
 
@@ -269,44 +269,44 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    void LayoutEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void WindowLayoutItemEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
         FUNC_DEBUG_ENTRY();
         //Don't need to draw anything
         FUNC_DEBUG_EXIT();
     }
 
-    std::string LayoutEnforcer::GetExtensionName()
+    std::string WindowLayoutItemEnforcer::GetExtensionName()
     {
         return EXTENSION_NAME;
     }
 
-    void LayoutEnforcer::BindToObject(ssGUI::GUIObject* bindObj)
+    void WindowLayoutItemEnforcer::BindToObject(ssGUI::GUIObject* bindObj)
     {
         Container = bindObj;
     }
 
-    void LayoutEnforcer::Copy(ssGUI::Extensions::Extension* extension)
+    void WindowLayoutItemEnforcer::Copy(ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::LayoutEnforcer* layoutEnforcer = static_cast<ssGUI::Extensions::LayoutEnforcer*>(extension);
+        ssGUI::Extensions::WindowLayoutItemEnforcer* WindowLayoutItemEnforcer = static_cast<ssGUI::Extensions::WindowLayoutItemEnforcer*>(extension);
         
-        Enabled = layoutEnforcer->IsEnabled();
-        ContainerStartPos = layoutEnforcer->ContainerStartPos;
-        ContainerStartSize = layoutEnforcer->ContainerStartSize;
-        ContainerResizeStarted = layoutEnforcer->ContainerResizeStarted;
+        Enabled = WindowLayoutItemEnforcer->IsEnabled();
+        ContainerStartPos = WindowLayoutItemEnforcer->ContainerStartPos;
+        ContainerStartSize = WindowLayoutItemEnforcer->ContainerStartSize;
+        ContainerResizeStarted = WindowLayoutItemEnforcer->ContainerResizeStarted;
     }
 
-    ObjectsReferences* LayoutEnforcer::Internal_GetObjectsReferences()
+    ObjectsReferences* WindowLayoutItemEnforcer::Internal_GetObjectsReferences()
     {
         return nullptr;
     }
 
-    LayoutEnforcer* LayoutEnforcer::Clone(ssGUI::GUIObject* newContainer)
+    WindowLayoutItemEnforcer* WindowLayoutItemEnforcer::Clone(ssGUI::GUIObject* newContainer)
     {
-        LayoutEnforcer* temp = new LayoutEnforcer(*this);
+        WindowLayoutItemEnforcer* temp = new WindowLayoutItemEnforcer(*this);
         if(newContainer != nullptr)
             newContainer->AddExtension(temp);
         return temp;

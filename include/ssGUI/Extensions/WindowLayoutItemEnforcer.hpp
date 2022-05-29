@@ -1,5 +1,5 @@
-#ifndef SSGUI_LAYOUT_ENFORCER
-#define SSGUI_LAYOUT_ENFORCER
+#ifndef SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER
+#define SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "glm/vec2.hpp"
@@ -8,7 +8,7 @@
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
-    /*class: ssGUI::Extensions::LayoutEnforcer
+    /*class: ssGUI::Extensions::WindowLayoutItemEnforcer
     This extension is only for window GUI Objects which allows the user 
     to "pull" and "push" the layout items by recording the container state.
 
@@ -24,11 +24,11 @@ namespace ssGUI::Extensions
 
     =================================================================
     ============================== C++ ==============================
-    LayoutEnforcer::LayoutEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false)
+    WindowLayoutItemEnforcer::WindowLayoutItemEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false)
     {}
     =================================================================
     */
-    class LayoutEnforcer : public Extension
+    class WindowLayoutItemEnforcer : public Extension
     {
         public:
             friend class ssGUI::Factory;
@@ -41,12 +41,12 @@ namespace ssGUI::Extensions
             bool ContainerResizeStarted;
             glm::vec2 LastContainerSize;
 
-            LayoutEnforcer& operator=(LayoutEnforcer const& other);
+            WindowLayoutItemEnforcer& operator=(WindowLayoutItemEnforcer const& other);
 
         protected:
-            LayoutEnforcer();
-            virtual ~LayoutEnforcer() override;
-            LayoutEnforcer(LayoutEnforcer const& other);
+            WindowLayoutItemEnforcer();
+            virtual ~WindowLayoutItemEnforcer() override;
+            WindowLayoutItemEnforcer(WindowLayoutItemEnforcer const& other);
             static void* operator new(size_t size)      {return ::operator new(size);};
             static void* operator new[](size_t size)    {return ::operator new(size);};
             static void operator delete(void* p)        {free(p);};
@@ -93,7 +93,7 @@ namespace ssGUI::Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual LayoutEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual WindowLayoutItemEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
     };
 }
 

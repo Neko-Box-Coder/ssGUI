@@ -11,5 +11,5 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/Outline.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/BoxShadow.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Shape.cpp"
-                    "${CMAKE_CURRENT_LIST_DIR}/LayoutEnforcer.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/WindowLayoutItemEnforcer.cpp"
                     )
