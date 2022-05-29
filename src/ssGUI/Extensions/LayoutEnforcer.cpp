@@ -8,7 +8,8 @@
 
 namespace ssGUI::Extensions
 {
-    LayoutEnforcer::LayoutEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false)
+    LayoutEnforcer::LayoutEnforcer() : Container(nullptr), Enabled(true), ContainerStartPos(), ContainerStartSize(), ContainerResizeStarted(false),
+                                        LastContainerSize()
     {}
 
     LayoutEnforcer::~LayoutEnforcer()
@@ -51,8 +52,19 @@ namespace ssGUI::Extensions
     {
         FUNC_DEBUG_ENTRY();
 
-        if(!Enabled || Container == nullptr || isPreUpdate)
+        if(!Enabled || Container == nullptr)
         {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        if(isPreUpdate)
+        {
+            if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+            {
+                LastContainerSize = Container->GetSize();
+            }
+            
             FUNC_DEBUG_EXIT();
             return;
         }
@@ -75,6 +87,12 @@ namespace ssGUI::Extensions
             return;
         }
 
+        if(LastContainerSize != Container->GetSize())
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
         auto layout = static_cast<ssGUI::Extensions::Layout*>(Container->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
         
         auto resizeLambda = [&](float targetResizeAmount, float containerResizedAmount, float othersResizedAmount, ssGUI::WindowResizeDragData const & resizeData, bool horizontal)
@@ -90,54 +108,80 @@ namespace ssGUI::Extensions
                 temp.MouseDownPosition = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow));
                 temp.OnTransformBeginSize = Container->GetSize();
                 windowContainer->SetResizeDragData(temp);
+                LastContainerSize = Container->GetSize();
+                FUNC_DEBUG_EXIT();
                 return;
             }
 
-            //Reduce gui objects sizes before container
-            float prevDiff = diff;
-            Container->GetParent()->StashChildrenIterator();
-            Container->GetParent()->FindChild(Container);
-            Container->GetParent()->MoveChildrenIteratorPrevious();
-            while(!Container->GetParent()->IsChildrenIteratorEnd() && prevDiff != 0)
+            float resizedAmount = 0;
+            auto resizeBefore = [&](bool resizeFirst)
             {
-                auto curChild = Container->GetParent()->GetCurrentChild();
-                float sizeBefore = horizontal ? curChild->GetSize().x : curChild->GetSize().y;
-                if(horizontal)
-                {
-                    curChild->SetSize(glm::vec2(curChild->GetSize().x + prevDiff, curChild->GetSize().y));
-                    prevDiff -= curChild->GetSize().x - sizeBefore;
-                }
-                else
-                {
-                    curChild->SetSize(glm::vec2(curChild->GetSize().x, curChild->GetSize().y + prevDiff));
-                    prevDiff -= curChild->GetSize().y - sizeBefore;
-                }
-
+                float prevDiff = resizeFirst ? diff : resizedAmount;
+                //Reduce gui objects sizes before container
+                Container->GetParent()->StashChildrenIterator();
+                Container->GetParent()->FindChild(Container);
                 Container->GetParent()->MoveChildrenIteratorPrevious();
-            }
+                while(!Container->GetParent()->IsChildrenIteratorEnd() && prevDiff != 0)
+                {
+                    auto curChild = Container->GetParent()->GetCurrentChild();
+                    float sizeBefore = horizontal ? curChild->GetSize().x : curChild->GetSize().y;
+                    if(horizontal)
+                    {
+                        curChild->SetSize(glm::vec2(curChild->GetSize().x + prevDiff, curChild->GetSize().y));
+                        prevDiff -= curChild->GetSize().x - sizeBefore;
+                        resizedAmount += curChild->GetSize().x - sizeBefore;
+                    }
+                    else
+                    {
+                        curChild->SetSize(glm::vec2(curChild->GetSize().x, curChild->GetSize().y + prevDiff));
+                        prevDiff -= curChild->GetSize().y - sizeBefore;
+                        resizedAmount += curChild->GetSize().y - sizeBefore;
+                    }
 
-            //Increase gui objects sizes after container
-            float afterDiff = diff - prevDiff;
-            Container->GetParent()->FindChild(Container);
-            Container->GetParent()->MoveChildrenIteratorNext();
-            while(!Container->GetParent()->IsChildrenIteratorEnd() && afterDiff != 0)
+                    Container->GetParent()->MoveChildrenIteratorPrevious();
+                }
+                Container->GetParent()->PopChildrenIterator();
+            };
+
+            auto resizeAfter = [&](bool resizeFirst)
             {
-                auto curChild = Container->GetParent()->GetCurrentChild();
-                float sizeBefore = horizontal ? curChild->GetSize().x : curChild->GetSize().y;
-                if(horizontal)
-                {
-                    curChild->SetSize(glm::vec2(curChild->GetSize().x - afterDiff, curChild->GetSize().y));
-                    afterDiff += curChild->GetSize().x - sizeBefore;
-                }
-                else
-                {
-                    curChild->SetSize(glm::vec2(curChild->GetSize().x, curChild->GetSize().y - afterDiff));
-                    afterDiff += curChild->GetSize().y - sizeBefore;
-                }
-
+                //Increase gui objects sizes after container
+                float afterDiff = resizeFirst ? diff : resizedAmount;
+                Container->GetParent()->StashChildrenIterator();
+                Container->GetParent()->FindChild(Container);
                 Container->GetParent()->MoveChildrenIteratorNext();
+                while(!Container->GetParent()->IsChildrenIteratorEnd() && afterDiff != 0)
+                {
+                    auto curChild = Container->GetParent()->GetCurrentChild();
+                    float sizeBefore = horizontal ? curChild->GetSize().x : curChild->GetSize().y;
+                    if(horizontal)
+                    {
+                        curChild->SetSize(glm::vec2(curChild->GetSize().x - afterDiff, curChild->GetSize().y));
+                        afterDiff += curChild->GetSize().x - sizeBefore;
+                        resizedAmount -= curChild->GetSize().x - sizeBefore;
+                    }
+                    else
+                    {
+                        curChild->SetSize(glm::vec2(curChild->GetSize().x, curChild->GetSize().y - afterDiff));
+                        afterDiff += curChild->GetSize().y - sizeBefore;
+                        resizedAmount -= curChild->GetSize().x - sizeBefore;
+                    }
+
+                    Container->GetParent()->MoveChildrenIteratorNext();
+                }
+                Container->GetParent()->PopChildrenIterator();
+            };
+
+            if(targetResizeAmount < 0)
+            {
+                resizeBefore(true);
+                resizeAfter(false);
             }
-            Container->GetParent()->PopChildrenIterator();
+            else
+            {
+                resizeAfter(true);
+                resizeBefore(false);
+            }
         };
 
         //Check if container's min size has reached. 
@@ -154,6 +198,8 @@ namespace ssGUI::Extensions
                 ContainerResizeStarted = true;
                 ContainerStartPos = Container->GetPosition();
                 ContainerStartSize = Container->GetSize();
+                FUNC_DEBUG_EXIT();
+                return;
             }
 
             //Resizing left

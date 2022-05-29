@@ -9,7 +9,8 @@
 namespace ssGUI::Extensions
 {
     /*class: ssGUI::Extensions::LayoutEnforcer
-    This allows the user to "pull" the layout items back by recording the container state.
+    This extension is only for window GUI Objects which allows the user 
+    to "pull" and "push" the layout items by recording the container state.
 
     Variables & Constructor:
     ============================== C++ ==============================
@@ -19,6 +20,7 @@ namespace ssGUI::Extensions
         glm::vec2 ContainerStartPos;
         glm::vec2 ContainerStartSize;
         bool ContainerResizeStarted;
+        glm::vec2 LastContainerSize;
 
     =================================================================
     ============================== C++ ==============================
@@ -37,6 +39,7 @@ namespace ssGUI::Extensions
             glm::vec2 ContainerStartPos;
             glm::vec2 ContainerStartSize;
             bool ContainerResizeStarted;
+            glm::vec2 LastContainerSize;
 
             LayoutEnforcer& operator=(LayoutEnforcer const& other);
 
