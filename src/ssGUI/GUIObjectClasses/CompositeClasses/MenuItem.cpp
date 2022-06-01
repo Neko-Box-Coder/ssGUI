@@ -7,6 +7,8 @@ namespace ssGUI
     MenuItem::MenuItem(MenuItem const& other) : StandardButton(other)
     {
     }
+
+    const std::string MenuItem::ListenerKey = "Menu Item";
     
     MenuItem::MenuItem()
     {
@@ -24,7 +26,9 @@ namespace ssGUI
 
         auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
         buttonEventCallback->ClearEventListeners();
-        buttonEventCallback->AddEventListener(
+        buttonEventCallback->AddEventListener
+        (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(container);

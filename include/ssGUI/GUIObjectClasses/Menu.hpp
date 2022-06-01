@@ -24,12 +24,10 @@ namespace ssGUI
     protected:
         glm::vec2 SpawnGlobalPosition;
         ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection;
-        std::unordered_map<ssGUI::MenuItem*, int> MenuItemListenersIndices;
         ssGUI::GUIObject* MenuTarget;
     =================================================================
     ============================== C++ ==============================
-    Menu::Menu() : SpawnGlobalPosition(), CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT), MenuItemListenersIndices(),
-                    MenuTarget(nullptr)
+    Menu::Menu() : SpawnGlobalPosition(), CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT), MenuTarget(nullptr)
     {
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
@@ -48,12 +46,14 @@ namespace ssGUI
         protected:
             glm::vec2 SpawnGlobalPosition;
             ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection;
-            std::unordered_map<ssGUI::MenuItem*, int> MenuItemListenersIndices;
             ssGUI::GUIObject* MenuTarget;
 
             Menu(Menu const& other);
 
         public:
+            //string: ListenerKey
+            static const std::string ListenerKey;
+
             Menu();
             virtual ~Menu() override;
             

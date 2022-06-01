@@ -539,23 +539,6 @@ namespace ssGUI
         return OnTopWhenFocused;
     }
 
-    int Window::AddOnCloseEventListener(std::function<void()> onClose)
-    {
-        if(!IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
-            AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnWindowCloseEventCallback>());
-        
-        return GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->
-            AddEventListener([onClose](ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*){onClose();});
-    }
-    
-    void Window::RemoveOnCloseEventListener(int index)
-    {
-        if(!IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
-            return;
-        
-        GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->RemoveEventListener(index);   
-    }
-
     void Window::SetFocus(bool focus)
     {       
         if(focus && IsOnTopWhenFocused())

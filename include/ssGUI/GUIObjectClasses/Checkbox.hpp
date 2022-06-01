@@ -27,6 +27,7 @@ namespace ssGUI
         auto buttonEvent = GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         buttonEvent->ClearEventListeners();
         buttonEvent->AddEventListener(
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::Checkbox* btn = static_cast<ssGUI::Checkbox*>(src);
@@ -41,12 +42,14 @@ namespace ssGUI
                         bgcolor.a = 200;
                         btn->SetBackgroundColor(bgcolor);
                         break;
-                    case ssGUI::Enums::ButtonState::CLICKED:
                     case ssGUI::Enums::ButtonState::ON_CLICK:
+                        break;
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.a = 100;
-                        btn->SetChecked(!btn->IsChecked());
                         btn->SetBackgroundColor(bgcolor);
+                        break;
+                    case ssGUI::Enums::ButtonState::CLICKED:
+                        btn->SetChecked(!btn->IsChecked());
                         break;
                     case ssGUI::Enums::ButtonState::DISABLED:
                         bgcolor.a = 50;
@@ -76,6 +79,9 @@ namespace ssGUI
             virtual void ConstructRenderInfo() override;
 
         public:
+            //string: ListenerKey
+            static const std::string ListenerKey;
+
             Checkbox();
             virtual ~Checkbox() override;
             

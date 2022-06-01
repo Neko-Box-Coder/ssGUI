@@ -39,14 +39,10 @@ namespace ssGUI::Extensions
 
         glm::vec2 GlobalPosition;
         glm::vec2 Size;
-
-        int ChildAddedEventIndex;
-        int ChildRemovedEventIndex;
     =================================================================
     ============================== C++ ==============================
     Mask::Mask() :  Container(nullptr), Enabled(true), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
-                    FollowPositionOffset(glm::vec2(1, 1)), FollowSizePadding(glm::vec2(-2, -2)), GlobalPosition(), Size(),
-                    ChildAddedEventIndex(-1), ChildRemovedEventIndex(-1)
+                    FollowPositionOffset(glm::vec2(1, 1)), FollowSizePadding(glm::vec2(-2, -2)), GlobalPosition(), Size()
     {}
     =================================================================    
     */
@@ -69,9 +65,6 @@ namespace ssGUI::Extensions
 
             glm::vec2 GlobalPosition;
             glm::vec2 Size;
-
-            int ChildAddedEventIndex;
-            int ChildRemovedEventIndex;
 
             virtual bool IsContained(glm::vec2 point, glm::vec2 min, glm::vec2 max) const;
             virtual bool LineToLineIntersection(glm::vec2 linePointA, glm::vec2 linePointB, 

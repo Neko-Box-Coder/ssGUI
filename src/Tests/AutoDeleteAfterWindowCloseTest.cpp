@@ -20,6 +20,7 @@ int main()
     button.SetSize(glm::ivec2(50, 30));
     button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
+        "AnyKey",
         [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
         {
             if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)

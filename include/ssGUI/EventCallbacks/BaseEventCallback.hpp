@@ -15,17 +15,13 @@ namespace ssGUI::EventCallbacks
     ============================== C++ ==============================
     private:
         //Events
-        std::vector<std::function<void(ssGUI::GUIObject*)>> EventListeners;
-        std::vector<bool> EventListenersValid;
-        std::queue<int> NextFreeIndices;
-        int EventListenerCount;
+        std::unordered_map<std::string, std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*)>> EventListeners;
         ssGUI::GUIObject* Container;
 
         ssGUI::ObjectsReferences CurrentObjectsReferences;
     =================================================================
     ============================== C++ ==============================
-    BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0),
-                                                Container(nullptr), CurrentObjectsReferences()
+    BaseEventCallback::BaseEventCallback() : EventListeners(), Container(nullptr), CurrentObjectsReferences()
     {}
     =================================================================
     */
@@ -36,10 +32,7 @@ namespace ssGUI::EventCallbacks
         
         private:
             //Events
-            std::vector<std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*)>> EventListeners;
-            std::vector<bool> EventListenersValid;
-            std::queue<int> NextFreeIndices;
-            int EventListenerCount;
+            std::unordered_map<std::string, std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*)>> EventListeners;
             ssGUI::GUIObject* Container;
 
             ssGUI::ObjectsReferences CurrentObjectsReferences;
@@ -57,11 +50,29 @@ namespace ssGUI::EventCallbacks
         public:
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
-            virtual int AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) override;
+            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, 
+                std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) override;
             
+            //function: AddEventListener
+            //See <EventCallback::AddEventListener>
+            virtual void AddEventListener(std::string key, 
+                std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) override;
+            
+            //function: IsEventListenerExist
+            //See <EventCallback::IsEventListenerExist>
+            virtual bool IsEventListenerExist(std::string key, ssGUI::GUIObject* adder) override;
+
+            //function: IsEventListenerExist
+            //See <EventCallback::IsEventListenerExist>
+            virtual bool IsEventListenerExist(std::string key) override;
+
             //function: RemoveEventListener
             //See <EventCallback::RemoveEventListener>
-            virtual void RemoveEventListener(int index) override;
+            virtual void RemoveEventListener(std::string key, ssGUI::GUIObject* adder) override;
+
+            //function: RemoveEventListener
+            //See <EventCallback::RemoveEventListener>
+            virtual void RemoveEventListener(std::string key) override;
 
             //function: ClearEventListeners
             //See <EventCallback::ClearEventListeners>

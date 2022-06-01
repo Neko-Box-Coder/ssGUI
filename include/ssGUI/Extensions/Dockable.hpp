@@ -77,8 +77,6 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* DockTriggerBottom;
         ssGUI::GUIObject* DockTriggerLeft;
 
-        int WindowDragStateChangedEventIndex;
-
         static bool GlobalDockMode;
         static ssGUI::MainWindow* MainWindowUnderDocking;
         static ssGUI::GUIObject* DockingTopLevelParent;
@@ -89,7 +87,7 @@ namespace ssGUI::Extensions
     Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(-1), CurrentObjectsReferences(), UseTriggerPercentage(true), 
                             TriggerPercentage(0.25f), TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
                             ContainerIsDocking(false), DockPreivewTop(nullptr), DockPreivewRight(nullptr), DockPreivewBottom(nullptr), DockPreivewLeft(nullptr),
-                            DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr), WindowDragStateChangedEventIndex(-1)
+                            DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr)
     {}
 
     bool Dockable::GlobalDockMode = false;
@@ -141,8 +139,6 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* DockTriggerRight;
             ssGUI::GUIObject* DockTriggerBottom;
             ssGUI::GUIObject* DockTriggerLeft;
-
-            int WindowDragStateChangedEventIndex;
 
             static bool GlobalDockMode;
             static ssGUI::MainWindow* MainWindowUnderDocking;

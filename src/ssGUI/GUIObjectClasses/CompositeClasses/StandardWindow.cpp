@@ -168,6 +168,8 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
+    const std::string StandardWindow::ListenerKey = "Standard Window";
+
     StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(4), AdaptiveTitleColor(true), TitleColorDifference(0, 0, 0, 0), AdaptiveTitleContrast(true), 
                                         AutoFontSize(true), FontSizeMultiplier(0.8), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
     {        
@@ -221,9 +223,10 @@ namespace ssGUI
 
         //Setup button event
         auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
-        buttonEvent->RemoveEventListener(0);
+        buttonEvent->RemoveEventListener(ssGUI::Button::ListenerKey, closeButton);
         buttonEvent->AddEventListener
         (
+            ListenerKey, this,
             [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 auto closeButtonObj = static_cast<ssGUI::Button*>(src);
@@ -261,6 +264,7 @@ namespace ssGUI
         auto shapeEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         shapeEvent->AddEventListener
         (
+            ListenerKey, this,
             [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
@@ -307,7 +311,9 @@ namespace ssGUI
             AddEventCallback(callback);
         }
         
-        callback->AddEventListener(
+        callback->AddEventListener
+        (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
             {
                 auto standardWindow = static_cast<ssGUI::StandardWindow*>(container);
@@ -323,7 +329,8 @@ namespace ssGUI
 
                 if(closeButtonObj != nullptr && closeButtonObj->GetParent() != container && !closeButtonObj->Internal_IsDeleted())
                     closeButtonObj->Delete();
-            });
+            }
+        );
 
         UpdateTitleText();
         UpdateIconImage();

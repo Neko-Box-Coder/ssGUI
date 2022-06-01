@@ -743,6 +743,8 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
     
+    const std::string Text::ListenerKey = "Text";
+
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
                     CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), TextColor(glm::u8vec4(0, 0, 0, 255)), 
                     MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
@@ -756,6 +758,7 @@ namespace ssGUI
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 static_cast<ssGUI::Text*>(src)->RecalculateTextNeeded = true;

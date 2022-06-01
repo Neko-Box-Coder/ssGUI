@@ -34,11 +34,6 @@ namespace ssGUI::Extensions
         int Spacing;
         bool Overflow;
 
-        int OnChildAddEventIndex;
-        int ChildAddedEventIndex;
-        int ChildRemovedEventIndex;
-        int ChildPositionChangedEventIndex;
-
         ObjectsReferences CurrentObjectsReferences;
 
         std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
@@ -47,15 +42,13 @@ namespace ssGUI::Extensions
         std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
         std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
         std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
-        std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
     =================================================================
     ============================== C++ ==============================
     Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
                         OverrideChildrenResizeTypesAndOnTop(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(0), Spacing(5), Overflow(false), OnChildAddEventIndex(-1), ChildAddedEventIndex(-1), 
-                        ChildRemovedEventIndex(-1), ChildPositionChangedEventIndex(-1), CurrentObjectsReferences(), LastUpdateChildrenSize(), 
-                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), OriginalChildrenOnTop(),
-                        MinMaxSizeChangedEventIndices()
+                        Container(nullptr), Enabled(true), Padding(0), Spacing(5), Overflow(false), 
+                        CurrentObjectsReferences(), LastUpdateChildrenSize(), 
+                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), OriginalChildrenOnTop()
     {}
     =================================================================
     */
@@ -82,11 +75,6 @@ namespace ssGUI::Extensions
             int Spacing;
             bool Overflow;
 
-            int OnChildAddEventIndex;
-            int ChildAddedEventIndex;
-            int ChildRemovedEventIndex;
-            int ChildPositionChangedEventIndex;
-
             ObjectsReferences CurrentObjectsReferences;
 
             std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
@@ -95,7 +83,6 @@ namespace ssGUI::Extensions
             std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
             std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
-            std::unordered_map<ssGUIObjectIndex, int> MinMaxSizeChangedEventIndices;
 
             Layout(Layout const& other);
             Layout();

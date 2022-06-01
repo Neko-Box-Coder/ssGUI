@@ -45,6 +45,8 @@ namespace ssGUI
         DrawingProperties.push_back(ssGUI::DrawingProperty());
     }
     
+    const std::string Checkbox::ListenerKey = "Checkbox";
+
     Checkbox::Checkbox() : InnerBoxSpace(2), Checked(true)
     {
         SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
@@ -55,6 +57,7 @@ namespace ssGUI
         auto buttonEvent = GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         buttonEvent->ClearEventListeners();
         buttonEvent->AddEventListener(
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::Checkbox* btn = static_cast<ssGUI::Checkbox*>(src);

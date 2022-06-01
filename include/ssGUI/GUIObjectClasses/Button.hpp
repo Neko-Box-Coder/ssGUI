@@ -26,6 +26,7 @@ namespace ssGUI
         SetSize(glm::vec2(25, 25));
         auto stateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         stateChangedEventCallback->AddEventListener(
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(src);
@@ -75,6 +76,9 @@ namespace ssGUI
             virtual void SetButtonState(ssGUI::Enums::ButtonState state);
             
         public:
+            //string: ListenerKey
+            static const std::string ListenerKey;
+
             Button();
             virtual ~Button() override;
             

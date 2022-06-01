@@ -46,11 +46,14 @@ namespace ssGUI
             GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
+    const std::string Button::ListenerKey = "Button";
+
     Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), ButtonColor(glm::u8vec4(100, 100, 100, 255))
     {
         SetSize(glm::vec2(25, 25));
         auto stateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         stateChangedEventCallback->AddEventListener(
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(src);

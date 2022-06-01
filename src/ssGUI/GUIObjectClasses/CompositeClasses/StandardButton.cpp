@@ -39,6 +39,8 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
+    const std::string StandardButton::ListenerKey = "Standard Button";
+
     StandardButton::StandardButton() : ButtonText(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), AdaptiveButtonTextContrast(true)
     {
         FUNC_DEBUG_ENTRY();
@@ -72,31 +74,36 @@ namespace ssGUI
         SetAdaptiveButtonTextColor(true);   //Update the text color
 
         //Add button text clean-up
-        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
+        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* onDestroyCallback = nullptr;
         if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
         {
-            callback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
+            onDestroyCallback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
                 (GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME));
         }
         else
         {
-            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
-            AddEventCallback(callback);
+            onDestroyCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
+            AddEventCallback(onDestroyCallback);
         }
         
-        callback->AddEventListener(
+        onDestroyCallback->AddEventListener
+        (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
             {
                 auto buttonText = static_cast<ssGUI::StandardButton*>(container)->GetButtonTextObject();
 
                 if(buttonText != nullptr && buttonText->GetParent() != container && !buttonText->Internal_IsDeleted())
                     buttonText->Delete();
-            });
+            }
+        );
         
         //Change button callback
         auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
-        buttonEventCallback->RemoveEventListener(0);
-        buttonEventCallback->AddEventListener(
+        buttonEventCallback->RemoveEventListener(Button::ListenerKey, this);
+        buttonEventCallback->AddEventListener
+        (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(container);
@@ -135,7 +142,8 @@ namespace ssGUI
                         btn->GetButtonTextObject()->SetTextColor(textColor);
                         break;
                 }
-            }); 
+            }
+        ); 
 
         SetBackgroundColor(GetButtonColor());
         UpdateButtonText();

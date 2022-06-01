@@ -29,6 +29,8 @@ int main()
     button.SetPosition(glm::vec2(200, 75));
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
+        //Key for ability to remove the listener later if needed
+        "AnyKey",
         //*src* is the source that causes the event. In the case of <ButtonStateChangedEventCallback>, it would be the button itself.
         //*container* is the GUI Object that this event callback attaches to. *container* doesn't always necessarily the same as *src*.
         //*refs* is a class that holds all references for other GUI objects. This will be further explained and shown in the cloning tutorial. 

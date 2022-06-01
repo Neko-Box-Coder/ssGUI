@@ -20,12 +20,13 @@ namespace ssGUI::EventCallbacks
     EventCallback enables the ablity to act against a certain event. 
 
     In order to add a class's function as a listener to an event callback
-    > int index = EventCallback->AddEventListener(std::bind(&some::class::function, objectPointer, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    > int index = EventCallback->AddEventListener("AnyKey", std::bind(&some::class::function, objectPointer, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     
     Alternatively, you can add a lambda as an event listener to an <EventCallback> object.
     =================================== C++ ===================================
     int index = EventCallback->AddEventListener
     (
+        "AnyKey",
         //source is what *triggered* the callback
         //container is the GUI Object that holds this event callback
         [](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
@@ -50,18 +51,35 @@ namespace ssGUI::EventCallbacks
 
         public:
             /*function: AddEventListener
-
-            Adds a listener to this EventCallback, and returns an index for removing it.
+            Adds a listener to this EventCallback by passing a key string for the ability to remove it later.
 
             Parameters:
+                key - Key string for the ability to remove it later
+                adder - GUI Object that added the event listener, nullptr if non-GUI Object added the listener
                 src - GUI Object that triggered the callback
                 container - GUI Object that contains this eventcallback
                 references - <ObjectsReferences> that this event callback has*/ 
-            virtual int AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) = 0;
+            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) = 0;
             
+            //function: AddEventListener
+            //Same as above but with adder as nullptr
+            virtual void AddEventListener(std::string key, std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) = 0;
+            
+            //function: IsEventListenerExist
+            //Check if the listener exists with key and adder specified. Note that same key but with different adder is diffentiated.
+            virtual bool IsEventListenerExist(std::string key, ssGUI::GUIObject* adder) = 0;
+            
+            //function: IsEventListenerExist
+            //Same as above but with adder as nullptr
+            virtual bool IsEventListenerExist(std::string key) = 0;
+
             //function: RemoveEventListener
-            //Removes a listener with the index specified
-            virtual void RemoveEventListener(int index) = 0;
+            //Removes a listener with the key and adder specified
+            virtual void RemoveEventListener(std::string key, ssGUI::GUIObject* adder) = 0;
+
+            //function: RemoveEventListener
+            //Same as above but with adder as nullptr
+            virtual void RemoveEventListener(std::string key) = 0;
 
             //function: ClearEventListeners
             //Clears all event listeners

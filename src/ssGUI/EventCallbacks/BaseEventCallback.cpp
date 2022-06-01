@@ -3,8 +3,7 @@
 
 namespace ssGUI::EventCallbacks
 {    
-    BaseEventCallback::BaseEventCallback() : EventListeners(), EventListenersValid(), NextFreeIndices(), EventListenerCount(0),
-                                                Container(nullptr), CurrentObjectsReferences()
+    BaseEventCallback::BaseEventCallback() : EventListeners(), Container(nullptr), CurrentObjectsReferences()
     {}
 
     BaseEventCallback::~BaseEventCallback()
@@ -12,61 +11,78 @@ namespace ssGUI::EventCallbacks
         CurrentObjectsReferences.CleanUp();
     }
     
-    int BaseEventCallback::AddEventListener(std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback)
+    void BaseEventCallback::AddEventListener(std::string key, ssGUI::GUIObject* adder, 
+        std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback)
     {
-        int addedIndex = -1;
-        
-        if(NextFreeIndices.empty())
+        if(adder != nullptr)
         {
-            EventListeners.push_back(callback);
-            EventListenersValid.push_back(true);
-            addedIndex = EventListeners.size() - 1;
+            int adderIndex = CurrentObjectsReferences.AddObjectReference(adder);
+            EventListeners[key+"-adder-"+std::to_string(adderIndex)] = callback;
         }
         else
-        {
-            addedIndex = NextFreeIndices.front();
-            EventListeners[NextFreeIndices.front()] = callback;
-            EventListenersValid[NextFreeIndices.front()] = true;
-            NextFreeIndices.pop();
-        }
-
-        EventListenerCount++;
-
-        return addedIndex;
+            EventListeners[key] = callback;
     }
 
-    void BaseEventCallback::RemoveEventListener(int index)
+    void BaseEventCallback::AddEventListener(std::string key, 
+        std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback)
     {
-        if(index < 0 || index >= EventListenersValid.size() || EventListenersValid[index] == false)
-            return;
-        
-        EventListenersValid[index] = false;
-        NextFreeIndices.push(index);
+        AddEventListener(key, nullptr, callback);
+    }
+    
+    bool BaseEventCallback::IsEventListenerExist(std::string key, ssGUI::GUIObject* adder)
+    {
+        if(adder != nullptr)
+        {
+            int adderIndex = CurrentObjectsReferences.GetObjectIndex(adder);
+            if(adderIndex == -1)
+                return false;
+            
+            return EventListeners.find(key+"-adder-"+std::to_string(adderIndex)) != EventListeners.end();
+        }
 
-        EventListenerCount--;
+        else
+            return EventListeners.find(key) != EventListeners.end();
+    }
+
+    bool BaseEventCallback::IsEventListenerExist(std::string key)
+    {
+        return IsEventListenerExist(key, nullptr);
+    }
+
+    void BaseEventCallback::RemoveEventListener(std::string key, ssGUI::GUIObject* adder)
+    {
+        if(!IsEventListenerExist(key, adder))
+            return;
+
+        if(adder != nullptr)
+        {
+            int adderIndex = CurrentObjectsReferences.GetObjectIndex(adder);
+            EventListeners.erase(key+"-adder-"+std::to_string(adderIndex));
+        }
+        else
+            EventListeners.erase(key);
+    }
+
+    void BaseEventCallback::RemoveEventListener(std::string key)
+    {
+        RemoveEventListener(key, nullptr);
     }
 
     void BaseEventCallback::ClearEventListeners()
     {
         EventListeners.clear();
-        EventListenersValid.clear();
-        NextFreeIndices = std::queue<int>();
-        EventListenerCount = 0;
     }
 
     int BaseEventCallback::GetEventListenerCount() const
     {
-        return EventListenerCount;
+        return EventListeners.size();
     }
 
     void BaseEventCallback::Notify(ssGUI::GUIObject* source)
     {
         FUNC_DEBUG_ENTRY();
-        for(int i = 0; i < EventListeners.size(); i++)
-        {
-            if(EventListenersValid[i] == true)
-                EventListeners[i](source, Container, &CurrentObjectsReferences);
-        }
+        for(auto it = EventListeners.begin(); it != EventListeners.end(); it++)
+            it->second(source, Container, &CurrentObjectsReferences);
         FUNC_DEBUG_EXIT();
     }
 

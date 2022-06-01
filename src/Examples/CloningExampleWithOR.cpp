@@ -35,6 +35,7 @@ int main()
     ssGUI::ssGUIObjectIndex textIndex = ecb->AddObjectReference(&text);
     ecb->AddEventListener
     (
+        "AnyKey",
         [textIndex](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
         {
             if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)

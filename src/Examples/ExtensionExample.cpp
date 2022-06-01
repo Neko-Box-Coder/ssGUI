@@ -41,6 +41,7 @@ int main()
     
     borderButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
+        "AnyKey",
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
         {
             if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
@@ -58,6 +59,7 @@ int main()
 
     boxShadowButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
+        "AnyKey",
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
         {
             if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
@@ -74,6 +76,7 @@ int main()
 
     roundedCornersButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
+        "AnyKey",
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
         {
             if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
@@ -100,6 +103,7 @@ int main()
 
     outlineButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
+        "AnyKey",
         [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
         {
             if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)

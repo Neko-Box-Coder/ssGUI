@@ -63,10 +63,13 @@ namespace ssGUI
                     CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
+        SetBlockInput(false);
+        SetInteractable(false);
 
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 static_cast<ssGUI::Text*>(src)->RecalculateTextNeeded = true;
@@ -155,6 +158,9 @@ namespace ssGUI
             virtual void ConstructRenderInfo() override;
 
         public:
+            //string: ListenerKey
+            static const std::string ListenerKey;
+
             Text();
             virtual ~Text() override;
 

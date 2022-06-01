@@ -45,7 +45,7 @@ namespace ssGUI
         windowTitle->SetTextColor(glm::u8vec4(255, 255, 255, 255));
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
-        SetAdaptiveTitleColorDifference(glm::ivec4(255, 255, 255, 0));
+        SetAdaptiveTitleColorDifference(glm::ivec4(150, 150, 150, 0));
 
         auto windowIcon = new ssGUI::Image();
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
@@ -82,9 +82,10 @@ namespace ssGUI
 
         //Setup button event
         auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
-        buttonEvent->RemoveEventListener(0);
+        buttonEvent->RemoveEventListener(ssGUI::Button::ListenerKey, closeButton);
         buttonEvent->AddEventListener
         (
+            ListenerKey, this,
             [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 auto closeButtonObj = static_cast<ssGUI::Button*>(src);
@@ -122,6 +123,7 @@ namespace ssGUI
         auto shapeEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         shapeEvent->AddEventListener
         (
+            ListenerKey, this,
             [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
@@ -168,7 +170,9 @@ namespace ssGUI
             AddEventCallback(callback);
         }
         
-        callback->AddEventListener(
+        callback->AddEventListener
+        (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
             {
                 auto standardWindow = static_cast<ssGUI::StandardWindow*>(container);
@@ -184,7 +188,8 @@ namespace ssGUI
 
                 if(closeButtonObj != nullptr && closeButtonObj->GetParent() != container && !closeButtonObj->Internal_IsDeleted())
                     closeButtonObj->Delete();
-            });
+            }
+        );
 
         UpdateTitleText();
         UpdateIconImage();
@@ -219,6 +224,9 @@ namespace ssGUI
             virtual void UpdateCloseButton();
 
         public:
+            //string: ListenerKey
+            static const std::string ListenerKey;
+
             StandardWindow();
             virtual ~StandardWindow() override;
 

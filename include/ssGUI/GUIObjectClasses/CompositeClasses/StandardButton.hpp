@@ -25,7 +25,8 @@ namespace ssGUI
     ============================== C++ ==============================
     StandardButton::StandardButton() : ButtonText(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), AdaptiveButtonTextContrast(true)
     {
-        SetMinSize(glm::vec2(50, 50));
+        FUNC_DEBUG_ENTRY();
+        SetSize(glm::vec2(50, 50));
 
         //Add visual extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
@@ -55,31 +56,36 @@ namespace ssGUI
         SetAdaptiveButtonTextColor(true);   //Update the text color
 
         //Add button text clean-up
-        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
+        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* onDestroyCallback = nullptr;
         if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
         {
-            callback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
+            onDestroyCallback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
                 (GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME));
         }
         else
         {
-            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
-            AddEventCallback(callback);
+            onDestroyCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
+            AddEventCallback(onDestroyCallback);
         }
         
-        callback->AddEventListener(
+        onDestroyCallback->AddEventListener
+        (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
             {
                 auto buttonText = static_cast<ssGUI::StandardButton*>(container)->GetButtonTextObject();
 
                 if(buttonText != nullptr && buttonText->GetParent() != container && !buttonText->Internal_IsDeleted())
                     buttonText->Delete();
-            });
+            }
+        );
         
         //Change button callback
         auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
-        buttonEventCallback->RemoveEventListener(0);
-        buttonEventCallback->AddEventListener(
+        buttonEventCallback->RemoveEventListener(Button::ListenerKey, this);
+        buttonEventCallback->AddEventListener
+        (
+            ListenerKey, this,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(container);
@@ -97,6 +103,7 @@ namespace ssGUI
                         btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::ON_CLICK:
+                        break;
                     case ssGUI::Enums::ButtonState::CLICKING:
                         bgcolor.r = bgcolor.r - buttonReactAmount * 2 < 0 ? 0 : bgcolor.r - buttonReactAmount * 2;
                         bgcolor.g = bgcolor.g - buttonReactAmount * 2 < 0 ? 0 : bgcolor.g - buttonReactAmount * 2;
@@ -104,17 +111,26 @@ namespace ssGUI
                         btn->SetBackgroundColor(bgcolor);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
+                        break;
                     case ssGUI::Enums::ButtonState::DISABLED:
-                        bgcolor.r = bgcolor.r + buttonReactAmount < 0 ? 0 : bgcolor.r - buttonReactAmount * 3;
-                        bgcolor.g = bgcolor.g + buttonReactAmount < 0 ? 0 : bgcolor.g - buttonReactAmount * 3;
-                        bgcolor.b = bgcolor.b + buttonReactAmount < 0 ? 0 : bgcolor.b - buttonReactAmount * 3;
+                        bgcolor.r = bgcolor.r + buttonReactAmount > 255 ? 255 : bgcolor.r + buttonReactAmount;
+                        bgcolor.g = bgcolor.g + buttonReactAmount > 255 ? 255 : bgcolor.g + buttonReactAmount;
+                        bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
+                        auto textColor = btn->GetButtonTextObject()->GetTextColor();
+                        textColor.r = (uint8_t)(textColor.r + buttonReactAmount * 4 & 255);
+                        textColor.g = (uint8_t)(textColor.g + buttonReactAmount * 4 & 255);
+                        textColor.b = (uint8_t)(textColor.b + buttonReactAmount * 4 & 255);
+                        btn->GetButtonTextObject()->SetTextColor(textColor);
                         break;
                 }
-            }); 
+            }
+        ); 
 
         SetBackgroundColor(GetButtonColor());
         UpdateButtonText();
+        
+        FUNC_DEBUG_EXIT();
     }
     =================================================================
     */
@@ -134,6 +150,9 @@ namespace ssGUI
             virtual void UpdateButtonText();
 
         public:
+            //string: ListenerKey
+            static const std::string ListenerKey;
+
             StandardButton();
             virtual ~StandardButton() override;
 

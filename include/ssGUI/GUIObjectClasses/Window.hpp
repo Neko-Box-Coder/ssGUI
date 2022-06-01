@@ -220,14 +220,6 @@ namespace ssGUI
             //Returns if the window will be on top when focused, meaning it will be the last child if true
             virtual bool IsOnTopWhenFocused() const;
 
-            //function: AddOnCloseEventListener [Deprecated]
-            //Proxy function for adding listener and <EventCallbacks::OnWindowCloseEventCallback> to this object 
-            virtual int AddOnCloseEventListener(std::function<void()> onClose);
-            
-            //function: RemoveOnCloseEventListener [Deprecated]
-            //Proxy function for removing listener from <EventCallbacks::OnWindowCloseEventCallback> on this object 
-            virtual void RemoveOnCloseEventListener(int index);
-
             //function: SetFocus
             //See <BaseGUIObject::SetFocus>
             virtual void SetFocus(bool focus) override;

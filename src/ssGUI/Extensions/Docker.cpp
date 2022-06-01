@@ -14,7 +14,7 @@ namespace ssGUI::Extensions
     Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), UseTriggerPercentage(true),
                         TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
                         TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
-                        DockTrigger(nullptr), ChildRemovedEventIndex(-1), ChildRemoveGuard(false)
+                        DockTrigger(nullptr), ChildRemoveGuard(false)
     {}
 
     Docker::~Docker()
@@ -22,6 +22,15 @@ namespace ssGUI::Extensions
         //Cleanup dock preview and trigger if exist
         DiscardPreview();
         DiscardTriggerArea();
+        
+        //Remove EventCallback
+        if(Container != nullptr && Container->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ChildRemovedEventCallback>())
+        {
+            auto ecb = Container->GetAnyEventCallback<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
+            ecb->RemoveEventListener(EXTENSION_NAME);
+            if(ecb->GetEventListenerCount() == 0)
+                Container->RemoveAnyEventCallback<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
+        }
     }
 
     Docker::Docker(Docker const& other)
@@ -41,7 +50,6 @@ namespace ssGUI::Extensions
         DockPreivew = nullptr;
         DockTrigger = nullptr;
 
-        ChildRemovedEventIndex = -1;
         ChildRemoveGuard = false;
     }
 
@@ -168,6 +176,7 @@ namespace ssGUI::Extensions
         return realChildrenCount;
     }
 
+    //This function basically make sure there's no unnecessary generated Docker that only contains 1 child
     void Docker::ChildRemoved(ssGUI::GUIObject* child)
     {
         FUNC_DEBUG_ENTRY();
@@ -577,9 +586,10 @@ namespace ssGUI::Extensions
 
         if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))    
             Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildRemovedEventCallback>());
-
-        ChildRemovedEventIndex = 
-            Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener(
+        
+        Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener
+        (
+            EXTENSION_NAME,
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 if(!container->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
@@ -596,7 +606,8 @@ namespace ssGUI::Extensions
                         (container->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
 
                 containerDocker->ChildRemoved(src);
-            });
+            }
+        );
 
         FUNC_DEBUG_EXIT();
     }
