@@ -139,22 +139,22 @@ namespace ssGUI
             
             //function: GetPosition
             //This will always return (0, 0). To get the main window's position on the monitor, see <GetDisplayPosition>
-            //See <GUIObject::GetPosition>
+            //See <ssGUI::Hierarchy::GetPosition>
             virtual glm::vec2 GetPosition() const override;
             
             //function: SetPosition
             //This will not set the position of the main window, to do that, see <SetDisplayPosition>
-            //See <GUIObject::SetPosition>
+            //See <ssGUI::Hierarchy::SetPosition>
             virtual void SetPosition(glm::vec2 position) override;
             
             //function: GetGlobalPosition
             //This will always return (0, 0). To get the main window's position on the monitor, see <GetDisplayPosition>
-            //See <GUIObject::GetGlobalPosition>
+            //See <ssGUI::Hierarchy::GetGlobalPosition>
             virtual glm::vec2 GetGlobalPosition() override;
             
             //function: SetGlobalPosition
             //This will not set the position of the main window, to do that, see <SetDisplayPosition>
-            //See <GUIObject::SetGlobalPosition>
+            //See <ssGUI::Hierarchy::SetGlobalPosition>
             virtual void SetGlobalPosition(glm::vec2 position) override;
             
             //function: GetSize

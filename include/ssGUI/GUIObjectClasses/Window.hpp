@@ -1,14 +1,10 @@
 #ifndef SSGUI_WINDOW
 #define SSGUI_WINDOW
 
-#include "ssGUI/GUIObjectClasses/BaseGUIObject.hpp"
-#include "ssGUI/Enums/MouseButton.hpp"
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include "ssGUI/Enums/ResizeType.hpp"
 #include "ssGUI/DataClasses/WindowResizeDragData.hpp"
 #include "ssGUI/Enums/WindowDragState.hpp"
-#include "ssGUI/EventCallbacks/OnWindowCloseEventCallback.hpp"
-#include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
-#include "ssGUI/Extensions/Border.hpp"
 #include <cmath>
 #include <functional>
 
@@ -61,7 +57,7 @@ namespace ssGUI
     }
     =================================================================    
     */
-    class Window : public BaseGUIObject
+    class Window : public GUIObject
     {
         private:
             Window& operator=(Window const& other) = default;
@@ -221,27 +217,27 @@ namespace ssGUI
             virtual bool IsOnTopWhenFocused() const;
 
             //function: SetFocus
-            //See <BaseGUIObject::SetFocus>
+            //See <ssGUI::Hierarchy::SetFocus>
             virtual void SetFocus(bool focus) override;
 
             //function: Internal_SetSelfFocus
-            //See <BaseGUIObject::Internal_SetSelfFocus>
+            //See <ssGUI::Hierarchy::Internal_SetSelfFocus>
             virtual void Internal_SetSelfFocus(bool focus) override;
 
             //function: SetBackgroundColor
-            //See <BaseGUIObject::SetBackgroundColor>
+            //See <ssGUI::Renderer::SetBackgroundColor>
             virtual void SetBackgroundColor(glm::u8vec4 color) override;
 
             //function: GetType
-            //See <BaseGUIObject::GetType>
+            //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
             //function: Internal_Update
-            //See <BaseGUIObject::Internal_Update>
+            //See <GUIObject::Internal_Update>
             virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Clone
-            //See <BaseGUIObject::Clone>
+            //See <GUIObject::Clone>
             virtual Window* Clone(bool cloneChildren) override;
     };
 }

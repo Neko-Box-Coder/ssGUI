@@ -98,11 +98,11 @@ namespace ssGUI
             ssGUI::GUIObject* GetMenuTarget() const;
 
             //function: SetFocus
-            //See <BaseGUIObject::SetFocus>
+            //See <ssGUI::Hierarchy::SetFocus>
             virtual void SetFocus(bool focus) override;
 
             //function: Internal_SetSelfFocus
-            //See <BaseGUIObject::Internal_SetSelfFocus>
+            //See <ssGUI::Hierarchy::Internal_SetSelfFocus>
             virtual void Internal_SetSelfFocus(bool focus) override;
 
             //function: GetType

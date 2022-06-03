@@ -1,7 +1,7 @@
 #ifndef SSGUI_WIDGET
 #define SSGUI_WIDGET
 
-#include "ssGUI/GUIObjectClasses/BaseGUIObject.hpp"
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -21,7 +21,7 @@ namespace ssGUI
     {}
     =================================================================
     */
-    class Widget : public BaseGUIObject
+    class Widget : public GUIObject
     {
         private:
             //Widget status

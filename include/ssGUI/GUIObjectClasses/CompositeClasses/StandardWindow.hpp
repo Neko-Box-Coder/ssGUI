@@ -335,6 +335,7 @@ namespace ssGUI
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
             //function: Clone
+            //See <Window::Clone>
             virtual StandardWindow* Clone(bool cloneChildren) override;
     };
 }

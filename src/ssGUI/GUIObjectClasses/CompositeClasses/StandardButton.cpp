@@ -1,6 +1,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
+#include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 
 namespace ssGUI
 {

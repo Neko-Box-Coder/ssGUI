@@ -10,7 +10,7 @@ int main()
     mainWindow.SetSize(glm::vec2(700, 350));
     mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
 
-    ssGUI::BaseGUIObject buttonsContainer;
+    ssGUI::GUIObject buttonsContainer;
     buttonsContainer.SetPosition(glm::vec2(360, 40));
     buttonsContainer.SetSize(glm::vec2(300, 250));
     buttonsContainer.SetParent(&mainWindow);

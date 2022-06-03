@@ -229,7 +229,7 @@ namespace ssGUI
         if(focus)
             SetParent(GetParent());
 
-        BaseGUIObject::SetFocus(focus);
+        GUIObject::SetFocus(focus);
     }
 
     void Menu::Internal_SetSelfFocus(bool focus)
@@ -237,7 +237,7 @@ namespace ssGUI
         if(focus)
             SetParent(GetParent());
         
-        BaseGUIObject::Internal_SetSelfFocus(focus);
+        GUIObject::Internal_SetSelfFocus(focus);
     }
 
     ssGUI::Enums::GUIObjectType Menu::GetType() const

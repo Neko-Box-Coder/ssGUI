@@ -1,5 +1,8 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 
+#include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
+#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
 namespace ssGUI
 {
@@ -356,7 +359,7 @@ namespace ssGUI
                 (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
                 (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
             {
-                BaseGUIObject::SetFocus(true);
+                GUIObject::SetFocus(true);
             }
         }
 

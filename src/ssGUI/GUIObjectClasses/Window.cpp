@@ -2,6 +2,12 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssGUI/EventCallbacks/BackgroundColorChangedEventCallback.hpp"
+#include "ssGUI/Enums/MouseButton.hpp"
+#include "ssGUI/EventCallbacks/OnWindowCloseEventCallback.hpp"
+#include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
+#include "ssGUI/Extensions/Border.hpp"
+
 namespace ssGUI
 {
     void Window::SetWindowDragState(ssGUI::Enums::WindowDragState dragState)
@@ -544,7 +550,7 @@ namespace ssGUI
         if(focus && IsOnTopWhenFocused())
             SetParent(GetParent());
 
-        BaseGUIObject::SetFocus(focus);
+        GUIObject::SetFocus(focus);
     }
 
     void Window::Internal_SetSelfFocus(bool focus)
@@ -552,7 +558,7 @@ namespace ssGUI
         if(focus && IsOnTopWhenFocused())
             SetParent(GetParent());
         
-        BaseGUIObject::Internal_SetSelfFocus(focus);
+        GUIObject::Internal_SetSelfFocus(focus);
     }
 
     void Window::SetBackgroundColor(glm::u8vec4 color)

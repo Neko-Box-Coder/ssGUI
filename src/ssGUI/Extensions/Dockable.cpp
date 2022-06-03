@@ -1,10 +1,11 @@
 #include "ssGUI/Extensions/Dockable.hpp"
 
-
+#include "ssGUI/ssGUITags.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/Docker.hpp"
+#include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 
 namespace ssGUI::Extensions
 {

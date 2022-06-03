@@ -1,8 +1,10 @@
 #include "ssGUI/Extensions/Layout.hpp"
 
+#include "ssGUI/EventCallbacks/OnRecursiveChildAddEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
 #include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/ssGUITags.hpp"
 

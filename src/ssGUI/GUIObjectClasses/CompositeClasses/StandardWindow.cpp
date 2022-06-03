@@ -10,6 +10,7 @@
 #include "ssGUI/Extensions/BoxShadow.hpp"
 #include "ssGUI/Extensions/Shape.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 
 namespace ssGUI
 {
