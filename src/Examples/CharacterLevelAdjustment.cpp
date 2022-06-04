@@ -45,7 +45,7 @@ int main()
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
-    guiManager.AddOnUpdateEventListener
+    guiManager.AddPostUpdateEventListener
     (
         [&]()
         {

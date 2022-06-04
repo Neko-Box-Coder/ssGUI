@@ -88,6 +88,7 @@ int main()
         //Set button to align text when pressed
         button->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
         (
+            "AnyKey",
             [&text, i](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 if(((ssGUI::Button*)src)->GetButtonState() != ssGUI::Enums::ButtonState::CLICKED)

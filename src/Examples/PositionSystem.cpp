@@ -47,7 +47,7 @@ int main()
     ssGUI::ssGUIManager guiManager;
 
     //Add update event listener for updating the text for showing the local and global position of the text
-    guiManager.AddOnUpdateEventListener
+    guiManager.AddPostUpdateEventListener
     (
         [&]()
         {

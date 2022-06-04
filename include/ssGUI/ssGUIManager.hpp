@@ -30,7 +30,7 @@ namespace ssGUI
     manager.StartRunning();
     =========================================
 
-    You can subscribe to the update function (called every frame) by adding a listener to <AddOnUpdateEventListener>
+    You can subscribe to the update function (called every frame) by adding a listener to <AddPostUpdateEventListener>
 
     You can also get the current instance of ssGUIManager without having to get a reference of it.
     > ssGUIManager* currentInstance = ssGUIManager::GetInstance();
@@ -43,12 +43,18 @@ namespace ssGUI
             std::list<ssGUI::GUIObject*> MainWindowPList;      //TODO : Turn this into ssGUI::MainWindow* instead maybe
             //std::list<ssGUI::GUIObject*> GUIObjectPList;
 
-            std::vector<std::function<void()>> OnUpdateEventListeners;
-            std::vector<bool> OnUpdateEventListenersValid;
-            std::queue<int> OnUpdateEventListenersNextFreeIndices;
-            std::vector<std::function<void()>> OnPostRenderingUpdateEventListeners;
-            std::vector<bool> OnPostRenderingUpdateEventListenersValid;
-            std::queue<int> OnPostRenderingUpdateEventListenersNextFreeIndices;
+            std::vector<std::function<void()>> PreUpdateEventListeners;
+            std::vector<bool> PreUpdateEventListenersValid;
+            std::queue<int> PreUpdateEventListenersNextFreeIndices;
+
+            std::vector<std::function<void()>> PostUpdateEventListeners;
+            std::vector<bool> PostUpdateEventListenersValid;
+            std::queue<int> PostUpdateEventListenersNextFreeIndices;
+
+            std::vector<std::function<void()>> PostRenderingUpdateEventListeners;
+            std::vector<bool> PostRenderingUpdateEventListenersValid;
+            std::queue<int> PostRenderingUpdateEventListenersNextFreeIndices;
+
             std::vector<std::function<void( std::list<ssGUI::GUIObject*>& ) >> OnCustomRenderEventListeners;
             std::vector<bool> OnCustomRenderEventListenersValid;
             std::queue<int> OnCustomRenderEventListenersNextFreeIndices;
@@ -97,17 +103,23 @@ namespace ssGUI
             //function: GetInstance
             static ssGUI::ssGUIManager* GetInstance();
 
-            //function: AddOnUpdateEventListener
-            int AddOnUpdateEventListener(std::function<void()> event);
+            //function: AddPreUpdateEventListener
+            int AddPreUpdateEventListener(std::function<void()> event);
 
-            //function: RemoveOnUpdateEventListener
-            void RemoveOnUpdateEventListener(int index);
+            //function: RemovePreUpdateEventListener
+            void RemovePreUpdateEventListener(int index);
 
-            //function: AddOnPostRenderingUpdateEventListener
-            int AddOnPostRenderingUpdateEventListener(std::function<void()> event);
+            //function: AddPostUpdateEventListener
+            int AddPostUpdateEventListener(std::function<void()> event);
 
-            //function: RemoveOnPostRenderingUpdateEventListener
-            void RemoveOnPostRenderingUpdateEventListener(int index);
+            //function: RemovePostUpdateEventListener
+            void RemovePostUpdateEventListener(int index);
+
+            //function: AddPostRenderingUpdateEventListener
+            int AddPostRenderingUpdateEventListener(std::function<void()> event);
+
+            //function: RemovePostRenderingUpdateEventListener
+            void RemovePostRenderingUpdateEventListener(int index);
 
             //function: AddOnCustomRenderEventListener
             int AddOnCustomRenderEventListener(std::function<void( std::list<ssGUI::GUIObject*>& ) > event);

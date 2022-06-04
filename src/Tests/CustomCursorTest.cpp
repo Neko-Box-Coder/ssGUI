@@ -38,7 +38,7 @@ int main()
     guiManager.GetBackendInputInterface()->GetCustomCursor(imagedata, hotspot);
     DEBUG_LINE("cursor2: "<<imagedata.IsValid());
 
-    guiManager.AddOnUpdateEventListener
+    guiManager.AddPostUpdateEventListener
     (
         [&]()
         {

@@ -25,13 +25,13 @@ namespace ssGUI
             BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
 
             //Dispatch Update event
-            FUNC_DEBUG_ENTRY("ssGUIManagerCustomUpdateEvent");
-            for(int i = 0; i < OnUpdateEventListeners.size(); i++)
+            FUNC_DEBUG_ENTRY("ssGUIManagerPreUpdateEvent");
+            for(int i = 0; i < PreUpdateEventListeners.size(); i++)
             {                
-                if(OnUpdateEventListenersValid[i])
-                    OnUpdateEventListeners[i]();
+                if(PreUpdateEventListenersValid[i])
+                    PreUpdateEventListeners[i]();
             }
-            FUNC_DEBUG_EXIT("ssGUIManagerCustomUpdateEvent");
+            FUNC_DEBUG_EXIT("ssGUIManagerPreUpdateEvent");
 
             #if DEBUG_STATE 
                 DEBUG_LINE("Update");
@@ -55,6 +55,15 @@ namespace ssGUI
                 }
                 ssGUI::GUIObject::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
             }
+
+            //Dispatch Update event
+            FUNC_DEBUG_ENTRY("ssGUIManagerPostUpdateEvent");
+            for(int i = 0; i < PostUpdateEventListeners.size(); i++)
+            {                
+                if(PostUpdateEventListenersValid[i])
+                    PostUpdateEventListeners[i]();
+            }
+            FUNC_DEBUG_EXIT("ssGUIManagerPostUpdateEvent");
 
             #if DEBUG_STATE 
                 DEBUG_LINE("Render");
@@ -86,15 +95,6 @@ namespace ssGUI
             #if DEBUG_STATE 
                 DEBUG_LINE("Post Render");
             #endif
-
-            //Dispatch Post Rendering Update event
-            FUNC_DEBUG_ENTRY("ssGUIManagerPostRenderingUpdateEvent");
-            for(int i = 0; i < OnPostRenderingUpdateEventListeners.size(); i++)
-            {
-                if(OnPostRenderingUpdateEventListenersValid[i])
-                    OnPostRenderingUpdateEventListeners[i]();
-            }
-            FUNC_DEBUG_EXIT("ssGUIManagerPostRenderingUpdateEvent");
 
             if(lastCursor != BackendInput->GetCursorType())
                 UpdateCursor();
@@ -237,6 +237,15 @@ namespace ssGUI
                                                     dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
                                                     currentMainWindowP->GetPositionOffset());
                 }
+
+                //Dispatch Post Rendering Update event
+                FUNC_DEBUG_ENTRY("ssGUIManagerPostRenderingUpdateEvent");
+                for(int i = 0; i < PostRenderingUpdateEventListeners.size(); i++)
+                {
+                    if(PostRenderingUpdateEventListenersValid[i])
+                        PostRenderingUpdateEventListeners[i]();
+                }
+                FUNC_DEBUG_EXIT("ssGUIManagerPostRenderingUpdateEvent");
 
                 //Draw everything that is displayed on the mainWindow back buffer
                 currentMainWindowP->Render();
@@ -384,10 +393,12 @@ namespace ssGUI
 
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;
 
-    ssGUIManager::ssGUIManager() :  BackendInput(), MainWindowPList(), OnUpdateEventListeners(), 
-                                    OnUpdateEventListenersValid(), OnUpdateEventListenersNextFreeIndices(),
-                                    OnPostRenderingUpdateEventListeners(), OnPostRenderingUpdateEventListenersValid(), 
-                                    OnPostRenderingUpdateEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
+    ssGUIManager::ssGUIManager() :  BackendInput(), MainWindowPList(), PreUpdateEventListeners(), 
+                                    PreUpdateEventListenersValid(), PreUpdateEventListenersNextFreeIndices(),
+                                    PostUpdateEventListeners(), PostUpdateEventListenersValid(), 
+                                    PostUpdateEventListenersNextFreeIndices(),
+                                    PostRenderingUpdateEventListeners(), PostRenderingUpdateEventListenersValid(), 
+                                    PostRenderingUpdateEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
                                     OnCustomRenderEventListenersValid(), OnCustomRenderEventListenersNextFreeIndices(), 
                                     IsCustomRendering(false)
     {
@@ -468,58 +479,85 @@ namespace ssGUI
         return CurrentInstanceP;
     }
 
-    int ssGUIManager::AddOnUpdateEventListener(std::function<void()> event)
+    int ssGUIManager::AddPreUpdateEventListener(std::function<void()> event)
     {
         int addedIndex = -1;
 
-        if(OnUpdateEventListenersNextFreeIndices.empty())
+        if(PreUpdateEventListenersNextFreeIndices.empty())
         {
-            OnUpdateEventListeners.push_back(event);
-            OnUpdateEventListenersValid.push_back(true);
-            addedIndex = OnUpdateEventListeners.size() - 1;
+            PreUpdateEventListeners.push_back(event);
+            PreUpdateEventListenersValid.push_back(true);
+            addedIndex = PreUpdateEventListeners.size() - 1;
         }
         else
         {
-            addedIndex = OnUpdateEventListenersNextFreeIndices.front();
-            OnUpdateEventListeners[OnUpdateEventListenersNextFreeIndices.front()] = event;
-            OnUpdateEventListenersValid[OnUpdateEventListenersNextFreeIndices.front()] = true;
-            OnUpdateEventListenersNextFreeIndices.pop();
+            addedIndex = PreUpdateEventListenersNextFreeIndices.front();
+            PreUpdateEventListeners[PreUpdateEventListenersNextFreeIndices.front()] = event;
+            PreUpdateEventListenersValid[PreUpdateEventListenersNextFreeIndices.front()] = true;
+            PreUpdateEventListenersNextFreeIndices.pop();
         }
 
         return addedIndex;
     }
 
-    void ssGUIManager::RemoveOnUpdateEventListener(int index)
+    void ssGUIManager::RemovePreUpdateEventListener(int index)
     {
-        OnUpdateEventListenersValid[index] = false;
-        OnUpdateEventListenersNextFreeIndices.push(index);
+        PreUpdateEventListenersValid[index] = false;
+        PreUpdateEventListenersNextFreeIndices.push(index);
     }
 
-    int ssGUIManager::AddOnPostRenderingUpdateEventListener(std::function<void()> event)
+    int ssGUIManager::AddPostUpdateEventListener(std::function<void()> event)
     {
         int addedIndex = -1;
 
-        if(OnPostRenderingUpdateEventListenersNextFreeIndices.empty())
+        if(PostUpdateEventListenersNextFreeIndices.empty())
         {
-            OnPostRenderingUpdateEventListeners.push_back(event);
-            OnPostRenderingUpdateEventListenersValid.push_back(true);
-            addedIndex = OnPostRenderingUpdateEventListeners.size() - 1;
+            PostUpdateEventListeners.push_back(event);
+            PostUpdateEventListenersValid.push_back(true);
+            addedIndex = PostUpdateEventListeners.size() - 1;
         }
         else
         {
-            addedIndex = OnPostRenderingUpdateEventListenersNextFreeIndices.front();
-            OnPostRenderingUpdateEventListeners[OnPostRenderingUpdateEventListenersNextFreeIndices.front()] = event;
-            OnPostRenderingUpdateEventListenersValid[OnPostRenderingUpdateEventListenersNextFreeIndices.front()] = true;
-            OnPostRenderingUpdateEventListenersNextFreeIndices.pop();
+            addedIndex = PostUpdateEventListenersNextFreeIndices.front();
+            PostUpdateEventListeners[PostUpdateEventListenersNextFreeIndices.front()] = event;
+            PostUpdateEventListenersValid[PostUpdateEventListenersNextFreeIndices.front()] = true;
+            PostUpdateEventListenersNextFreeIndices.pop();
         }
 
         return addedIndex;
     }
 
-    void ssGUIManager::RemoveOnPostRenderingUpdateEventListener(int index)
+    void ssGUIManager::RemovePostUpdateEventListener(int index)
     {
-        OnPostRenderingUpdateEventListenersValid[index] = false;
-        OnPostRenderingUpdateEventListenersNextFreeIndices.push(index);
+        PostUpdateEventListenersValid[index] = false;
+        PostUpdateEventListenersNextFreeIndices.push(index);
+    }
+
+    int ssGUIManager::AddPostRenderingUpdateEventListener(std::function<void()> event)
+    {
+        int addedIndex = -1;
+
+        if(PostRenderingUpdateEventListenersNextFreeIndices.empty())
+        {
+            PostRenderingUpdateEventListeners.push_back(event);
+            PostRenderingUpdateEventListenersValid.push_back(true);
+            addedIndex = PostRenderingUpdateEventListeners.size() - 1;
+        }
+        else
+        {
+            addedIndex = PostRenderingUpdateEventListenersNextFreeIndices.front();
+            PostRenderingUpdateEventListeners[PostRenderingUpdateEventListenersNextFreeIndices.front()] = event;
+            PostRenderingUpdateEventListenersValid[PostRenderingUpdateEventListenersNextFreeIndices.front()] = true;
+            PostRenderingUpdateEventListenersNextFreeIndices.pop();
+        }
+
+        return addedIndex;
+    }
+
+    void ssGUIManager::RemovePostRenderingUpdateEventListener(int index)
+    {
+        PostRenderingUpdateEventListenersValid[index] = false;
+        PostRenderingUpdateEventListenersNextFreeIndices.push(index);
     }
 
     int ssGUIManager::AddOnCustomRenderEventListener(std::function<void( std::list<ssGUI::GUIObject*>& ) > event)
