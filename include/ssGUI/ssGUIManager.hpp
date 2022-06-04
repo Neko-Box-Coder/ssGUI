@@ -60,7 +60,6 @@ namespace ssGUI
             void Internal_Update();
             void PollInputs();
             void CheckMainWindowExistence();
-            void GUIObjectsEventCallback();
             void Render();
             void UpdateObjects();
             void UpdateCursor();

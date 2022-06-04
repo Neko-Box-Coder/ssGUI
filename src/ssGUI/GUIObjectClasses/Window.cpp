@@ -17,8 +17,6 @@ namespace ssGUI
         
         CurrentDragState = dragState;
 
-
-        //TODO : Cache this
         if(IsEventCallbackExist(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME))
            GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->Notify(this);
     }
@@ -278,8 +276,6 @@ namespace ssGUI
     {
         glm::vec2 drawPosition = GetGlobalPosition();
 
-        //TODO: Some optimisation maybe possible
-
         //Base window
         DrawingVerticies.push_back(drawPosition);
         DrawingUVs.push_back(glm::vec2());
@@ -294,7 +290,7 @@ namespace ssGUI
         DrawingColours.push_back(GetBackgroundColor());
 
         DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());        //TODO : Caching
+        DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());
 
         DrawingCounts.push_back(4);

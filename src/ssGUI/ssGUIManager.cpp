@@ -141,11 +141,6 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    void ssGUIManager::GUIObjectsEventCallback()
-    {
-        //TODO: Not sure if this function is needed
-    }
-
     void ssGUIManager::Render()
     {        
         FUNC_DEBUG_ENTRY();

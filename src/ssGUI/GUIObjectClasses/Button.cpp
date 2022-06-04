@@ -41,7 +41,6 @@ namespace ssGUI
         
         CurrentState = state;
 
-        //TODO : Set it as optional
         if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>())
             GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
     }

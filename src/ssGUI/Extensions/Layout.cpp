@@ -951,7 +951,6 @@ namespace ssGUI::Extensions
         }
     }
 
-    //TODO: This can be just using the ChildAddedEventCallback instead of recursive one
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
         FUNC_DEBUG_ENTRY();
@@ -1155,10 +1154,6 @@ namespace ssGUI::Extensions
         //Disable children resizing
         if(DisableChildrenResizing)
             DisableChildrenResizingInUpdate();
-        
-        //TODO : Probably don't need this as events will sort this out, need awhile to test to make sure.
-        // if(UpdateContainerMinMaxSize)
-        //     SyncContainerMinMaxSize();
 
         //Set all children's width and get all children pos and size and min size
         std::vector<float> childrenPos;

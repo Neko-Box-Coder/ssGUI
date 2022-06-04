@@ -171,10 +171,6 @@ namespace ssGUI::Extensions
 
             virtual void OnWindowDragStarted();
 
-            virtual void RemoveUnnecessaryDocker(ssGUI::GUIObject* checkObj);
-            
-            //virtual void RemoveOriginalParentIfNeeded();
-
             virtual void FindDockLayout(ssGUI::Extensions::Layout*& dockLayout);
             virtual void CreateEmptyParentForDocking(ssGUI::Extensions::Layout*& dockLayout);
             virtual void OnWindowDragFinished();

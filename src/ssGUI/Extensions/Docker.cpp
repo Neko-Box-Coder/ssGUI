@@ -266,7 +266,7 @@ namespace ssGUI::Extensions
 
                 //Don't need to stash children iterator as this will get deleted anyway
                 //Transfer the rest of the floating or overlay children
-                //NOTE: Might be necessary to maintain order for the overlay or floating children. Not too sure :/
+                //TODO: Might be necessary to maintain order for the overlay or floating children. Not too sure :/
                 Container->MoveChildrenIteratorToFirst();
                 while(!Container->IsChildrenIteratorEnd())
                 {

@@ -9,7 +9,6 @@ namespace ssGUI
         //Internal_Draw background by default
         glm::vec2 drawPosition = GetGlobalPosition();
 
-        //TODO: Some optimisation maybe possible
         DrawingVerticies.push_back(drawPosition);
         DrawingUVs.push_back(glm::vec2());
         DrawingColours.push_back(GetBackgroundColor());

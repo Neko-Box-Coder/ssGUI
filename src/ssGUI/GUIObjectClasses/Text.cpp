@@ -703,7 +703,6 @@ namespace ssGUI
         
         glm::vec2 drawPos = GetGlobalPosition();
 
-        //TODO: Some optimisation maybe possible
         //Drawing background
         DrawingVerticies.push_back(drawPos);
         DrawingUVs.push_back(glm::vec2());
@@ -803,7 +802,6 @@ namespace ssGUI
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
     }
     
-    //TODO : Maybe subdivide this function
     void Text::ComputeCharactersPositionAndSize()
     {
         FUNC_DEBUG_ENTRY();
