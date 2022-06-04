@@ -149,12 +149,12 @@ namespace ssGUI::Extensions
             Container->RedrawObject();
     }
 
-    int Border::GetBorderWidth() const
+    float Border::GetBorderWidth() const
     {
         return BorderWidth;
     }
     
-    void Border::SetBorderWidth(int width)
+    void Border::SetBorderWidth(float width)
     {
         BorderWidth = width;
 

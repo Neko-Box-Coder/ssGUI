@@ -889,22 +889,22 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-    int Layout::GetPadding() const
+    float Layout::GetPadding() const
     {
         return Padding;
     }
 
-    void Layout::SetPadding(int padding)
+    void Layout::SetPadding(float padding)
     {
         Padding = padding;
     }
 
-    int Layout::GetSpacing() const
+    float Layout::GetSpacing() const
     {
         return Spacing;
     }
 
-    void Layout::SetSpacing(int spacing)
+    void Layout::SetSpacing(float spacing)
     {
         Spacing = spacing;
     }

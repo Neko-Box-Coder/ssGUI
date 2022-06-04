@@ -75,22 +75,22 @@ namespace ssGUI::Extensions
         return VerticalUsePercentage;
     }
 
-    void AdvancedPosition::SetHorizontalPixel(int pixel)
+    void AdvancedPosition::SetHorizontalPixel(float pixel)
     {
         HorizontalPixelValue = pixel;
     }
 
-    int AdvancedPosition::GetHorizontalPixel() const
+    float AdvancedPosition::GetHorizontalPixel() const
     {
         return HorizontalPixelValue;
     }
 
-    void AdvancedPosition::SetVerticalPixel(int pixel)
+    void AdvancedPosition::SetVerticalPixel(float pixel)
     {
         VerticalPixelValue = pixel;
     }
 
-    int AdvancedPosition::GetVerticalPixel() const
+    float AdvancedPosition::GetVerticalPixel() const
     {
         return VerticalPixelValue;
     }

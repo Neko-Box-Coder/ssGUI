@@ -28,8 +28,8 @@ namespace ssGUI::Extensions
         bool HorizontalUsePercentage;
         bool VerticalUsePercentage;
 
-        int HorizontalPixelValue;
-        int VerticalPixelValue;
+        float HorizontalPixelValue;
+        float VerticalPixelValue;
 
         float HorizontalPercentageValue;
         float VerticalPercentageValue;
@@ -58,8 +58,8 @@ namespace ssGUI::Extensions
             bool HorizontalUsePercentage;
             bool VerticalUsePercentage;
 
-            int HorizontalPixelValue;
-            int VerticalPixelValue;
+            float HorizontalPixelValue;
+            float VerticalPixelValue;
 
             float HorizontalPercentageValue;
             float VerticalPercentageValue;
@@ -93,16 +93,16 @@ namespace ssGUI::Extensions
             virtual bool IsVerticalUsePercentage() const;
 
             //function: SetHorizontalPixel
-            virtual void SetHorizontalPixel(int pixel);
+            virtual void SetHorizontalPixel(float pixel);
 
             //function: GetHorizontalPixel            
-            virtual int GetHorizontalPixel() const;
+            virtual float GetHorizontalPixel() const;
 
             //function: SetVerticalPixel
-            virtual void SetVerticalPixel(int pixel);
+            virtual void SetVerticalPixel(float pixel);
 
             //function: GetVerticalPixel            
-            virtual int GetVerticalPixel() const;
+            virtual float GetVerticalPixel() const;
             
             //function: SetHorizontalPercentage           
             //0 = 0%, 1 = 100%. This can go below 0 or over 1

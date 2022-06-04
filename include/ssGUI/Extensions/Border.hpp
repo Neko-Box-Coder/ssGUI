@@ -18,7 +18,7 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* Container;
         bool Enabled;
         glm::u8vec4 BorderColor;
-        int BorderWidth;
+        float BorderWidth;
 
         //TODO : Maybe change to private enum class. Just too lazy to do it atm :P
         int8_t BorderSides;     //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
@@ -40,7 +40,7 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* Container;
             bool Enabled;
             glm::u8vec4 BorderColor;
-            int BorderWidth;
+            float BorderWidth;
 
             //TODO : Maybe change to private enum class. Just too lazy to do it atm :P
             int8_t BorderSides;     //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
@@ -67,10 +67,10 @@ namespace ssGUI::Extensions
             virtual void SetBorderColor(glm::u8vec4 colour);
             
             //function: GetBorderWidth
-            virtual int GetBorderWidth() const;
+            virtual float GetBorderWidth() const;
             
             //function: SetBorderWidth
-            virtual void SetBorderWidth(int width);
+            virtual void SetBorderWidth(float width);
 
             //function: ShowBorderLeft
             virtual void ShowBorderLeft(bool show);

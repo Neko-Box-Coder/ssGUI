@@ -30,8 +30,8 @@ namespace ssGUI::Extensions
         bool CoverFullLength; 
         ssGUI::GUIObject* Container;
         bool Enabled;
-        int Padding;
-        int Spacing;
+        float Padding;
+        float Spacing;
         bool Overflow;
 
         ObjectsReferences CurrentObjectsReferences;
@@ -71,8 +71,8 @@ namespace ssGUI::Extensions
             bool CoverFullLength; 
             ssGUI::GUIObject* Container;
             bool Enabled;
-            int Padding;
-            int Spacing;
+            float Padding;
+            float Spacing;
             bool Overflow;
 
             ObjectsReferences CurrentObjectsReferences;
@@ -199,20 +199,20 @@ namespace ssGUI::Extensions
             //function: GetPadding
             //Padding for layouting the children GUI objects. 
             //Padding will be on all 4 sides (widget) or only on left, right and bottom sides (window). 
-            virtual int GetPadding() const;
+            virtual float GetPadding() const;
             
             //function: SetPadding
             //Padding for layouting the children GUI objects. 
             //Padding will be on all 4 sides (widget) or only on left, right and bottom sides (window). 
-            virtual void SetPadding(int padding);
+            virtual void SetPadding(float padding);
             
             //function: GetSpacing
             //Spacing between each child
-            virtual int GetSpacing() const;
+            virtual float GetSpacing() const;
             
             //function: SetSpacing
             //Spacing between each child
-            virtual void SetSpacing(int spacing);
+            virtual void SetSpacing(float spacing);
 
             //function: SetOverflow
             //Sets if allows the children to overflow the container. 
