@@ -5,10 +5,7 @@
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 
 namespace ssGUI::Backend
-{
-    sf::Image BackendSystemInputSFML::CustomCursorImage = sf::Image();
-    glm::ivec2 BackendSystemInputSFML::Hotspot = glm::ivec2();
-    
+{    
     template <class T>
     void BackendSystemInputSFML::AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo)
     {
@@ -166,7 +163,8 @@ namespace ssGUI::Backend
 
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
                                             CurrentMouseButtons(), LastMouseButtons(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
-                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime()
+                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursorImage(),
+                                            Hotspot()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {

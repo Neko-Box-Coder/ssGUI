@@ -41,9 +41,8 @@ namespace ssGUI::Backend
         ssGUI::Enums::CursorType CurrentCursor;
         std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
 
-        //TODO: Do these need to be static?...
-        static sf::Image CustomCursorImage;
-        static glm::ivec2 Hotspot;
+        sf::Image CustomCursorImage;
+        glm::ivec2 Hotspot;
 
         #if USE_SFML_TIME
             sf::Clock ElapsedTime;
@@ -54,7 +53,8 @@ namespace ssGUI::Backend
     ============================== C++ ==============================
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
                                             CurrentMouseButtons(), LastMouseButtons(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
-                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime()
+                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursorImage(),
+                                            Hotspot()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
@@ -86,9 +86,8 @@ namespace ssGUI::Backend
             ssGUI::Enums::CursorType CurrentCursor;
             std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
 
-            //TODO: Do these need to be static?...
-            static sf::Image CustomCursorImage;
-            static glm::ivec2 Hotspot;
+            sf::Image CustomCursorImage;
+            glm::ivec2 Hotspot;
 
             #if USE_SFML_TIME
                 sf::Clock ElapsedTime;
