@@ -32,6 +32,7 @@ namespace ssGUI::Backend
                 #ifdef USE_SFML_BACKEND
                     return static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingSFML());
                 #endif
+                return nullptr;
             }
 
             //function: CreateBackendFontInterface
@@ -40,6 +41,7 @@ namespace ssGUI::Backend
                 #ifdef USE_SFML_BACKEND
                     return static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontSFML());
                 #endif
+                return nullptr;
             }
 
             //function: CreateBackendImageInterface
@@ -48,6 +50,7 @@ namespace ssGUI::Backend
                 #ifdef USE_SFML_BACKEND
                     return static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageSFML());
                 #endif
+                return nullptr;
             }
 
             //function: CreateBackendInputInterface
@@ -56,6 +59,7 @@ namespace ssGUI::Backend
                 #ifdef USE_SFML_BACKEND
                     return static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputSFML());
                 #endif
+                return nullptr;
             }
             
             //function: CreateBackendMainWindowInterface
@@ -64,6 +68,7 @@ namespace ssGUI::Backend
                 #ifdef USE_SFML_BACKEND
                     return static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowSFML());
                 #endif
+                return nullptr;
             }
     };
 }
