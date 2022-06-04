@@ -78,7 +78,12 @@ namespace ssGUI::Backend
             //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
 
+            //function: GetRawHandle
+            //See <BackendFontInterface::GetRawHandle>
+            void* GetRawHandle() override;
+
             //function: Clone
+            //See <BackendFontInterface::Clone>
             ssGUI::Backend::BackendFontInterface* Clone() override;
     };
 }

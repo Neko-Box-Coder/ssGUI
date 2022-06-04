@@ -57,11 +57,13 @@ namespace ssGUI::Backend
             //Please see <BackendFontSFML::LoadFromMemory> for supported font format.
             virtual bool LoadFromMemory(void* dataPtr, int lengthInBytes) = 0;
 
+            //function: GetRawHandle
+            //Returns the raw pointer to the underlying backend implmentation object
+            virtual void* GetRawHandle() = 0;
+
             //function: Clone
+            //Clones the backend font object
             virtual BackendFontInterface* Clone() = 0;
-
-            //TODO : Add GetRawHandle()
-
     };
 }
 

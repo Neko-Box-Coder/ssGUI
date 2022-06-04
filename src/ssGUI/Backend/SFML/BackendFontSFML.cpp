@@ -103,7 +103,12 @@ namespace ssGUI::Backend
         }
         else
             return false;
-    }   
+    }
+
+    void* BackendFontSFML::GetRawHandle()
+    {
+        return &Font;
+    }
 
     ssGUI::Backend::BackendFontInterface* BackendFontSFML::Clone()
     {
