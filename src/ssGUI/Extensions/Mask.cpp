@@ -869,7 +869,7 @@ namespace ssGUI::Extensions
         Container = nullptr;
         Enabled = other.IsEnabled();
         MaskChildren = other.GetMaskChildren();
-        MaskContainer = other.GetMaskContainer();
+        MaskContainer = other.IsMaskContainer();
         FollowContainer = other.GetFollowContainer();
         FollowPositionOffset = other.GetFollowPositionOffset();
         FollowSizePadding = other.GetFollowSizePadding();
@@ -898,7 +898,7 @@ namespace ssGUI::Extensions
 
         if(MaskChildren)
         {
-            AddMaskEnforcerToChildren(Container, GetMaskContainer());      
+            AddMaskEnforcerToChildren(Container, IsMaskContainer());      
             if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME))
             {
                 Container->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME)->AddEventListener
@@ -941,7 +941,7 @@ namespace ssGUI::Extensions
         }
         else
         {
-            RemoveMaskEnforcerToChildren(Container, GetMaskContainer());
+            RemoveMaskEnforcerToChildren(Container, IsMaskContainer());
             if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME))
             {
                 Container->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME)->
@@ -1003,7 +1003,7 @@ namespace ssGUI::Extensions
         }
     }
 
-    bool Mask::GetMaskContainer() const
+    bool Mask::IsMaskContainer() const
     {
         return MaskContainer;
     }
@@ -1304,7 +1304,7 @@ namespace ssGUI::Extensions
         
         Enabled = mask->IsEnabled();
         MaskChildren = mask->GetMaskChildren();
-        MaskContainer = mask->GetMaskContainer();
+        MaskContainer = mask->IsMaskContainer();
         FollowContainer = mask->GetFollowContainer();
         FollowPositionOffset = mask->GetFollowPositionOffset();
         FollowSizePadding = mask->GetFollowSizePadding();

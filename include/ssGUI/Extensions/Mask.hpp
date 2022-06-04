@@ -15,8 +15,6 @@
 #include <cmath>
 #include <queue>
 
-//TODO : Change GetMaskContainer to IsMaskContainer instead
-
 //namespace: ssGUI::Extensions
 namespace ssGUI::Extensions
 {
@@ -123,12 +121,14 @@ namespace ssGUI::Extensions
             virtual bool GetMaskChildren() const;
             
             //function: SetMaskContainer
-            //If true, a <MaskEnforcer> will be added to the container. This should normally be false.
+            //If true, a <MaskEnforcer> will be added to the container, 
+            //meaning mask will be applied to the container itself. This should normally be false.
             virtual void SetMaskContainer(bool maskContainer);
             
-            //function: GetMaskContainer
-            //If true, a <MaskEnforcer> will be added to the container. This should normally be false.
-            virtual bool GetMaskContainer() const;
+            //function: IsMaskContainer
+            //If true, a <MaskEnforcer> will be added to the container,
+            //meaning mask will be applied to the container itself. This should normally be false.
+            virtual bool IsMaskContainer() const;
             
             //function: SetFollowContainer
             //If true, the mask will follow the container (Setting the position of the mask to be the same as Container) and will be the same size as the container. This should normally be true.
