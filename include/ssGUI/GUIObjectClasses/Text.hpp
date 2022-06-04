@@ -157,6 +157,9 @@ namespace ssGUI
 
             virtual void ConstructRenderInfo() override;
 
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
@@ -353,10 +356,6 @@ namespace ssGUI
             //function: GetType
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
-
-            //function: Internal_Update
-            //See <GUIObject::Internal_Update>
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
             //function: Clone
             //See <GUIObject::Clone>

@@ -742,6 +742,36 @@ namespace ssGUI
         
         FUNC_DEBUG_EXIT();
     }
+
+    void Text::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        //Check any changes to default fonts
+        //TODO: Maybe need optimization
+        bool defaultFontsChanged = false; 
+        if(LastDefaultFonts.size() != DefaultFonts.size()) 
+            defaultFontsChanged = true; 
+        else 
+        { 
+            for(int i = 0; i < DefaultFonts.size(); i++) 
+            { 
+                if(LastDefaultFonts[i] != DefaultFonts[i]) 
+                { 
+                    defaultFontsChanged = true; 
+                    break; 
+                } 
+            } 
+        } 
+ 
+        if(defaultFontsChanged) 
+        { 
+            LastDefaultFonts = DefaultFonts; 
+            RecalculateTextNeeded = true; 
+            RedrawObject(); 
+        }
+
+        Widget::MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+    }
     
     const std::string Text::ListenerKey = "Text";
 
@@ -1172,105 +1202,6 @@ namespace ssGUI
     ssGUI::Enums::GUIObjectType Text::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
-    }
-
-    void Text::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
-    {        
-        FUNC_DEBUG_ENTRY();
-        
-        //If it is not visible, don't even update/draw it
-        if(!IsVisible())
-        {
-            FUNC_DEBUG_EXIT();
-            return;
-        }
-
-        for(auto extension : ExtensionsUpdateOrder)
-        {
-            //Guard against extension being deleted by other extensions
-            if(!IsExtensionExist(extension))
-                continue;
-
-            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        }
-
-        //It will only block when BlockInput flag is true
-        if(!IsBlockInput())
-            goto endOfUpdate;
-
-        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-
-        //Mouse Input blocking
-        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
-            goto endOfUpdate;
-
-        //Mouse Input blocking
-        {
-            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
-
-            bool mouseInWindowBoundX = false;
-            bool mouseInWindowBoundY = false;
-            
-            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
-                mouseInWindowBoundX = true;
-
-            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
-                mouseInWindowBoundY = true;
-            
-            //Input blocking and set focus
-            if(mouseInWindowBoundX && mouseInWindowBoundY)
-                windowInputStatus.MouseInputBlocked = true;
-
-            //If mouse click on this, set focus
-            if(mouseInWindowBoundX && mouseInWindowBoundY &&
-                ((inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT)) ||
-                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
-                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
-            {
-                SetFocus(true);    
-            }
-        }
-
-        endOfUpdate:
-        for(auto extension : ExtensionsUpdateOrder)
-        {
-            //Guard against extension being deleted by other extensions
-            if(!IsExtensionExist(extension))
-                continue;
-
-            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        }
-
-        //Check any changes to default fonts
-        bool defaultFontsChanged = false;
-        if(LastDefaultFonts.size() != DefaultFonts.size())
-            defaultFontsChanged = true;
-        else
-        {
-            for(int i = 0; i < DefaultFonts.size(); i++)
-            {
-                if(LastDefaultFonts[i] != DefaultFonts[i])
-                {
-                    defaultFontsChanged = true;
-                    break;
-                }
-            }
-        }
-
-        if(defaultFontsChanged)
-        {
-            LastDefaultFonts = DefaultFonts;
-            RecalculateTextNeeded = true;
-            RedrawObject();
-        }
-        
-        //Check position different for redraw
-        if(GetGlobalPosition() != LastGlobalPosition)
-            RedrawObject();
-
-        LastGlobalPosition = GetGlobalPosition();
-
-        FUNC_DEBUG_EXIT();
     }
 
     Text* Text::Clone(bool cloneChildren)

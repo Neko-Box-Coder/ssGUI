@@ -29,6 +29,41 @@ namespace ssGUI
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
     }
+
+    void Widget::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        //Mouse Input blocking
+        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
+            return;
+
+        //Mouse Input blocking
+        {
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+
+            bool mouseInWindowBoundX = false;
+            bool mouseInWindowBoundY = false;
+            
+            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+                mouseInWindowBoundX = true;
+
+            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                mouseInWindowBoundY = true;
+            
+            //Input blocking
+            if(mouseInWindowBoundX && mouseInWindowBoundY)
+                windowInputStatus.MouseInputBlocked = true;
+
+            //If mouse click on this, set focus
+            if(mouseInWindowBoundX && mouseInWindowBoundY &&
+                ((inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
+            {
+                SetFocus(true);    
+            }
+        }
+    }
     
     Widget::Widget() : Interactable(true), BlockInput(true) 
     {}
@@ -73,7 +108,7 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
-        
+
         for(auto extension : ExtensionsUpdateOrder)
         {
             //Guard against extension being deleted by other extensions
@@ -88,37 +123,7 @@ namespace ssGUI
             goto endOfUpdate;
 
         CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-
-        //Mouse Input blocking
-        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
-            goto endOfUpdate;
-
-        //Mouse Input blocking
-        {
-            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
-
-            bool mouseInWindowBoundX = false;
-            bool mouseInWindowBoundY = false;
-            
-            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
-                mouseInWindowBoundX = true;
-
-            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
-                mouseInWindowBoundY = true;
-            
-            //Input blocking
-            if(mouseInWindowBoundX && mouseInWindowBoundY)
-                windowInputStatus.MouseInputBlocked = true;
-
-            //If mouse click on this, set focus
-            if(mouseInWindowBoundX && mouseInWindowBoundY &&
-                ((inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT)) ||
-                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
-                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
-            {
-                SetFocus(true);    
-            }
-        }
+        MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         endOfUpdate:;
         for(auto extension : ExtensionsUpdateOrder)
@@ -129,7 +134,7 @@ namespace ssGUI
 
             Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
         }
-
+        
         //Check position different for redraw
         if(GetGlobalPosition() != LastGlobalPosition)
             RedrawObject();

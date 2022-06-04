@@ -16,6 +16,10 @@ namespace ssGUI
         
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
     }
+
+    void MainWindow::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {}
     
     MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::vec2(0, 0)), RedrawCount(0), LastSyncTime(0)
     {
@@ -334,6 +338,7 @@ namespace ssGUI
         LastSize = GetSize();
 
         CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         //Apply focus
         if(!windowInputStatus.MouseInputBlocked && !globalInputStatus.MouseInputBlocked)

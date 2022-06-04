@@ -342,6 +342,36 @@ namespace ssGUI
         
         // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
     }
+
+    void Window::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+        glm::vec2 mouseDelta = currentMousePos - MouseDownPosition;
+
+        // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";
+        // std::cout << "current window pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
+        // std::cout << "current window size: "<<GetSize().x<<", "<<GetSize().y<<"\n";
+        // std::cout<<"\n";
+        
+        //Resize
+        //On mouse down
+        if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
+            !globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
+        {
+            OnMouseDownUpdate(currentMousePos, globalInputStatus);
+        }
+        //When the user is resizing or dragging the window
+        else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
+        {
+            OnMouseDragOrResizeUpdate(globalInputStatus, mouseDelta, inputInterface);
+        }
+        //Otherwise show resize cursor if necessary 
+        else if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
+        {
+            BlockMouseInputAndUpdateCursor(globalInputStatus, currentMousePos, inputInterface);
+        }
+    }
         
     Window::Window() : Titlebar(true), TitlebarHeight(20), ResizeType(ssGUI::Enums::ResizeType::ALL), Draggable(true), Closable(true), Closed(false),
                        IsClosingAborted(false), TitlebarColorDifference(-40, -40, -40, 0), AdaptiveTitlebarColor(false), DeleteAfterClosed(true), OnTopWhenFocused(true),
@@ -582,72 +612,6 @@ namespace ssGUI
     ssGUI::Enums::GUIObjectType Window::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::WINDOW;
-    }
-
-    void Window::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
-    {        
-        FUNC_DEBUG_ENTRY();
-        
-        //If it is not visible, don't even update/draw it
-        if(!IsVisible())
-        {
-            FUNC_DEBUG_EXIT();
-            return;
-        }
-
-        for(auto extension : ExtensionsUpdateOrder)
-        {
-            //Guard against extension being deleted by other extensions
-            if(!IsExtensionExist(extension))
-                continue;
-
-            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        }
-
-        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-
-        glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
-        glm::vec2 mouseDelta = currentMousePos - MouseDownPosition;
-
-        // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";
-        // std::cout << "current window pos: "<<GetGlobalPosition().x<<", "<<GetGlobalPosition().y<<"\n";
-        // std::cout << "current window size: "<<GetSize().x<<", "<<GetSize().y<<"\n";
-        // std::cout<<"\n";
-        
-        //Resize
-        //On mouse down
-        if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-            !globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
-        {
-            OnMouseDownUpdate(currentMousePos, globalInputStatus);
-        }
-        //When the user is resizing or dragging the window
-        else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
-        {
-            OnMouseDragOrResizeUpdate(globalInputStatus, mouseDelta, inputInterface);
-        }
-        //Otherwise show resize cursor if necessary 
-        else if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked)
-        {
-            BlockMouseInputAndUpdateCursor(globalInputStatus, currentMousePos, inputInterface);
-        }
-
-        for(auto extension : ExtensionsUpdateOrder)
-        {
-            //Guard against extension being deleted by other extensions
-            if(!IsExtensionExist(extension))
-                continue;
-
-            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        }
-
-        //Check position different for redraw
-        if(GetGlobalPosition() != LastGlobalPosition)
-            RedrawObject();
-
-        LastGlobalPosition = GetGlobalPosition();
-
-        FUNC_DEBUG_EXIT();
     }
 
     Window* Window::Clone(bool cloneChildren)

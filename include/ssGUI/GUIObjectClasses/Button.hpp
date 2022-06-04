@@ -74,6 +74,8 @@ namespace ssGUI
 
             virtual void ConstructRenderInfo() override;
             virtual void SetButtonState(ssGUI::Enums::ButtonState state);
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
             
         public:
             //string: ListenerKey
@@ -109,10 +111,6 @@ namespace ssGUI
             //function: SetInteractable
             //See <Widget::SetInteractable>
             virtual void SetInteractable(bool interactable) override;
-
-            //function: Internal_Update
-            //See <Widget::Internal_Update>
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface *inputInterface, ssGUI::InputStatus &globalInputStatus, ssGUI::InputStatus &windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
             //function: Clone
             //See <Widget::Clone>

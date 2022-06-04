@@ -168,7 +168,8 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+        ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
         if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked || RightClickMenu == nullptr)
             return;
@@ -192,6 +193,11 @@ namespace ssGUI
             RightClickMenu->SetMenuTarget(this);
             RightClickMenu->SpawnMenu(currentMousePos);
         }
+    }
+
+    void GUIObject::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+        ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
     }
 
     GUIObject::GUIObject() : LastGlobalPosition(), CurrentTags(), RightClickMenu(nullptr)
@@ -312,6 +318,7 @@ namespace ssGUI
         }
 
         CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
 
         for(auto extension : ExtensionsUpdateOrder)
         {

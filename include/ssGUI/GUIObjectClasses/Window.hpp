@@ -95,6 +95,8 @@ namespace ssGUI
 
             Window(Window const& other) = default;
             virtual void ConstructRenderInfo() override;
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
 
         public:
             Window();
@@ -232,19 +234,10 @@ namespace ssGUI
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
-            //function: Internal_Update
-            //See <GUIObject::Internal_Update>
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
-            
             //function: Clone
             //See <GUIObject::Clone>
             virtual Window* Clone(bool cloneChildren) override;
     };
 }
-
-
-
-
-
 
 #endif
