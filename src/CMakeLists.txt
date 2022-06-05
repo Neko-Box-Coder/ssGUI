@@ -12,8 +12,8 @@ project(example VERSION 1.0)
 configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
 # add the executable
-# add_executable(example ./Examples/DockAndLayoutExample.cpp)
-add_executable(example "./Tests/MenuTest.cpp")
+# add_executable(example ./Examples/TextAlignmentExample.cpp)
+add_executable(example "./Tests/StandardButtonTest.cpp")
 
 # For projectconfig.hpp in build folder
 target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")
@@ -46,10 +46,12 @@ set(CMAKE_CXX_FLAGS "-fpermissive -std=c++0x")  #For surpressing goto warning
 if("${OUTPUT_STATIC}")
     add_library(ssGUI STATIC
     "${PROJECT_SOURCE_DIR}/ssGUI/ssGUIManager.cpp"
+    "${PROJECT_SOURCE_DIR}/ssGUI/Factory.cpp"
 )
 else()
     add_library(ssGUI SHARED
     "${PROJECT_SOURCE_DIR}/ssGUI/ssGUIManager.cpp"
+    "${PROJECT_SOURCE_DIR}/ssGUI/Factory.cpp"
 )
 endif()
 

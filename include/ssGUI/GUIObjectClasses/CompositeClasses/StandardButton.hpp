@@ -2,8 +2,10 @@
 #define SSGUI_STANDARD_BUTTPM
 
 #include "ssGUI/GUIObjectClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/Image.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
+#include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 #include "ssGUI/Extensions/Outline.hpp"
 #include "ssGUI/Extensions/BoxShadow.hpp"
@@ -18,12 +20,15 @@ namespace ssGUI
     ============================== C++ ==============================
     protected:
         ssGUIObjectIndex ButtonText;
+        ssGUIObjectIndex ButtonImage;
         bool AdaptiveButtonTextColor;
         glm::ivec4 ButtonTextColorDifference;
         bool AdaptiveButtonTextContrast;
+        bool IconButtonMode;
     =================================================================
     ============================== C++ ==============================
-    StandardButton::StandardButton() : ButtonText(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), AdaptiveButtonTextContrast(true)
+    StandardButton::StandardButton() : ButtonText(-1), ButtonImage(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), 
+                                        AdaptiveButtonTextContrast(true), IconButtonMode(false)
     {
         FUNC_DEBUG_ENTRY();
         SetSize(glm::vec2(50, 50));
@@ -32,7 +37,6 @@ namespace ssGUI
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
         auto boxShadow = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
-        boxShadow->SetShadowColor(glm::u8vec4(0, 0, 0, 127));
         AddExtension(boxShadow);
 
         auto roundedCorners = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
@@ -42,7 +46,7 @@ namespace ssGUI
         auto outline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         outline->SetSimpleOutline(false);
         outline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
-        outline->SetOutlineThickness(2);
+        outline->SetOutlineThickness(1);
         AddExtension(outline);
 
         //Add button text
@@ -57,17 +61,13 @@ namespace ssGUI
 
         //Add button text clean-up
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* onDestroyCallback = nullptr;
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
-        {
-            onDestroyCallback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
-                (GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME));
-        }
-        else
+        if(!IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
         {
             onDestroyCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
             AddEventCallback(onDestroyCallback);
         }
-        
+
+        onDestroyCallback = GetAnyEventCallback<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
         onDestroyCallback->AddEventListener
         (
             ListenerKey, this,
@@ -89,18 +89,30 @@ namespace ssGUI
             [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(container);
+                auto iconImage = btn->GetButtonIconObject();
                 int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();
+                glm::u8vec4 iconTintColor = iconImage == nullptr ? glm::u8vec4(0,0,0,0) : iconImage->GetImageTint();
                 switch(btn->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
                         btn->SetBackgroundColor(bgcolor);
+                        if(iconImage != nullptr)
+                        {
+                            iconTintColor.a = 255;
+                            iconImage->SetImageTint(iconTintColor);
+                        }
                         break;
                     case ssGUI::Enums::ButtonState::HOVER:
                         bgcolor.r = bgcolor.r - buttonReactAmount < 0 ? 0 : bgcolor.r - buttonReactAmount;
                         bgcolor.g = bgcolor.g - buttonReactAmount < 0 ? 0 : bgcolor.g - buttonReactAmount;
                         bgcolor.b = bgcolor.b - buttonReactAmount < 0 ? 0 : bgcolor.b - buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
+                        if(iconImage != nullptr)
+                        {
+                            iconTintColor.a = 255 - buttonReactAmount * 2;
+                            iconImage->SetImageTint(iconTintColor);
+                        }
                         break;
                     case ssGUI::Enums::ButtonState::ON_CLICK:
                         break;
@@ -109,6 +121,11 @@ namespace ssGUI
                         bgcolor.g = bgcolor.g - buttonReactAmount * 2 < 0 ? 0 : bgcolor.g - buttonReactAmount * 2;
                         bgcolor.b = bgcolor.b - buttonReactAmount * 2 < 0 ? 0 : bgcolor.b - buttonReactAmount * 2;
                         btn->SetBackgroundColor(bgcolor);
+                        if(iconImage != nullptr)
+                        {
+                            iconTintColor.a = 255 - buttonReactAmount * 4;
+                            iconImage->SetImageTint(iconTintColor);
+                        }
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
                         break;
@@ -117,6 +134,11 @@ namespace ssGUI
                         bgcolor.g = bgcolor.g + buttonReactAmount > 255 ? 255 : bgcolor.g + buttonReactAmount;
                         bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
+                        if(iconImage != nullptr)
+                        {
+                            iconTintColor.a = 255 - buttonReactAmount * 2;
+                            iconImage->SetImageTint(iconTintColor);
+                        }
                         auto textColor = btn->GetButtonTextObject()->GetTextColor();
                         textColor.r = (uint8_t)(textColor.r + buttonReactAmount * 4 & 255);
                         textColor.g = (uint8_t)(textColor.g + buttonReactAmount * 4 & 255);
@@ -127,9 +149,20 @@ namespace ssGUI
             }
         ); 
 
-        SetBackgroundColor(GetButtonColor());
+        //Add Button Image
+        auto buttonImage = new ssGUI::Image();
+        buttonImage->SetUserCreated(false);
+        buttonImage->SetHeapAllocated(true);
+        buttonImage->SetParent(this);
+        buttonImage->SetMinSize(glm::vec2(5, 5));
+        buttonImage->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
+        buttonImage->SetBlockInput(false);
+        ButtonImage = CurrentObjectsReferences.AddObjectReference(buttonImage);
+
         UpdateButtonText();
-        
+        UpdateButtonImage();
+        NotifyButtonEventCallbackManually();
+
         FUNC_DEBUG_EXIT();
     }
     =================================================================
@@ -141,13 +174,16 @@ namespace ssGUI
 
         protected:
             ssGUIObjectIndex ButtonText;
+            ssGUIObjectIndex ButtonImage;
             bool AdaptiveButtonTextColor;
             glm::ivec4 ButtonTextColorDifference;
             bool AdaptiveButtonTextContrast;
+            bool IconButtonMode;
 
             StandardButton(StandardButton const& other);
 
             virtual void UpdateButtonText();
+            virtual void UpdateButtonImage();
 
         public:
             //string: ListenerKey
@@ -155,6 +191,14 @@ namespace ssGUI
 
             StandardButton();
             virtual ~StandardButton() override;
+
+            //function: SetButtonIconObject
+            //Sets the icon image object, by default it will be generated
+            virtual void SetButtonIconObject(ssGUI::Image* image);
+            
+            //function: GetButtonIconObject
+            //Gets the icon image object, by default it will be generated
+            virtual ssGUI::Image* GetButtonIconObject() const;
 
             //function: SetButtonTextObject
             //Sets the text object, by default it will be generated
@@ -189,6 +233,14 @@ namespace ssGUI
             //function: GetAdaptiveButtonTextColorDifference
             //Gets the button text color difference to button color (ButtonTextColor-ButtonColor)
             virtual glm::ivec4 GetAdaptiveButtonTextColorDifference() const;
+
+            //function: SetIconButtonMode
+            //Sets if the button displays text or icon
+            virtual void SetIconButtonMode(bool icon);
+
+            //function: IsIconButtonMode
+            //Returns if the button displays text or icon
+            virtual bool IsIconButtonMode() const;
 
             //function: SetButtonColor
             //See <Button::SetButtonColor>

@@ -16,8 +16,15 @@ int main()
     ssGUI::StandardButton button;
     button.GetButtonTextObject()->SetText("Click me!!");
     button.SetPosition(glm::vec2(50, 50));
-    button.SetSize(glm::vec2(125, 40));
+    button.SetSize(glm::vec2(120, 40));
     button.SetParent(&window);
+
+
+    auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+    data->LoadFromPath("Resources/WindowIcon.png");
+    button.GetButtonIconObject()->SetImageData(data);
+    button.SetIconButtonMode(true);
+
 
     ssGUI::Button button2;
     button2.SetPosition(glm::vec2(50, 150));
@@ -28,7 +35,7 @@ int main()
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
 
-    guiManager.AddOnUpdateEventListener
+    guiManager.AddPostUpdateEventListener
     (
         [&]()
         {
@@ -56,5 +63,6 @@ int main()
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
 
+    ssGUI::Factory::Dispose<ssGUI::ImageData>(data);
     return 0;
 }

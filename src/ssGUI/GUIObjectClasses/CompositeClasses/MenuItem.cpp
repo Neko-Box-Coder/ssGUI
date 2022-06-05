@@ -8,6 +8,20 @@ namespace ssGUI
     {
     }
 
+    void MenuItem::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        bool oriMouseInputBlocked = globalInputStatus.MouseInputBlocked;        
+        ssGUI::StandardButton::MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+
+        //Hover or any other interaction within the menu item
+        if(!oriMouseInputBlocked && globalInputStatus.MouseInputBlocked)
+        {
+            if(inputInterface->GetCursorType() == ssGUI::Enums::CursorType::HAND)
+                inputInterface->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
+        }
+    }
+
     const std::string MenuItem::ListenerKey = "Menu Item";
     
     MenuItem::MenuItem()

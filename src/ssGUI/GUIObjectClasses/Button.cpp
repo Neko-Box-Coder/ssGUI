@@ -63,6 +63,7 @@ namespace ssGUI
                     {
                         SetFocus(true);
                         SetButtonState(ssGUI::Enums::ButtonState::ON_CLICK);
+                        inputInterface->SetCursorType(ssGUI::Enums::CursorType::HAND);
                     }
                 }
             }
@@ -75,6 +76,7 @@ namespace ssGUI
                 if(IsInteractable())
                 {
                     SetFocus(true);
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::HAND);
                     if (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
                         SetButtonState(ssGUI::Enums::ButtonState::CLICKING);
                 }
@@ -89,6 +91,7 @@ namespace ssGUI
                 if(IsInteractable())
                 {
                     SetFocus(true);
+                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::HAND);
                     SetButtonState(ssGUI::Enums::ButtonState::CLICKED);
                 }
             }
@@ -100,7 +103,10 @@ namespace ssGUI
                 {
                     globalInputStatus.MouseInputBlocked = true;
                     if(IsInteractable())
+                    {
+                        inputInterface->SetCursorType(ssGUI::Enums::CursorType::HAND);
                         SetButtonState(ssGUI::Enums::ButtonState::HOVER);
+                    }
                 }
                 else
                 {
@@ -114,7 +120,7 @@ namespace ssGUI
             SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
         }
         else
-        {
+        {            
             if (GetButtonState() != ssGUI::Enums::ButtonState::DISABLED)
                 SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
         }
@@ -168,7 +174,9 @@ namespace ssGUI
 
     void Button::NotifyButtonEventCallbackManually()
     {   
-        SetButtonState(GetButtonState());
+        if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>())
+            GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
+        //SetButtonState(GetButtonState());
     }
 
     ssGUI::Enums::ButtonState Button::GetButtonState() const

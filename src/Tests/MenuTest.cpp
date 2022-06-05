@@ -26,6 +26,7 @@ int main()
     menu.RegisterMenuItem(menuItem.Clone(true));
     auto menuItem5 = menuItem.Clone(true);
     menuItem5->SetInteractable(false);
+    menu.RegisterMenuItem(menuItem5);
 
     auto subMenu = menu.Clone(true);
     subMenu->SetParent(&menu);

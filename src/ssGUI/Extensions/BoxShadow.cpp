@@ -6,8 +6,8 @@
 
 namespace ssGUI::Extensions
 {
-    BoxShadow::BoxShadow() : Container(nullptr), Enabled(true), PositionOffset(glm::vec2(0, 0)), SizeOffset(glm::vec2(10, 10)), 
-                                BlurRadius(20), ShadowColor(glm::u8vec4(0, 0, 0, 127))
+    BoxShadow::BoxShadow() : Container(nullptr), Enabled(true), PositionOffset(glm::vec2(0, 0)), SizeOffset(glm::vec2(5, 5)), 
+                                BlurRadius(10), ShadowColor(glm::u8vec4(0, 0, 0, 127))
     {}
 
     BoxShadow::~BoxShadow()

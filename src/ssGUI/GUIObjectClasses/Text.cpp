@@ -775,7 +775,7 @@ namespace ssGUI
     const std::string Text::ListenerKey = "Text";
 
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
-                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), TextColor(glm::u8vec4(0, 0, 0, 255)), 
+                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
                     MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
                     HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
                     CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
