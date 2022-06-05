@@ -19,9 +19,10 @@ namespace ssGUI
     protected:
         ssGUI::ImageData* ImageData;
         ssGUI::Enums::ImageFitting Fitting;
+        glm::u8vec4 ImageTint;
     =================================================================
     ============================== C++ ==============================
-    Image::Image() : ImageData(nullptr), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_AREA) 
+    Image::Image() : ImageData(nullptr), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE), ImageTint(glm::u8vec4(255, 255, 255, 255))
     {
         //AddExtension(new ssGUI::Extensions::Border());
     }
@@ -35,6 +36,7 @@ namespace ssGUI
         protected:
             ssGUI::ImageData* ImageData;
             ssGUI::Enums::ImageFitting Fitting;
+            glm::u8vec4 ImageTint;
             Image(Image const& other);
 
             virtual void ConstructRenderInfo() override;
@@ -58,6 +60,14 @@ namespace ssGUI
             //function: SetFitting
             //Sets how the image will be fitted inside this Image Widget
             virtual void SetFitting(ssGUI::Enums::ImageFitting fitting);
+
+            //function: SetImageTint
+            //Sets the tint of the image. (255, 255, 255, 255) would be the normal image color
+            virtual void SetImageTint(glm::u8vec4 tint);
+
+            //function: GetImageTint
+            //Gets the tint of the image. (255, 255, 255, 255) would be the normal image color
+            virtual glm::u8vec4 GetImageTint() const;
 
             //Overriding widget
             //function: GetType

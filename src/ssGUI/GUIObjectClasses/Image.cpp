@@ -7,6 +7,7 @@ namespace ssGUI
     {
         ImageData = other.ImageData;
         Fitting = other.GetFitting();
+        ImageTint = other.GetImageTint();
     }
 
     void Image::ConstructRenderInfo()
@@ -38,10 +39,10 @@ namespace ssGUI
         glm::vec2 imgDrawPosition = GetGlobalPosition();
         glm::vec2 imgSize = ImageData->GetSize();
 
-        DrawingColours.push_back(glm::u8vec4(255, 255, 255, 255));
-        DrawingColours.push_back(glm::u8vec4(255, 255, 255, 255));
-        DrawingColours.push_back(glm::u8vec4(255, 255, 255, 255));
-        DrawingColours.push_back(glm::u8vec4(255, 255, 255, 255));
+        DrawingColours.push_back(ImageTint);
+        DrawingColours.push_back(ImageTint);
+        DrawingColours.push_back(ImageTint);
+        DrawingColours.push_back(ImageTint);
 
         float widgetLandscapeRatio = (float)GetSize().x / (float)GetSize().y;
         float imageLandscapeRatio = (float)imgSize.x / (float)imgSize.y;
@@ -123,7 +124,7 @@ namespace ssGUI
         DrawingProperties.push_back(currentProperty);
     }
     
-    Image::Image() : ImageData(nullptr), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_AREA) 
+    Image::Image() : ImageData(nullptr), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE), ImageTint(glm::u8vec4(255, 255, 255, 255))
     {
         // AddExtension(new ssGUI::Extensions::Border());
     }
@@ -153,6 +154,17 @@ namespace ssGUI
     {
         Fitting = fitting;
         RedrawObject();
+    }
+
+    void Image::SetImageTint(glm::u8vec4 tint)
+    {
+        ImageTint = tint;
+        RedrawObject();
+    }
+
+    glm::u8vec4 Image::GetImageTint() const
+    {
+        return ImageTint;
     }
 
     //Overriding widget
