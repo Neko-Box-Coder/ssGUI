@@ -48,7 +48,7 @@ namespace ssGUI
     void Button::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
                 ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
     {
-        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked && IsBlockInput() && IsInteractable())
+        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked && IsBlockInput())
         {
             //On mouse down
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
@@ -59,8 +59,11 @@ namespace ssGUI
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
                     globalInputStatus.MouseInputBlocked = true;
-                    SetFocus(true);
-                    SetButtonState(ssGUI::Enums::ButtonState::ON_CLICK);
+                    if(IsInteractable())
+                    {
+                        SetFocus(true);
+                        SetButtonState(ssGUI::Enums::ButtonState::ON_CLICK);
+                    }
                 }
             }
             //On mouse hold
@@ -69,9 +72,12 @@ namespace ssGUI
                     GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
             {
                 globalInputStatus.MouseInputBlocked = true;
-                SetFocus(true);
-                if (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
-                    SetButtonState(ssGUI::Enums::ButtonState::CLICKING);
+                if(IsInteractable())
+                {
+                    SetFocus(true);
+                    if (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
+                        SetButtonState(ssGUI::Enums::ButtonState::CLICKING);
+                }
             }
             //On mouse up
             else if (!inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
@@ -79,7 +85,12 @@ namespace ssGUI
                     currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
             {
-                SetButtonState(ssGUI::Enums::ButtonState::CLICKED);
+                globalInputStatus.MouseInputBlocked = true;
+                if(IsInteractable())
+                {
+                    SetFocus(true);
+                    SetButtonState(ssGUI::Enums::ButtonState::CLICKED);
+                }
             }
             //Otherwise check normal/hover state
             else
@@ -88,10 +99,14 @@ namespace ssGUI
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
                     globalInputStatus.MouseInputBlocked = true;
-                    SetButtonState(ssGUI::Enums::ButtonState::HOVER);
+                    if(IsInteractable())
+                        SetButtonState(ssGUI::Enums::ButtonState::HOVER);
                 }
                 else
-                    SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
+                {
+                    if(IsInteractable())
+                        SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
+                }
             }
         }
         else if(IsInteractable())

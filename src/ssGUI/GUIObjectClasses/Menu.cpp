@@ -14,6 +14,32 @@ namespace ssGUI
         MenuTarget = other.MenuTarget;
     }
 
+    void Menu::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
+                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    {
+        if(!IsFocused())
+        {
+            SetVisible(false);
+            return;
+        }
+
+        switch (CurrentMenuSpawnDirection)
+        {
+            case ssGUI::Enums::MenuSpawnDirection::TOP_LEFT:
+                SetGlobalPosition(SpawnGlobalPosition - GetSize());
+                break;
+            case ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT:
+                SetGlobalPosition(SpawnGlobalPosition - glm::vec2(0, GetSize().y));
+                break;
+            case ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT:
+                SetGlobalPosition(SpawnGlobalPosition);
+                break;
+            case ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT:
+                SetGlobalPosition(SpawnGlobalPosition - glm::vec2(GetSize().x, 0));
+                break;
+        }
+    }
+
     const std::string Menu::ListenerKey = "Menu";
     
     Menu::Menu() : SpawnGlobalPosition(), CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT), MenuTarget(nullptr)
