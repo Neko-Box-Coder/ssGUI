@@ -98,7 +98,7 @@ namespace ssGUI
                                         AdaptiveButtonTextContrast(true), IconButtonMode(false)
     {
         FUNC_DEBUG_ENTRY();
-        SetSize(glm::vec2(50, 50));
+        SetSize(glm::vec2(100, 40));
 
         //Add visual extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);

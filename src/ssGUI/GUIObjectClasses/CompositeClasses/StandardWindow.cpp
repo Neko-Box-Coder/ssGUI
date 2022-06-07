@@ -176,6 +176,7 @@ namespace ssGUI
     {        
         FUNC_DEBUG_ENTRY();
         SetMinSize(glm::vec2(100, 100));
+        SetTitlebarHeight(26);
         
         //Setup title
         auto windowTitle = new ssGUI::Text();
@@ -295,9 +296,11 @@ namespace ssGUI
         AddExtension(windowOutline);
 
         //Add shadow to window
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>());
+        auto shadowEx = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
+        shadowEx->SetBlurRadius(20);
+        shadowEx->SetSizeOffset(glm::vec2(10, 10));
+        AddExtension(shadowEx);
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
-        SetTitlebarHeight(26);
 
         //Clean up sub-components when this is deleted
         ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
