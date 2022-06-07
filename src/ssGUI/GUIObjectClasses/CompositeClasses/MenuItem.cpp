@@ -2,6 +2,11 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssGUI/Extensions/Outline.hpp"
+#include "ssGUI/Extensions/BoxShadow.hpp"
+#include "ssGUI/Extensions/Layout.hpp"
+#include "ssGUI/Extensions/RoundedCorners.hpp"
+
 namespace ssGUI
 {
     MenuItem::MenuItem(MenuItem const& other) : StandardButton(other)

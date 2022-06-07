@@ -23,7 +23,7 @@ namespace ssGUI
         CurrentObject = nullptr;
     }
     
-    Transform::Transform() : Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(150, 150)), MinSize(glm::vec2(25, 25)), 
+    Transform::Transform() : Position(glm::vec2(0, 0)), GlobalPosition(glm::vec2(0, 0)), Size(glm::vec2(25, 25)), MinSize(glm::vec2(25, 25)), 
                             MaxSize(glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
                             Anchor(ssGUI::Enums::AnchorType::TOP_LEFT), CurrentHierarchy(nullptr), CurrentRenderer(nullptr),
                             CurrentEventCallbackManager(nullptr), CurrentObject(nullptr)

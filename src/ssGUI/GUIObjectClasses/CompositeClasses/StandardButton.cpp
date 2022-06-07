@@ -2,6 +2,12 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
+#include "ssGUI/Extensions/AdvancedSize.hpp"
+#include "ssGUI/Extensions/AdvancedPosition.hpp"
+#include "ssGUI/Extensions/RoundedCorners.hpp"
+#include "ssGUI/Extensions/Outline.hpp"
+#include "ssGUI/Extensions/BoxShadow.hpp"
+#include "ssGUI/Extensions/Layout.hpp"
 
 namespace ssGUI
 {
@@ -12,7 +18,8 @@ namespace ssGUI
         AdaptiveButtonTextColor = other.IsAdaptiveButtonTextColor();
         ButtonTextColorDifference = other.GetAdaptiveButtonTextColorDifference();
         AdaptiveButtonTextContrast = other.IsAdaptiveButtonTextContrast();
-        IconButtonMode = other.IsIconButtonMode();
+        ButtonMode = other.GetButtonMode();
+        ButtonImageWrapper = other.ButtonImageWrapper;
     }
     
     void StandardButton::UpdateButtonText()
@@ -25,7 +32,7 @@ namespace ssGUI
             return;
         }
         
-        if(IconButtonMode)
+        if(GetButtonMode() == StandardButton::Mode::ICON)
         {
             buttonTextObj->SetVisible(false);
             FUNC_DEBUG_EXIT();
@@ -38,13 +45,6 @@ namespace ssGUI
         
         if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
             buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
-
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
-
-        as->SetHorizontalUsePercentage(true);
-        as->SetHorizontalPercentage(1);
-        as->SetVerticalUsePercentage(true);
-        as->SetVerticalPercentage(1);
 
         static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
         static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
@@ -61,13 +61,21 @@ namespace ssGUI
             return;
         }
 
-        if(!IconButtonMode)
+        auto buttonImgWrapper = CurrentObjectsReferences.GetObjectReference(ButtonImageWrapper);
+        if(buttonImgWrapper == nullptr)
         {
-            buttonImgObj->SetVisible(false);
             FUNC_DEBUG_EXIT();
             return;
         }
-        buttonImgObj->SetVisible(true);
+
+        if(GetButtonMode() == StandardButton::Mode::TEXT)
+        {
+            buttonImgWrapper->SetVisible(false);
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+        
+        buttonImgWrapper->SetVisible(true);
         
         ssGUI::Extensions::AdvancedSize* as;
         ssGUI::Extensions::AdvancedPosition* ap;
@@ -78,9 +86,9 @@ namespace ssGUI
         as = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
         as->SetHorizontalUsePercentage(true);
-        as->SetHorizontalPercentage(0.5);
+        as->SetHorizontalPercentage(0.55);
         as->SetVerticalUsePercentage(true);
-        as->SetVerticalPercentage(0.5);
+        as->SetVerticalPercentage(0.55);
 
         if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
             buttonImgObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
@@ -95,12 +103,12 @@ namespace ssGUI
     const std::string StandardButton::ListenerKey = "Standard Button";
 
     StandardButton::StandardButton() : ButtonText(-1), ButtonImage(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), 
-                                        AdaptiveButtonTextContrast(true), IconButtonMode(false)
+                                        AdaptiveButtonTextContrast(true), ButtonMode(StandardButton::Mode::TEXT)
     {
         FUNC_DEBUG_ENTRY();
         SetSize(glm::vec2(100, 40));
 
-        //Add visual extensions
+        //Adjust Extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
         auto boxShadow = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
@@ -115,6 +123,30 @@ namespace ssGUI
         outline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         outline->SetOutlineThickness(1);
         AddExtension(outline);
+
+        auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+        layout->SetHorizontalLayout(true);
+        layout->SetSpacing(0);
+        layout->AddPreferredSizeMultiplier(0.25);
+        layout->AddPreferredSizeMultiplier(0.75);
+        AddExtension(layout);
+
+        //Add Button Image
+        auto wrapper = ssGUI::Factory::Create<ssGUI::Widget>();
+        wrapper->SetParent(this);
+        wrapper->SetBlockInput(false);
+        wrapper->SetUserCreated(false);
+        wrapper->SetBackgroundColor(glm::u8vec4(0, 0, 0, 25));
+        ButtonImageWrapper = CurrentObjectsReferences.AddObjectReference(wrapper);
+
+        auto buttonImage = new ssGUI::Image();
+        buttonImage->SetUserCreated(false);
+        buttonImage->SetHeapAllocated(true);
+        buttonImage->SetParent(wrapper);
+        buttonImage->SetMinSize(glm::vec2(5, 5));
+        buttonImage->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
+        buttonImage->SetBlockInput(false);
+        ButtonImage = CurrentObjectsReferences.AddObjectReference(buttonImage);
 
         //Add button text
         auto buttonText = new ssGUI::Text();
@@ -216,16 +248,6 @@ namespace ssGUI
             }
         ); 
 
-        //Add Button Image
-        auto buttonImage = new ssGUI::Image();
-        buttonImage->SetUserCreated(false);
-        buttonImage->SetHeapAllocated(true);
-        buttonImage->SetParent(this);
-        buttonImage->SetMinSize(glm::vec2(5, 5));
-        buttonImage->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
-        buttonImage->SetBlockInput(false);
-        ButtonImage = CurrentObjectsReferences.AddObjectReference(buttonImage);
-
         UpdateButtonText();
         UpdateButtonImage();
         NotifyButtonEventCallbackManually();
@@ -247,6 +269,14 @@ namespace ssGUI
         if(image == nullptr)
         {
             ButtonImage = -1;
+            return;
+        }
+
+        auto buttonImgWrapper = CurrentObjectsReferences.GetObjectReference(ButtonImageWrapper);
+        if(buttonImgWrapper == nullptr)
+        {
+            ButtonImage = -1;
+            FUNC_DEBUG_EXIT();
             return;
         }
 
@@ -347,16 +377,16 @@ namespace ssGUI
         return ButtonTextColorDifference;
     }
 
-    void StandardButton::SetIconButtonMode(bool icon)
+    void StandardButton::SetButtonMode(Mode buttonMode)
     {
-        IconButtonMode = icon;
+        ButtonMode = buttonMode;
         UpdateButtonText();
         UpdateButtonImage();
     }
 
-    bool StandardButton::IsIconButtonMode() const
+    StandardButton::Mode StandardButton::GetButtonMode() const
     {
-        return IconButtonMode;
+        return ButtonMode;
     }
 
     void StandardButton::SetButtonColor(glm::u8vec4 color)

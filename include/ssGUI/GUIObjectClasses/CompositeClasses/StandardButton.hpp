@@ -4,11 +4,6 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
-#include "ssGUI/Extensions/AdvancedSize.hpp"
-#include "ssGUI/Extensions/AdvancedPosition.hpp"
-#include "ssGUI/Extensions/RoundedCorners.hpp"
-#include "ssGUI/Extensions/Outline.hpp"
-#include "ssGUI/Extensions/BoxShadow.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -24,16 +19,18 @@ namespace ssGUI
         bool AdaptiveButtonTextColor;
         glm::ivec4 ButtonTextColorDifference;
         bool AdaptiveButtonTextContrast;
-        bool IconButtonMode;
+        Mode ButtonMode;
+        
+        ssGUIObjectIndex ButtonImageWrapper;
     =================================================================
     ============================== C++ ==============================
     StandardButton::StandardButton() : ButtonText(-1), ButtonImage(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), 
-                                        AdaptiveButtonTextContrast(true), IconButtonMode(false)
+                                        AdaptiveButtonTextContrast(true), ButtonMode(StandardButton::Mode::TEXT)
     {
         FUNC_DEBUG_ENTRY();
-        SetSize(glm::vec2(50, 50));
+        SetSize(glm::vec2(100, 40));
 
-        //Add visual extensions
+        //Adjust Extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
         auto boxShadow = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
@@ -48,6 +45,30 @@ namespace ssGUI
         outline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         outline->SetOutlineThickness(1);
         AddExtension(outline);
+
+        auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+        layout->SetHorizontalLayout(true);
+        layout->SetSpacing(0);
+        layout->AddPreferredSizeMultiplier(0.25);
+        layout->AddPreferredSizeMultiplier(0.75);
+        AddExtension(layout);
+
+        //Add Button Image
+        auto wrapper = ssGUI::Factory::Create<ssGUI::Widget>();
+        wrapper->SetParent(this);
+        wrapper->SetBlockInput(false);
+        wrapper->SetUserCreated(false);
+        wrapper->SetBackgroundColor(glm::u8vec4(0, 0, 0, 25));
+        ButtonImageWrapper = CurrentObjectsReferences.AddObjectReference(wrapper);
+
+        auto buttonImage = new ssGUI::Image();
+        buttonImage->SetUserCreated(false);
+        buttonImage->SetHeapAllocated(true);
+        buttonImage->SetParent(wrapper);
+        buttonImage->SetMinSize(glm::vec2(5, 5));
+        buttonImage->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
+        buttonImage->SetBlockInput(false);
+        ButtonImage = CurrentObjectsReferences.AddObjectReference(buttonImage);
 
         //Add button text
         auto buttonText = new ssGUI::Text();
@@ -149,16 +170,6 @@ namespace ssGUI
             }
         ); 
 
-        //Add Button Image
-        auto buttonImage = new ssGUI::Image();
-        buttonImage->SetUserCreated(false);
-        buttonImage->SetHeapAllocated(true);
-        buttonImage->SetParent(this);
-        buttonImage->SetMinSize(glm::vec2(5, 5));
-        buttonImage->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
-        buttonImage->SetBlockInput(false);
-        ButtonImage = CurrentObjectsReferences.AddObjectReference(buttonImage);
-
         UpdateButtonText();
         UpdateButtonImage();
         NotifyButtonEventCallbackManually();
@@ -169,6 +180,15 @@ namespace ssGUI
     */
     class StandardButton : public Button
     {
+        public:
+            //Enum: ssGUI::StandardButton::Mode
+            enum class Mode
+            {
+                TEXT,
+                ICON,
+                BOTH
+            };
+
         private:
             StandardButton& operator=(StandardButton const& other) = default;
 
@@ -178,7 +198,9 @@ namespace ssGUI
             bool AdaptiveButtonTextColor;
             glm::ivec4 ButtonTextColorDifference;
             bool AdaptiveButtonTextContrast;
-            bool IconButtonMode;
+            Mode ButtonMode;
+
+            ssGUIObjectIndex ButtonImageWrapper;
 
             StandardButton(StandardButton const& other);
 
@@ -234,13 +256,13 @@ namespace ssGUI
             //Gets the button text color difference to button color (ButtonTextColor-ButtonColor)
             virtual glm::ivec4 GetAdaptiveButtonTextColorDifference() const;
 
-            //function: SetIconButtonMode
-            //Sets if the button displays text or icon
-            virtual void SetIconButtonMode(bool icon);
+            //function: SetButtonMode
+            //Sets the button mode for displaying text or icon or both
+            virtual void SetButtonMode(Mode buttonMode);
 
-            //function: IsIconButtonMode
-            //Returns if the button displays text or icon
-            virtual bool IsIconButtonMode() const;
+            //function: GetButtonMode
+            //Gets the button mode for displaying text or icon or both
+            virtual Mode GetButtonMode() const;
 
             //function: SetButtonColor
             //See <Button::SetButtonColor>

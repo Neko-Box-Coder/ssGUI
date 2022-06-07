@@ -19,18 +19,15 @@ int main()
     button.SetSize(glm::vec2(120, 40));
     button.SetParent(&window);
 
-
     auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
     data->LoadFromPath("Resources/WindowIcon.png");
     button.GetButtonIconObject()->SetImageData(data);
-    button.SetIconButtonMode(true);
-
+    button.SetButtonMode(ssGUI::StandardButton::Mode::BOTH);
 
     ssGUI::Button button2;
     button2.SetPosition(glm::vec2(50, 150));
     button2.SetSize(glm::vec2(125, 40));
     button2.SetParent(&window);
-
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
