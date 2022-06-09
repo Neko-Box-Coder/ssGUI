@@ -726,6 +726,23 @@ namespace ssGUI
     {
         return HeapAllocated;
     }
+    
+    void Hierarchy::Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex> generatedObjs)
+    {
+        for(int i = 0; i < generatedObjs.size(); i++)
+        {
+            auto curObj = CurrentObjectsReferences.GetObjectReference(generatedObjs[i]);
+
+            if(curObj == nullptr)
+                continue;
+
+            if(curObj->IsHeapAllocated())
+            {
+                curObj->Delete();
+                delete curObj;
+            }
+        }
+    }
 
     ObjectsReferences* Hierarchy::Internal_GetObjectsReferences()
     {

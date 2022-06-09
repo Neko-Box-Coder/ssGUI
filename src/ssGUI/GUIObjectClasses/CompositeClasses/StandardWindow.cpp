@@ -302,40 +302,6 @@ namespace ssGUI
         AddExtension(shadowEx);
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
-        //Clean up sub-components when this is deleted
-        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
-        {
-            callback = static_cast<ssGUI::EventCallbacks::OnObjectDestroyEventCallback*>
-                (GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME));
-        }
-        else
-        {
-            callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
-            AddEventCallback(callback);
-        }
-        
-        callback->AddEventListener
-        (
-            ListenerKey, this,
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
-            {
-                auto standardWindow = static_cast<ssGUI::StandardWindow*>(container);
-                auto windowTitleObj = standardWindow->GetWindowTitleObject();
-                auto windowIconObj = standardWindow->GetWindowIconObject();
-                auto closeButtonObj = standardWindow->GetCloseButtonObject();
-
-                if(windowTitleObj != nullptr && windowTitleObj->GetParent() != container && !windowTitleObj->Internal_IsDeleted())
-                    windowTitleObj->Delete();
-                
-                if(windowIconObj != nullptr && windowIconObj->GetParent() != container && !windowIconObj->Internal_IsDeleted())
-                    windowIconObj->Delete();
-
-                if(closeButtonObj != nullptr && closeButtonObj->GetParent() != container && !closeButtonObj->Internal_IsDeleted())
-                    closeButtonObj->Delete();
-            }
-        );
-
         UpdateTitleText();
         UpdateIconImage();
         UpdateCloseButton();
@@ -346,6 +312,10 @@ namespace ssGUI
     StandardWindow::~StandardWindow()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+
+        //If the object deallocation is not handled by ssGUIManager
+        if(!Internal_IsDeleted())
+            Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{WindowTitle, WindowIcon, CloseButton});
     }
 
     void StandardWindow::SetWindowTitleObject(ssGUI::Text* text)

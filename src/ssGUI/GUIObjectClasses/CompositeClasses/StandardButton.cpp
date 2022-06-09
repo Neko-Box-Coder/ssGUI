@@ -166,19 +166,6 @@ namespace ssGUI
             AddEventCallback(onDestroyCallback);
         }
 
-        onDestroyCallback = GetAnyEventCallback<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
-        onDestroyCallback->AddEventListener
-        (
-            ListenerKey, this,
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
-            {
-                auto buttonText = static_cast<ssGUI::StandardButton*>(container)->GetButtonTextObject();
-
-                if(buttonText != nullptr && buttonText->GetParent() != container && !buttonText->Internal_IsDeleted())
-                    buttonText->Delete();
-            }
-        );
-        
         //Change button callback
         auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
         buttonEventCallback->RemoveEventListener(Button::ListenerKey, this);
@@ -256,8 +243,12 @@ namespace ssGUI
     }
 
     StandardButton::~StandardButton()
-    {
+    {        
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+
+        //If the object deallocation is not handled by ssGUIManager
+        if(!Internal_IsDeleted())
+            Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{ButtonText, ButtonImage, ButtonImageWrapper});
     }
 
     void StandardButton::SetButtonIconObject(ssGUI::Image* image)
