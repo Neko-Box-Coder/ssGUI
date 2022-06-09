@@ -88,19 +88,6 @@ namespace ssGUI
             AddEventCallback(onDestroyCallback);
         }
 
-        onDestroyCallback = GetAnyEventCallback<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
-        onDestroyCallback->AddEventListener
-        (
-            ListenerKey, this,
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
-            {
-                auto buttonText = static_cast<ssGUI::StandardButton*>(container)->GetButtonTextObject();
-
-                if(buttonText != nullptr && buttonText->GetParent() != container && !buttonText->Internal_IsDeleted())
-                    buttonText->Delete();
-            }
-        );
-        
         //Change button callback
         auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
         buttonEventCallback->RemoveEventListener(Button::ListenerKey, this);
