@@ -23,6 +23,8 @@ namespace ssGUI
             return;
         }
 
+        //The reason for putting this here is because layout can change the size of the menu,
+        //and it changes the size only after this is set to visible
         switch (CurrentMenuSpawnDirection)
         {
             case ssGUI::Enums::MenuSpawnDirection::TOP_LEFT:
@@ -44,6 +46,7 @@ namespace ssGUI
     
     Menu::Menu() : SpawnGlobalPosition(), CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT), MenuTarget(nullptr)
     {
+        SetSize(glm::vec2(200, GetSize().y));
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
         GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(2);

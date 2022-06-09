@@ -22,8 +22,6 @@ namespace ssGUI
         RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
         RemoveAnyExtension<ssGUI::Extensions::Outline>();
 
-        SetMinSize(glm::vec2(200, 25));
-        SetMaxSize(glm::vec2(200, 25));
         GetButtonTextObject()->SetFontSize(15);
         GetButtonTextObject()->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT);
         GetButtonTextObject()->SetHorizontalPadding(15);
