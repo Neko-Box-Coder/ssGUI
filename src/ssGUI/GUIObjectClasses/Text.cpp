@@ -3,6 +3,7 @@
 
 namespace ssGUI
 {    
+    //TODO: Encapsulate it in class for deallocation
     std::vector<ssGUI::Font*> Text::DefaultFonts = []()->std::vector<ssGUI::Font*>
     {
         FUNC_DEBUG_ENTRY("LoadDefaultFont");
