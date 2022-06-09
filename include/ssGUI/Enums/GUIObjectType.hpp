@@ -26,15 +26,18 @@ namespace ssGUI::Enums
     
     /*enum: GUIObjectType
 
-    WINDOW          - Window object type. All windows will have this value.
-    WIDGET          - Widget object type. All widgets will have this value.
+    WINDOW          - Window object type
+    WIDGET          - Widget object type
     MAIN_WINDOW     - Main window object type
     IMAGE           - Image object type
     TEXT            - Text object type
     BUTTON          - Button object type
     BASE_OBJECT     - Base Object type
-    STANDARD_WINDOW - Standard window object type (WIP)
+    STANDARD_WINDOW - Standard window object type
     STANDARD_BUTTON - Standard button object type
+    MENU            - Menu object type
+    MENU_ITEM       - Menu item object type
+    DROPDOWN        - Dropdown object type
     */
     enum class GUIObjectType
     {
@@ -48,7 +51,8 @@ namespace ssGUI::Enums
         STANDARD_WINDOW =   1 << 7,
         STANDARD_BUTTON =   1 << 8,
         MENU =              1 << 9,
-        MENU_ITEM =         1 << 10
+        MENU_ITEM =         1 << 10,
+        DROPDOWN =          1 << 11,
     };
 
     inline ssGUI::Enums::GUIObjectType operator|(ssGUI::Enums::GUIObjectType a, ssGUI::Enums::GUIObjectType b)
