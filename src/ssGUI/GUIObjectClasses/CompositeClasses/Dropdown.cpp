@@ -98,6 +98,7 @@ namespace ssGUI
         dropdownMenu->SetParent(this);
         dropdownMenu->SetVisible(false);
         dropdownMenu->SetUserCreated(false);
+        dropdownMenu->SetMenuTarget(this);
         dropdownMenu->SetSize(glm::vec2(GetSize().x, dropdownMenu->GetSize().y));
         DropdownMenu = CurrentObjectsReferences.AddObjectReference(dropdownMenu);
 
