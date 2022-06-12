@@ -37,6 +37,7 @@ namespace ssGUI
         Overflow = other.Overflow;
         FontSize = other.GetFontSize();
         TextColor = other.GetTextColor();
+        TextUnderline = other.IsTextUnderlined();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
         HorizontalAlignment = other.GetHorizontalAlignment();
@@ -68,6 +69,7 @@ namespace ssGUI
                 detail.Character = CurrentText[i];
                 detail.FontSize = GetFontSize();
                 detail.CharacterColor = GetTextColor();
+                detail.Underlined = IsTextUnderlined();
                 CurrentCharacterDetails.push_back(detail);
             }
         }
@@ -533,6 +535,7 @@ namespace ssGUI
         int currentIndex = 0;
         int currentLineIndex = 0;
         int currentOffset = 0;
+        int lineCount = 0;
 
         while (currentIndex < CharactersRenderInfos.size())
         {
@@ -543,18 +546,6 @@ namespace ssGUI
                 continue;
             }
 
-            //When there's a newline, offset the current line
-            if(CharactersRenderInfos[currentIndex].CharacterAtNewline)
-            {
-                currentOffset += curMaxFontNewline;
-                
-                for(int i = currentLineIndex; i < currentIndex; i++)
-                   CharactersRenderInfos[i].RenderPosition.y += currentOffset;
-
-                curMaxFontNewline = 0;            
-                currentLineIndex = currentIndex;
-            }
-            
             //Record max font newline height if needed
             ssGUI::Backend::BackendFontInterface* backendFont = nullptr;
             if(CurrentCharacterDetails[currentIndex].FontIndex != -1)
@@ -562,13 +553,48 @@ namespace ssGUI
             else
                 backendFont = GetDefaultFont(CurrentCharacterDetails[currentIndex].DefaultFontIndex)->GetBackendFontInterface();
 
+            //When there's a newline, offset the current line
+            if(CharactersRenderInfos[currentIndex].CharacterAtNewline)
+            {
+                //First line doesn't use font line space
+                if(lineCount == 1)
+                {
+                    currentOffset += curMaxFontNewline;
+                    
+                    for(int i = currentLineIndex; i < currentIndex; i++)
+                        CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+
+                    curMaxFontNewline = 0;
+                    currentLineIndex = currentIndex;
+                    lineCount++;
+                }
+                //Second line and beyond uses font line space
+                else if(lineCount >= 2)
+                {
+                    currentOffset += backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                    
+                    for(int i = currentLineIndex; i < currentIndex; i++)
+                        CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+
+                    curMaxFontNewline = 0;
+                    currentLineIndex = currentIndex;
+                }
+                //First character is always new line, ignore it
+                else
+                {
+                    curMaxFontNewline = 0;
+                    currentLineIndex = currentIndex;
+                    lineCount++;
+                }
+            }
+
             if(CurrentCharacterDetails[currentIndex].FontSize > curMaxFontNewline)
                 curMaxFontNewline = CurrentCharacterDetails[currentIndex].FontSize;
 
             //If this is the last character, offset the current line
             if(currentIndex == CharactersRenderInfos.size() - 1)
             {
-                currentOffset += curMaxFontNewline;
+                currentOffset += lineCount == 1 ? curMaxFontNewline : backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                 
                 for(int i = currentLineIndex; i <= currentIndex; i++)
                     CharactersRenderInfos[i].RenderPosition.y += currentOffset;
@@ -700,6 +726,149 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
+    void Text::ApplyTextUnderline()
+    {
+        FUNC_DEBUG_ENTRY();
+
+        auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
+        {
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() +
+                glm::vec2(0, underlineOffset));
+
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() + 
+                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset));
+
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() + 
+                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset + thickness));
+
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() + 
+                glm::vec2(0, underlineOffset + thickness));
+
+            for(int i = 0; i < 4; i++)
+            {
+                DrawingUVs.push_back(glm::vec2());
+                DrawingColours.push_back(underlineColor);
+            }
+
+            DrawingCounts.push_back(4);
+            DrawingProperties.push_back(ssGUI::DrawingProperty());
+        };
+
+        //This handles font size and color change
+        auto drawMultiColoredUnderline = [&](int startIndex, int inclusiveEndIndex)
+        {
+            float maxFontSize = CurrentCharacterDetails[startIndex].FontSize;
+            int maxFontSizeCharIndex = 0;
+            
+            //Find max font size
+            for (int i = startIndex; i <= inclusiveEndIndex; i++)
+            {
+                if(CurrentCharacterDetails[i].FontSize > maxFontSize)
+                {
+                    maxFontSize = CurrentCharacterDetails[i].FontSize;
+                    maxFontSizeCharIndex = i;
+                }
+            }
+
+            ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+            if(CurrentCharacterDetails[maxFontSizeCharIndex].FontIndex != -1)
+                fontInterface = GetFont(CurrentCharacterDetails[maxFontSizeCharIndex].FontIndex)->GetBackendFontInterface();
+            else
+                fontInterface = GetDefaultFont(CurrentCharacterDetails[maxFontSizeCharIndex].DefaultFontIndex)->GetBackendFontInterface();
+
+            //Draw underlines
+            glm::u8vec4 currentUnderlineColor = CurrentCharacterDetails[startIndex].CharacterColor;
+            int lastIndex = startIndex;
+            for (int i = startIndex; i <= inclusiveEndIndex; i++)
+            {
+                //Check for color change
+                if(CurrentCharacterDetails[i].CharacterColor != currentUnderlineColor)
+                {
+                    drawUnderline
+                    (
+                        lastIndex, 
+                        i-1, 
+                        currentUnderlineColor, 
+                        fontInterface->GetUnderlineThickness(maxFontSize), 
+                        fontInterface->GetUnderlineOffset(maxFontSize)    
+                    );
+                    
+                    currentUnderlineColor = CurrentCharacterDetails[i].CharacterColor;
+                    lastIndex = i;
+                }
+
+                //last index, draw underline
+                if(i == inclusiveEndIndex)
+                {
+                    drawUnderline
+                    (
+                        lastIndex, 
+                        i, 
+                        currentUnderlineColor, 
+                        fontInterface->GetUnderlineThickness(maxFontSize), 
+                        fontInterface->GetUnderlineOffset(maxFontSize)    
+                    );
+                }
+            }
+        };
+
+        int underlineStartIndex = -1;
+
+        for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+        {
+            CharacterDetails curDetail = CurrentCharacterDetails.at(i);
+            wchar_t curChar = curDetail.Character;
+
+            //If current character/font is invalid
+            if(curChar == L'\0' ||
+                (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1) ||
+                (curDetail.FontIndex != -1 && GetFont(curDetail.FontIndex) == nullptr) ||
+                (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
+            {               
+                continue;
+            }
+            
+            ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+            
+            if(curDetail.FontIndex != -1)
+                fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
+            else
+                fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
+            
+            //If underline started
+            if(underlineStartIndex != -1)
+            {
+                //If current charcter is at newline or
+                //If current character doesn't need underline
+                if(CharactersRenderInfos[i].CharacterAtNewline || !curDetail.Underlined)
+                {
+                    //Break underline
+                    drawMultiColoredUnderline(underlineStartIndex, i - 1);
+
+                    //Reset status
+                    underlineStartIndex = -1;
+                }
+            }
+
+            //If underline not started
+            if(underlineStartIndex == -1)
+            {
+                //Record underline if needed
+                if(curDetail.Underlined)
+                    underlineStartIndex = i;
+            }
+
+            //Check if last index and underline needed
+            if(underlineStartIndex != -1 && i == CurrentCharacterDetails.size() - 1)
+            {
+                //Draw underline
+                drawMultiColoredUnderline(underlineStartIndex, i);
+            }
+        }
+
+        FUNC_DEBUG_EXIT();
+    }
+
     void Text::ConstructRenderInfo()
     {
         FUNC_DEBUG_ENTRY();
@@ -742,6 +911,8 @@ namespace ssGUI
             DrawCharacter(drawPos, CharactersRenderInfos[i], CurrentCharacterDetails[i]);
         }
         
+        ApplyTextUnderline();
+
         FUNC_DEBUG_EXIT();
     }
 
@@ -779,7 +950,7 @@ namespace ssGUI
 
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
                     CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
-                    MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
+                    TextUnderline(false), MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
                     HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
                     CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
@@ -981,6 +1152,16 @@ namespace ssGUI
     {
         return TextColor;
     } 
+
+    void Text::SetTextUnderlined(bool underline)
+    {
+        TextUnderline = underline;
+    }
+
+    bool Text::IsTextUnderlined() const
+    {
+        return TextUnderline;
+    }
 
     void Text::SetMultilineAllowed(bool multiline)
     {

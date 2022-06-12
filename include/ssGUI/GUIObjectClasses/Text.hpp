@@ -40,6 +40,7 @@ namespace ssGUI
         bool Overflow;
         int FontSize;
         glm::u8vec4 TextColor;
+        bool TextUnderline;
         bool MultilineAllowed;
         ssGUI::Enums::TextWrapping WrappingMode;
         ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
@@ -58,7 +59,7 @@ namespace ssGUI
     ============================== C++ ==============================
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
                     CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), TextColor(glm::u8vec4(0, 0, 0, 255)), 
-                    MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
+                    TextUnderline(false), MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
                     HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
                     CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
     {
@@ -122,6 +123,7 @@ namespace ssGUI
             bool Overflow;
             int FontSize;
             glm::u8vec4 TextColor;
+            bool TextUnderline;
             bool MultilineAllowed;
             ssGUI::Enums::TextWrapping WrappingMode;
             ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;
@@ -156,6 +158,8 @@ namespace ssGUI
             virtual void ApplyFontLineSpacing();
 
             virtual void ApplyTextAlignment();
+
+            virtual void ApplyTextUnderline();
 
             virtual void ConstructRenderInfo() override;
 
@@ -232,20 +236,28 @@ namespace ssGUI
             virtual bool IsOverflow() const;
             
             //function: SetFontSize
-            //Sets the size of the font being used
+            //Sets the size of the font being used (when there's no override character details)
             virtual void SetFontSize(int size);
             
             //function: GetFontSize
-            //Returns the size of the font being used
+            //Returns the size of the font being used (when there's no override character details)
             virtual int GetFontSize() const;
 
             //function: SetTextColor
-            //Sets the text color being used
+            //Sets the text color being used (when there's no override character details)
             virtual void SetTextColor(glm::u8vec4 color);
 
             //function: GetTextColor
-            //Gets the text color being used
+            //Gets the text color being used (when there's no override character details)
             virtual glm::u8vec4 GetTextColor() const;
+
+            //function: SetTextUnderlined
+            //Sets if text is underlined (when there's no override character details)
+            virtual void SetTextUnderlined(bool underline);
+
+            //function: IsTextUnderlined
+            //Returns if text is underlined (when there's no override character details)
+            virtual bool IsTextUnderlined() const;
             
             //function: SetMultilineAllowed
             //If true, newlines will be allowed
@@ -312,19 +324,19 @@ namespace ssGUI
             virtual int GetVerticalPadding() const;
             
             //function: SetCharacterSpace
-            //Sets the space between each character
+            //Sets the additional space between each character
             virtual void SetCharacterSpace(int charSpace);
             
             //function: GetCharacterSpace
-            //Gets the space between each character
+            //Gets the additional space between each character
             virtual int GetCharacterSpace() const;
             
             //function: SetLineSpace
-            //Sets the space between each line
+            //Sets the additional space between each line
             virtual void SetLineSpace(int lineSpace);
             
             //function: GetLineSpace
-            //Gets the space between each line
+            //Gets the additional space between each line
             virtual int GetLineSpace() const;
             
             //function: SetTabSize

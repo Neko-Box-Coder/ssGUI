@@ -31,6 +31,10 @@ namespace ssGUI
             //var: CharacterColor
             //The color of the character
             glm::u8vec4 CharacterColor = glm::u8vec4(0, 0, 0, 255);
+
+            //var: Underlined
+            //If the character is underlined or not
+            bool Underlined = false;
     };
 }
 

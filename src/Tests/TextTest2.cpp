@@ -32,7 +32,7 @@ int main()
 
     // text.SetText(L"This is a very long test sentence!!!!!");
 
-    std::wstring s = L"This is a very long test sentence!!!!!";
+    std::wstring s = L"This is a very long test \nsentence!!!!!";
 
     for(int i = 0; i < s.size(); i++)
     {
@@ -43,15 +43,22 @@ int main()
         if(i >= 10 && i <= 13)
         {
             details.CharacterColor = glm::u8vec4(0, 0, 255, 255);
-            details.FontIndex = 1;
+            details.FontIndex = 1;  //Bold
+            details.FontSize = 20;
+            details.Underlined = true;
+        }
+        else if(i >= 20 && i <= 23)
+        {
+            details.FontSize = 50;
+            // details.FontSize = 20;
+            details.Underlined = true;
         }
         else
+        {
             details.FontIndex = 0;
-
-        // if(i == s.size() - 7)
-        //     details.FontSize = 40;
-        // else
             details.FontSize = 20;
+            details.Underlined = true;
+        }
         
         text.AddOverrideCharacterDetails(details);
     }
@@ -73,6 +80,34 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
+
+    guiManager.AddPreUpdateEventListener
+    (
+        [&]()
+        {
+            if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::EQUAL) &&
+                !guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::EQUAL))
+            {
+                for(int i = 0; i < text.GetOverrideCharactersDetailsCount(); i++)
+                {
+                    auto curDetails = text.GetOverrideCharacterDetails(i);
+                    curDetails.FontSize = curDetails.FontSize+1;
+                    text.SetOverrideCharacterDetails(i, curDetails);
+                }
+            }
+            else if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::MINUS) &&
+                    !guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::MINUS))
+            {
+                for(int i = 0; i < text.GetOverrideCharactersDetailsCount(); i++)
+                {
+                    auto curDetails = text.GetOverrideCharacterDetails(i);
+                    curDetails.FontSize = curDetails.FontSize-1;
+                    text.SetOverrideCharacterDetails(i, curDetails);
+                }
+            }
+        }
+    );
+
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
 
