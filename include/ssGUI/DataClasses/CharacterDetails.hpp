@@ -26,7 +26,7 @@ namespace ssGUI
 
             //var: FontSize
             //The font size of the character
-            int FontSize = 20;
+            float FontSize = 20;
 
             //var: CharacterColor
             //The color of the character

@@ -38,7 +38,7 @@ namespace ssGUI
         std::vector<ssGUI::CharacterDetails> CurrentCharacterDetails;
 
         bool Overflow;
-        int FontSize;
+        float FontSize;
         glm::u8vec4 TextColor;
         bool TextUnderline;
         bool MultilineAllowed;
@@ -47,10 +47,10 @@ namespace ssGUI
         ssGUI::Enums::TextAlignmentVertical VerticalAlignment;            
         std::vector<ssGUI::Font*> CurrentFonts;
 
-        int HorizontalPadding;
-        int VerticalPadding;
-        int CharacterSpace;
-        int LineSpace;
+        float HorizontalPadding;
+        float VerticalPadding;
+        float CharacterSpace;
+        float LineSpace;
         float TabSize;
         std::vector<ssGUI::Font*> LastDefaultFonts;
 
@@ -121,7 +121,7 @@ namespace ssGUI
             std::vector<ssGUI::CharacterDetails> CurrentCharacterDetails;
 
             bool Overflow;
-            int FontSize;
+            float FontSize;
             glm::u8vec4 TextColor;
             bool TextUnderline;
             bool MultilineAllowed;
@@ -130,10 +130,10 @@ namespace ssGUI
             ssGUI::Enums::TextAlignmentVertical VerticalAlignment;            
             std::vector<ssGUI::Font*> CurrentFonts;
 
-            int HorizontalPadding;
-            int VerticalPadding;
-            int CharacterSpace;
-            int LineSpace;
+            float HorizontalPadding;
+            float VerticalPadding;
+            float CharacterSpace;
+            float LineSpace;
             float TabSize;
             std::vector<ssGUI::Font*> LastDefaultFonts;
 
@@ -237,11 +237,11 @@ namespace ssGUI
             
             //function: SetFontSize
             //Sets the size of the font being used (when there's no override character details)
-            virtual void SetFontSize(int size);
+            virtual void SetFontSize(float size);
             
             //function: GetFontSize
             //Returns the size of the font being used (when there's no override character details)
-            virtual int GetFontSize() const;
+            virtual float GetFontSize() const;
 
             //function: SetTextColor
             //Sets the text color being used (when there's no override character details)
@@ -309,35 +309,35 @@ namespace ssGUI
 
             //function: SetHorizontalPadding
             //Sets the horizontal padding for the beginning and the end of the text
-            virtual void SetHorizontalPadding(int padding);
+            virtual void SetHorizontalPadding(float padding);
 
             //function: GetHorizontalPadding
             //Gets the horizontal padding for the beginning and the end of the text
-            virtual int GetHorizontalPadding() const;
+            virtual float GetHorizontalPadding() const;
 
             //function: SetVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual void SetVerticalPadding(int padding);
+            virtual void SetVerticalPadding(float padding);
 
             //function: GetVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual int GetVerticalPadding() const;
+            virtual float GetVerticalPadding() const;
             
             //function: SetCharacterSpace
             //Sets the additional space between each character
-            virtual void SetCharacterSpace(int charSpace);
+            virtual void SetCharacterSpace(float charSpace);
             
             //function: GetCharacterSpace
             //Gets the additional space between each character
-            virtual int GetCharacterSpace() const;
+            virtual float GetCharacterSpace() const;
             
             //function: SetLineSpace
             //Sets the additional space between each line
-            virtual void SetLineSpace(int lineSpace);
+            virtual void SetLineSpace(float lineSpace);
             
             //function: GetLineSpace
             //Gets the additional space between each line
-            virtual int GetLineSpace() const;
+            virtual float GetLineSpace() const;
             
             //function: SetTabSize
             //Sets how many space each tab is

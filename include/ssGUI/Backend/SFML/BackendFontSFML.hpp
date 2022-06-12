@@ -46,7 +46,7 @@ namespace ssGUI::Backend
             
             //function: GetCharacterRenderInfo
             //See <BackendFontInterface::GetCharacterRenderInfo>
-            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, int charSize) override;
+            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) override;
             
             //function: IsCharacterSupported
             //See <BackendFontInterface::IsCharacterSupported>
@@ -54,19 +54,19 @@ namespace ssGUI::Backend
             
             //function: GetKerning
             //See <BackendFontInterface::GetKerning>
-            int GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, int charSize) override;
+            float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) override;
             
             //function: GetLineSpacing
             //See <BackendFontInterface::GetLineSpacing>
-            int GetLineSpacing(int charSize) override;
+            float GetLineSpacing(float charSize) override;
             
             //function: GetUnderlineOffset
             //See <BackendFontInterface::GetUnderlineOffset>
-            int GetUnderlineOffset(int charSize) override;
+            float GetUnderlineOffset(float charSize) override;
             
             //function: GetUnderlineThickness
             //See <BackendFontInterface::GetUnderlineThickness>
-            int GetUnderlineThickness(int charSize) override;
+            float GetUnderlineThickness(float charSize) override;
 
             //function: LoadFromPath
             //See <BackendFontInterface::LoadFromPath>

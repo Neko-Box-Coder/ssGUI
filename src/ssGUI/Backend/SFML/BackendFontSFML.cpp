@@ -25,7 +25,7 @@ namespace ssGUI::Backend
         return SFFontValid;
     }
 
-    ssGUI::CharacterRenderInfo BackendFontSFML::GetCharacterRenderInfo(wchar_t charUnicode, int charSize)
+    ssGUI::CharacterRenderInfo BackendFontSFML::GetCharacterRenderInfo(wchar_t charUnicode, float charSize)
     {
         ssGUI::CharacterRenderInfo info;
 
@@ -35,9 +35,9 @@ namespace ssGUI::Backend
         sf::Glyph glyph = Font.getGlyph(charUnicode, charSize, false);
 
         info.Advance = glyph.advance;
-        info.DrawOffset = glm::ivec2(glyph.bounds.left, glyph.bounds.top);
-        info.Size = glm::ivec2(glyph.textureRect.width, glyph.textureRect.height);
-        info.UVOrigin = glm::ivec2(glyph.textureRect.left, glyph.textureRect.top);
+        info.DrawOffset = glm::vec2(glyph.bounds.left, glyph.bounds.top);
+        info.Size = glm::vec2(glyph.textureRect.width, glyph.textureRect.height);
+        info.UVOrigin = glm::vec2(glyph.textureRect.left, glyph.textureRect.top);
         info.Valid = true;
 
         return info;
@@ -51,7 +51,7 @@ namespace ssGUI::Backend
         return Font.hasGlyph(charUnicode);   
     }
 
-    int BackendFontSFML::GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, int charSize)
+    float BackendFontSFML::GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize)
     {
         if(!SFFontValid)
             return -1;
@@ -59,7 +59,7 @@ namespace ssGUI::Backend
         return Font.getKerning(charUnicode, secondCharUnicode, charSize);
     }
     
-    int BackendFontSFML::GetLineSpacing(int charSize)
+    float BackendFontSFML::GetLineSpacing(float charSize)
     {
         if(!SFFontValid)
             return -1;
@@ -67,7 +67,7 @@ namespace ssGUI::Backend
         return Font.getLineSpacing(charSize);
     }
     
-    int BackendFontSFML::GetUnderlineOffset(int charSize)
+    float BackendFontSFML::GetUnderlineOffset(float charSize)
     {
         if(!SFFontValid)
             return -1;
@@ -75,7 +75,7 @@ namespace ssGUI::Backend
         return Font.getUnderlinePosition(charSize);
     }
 
-    int BackendFontSFML::GetUnderlineThickness(int charSize)
+    float BackendFontSFML::GetUnderlineThickness(float charSize)
     {
         if(!SFFontValid)
             return -1;

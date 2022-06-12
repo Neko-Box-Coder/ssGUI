@@ -12,7 +12,7 @@ namespace ssGUI
         public:
             //var: Advance
             //How many pixels this character takes horizontally
-            int Advance;
+            float Advance;
 
             //var: DrawOffset
             //Offset for getting the top-left corner of the character

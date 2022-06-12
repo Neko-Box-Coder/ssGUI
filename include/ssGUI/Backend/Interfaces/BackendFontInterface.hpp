@@ -23,7 +23,7 @@ namespace ssGUI::Backend
 
             //function: GetCharacterRenderInfo
             //Gets the rendering infomation of a character
-            virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, int charSize) = 0;
+            virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) = 0;
             
             //function: IsCharacterSupported
             //Returns true if the character is supported
@@ -31,20 +31,19 @@ namespace ssGUI::Backend
             
             //function: GetKerning
             //Kerning represents the drawing position offset when drawn after certain characters. (i.e. AV has a negative kerning for the characte V)
-            virtual int GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, int charSize) = 0;
+            virtual float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) = 0;
             
             //function: GetLineSpacing
             //Returns how much a line space is based on the font size
-            virtual int GetLineSpacing(int charSize) = 0;
+            virtual float GetLineSpacing(float charSize) = 0;
             
             //function: GetUnderlineOffset
             //Gets the vertical offset for underline based on the font size 
-            virtual int GetUnderlineOffset(int charSize) = 0;
+            virtual float GetUnderlineOffset(float charSize) = 0;
             
             //function: GetUnderlineThickness
             //Gets the thickness for underline based on the font size 
-            virtual int GetUnderlineThickness(int charSize) = 0;
-
+            virtual float GetUnderlineThickness(float charSize) = 0;
 
             /*function: LoadFromPath
             Loads a font file. Supported font format is dependent on the backend.

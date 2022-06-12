@@ -205,9 +205,9 @@ namespace ssGUI
         FUNC_DEBUG_ENTRY();
         
         int currentWordIndex = 0;
-        int currentLineLength = GetHorizontalPadding();
-        int currentWordLength = 0;
-        int drawXPos = GetHorizontalPadding();
+        float currentLineLength = GetHorizontalPadding();
+        float currentWordLength = 0;
+        float drawXPos = GetHorizontalPadding();
 
         wchar_t prevChar = 0;
         Overflow = false;
@@ -247,7 +247,7 @@ namespace ssGUI
                 if(i == CurrentCharacterDetails.size() - 1 && curChar != L' ' && curChar != L'\n' && curChar != L'\t')
                 {
                     ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                    int characterLength = info.Advance;
+                    float characterLength = info.Advance;
 
                     CharactersRenderInfos[i] = info;
                     CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
@@ -287,7 +287,7 @@ namespace ssGUI
                     currentLineLength += currentWordLength;
                     currentWordLength = 0;
                     CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                    int whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
+                    float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                     switch (curChar)
                     {
@@ -312,7 +312,7 @@ namespace ssGUI
             else
             {
                 ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                int characterLength = info.Advance;
+                float characterLength = info.Advance;
 
                 CharactersRenderInfos[i] = info;
                 CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
@@ -332,9 +332,9 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
 
-        int currentLineLength = GetHorizontalPadding();
+        float currentLineLength = GetHorizontalPadding();
         // glm::vec2 currentDrawPos = glm::vec2();
-        int drawXPos = GetHorizontalPadding();
+        float drawXPos = GetHorizontalPadding();
 
         wchar_t prevChar = 0;
         Overflow = false;
@@ -370,7 +370,7 @@ namespace ssGUI
             if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
             {
                 CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                int whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
+                float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 switch (curChar)
                 {
@@ -393,7 +393,7 @@ namespace ssGUI
             else 
             {
                 ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                int characterLength = info.Advance;
+                float characterLength = info.Advance;
 
                 //If one character is taking up the whole line, reset line length and go to next line
                 if(characterLength + GetHorizontalPadding()* 2 > GetSize().x && currentLineLength == 0)
@@ -433,7 +433,7 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        int drawXPos = GetHorizontalPadding();
+        float drawXPos = GetHorizontalPadding();
 
         wchar_t prevChar = 0;
         bool nextCharOnNewline = true;
@@ -470,7 +470,7 @@ namespace ssGUI
             if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
             {
                 CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                int whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
+                float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 if(nextCharOnNewline)
                 {
@@ -500,7 +500,7 @@ namespace ssGUI
             else 
             {
                 ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                int characterLength = info.Advance;
+                float characterLength = info.Advance;
 
                 CharactersRenderInfos[i] = info;
                 CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
@@ -531,10 +531,10 @@ namespace ssGUI
             return;
         }
         
-        int curMaxFontNewline = 0;
+        float curMaxFontNewline = 0;
         int currentIndex = 0;
         int currentLineIndex = 0;
-        int currentOffset = 0;
+        float currentOffset = 0;
         int lineCount = 0;
 
         while (currentIndex < CharactersRenderInfos.size())
@@ -623,10 +623,10 @@ namespace ssGUI
         }
         
         //Text alignment
-        int lineStartPos = 0;
+        float lineStartPos = 0;
         int lineStartIndex = 0;
-        int lineEndPos = lineStartPos;
-        int currentLineHeight = -1;
+        float lineEndPos = lineStartPos;
+        float currentLineHeight = -1;
 
         //For each line, find out how long it is and align accordingly
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
@@ -642,7 +642,7 @@ namespace ssGUI
                 {
                     lineEndPos = CharactersRenderInfos[i-1].RenderPosition.x + CharactersRenderInfos[i-1].DrawOffset.x +
                         CharactersRenderInfos[i-1].Size.x + GetHorizontalPadding();
-                    int alignOffset = 0; 
+                    float alignOffset = 0; 
 
                     switch (HorizontalAlignment)
                     {
@@ -673,7 +673,7 @@ namespace ssGUI
             {
                 lineEndPos = CharactersRenderInfos[i].RenderPosition.x + CharactersRenderInfos[i].DrawOffset.x +
                         CharactersRenderInfos[i].Size.x + GetHorizontalPadding();
-                int alignOffset = 0; 
+                float alignOffset = 0; 
 
                 switch (HorizontalAlignment)
                 {
@@ -695,7 +695,7 @@ namespace ssGUI
         }
         
         //Find out how tall all the texts are and align accordingly
-        int alignOffset = 0;
+        float alignOffset = 0;
         lineStartPos = 0;
         
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
@@ -1129,14 +1129,14 @@ namespace ssGUI
         return Overflow;
     }
 
-    void Text::SetFontSize(int size)
+    void Text::SetFontSize(float size)
     {
         FontSize = size;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    int Text::GetFontSize() const
+    float Text::GetFontSize() const
     {
         return FontSize;
     }
@@ -1276,50 +1276,50 @@ namespace ssGUI
         return CurrentFonts.size();
     }
 
-    void Text::SetHorizontalPadding(int padding)
+    void Text::SetHorizontalPadding(float padding)
     {
         HorizontalPadding = padding;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    int Text::GetHorizontalPadding() const
+    float Text::GetHorizontalPadding() const
     {
         return HorizontalPadding;
     }
 
-    void Text::SetVerticalPadding(int padding)
+    void Text::SetVerticalPadding(float padding)
     {
         VerticalPadding = padding;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    int Text::GetVerticalPadding() const
+    float Text::GetVerticalPadding() const
     {
         return VerticalPadding;
     }
 
-    void Text::SetCharacterSpace(int charSpace)
+    void Text::SetCharacterSpace(float charSpace)
     {
         CharacterSpace = charSpace;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    int Text::GetCharacterSpace() const
+    float Text::GetCharacterSpace() const
     {
         return CharacterSpace;
     }
 
-    void Text::SetLineSpace(int lineSpace)
+    void Text::SetLineSpace(float lineSpace)
     {
         LineSpace = lineSpace;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    int Text::GetLineSpace() const
+    float Text::GetLineSpace() const
     {
         return LineSpace;
     }
