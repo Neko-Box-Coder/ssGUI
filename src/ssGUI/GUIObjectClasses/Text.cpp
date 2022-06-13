@@ -1,6 +1,9 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "glm/gtx/norm.hpp"
+
+
 namespace ssGUI
 {    
     //TODO: Encapsulate it in class for deallocation
@@ -521,7 +524,6 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-
     void Text::ApplyFontLineSpacing()
     {
         FUNC_DEBUG_ENTRY();
@@ -562,7 +564,10 @@ namespace ssGUI
                     currentOffset += curMaxFontNewline;
                     
                     for(int i = currentLineIndex; i < currentIndex; i++)
+                    {
                         CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                        CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
+                    }
 
                     curMaxFontNewline = 0;
                     currentLineIndex = currentIndex;
@@ -574,7 +579,10 @@ namespace ssGUI
                     currentOffset += backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                     
                     for(int i = currentLineIndex; i < currentIndex; i++)
+                    {
                         CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                        CharactersRenderInfos[i].LineMinY = -backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
+                    }
 
                     curMaxFontNewline = 0;
                     currentLineIndex = currentIndex;
@@ -1334,6 +1342,141 @@ namespace ssGUI
     float Text::GetTabSize() const
     {
         return TabSize;
+    }
+
+    int Text::GetContainedCharacterIndexFromPos(glm::vec2 pos)
+    {
+        if(CharactersRenderInfos.empty())
+            return -1;
+        
+        //Use binary search to find the character
+        int startIndex = 0;
+        int endIndex = CharactersRenderInfos.size() - 1;
+        int midIndex = 0;
+
+        auto checkWithin = [](glm::vec2 checkPos, glm::vec2 charPos, glm::vec2 charSize)->bool
+        {
+            return checkPos.x > charPos.x && 
+                checkPos.x < charPos.x + charSize.x &&
+                checkPos.y > charPos.y &&
+                checkPos.y < charPos.y + charSize.y;
+        };
+
+        //TODO: Add max search iterations
+        while (true)
+        {
+            if(endIndex < startIndex)
+                return -1;
+
+            glm::vec2 globalPos = GetGlobalPosition();
+
+            midIndex = (startIndex + endIndex) / 2;
+            
+            //Check within
+            ssGUI::CharacterRenderInfo& midInfo = CharactersRenderInfos[midIndex];
+            if(checkWithin(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset, midInfo.Size))
+            {
+                return midIndex;
+            }
+
+            ssGUI::CharacterRenderInfo& startInfo = CharactersRenderInfos[startIndex];
+            ssGUI::CharacterRenderInfo& endInfo = CharactersRenderInfos[endIndex];
+
+            //Check if check position is contained
+            if(pos.y < globalPos.y + startInfo.LineMinY ||
+                pos.y > globalPos.y + endInfo.RenderPosition.y)
+            {
+                return -1;
+            }
+
+            //Check if pos is before midChar or after
+            //If above this line
+            if(pos.y < globalPos.y + midInfo.LineMinY)
+                endIndex = midIndex - 1;
+
+            //If below this line
+            else if(pos.y > globalPos.y + midInfo.RenderPosition.y)
+                startIndex = midIndex + 1;
+
+            //If within this line
+            else
+            {
+                //Before this character
+                if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                    endIndex = midIndex - 1;
+
+                //After this character
+                else if(pos.x > globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                    startIndex = midIndex + 1;
+
+                //Not contained
+                else
+                    return -1;
+            }
+        }
+    }
+
+    int Text::GetNearestCharacterIndexFromPos(glm::vec2 pos)
+    {
+        if(CharactersRenderInfos.empty())
+            return -1;
+        
+        //Use binary search to find the character
+        int startIndex = 0;
+        int endIndex = CharactersRenderInfos.size() - 1;
+        int midIndex = 0;
+
+        auto checkWithin = [](glm::vec2 checkPos, glm::vec2 charPos, glm::vec2 charSize)->bool
+        {
+            return checkPos.x > charPos.x && 
+                checkPos.x < charPos.x + charSize.x &&
+                checkPos.y > charPos.y &&
+                checkPos.y < charPos.y + charSize.y;
+        };
+
+        //TODO: Add max search iterations
+        while (true)
+        {
+            if(endIndex < startIndex)
+                return -1;
+
+            glm::vec2 globalPos = GetGlobalPosition();
+
+            midIndex = (startIndex + endIndex) / 2;
+
+            ssGUI::CharacterRenderInfo& midInfo = CharactersRenderInfos[midIndex];
+            ssGUI::CharacterRenderInfo& startInfo = CharactersRenderInfos[startIndex];
+            ssGUI::CharacterRenderInfo& endInfo = CharactersRenderInfos[endIndex];
+
+            //Check closest
+            if(startIndex == endIndex && endIndex == midIndex)
+                return midIndex;
+
+            if(startIndex == midIndex)
+            {                
+                return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
+                        glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + endInfo.Size * 0.5f) ?
+                        midIndex : endIndex;
+            }
+
+            if(endIndex == midIndex)
+            {
+                return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
+                        glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + startInfo.Size * 0.5f) ?
+                        midIndex : startIndex;
+            }
+
+            //Check if pos is before midChar or after
+            if(glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + startInfo.Size * 0.5f) < 
+                glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + endInfo.Size * 0.5f))
+            {
+                endIndex = midIndex;
+            }
+            else
+            {
+                startIndex = midIndex;
+            }
+        }
     }
 
     void Text::AddDefaultFont(ssGUI::Font* font)

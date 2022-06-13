@@ -42,6 +42,8 @@ int main()
         text.AddOverrideCharacterDetails(detail);
     }
 
+    int foundIndex = -1;
+
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
@@ -50,24 +52,24 @@ int main()
         [&]()
         {
             glm::ivec2 curMousePos = guiManager.GetBackendInputInterface()->GetCurrentMousePosition(&mainWindow);
-            for(int i = 0; i < text.GetOverrideCharactersDetailsCount(); i++)
+            
+            //Reset the previous highlighted character
+            if(foundIndex != -1)
             {
-                auto curDetail = text.GetOverrideCharacterDetails(i);
-                auto drawOffset = text.GetCharacterRenderInfo(i).DrawOffset;
-                auto advance = text.GetCharacterRenderInfo(i).Advance;
-                if(glm::distance(text.GetCharacterGlobalPosition(i, false) + glm::vec2(drawOffset.x + advance/2, drawOffset.y/2), 
-                    (glm::vec2)curMousePos) < advance/2)
-                {
-                    curDetail.FontIndex = 1;
-                    curDetail.FontSize = 30;
-                    text.SetOverrideCharacterDetails(i, curDetail);
-                }
-                else
-                {
-                    curDetail.FontIndex = 0;
-                    curDetail.FontSize = 20;
-                    text.SetOverrideCharacterDetails(i, curDetail);
-                }
+                auto curDetail = text.GetOverrideCharacterDetails(foundIndex);
+                curDetail.FontIndex = 0;
+                curDetail.FontSize = 20;
+                text.SetOverrideCharacterDetails(foundIndex, curDetail);
+            }
+
+            foundIndex = text.GetNearestCharacterIndexFromPos(curMousePos);
+            //Highlight character
+            if(foundIndex != -1)
+            {
+                auto curDetail = text.GetOverrideCharacterDetails(foundIndex);
+                curDetail.FontIndex = 1;
+                curDetail.FontSize = 30;
+                text.SetOverrideCharacterDetails(foundIndex, curDetail);
             }
         }
     );

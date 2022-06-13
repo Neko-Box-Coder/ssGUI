@@ -27,7 +27,7 @@ namespace ssGUI
             glm::vec2 Size;
 
             //var: RenderPosition
-            //This is the left-most position of the character on the horizontal line. 
+            //This is the left-most position of the character on the horizontal line (In other words bottom left corner). 
             //To get the top-left corner of the character, add <DrawOffset> to this 
             glm::vec2 RenderPosition;
 
@@ -38,6 +38,11 @@ namespace ssGUI
             //var: Valid
             //True if this character is valid and being rendered. Otherwise this character is not being rendered.
             bool Valid = false;
+
+            //var: LineMinY
+            //Minimum Y bound of the current line (Relative to RenderPosition).
+            //Maximum Y bound of the current line is always the same as RenderPosition.y.
+            float LineMinY;
     };
 }
 

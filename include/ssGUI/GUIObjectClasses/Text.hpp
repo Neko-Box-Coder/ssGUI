@@ -228,7 +228,7 @@ namespace ssGUI
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
             //If topLeftCorner is true, this will return the top-left corner of the character,
-            //Otherwise this will return the left-most position of the character on the horizontal line.
+            //Otherwise this will return the left-most position of the character on the horizontal line (Bottom Left corner).
             virtual glm::vec2 GetCharacterGlobalPosition(int index, bool topLeftCorner);
             
             //function: IsOverflow
@@ -346,6 +346,14 @@ namespace ssGUI
             //function: GetTabSize
             //Gets how many space each tab is
             virtual float GetTabSize() const;
+
+            //function: GetContainedCharacterIndexFromPos
+            //Gets the character index if the passed in position is contained inside a character
+            virtual int GetContainedCharacterIndexFromPos(glm::vec2 pos);
+            
+            //funciton: GetNearestCharacterIndexFromPos
+            //Gets the character index that is closest to the passed in position
+            virtual int GetNearestCharacterIndexFromPos(glm::vec2 pos);
 
             //function: AddDefaultFont
             //Adds the font to the end of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
