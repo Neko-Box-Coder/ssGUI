@@ -5,10 +5,11 @@ namespace ssGUI::Backend
     BackendImageSFML::BackendImageSFML(BackendImageSFML const& other)
     {
         GPUTexture = sf::Texture(other.GPUTexture);
+        MemoryImage = sf::Image(other.MemoryImage);
         GPUTextureValid = other.GPUTextureValid;
     }
     
-    BackendImageSFML::BackendImageSFML() : GPUTexture(), GPUTextureValid(false)
+    BackendImageSFML::BackendImageSFML() : GPUTexture(), MemoryImage(), GPUTextureValid(false)
     {}
 
     BackendImageSFML::~BackendImageSFML()
@@ -26,6 +27,9 @@ namespace ssGUI::Backend
 
     bool BackendImageSFML::LoadFromPath(std::string path)
     {
+        if(!MemoryImage.loadFromFile(std::filesystem::path(path)))
+            return false;
+
         if(GPUTexture.loadFromFile(std::filesystem::path(path)))
         {
             GPUTextureValid = true;
@@ -38,6 +42,9 @@ namespace ssGUI::Backend
 
     bool BackendImageSFML::LoadImgFileFromMemory(void const * dataPtr, std::size_t size)
     {
+        if(!MemoryImage.loadFromMemory(dataPtr, size))
+            return false;
+        
         if(GPUTexture.loadFromMemory(dataPtr, size))
         {
             GPUTextureValid = true;
@@ -50,10 +57,8 @@ namespace ssGUI::Backend
 
     bool BackendImageSFML::LoadRawFromMemory(void const * dataPtr, int width, int height)
     {
-        sf::Image img;
-        img.create(width, height, (sf::Uint8*)dataPtr);
-
-        if(GPUTexture.loadFromImage(img))
+        MemoryImage.create(width, height, (sf::Uint8*)dataPtr);
+        if(GPUTexture.loadFromImage(MemoryImage))
         {
             GPUTextureValid = true;
             return true;
@@ -72,6 +77,11 @@ namespace ssGUI::Backend
         }
         else
             return glm::ivec2();
+    }
+
+    const void* BackendImageSFML::GetPixelPtr() const
+    {
+        return GPUTextureValid ? MemoryImage.getPixelsPtr() : nullptr;
     }
 
     ssGUI::Backend::BackendImageInterface* BackendImageSFML::Clone()

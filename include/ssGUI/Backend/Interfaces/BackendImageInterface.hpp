@@ -39,7 +39,12 @@ namespace ssGUI::Backend
             virtual bool LoadRawFromMemory(void const * dataPtr, int width, int height) = 0;
             
             //function: GetSize
+            //Returns the size of the image
             virtual glm::ivec2 GetSize() const = 0;
+
+            //function: GetPixelPtr
+            //Returns the pixel data pointer of the image
+            virtual const void* GetPixelPtr() const = 0;
 
             //function: Clone
             virtual BackendImageInterface* Clone() = 0;

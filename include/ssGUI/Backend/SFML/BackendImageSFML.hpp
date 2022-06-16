@@ -15,6 +15,7 @@ namespace ssGUI::Backend
     ========================== C++ ==========================
     private:
         sf::Texture GPUTexture;
+        sf::Image MemoryImage;
         bool GPUTextureValid;
     =========================================================
     ========================== C++ ==========================
@@ -26,6 +27,7 @@ namespace ssGUI::Backend
     {
         private:
             sf::Texture GPUTexture;
+            sf::Image MemoryImage;
             bool GPUTextureValid;
             BackendImageSFML& operator=(BackendImageSFML const& other);
 
@@ -65,6 +67,10 @@ namespace ssGUI::Backend
             //function: GetSize
             //See <BackendImageInterface::GetSize>
             glm::ivec2 GetSize() const override;
+
+            //function: GetPixelPtr
+            //See <BackendImageInterface::GetPixelPtr>
+            const void* GetPixelPtr() const override;
 
             //function: Clone
             ssGUI::Backend::BackendImageInterface* Clone() override;

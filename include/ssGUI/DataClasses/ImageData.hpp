@@ -37,7 +37,7 @@ namespace ssGUI
 
             //function: GetBackendImageInterface
             //Gets the pointer of the BackendImageInterface
-            virtual ssGUI::Backend::BackendImageInterface* GetBackendImageInterface();
+            virtual ssGUI::Backend::BackendImageInterface* GetBackendImageInterface() const;
 
             //function: IsValid
             //See <BackendImageInterface::IsValid>
@@ -58,6 +58,10 @@ namespace ssGUI
             //function: GetSize
             //See <ssGUI::Backend::BackendImageInterface::GetSize>
             virtual glm::ivec2 GetSize() const;
+
+            //function: GetPixelPtr
+            //See <ssGUI::Backend::BackendImageInterface::GetPixelPtr>
+            virtual const void* GetPixelPtr() const;
 
             //function: Clone
             //Clones this ImageData object. Use this function instead of assignment operator or copy constructor.

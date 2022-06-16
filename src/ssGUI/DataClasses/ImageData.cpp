@@ -17,7 +17,7 @@ namespace ssGUI
         delete BackendImage;
     }
 
-    ssGUI::Backend::BackendImageInterface* ImageData::GetBackendImageInterface()
+    ssGUI::Backend::BackendImageInterface* ImageData::GetBackendImageInterface() const
     {
         return BackendImage;
     }
