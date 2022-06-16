@@ -143,7 +143,7 @@ namespace ssGUI
 
     void Text::DrawCharacter(glm::vec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details)
     {
-        if(!info.Valid)
+        if(!info.Rendered)
             return;
 
         glm::vec2 position = positionOffset + info.RenderPosition;
@@ -215,7 +215,7 @@ namespace ssGUI
         //If at tab
         //https://stackoverflow.com/questions/5796983/checking-if-float-is-an-integer#answer-25274904
         if(fabs(round(tabAmount) - tabAmount) <= 0.00001f)
-            return startPos + round(tabAmount) * tabSpace;
+            return startPos + (round(tabAmount) + 1) * tabSpace;
         else
             return startPos + ceil(tabAmount) * tabSpace;
     }
@@ -283,7 +283,7 @@ namespace ssGUI
                     currentWordIndex = i + 1;
                     currentWordLength = 0;
                     CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                    // CharactersRenderInfos[i].Valid = true;
+                    // CharactersRenderInfos[i].Rendered = true;
                     
                     drawXPos = GetHorizontalPadding();
                     Overflow = true;
@@ -307,7 +307,7 @@ namespace ssGUI
                     currentLineLength += currentWordLength;
                     currentWordLength = 0;
                     CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                    // CharactersRenderInfos[i].Valid = true;
+                    // CharactersRenderInfos[i].Rendered = true;
                     float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                     switch (curChar)
@@ -395,7 +395,7 @@ namespace ssGUI
             if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
             {
                 CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                // CharactersRenderInfos[i].Valid = true;
+                // CharactersRenderInfos[i].Rendered = true;
                 float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 switch (curChar)
@@ -500,7 +500,7 @@ namespace ssGUI
             if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
             {
                 CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                // CharactersRenderInfos[i].Valid = true;
+                // CharactersRenderInfos[i].Rendered = true;
                 float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 if(nextCharOnNewline)
@@ -524,7 +524,6 @@ namespace ssGUI
                         break;
                     }
                     case L'\n': 
-                        DEBUG_LINE();
                         nextCharOnNewline = true;
                         drawXPos = GetHorizontalPadding();
                         break;
@@ -575,59 +574,64 @@ namespace ssGUI
 
         while (currentIndex < CharactersRenderInfos.size())
         {
-            if(CharactersRenderInfos[currentIndex].Valid)
+            //Record max font newline height if needed
+            if(CurrentCharacterDetails[currentIndex].FontIndex != -1 && GetFont(CurrentCharacterDetails[currentIndex].FontIndex) != nullptr)
+                backendFont = GetFont(CurrentCharacterDetails[currentIndex].FontIndex)->GetBackendFontInterface();
+            else if(CurrentCharacterDetails[currentIndex].DefaultFontIndex != -1 && 
+                    GetDefaultFont(CurrentCharacterDetails[currentIndex].DefaultFontIndex) != nullptr)
             {
-                //Record max font newline height if needed
-                if(CurrentCharacterDetails[currentIndex].FontIndex != -1)
-                    backendFont = GetFont(CurrentCharacterDetails[currentIndex].FontIndex)->GetBackendFontInterface();
-                else
-                    backendFont = GetDefaultFont(CurrentCharacterDetails[currentIndex].DefaultFontIndex)->GetBackendFontInterface();
-
-                //When there's a newline, offset the current line
-                if(CharactersRenderInfos[currentIndex].CharacterAtNewline)
-                {
-                    //First line doesn't use font line space
-                    if(lineCount == 1)
-                    {
-                        currentOffset += curMaxFontNewline;
-                        
-                        for(int i = currentLineIndex; i < currentIndex; i++)
-                        {
-                            CharactersRenderInfos[i].RenderPosition.y += currentOffset;
-                            CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
-                        }
-
-                        curMaxFontNewline = 0;
-                        currentLineIndex = currentIndex;
-                        lineCount++;
-                    }
-                    //Second line and beyond uses font line space
-                    else if(lineCount >= 2)
-                    {
-                        currentOffset += backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
-                        
-                        for(int i = currentLineIndex; i < currentIndex; i++)
-                        {
-                            CharactersRenderInfos[i].RenderPosition.y += currentOffset;
-                            CharactersRenderInfos[i].LineMinY = -backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
-                        }
-
-                        curMaxFontNewline = 0;
-                        currentLineIndex = currentIndex;
-                    }
-                    //First character is always new line, ignore it
-                    else
-                    {
-                        curMaxFontNewline = 0;
-                        currentLineIndex = currentIndex;
-                        lineCount++;
-                    }
-                }
-
-                if(CurrentCharacterDetails[currentIndex].FontSize > curMaxFontNewline)
-                    curMaxFontNewline = CurrentCharacterDetails[currentIndex].FontSize;
+                backendFont = GetDefaultFont(CurrentCharacterDetails[currentIndex].DefaultFontIndex)->GetBackendFontInterface();   
+            }
+            else
+            {
+                currentIndex++;
+                continue;
             }
 
+            //When there's a newline, offset the current line
+            if(CharactersRenderInfos[currentIndex].CharacterAtNewline)
+            {
+                //First line doesn't use font line space
+                if(lineCount == 1)
+                {
+                    currentOffset += curMaxFontNewline;
+                    
+                    for(int i = currentLineIndex; i < currentIndex; i++)
+                    {
+                        CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                        CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
+                    }
+
+                    curMaxFontNewline = 0;
+                    currentLineIndex = currentIndex;
+                    lineCount++;
+                }
+                //Second line and beyond uses font line space
+                else if(lineCount >= 2)
+                {
+                    currentOffset += backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                    
+                    for(int i = currentLineIndex; i < currentIndex; i++)
+                    {
+                        CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                        CharactersRenderInfos[i].LineMinY = -backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
+                    }
+
+                    curMaxFontNewline = 0;
+                    currentLineIndex = currentIndex;
+                }
+                //First character is always new line, ignore it
+                else
+                {
+                    curMaxFontNewline = 0;
+                    currentLineIndex = currentIndex;
+                    lineCount++;
+                }
+            }
+
+            if(CurrentCharacterDetails[currentIndex].FontSize > curMaxFontNewline)
+                curMaxFontNewline = CurrentCharacterDetails[currentIndex].FontSize;
+            
 
             //If this is the last character, offset the current line
             if(currentIndex == CharactersRenderInfos.size() - 1 && backendFont != nullptr)
@@ -669,43 +673,40 @@ namespace ssGUI
         //For each line, find out how long it is and align accordingly
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
         {
-            if(CharactersRenderInfos[i].Valid)
+            //If this character is on a newline
+            if(CharactersRenderInfos[i].RenderPosition.y != currentLineHeight)
             {
-                //If this character is on a newline
-                if(CharactersRenderInfos[i].RenderPosition.y != currentLineHeight)
+                //Align the previous line first
+                if(i > 0)
                 {
-                    //Align the previous line first
-                    if(i > 0)
+                    lineEndPos = CharactersRenderInfos[i-1].RenderPosition.x + CharactersRenderInfos[i-1].DrawOffset.x +
+                        CharactersRenderInfos[i-1].Size.x + GetHorizontalPadding();
+                    float alignOffset = 0; 
+
+                    switch (HorizontalAlignment)
                     {
-                        lineEndPos = CharactersRenderInfos[i-1].RenderPosition.x + CharactersRenderInfos[i-1].DrawOffset.x +
-                            CharactersRenderInfos[i-1].Size.x + GetHorizontalPadding();
-                        float alignOffset = 0; 
-
-                        switch (HorizontalAlignment)
-                        {
-                            case ssGUI::Enums::TextAlignmentHorizontal::LEFT:
-                                break;
+                        case ssGUI::Enums::TextAlignmentHorizontal::LEFT:
+                            break;
+                    
+                        case ssGUI::Enums::TextAlignmentHorizontal::CENTER:
+                            alignOffset = (GetSize().x * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
+                            break;
                         
-                            case ssGUI::Enums::TextAlignmentHorizontal::CENTER:
-                                alignOffset = (GetSize().x * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
-                                break;
-                            
-                            case ssGUI::Enums::TextAlignmentHorizontal::RIGHT:
-                                alignOffset = GetSize().x - lineEndPos;
-                                break;
-                        }
-
-                        for(int j = lineStartIndex; j < i; j++)
-                            CharactersRenderInfos[j].RenderPosition.x += alignOffset;
+                        case ssGUI::Enums::TextAlignmentHorizontal::RIGHT:
+                            alignOffset = GetSize().x - lineEndPos;
+                            break;
                     }
 
-                    //Then record where the newline starts
-                    lineStartPos = 0;
-                    currentLineHeight = CharactersRenderInfos[i].RenderPosition.y;
-                    lineStartIndex = i;
+                    for(int j = lineStartIndex; j < i; j++)
+                        CharactersRenderInfos[j].RenderPosition.x += alignOffset;
                 }
-            }
 
+                //Then record where the newline starts
+                lineStartPos = 0;
+                currentLineHeight = CharactersRenderInfos[i].RenderPosition.y;
+                lineStartIndex = i;
+            }
+            
             //End of character
             if(i == CharactersRenderInfos.size() - 1)
             {

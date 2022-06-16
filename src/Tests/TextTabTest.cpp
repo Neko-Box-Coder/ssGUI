@@ -16,7 +16,8 @@ int main()
     text.SetFontSize(20);
     text.SetWrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING);
 
-    text.SetText("i\tiiiii\tiii\tiii\ni\ti\ti\ti\ti\ti\ti");
+    // text.SetText("i\tiiiii\tiii\tiii\ni\ti\ti\ti\ti\ti\ti");
+    text.SetText("\t\t\t//var: UVOrigin\n\t\t\t//The uv texture");
 
     text.SetParent(&mainWindow);
 

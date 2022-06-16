@@ -35,9 +35,11 @@ namespace ssGUI
             //True if this character is on a newline
             bool CharacterAtNewline = false;
 
-            //var: Valid
-            //True if this character is valid and being rendered. Otherwise this character is not being rendered.
-            bool Valid = false;
+            //var: Rendered
+            //True if this character is being rendered. Otherwise this character is not being rendered.
+            //Note that characters such as space and tab is not "rendered" since it has no texture to be rendered,
+            //but it is still "present" in the text.
+            bool Rendered = false;
 
             //var: LineMinY
             //Minimum Y bound of the current line (Relative to RenderPosition).

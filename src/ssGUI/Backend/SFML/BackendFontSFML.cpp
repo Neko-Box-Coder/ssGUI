@@ -38,7 +38,7 @@ namespace ssGUI::Backend
         info.DrawOffset = glm::vec2(glyph.bounds.left, glyph.bounds.top);
         info.Size = glm::vec2(glyph.textureRect.width, glyph.textureRect.height);
         info.UVOrigin = glm::vec2(glyph.textureRect.left, glyph.textureRect.top);
-        info.Valid = true;
+        info.Rendered = true;
 
         return info;
     }
