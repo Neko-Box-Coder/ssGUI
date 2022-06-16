@@ -149,6 +149,8 @@ namespace ssGUI
             
             virtual void FormatNewlinesCharacters();
 
+            virtual float GetClosestTabSpace(float startPos, float tabSpace, float targetPos);
+
             virtual void ConstructRenderInfosForWordWrapping();
 
             virtual void ConstructRenderInfosForCharacterWrapping();

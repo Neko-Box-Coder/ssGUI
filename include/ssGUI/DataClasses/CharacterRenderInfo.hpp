@@ -12,24 +12,24 @@ namespace ssGUI
         public:
             //var: Advance
             //How many pixels this character takes horizontally
-            float Advance;
+            float Advance = 0;
 
             //var: DrawOffset
             //Offset for getting the top-left corner of the character
-            glm::vec2 DrawOffset;
+            glm::vec2 DrawOffset = glm::vec2();
             
             //var: UVOrigin
             //The uv texture origin for this character
-            glm::vec2 UVOrigin;
+            glm::vec2 UVOrigin = glm::vec2();
             
             //var: Size
             //The texture size corresponding to UVOrigin
-            glm::vec2 Size;
+            glm::vec2 Size = glm::vec2();
 
             //var: RenderPosition
             //This is the left-most position of the character on the horizontal line (In other words bottom left corner). 
             //To get the top-left corner of the character, add <DrawOffset> to this 
-            glm::vec2 RenderPosition;
+            glm::vec2 RenderPosition = glm::vec2();
 
             //var: CharacterAtNewline
             //True if this character is on a newline
@@ -42,7 +42,7 @@ namespace ssGUI
             //var: LineMinY
             //Minimum Y bound of the current line (Relative to RenderPosition).
             //Maximum Y bound of the current line is always the same as RenderPosition.y.
-            float LineMinY;
+            float LineMinY = 0;
     };
 }
 
