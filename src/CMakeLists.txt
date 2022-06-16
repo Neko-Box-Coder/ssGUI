@@ -12,8 +12,8 @@ project(example VERSION 1.0)
 configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
 # add the executable
-# add_executable(example ./Examples/TextAlignmentExample.cpp)
-add_executable(example "./Tests/StandardButtonTest.cpp")
+# add_executable(example ./Examples/CharacterLevelAdjustment.cpp)
+add_executable(example "./Tests/ClipboardTest.cpp")
 
 # For projectconfig.hpp in build folder
 target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")
@@ -69,9 +69,31 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/ssGUI/GUIObjectClasses/CompositeClasses"
 
 target_include_directories(ssGUI PUBLIC "${INCLUDE_LOCATION}")
 
+
 # Copy resources 
 file(   COPY "${PROJECT_SOURCE_DIR}/Resources"
         DESTINATION "${PROJECT_BINARY_DIR}") 
+
+# ==========================================================
+# clip 
+# ==========================================================
+
+# Disable clip examples and tests
+set(CLIP_EXAMPLES OFF CACHE BOOL "Compile clip examples")
+set(CLIP_TESTS OFF CACHE BOOL "Compile clip tests")
+
+# In case that you have ${PNG_LIBRARY} set to support copy/paste images on Linux
+#set(CLIP_X11_PNG_LIBRARY "${PNG_LIBRARY}")
+
+# Add clip subdirectory to compile the library
+add_subdirectory("${PROJECT_SOURCE_DIR}/clip")
+
+target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/clip")
+
+# Linking clip to ssGUI
+target_link_libraries(ssGUI PUBLIC clip)
+
+
 # ==========================================================
 # SFML 
 # ==========================================================

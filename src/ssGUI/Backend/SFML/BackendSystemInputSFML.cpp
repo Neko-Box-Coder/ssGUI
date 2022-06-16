@@ -4,6 +4,9 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 
+#include "clip.h"   //TODO: Add macro for switching between this and SFML one.
+// #include "SFML/Window/Clipboard.hpp"
+
 namespace ssGUI::Backend
 {    
     template <class T>
@@ -417,96 +420,6 @@ namespace ssGUI::Backend
         return InputText;
     }
 
-    void BackendSystemInputSFML::UpdateCursor()
-    {
-        FUNC_DEBUG_ENTRY();
-        switch (CurrentCursor)
-        {
-            case ssGUI::Enums::CursorType::NONE:
-                break;
-            case ssGUI::Enums::CursorType::NORMAL:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::TEXT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Text))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::HAND:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Hand))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_LEFT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_RIGHT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeRight))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_UP:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTop))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_DOWN:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::MOVE:
-                if (!SFMLCursor.loadFromSystem(sf::Cursor::SizeAll)) //Not supported natively for mac os
-                    if(!SFMLCursor.loadFromSystem(sf::Cursor::Cross))
-                        DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::HELP:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Help))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::NOT_ALLOWED:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
-                    DEBUG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::CUSTOM:
-                if(CustomCursorImage.getPixelsPtr() != nullptr)
-                    if(!SFMLCursor.loadFromPixels(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize(), sf::Vector2u(Hotspot.x, Hotspot.y)))
-                        DEBUG_LINE("Failed to load cursor");
-        }
-
-        for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
-        {
-            if(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->IsClosed())
-                continue;            
-            
-            if(CurrentCursor == ssGUI::Enums::CursorType::NONE)
-            {
-                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(false);
-            }
-            else
-            {
-                //For whatever reason, when the cursor is changed and set visible without setting mouse cursor, it will crash. 
-                //This line is needed for whatever reason lol 
-                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursor(SFMLCursor);
-                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(true);
-            }
-        }
-        FUNC_DEBUG_EXIT();
-    }
-
     //Supported cursor type natively: https://www.sfml-dev.org/documentation/2.5.1/classsf_1_1Cursor.php#ad41999c8633c2fbaa2364e379c1ab25b
     void BackendSystemInputSFML::SetCursorType(ssGUI::Enums::CursorType cursorType)
     {
@@ -670,6 +583,199 @@ namespace ssGUI::Backend
             DEBUG_LINE("Failed to load custom cursor image");
 
         hotspot = Hotspot;
+    }
+
+    void BackendSystemInputSFML::UpdateCursor()
+    {
+        FUNC_DEBUG_ENTRY();
+        switch (CurrentCursor)
+        {
+            case ssGUI::Enums::CursorType::NONE:
+                break;
+            case ssGUI::Enums::CursorType::NORMAL:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::TEXT:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Text))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::HAND:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Hand))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_LEFT:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_RIGHT:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeRight))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_UP:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTop))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_DOWN:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::MOVE:
+                if (!SFMLCursor.loadFromSystem(sf::Cursor::SizeAll)) //Not supported natively for mac os
+                    if(!SFMLCursor.loadFromSystem(sf::Cursor::Cross))
+                        DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::HELP:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::Help))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::NOT_ALLOWED:
+                if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
+                    DEBUG_LINE("Failed to load cursor");
+                break;
+            case ssGUI::Enums::CursorType::CUSTOM:
+                if(CustomCursorImage.getPixelsPtr() != nullptr)
+                    if(!SFMLCursor.loadFromPixels(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize(), sf::Vector2u(Hotspot.x, Hotspot.y)))
+                        DEBUG_LINE("Failed to load cursor");
+        }
+
+        for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
+        {
+            if(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->IsClosed())
+                continue;            
+            
+            if(CurrentCursor == ssGUI::Enums::CursorType::NONE)
+            {
+                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(false);
+            }
+            else
+            {
+                //For whatever reason, when the cursor is changed and set visible without setting mouse cursor, it will crash. 
+                //This line is needed for whatever reason lol 
+                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursor(SFMLCursor);
+                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(true);
+            }
+        }
+        FUNC_DEBUG_EXIT();
+    }
+
+    bool BackendSystemInputSFML::ClearClipboard()
+    {
+        return clip::clear();
+    }
+
+    bool BackendSystemInputSFML::ClipbaordHasText()
+    {
+        return clip::has(clip::text_format());
+    }
+            
+    bool BackendSystemInputSFML::ClipbaordHasImage()
+    {
+        return clip::has(clip::image_format());
+    }
+
+    bool BackendSystemInputSFML::SetClipboardImage(const ssGUI::ImageData& imgData)
+    {
+        if(!imgData.IsValid())
+            return false;
+
+        auto sfTexture = static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
+
+        sf::Image img = sfTexture->copyToImage();
+
+        if(img.getPixelsPtr() == nullptr)
+            return false;
+
+        clip::image_spec spec;
+        spec.width = imgData.GetSize().x;
+        spec.height = imgData.GetSize().y;
+        spec.bits_per_pixel = 32;
+        spec.bytes_per_row = spec.width*4;
+
+        uint32_t endianness = 1;
+
+        //Little endian
+        if(*reinterpret_cast<uint8_t*>(&endianness) == 1)
+        {
+            spec.red_mask = 0xff;
+            spec.green_mask = 0xff00;
+            spec.blue_mask = 0xff0000;
+            spec.alpha_mask = 0xff000000;
+            spec.red_shift = 0;
+            spec.green_shift = 8;
+            spec.blue_shift = 16;
+            spec.alpha_shift = 24;
+        }
+        //Big endian
+        else
+        {
+            spec.red_mask = 0xff000000;
+            spec.green_mask = 0xff0000;
+            spec.blue_mask = 0xff00;
+            spec.alpha_mask = 0xff;
+            spec.red_shift = 24;
+            spec.green_shift = 16;
+            spec.blue_shift = 8;
+            spec.alpha_shift = 0;
+        }
+
+        clip::image clipImg = clip::image(static_cast<const void*>(img.getPixelsPtr()), spec);
+        return clip::set_image(clipImg);
+    }
+            
+    bool BackendSystemInputSFML::SetClipboardText(const std::wstring& str)
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
+        return clip::set_text(converter.to_bytes(str));
+    }
+            
+    bool BackendSystemInputSFML::GetClipboardImage(ssGUI::ImageData& imgData)
+    {
+        clip::image img;
+
+        if(!clip::get_image(img) || img.spec().bits_per_pixel != 32)
+            return false;
+
+        return imgData.LoadRawFromMemory(static_cast<void*>(img.data()), img.spec().width, img.spec().height);
+    }
+
+    bool BackendSystemInputSFML::GetClipboardText(std::wstring& str)
+    {
+        // auto sfstr = sf::Clipboard::getString();
+
+        // if(sfstr.isEmpty())
+        //     return false;
+        // else
+        // {
+        //     str = sfstr.toAnsiString();
+        //     return true;
+        // }
+
+        std::string temp;
+        if(!clip::get_text(temp))
+            return false;
+
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        str = converter.from_bytes(temp);
+
+        return true;
     }
 
     uint64_t BackendSystemInputSFML::GetElapsedTime() const

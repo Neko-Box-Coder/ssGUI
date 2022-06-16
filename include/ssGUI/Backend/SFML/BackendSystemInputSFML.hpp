@@ -176,6 +176,34 @@ namespace ssGUI::Backend
             //See <BackendSystemInputInterface::UpdateCursor>
             void UpdateCursor() override;
 
+            //function: ClearClipboard
+            //See <BackendSystemInputInterface::ClearClipboard>
+            bool ClearClipboard() override;
+
+            //function: ClipbaordHasText
+            //See <BackendSystemInputInterface::ClipbaordHasText>
+            bool ClipbaordHasText() override;
+            
+            //function: ClipbaordHasImage
+            //See <BackendSystemInputInterface::ClipbaordHasImage>            
+            bool ClipbaordHasImage() override;
+
+            //function: SetClipboardImage
+            //See <BackendSystemInputInterface::SetClipboardImage>
+            bool SetClipboardImage(const ssGUI::ImageData& imgData) override;
+            
+            //function: SetClipboardText
+            //See <BackendSystemInputInterface::SetClipboardText>            
+            bool SetClipboardText(const std::wstring& str) override;
+            
+            //function: GetClipboardImage
+            //See <BackendSystemInputInterface::GetClipboardImage>            
+            bool GetClipboardImage(ssGUI::ImageData& imgData) override;
+
+            //function: GetClipboardText
+            //See <BackendSystemInputInterface::GetClipboardText>
+            bool GetClipboardText(std::wstring& str) override;
+
             //function: GetElapsedTime
             //See <BackendSystemInputInterface::GetElapsedTime>
             uint64_t GetElapsedTime() const override;

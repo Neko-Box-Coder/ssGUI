@@ -104,6 +104,34 @@ namespace ssGUI::Backend
             //Updates the cursor. This needs to be called after a new cursor is set.
             virtual void UpdateCursor() = 0;
 
+            //function: ClearClipboard
+            //Clears the clipboard
+            virtual bool ClearClipboard() = 0;
+
+            //function: ClipbaordHasText
+            //Returns if the clipboard contains text
+            virtual bool ClipbaordHasText() = 0;
+            
+            //function: ClipbaordHasImage
+            //Returns if the clipboard contains image
+            virtual bool ClipbaordHasImage() = 0;
+
+            //function: SetClipboardImage
+            //Sets the clipboard image
+            virtual bool SetClipboardImage(const ssGUI::ImageData& imgData) = 0;
+            
+            //function: SetClipboardText
+            //Sets the clipboard text
+            virtual bool SetClipboardText(const std::wstring& str) = 0;
+            
+            //function: GetClipboardImage
+            //Gets the clipboard image. It currently only supports 32-bit RGBA image
+            virtual bool GetClipboardImage(ssGUI::ImageData& imgData) = 0;
+
+            //function: GetClipboardText
+            //Gets the clipboard text
+            virtual bool GetClipboardText(std::wstring& str) = 0;
+
             //function: GetElapsedTime
             //Returns elapsed time since application startup in millisecond
             virtual uint64_t GetElapsedTime() const = 0;
