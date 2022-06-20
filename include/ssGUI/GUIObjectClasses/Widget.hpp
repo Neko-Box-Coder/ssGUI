@@ -64,11 +64,6 @@ namespace ssGUI
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
-            //function: Internal_Update
-            //(Internal ssGUI function) Update function called by <ssGUIManager>
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
-
             //function: Clone
             //See <GUIObject::Clone>
             virtual Widget* Clone(bool cloneChildren) override;

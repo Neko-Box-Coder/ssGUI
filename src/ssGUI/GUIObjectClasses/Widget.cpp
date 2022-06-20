@@ -97,52 +97,6 @@ namespace ssGUI
         return ssGUI::Enums::GUIObjectType::WIDGET;
     }
 
-    void Widget::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
-    {
-        FUNC_DEBUG_ENTRY();
-        
-        //If it is not visible, don't even update/draw it
-        if(!IsVisible())
-        {
-            FUNC_DEBUG_EXIT();
-            return;
-        }
-
-        for(auto extension : ExtensionsUpdateOrder)
-        {
-            //Guard against extension being deleted by other extensions
-            if(!IsExtensionExist(extension))
-                continue;
-
-            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        }
-
-        //It will only block when BlockInput flag is true
-        if(!IsBlockInput())
-            goto endOfUpdate;
-
-        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-
-        endOfUpdate:;
-        for(auto extension : ExtensionsUpdateOrder)
-        {
-            //Guard against extension being deleted by other extensions
-            if(!IsExtensionExist(extension))
-                continue;
-
-            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        }
-        
-        //Check position different for redraw
-        if(GetGlobalPosition() != LastGlobalPosition)
-            RedrawObject();
-
-        LastGlobalPosition = GetGlobalPosition();
-
-        FUNC_DEBUG_EXIT();
-    }
-
     Widget* Widget::Clone(bool cloneChildren)
     {
         FUNC_DEBUG_ENTRY();
