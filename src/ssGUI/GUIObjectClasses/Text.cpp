@@ -52,6 +52,11 @@ namespace ssGUI
         CharacterSpace = other.GetCharacterSpace();
         LineSpace = other.GetLineSpace();
         TabSize = other.GetTabSize();
+        SelectionAllowed = other.IsTextSelectionAllowed();
+        StartSelectionIndex = other.GetStartSelectionIndex();
+        EndSelectionIndex = other.GetEndSelectionIndex();
+        SelectionColor = other.GetSelectionColor();
+        TextSelectedColor = other.GetTextSelectedColor();
         LastDefaultFonts = other.LastDefaultFonts;
     }
 
@@ -600,6 +605,7 @@ namespace ssGUI
                     {
                         CharactersRenderInfos[i].RenderPosition.y += currentOffset;
                         CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
+                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                     }
 
                     curMaxFontNewline = 0;
@@ -614,7 +620,8 @@ namespace ssGUI
                     for(int i = currentLineIndex; i < currentIndex; i++)
                     {
                         CharactersRenderInfos[i].RenderPosition.y += currentOffset;
-                        CharactersRenderInfos[i].LineMinY = -backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
+                        CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;//-backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
+                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                     }
 
                     curMaxFontNewline = 0;
@@ -639,7 +646,11 @@ namespace ssGUI
                 currentOffset += lineCount == 1 ? curMaxFontNewline : backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                 
                 for(int i = currentLineIndex; i <= currentIndex; i++)
+                {
                     CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                    CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
+                    CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                }
 
                 //Update vertical overflow
                 if(!IsOverflow() && CharactersRenderInfos[currentIndex].RenderPosition.y + GetVerticalPadding() * 2 > GetSize().y)
@@ -764,6 +775,79 @@ namespace ssGUI
 
         FUNC_DEBUG_EXIT();
     }
+    
+    void Text::ApplyTextHighlight()
+    {
+        FUNC_DEBUG_ENTRY();
+
+        if(StartSelectionIndex == EndSelectionIndex)
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+        
+        if(StartSelectionIndex < 0 || StartSelectionIndex > CharactersRenderInfos.size() ||
+            EndSelectionIndex < 0 || EndSelectionIndex > CharactersRenderInfos.size())
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
+
+        auto drawHighlight = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 highlightColor)
+        {
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() +
+                glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
+
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() +
+                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMinY));
+
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() +
+                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
+
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() +
+                glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
+
+            for(int i = 0; i < 4; i++)
+            {
+                DrawingUVs.push_back(glm::vec2());
+                DrawingColours.push_back(highlightColor);
+            }
+
+            DrawingCounts.push_back(4);
+            DrawingProperties.push_back(ssGUI::DrawingProperty());
+        };
+
+        int startIndex, endIndex;
+
+        if(StartSelectionIndex < EndSelectionIndex)
+        {
+            startIndex = StartSelectionIndex;
+            endIndex = EndSelectionIndex;
+        }
+        else
+        {
+            startIndex = EndSelectionIndex;
+            endIndex = StartSelectionIndex;
+        }
+
+        int lineStartIndex = startIndex;
+
+        for(int i = startIndex; i < endIndex; i++)
+        {           
+            //Check newline
+            if(CharactersRenderInfos[i].CharacterAtNewline && i != 0 && lineStartIndex != i)
+            {
+                drawHighlight(lineStartIndex, i-1, SelectionColor);
+                lineStartIndex = i;
+            }
+
+            //Check last character
+            if(i == endIndex - 1)
+                drawHighlight(lineStartIndex, i, glm::u8vec4(51, 153, 255, 255));
+        }
+
+        FUNC_DEBUG_EXIT();
+    }
 
     void Text::ApplyTextUnderline()
     {
@@ -796,13 +880,36 @@ namespace ssGUI
         //This handles font size and color change
         auto drawMultiColoredUnderline = [&](int startIndex, int inclusiveEndIndex)
         {
+            std::function<bool(int)> isIndexInSelection;
+
+            //Setup lambda for checking character is highlighted
+            if(IsMultilineAllowed() && GetStartSelectionIndex() >= 0 && GetEndSelectionIndex() >= 0)
+            {
+                if(GetStartSelectionIndex() < GetEndSelectionIndex())
+                {
+                    isIndexInSelection = [&](int targetIndex)->bool
+                    {
+                        return targetIndex >= GetStartSelectionIndex() && targetIndex < GetEndSelectionIndex(); 
+                    };
+                }
+                else
+                {
+                    isIndexInSelection = [&](int targetIndex)->bool
+                    {
+                        return targetIndex >= GetEndSelectionIndex() && targetIndex < GetStartSelectionIndex(); 
+                    };
+                }
+            }
+            else
+                isIndexInSelection = [](int targetIndex){return false;};
+            
             float maxFontSize = -1;
             int maxFontSizeCharIndex = -1;
             
             //Find max font size
             for (int i = startIndex; i <= inclusiveEndIndex; i++)
             {
-                if(CurrentCharacterDetails[i].FontIndex != -1 && CurrentCharacterDetails[i].DefaultFontIndex != -1 && 
+                if((CurrentCharacterDetails[i].FontIndex != -1 || CurrentCharacterDetails[i].DefaultFontIndex != -1) && 
                     CurrentCharacterDetails[i].FontSize > maxFontSize)
                 {
                     maxFontSize = CurrentCharacterDetails[i].FontSize;
@@ -819,16 +926,19 @@ namespace ssGUI
             //Draw underlines
             glm::u8vec4 currentUnderlineColor = CurrentCharacterDetails[startIndex].CharacterColor;
             int lastIndex = startIndex;
+            bool IsLastCharHighlighted = isIndexInSelection(startIndex);
             for (int i = startIndex; i <= inclusiveEndIndex; i++)
             {
-                //Check for color change
-                if(CurrentCharacterDetails[i].CharacterColor != currentUnderlineColor)
-                {
+                bool curCharHighlighted = isIndexInSelection(i);
+                
+                //Check for color change or highlight change
+                if(CurrentCharacterDetails[i].CharacterColor != currentUnderlineColor || curCharHighlighted != IsLastCharHighlighted)
+                {                    
                     drawUnderline
                     (
                         lastIndex, 
                         i-1, 
-                        currentUnderlineColor, 
+                        IsLastCharHighlighted ? TextSelectedColor : currentUnderlineColor, 
                         fontInterface->GetUnderlineThickness(maxFontSize), 
                         fontInterface->GetUnderlineOffset(maxFontSize)    
                     );
@@ -844,11 +954,13 @@ namespace ssGUI
                     (
                         lastIndex, 
                         i, 
-                        currentUnderlineColor, 
+                        curCharHighlighted ? TextSelectedColor : currentUnderlineColor, 
                         fontInterface->GetUnderlineThickness(maxFontSize), 
                         fontInterface->GetUnderlineOffset(maxFontSize)    
                     );
                 }
+
+                IsLastCharHighlighted = curCharHighlighted;
             }
         };
 
@@ -908,6 +1020,52 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
+    void Text::DrawAllCharacters()
+    {
+        if(!IsTextSelectionAllowed() || StartSelectionIndex < 0 || EndSelectionIndex < 0 || 
+            StartSelectionIndex == EndSelectionIndex)
+        {
+            for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+            {
+                // Add the glyph to the vertices
+                DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], CurrentCharacterDetails[i]);
+            }
+        }
+        else
+        {
+            std::function<bool(int)> isIndexInSelection;
+            
+            if(GetStartSelectionIndex() < GetEndSelectionIndex())
+            {
+                isIndexInSelection = [&](int targetIndex)->bool
+                {
+                    return targetIndex >= GetStartSelectionIndex() && targetIndex < GetEndSelectionIndex(); 
+                };
+            }
+            else
+            {
+                isIndexInSelection = [&](int targetIndex)->bool
+                {
+                    return targetIndex >= GetEndSelectionIndex() && targetIndex < GetStartSelectionIndex(); 
+                };
+            }
+
+            for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+            {
+                if(!isIndexInSelection(i))
+                    // Add the glyph to the vertices
+                    DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], CurrentCharacterDetails[i]);
+                else
+                {
+                    auto curDetails = CurrentCharacterDetails[i];
+                    curDetails.CharacterColor = TextSelectedColor;
+
+                    DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], curDetails);
+                }
+            }
+        }
+    }
+
     void Text::ConstructRenderInfo()
     {
         FUNC_DEBUG_ENTRY();
@@ -944,11 +1102,10 @@ namespace ssGUI
         if(RecalculateTextNeeded)
             ComputeCharactersPositionAndSize(); 
 
-        for (int i = 0; i < CurrentCharacterDetails.size(); i++)
-        {
-            // Add the glyph to the vertices
-            DrawCharacter(drawPos, CharactersRenderInfos[i], CurrentCharacterDetails[i]);
-        }
+        if(IsTextSelectionAllowed())
+            ApplyTextHighlight();
+
+        DrawAllCharacters();
         
         ApplyTextUnderline();
 
@@ -981,8 +1138,62 @@ namespace ssGUI
             RecalculateTextNeeded = true; 
             RedrawObject(); 
         }
+        
+        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked && IsBlockInput())
+        {
+            //Mouse Input blocking
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
 
-        Widget::MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            bool mouseInWindowBoundX = false;
+            bool mouseInWindowBoundY = false;
+            
+            if(currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x)
+                mouseInWindowBoundX = true;
+
+            if(currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
+                mouseInWindowBoundY = true;
+            
+            //Input blocking
+            if(mouseInWindowBoundX && mouseInWindowBoundY)
+            {
+                inputInterface->SetCursorType(ssGUI::Enums::CursorType::TEXT); 
+                windowInputStatus.MouseInputBlocked = true;
+            }
+
+            //If mouse click on this, set focus
+            if(mouseInWindowBoundX && mouseInWindowBoundY &&
+                ((inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
+                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
+            {
+                SetFocus(true);    
+            }
+
+            if(IsTextSelectionAllowed() && inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
+                mouseInWindowBoundX && mouseInWindowBoundY && IsInteractable())
+            {
+                int closestIndex = GetNearestCharacterIndexFromPos
+                (
+                    inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)), true
+                );
+
+                if(closestIndex == CurrentCharacterDetails.size() - 1 && 
+                    IsPosAfterLastCharacter(inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow))))
+                {
+                    closestIndex += 1;
+                }
+
+                //When left click down, set start and end selection index to the closest (exclusive) index
+                if(!inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
+                {
+                    SetStartSelectionIndex(closestIndex);
+                    SetEndSelectionIndex(closestIndex);
+                }
+                //When left clicking, move end selection index to the closest index
+                else
+                    SetEndSelectionIndex(closestIndex);
+            }
+        }
     }
     
     const std::string Text::ListenerKey = "Text";
@@ -991,11 +1202,13 @@ namespace ssGUI
                     CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
                     TextUnderline(false), MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
                     HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
-                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
+                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), SelectionAllowed(true),
+                    StartSelectionIndex(-1), EndSelectionIndex(-1), SelectionColor(51, 153, 255, 255), TextSelectedColor(255, 255, 255, 255), 
+                    LastDefaultFonts()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
-        SetInteractable(false);
+        SetInteractable(true);
 
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
@@ -1195,6 +1408,7 @@ namespace ssGUI
     void Text::SetTextUnderlined(bool underline)
     {
         TextUnderline = underline;
+        RedrawObject();
     }
 
     bool Text::IsTextUnderlined() const
@@ -1375,6 +1589,65 @@ namespace ssGUI
         return TabSize;
     }
 
+    void Text::SetTextSelectionAllowed(bool allowed)
+    {
+        SelectionAllowed = allowed;
+        RedrawObject();
+    }
+
+    bool Text::IsTextSelectionAllowed() const
+    {
+        return SelectionAllowed;
+    }
+
+    void Text::SetStartSelectionIndex(int index)
+    {
+        if(IsTextSelectionAllowed())
+        {
+            StartSelectionIndex = index;
+            RedrawObject();
+        }
+    }
+
+    int Text::GetStartSelectionIndex() const
+    {
+        return IsTextSelectionAllowed() ? StartSelectionIndex : -1;
+    }
+
+    void Text::SetEndSelectionIndex(int index)
+    {
+        if(IsTextSelectionAllowed())
+        {
+            EndSelectionIndex = index;
+            RedrawObject();
+        }
+    }
+
+    int Text::GetEndSelectionIndex() const
+    {
+        return IsTextSelectionAllowed() ? EndSelectionIndex : -1;
+    }
+
+    void Text::SetSelectionColor(glm::u8vec4 color)
+    {
+        SelectionColor = color;
+    }
+
+    glm::u8vec4 Text::GetSelectionColor() const
+    {
+        return SelectionColor;
+    }
+
+    void Text::SetTextSelectedColor(glm::u8vec4 color)
+    {
+        TextSelectedColor = color;
+    }
+
+    glm::u8vec4 Text::GetTextSelectedColor() const
+    {
+        return TextSelectedColor;
+    }
+
     int Text::GetContainedCharacterIndexFromPos(glm::vec2 pos)
     {
         if(CharactersRenderInfos.empty())
@@ -1447,7 +1720,7 @@ namespace ssGUI
         }
     }
 
-    int Text::GetNearestCharacterIndexFromPos(glm::vec2 pos)
+    int Text::GetNearestCharacterIndexFromPos(glm::vec2 pos, bool useLeftEdge)
     {
         if(CharactersRenderInfos.empty())
             return -1;
@@ -1456,14 +1729,6 @@ namespace ssGUI
         int startIndex = 0;
         int endIndex = CharactersRenderInfos.size() - 1;
         int midIndex = 0;
-
-        auto checkWithin = [](glm::vec2 checkPos, glm::vec2 charPos, glm::vec2 charSize)->bool
-        {
-            return checkPos.x > charPos.x && 
-                checkPos.x < charPos.x + charSize.x &&
-                checkPos.y > charPos.y &&
-                checkPos.y < charPos.y + charSize.y;
-        };
 
         //TODO: Add max search iterations
         while (true)
@@ -1485,29 +1750,89 @@ namespace ssGUI
 
             if(startIndex == midIndex)
             {                
-                return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
-                        glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + endInfo.Size * 0.5f) ?
-                        midIndex : endIndex;
+                if(!useLeftEdge)
+                {
+                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
+                            glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + endInfo.Size * 0.5f) ?
+                            midIndex : endIndex;
+                }
+                else
+                {
+                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + glm::vec2(0, midInfo.Size.y * 0.5f)) < 
+                            glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + glm::vec2(0, endInfo.Size.y * 0.5f)) ?
+                            midIndex : endIndex;
+                }
             }
 
             if(endIndex == midIndex)
             {
-                return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
-                        glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + startInfo.Size * 0.5f) ?
-                        midIndex : startIndex;
+                if(!useLeftEdge)
+                {
+                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
+                            glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + startInfo.Size * 0.5f) ?
+                            midIndex : startIndex;
+                }
+                else
+                {
+                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + glm::vec2(0, midInfo.Size.y * 0.5f)) < 
+                            glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + glm::vec2(0, startInfo.Size.y * 0.5f)) ?
+                            midIndex : startIndex;
+                }
             }
 
             //Check if pos is before midChar or after
-            if(glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + startInfo.Size * 0.5f) < 
-                glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + endInfo.Size * 0.5f))
+            //If above this line
+            if(pos.y < globalPos.y + midInfo.LineMinY)
             {
-                endIndex = midIndex;
+                //If mid char and start char are on the same line
+                if(startInfo.RenderPosition.y == midInfo.RenderPosition.y)
+                {
+                    //Before this character
+                    if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                        endIndex = midIndex;
+                    //After this character
+                    else
+                        startIndex = midIndex;
+                }
+                else
+                    endIndex = midIndex;
             }
+            //If below this line
+            else if(pos.y > globalPos.y + midInfo.RenderPosition.y)
+            {
+                //If mid char and end char are on the same line
+                if(endInfo.RenderPosition.y == midInfo.RenderPosition.y)
+                {
+                    //Before this character
+                    if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                        endIndex = midIndex;
+                    //After this character
+                    else
+                        startIndex = midIndex;
+                }
+                else
+                    startIndex = midIndex;
+            }
+            //If within this line
             else
             {
-                startIndex = midIndex;
+                //Before this character
+                if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                    endIndex = midIndex;
+                //After this character
+                else
+                    startIndex = midIndex;
             }
         }
+    }
+    
+    bool Text::IsPosAfterLastCharacter(glm::vec2 pos)
+    {
+        if(CharactersRenderInfos.empty())
+            return false;
+
+        return pos.x > GetGlobalPosition().x + CharactersRenderInfos[CharactersRenderInfos.size() - 1].RenderPosition.x + 
+            CharactersRenderInfos[CharactersRenderInfos.size() - 1].Advance;
     }
 
     void Text::AddDefaultFont(ssGUI::Font* font)

@@ -52,20 +52,29 @@ namespace ssGUI
         float CharacterSpace;
         float LineSpace;
         float TabSize;
+        bool SelectionAllowed;
+        int StartSelectionIndex;
+        int EndSelectionIndex;
+
+        glm::u8vec4 SelectionColor;
+        glm::u8vec4 TextSelectedColor;
+
         std::vector<ssGUI::Font*> LastDefaultFonts;
 
         static std::vector<ssGUI::Font*> DefaultFonts;
     =================================================================
     ============================== C++ ==============================
     Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
-                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(20), TextColor(glm::u8vec4(0, 0, 0, 255)), 
+                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
                     TextUnderline(false), MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
                     HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
-                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), LastDefaultFonts()
+                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), SelectionAllowed(true),
+                    StartSelectionIndex(-1), EndSelectionIndex(-1), SelectionColor(51, 153, 255, 255), TextSelectedColor(255, 255, 255, 255), 
+                    LastDefaultFonts()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
-        SetInteractable(false);
+        SetInteractable(true);
 
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
@@ -135,6 +144,13 @@ namespace ssGUI
             float CharacterSpace;
             float LineSpace;
             float TabSize;
+            bool SelectionAllowed;
+            int StartSelectionIndex;
+            int EndSelectionIndex;
+
+            glm::u8vec4 SelectionColor;
+            glm::u8vec4 TextSelectedColor;
+
             std::vector<ssGUI::Font*> LastDefaultFonts;
 
             static std::vector<ssGUI::Font*> DefaultFonts;
@@ -161,7 +177,11 @@ namespace ssGUI
 
             virtual void ApplyTextAlignment();
 
+            virtual void ApplyTextHighlight();
+
             virtual void ApplyTextUnderline();
+
+            virtual void DrawAllCharacters();
 
             virtual void ConstructRenderInfo() override;
 
@@ -349,13 +369,63 @@ namespace ssGUI
             //Gets how many space each tab is
             virtual float GetTabSize() const;
 
+            //function: SetTextSelectionAllowed
+            //Sets if text selection is allowed
+            virtual void SetTextSelectionAllowed(bool allowed);
+
+            //function: IsTextSelectionAllowed
+            //Returns if text selection is allowed
+            virtual bool IsTextSelectionAllowed() const;
+
+            //function: SetStartSelectionIndex
+            //Sets the start selection index. If start and end index is the same, nothing is selected.
+            //If start index is before the end index, characters in the range of start (inclusive) and end (exclusive) index are selected.
+            //If start index is after the end index, characters in the range of start (exclusive) and end (inclusive) index are selected.
+            //Note that it is possible for the start/end selection index to be equal to the total characters count.
+            virtual void SetStartSelectionIndex(int index);
+
+            //function: GetStartSelectionIndex
+            //Gets the start selection index. Returns -1 if selection is not allowed or invalid
+            //For explaination on how selection works, see <SetStartSelectionIndex>
+            virtual int GetStartSelectionIndex() const;
+
+            //function: SetEndSelectionIndex
+            //Sets the end selection index
+            //For explaination on how selection works, see <SetStartSelectionIndex>
+            virtual void SetEndSelectionIndex(int index);
+
+            //function: GetEndSelectionIndex
+            //Gets the end selection index. Returns -1 if selection is not allowed or invalid
+            virtual int GetEndSelectionIndex() const;
+
+            //function: SetSelectionColor
+            //Sets the selection color
+            virtual void SetSelectionColor(glm::u8vec4 color);
+
+            //function: GetSelectionColor
+            //Gets the selection color
+            virtual glm::u8vec4 GetSelectionColor() const;
+
+            //function: SetTextSelectedColor
+            //Sets the text color when being selected
+            virtual void SetTextSelectedColor(glm::u8vec4 color);
+
+            //function: GetTextSelectedColor
+            //Gets the text color when being selected
+            virtual glm::u8vec4 GetTextSelectedColor() const;
+
             //function: GetContainedCharacterIndexFromPos
             //Gets the character index if the passed in position is contained inside a character
             virtual int GetContainedCharacterIndexFromPos(glm::vec2 pos);
             
             //funciton: GetNearestCharacterIndexFromPos
-            //Gets the character index that is closest to the passed in position
-            virtual int GetNearestCharacterIndexFromPos(glm::vec2 pos);
+            //Gets the character index that is closest to the passed in position.
+            //If useLeftEdge, it will use the left side of the character instead of the center of it.
+            virtual int GetNearestCharacterIndexFromPos(glm::vec2 pos, bool useLeftEdge);
+
+            //function: IsPosAfterLastCharacter
+            //Returns if the x position is before or after the right side of the last character
+            virtual bool IsPosAfterLastCharacter(glm::vec2 pos);
 
             //function: AddDefaultFont
             //Adds the font to the end of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.

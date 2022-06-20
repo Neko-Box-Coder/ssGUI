@@ -43,8 +43,11 @@ namespace ssGUI
 
             //var: LineMinY
             //Minimum Y bound of the current line (Relative to RenderPosition).
-            //Maximum Y bound of the current line is always the same as RenderPosition.y.
             float LineMinY = 0;
+
+            //var: LineMaxY
+            //Maximum Y bound of the current line (Relative to RenderPosition).
+            float LineMaxY = 0;
     };
 }
 

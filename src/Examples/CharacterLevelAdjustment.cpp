@@ -62,7 +62,8 @@ int main()
                 text.SetOverrideCharacterDetails(foundIndex, curDetail);
             }
 
-            foundIndex = text.GetNearestCharacterIndexFromPos(curMousePos);
+            // foundIndex = text.GetNearestCharacterIndexFromPos(curMousePos, false);
+            foundIndex = text.GetContainedCharacterIndexFromPos(curMousePos);
             //Highlight character
             if(foundIndex != -1)
             {
