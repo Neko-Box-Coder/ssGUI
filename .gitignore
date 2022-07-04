@@ -42,3 +42,7 @@
 builds/
 Internal_Documentation/ND_Config/Working\ Data
 v0.*/
+
+.cache/
+
+compile_commands.json

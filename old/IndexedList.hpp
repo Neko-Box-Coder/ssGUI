@@ -19,52 +19,47 @@ namespace ssGUI
     class IndexedList
     {
         private:
-            inline typename std::list<T>::iterator GetIterator(int index)
+            inline typename std::list<T>::iterator GetIterator(size_t index)
             {
-                const int maxMapSize = MapCacheSize;
-                const int maxQueueSize = QueueCacheSize;
-
                 //Check out of range
-                if(index < 0 || index >= InternalList.size())
+                if(index < 0 || index >= CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in IndexedList (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
+                
+                const size_t maxMapSize = MapCacheSize;
+                const size_t minCacheDistance = MinMapDistance; 
+
+                //Check sequential cache
+                typename std::list<T>::iterator foundIt = InternalList.end();
+                if(SequentialCacheValid)
+                {
+                    int32_t diff = index - SequentialCache.Index;
+
+                    if(diff == 0)
+                        return SequentialCache.TargetIt;
+                    else if(diff == 1)
+                    {
+                        auto it = SequentialCache.TargetIt;
+                        foundIt = ++it;
+                        SequentialCache = {index, foundIt};
+                        return foundIt;
+                    }
+                    else if(diff == -1)
+                    {
+                        auto it = SequentialCache.TargetIt;
+                        foundIt = --it;
+                        SequentialCache = {index, foundIt};
+                        return foundIt;
+                    } 
+                }
 
                 //If size is less than 5, just iterate to find it
-                if(InternalList.size() < 5)
+                if(foundIt == InternalList.end() && CurrentSize < 5)
                 {
                     auto it = InternalList.begin();
                     for(int i = 0; i < index; i++)
                         it++;
                     
                     return it;
-                }
-
-                typename std::list<T>::iterator foundIt = InternalList.end();
-
-                //Find in queue first, sequential read will hit this one
-                for(auto it = QueuedItems.begin(); it != QueuedItems.end(); it++)
-                {
-                    int diff = index - (*it).first;
-
-                    if(abs(diff) > 1)
-                        continue;
-                    
-                    //If item is already in queue cache
-                    if(diff == 0)
-                        return (*it).second;
-                    //If item is next to current queue cache item
-                    else if(diff > 0)
-                    {
-                        auto tempIt = (*it).second;
-                        foundIt = ++tempIt;
-                        break;
-                    }
-                    //If item is before current queue cache item
-                    else
-                    {
-                        auto tempIt = (*it).second; 
-                        foundIt = --tempIt;
-                        break;
-                    }
                 }
 
                 bool isInMap = false;
@@ -97,7 +92,7 @@ namespace ssGUI
                         //Traverse accordingly
                         int absFrontDiff = abs(frontDiff);
                         int absBackDiff = abs(backDiff);
-                        int absMapDiff = 1000000000;//abs(mapDiff);
+                        int absMapDiff = abs(mapDiff);
                         
                         if(absFrontDiff < absBackDiff && absFrontDiff < absMapDiff)
                         {
@@ -141,42 +136,124 @@ namespace ssGUI
                         }
                     }
                 }
+
+                //Add to seqential 
+                SequentialCache = {index, foundIt};
+                SequentialCacheValid = true;
                   
                 //Add to MappedItems
                 if(!isInMap)
                 {
-                    //Check max size is reach
-                    if(MappedItems.size() >= maxMapSize)
+                    auto closestIt = MappedItems.lower_bound(index);
+                    if(closestIt != MappedItems.end() && abs(index - closestIt->first) > minCacheDistance)
                     {
-                        int midPoint = (MappedItems.rbegin()->first + MappedItems.begin()->first) / 2;
+                        //Check max size is reach
+                        if(MappedItems.size() >= maxMapSize)
+                        {
+                            int midPoint = (MappedItems.rbegin()->first + MappedItems.begin()->first) / 2;
 
-                        if(index < midPoint)
-                            MappedItems.erase(MappedItems.begin());
-                        else
-                            MappedItems.erase(--MappedItems.end());
+                            if(index < midPoint)
+                                MappedItems.erase(MappedItems.begin());
+                            else
+                                MappedItems.erase(--MappedItems.end());
+                        }
+
+                        MappedItems[index] = foundIt;
                     }
-
-                    MappedItems[index] = foundIt;
                 }
 
-                //Add to QueuedItems
-                //Check max size is reach
-                if(QueuedItems.size() >= maxQueueSize)
-                    QueuedItems.erase(--QueuedItems.end());
-                
-                QueuedItems.push_front(std::make_pair(index, foundIt));
-                
                 return foundIt;
             };
+
+            inline void ShiftCache(size_t index, int32_t shiftAmount)
+            {
+                //Adding
+                if(shiftAmount > 0)
+                {
+                    //Update sequential cache
+                    if(SequentialCacheValid)
+                        SequentialCache.Index += shiftAmount;
+
+                    //Update map cache
+                    auto foundIt = MappedItems.lower_bound(index);
+                    if(foundIt != MappedItems.end())
+                    {                    
+                        auto mapIt = --MappedItems.end(); 
+                        //Shift all the items that are after the item just inserted
+                        while(true)
+                        {
+                            MappedItems[mapIt->first + shiftAmount] = mapIt->second;
+                            if(mapIt == foundIt)
+                            {
+                                MappedItems.erase(mapIt);
+                                break;
+                            }
+
+                            auto itToRemove = mapIt;
+                            mapIt--;
+                            MappedItems.erase(itToRemove);
+                        }
+                    }
+                }
+                //Removing
+                else 
+                {
+                    size_t startIndex = index;
+                    size_t endExclusiveIndex = index - shiftAmount;
+                    
+                    //Update sequential cache
+                    if(SequentialCacheValid)
+                    {
+                        if(SequentialCache.Index >= startIndex && SequentialCache.Index < endExclusiveIndex)
+                            SequentialCacheValid = false;
+                        else
+                            SequentialCache.Index += shiftAmount;
+                    }
+
+                    //Update map cache
+                    auto mapIt = MappedItems.lower_bound(index);
+                    if(mapIt != MappedItems.end())
+                    {
+                        std::vector<typename std::map<size_t, typename std::list<T>::iterator>::iterator> mapItemsToRemove;
+                        for(; mapIt != MappedItems.end(); mapIt++)
+                        {
+                            //Record all the items that are in the range to remove
+                            if(mapIt->first >= startIndex && mapIt->first < endExclusiveIndex)
+                                mapItemsToRemove.push_back(mapIt);
+                            //Shift alll the items that are after the range
+                            else if(mapIt->first >= endExclusiveIndex)
+                                MappedItems[mapIt->first + shiftAmount] = mapIt->second;
+                        }
+
+                        //Find all the old items with incorrect index and record them 
+                        mapIt = MappedItems.lower_bound(InternalList.size());
+                        for(; mapIt != MappedItems.end(); mapIt++)
+                            mapItemsToRemove.push_back(mapIt);
+                        
+                        //Remove all the items needed
+                        if(!mapItemsToRemove.empty())
+                        {
+                            for(int i = 0; i < mapItemsToRemove.size(); i++)
+                                MappedItems.erase(mapItemsToRemove[i]);
+                        }
+                    }
+                }
+            }
         
         // protected:
         public:
             std::list<T> InternalList;
-            std::map<int, typename std::list<T>::iterator> MappedItems;
-            std::deque<std::pair<int, typename std::list<T>::iterator>> QueuedItems;    //New --> Old
-        
-            int MapCacheSize = 20;
-            int QueueCacheSize = 5;
+            std::map<size_t, typename std::list<T>::iterator> MappedItems;
+            int MinMapDistance = 10;
+            struct SimplePair
+            {
+                size_t Index;
+                typename std::list<T>::iterator TargetIt;
+            };
+            SimplePair SequentialCache = {0, InternalList.end()};
+            bool SequentialCacheValid = false;
+            size_t CurrentSize = 0;
+            int MapCacheSize = 100;
 
         public:
             inline IndexedList() = default;
@@ -216,16 +293,6 @@ namespace ssGUI
                 return MapCacheSize;
             }
 
-            inline void SetQueueCacheSize(int size)
-            {
-                QueueCacheSize = size;
-            }
-
-            inline int GetQueueCacheSize()
-            {
-                return QueueCacheSize;
-            }
-
             inline T& At(int index)
             {
                 return (*this)[index];
@@ -233,7 +300,7 @@ namespace ssGUI
 
             inline std::size_t Size() const
             {
-                return InternalList.size();
+                return CurrentSize;
             };
 
             inline bool Empty() const
@@ -253,37 +320,10 @@ namespace ssGUI
                 //Remove it
                 InternalList.erase(it);
 
-                //Update queue cache
-                auto queueItemToRemove = QueuedItems.end();
-                for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    if((*queueIt).first == index)
-                        queueItemToRemove = queueIt;
-                    else if((*queueIt).first > index)
-                        (*queueIt).first -= 1;
-                }
+                //Update cache
+                ShiftCache(index, -1);
 
-                if(queueItemToRemove != QueuedItems.end())
-                    QueuedItems.erase(queueItemToRemove);
-                
-                //Update map cache
-                auto mapIt = MappedItems.lower_bound(index);
-                auto mapItemToRemove = MappedItems.end();
-                if(mapIt != MappedItems.end())
-                {
-                    //Remove the target item to remove first
-                    if(mapIt->first == index)
-                    {
-                        mapItemToRemove = mapIt;
-                        mapIt++;
-                    }
-                    
-                    //Then shift all the subsequent items behind it
-                    for(; mapIt != MappedItems.end(); mapIt++)
-                        MappedItems[mapIt->first - 1] = mapIt->second;
-                    
-                    MappedItems.erase(--MappedItems.end());
-                }
+                CurrentSize--;
             };
 
             inline void Remove(int startIndex, int endExclusiveIndex)
@@ -304,92 +344,60 @@ namespace ssGUI
                 for(int i = 0; i < itemsToRemove.size(); i++)
                     InternalList.erase(itemsToRemove[i]);
 
-                //Update queue cache
-                int moveAmount = endExclusiveIndex - startIndex;
-                std::vector<typename std::deque<std::pair<int, typename std::list<T>::iterator>>::iterator> queueItemsToRemove;
-                for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    //Record all the items that are in the range to remove
-                    if((*queueIt).first >= startIndex && (*queueIt).first < endExclusiveIndex)
-                        queueItemsToRemove.push_back(queueIt);
-                    //Shift all the items that are after the range
-                    else if((*queueIt).first >= endExclusiveIndex)
-                        (*queueIt).first -= moveAmount;
-                }
+                //Update cache
+                int moveAmount = startIndex - endExclusiveIndex;
+                ShiftCache(startIndex, moveAmount);
 
-                //Remove all the items needed
-                if(!queueItemsToRemove.empty())
-                {
-                    for(int i = 0; i < queueItemsToRemove.size(); i++)
-                        QueuedItems.erase(queueItemsToRemove[i]);
-                }
-
-                //Update map cache
-                auto mapIt = MappedItems.lower_bound(startIndex);
-                std::vector<typename std::map<int, typename std::list<T>::iterator>::iterator> mapItemsToRemove;
-                if(mapIt != MappedItems.end())
-                {
-                    for(; mapIt != MappedItems.end(); mapIt++)
-                    {
-                        //Record all the items that are in the range to remove
-                        if(mapIt->first >= startIndex && mapIt->first < endExclusiveIndex)
-                            mapItemsToRemove.push_back(mapIt);
-                        //Shift alll the items that are after the range
-                        else if(mapIt->first >= endExclusiveIndex)
-                            MappedItems[mapIt->first - moveAmount] = mapIt->second;
-                    }
-
-                    //Find alll the old items with incorrect index and record them 
-                    mapIt = MappedItems.lower_bound(InternalList.size());
-                    for(; mapIt != MappedItems.end(); mapIt++)
-                        mapItemsToRemove.push_back(mapIt);
-                    
-                    //Remove all the items needed
-                    if(!mapItemsToRemove.empty())
-                    {
-                        for(int i = 0; i < mapItemsToRemove.size(); i++)
-                            MappedItems.erase(mapItemsToRemove[i]);
-                    }
-                }
+                CurrentSize += moveAmount;
             };
 
             inline void Clear()
             {
                 InternalList.clear();
                 MappedItems.clear();
-                QueuedItems.clear();
+
+                CurrentSize = 0;
             };
 
             inline void Add(T& obj)
             {
                 InternalList.push_back(obj);
+                CurrentSize++;
             };
 
             inline void Add(T&& obj)
             {
                 InternalList.push_back(obj);
+                CurrentSize++;
             };
 
             inline void Add(IndexedList<T>& objs)
             {
                 InternalList.insert(InternalList.end(), objs.InternalList.begin(), objs.InternalList.end());
+                CurrentSize += objs.Size();
             };
 
             inline void Add(std::vector<T>& objs)
             {
                 for(int i = 0; i < objs.size(); i++)
                     InternalList.push_back(objs[i]);
+                
+                CurrentSize += objs.size();
             };
 
             inline void Add(std::list<T>& objs)
             {
                 InternalList.insert(InternalList.end(), objs.begin(), objs.end());
+
+                CurrentSize += objs.size();
             };
 
             inline void Add(T objs[], size_t len)
             {
                 for(int i = 0; i < len; i++)
                     InternalList.push_back(objs[i]);
+                
+                CurrentSize += len;
             };
 
             inline void Add(T& obj, int index)
@@ -411,33 +419,10 @@ namespace ssGUI
                 //Add it
                 InternalList.insert(it, obj);
 
-                //Update queue cache
-                for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    if((*queueIt).first >= index)
-                        (*queueIt).first += 1;
-                }
+                //Update cache
+                ShiftCache(index, 1);
 
-                //Update map cache
-                auto foundIt = MappedItems.lower_bound(index);
-                auto mapIt = --MappedItems.end(); 
-                if(foundIt != MappedItems.end())
-                {                    
-                    //Shift all the items that are after the item just inserted
-                    while(true)
-                    {
-                        MappedItems[mapIt->first + 1] = mapIt->second;
-                        if(mapIt == foundIt)
-                        {
-                            MappedItems.erase(mapIt);
-                            break;
-                        }
-
-                        auto itToRemove = mapIt;
-                        mapIt--;
-                        MappedItems.erase(itToRemove);
-                    }
-                }
+                CurrentSize++;
             };
 
             inline void Add(T&& obj, int index)
@@ -459,33 +444,10 @@ namespace ssGUI
                 //Add it
                 InternalList.insert(it, obj);
 
-                //Update queue cache
-                for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    if((*queueIt).first >= index)
-                        (*queueIt).first += 1;
-                }
+                //Update cache
+                ShiftCache(index, 1);
 
-                //Update map cache
-                auto foundIt = MappedItems.lower_bound(index);
-                auto mapIt = --MappedItems.end(); 
-                if(foundIt != MappedItems.end())
-                {                    
-                    //Shift all the items that are after the item just inserted
-                    while(true)
-                    {
-                        MappedItems[mapIt->first + 1] = mapIt->second;
-                        if(mapIt == foundIt)
-                        {
-                            MappedItems.erase(mapIt);
-                            break;
-                        }
-
-                        auto itToRemove = mapIt;
-                        mapIt--;
-                        MappedItems.erase(itToRemove);
-                    }
-                }
+                CurrentSize++;
             };
 
             inline void Add(IndexedList<T>& objs, int index)
@@ -507,33 +469,10 @@ namespace ssGUI
                 //Add it
                 InternalList.insert(it, objs.InternalList.begin(), objs.InternalList.end());
 
-                //Update queue cache
-                for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    if((*queueIt).first >= index)
-                        (*queueIt).first += objs.Size();
-                }
+                //Update cache
+                ShiftCache(index, objs.Size());
 
-                //Update map cache
-                auto foundIt = MappedItems.lower_bound(index);
-                auto mapIt = --MappedItems.end(); 
-                if(foundIt != MappedItems.end())
-                {                    
-                    //Shift all the items that are after the item just inserted
-                    while(true)
-                    {
-                        MappedItems[mapIt->first + objs.Size()] = mapIt->second;
-                        if(mapIt == foundIt)
-                        {
-                            MappedItems.erase(mapIt);
-                            break;
-                        }
-
-                        auto itToRemove = mapIt;
-                        mapIt--;
-                        MappedItems.erase(itToRemove);
-                    }
-                }
+                CurrentSize += objs.Size();
             };
 
             inline void Add(std::vector<T>& objs, int index)
@@ -556,33 +495,10 @@ namespace ssGUI
                 for(int i = 0; i < objs.size(); i++)
                     InternalList.insert(it, objs[i]);
 
-                //Update queue cache
-                for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    if((*queueIt).first >= index)
-                        (*queueIt).first += objs.size();
-                }
+                //Update cache
+                ShiftCache(index, objs.size());
 
-                //Update map cache
-                auto foundIt = MappedItems.lower_bound(index);
-                auto mapIt = --MappedItems.end(); 
-                if(foundIt != MappedItems.end())
-                {                    
-                    //Shift all the items that are after the item just inserted
-                    while(true)
-                    {
-                        MappedItems[mapIt->first + objs.size()] = mapIt->second;
-                        if(mapIt == foundIt)
-                        {
-                            MappedItems.erase(mapIt);
-                            break;
-                        }
-
-                        auto itToRemove = mapIt;
-                        mapIt--;
-                        MappedItems.erase(itToRemove);
-                    }
-                }
+                CurrentSize += objs.size();
             };
 
             inline void Add(std::list<T>& objs, int index)
@@ -604,34 +520,10 @@ namespace ssGUI
                 //Add it
                 InternalList.insert(it, objs.begin(), objs.end());
 
-                //Update queue cache
-                /*for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    if((*queueIt).first >= index)
-                        (*queueIt).first += objs.size();
-                }*/
+                //Update cache
+                ShiftCache(index, objs.size());
 
-                //Update map cache
-                /*
-                auto foundIt = MappedItems.lower_bound(index);
-                auto mapIt = --MappedItems.end(); 
-                if(foundIt != MappedItems.end())
-                {                    
-                    //Shift all the items that are after the item just inserted
-                    while(true)
-                    {
-                        MappedItems[mapIt->first + objs.size()] = mapIt->second;
-                        if(mapIt == foundIt)
-                        {
-                            MappedItems.erase(mapIt);
-                            break;
-                        }
-
-                        auto itToRemove = mapIt;
-                        mapIt--;
-                        MappedItems.erase(itToRemove);
-                    }
-                }*/
+                CurrentSize += objs.size();
             };
 
             inline void Add(T objs[], size_t len, int index)
@@ -654,33 +546,10 @@ namespace ssGUI
                 for(int i = 0; i < len; i++)
                     InternalList.insert(it, objs[i]);
 
-                //Update queue cache
-                for(auto queueIt = QueuedItems.begin(); queueIt != QueuedItems.end(); queueIt++)
-                {
-                    if((*queueIt).first >= index)
-                        (*queueIt).first += len;
-                }
+                //Update cache
+                ShiftCache(index, len);
 
-                //Update map cache
-                auto foundIt = MappedItems.lower_bound(index);
-                auto mapIt = --MappedItems.end(); 
-                if(foundIt != MappedItems.end())
-                {                    
-                    //Shift all the items that are after the item just inserted
-                    while(true)
-                    {
-                        MappedItems[mapIt->first + len] = mapIt->second;
-                        if(mapIt == foundIt)
-                        {
-                            MappedItems.erase(mapIt);
-                            break;
-                        }
-
-                        auto itToRemove = mapIt;
-                        mapIt--;
-                        MappedItems.erase(itToRemove);
-                    }
-                }
+                CurrentSize += len;
             };
 
             inline void Swap(int index, int index2)
