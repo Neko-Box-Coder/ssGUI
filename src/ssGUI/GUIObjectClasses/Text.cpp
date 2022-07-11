@@ -3,7 +3,8 @@
 
 #include "glm/gtx/norm.hpp"
 #include <cmath>
-
+#include <locale>
+#include <codecvt>
 
 namespace ssGUI
 {    
@@ -33,11 +34,10 @@ namespace ssGUI
     
     Text::Text(Text const& other) : Widget(other)
     {
-        CurrentText = other.GetText();
         RecalculateTextNeeded = true;
-        OverrideCharactersDetails = other.OverrideCharactersDetails;
+        CurrentCharactersDetails = other.CurrentCharactersDetails;
         CharactersRenderInfos = other.CharactersRenderInfos;
-        CurrentCharacterDetails = other.CurrentCharacterDetails;
+        ProcessedCharacterDetails = other.ProcessedCharacterDetails;
         Overflow = other.Overflow;
         FontSize = other.GetFontSize();
         TextColor = other.GetTextColor();
@@ -60,27 +60,22 @@ namespace ssGUI
         LastDefaultFonts = other.LastDefaultFonts;
     }
 
-    void Text::ConstructCharacterDetails()
+    ssGUI::CharacterDetails& Text::GetInternalCharacterDetail(int index)
     {
-        CurrentCharacterDetails.clear();
-        
-        //Using override character details 
-        if(!OverrideCharactersDetails.empty())
+        return ProcessedCharacterDetails.find(index) == ProcessedCharacterDetails.end() ?
+            CurrentCharactersDetails[index] : ProcessedCharacterDetails[index];
+    }
+
+    void Text::ConstructCharacterDetails(std::wstring& s, std::vector<ssGUI::CharacterDetails>& details)
+    {
+        for(int i = 0; i < s.size(); i++)
         {
-            CurrentCharacterDetails = OverrideCharactersDetails;
-        }
-        //Using normal text
-        else
-        {
-            for(int i = 0; i < CurrentText.size(); i++)
-            {
-                ssGUI::CharacterDetails detail;
-                detail.Character = CurrentText[i];
-                detail.FontSize = GetFontSize();
-                detail.CharacterColor = GetTextColor();
-                detail.Underlined = IsTextUnderlined();
-                CurrentCharacterDetails.push_back(detail);
-            }
+            ssGUI::CharacterDetails detail;
+            detail.Character = s[i];
+            detail.FontSize = GetFontSize();
+            detail.CharacterColor = GetTextColor();
+            detail.Underlined = IsTextUnderlined();
+            details.push_back(detail);
         }
     }
 
@@ -88,59 +83,93 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        for(int i = 0; i < CurrentCharacterDetails.size(); i++)
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
-            ssGUI::CharacterDetails& detail = CurrentCharacterDetails[i];
+            const ssGUI::CharacterDetails& detail = GetInternalCharacterDetail(i);
+
+            ssGUI::CharacterDetails newDetail = detail;
+            bool changed = false;
             
+            //If null character, we don't care about the font as it will be marked as not rendered
             if(detail.Character == L'\0')
                 continue;
             
-            //Assign font index if not assigned
+            //Assign font index if nothing is assigned
             if(detail.FontIndex == -1 && detail.DefaultFontIndex == -1)
             {
+                changed = true;
                 if(GetFontsCount() > 0)
-                    detail.FontIndex = 0;
+                    newDetail.FontIndex = 0;
                 else
-                    detail.DefaultFontIndex = 0;
+                    newDetail.DefaultFontIndex = 0;
             }
             
-            //Just move on if it is newline, tab or space
-            if(detail.Character == L'\n' || detail.Character == L'\t' || detail.Character == L' ')
-                continue;
-
-            //Check each font if character is supported. If not, fallback to default fonts
-            bool fallbackToDefault = false;
-            if(detail.FontIndex != -1)
+            //Just move on if it is newline, tab or space as it will be marked as not rendered
+            if(detail.Character != L'\n' && detail.Character != L'\t' && detail.Character != L' ')
             {
-                while (!GetFont(detail.FontIndex)->IsCharacterSupported(detail.Character))
-                {                   
-                    if(detail.FontIndex == GetFontsCount() -1)
+                //Check each font if character is supported. If not, fallback to default fonts
+                bool fallbackToDefault = false;
+                if(newDetail.FontIndex != -1)
+                {
+                    if(GetFontsCount() == 0 || newDetail.FontIndex >= GetFontsCount())
                     {
+                        newDetail.FontIndex = -1;
+                        changed = true;
                         fallbackToDefault = true;
-                        break;
                     }
+                    else
+                    {
+                        while (!GetFont(newDetail.FontIndex)->IsCharacterSupported(newDetail.Character))
+                        {
+                            if(newDetail.FontIndex == GetFontsCount() -1)
+                            {
+                                newDetail.FontIndex = -1;
+                                break;
+                            }
 
-                    detail.FontIndex++;
+                            newDetail.FontIndex++;
+                            changed = true;
+                        }
+                    }
+                }
+                
+                //Default fonts
+                if(fallbackToDefault || (newDetail.FontIndex == -1 && newDetail.DefaultFontIndex != -1))
+                {
+                    if(GetDefaultFontsCount() == 0)
+                    {
+                        newDetail.DefaultFontIndex = -1;
+                        changed = true;
+                    }
+                    else
+                    {
+                        while (!GetDefaultFont(newDetail.DefaultFontIndex)->IsCharacterSupported(newDetail.Character))
+                        {
+                            if(newDetail.DefaultFontIndex == GetDefaultFontsCount() -1)
+                            {
+                                newDetail.DefaultFontIndex = -1;
+                                break;
+                            }
+
+                            newDetail.DefaultFontIndex++;
+                            changed = true;
+                        }
+                    }
                 }
             }
-            
-            //Default fonts
-            if(fallbackToDefault || (detail.FontIndex == -1 && detail.DefaultFontIndex != -1))
+
+            //If no supported fonts are found just assign the default font
+            if(newDetail.FontIndex == -1 && newDetail.DefaultFontIndex == -1)
             {
-                if(GetDefaultFontsCount() == 0)
-                {
-                    detail.DefaultFontIndex = -1;
-                    continue;
-                }
-
-                while (!GetDefaultFont(detail.DefaultFontIndex)->IsCharacterSupported(detail.Character))
-                {
-                    if(detail.DefaultFontIndex == GetDefaultFontsCount() -1)
-                        break;
-
-                    detail.DefaultFontIndex++;
-                }
+                if(GetFontsCount() > 0)
+                    newDetail.FontIndex = 0;
+                else if(GetDefaultFontsCount() > 0)
+                    newDetail.DefaultFontIndex = 0;
             }
+
+            //Check detail is changed, if so record it.
+            if(changed)
+                ProcessedCharacterDetails[i] = newDetail;
         }
 
         FUNC_DEBUG_EXIT();
@@ -192,21 +221,30 @@ namespace ssGUI
         //If multiline is disabled, replace all newline to spaces and remove all \r
         if(!MultilineAllowed)
         {
-            for(int i = 0; i < CurrentCharacterDetails.size(); i++)
+            for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
             {
-                if(CurrentCharacterDetails.at(i).Character == L'\n')
-                    CurrentCharacterDetails.at(i).Character = L' ';
-                else if(CurrentCharacterDetails.at(i).Character == L'\r')
-                    CurrentCharacterDetails.at(i).Character = L'\0';
+                if(CurrentCharactersDetails.At(i).Character == L'\n')
+                {
+                    ProcessedCharacterDetails[i] = CurrentCharactersDetails[i];
+                    ProcessedCharacterDetails[i].Character = L' ';
+                }
+                else if(CurrentCharactersDetails.At(i).Character == L'\r')
+                {
+                    ProcessedCharacterDetails[i] = CurrentCharactersDetails[i];
+                    ProcessedCharacterDetails[i].Character = L'\0';
+                }
             }
         }
         //Otherwise find out how many lines and length and remove all \r
         else
         {
-            for(int i = 0; i < CurrentCharacterDetails.size(); i++)
+            for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
             {
-                if(CurrentCharacterDetails.at(i).Character == L'\r')
-                    CurrentCharacterDetails.at(i).Character = L'\0';
+                if(CurrentCharactersDetails.At(i).Character == L'\r')
+                {
+                    ProcessedCharacterDetails[i] = CurrentCharactersDetails[i];
+                    ProcessedCharacterDetails[i].Character = L'\0';
+                }
             }
         }
 
@@ -232,127 +270,84 @@ namespace ssGUI
         int currentWordIndex = 0;
         float currentLineLength = GetHorizontalPadding();
         float currentWordLength = 0;
-        float drawXPos = GetHorizontalPadding();
+        float drawXOffset = 0;
 
-        wchar_t prevChar = 0;
-        Overflow = false;
+        int lastValidIndex = -1;
 
-        for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+        //First pass, check which characters are valid. Also record the last valid character index
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
-            CharacterDetails curDetail = CurrentCharacterDetails.at(i);
+            ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
             wchar_t curChar = curDetail.Character;
 
             //If this character is null or fonts are not available, skip
-            if(curChar == L'\0' ||
-                (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1) ||
-                (curDetail.FontIndex != -1 && GetFont(curDetail.FontIndex) == nullptr) ||
-                (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
+            if(curChar == L'\0' || (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1))
+                continue;
+            
+            CharactersRenderInfos[i].Valid = true;
+            lastValidIndex = i;
+        }
+
+        //Second pass, Construct render infos as no character wrapping
+        ConstructRenderInfosForNoWrapping(false);
+        Overflow = false;
+
+        //Third pass, reposition the characters as word wrapping
+        for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
+        {
+            if(!CharactersRenderInfos[i].Valid)
             {
-                prevChar = 0;
-                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition.x += drawXOffset;
                 continue;
             }
-            
-            ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
-            
-            if(curDetail.FontIndex != -1)
-                fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
-            else
-                fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
-            
-            // Apply the kerning offset
-            drawXPos += fontInterface->GetKerning(prevChar, curChar, curDetail.FontSize);
 
-            prevChar = curChar;
-            
-            //See if the current word exceeds widget width when a word finishes
-            if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t') || i == CurrentCharacterDetails.size() - 1)
+            ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
+            ssGUI::CharacterRenderInfo& curRenderInfo = CharactersRenderInfos[i];
+            wchar_t curChar = curDetail.Character;
+
+            //Check for newline. If so, reset word and line settings
+            if(curRenderInfo.CharacterAtNewline)
             {
-                //last character
-                if(i == CurrentCharacterDetails.size() - 1 && curChar != L' ' && curChar != L'\n' && curChar != L'\t')
-                {
-                    ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                    float characterLength = info.Advance;
+                currentWordIndex = i;
+                currentWordLength = 0;
+                currentLineLength = GetHorizontalPadding();
+                drawXOffset = 0;
+            }
 
-                    CharactersRenderInfos[i] = info;
-                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
+            currentWordLength += curRenderInfo.Advance + GetCharacterSpace();
 
-                    currentWordLength += characterLength;
-                }
-                
-                prevChar = 0;
-                
-                //Check if word width is wider than widget width by itself, it will be on its own line
-                if(currentWordLength - GetCharacterSpace() + GetHorizontalPadding() * 2 > GetSize().x && currentLineLength == GetHorizontalPadding())
+            //See if the current word exceeds widget width when a word *finishes*
+            if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t') || i == lastValidIndex)
+            {
+                //check if adding current word length to current line length exceeds widget width
+                if(currentWordLength - GetCharacterSpace() + currentLineLength + GetHorizontalPadding() > GetSize().x)
                 {
-                    currentWordIndex = i + 1;
-                    currentWordLength = 0;
-                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                    // CharactersRenderInfos[i].Rendered = true;
-                    
-                    drawXPos = GetHorizontalPadding();
-                    Overflow = true;
-                }
-                //Otherwise check if adding current word length to current line length exceeds widget width
-                //If so, reset i and current line length and current word length and go to next line
-                else if(currentWordLength - GetCharacterSpace() + currentLineLength + GetHorizontalPadding() > GetSize().x)
-                {
-                    i = currentWordIndex - 1;
-                    currentLineLength = GetHorizontalPadding();
-                    currentWordLength = 0;
-
-                    drawXPos = GetHorizontalPadding();
-                }
-                //Otherwise, set word index to next character and reset current word length.
-                //Assign render position to space, tab and newline.
-                //Assign advance to space and tab.
-                else 
-                {
-                    currentWordIndex = i + 1;
-                    currentLineLength += currentWordLength;
-                    currentWordLength = 0;
-                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                    // CharactersRenderInfos[i].Rendered = true;
-                    float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
-
-                    switch (curChar)
+                    //If the word is already at newline, set overflow
+                    if(CharactersRenderInfos[currentWordIndex].CharacterAtNewline)
+                        Overflow = true;
+                    //Otherwise, reposition the word to the newlne
+                    else
                     {
-                        case L' ':
-                            CharactersRenderInfos[i].Advance = whitespaceWidth; 
-                            drawXPos += whitespaceWidth;
-                            currentLineLength += whitespaceWidth;
-                            break;
-                        case L'\t': 
-                        {
-                            float newPos = GetClosestTabSpace(GetHorizontalPadding(), whitespaceWidth * GetTabSize(), drawXPos);
-                            float actualTabSpace = newPos - drawXPos;
-                            CharactersRenderInfos[i].Advance = actualTabSpace; 
-                            drawXPos += actualTabSpace;
-                            currentLineLength += actualTabSpace;
-                            break;
-                        }
-                        case L'\n': 
-                            drawXPos = GetHorizontalPadding();
-                            currentLineLength = GetHorizontalPadding();
-                            break;
+                        float curWordXOffset = GetHorizontalPadding() - CharactersRenderInfos[currentWordIndex].RenderPosition.x;
+                        CharactersRenderInfos[currentWordIndex].CharacterAtNewline = true;
+                        currentLineLength = GetHorizontalPadding();
+
+                        for(int j = currentWordIndex; j < i; j++)
+                            CharactersRenderInfos[j].RenderPosition.x += curWordXOffset;
+                        
+                        //Needs to total up the offset instead of assigning it.
+                        drawXOffset += curWordXOffset;
                     }
                 }
+
+                //Reset word settings
+                currentLineLength += currentWordLength;
+                currentWordIndex = i + 1;
+                currentWordLength = 0;
             }
-            //Otherwise, add the current character
-            else
-            {
-                ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                float characterLength = info.Advance;
 
-                CharactersRenderInfos[i] = info;
-                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-
-                if(currentLineLength == GetHorizontalPadding() && currentWordLength == 0)
-                    CharactersRenderInfos[i].CharacterAtNewline = true;
-
-                currentWordLength += characterLength + GetCharacterSpace();
-                drawXPos += characterLength + GetCharacterSpace();
-            }
+            //Apply offset
+            curRenderInfo.RenderPosition.x += drawXOffset;
         }
 
         FUNC_DEBUG_EXIT();
@@ -363,129 +358,88 @@ namespace ssGUI
         FUNC_DEBUG_ENTRY();
 
         float currentLineLength = GetHorizontalPadding();
-        // glm::vec2 currentDrawPos = glm::vec2();
-        float drawXPos = GetHorizontalPadding();
+        float drawXOffset = 0;
 
-        wchar_t prevChar = 0;
+        //First pass, Construct render infos as no character wrapping
+        ConstructRenderInfosForNoWrapping(true);
         Overflow = false;
 
-        for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+        //Second pass, reposition the characters as character wrapping
+        for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
-            CharacterDetails curDetail = CurrentCharacterDetails.at(i);
-            wchar_t curChar = curDetail.Character;
-
-            if(curChar == L'\0' ||
-                (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1) ||
-                (curDetail.FontIndex != -1 && GetFont(curDetail.FontIndex) == nullptr) ||
-                (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
+            if(!CharactersRenderInfos[i].Valid)
             {
-                prevChar = 0;
-                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
+                CharactersRenderInfos[i].RenderPosition.x += drawXOffset;
                 continue;
             }
-            
-            ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
-            
-            if(curDetail.FontIndex != -1)
-                fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
-            else
-                fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
-            
-            // Apply the kerning offset
-            drawXPos += fontInterface->GetKerning(prevChar, curChar, curDetail.FontSize) /* GetCharacterSpace()*/;
 
-            prevChar = curChar;
+            ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
+            ssGUI::CharacterRenderInfo& curRenderInfo = CharactersRenderInfos[i];
+            float characterLength = curRenderInfo.Advance + GetCharacterSpace();
 
-            //If space or tab or newline character, just append
-            if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
+            //Check for newline. If so, reset word and line settings
+            if(curRenderInfo.CharacterAtNewline)
             {
-                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                // CharactersRenderInfos[i].Rendered = true;
-                float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
-
-                switch (curChar)
-                {
-                    case L' ':  
-                        drawXPos += whitespaceWidth;
-                        currentLineLength += whitespaceWidth;
-                        CharactersRenderInfos[i].Advance = whitespaceWidth;    
-                        break;
-                    case L'\t': 
-                    {
-                        float newPos = GetClosestTabSpace(GetHorizontalPadding(), whitespaceWidth * GetTabSize(), drawXPos);
-                        float actualTabSpace = newPos - drawXPos;
-                        drawXPos += actualTabSpace;
-                        currentLineLength += actualTabSpace;
-                        CharactersRenderInfos[i].Advance = actualTabSpace; 
-                        break;
-                    }
-                    case L'\n': 
-                        drawXPos = GetHorizontalPadding();
-                        currentLineLength = GetHorizontalPadding();
-                        break;
-                }
+                currentLineLength = GetHorizontalPadding();
+                drawXOffset = 0;
             }
-            else 
+
+            //If exceed widget width
+            if(currentLineLength + characterLength + GetHorizontalPadding() > GetSize().x)
             {
-                ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                float characterLength = info.Advance;
-
-                //If one character is taking up the whole line, reset line length and go to next line
-                if(characterLength + GetHorizontalPadding()* 2 > GetSize().x && currentLineLength == 0)
-                {
-                    CharactersRenderInfos[i] = info;
-                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                    CharactersRenderInfos[i].CharacterAtNewline = true;
-
-                    currentLineLength = GetHorizontalPadding();
+                //If this character is already at newline, set overflow
+                if(curRenderInfo.CharacterAtNewline)
                     Overflow = true;
-                    drawXPos = GetHorizontalPadding();
-                }
-                //If exceed widget width, reset i and line length and go to next line
-                else if(currentLineLength + characterLength + GetHorizontalPadding() > GetSize().x)
-                {
-                    currentLineLength = GetHorizontalPadding();
-                    drawXPos = GetHorizontalPadding();
-                    i--;
-                }
+                //Otherwise, move character to newline
                 else
                 {
-                    CharactersRenderInfos[i] = info;
-                    CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                    if(currentLineLength == GetHorizontalPadding())
-                        CharactersRenderInfos[i].CharacterAtNewline = true;
-
-                    currentLineLength += characterLength + GetCharacterSpace();
-                    drawXPos += characterLength + GetCharacterSpace();
+                    drawXOffset = GetHorizontalPadding() - curRenderInfo.RenderPosition.x;
+                    curRenderInfo.CharacterAtNewline = true;
+                    currentLineLength = GetHorizontalPadding();
                 }
             }
+            currentLineLength += characterLength;
+
+            //Apply offset
+            curRenderInfo.RenderPosition.x += drawXOffset;
         }
 
         FUNC_DEBUG_EXIT();
     }
 
-    void Text::ConstructRenderInfosForNoWrapping()
+    void Text::ConstructRenderInfosForNoWrapping(bool checkValid)
     {
         FUNC_DEBUG_ENTRY();
-        
         float drawXPos = GetHorizontalPadding();
 
         wchar_t prevChar = 0;
-        bool nextCharOnNewline = true;
         Overflow = false;
+        bool nextCharIsAtNewline = true;
 
-        for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+        for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
-            CharacterDetails curDetail = CurrentCharacterDetails.at(i);
+            ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
+            ssGUI::CharacterRenderInfo& curRenderInfo = CharactersRenderInfos[i];
+
             wchar_t curChar = curDetail.Character;
 
-            if(curChar == L'\0' ||
-                (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1) ||
-                (curDetail.FontIndex != -1 && GetFont(curDetail.FontIndex) == nullptr) ||
-                (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
+            if(checkValid)
+            {
+                //If this character is null or fonts are not available, skip
+                if(curChar == L'\0' || (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1))
+                {
+                    prevChar = 0;
+                    curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
+                    continue;
+                }
+                else
+                    curRenderInfo.Valid = true;
+            }
+            //Skip if not valid
+            else if(!curRenderInfo.Valid)
             {
                 prevChar = 0;
-                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
+                curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
                 continue;
             }
             
@@ -504,15 +458,16 @@ namespace ssGUI
             //If space or tab or newline character, just append
             if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
             {
-                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-                // CharactersRenderInfos[i].Rendered = true;
-                float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
-
-                if(nextCharOnNewline)
+                //Check newline
+                if(nextCharIsAtNewline)
                 {
-                    CharactersRenderInfos[i].CharacterAtNewline = true;
-                    nextCharOnNewline = false;
+                    drawXPos = GetHorizontalPadding();
+                    curRenderInfo.CharacterAtNewline = true;
+                    nextCharIsAtNewline = false;
                 }
+                
+                curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
+                float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 switch (curChar)
                 {
@@ -529,8 +484,7 @@ namespace ssGUI
                         break;
                     }
                     case L'\n': 
-                        nextCharOnNewline = true;
-                        drawXPos = GetHorizontalPadding();
+                        nextCharIsAtNewline = true;
                         break;
                 }
 
@@ -541,15 +495,19 @@ namespace ssGUI
             {
                 ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
                 float characterLength = info.Advance;
+                bool oriValid = curRenderInfo.Valid;
+                curRenderInfo = info;
+                curRenderInfo.Valid = oriValid;
 
-                CharactersRenderInfos[i] = info;
-                CharactersRenderInfos[i].RenderPosition = glm::vec2(drawXPos, 0);
-
-                if(nextCharOnNewline)
+                //Check newline
+                if(nextCharIsAtNewline)
                 {
-                    CharactersRenderInfos[i].CharacterAtNewline = true;
-                    nextCharOnNewline = false;
+                    drawXPos = GetHorizontalPadding();
+                    curRenderInfo.CharacterAtNewline = true;
+                    nextCharIsAtNewline = false;
                 }
+
+                curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
 
                 drawXPos += characterLength + GetCharacterSpace();
 
@@ -575,23 +533,23 @@ namespace ssGUI
         int currentLineIndex = 0;
         float currentOffset = 0;
         int lineCount = 0;
+        int lastValidIndex = GetLastValidCharacterIndex();
         ssGUI::Backend::BackendFontInterface* backendFont = nullptr;
 
         while (currentIndex < CharactersRenderInfos.size())
         {
+            const ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(currentIndex);
+
             //Record max font newline height if needed
-            if(CurrentCharacterDetails[currentIndex].FontIndex != -1 && GetFont(CurrentCharacterDetails[currentIndex].FontIndex) != nullptr)
-                backendFont = GetFont(CurrentCharacterDetails[currentIndex].FontIndex)->GetBackendFontInterface();
-            else if(CurrentCharacterDetails[currentIndex].DefaultFontIndex != -1 && 
-                    GetDefaultFont(CurrentCharacterDetails[currentIndex].DefaultFontIndex) != nullptr)
-            {
-                backendFont = GetDefaultFont(CurrentCharacterDetails[currentIndex].DefaultFontIndex)->GetBackendFontInterface();   
-            }
-            else
+            if(!CharactersRenderInfos[currentIndex].Valid)
             {
                 currentIndex++;
                 continue;
             }
+            else if(curDetail.FontIndex != -1)
+                backendFont = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
+            else
+                backendFont = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
 
             //When there's a newline, offset the current line
             if(CharactersRenderInfos[currentIndex].CharacterAtNewline)
@@ -636,12 +594,11 @@ namespace ssGUI
                 }
             }
 
-            if(CurrentCharacterDetails[currentIndex].FontSize > curMaxFontNewline)
-                curMaxFontNewline = CurrentCharacterDetails[currentIndex].FontSize;
+            if(curDetail.FontSize > curMaxFontNewline)
+                curMaxFontNewline = curDetail.FontSize;
             
-
             //If this is the last character, offset the current line
-            if(currentIndex == CharactersRenderInfos.size() - 1 && backendFont != nullptr)
+            if(currentIndex == lastValidIndex && backendFont != nullptr)
             {
                 currentOffset += lineCount == 1 ? curMaxFontNewline : backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                 
@@ -674,6 +631,8 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
+
+        //Alignment is fine without checking whether the iterating character is valid or not since the render position would be correct
         
         //Text alignment
         float lineStartPos = 0;
@@ -909,22 +868,24 @@ namespace ssGUI
             //Find max font size
             for (int i = startIndex; i <= inclusiveEndIndex; i++)
             {
-                if((CurrentCharacterDetails[i].FontIndex != -1 || CurrentCharacterDetails[i].DefaultFontIndex != -1) && 
-                    CurrentCharacterDetails[i].FontSize > maxFontSize)
+                const ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
+                
+                if((curDetail.FontIndex != -1 || curDetail.DefaultFontIndex != -1) && 
+                    curDetail.FontSize > maxFontSize)
                 {
-                    maxFontSize = CurrentCharacterDetails[i].FontSize;
+                    maxFontSize = curDetail.FontSize;
                     maxFontSizeCharIndex = i;
                 }
             }
 
             ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
-            if(CurrentCharacterDetails[maxFontSizeCharIndex].FontIndex != -1)
-                fontInterface = GetFont(CurrentCharacterDetails[maxFontSizeCharIndex].FontIndex)->GetBackendFontInterface();
+            if(GetInternalCharacterDetail(maxFontSizeCharIndex).FontIndex != -1)
+                fontInterface = GetFont(GetInternalCharacterDetail(maxFontSizeCharIndex).FontIndex)->GetBackendFontInterface();
             else
-                fontInterface = GetDefaultFont(CurrentCharacterDetails[maxFontSizeCharIndex].DefaultFontIndex)->GetBackendFontInterface();
+                fontInterface = GetDefaultFont(GetInternalCharacterDetail(maxFontSizeCharIndex).DefaultFontIndex)->GetBackendFontInterface();
 
             //Draw underlines
-            glm::u8vec4 currentUnderlineColor = CurrentCharacterDetails[startIndex].CharacterColor;
+            glm::u8vec4 currentUnderlineColor = GetInternalCharacterDetail(startIndex).CharacterColor;
             int lastIndex = startIndex;
             bool IsLastCharHighlighted = isIndexInSelection(startIndex);
             for (int i = startIndex; i <= inclusiveEndIndex; i++)
@@ -932,8 +893,8 @@ namespace ssGUI
                 bool curCharHighlighted = isIndexInSelection(i);
                 
                 //Check for color change or highlight change
-                if(CurrentCharacterDetails[i].CharacterColor != currentUnderlineColor || curCharHighlighted != IsLastCharHighlighted)
-                {                    
+                if(GetInternalCharacterDetail(i).CharacterColor != currentUnderlineColor || curCharHighlighted != IsLastCharHighlighted)
+                {           
                     drawUnderline
                     (
                         lastIndex, 
@@ -942,8 +903,8 @@ namespace ssGUI
                         fontInterface->GetUnderlineThickness(maxFontSize), 
                         fontInterface->GetUnderlineOffset(maxFontSize)    
                     );
-                    
-                    currentUnderlineColor = CurrentCharacterDetails[i].CharacterColor;
+
+                    currentUnderlineColor = GetInternalCharacterDetail(i).CharacterColor;
                     lastIndex = i;
                 }
 
@@ -967,16 +928,13 @@ namespace ssGUI
         int underlineStartIndex = -1;
 
         ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
-        for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+        for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
-            CharacterDetails curDetail = CurrentCharacterDetails.at(i);
+            ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
             wchar_t curChar = curDetail.Character;
 
             //If current character/font is invalid
-            if(curChar == L'\0' ||
-                (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1) ||
-                (curDetail.FontIndex != -1 && GetFont(curDetail.FontIndex) == nullptr) ||
-                (curDetail.DefaultFontIndex != -1 && GetDefaultFont(curDetail.DefaultFontIndex) == nullptr))
+            if(!CharactersRenderInfos[i].Valid)
             {               
                 continue;
             }
@@ -1010,7 +968,7 @@ namespace ssGUI
             }
 
             //Check if last index and underline needed
-            if(underlineStartIndex != -1 && i == CurrentCharacterDetails.size() - 1)
+            if(underlineStartIndex != -1 && i == CurrentCharactersDetails.Size() - 1)
             {
                 //Draw underline
                 drawMultiColoredUnderline(underlineStartIndex, i);
@@ -1025,10 +983,12 @@ namespace ssGUI
         if(!IsTextSelectionAllowed() || StartSelectionIndex < 0 || EndSelectionIndex < 0 || 
             StartSelectionIndex == EndSelectionIndex)
         {
-            for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+            for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
             {
+                const ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
+                
                 // Add the glyph to the vertices
-                DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], CurrentCharacterDetails[i]);
+                DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], curDetail);
             }
         }
         else
@@ -1050,17 +1010,19 @@ namespace ssGUI
                 };
             }
 
-            for (int i = 0; i < CurrentCharacterDetails.size(); i++)
+            for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
             {
+                
                 if(!isIndexInSelection(i))
+                {
                     // Add the glyph to the vertices
-                    DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], CurrentCharacterDetails[i]);
+                    DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], GetInternalCharacterDetail(i));
+                }
                 else
                 {
-                    auto curDetails = CurrentCharacterDetails[i];
-                    curDetails.CharacterColor = TextSelectedColor;
-
-                    DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], curDetails);
+                    ssGUI::CharacterDetails curDetail = GetInternalCharacterDetail(i);
+                    curDetail.CharacterColor = TextSelectedColor;
+                    DrawCharacter(GetGlobalPosition(), CharactersRenderInfos[i], curDetail);
                 }
             }
         }
@@ -1098,6 +1060,8 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
+
+        //TODO: Some optimization can be done here depending on what characters are changed
 
         if(RecalculateTextNeeded)
             ComputeCharactersPositionAndSize(); 
@@ -1169,6 +1133,7 @@ namespace ssGUI
                 SetFocus(true);    
             }
 
+            //Text selection with mouse
             if(IsTextSelectionAllowed() && inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
                 mouseInWindowBoundX && mouseInWindowBoundY && IsInteractable())
             {
@@ -1177,7 +1142,7 @@ namespace ssGUI
                     inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)), true
                 );
 
-                if(closestIndex == CurrentCharacterDetails.size() - 1 && 
+                if(closestIndex == GetLastValidCharacterIndex() && 
                     IsPosAfterLastCharacter(inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow))))
                 {
                     closestIndex += 1;
@@ -1194,12 +1159,39 @@ namespace ssGUI
                     SetEndSelectionIndex(closestIndex);
             }
         }
+
+        if(!globalInputStatus.KeyInputBlocked && !windowInputStatus.KeyInputBlocked)
+        {
+            //Text copying
+            if(IsTextSelectionAllowed() && GetStartSelectionIndex() >= 0 && GetEndSelectionIndex() >= 0 && 
+                (inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
+                inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL)) &&
+                !inputInterface->GetLastKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::C) &&
+                inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::C))
+            {
+                std::wstring curText = GetText();
+
+                if(GetStartSelectionIndex() < GetEndSelectionIndex())
+                {
+                    curText = curText.substr(GetStartSelectionIndex(), GetEndSelectionIndex() - GetStartSelectionIndex());
+                    inputInterface->SetClipboardText(curText); 
+                }
+                else if(GetEndSelectionIndex() < GetStartSelectionIndex())
+                {
+                    curText = curText.substr(GetEndSelectionIndex(), GetStartSelectionIndex() - GetEndSelectionIndex());
+                    inputInterface->SetClipboardText(curText); 
+                }
+
+                windowInputStatus.KeyInputBlocked = true;
+                globalInputStatus.KeyInputBlocked = true;
+            }
+        }
     }
     
     const std::string Text::ListenerKey = "Text";
 
-    Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
-                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
+    Text::Text() :  RecalculateTextNeeded(false), CurrentCharactersDetails(), 
+                    CharactersRenderInfos(), ProcessedCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
                     TextUnderline(false), MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
                     HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
                     CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), SelectionAllowed(true),
@@ -1236,13 +1228,14 @@ namespace ssGUI
             FUNC_DEBUG_EXIT();
             return;
         }
-        
+
         RedrawObject();
         RecalculateTextNeeded = false;
         Overflow = false;
-
-        ConstructCharacterDetails();
         
+        //Clear and reprocess the character details
+        ProcessedCharacterDetails.clear(); 
+
         FormatNewlinesCharacters();
 
         AssignSupportedFont();
@@ -1250,14 +1243,14 @@ namespace ssGUI
         CharactersRenderInfos.clear();
 
         //Empty text guard
-        if(CurrentText.empty() && OverrideCharactersDetails.empty())
+        if(CurrentCharactersDetails.Empty())
         {
             FUNC_DEBUG_EXIT();
             return;
         }
 
         //Populate CharactersRenderInfos list
-        for(int i = 0; i < CurrentCharacterDetails.size(); i++)
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
             CharactersRenderInfos.push_back(ssGUI::CharacterRenderInfo());
         
         if(WrappingMode == ssGUI::Enums::TextWrapping::WORD_WRAPPING)
@@ -1265,7 +1258,7 @@ namespace ssGUI
         else if(WrappingMode == ssGUI::Enums::TextWrapping::CHARACTER_WRAPPING)
             ConstructRenderInfosForCharacterWrapping();
         else
-            ConstructRenderInfosForNoWrapping();
+            ConstructRenderInfosForNoWrapping(true);
 
         ApplyFontLineSpacing();
         ApplyTextAlignment();
@@ -1276,26 +1269,84 @@ namespace ssGUI
     void Text::SetText(std::wstring text)
     {
         RecalculateTextNeeded = true;
-        CurrentText = text;
+
+        CurrentCharactersDetails.Clear();
+        ProcessedCharacterDetails.clear();
+        std::vector<ssGUI::CharacterDetails> newDetails;
+        ConstructCharacterDetails(text, newDetails);
+        AddCurrentCharacterDetails(newDetails);
         RedrawObject();
     }
 
     void Text::SetText(std::string text)
     {
         RecalculateTextNeeded = true;
+
+        CurrentCharactersDetails.Clear();
+        ProcessedCharacterDetails.clear();
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        CurrentText = converter.from_bytes(text);
+        std::wstring currentText = converter.from_bytes(text);
+        std::vector<ssGUI::CharacterDetails> newDetails;
+        ConstructCharacterDetails(currentText, newDetails);
+        AddCurrentCharacterDetails(newDetails);
         RedrawObject();
     }
 
-    std::wstring Text::GetText() const
+    void Text::AddText(std::wstring text)
     {
-        return CurrentText;
+        std::vector<ssGUI::CharacterDetails> newDetails;
+        ConstructCharacterDetails(text, newDetails);
+        AddCurrentCharacterDetails(newDetails);
+        RedrawObject();
+    }
+
+    void Text::AddText(std::string text)
+    {
+        std::vector<ssGUI::CharacterDetails> newDetails;
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring currentText = converter.from_bytes(text);
+        ConstructCharacterDetails(currentText, newDetails);
+        AddCurrentCharacterDetails(newDetails);
+        RedrawObject();
+    }
+
+    void Text::AddText(std::wstring text, int index)
+    {
+        std::vector<ssGUI::CharacterDetails> newDetails;
+        ConstructCharacterDetails(text, newDetails);
+        AddCurrentCharacterDetails(index, newDetails);
+        RedrawObject();
+    }
+
+    void Text::AddText(std::string text, int index)
+    {
+        std::vector<ssGUI::CharacterDetails> newDetails;
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring currentText = converter.from_bytes(text);
+        ConstructCharacterDetails(currentText, newDetails);
+        AddCurrentCharacterDetails(index, newDetails);
+        RedrawObject();
+    }
+
+    void Text::RemoveText(int startIndex, int exclusiveEndIndex)
+    {
+        RemoveCurrentCharacterDetails(startIndex, exclusiveEndIndex);
+        RedrawObject();
+    }
+
+    std::wstring Text::GetText()
+    {
+        std::wstring currentText = L"";
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
+        {
+            currentText += CurrentCharactersDetails[i].Character;
+        }
+        return currentText;
     }
 
     int Text::GetCharacterCount() const
     {
-        return CurrentText.size();
+        return CurrentCharactersDetails.Size();
     }
 
     ssGUI::CharacterRenderInfo Text::GetCharacterRenderInfo(int index) const
@@ -1306,61 +1357,90 @@ namespace ssGUI
         return CharactersRenderInfos[index];
     }
     
-    void Text::SetOverrideCharacterDetails(int index, ssGUI::CharacterDetails details)
+    void Text::SetCurrentCharacterDetails(int index, ssGUI::CharacterDetails details)
     {
-        if(index < 0 || index >= OverrideCharactersDetails.size())
+        if(index < 0 || index >= CurrentCharactersDetails.Size())
             return;
 
-        OverrideCharactersDetails[index] = details;
+        CurrentCharactersDetails[index] = details;
 
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    ssGUI::CharacterDetails Text::GetOverrideCharacterDetails(int index) const
+    ssGUI::CharacterDetails Text::GetCurrentCharacterDetails(int index)
     {
-        if(index < 0 || index >= OverrideCharactersDetails.size())
+        if(index < 0 || index >= CurrentCharactersDetails.Size())
             return ssGUI::CharacterDetails();
         
-        return OverrideCharactersDetails[index];
+        return CurrentCharactersDetails[index];
     }
 
-    int Text::GetOverrideCharactersDetailsCount() const
+    int Text::GetCurrentCharactersDetailsCount() const
     {
-        return OverrideCharactersDetails.size();
+        return CurrentCharactersDetails.Size();
     }
 
-    void Text::AddOverrideCharacterDetails(int index, ssGUI::CharacterDetails details)
+    void Text::AddCurrentCharacterDetails(int index, ssGUI::CharacterDetails details)
     {
-        if(index < 0 || index > OverrideCharactersDetails.size())
+        if(index < 0 || index > CurrentCharactersDetails.Size())
             return;
 
-        OverrideCharactersDetails.insert(OverrideCharactersDetails.begin() + index, details);
+        CurrentCharactersDetails.Add(details, index);
 
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    void Text::AddOverrideCharacterDetails(ssGUI::CharacterDetails details)
+    void Text::AddCurrentCharacterDetails(ssGUI::CharacterDetails details)
     {
-        OverrideCharactersDetails.push_back(details);
+        CurrentCharactersDetails.Add(details);
         RecalculateTextNeeded = true;
         RedrawObject();
     }
-
-    void Text::RemoveOverrideCharacterDetails(int index)
+    
+    void Text::AddCurrentCharacterDetails(int index, std::vector<ssGUI::CharacterDetails>& details)
     {
-        if(index < 0 || index >= OverrideCharactersDetails.size())
+        if(index < 0 || index > CurrentCharactersDetails.Size())
             return;
 
-        OverrideCharactersDetails.erase(OverrideCharactersDetails.begin() + index);
+        CurrentCharactersDetails.Add(details, index);
+
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    void Text::ClearAllOverrideCharacterDetails()
+    void Text::AddCurrentCharacterDetails(std::vector<ssGUI::CharacterDetails>& details)
     {
-        OverrideCharactersDetails.clear();
+        CurrentCharactersDetails.Add(details);
+    }
+
+    void Text::RemoveCurrentCharacterDetails(int index)
+    {
+        if(index < 0 || index >= CurrentCharactersDetails.Size())
+            return;
+
+        CurrentCharactersDetails.Remove(index);
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    void Text::RemoveCurrentCharacterDetails(int startIndex, int exclusiveEndIndex)
+    {
+        if(startIndex < 0 || startIndex >= CurrentCharactersDetails.Size())
+            return;
+
+        if(exclusiveEndIndex < 0 || exclusiveEndIndex > CurrentCharactersDetails.Size())
+            return;
+
+        CurrentCharactersDetails.Remove(startIndex, exclusiveEndIndex);
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    void Text::ClearAllCurrentCharacterDetails()
+    {
+        CurrentCharactersDetails.Clear();
         RecalculateTextNeeded = true;
         RedrawObject();
     }
@@ -1669,12 +1749,26 @@ namespace ssGUI
         //TODO: Add max search iterations
         while (true)
         {
+            //Check start and end index are valid
+            while (!CharactersRenderInfos[startIndex].Valid && startIndex < CharactersRenderInfos.size()) 
+            {
+                startIndex++;
+            }
+            while (!CharactersRenderInfos[endIndex].Valid && endIndex >= 0) 
+            {
+                endIndex--;
+            }
+            
             if(endIndex < startIndex)
                 return -1;
 
             glm::vec2 globalPos = GetGlobalPosition();
 
             midIndex = (startIndex + endIndex) / 2;
+            while (!CharactersRenderInfos[midIndex].Valid && midIndex >= 0) 
+            {
+                midIndex--;
+            }
             
             //Check within
             ssGUI::CharacterRenderInfo& midInfo = CharactersRenderInfos[midIndex];
@@ -1695,11 +1789,11 @@ namespace ssGUI
 
             //Check if pos is before midChar or after
             //If above this line
-            if(pos.y < globalPos.y + midInfo.LineMinY)
+            if(pos.y < globalPos.y + midInfo.RenderPosition.y + midInfo.LineMinY)
                 endIndex = midIndex - 1;
 
             //If below this line
-            else if(pos.y > globalPos.y + midInfo.RenderPosition.y)
+            else if(pos.y > globalPos.y + midInfo.RenderPosition.y + midInfo.LineMaxY)
                 startIndex = midIndex + 1;
 
             //If within this line
@@ -1733,12 +1827,26 @@ namespace ssGUI
         //TODO: Add max search iterations
         while (true)
         {
+            //Check start and end index are valid
+            while (!CharactersRenderInfos[startIndex].Valid && startIndex < CharactersRenderInfos.size()) 
+            {
+                startIndex++;
+            }
+            while (!CharactersRenderInfos[endIndex].Valid && endIndex >= 0) 
+            {
+                endIndex--;
+            }
+            
             if(endIndex < startIndex)
                 return -1;
 
             glm::vec2 globalPos = GetGlobalPosition();
 
             midIndex = (startIndex + endIndex) / 2;
+            while (!CharactersRenderInfos[midIndex].Valid && midIndex >= 0) 
+            {
+                midIndex--;
+            }
 
             ssGUI::CharacterRenderInfo& midInfo = CharactersRenderInfos[midIndex];
             ssGUI::CharacterRenderInfo& startInfo = CharactersRenderInfos[startIndex];
@@ -1750,6 +1858,10 @@ namespace ssGUI
 
             if(startIndex == midIndex)
             {                
+                //If below the line, just go for the endIndex character
+                if(pos.y > globalPos.y + midInfo.RenderPosition.y + midInfo.LineMaxY)
+                    return endIndex;
+                
                 if(!useLeftEdge)
                 {
                     return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
@@ -1766,6 +1878,10 @@ namespace ssGUI
 
             if(endIndex == midIndex)
             {
+                //If above the line, just go for the startIndex character
+                if(pos.y < globalPos.y + midInfo.RenderPosition.y + midInfo.LineMinY)
+                    return startIndex;
+                
                 if(!useLeftEdge)
                 {
                     return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
@@ -1782,36 +1898,14 @@ namespace ssGUI
 
             //Check if pos is before midChar or after
             //If above this line
-            if(pos.y < globalPos.y + midInfo.LineMinY)
+            if(pos.y < globalPos.y + midInfo.RenderPosition.y + midInfo.LineMinY)
             {
-                //If mid char and start char are on the same line
-                if(startInfo.RenderPosition.y == midInfo.RenderPosition.y)
-                {
-                    //Before this character
-                    if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
-                        endIndex = midIndex;
-                    //After this character
-                    else
-                        startIndex = midIndex;
-                }
-                else
-                    endIndex = midIndex;
+                endIndex = midIndex;
             }
             //If below this line
-            else if(pos.y > globalPos.y + midInfo.RenderPosition.y)
+            else if(pos.y > globalPos.y + midInfo.RenderPosition.y + midInfo.LineMaxY)
             {
-                //If mid char and end char are on the same line
-                if(endInfo.RenderPosition.y == midInfo.RenderPosition.y)
-                {
-                    //Before this character
-                    if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
-                        endIndex = midIndex;
-                    //After this character
-                    else
-                        startIndex = midIndex;
-                }
-                else
-                    startIndex = midIndex;
+                startIndex = midIndex;
             }
             //If within this line
             else
@@ -1825,14 +1919,62 @@ namespace ssGUI
             }
         }
     }
+
+    int Text::GetFirstValidCharacterIndex()
+    {
+        int firstIndex = 0;
+
+        while (firstIndex < CharactersRenderInfos.size() && !CharactersRenderInfos[firstIndex].Valid) 
+        {
+            firstIndex++;
+        }
+        
+        return firstIndex;
+    }
+
+    int Text::GetLastValidCharacterIndex()
+    {
+        int lastIndex = CharactersRenderInfos.size() - 1;
+
+        while (lastIndex >= 0 && !CharactersRenderInfos[lastIndex].Valid) 
+        {
+            lastIndex--;
+        }
+
+        if(lastIndex < 0)
+            return -1;
+        
+        return lastIndex;
+    }
     
     bool Text::IsPosAfterLastCharacter(glm::vec2 pos)
     {
         if(CharactersRenderInfos.empty())
             return false;
 
-        return pos.x > GetGlobalPosition().x + CharactersRenderInfos[CharactersRenderInfos.size() - 1].RenderPosition.x + 
-            CharactersRenderInfos[CharactersRenderInfos.size() - 1].Advance;
+        int lastIndex = GetLastValidCharacterIndex();
+
+        if(lastIndex < 0)
+            return false;
+
+        //If cursor is on the same line as last character
+        if(pos.y >= GetGlobalPosition().y + CharactersRenderInfos[lastIndex].RenderPosition.y + CharactersRenderInfos[lastIndex].LineMinY &&
+            pos.y <= GetGlobalPosition().y + CharactersRenderInfos[lastIndex].RenderPosition.y + CharactersRenderInfos[lastIndex].LineMaxY)
+        {
+            //If newline, it will be pointing to character before it
+            if(GetInternalCharacterDetail(lastIndex).Character == '\n')
+                return false;
+            //Otherwise check if the cursor is to the right of the character
+            else if(pos.x > GetGlobalPosition().x + CharactersRenderInfos[lastIndex].RenderPosition.x + CharactersRenderInfos[lastIndex].Advance)
+                return true;
+            else
+                return false;
+        }
+        //If cursor is after this line
+        else if(pos.y > GetGlobalPosition().y + CharactersRenderInfos[lastIndex].RenderPosition.y + CharactersRenderInfos[lastIndex].LineMaxY)
+            return true;
+        else
+            return false;
     }
 
     void Text::AddDefaultFont(ssGUI::Font* font)

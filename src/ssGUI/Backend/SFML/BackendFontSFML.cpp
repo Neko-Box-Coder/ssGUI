@@ -39,6 +39,7 @@ namespace ssGUI::Backend
         info.Size = glm::vec2(glyph.textureRect.width, glyph.textureRect.height);
         info.UVOrigin = glm::vec2(glyph.textureRect.left, glyph.textureRect.top);
         info.Rendered = true;
+        info.Valid = true;
 
         return info;
     }

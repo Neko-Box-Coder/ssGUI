@@ -60,7 +60,7 @@ int main()
             details.Underlined = true;
         }
         
-        text.AddOverrideCharacterDetails(details);
+        text.AddCurrentCharacterDetails(details);
     }
 
     text.ComputeCharactersPositionAndSize();
@@ -88,21 +88,21 @@ int main()
             if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::EQUAL) &&
                 !guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::EQUAL))
             {
-                for(int i = 0; i < text.GetOverrideCharactersDetailsCount(); i++)
+                for(int i = 0; i < text.GetCurrentCharactersDetailsCount(); i++)
                 {
-                    auto curDetails = text.GetOverrideCharacterDetails(i);
+                    auto curDetails = text.GetCurrentCharacterDetails(i);
                     curDetails.FontSize = curDetails.FontSize+1;
-                    text.SetOverrideCharacterDetails(i, curDetails);
+                    text.SetCurrentCharacterDetails(i, curDetails);
                 }
             }
             else if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::MINUS) &&
                     !guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::MINUS))
             {
-                for(int i = 0; i < text.GetOverrideCharactersDetailsCount(); i++)
+                for(int i = 0; i < text.GetCurrentCharactersDetailsCount(); i++)
                 {
-                    auto curDetails = text.GetOverrideCharacterDetails(i);
+                    auto curDetails = text.GetCurrentCharacterDetails(i);
                     curDetails.FontSize = curDetails.FontSize-1;
-                    text.SetOverrideCharacterDetails(i, curDetails);
+                    text.SetCurrentCharacterDetails(i, curDetails);
                 }
             }
         }

@@ -27,7 +27,7 @@ namespace ssGUI
             glm::vec2 Size = glm::vec2();
 
             //var: RenderPosition
-            //This is the left-most position of the character on the horizontal line (In other words bottom left corner). 
+            //This is the left-most position of the character on the baseline (In other words bottom left corner). 
             //To get the top-left corner of the character, add <DrawOffset> to this 
             glm::vec2 RenderPosition = glm::vec2();
 
@@ -36,10 +36,12 @@ namespace ssGUI
             bool CharacterAtNewline = false;
 
             //var: Rendered
-            //True if this character is being rendered. Otherwise this character is not being rendered.
-            //Note that characters such as space and tab is not "rendered" since it has no texture to be rendered,
-            //but it is still "present" in the text.
+            //When true, this means there's font assigned to this character and not space, tab or newline character.
             bool Rendered = false;
+
+            //var: Valid
+            //When false, this means there's no font assigned to this character or is null character.
+            bool Valid = false;
 
             //var: LineMinY
             //Minimum Y bound of the current line (Relative to RenderPosition).

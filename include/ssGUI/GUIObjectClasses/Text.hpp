@@ -12,9 +12,8 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
+#include "ssGUI/DataClasses/SegmentedVector.hpp"
 #include <string>
-#include <locale>
-#include <codecvt>
 
 //namespace: ssGUI
 namespace ssGUI
@@ -30,12 +29,11 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        std::wstring CurrentText;
-
         bool RecalculateTextNeeded;
-        std::vector<ssGUI::CharacterDetails> OverrideCharactersDetails;
+        ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;
+
         std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;
-        std::vector<ssGUI::CharacterDetails> CurrentCharacterDetails;
+        std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;
 
         bool Overflow;
         float FontSize;
@@ -64,8 +62,8 @@ namespace ssGUI
         static std::vector<ssGUI::Font*> DefaultFonts;
     =================================================================
     ============================== C++ ==============================
-    Text::Text() :  CurrentText(), RecalculateTextNeeded(false), OverrideCharactersDetails(), 
-                    CharactersRenderInfos(), CurrentCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
+    Text::Text() :  RecalculateTextNeeded(false), CurrentCharactersDetails(), 
+                    CharactersRenderInfos(), ProcessedCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
                     TextUnderline(false), MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
                     HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
                     CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), SelectionAllowed(true),
@@ -122,12 +120,11 @@ namespace ssGUI
             Text& operator=(Text const& other);
 
         protected:
-            std::wstring CurrentText;
-
             bool RecalculateTextNeeded;
-            std::vector<ssGUI::CharacterDetails> OverrideCharactersDetails;
+            ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;
+
             std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;
-            std::vector<ssGUI::CharacterDetails> CurrentCharacterDetails;
+            std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;
 
             bool Overflow;
             float FontSize;
@@ -157,7 +154,9 @@ namespace ssGUI
 
             Text(Text const& other);
 
-            virtual void ConstructCharacterDetails();
+            virtual ssGUI::CharacterDetails& GetInternalCharacterDetail(int index);
+
+            virtual void ConstructCharacterDetails(std::wstring& s, std::vector<ssGUI::CharacterDetails>& details);
 
             virtual void AssignSupportedFont();
 
@@ -171,7 +170,7 @@ namespace ssGUI
 
             virtual void ConstructRenderInfosForCharacterWrapping();
 
-            virtual void ConstructRenderInfosForNoWrapping();
+            virtual void ConstructRenderInfosForNoWrapping(bool checkValid);
 
             virtual void ApplyFontLineSpacing();
 
@@ -206,10 +205,30 @@ namespace ssGUI
             //function: SetText
             //Sets the text to show
             virtual void SetText(std::string text);
+
+            //function: AddText
+            //Append text to the end
+            virtual void AddText(std::wstring text);
+
+            //function: AddText
+            //Append text to the end
+            virtual void AddText(std::string text);
+
+            //function: AddText
+            //Insert text at index position
+            virtual void AddText(std::wstring text, int index);
+
+            //function: AddText
+            //Insert text at index position
+            virtual void AddText(std::string text, int index);
+
+            //function: RemoveText
+            //Remove text in range
+            virtual void RemoveText(int startIndex, int exclusiveEndIndex);
             
             //function: GetText
             //Gets the text being shown
-            virtual std::wstring GetText() const;
+            virtual std::wstring GetText();
             
             //function: GetCharacterCount
             //Gets the number of characters for the text being shown
@@ -219,33 +238,45 @@ namespace ssGUI
             //Gets the character render info of the character at the index position
             virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(int index) const;
 
-            //function: SetOverrideCharacterDetails
-            //Sets the override character details of the character at the index position
-            virtual void SetOverrideCharacterDetails(int index, ssGUI::CharacterDetails details);
+            //function: SetCurrentCharacterDetails
+            //Sets the character details at the index position
+            virtual void SetCurrentCharacterDetails(int index, ssGUI::CharacterDetails details);
 
-            //function: GetOverrideCharacterDetails
-            //Gets the override character details of the character at the index position
-            virtual ssGUI::CharacterDetails GetOverrideCharacterDetails(int index) const;
+            //function: GetCurrentCharacterDetails
+            //Gets the character details at the index position
+            virtual ssGUI::CharacterDetails GetCurrentCharacterDetails(int index);
 
-            //function: GetOverrideCharactersDetailsCount
-            //Returns the number of override characater details
-            virtual int GetOverrideCharactersDetailsCount() const;
+            //function: GetCurrentCharactersDetailsCount
+            //Returns the number of characater details, same as calling <GetCharacterCount>
+            virtual int GetCurrentCharactersDetailsCount() const;
 
-            //function: AddOverrideCharacterDetails
-            //Add the override character details of the character at the index position
-            virtual void AddOverrideCharacterDetails(int index, ssGUI::CharacterDetails details);
+            //function: AddCurrentCharacterDetails
+            //Add the character details at the index position
+            virtual void AddCurrentCharacterDetails(int index, ssGUI::CharacterDetails details);
 
-            //function: AddOverrideCharacterDetails
-            //Add the override character details of the character to the end
-            virtual void AddOverrideCharacterDetails(ssGUI::CharacterDetails details);
+            //function: AddCurrentCharacterDetails
+            //Add the character details to the end
+            virtual void AddCurrentCharacterDetails(ssGUI::CharacterDetails details);
 
-            //function: RemoveOverrideCharacterDetails
-            //Removes the override character details of the character at the index position
-            virtual void RemoveOverrideCharacterDetails(int index);
+            //function: AddCurrentCharacterDetails
+            //Add a number of character details at the index position
+            virtual void AddCurrentCharacterDetails(int index, std::vector<ssGUI::CharacterDetails>& details);
+            
+            //function: AddCurrentCharacterDetails
+            //Add a number of character details to the end
+            virtual void AddCurrentCharacterDetails(std::vector<ssGUI::CharacterDetails>& details);
+
+            //function: RemoveCurrentCharacterDetails
+            //Removes the character details at the index position
+            virtual void RemoveCurrentCharacterDetails(int index);
+
+            //function: RemoveCurrentCharacterDetails
+            //Removes a range of character details
+            virtual void RemoveCurrentCharacterDetails(int startIndex, int exclusiveEndIndex);
 
             //function: ClearAllOverrideCharacterDetails
             //Removes all override character details
-            virtual void ClearAllOverrideCharacterDetails();
+            virtual void ClearAllCurrentCharacterDetails();
 
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
@@ -422,6 +453,14 @@ namespace ssGUI
             //Gets the character index that is closest to the passed in position.
             //If useLeftEdge, it will use the left side of the character instead of the center of it.
             virtual int GetNearestCharacterIndexFromPos(glm::vec2 pos, bool useLeftEdge);
+
+            //function: GetFirstValidCharacterIndex
+            //Return the index of the first valid character (<ssGUI::CharacterRenderInfo::Valid>) 
+            virtual int GetFirstValidCharacterIndex();
+
+            //function: GetLastValidCharacterIndex
+            //Return the index of the last valid character (<ssGUI::CharacterRenderInfo::Valid>)
+            virtual int GetLastValidCharacterIndex();
 
             //function: IsPosAfterLastCharacter
             //Returns if the x position is before or after the right side of the last character
