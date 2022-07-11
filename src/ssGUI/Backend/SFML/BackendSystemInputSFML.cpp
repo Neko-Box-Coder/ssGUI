@@ -274,10 +274,8 @@ namespace ssGUI::Backend
                 
                 //TODO : Not sure if this needs to be added to realtime infos, probably needs to be.
                 if (event.type == sf::Event::TextEntered)
-                {
-                    //Exclude control characters
-                    if (event.text.unicode > 31 && event.text.unicode < 127 && event.text.unicode > 159)
-                        InputText += event.text.unicode;
+                {                   
+                    InputText += event.text.unicode;
 
                     CurrentInputInfos.push_back(curInfo);
                     continue;
