@@ -281,6 +281,12 @@ void AddSingleWithIndexTest()
     assert(test[5] == 11);
     assert(test[6] == 6);
 
+    PrintInternalState(test);
+
+    test.Add(12, 11);
+    PrintInternalState(test);
+    assert(test[11] == 12);
+
     PRINT_LINE(__func__<<": \u2705");
 }
 
@@ -907,26 +913,26 @@ void CacheBenchmarkTest()
 
 void RunTests()
 {
-    CopyConstructorTest();
-    AssignmentOperatorTest();
-    AtAndSquareOperatorTest();
-    SizeTest();
-    EmptyTest();
-    RemoveSingleTest();
-    RemoveRangeTest();
-    ClearTest();
-    AddSingleTest();
-    AddRangeWithSegmentedVectorTest();
-    AddRangeWithVectorTest();
-    AddRangeWithArrayTest();
+    // CopyConstructorTest();
+    // AssignmentOperatorTest();
+    // AtAndSquareOperatorTest();
+    // SizeTest();
+    // EmptyTest();
+    // RemoveSingleTest();
+    // RemoveRangeTest();
+    // ClearTest();
+    // AddSingleTest();
+    // AddRangeWithSegmentedVectorTest();
+    // AddRangeWithVectorTest();
+    // AddRangeWithArrayTest();
     AddSingleWithIndexTest();
-    AddRangeWithSegmentedVectorWithIndexTest();
-    AddRangeWithVectorWithIndexTest();
-    AddRangeWithArrayWithIndexTest();
-    SwapTest();
-    FrontTest();
-    BackTest();
-    IteratorTest();
+    // AddRangeWithSegmentedVectorWithIndexTest();
+    // AddRangeWithVectorWithIndexTest();
+    // AddRangeWithArrayWithIndexTest();
+    // SwapTest();
+    // FrontTest();
+    // BackTest();
+    // IteratorTest();
 }
 
 void RunBenchmark()

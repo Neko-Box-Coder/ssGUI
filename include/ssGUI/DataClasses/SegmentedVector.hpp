@@ -231,6 +231,7 @@ namespace ssGUI
             };
         
         protected:
+        // public:
             std::vector<std::vector<T>> InternalVectors;
             size_t MaxSegmentVectorSize;
 
@@ -550,6 +551,12 @@ namespace ssGUI
                 if(index < 0 || index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
+                if(index == CurrentSize)
+                {
+                    Add(obj);
+                    return;
+                }
+
                 size_t startIndex = 0;
                 size_t foundVector = -1;
 
@@ -566,6 +573,12 @@ namespace ssGUI
                 //Check out of range
                 if(index < 0 || index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
+
+                if(index == CurrentSize)
+                {
+                    Add(obj);
+                    return;
+                }
 
                 size_t startIndex = 0;
                 size_t foundVector = -1;
@@ -608,6 +621,12 @@ namespace ssGUI
                 if(index < 0 || index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
+                if(index == CurrentSize)
+                {
+                    Add(objs);
+                    return;
+                }
+
                 size_t startIndex = 0;
                 size_t foundVector = -1;
 
@@ -624,6 +643,12 @@ namespace ssGUI
                 //Check out of range
                 if(index < 0 || index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
+
+                if(index == CurrentSize)
+                {
+                    Add(objs, len);
+                    return;
+                }
 
                 size_t startIndex = 0;
                 size_t foundVector = -1;
