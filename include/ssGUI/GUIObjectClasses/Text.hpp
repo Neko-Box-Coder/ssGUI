@@ -20,11 +20,10 @@ namespace ssGUI
 {
     /*class: ssGUI::Text
     A class for showing text with different options such as font size, text alignment, fonts, etc.
-    Text can be added by just setting the text, which is the simplest.
+    Text can be added by just setting/adding the text, which is the simplest.
     
     If you want the ablitiy to adjust each characters settings such as font, font size, etc. 
-    You can add <ssGUI::CharacterDetails> as OverrideCharacterDetails by setting the object variables.
-    Please note that if you are using OverrideCharacterDetails, text set by <SetText> will be *ignored*.
+    You can set <ssGUI::CharacterDetails> for individual characters.
 
     Variables & Constructor:
     ============================== C++ ==============================
