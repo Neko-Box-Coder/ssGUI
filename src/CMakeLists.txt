@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 set (CMAKE_CXX_STANDARD 11)
+# For Clang to do parsing
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ==========================================================
 # Example 
@@ -13,7 +15,7 @@ configure_file(ProjectConfig.hpp.in ProjectConfig.hpp)
 
 # add the executable
 # add_executable(example ./Examples/CharacterLevelAdjustment.cpp)
-add_executable(example "./Tests/ClipboardTest.cpp")
+add_executable(example "./Tests/TextFieldTest.cpp")
 
 # For projectconfig.hpp in build folder
 target_include_directories(example PUBLIC "${PROJECT_BINARY_DIR}")
