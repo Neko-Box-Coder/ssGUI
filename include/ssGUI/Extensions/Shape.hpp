@@ -11,7 +11,7 @@
 namespace ssGUI::Extensions
 {
     /*class: ssGUI::Extensions::Shape
-    Shape extension allows adding/removing shapes in runtime on the GUI Object without too much effort 
+    Shape extension allows adding/removing shapes in runtime on the GUI Object without too much effort. This would not work with <ssGUI::MainWindow>
 
     Variables & Constructor:
     ============================== C++ ==============================
@@ -75,6 +75,7 @@ namespace ssGUI::Extensions
             virtual void ConstructAdditionalPolygon(AdditionalShape& targetShape, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject);
             virtual void ConstructAdditionalRectangle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject);
             virtual void ConstructAdditionalCircle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject);
+            virtual void ConstructAdditionalLine(AdditionalShape& targetShape, glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject);
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
@@ -90,7 +91,7 @@ namespace ssGUI::Extensions
             
             /*function: AddAdditionalPolygon
             Adding additional polygon in addition to GUI Object. 
-            The additional shape will be added in the list of additional shapes at index stored in this extension.
+            The additional shape will be added in the list of additional shapes at index position stored in this extension.
             This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
             virtual int AddAdditionalPolygon(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject, int index);
 
@@ -102,7 +103,7 @@ namespace ssGUI::Extensions
             
             /*function: AddAdditionalRectangle
             Adding additional rectangle in addition to GUI Object. 
-            The additional shape will be added in the list of additional shapes at index stored in this extension.
+            The additional shape will be added in the list of additional shapes at index position stored in this extension.
             This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
             virtual int AddAdditionalRectangle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index);
 
@@ -114,9 +115,21 @@ namespace ssGUI::Extensions
             
             /*function: AddAdditionalCircle
             Adding additional circle in addition to GUI Object.
-            The additional shape will be added in the list of additional shapes at index stored in this extension.
+            The additional shape will be added in the list of additional shapes at index position stored in this extension.
             This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
             virtual int AddAdditionalCircle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index);
+
+            /*function: AddAdditionalLine
+            Adding additional line in addition to GUI Object. 
+            The additional line will be appended in the list of additional shapes stored in this extension.
+            This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
+            virtual int AddAdditionalLine(glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject);
+            
+            /*function: AddAdditionalLine
+            Adding additional line in addition to GUI Object.
+            The additional line will be added in the list of additional shapes at index position stored in this extension.
+            This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
+            virtual int AddAdditionalLine(glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject, int index);
 
             /*function: SetAdditionalPolygon
             This sets the additional shape with target id. The additional shape with target id is not limited to the same type,
@@ -133,30 +146,35 @@ namespace ssGUI::Extensions
             meaning polygon or rectangle additional shape can be set to circle using this function.*/
             virtual void SetAdditionalCircle(int id, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject);
 
+            /*function: SetAdditionalLine
+            This sets the additional shape with target id. The additional shape with target id is not limited to the same type,
+            meaning other additional shape can be set to circle using this function.*/
+            virtual void SetAdditionalLine(int id, glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject);
+
             /*function: GetAdditionalShapeVerticesWithIndex
             This returns a pointer to the target shape vertices vector that is at target index stored in this extension.
-            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            This should not be used for a long period of time as the vector can be reallocated somewhere else.
             Also remember to redraw the GUI Object if changing any vertices.
             Nullptr can be returned if index is invalid. */
             virtual std::vector<glm::vec2>* GetAdditionalShapeVerticesWithIndex(int index);
 
             /*function: GetAdditionalShapeVerticesWithID
             This returns a pointer to the target shape vertices vector with target id in this extension.
-            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            This should not be used for a long period of time as the vector can be reallocated somewhere else.
             Also remember to redraw the GUI Object if changing any vertices.
             Nullptr can be returned if the id is invalid. */
             virtual std::vector<glm::vec2>* GetAdditionalShapeVerticesWithID(int id);
 
             /*function: GetAdditionalShapeColorsWithIndex
             This returns a pointer to the target shape colors vector that is at target index stored in this extension.
-            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            This should not be used for a long period of time as the vector can be reallocated somewhere else.
             Also remember to redraw the GUI Object if changing any vertices colors.
             Nullptr can be returned if index is invalid. */
             virtual std::vector<glm::u8vec4>* GetAdditionalShapeColorsWithIndex(int index);
             
             /*function: GetAdditionalShapeColorsWithID
             This returns a pointer to the target shape colors vector with target id in this extension.
-            This should not be used for a long period of time as the vector can be reallocated somewhere as.
+            This should not be used for a long period of time as the vector can be reallocated somewhere else.
             Also remember to redraw the GUI Object if changing any vertices colors.
             Nullptr can be returned if the id is invalid. */
             virtual std::vector<glm::u8vec4>* GetAdditionalShapeColorsWithID(int id);

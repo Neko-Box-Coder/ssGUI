@@ -65,6 +65,65 @@ namespace ssGUI::Extensions
         targetShape.BehindGUI = behindGUIObject;
     }
 
+    void Shape::ConstructAdditionalLine(AdditionalShape& targetShape, glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject)
+    {
+        /*
+          a ┌─────────────┐ b
+            │             │
+            │             │
+            │       start │
+            │      │      │
+            │      │      │
+            │      │      │
+            │      │      │
+            │      │      │
+            │      │      │
+            │      │ width│
+            │      │◄────►│
+            │      │      │
+            │      │      │
+            │      │      │
+            │      ▼      │
+            │       end   │
+            │             │
+            │             │
+            └─────────────┘
+           d               c
+        */
+
+        targetShape.Vertices.clear();
+        targetShape.Colors.clear();
+        
+        glm::vec2 curLine = end - start;
+        glm::vec2 curLineNormalized = glm::normalize(curLine);
+        
+        //This vector will have a direction of a ◄─── b  (b to a)
+        glm::vec2 perpendcularVector = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1)));
+
+        //Find the position of all vertices based on the thickness
+        //Get a and b
+        glm::vec2 a = start + perpendcularVector * startThickness - curLineNormalized * startThickness;
+        glm::vec2 b = start - perpendcularVector * startThickness - curLineNormalized * startThickness;
+
+        //Get c and d
+        glm::vec2 c = end - perpendcularVector * endThickness + curLineNormalized * endThickness;
+        glm::vec2 d = end + perpendcularVector * endThickness + curLineNormalized * endThickness;
+
+        targetShape.Vertices.push_back(a) ;
+        targetShape.Vertices.push_back(b);
+        targetShape.Vertices.push_back(c);
+        targetShape.Vertices.push_back(d);
+
+        //Apply color
+        targetShape.Colors.push_back(startColor);
+        targetShape.Colors.push_back(startColor);
+        targetShape.Colors.push_back(endColor);
+        targetShape.Colors.push_back(endColor);
+
+        targetShape.BehindGUI = behindGUIObject;
+    }
+
+
     void Shape::ConstructRenderInfo()
     {
         FUNC_DEBUG_ENTRY();
@@ -216,6 +275,34 @@ namespace ssGUI::Extensions
         return NextID++;
     }
 
+    int Shape::AddAdditionalLine(glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject)
+    {
+        AdditionalShapes.push_back(AdditionalShape());
+        ConstructAdditionalLine(AdditionalShapes[AdditionalShapes.size() - 1], start, end, startThickness, endThickness, startColor, endColor, behindGUIObject);
+        AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
+        return NextID++;
+    }
+
+    int Shape::AddAdditionalLine(glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject, int index)
+    {
+        if(index < 0 || index > AdditionalShapes.size())
+            return -1;
+        
+        AdditionalShape additionalShape;
+        AdditionalShapes.insert(AdditionalShapes.begin() + index, additionalShape);
+        ConstructAdditionalLine(AdditionalShapes[index], start, end, startThickness, endThickness, startColor, endColor, behindGUIObject);
+        AdditionalShapes[index].ID = NextID;
+
+        if(Container != nullptr)
+            Container->RedrawObject();
+
+        return NextID++;
+    }
+
     void Shape::SetAdditionalPolygon(int id, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
     {
         for(int i = 0; i < AdditionalShapes.size(); i++)
@@ -264,6 +351,22 @@ namespace ssGUI::Extensions
         }
     }
     
+    void Shape::SetAdditionalLine(int id, glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject)
+    {
+        for(int i = 0; i < AdditionalShapes.size(); i++)
+        {
+            if(AdditionalShapes[i].ID != id)
+                continue;
+
+            ConstructAdditionalLine(AdditionalShapes[i], start, end, startThickness, endThickness, startColor, endColor, behindGUIObject);
+
+            if(Container != nullptr)
+                Container->RedrawObject();
+
+            return;
+        }
+    }
+
     std::vector<glm::vec2>* Shape::GetAdditionalShapeVerticesWithIndex(int index)
     {
         if(index < 0 || index > AdditionalShapes.size())
