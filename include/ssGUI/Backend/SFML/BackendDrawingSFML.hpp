@@ -35,35 +35,35 @@ namespace ssGUI::Backend
             //Non index variants exist only for legacy purposes
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colours,
+                            const std::vector<glm::u8vec4>& colors,
                             const ssGUI::Backend::BackendFontInterface& font,
                             int characterSize) override;
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colours,
+                            const std::vector<glm::u8vec4>& colors,
                             const ssGUI::Backend::BackendImageInterface& image) override;
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colours) override;
+                            const std::vector<glm::u8vec4>& colors) override;
 
             //NOTE: End index is exclusive
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colours,
+                            const std::vector<glm::u8vec4>& colors,
                             int startIndex, int endIndex,
                             const ssGUI::Backend::BackendFontInterface& font,
                             int CharacterSize) override;
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colours,
+                            const std::vector<glm::u8vec4>& colors,
                             int startIndex, int endIndex,
                             const ssGUI::Backend::BackendImageInterface& image) override;
 
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colours,
+                            const std::vector<glm::u8vec4>& colors,
                             int startIndex, int endIndex) override;
 
         protected:
@@ -77,7 +77,7 @@ namespace ssGUI::Backend
             //See <BackendDrawingInterface::DrawEntities>
             bool DrawEntities(  const std::vector<glm::vec2>& vertices, 
                                 const std::vector<glm::vec2>& texCoords,
-                                const std::vector<glm::u8vec4>& colours,
+                                const std::vector<glm::u8vec4>& colors,
                                 const std::vector<int>& counts,
                                 const std::vector<ssGUI::DrawingProperty>& properties) override;
 

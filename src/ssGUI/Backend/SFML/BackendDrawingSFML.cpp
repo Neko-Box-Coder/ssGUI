@@ -14,30 +14,30 @@ namespace ssGUI::Backend
 
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
+                                        const std::vector<glm::u8vec4>& colors,
                                         const ssGUI::Backend::BackendFontInterface& font,
                                         int characterSize)
     {
-        return DrawShape(vertices, texCoords, colours, 0, vertices.size(), font, characterSize);
+        return DrawShape(vertices, texCoords, colors, 0, vertices.size(), font, characterSize);
     }
 
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
+                                        const std::vector<glm::u8vec4>& colors,
                                         const ssGUI::Backend::BackendImageInterface& image)
     {
-        return DrawShape(vertices, texCoords, colours, 0, vertices.size(), image);
+        return DrawShape(vertices, texCoords, colors, 0, vertices.size(), image);
     }
 
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colours)
+                                        const std::vector<glm::u8vec4>& colors)
     {
-        return DrawShape(vertices, colours, 0, vertices.size());
+        return DrawShape(vertices, colors, 0, vertices.size());
     }
 
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
+                                        const std::vector<glm::u8vec4>& colors,
                                         int startIndex, int endIndex,
                                         const ssGUI::Backend::BackendFontInterface& font,
                                         int CharacterSize)
@@ -56,7 +56,7 @@ namespace ssGUI::Backend
             //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
             outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
             outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
+            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
         }
 
         targetWindow->draw(outputShape, &((ssGUI::Backend::BackendFontSFML&)font).GetSFMLFont()->getTexture(CharacterSize));
@@ -66,7 +66,7 @@ namespace ssGUI::Backend
 
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colours,
+                                        const std::vector<glm::u8vec4>& colors,
                                         int startIndex, int endIndex,
                                         const ssGUI::Backend::BackendImageInterface& image)
     {
@@ -84,7 +84,7 @@ namespace ssGUI::Backend
             //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
             outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
             outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
+            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
         }
 
         targetWindow->draw(outputShape, (sf::Texture*)(((ssGUI::Backend::BackendImageSFML&)image).GetRawHandle()));
@@ -94,13 +94,13 @@ namespace ssGUI::Backend
 
 
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colours,
+                                        const std::vector<glm::u8vec4>& colors,
                                         int startIndex, int endIndex)
     {      
-        if(vertices.size() != colours.size() || vertices.empty())
+        if(vertices.size() != colors.size() || vertices.empty())
         {
             // std::cout<<"vertices size: "<<vertices.size()<<"\n";
-            // std::cout<<"colours size: "<<colours.size()<<"\n";
+            // std::cout<<"colors size: "<<colors.size()<<"\n";
             return false;
         }
         
@@ -113,7 +113,7 @@ namespace ssGUI::Backend
         for(int i = startIndex; i < endIndex; i++)
         {                        
             outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
-            outputShape[i - startIndex].color = sf::Color(colours[i].r, colours[i].g, colours[i].b, colours[i].a);
+            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
         }
         
         targetWindow->draw(outputShape);
@@ -123,7 +123,7 @@ namespace ssGUI::Backend
 
     bool BackendDrawingSFML::DrawEntities(  const std::vector<glm::vec2>& vertices, 
                                             const std::vector<glm::vec2>& texCoords,
-                                            const std::vector<glm::u8vec4>& colours,
+                                            const std::vector<glm::u8vec4>& colors,
                                             const std::vector<int>& counts,
                                             const std::vector<ssGUI::DrawingProperty>& properties)
     {
@@ -149,19 +149,19 @@ namespace ssGUI::Backend
             //Drawing text
             if(properties[i].fontP != nullptr)
             {
-                result = DrawShape(  vertices, texCoords, colours, currentIndex, currentIndex + counts[i],
+                result = DrawShape(  vertices, texCoords, colors, currentIndex, currentIndex + counts[i],
                                     *properties[i].fontP, properties[i].characterSize);
             }
             //Drawing image
             else if(properties[i].imageP != nullptr)
             {
-                result = DrawShape(  vertices, texCoords, colours, currentIndex, currentIndex + counts[i],
+                result = DrawShape(  vertices, texCoords, colors, currentIndex, currentIndex + counts[i],
                                     *properties[i].imageP);
             }
             //Drawing shapes
             else 
             {
-                result = DrawShape(  vertices, colours, currentIndex, currentIndex + counts[i]);
+                result = DrawShape(  vertices, colors, currentIndex, currentIndex + counts[i]);
             }
             currentIndex += counts[i];
 
