@@ -35,6 +35,7 @@ namespace ssGUI::Backend
         glm::ivec2 LastMousePosition;
         std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;
         std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;
+        glm::vec2 MouseScrollDelta;
         std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;
         std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;
         sf::Cursor SFMLCursor;
@@ -52,7 +53,7 @@ namespace ssGUI::Backend
     =================================================================
     ============================== C++ ==============================
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
-                                            CurrentMouseButtons(), LastMouseButtons(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
+                                            CurrentMouseButtons(), LastMouseButtons(), MouseScrollDelta(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
                                             CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursorImage(),
                                             Hotspot()
     {
@@ -80,6 +81,7 @@ namespace ssGUI::Backend
             glm::ivec2 LastMousePosition;
             std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;
             std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;
+            glm::vec2 MouseScrollDelta;
             std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;
             std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;
             sf::Cursor SFMLCursor;
@@ -143,6 +145,10 @@ namespace ssGUI::Backend
             //function: GetCurrentMouseButton
             //See <BackendSystemInputInterface::GetCurrentMouseButton>
             bool GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const override;
+
+            //function: GetCurrentMouseScrollDelta
+            //See <BackendSystemInputInterface::GetCurrentMouseScrollDelta>
+            virtual glm::vec2 GetCurrentMouseScrollDelta() const override;
 
             //function: GetLastRealtimeInputs
             //See <BackendSystemInputInterface::GetLastRealtimeInputs>

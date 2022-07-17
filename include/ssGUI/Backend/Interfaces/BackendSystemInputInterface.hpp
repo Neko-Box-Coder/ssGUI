@@ -62,6 +62,18 @@ namespace ssGUI::Backend
             //Return if a mouse button is being pressed current frame
             virtual bool GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const = 0;
 
+            /*function: GetCurrentMouseScrollDelta
+            Return the direction of mouse scrolling for the current frame.
+            ================== Text ==================
+                 ▲ 1
+            -1   │    1
+            ◄────┼────►
+                 │
+                 ▼-1
+            ==========================================
+            */
+            virtual glm::vec2 GetCurrentMouseScrollDelta() const = 0;
+
             //function: GetLastRealtimeInputs
             //Return a list of inputs in order happened in last frame. The last input info should be the same as <GetLastKeyPresses>, <GetLastMousePosition>, etc...
             virtual std::vector<ssGUI::RealtimeInputInfo> const & GetLastRealtimeInputs() const = 0;

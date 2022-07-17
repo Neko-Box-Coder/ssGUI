@@ -165,7 +165,7 @@ namespace ssGUI::Backend
     }
 
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
-                                            CurrentMouseButtons(), LastMouseButtons(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
+                                            CurrentMouseButtons(), LastMouseButtons(), MouseScrollDelta(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
                                             CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursorImage(),
                                             Hotspot()
     {
@@ -192,6 +192,7 @@ namespace ssGUI::Backend
     {
         FUNC_DEBUG_ENTRY();
         InputText.clear();
+        MouseScrollDelta = glm::vec2();
         
         //Set last key presses and mouse buttons
         LastKeyPresses = CurrentKeyPresses;
@@ -321,6 +322,16 @@ namespace ssGUI::Backend
                     CurrentInputInfos.push_back(curInfo);
                     continue;
                 }
+
+                if(event.type == sf::Event::MouseWheelScrolled)
+                {
+                    if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+                        MouseScrollDelta.y = event.mouseWheelScroll.delta;
+                    else if (event.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel)
+                        MouseScrollDelta.x = event.mouseWheelScroll.delta * -1;
+                    
+                    continue;
+                }
             }
         }
 
@@ -403,6 +414,11 @@ namespace ssGUI::Backend
         return false;
     }
 
+    glm::vec2 BackendSystemInputSFML::GetCurrentMouseScrollDelta() const
+    {
+        return MouseScrollDelta;
+    }
+    
     std::vector<ssGUI::RealtimeInputInfo> const & BackendSystemInputSFML::GetLastRealtimeInputs() const
     {
         return LastInputInfos;
