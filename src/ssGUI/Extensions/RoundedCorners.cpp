@@ -58,7 +58,7 @@ namespace ssGUI::Extensions
     void RoundedCorners::PlotArcPoints(glm::vec2 a, glm::vec2 b, glm::vec2 c, std::vector<glm::vec2>& plottedPoints)
     {
         //Let A be previous vertices and B be current and C be next
-        int roundRadius = RoundedCornersRadius;
+        float roundRadius = RoundedCornersRadius;
 
         //Check if the shortest side is lower than the rounded corner radius.
         //If so, change the radius to that
@@ -434,14 +434,14 @@ namespace ssGUI::Extensions
 
     const std::string RoundedCorners::EXTENSION_NAME = "Rounded Corners";
 
-    void RoundedCorners::SetRoundedCornersRadius(int radius)
+    void RoundedCorners::SetRoundedCornersRadius(float radius)
     {
         RoundedCornersRadius = radius;
         if(Container != nullptr)
             Container->RedrawObject();
     }
             
-    int RoundedCorners::GetRoundedCornersRadius() const
+    float RoundedCorners::GetRoundedCornersRadius() const
     {
         return RoundedCornersRadius;
     }

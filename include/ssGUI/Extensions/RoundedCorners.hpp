@@ -55,7 +55,7 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* Container;
             bool Enabled;
 
-            int RoundedCornersRadius;
+            float RoundedCornersRadius;
             std::vector<int> TargetShapes;
             std::vector<int> TargetVertices;
 
@@ -93,11 +93,11 @@ namespace ssGUI::Extensions
 
             //function: SetRoundedCornersRadius
             //Sets the radius for the rounded corners. Note that it will use the largest possible radius if this is not available.
-            virtual void SetRoundedCornersRadius(int radius);
+            virtual void SetRoundedCornersRadius(float radius);
 
             //function: GetRoundedCornersRadius
             //Returns the radius for the rounded corners
-            virtual int GetRoundedCornersRadius() const;
+            virtual float GetRoundedCornersRadius() const;
 
             //function: AddTargetShape
             //Adds the shapeIndex that indicates the index of the shape to be rounded drawn in GUI object.
