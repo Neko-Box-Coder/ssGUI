@@ -141,13 +141,19 @@ namespace ssGUI::Extensions
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
         // DEBUG_LINE("points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
-        int minSamples = 10;
+        int minSamples = 5;
         int sampleCount = (int)(roundRadius * angleT1CirT2 * 1) + 2;
-        int finalSampleCount = sampleCount < 10 ? minSamples : sampleCount;
+        int finalSampleCount = sampleCount < minSamples ? minSamples : sampleCount;
+        //DEBUG_LINE("originLineToT1Angle: "<<originLineToT1Angle);
+        //DEBUG_LINE("angleT1CirT2: "<<angleT1CirT2);
         for(int i = 1; i < finalSampleCount; i++)
         {
+            //DEBUG_LINE("i: "<<i<<"/"<<finalSampleCount);
+            //DEBUG_LINE("((double)i / (double)finalSampleCount): "<<((double)i / (double)finalSampleCount));
             double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)finalSampleCount);
+            //DEBUG_LINE("currentAngle: "<<currentAngle);
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)roundRadius;
+            //DEBUG_LINE("plotPoint: "<<plotPoint.x<<", "<<plotPoint.y);
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + cir);
         }
     }

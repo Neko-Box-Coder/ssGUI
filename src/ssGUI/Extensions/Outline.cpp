@@ -352,9 +352,9 @@ nextVertex (n)    (a)                   curVertex
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
         // DEBUG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
-        for(int i = 0; i < (int)(arcRadius * startToEndAngle * 1) + 2; i++)
+        for(int i = 0; i <= (int)(arcRadius * startToEndAngle * 1) + 2; i++)
         {
-            double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)((int)(arcRadius * startToEndAngle * 1) + 1));
+            double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)(arcRadius * startToEndAngle * 1));
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)arcRadius;
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + circlePos);
         }
@@ -804,16 +804,8 @@ nextVertex (n)    (a)                   curVertex
             return;
         }
 
-        if(!SimpleOutline)
-        {
-            if(Container->IsRedrawNeeded())
-                ConstructRenderInfo();
-        }
-        else
-        {
-            if(Container->IsRedrawNeeded())
-                ConstructRenderInfo();
-        }
+        if(Container->IsRedrawNeeded())
+            ConstructRenderInfo();
 
         FUNC_DEBUG_EXIT();
     }
