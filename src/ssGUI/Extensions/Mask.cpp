@@ -816,10 +816,12 @@ namespace ssGUI::Extensions
                 
                 //Check if it has more than 1 Target Mask GUI Object, if just remove Target Mask GUI Object
                 if(enforcer->HasTargetMaskObject(Container))
+                {
                     if(enforcer->GetTargetMaskObjects().size() == 1)
                         child->RemoveExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME);
                     else
                         enforcer->RemoveTargetMaskObject(Container);
+                }
             }
             
             child->StashChildrenIterator();
@@ -1240,7 +1242,7 @@ namespace ssGUI::Extensions
     }
     
     //Extension methods
-    void Mask::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Mask::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         

@@ -61,10 +61,10 @@ namespace ssGUI
             virtual void SetupComponents();
             virtual ssGUI::GUIObject* CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot);
             virtual void CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj);
-            virtual void CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow);
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow);
+            virtual void CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                                ssGUI::GUIObject* mainWindow);
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                    ssGUI::GUIObject* mainWindow);
 
         public:
             //TODO : Maybe make this thread safe?
@@ -103,7 +103,7 @@ namespace ssGUI
             
             //function: Internal_Update
             //(Internal ssGUI function) Update function called by <ssGUIManager>
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow);
+            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow);
 
             //function: Clone
             //Clone function for cloning the object. Use this function instead of assignment operator or copy constructor.

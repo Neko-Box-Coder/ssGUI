@@ -123,8 +123,8 @@ namespace ssGUI
 
             void AddItemListener(ssGUI::EventCallbacks::EventCallback* ecb, int index);
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                    ssGUI::GUIObject* mainWindow) override;
 
         public:
             //string: ListenerKey

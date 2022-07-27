@@ -831,8 +831,8 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
     
-    void TextField::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void TextField::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {       
         std::wstring textInput = inputInterface->GetTextInput();
         bool refreshBlinkTimer = false;
@@ -840,10 +840,10 @@ namespace ssGUI
 
         //Holding ctrl to enable word mode
         bool wordMode = inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
-            inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL);
+                        inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL);
 
         //Pasting
-        if(!globalInputStatus.KeyInputBlocked && !windowInputStatus.KeyInputBlocked && 
+        if(inputStatus.KeyInputBlockedObject == nullptr && 
             inputInterface->ClipbaordHasText() && wordMode && 
             inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V) &&
             !inputInterface->GetLastKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V))
@@ -855,17 +855,16 @@ namespace ssGUI
 
         //Text input
         //TODO: Put textInput to a CharacterDetails vector and insert the whole vector instead of 1 by 1
-        if(!globalInputStatus.KeyInputBlocked && !windowInputStatus.KeyInputBlocked && IsFocused() && !textInput.empty())
+        if(inputStatus.KeyInputBlockedObject == nullptr && IsFocused() && !textInput.empty())
         {
             blockKeys = true;
             TextInputUpdate(textInput, refreshBlinkTimer, wordMode);
         }
 
-
-        ssGUI::Text::MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        ssGUI::Text::MainLogic(inputInterface, inputStatus, mainWindow);
         
         //Caret navigation
-        if(!globalInputStatus.KeyInputBlocked && !windowInputStatus.KeyInputBlocked)
+        if(inputStatus.KeyInputBlockedObject == nullptr)
             CaretNavigationUpdate(inputInterface, refreshBlinkTimer, blockKeys, wordMode);
 
         //Blinking caret
@@ -888,10 +887,7 @@ namespace ssGUI
             RedrawObject();
 
         if(blockKeys)
-        {
-            globalInputStatus.KeyInputBlocked = true;
-            windowInputStatus.KeyInputBlocked = true;
-        }
+            inputStatus.KeyInputBlockedObject = this;
     }
 
     TextField::TextField() : LastBlinkTime(0), BlinkDuration(500), BlinkCaret(false), LastArrowNavStartTime(0), ArrowNavPauseDuration(500), 

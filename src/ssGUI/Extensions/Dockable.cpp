@@ -684,7 +684,7 @@ namespace ssGUI::Extensions
         return Enabled;
     }
 
-    void Dockable::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Dockable::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -695,7 +695,7 @@ namespace ssGUI::Extensions
         }
         
         //If global dock mode is true, check topLevelParent first, then check the cursor against the trigger area
-        if(GlobalDockMode && !ContainerIsDocking && !globalInputStatus.DockingBlocked)
+        if(GlobalDockMode && !ContainerIsDocking && inputStatus.DockingBlockedObject == nullptr)
         {
             ssGUI::GUIObject* curParent = Container;
             while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr && curParent != DockingTopLevelParent)
@@ -803,8 +803,7 @@ namespace ssGUI::Extensions
                     DiscardTriggerAreas();
                 
                     
-                globalInputStatus.DockingBlocked = true;
-                windowInputStatus.DockingBlocked = true;
+                inputStatus.DockingBlockedObject = Container;
                 TargetDockObject = Container;
             }
             else

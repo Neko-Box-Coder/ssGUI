@@ -89,14 +89,14 @@ namespace ssGUI
             glm::vec2 MouseDownPosition;
 
             virtual void SetWindowDragState(ssGUI::Enums::WindowDragState dragState);
-            virtual void OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& globalInputStatus);
-            virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& globalInputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
-            virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& globalInputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
+            virtual void OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& inputStatus);
+            virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& inputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
+            virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
 
             Window(Window const& other) = default;
             virtual void ConstructRenderInfo() override;
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                    ssGUI::GUIObject* mainWindow) override;
 
         public:
             Window();

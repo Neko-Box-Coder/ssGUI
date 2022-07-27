@@ -83,8 +83,8 @@ namespace ssGUI
         protected:
             MenuItem(MenuItem const& other);
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                    ssGUI::GUIObject* mainWindow) override;
 
         public:
             //string: ListenerKey

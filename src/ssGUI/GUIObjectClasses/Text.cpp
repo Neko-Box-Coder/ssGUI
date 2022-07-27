@@ -1076,8 +1076,8 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    void Text::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Text::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                        ssGUI::GUIObject* mainWindow)
     {
         //Check any changes to default fonts
         //TODO: Maybe need optimization
@@ -1103,7 +1103,7 @@ namespace ssGUI
             RedrawObject(); 
         }
         
-        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked && IsBlockInput())
+        if(inputStatus.MouseInputBlockedObject == nullptr && IsBlockInput())
         {
             //Mouse Input blocking
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
@@ -1121,7 +1121,7 @@ namespace ssGUI
             if(mouseInWindowBoundX && mouseInWindowBoundY)
             {
                 inputInterface->SetCursorType(ssGUI::Enums::CursorType::TEXT); 
-                windowInputStatus.MouseInputBlocked = true;
+                inputStatus.MouseInputBlockedObject = this;
             }
 
             //If mouse click on this, set focus
@@ -1160,7 +1160,7 @@ namespace ssGUI
             }
         }
 
-        if(!globalInputStatus.KeyInputBlocked && !windowInputStatus.KeyInputBlocked)
+        if(inputStatus.KeyInputBlockedObject == nullptr)
         {
             //Text copying
             if(IsTextSelectionAllowed() && GetStartSelectionIndex() >= 0 && GetEndSelectionIndex() >= 0 && 
@@ -1182,8 +1182,7 @@ namespace ssGUI
                     inputInterface->SetClipboardText(curText); 
                 }
 
-                windowInputStatus.KeyInputBlocked = true;
-                globalInputStatus.KeyInputBlocked = true;
+                inputStatus.KeyInputBlockedObject = this;
             }
         }
     }

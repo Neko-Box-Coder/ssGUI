@@ -119,7 +119,7 @@ namespace ssGUI::Extensions
     }
         
     //Extension methods
-    void MaskEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void MaskEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
 
@@ -149,7 +149,7 @@ namespace ssGUI::Extensions
                 if(!CurrentObjectsReferences.GetObjectReference(*it)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
                     continue;
 
-                if(globalInputStatus.MouseInputBlocked || windowInputStatus.MouseInputBlocked)                
+                if(inputStatus.MouseInputBlockedObject != nullptr)                
                     continue;
                 
                 //If so, check if the cursor is inside the mask
@@ -158,7 +158,7 @@ namespace ssGUI::Extensions
                 {
                     //If not, cut off the input
                     BlockingContainerInput = true;
-                    windowInputStatus.MouseInputBlocked = true;
+                    inputStatus.MouseInputBlockedObject = Container;
                 }  
             }
 
@@ -180,7 +180,7 @@ namespace ssGUI::Extensions
             if(BlockingContainerInput)
             {
                 BlockingContainerInput = false;
-                windowInputStatus.MouseInputBlocked = false;
+                inputStatus.MouseInputBlockedObject = nullptr;
             }
         }
 

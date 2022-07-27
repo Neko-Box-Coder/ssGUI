@@ -51,8 +51,8 @@ namespace ssGUI
         protected:
             MainWindow(MainWindow const& other);
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                    ssGUI::GUIObject* mainWindow) override;
 
         public:
             //MainWindow(MainWindow& mainWindow);
@@ -194,7 +194,7 @@ namespace ssGUI
             
             //function: Internal_Update
             //See <GUIObject::Internal_Update>
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
     
             //function: Clone
             //See <Window::Clone>

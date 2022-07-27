@@ -17,8 +17,8 @@ namespace ssGUI
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
     }
 
-    void MainWindow::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void MainWindow::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {}
     
     MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::vec2(0, 0)), RedrawCount(0), LastSyncTime(0)
@@ -280,7 +280,7 @@ namespace ssGUI
     }
 
     //TODO : Add WindowDragStateChangedEvent call
-    void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -290,7 +290,7 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(true, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, inputStatus, mainWindow);
         }
 
         //Update cursor position offset every .5 seconds
@@ -337,11 +337,11 @@ namespace ssGUI
 
         LastSize = GetSize();
 
-        CheckRightClickMenu(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
-        MainLogic(inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+        CheckRightClickMenu(inputInterface, inputStatus, mainWindow);
+        MainLogic(inputInterface, inputStatus, mainWindow);
 
         //Apply focus
-        if(!windowInputStatus.MouseInputBlocked && !globalInputStatus.MouseInputBlocked)
+        if(inputStatus.MouseInputBlockedObject == nullptr)
         {
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(this);
 
@@ -356,7 +356,7 @@ namespace ssGUI
             
             //Input blocking
             if(mouseInWindowBoundX && mouseInWindowBoundY)
-                windowInputStatus.MouseInputBlocked = true;
+                inputStatus.MouseInputBlockedObject = this;
 
             //If mouse click on this, set focus
             if(mouseInWindowBoundX && mouseInWindowBoundY &&
@@ -381,7 +381,7 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(false, inputInterface, globalInputStatus, windowInputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, inputStatus, mainWindow);
         }
 
         FUNC_DEBUG_EXIT();

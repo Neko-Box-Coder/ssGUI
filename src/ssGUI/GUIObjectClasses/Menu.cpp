@@ -14,8 +14,8 @@ namespace ssGUI
         MenuTarget = other.MenuTarget;
     }
 
-    void Menu::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Menu::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                            ssGUI::GUIObject* mainWindow)
     {
         if(!IsFocused())
         {
@@ -222,16 +222,19 @@ namespace ssGUI
                             curSubMenu->SpawnMenu(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0));
                         else if(curSubMenu->CanForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0), ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT))
                             curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0), ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT);
+                        
                         //Check Bottom right corner
                         else if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + btn->GetSize()) == ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT)
                             curSubMenu->SpawnMenu(btn->GetGlobalPosition() + btn->GetSize());
                         else if(curSubMenu->CanForceSpawnMenu(btn->GetGlobalPosition() + btn->GetSize(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT))
                             curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + btn->GetSize(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
+                        
                         //Check Top left corner
                         else if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition()) == ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT)
                             curSubMenu->SpawnMenu(btn->GetGlobalPosition());
                         else if(curSubMenu->CanForceSpawnMenu(btn->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT))
                             curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT);
+                        
                         //Check Bottom left corner
                         else if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + glm::vec2(0, btn->GetSize().y)) == ssGUI::Enums::MenuSpawnDirection::TOP_LEFT)
                             curSubMenu->SpawnMenu(btn->GetGlobalPosition() + glm::vec2(0, btn->GetSize().y));

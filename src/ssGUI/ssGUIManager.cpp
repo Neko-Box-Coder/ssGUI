@@ -303,25 +303,13 @@ namespace ssGUI
             childrenEvaluated.push(false);
 
             ssGUI::GUIObject* parentWindowP = nullptr;
-            ssGUI::InputStatus globalInputStatus;
-            ssGUI::InputStatus windowInputStatus;
+            ssGUI::InputStatus inputStatus;
 
             while (!objToUpdate.empty())
             {
                 //Update object if there's no children or the children are already evaluated
                 if(objToUpdate.top()->GetChildrenCount() == 0 || childrenEvaluated.top() == true)
-                {                    
-                    //Check if parent window is different, if so reset block window input
-                    ssGUI::GUIObject* currentParentP = FindParentWindowP(*objToUpdate.top());
-                    if(currentParentP != parentWindowP)
-                    {
-                        parentWindowP = currentParentP;
-                        windowInputStatus.KeyInputBlocked = false;
-                        windowInputStatus.MouseInputBlocked = false;
-                        windowInputStatus.DockingBlocked = false;
-                    }
-                    
-                    //objToUpdate.top()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
+                {                                        
                     updateQueue.push(objToUpdate.top());
                     objToUpdate.pop();
                     childrenEvaluated.pop();
@@ -348,7 +336,7 @@ namespace ssGUI
             {
                 if(!updateQueue.front()->Internal_IsDeleted())
                 {
-                    updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), globalInputStatus, windowInputStatus, mainWindow);
+                    updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), inputStatus, mainWindow);
                     
                     #if USE_DEBUG
                     DEBUG_LINE("object "<<updateQueue.front()<<" checking validity");

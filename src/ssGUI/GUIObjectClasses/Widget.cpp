@@ -29,11 +29,11 @@ namespace ssGUI
         DrawingProperties.push_back(ssGUI::DrawingProperty());
     }
 
-    void Widget::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Widget::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                            ssGUI::GUIObject* mainWindow)
     {
         //Mouse Input blocking
-        if(windowInputStatus.MouseInputBlocked || globalInputStatus.MouseInputBlocked)
+        if(inputStatus.MouseInputBlockedObject != nullptr)
             return;
 
         //Mouse Input blocking
@@ -51,7 +51,7 @@ namespace ssGUI
             
             //Input blocking
             if(mouseInWindowBoundX && mouseInWindowBoundY)
-                windowInputStatus.MouseInputBlocked = true;
+                inputStatus.MouseInputBlockedObject = this;
 
             //If mouse click on this, set focus
             if(mouseInWindowBoundX && mouseInWindowBoundY &&

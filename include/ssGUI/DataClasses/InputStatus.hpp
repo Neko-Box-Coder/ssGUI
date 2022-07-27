@@ -4,19 +4,20 @@
 //namespace: ssGUI
 namespace ssGUI
 {
+    class GUIObject;
     //class: ssGUI::InputStatus
     class InputStatus
     {
         public:
-            //var: MouseInputBlocked
-            bool MouseInputBlocked = false;
+            //var: MouseInputBlockedObject
+            ssGUI::GUIObject* MouseInputBlockedObject = nullptr;
             
-            //var: KeyInputBlocked
-            bool KeyInputBlocked = false;
+            //var: KeyInputBlockedObject
+            ssGUI::GUIObject* KeyInputBlockedObject = nullptr;
 
-            //var: DockingBlocked
+            //var: DockingBlockedObject
             //Blocks docking of a window if there's another GUI Object on top of it.
-            bool DockingBlocked = false;
+            ssGUI::GUIObject* DockingBlockedObject = nullptr;
     };
 }
 

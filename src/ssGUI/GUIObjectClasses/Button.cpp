@@ -45,10 +45,10 @@ namespace ssGUI
             GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
-    void Button::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& globalInputStatus, 
-                ssGUI::InputStatus& windowInputStatus, ssGUI::GUIObject* mainWindow)
+    void Button::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+                            ssGUI::GUIObject* mainWindow)
     {
-        if(!globalInputStatus.MouseInputBlocked && !windowInputStatus.MouseInputBlocked && IsBlockInput())
+        if(inputStatus.MouseInputBlockedObject == nullptr && IsBlockInput())
         {
             //On mouse down
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
@@ -58,7 +58,7 @@ namespace ssGUI
                 if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
-                    globalInputStatus.MouseInputBlocked = true;
+                    inputStatus.MouseInputBlockedObject = this;
                     if(IsInteractable())
                     {
                         SetFocus(true);
@@ -72,7 +72,7 @@ namespace ssGUI
                     (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK ||
                     GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
             {
-                globalInputStatus.MouseInputBlocked = true;
+                inputStatus.MouseInputBlockedObject = this;
                 if(IsInteractable())
                 {
                     SetFocus(true);
@@ -87,7 +87,7 @@ namespace ssGUI
                     currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
             {
-                globalInputStatus.MouseInputBlocked = true;
+                inputStatus.MouseInputBlockedObject = this;
                 if(IsInteractable())
                 {
                     SetFocus(true);
@@ -101,7 +101,7 @@ namespace ssGUI
                 if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
-                    globalInputStatus.MouseInputBlocked = true;
+                    inputStatus.MouseInputBlockedObject = this;
                     if(IsInteractable())
                     {
                         inputInterface->SetCursorType(ssGUI::Enums::CursorType::HAND);
