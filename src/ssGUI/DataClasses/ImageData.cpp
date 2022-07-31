@@ -47,6 +47,11 @@ namespace ssGUI
         return BackendImage->GetSize();
     }
 
+    const void* ImageData::GetPixelPtr() const
+    {
+        return BackendImage->GetPixelPtr();
+    }
+
     ImageData* ImageData::Clone()
     {   
         return new ImageData(*this);

@@ -287,30 +287,34 @@ namespace ssGUI
             //Returns true if the text is overflowing the text widget
             virtual bool IsOverflow() const;
             
-            //function: SetFontSize
-            //Sets the size of the font being used (when there's no override character details)
-            virtual void SetFontSize(float size);
+            //function: SetNewCharacterFontSize
+            //Sets the size of the font being used for new characters
+            virtual void SetNewCharacterFontSize(float size);
             
-            //function: GetFontSize
-            //Returns the size of the font being used (when there's no override character details)
-            virtual float GetFontSize() const;
+            //function: GetNewCharacterFontSize
+            //Returns the size of the font being used for new characters
+            virtual float GetNewCharacterFontSize() const;
 
-            //function: SetTextColor
-            //Sets the text color being used (when there's no override character details)
-            virtual void SetTextColor(glm::u8vec4 color);
+            //function: SetNewCharacterColor
+            //Sets the text color being used for new characters
+            virtual void SetNewCharacterColor(glm::u8vec4 color);
 
-            //function: GetTextColor
-            //Gets the text color being used (when there's no override character details)
-            virtual glm::u8vec4 GetTextColor() const;
+            //function: GetNewCharacterColor
+            //Gets the text color being used for new characters
+            virtual glm::u8vec4 GetNewCharacterColor() const;
 
-            //function: SetTextUnderlined
-            //Sets if text is underlined (when there's no override character details)
-            virtual void SetTextUnderlined(bool underline);
+            //function: SetNewCharacterUnderlined
+            //Sets if text is underlined for new characters
+            virtual void SetNewCharacterUnderlined(bool underline);
 
-            //function: IsTextUnderlined
-            //Returns if text is underlined (when there's no override character details)
-            virtual bool IsTextUnderlined() const;
+            //function: IsNewCharacterUnderlined
+            //Returns if text is underlined for new characters
+            virtual bool IsNewCharacterUnderlined() const;
             
+            //function: ApplyNewCharacterSettingsToText
+            //Applies the new character settings (color, font size, underline, etc...) to all characters
+            virtual void ApplyNewCharacterSettingsToText();
+
             //function: SetMultilineAllowed
             //If true, newlines will be allowed
             virtual void SetMultilineAllowed(bool multiline);

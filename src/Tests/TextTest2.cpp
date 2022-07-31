@@ -25,7 +25,7 @@ int main()
     text.AddFont(&font);
     text.AddFont(&font2);
     // ssGUI::Text::AddDefaultFont(&font);
-    text.SetFontSize(20);
+    text.SetNewCharacterFontSize(20);
     text.SetWrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING);
     // text.SetWrappingMode(ssGUI::Enums::TextWrapping::CHARACTER_WRAPPING);
     // text.SetText(L"これは非常に長い日本語の文章です~~~~~");

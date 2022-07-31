@@ -347,11 +347,11 @@ namespace ssGUI
             baseCD = CurrentCharactersDetails[insertIndex + 1];
         else
         {
-            baseCD.CharacterColor = GetTextColor();
+            baseCD.CharacterColor = GetNewCharacterColor();
             baseCD.DefaultFontIndex = GetFontsCount() == 0 ? 0 : -1;
             baseCD.FontIndex = GetFontsCount() == 0 ? -1 : 0;
-            baseCD.FontSize = GetFontSize();
-            baseCD.Underlined = IsTextUnderlined();
+            baseCD.FontSize = GetNewCharacterFontSize();
+            baseCD.Underlined = IsNewCharacterUnderlined();
         }
 
         int charCount = 0;
@@ -653,7 +653,7 @@ namespace ssGUI
         glm::vec2 drawPos = GetGlobalPosition();
         float height = 0;
         float caretWidth = GetEndSelectionIndex() < 0 || GetEndSelectionIndex() >= CurrentCharactersDetails.Size() ? 
-            GetFontSize() / 15.f : 
+            GetNewCharacterFontSize() / 15.f : 
             CurrentCharactersDetails[GetEndSelectionIndex()].FontSize / 15.f;
 
         if(GetEndSelectionIndex() >= 0 && lastValidIndex >= 0)
@@ -780,7 +780,7 @@ namespace ssGUI
                 return;
             }
 
-            height = fontInterface->GetLineSpacing(GetFontSize()) + GetLineSpace();
+            height = fontInterface->GetLineSpacing(GetNewCharacterFontSize()) + GetLineSpace();
             
             switch(GetHorizontalAlignment()) 
             {
@@ -804,7 +804,7 @@ namespace ssGUI
                     drawPos.y += GetSize().y / 2 - height / 2;
                     break;
                 case ssGUI::Enums::TextAlignmentVertical::BOTTOM:
-                    drawPos.y += GetSize().y - GetFontSize() - GetVerticalPadding();
+                    drawPos.y += GetSize().y - GetNewCharacterFontSize() - GetVerticalPadding();
                     break;
             }
 

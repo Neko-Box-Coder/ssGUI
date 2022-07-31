@@ -39,9 +39,9 @@ namespace ssGUI
         CharactersRenderInfos = other.CharactersRenderInfos;
         ProcessedCharacterDetails = other.ProcessedCharacterDetails;
         Overflow = other.Overflow;
-        FontSize = other.GetFontSize();
-        TextColor = other.GetTextColor();
-        TextUnderline = other.IsTextUnderlined();
+        FontSize = other.GetNewCharacterFontSize();
+        TextColor = other.GetNewCharacterColor();
+        TextUnderline = other.IsNewCharacterUnderlined();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
         HorizontalAlignment = other.GetHorizontalAlignment();
@@ -72,9 +72,9 @@ namespace ssGUI
         {
             ssGUI::CharacterDetails detail;
             detail.Character = s[i];
-            detail.FontSize = GetFontSize();
-            detail.CharacterColor = GetTextColor();
-            detail.Underlined = IsTextUnderlined();
+            detail.FontSize = GetNewCharacterFontSize();
+            detail.CharacterColor = GetNewCharacterColor();
+            detail.Underlined = IsNewCharacterUnderlined();
             details.push_back(detail);
         }
     }
@@ -1460,39 +1460,48 @@ namespace ssGUI
         return Overflow;
     }
 
-    void Text::SetFontSize(float size)
+    void Text::SetNewCharacterFontSize(float size)
     {
         FontSize = size;
-        RecalculateTextNeeded = true;
-        RedrawObject();
     }
 
-    float Text::GetFontSize() const
+    float Text::GetNewCharacterFontSize() const
     {
         return FontSize;
     }
 
-    void Text::SetTextColor(glm::u8vec4 color)
+    void Text::SetNewCharacterColor(glm::u8vec4 color)
     {
         TextColor = color;
-        RecalculateTextNeeded = true;   //Setting text color requires reconstruction of character details
-        RedrawObject();
     }
 
-    glm::u8vec4 Text::GetTextColor() const
+    glm::u8vec4 Text::GetNewCharacterColor() const
     {
         return TextColor;
     } 
 
-    void Text::SetTextUnderlined(bool underline)
+    void Text::SetNewCharacterUnderlined(bool underline)
     {
         TextUnderline = underline;
-        RedrawObject();
     }
 
-    bool Text::IsTextUnderlined() const
+    bool Text::IsNewCharacterUnderlined() const
     {
         return TextUnderline;
+    }
+
+    void Text::ApplyNewCharacterSettingsToText()
+    {
+        RecalculateTextNeeded = true;
+        
+        for(size_t i = 0; i < CurrentCharactersDetails.Size(); i++)
+        {
+            CurrentCharactersDetails[i].FontSize = GetNewCharacterFontSize();
+            CurrentCharactersDetails[i].CharacterColor = GetNewCharacterColor();
+            CurrentCharactersDetails[i].Underlined = IsNewCharacterUnderlined();
+        }
+        
+        RedrawObject();
     }
 
     void Text::SetMultilineAllowed(bool multiline)
