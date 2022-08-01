@@ -834,60 +834,67 @@ namespace ssGUI
     void TextField::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {       
-        std::wstring textInput = inputInterface->GetTextInput();
-        bool refreshBlinkTimer = false;
         bool blockKeys = false;
-
-        //Holding ctrl to enable word mode
-        bool wordMode = inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
-                        inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL);
-
-        //Pasting
-        if(inputStatus.KeyInputBlockedObject == nullptr && 
-            inputInterface->ClipbaordHasText() && wordMode && 
-            inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V) &&
-            !inputInterface->GetLastKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V))
+        bool refreshBlinkTimer = false;
+        bool wordMode = false;
+        if(IsInteractable() && IsBlockInput())
         {
-            std::wstring clipboardStr;
-            inputInterface->GetClipboardText(clipboardStr);
-            textInput += clipboardStr;
-        }
+            std::wstring textInput = inputInterface->GetTextInput();
 
-        //Text input
-        //TODO: Put textInput to a CharacterDetails vector and insert the whole vector instead of 1 by 1
-        if(inputStatus.KeyInputBlockedObject == nullptr && IsFocused() && !textInput.empty())
-        {
-            blockKeys = true;
-            TextInputUpdate(textInput, refreshBlinkTimer, wordMode);
+            //Holding ctrl to enable word mode
+            wordMode = inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
+                            inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL);
+
+            //Pasting
+            if(inputStatus.KeyInputBlockedObject == nullptr && 
+                inputInterface->ClipbaordHasText() && wordMode && 
+                inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V) &&
+                !inputInterface->GetLastKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V))
+            {
+                std::wstring clipboardStr;
+                inputInterface->GetClipboardText(clipboardStr);
+                textInput += clipboardStr;
+            }
+
+            //Text input
+            //TODO: Put textInput to a CharacterDetails vector and insert the whole vector instead of 1 by 1
+            if(inputStatus.KeyInputBlockedObject == nullptr && IsFocused() && !textInput.empty())
+            {
+                blockKeys = true;
+                TextInputUpdate(textInput, refreshBlinkTimer, wordMode);
+            }
         }
 
         ssGUI::Text::MainLogic(inputInterface, inputStatus, mainWindow);
         
-        //Caret navigation
-        if(inputStatus.KeyInputBlockedObject == nullptr)
-            CaretNavigationUpdate(inputInterface, refreshBlinkTimer, blockKeys, wordMode);
-
-        //Blinking caret
-        if(refreshBlinkTimer)
-            LastBlinkTime = inputInterface->GetElapsedTime() - BlinkDuration;
-
-        uint64_t blinkDiff = inputInterface->GetElapsedTime() - LastBlinkTime;
-        bool curState = BlinkCaret;
-        if(blinkDiff < BlinkDuration)
-            BlinkCaret = true;
-        else if(blinkDiff < BlinkDuration * 2)
-            BlinkCaret = false;
-        else
+        if(IsInteractable())
         {
-            LastBlinkTime = inputInterface->GetElapsedTime();
-            BlinkCaret = true;
+            //Caret navigation
+            if(inputStatus.KeyInputBlockedObject == nullptr)
+                CaretNavigationUpdate(inputInterface, refreshBlinkTimer, blockKeys, wordMode);
+
+            //Blinking caret
+            if(refreshBlinkTimer)
+                LastBlinkTime = inputInterface->GetElapsedTime() - BlinkDuration;
+
+            uint64_t blinkDiff = inputInterface->GetElapsedTime() - LastBlinkTime;
+            bool curState = BlinkCaret;
+            if(blinkDiff < BlinkDuration)
+                BlinkCaret = true;
+            else if(blinkDiff < BlinkDuration * 2)
+                BlinkCaret = false;
+            else
+            {
+                LastBlinkTime = inputInterface->GetElapsedTime();
+                BlinkCaret = true;
+            }
+
+            if(BlinkCaret != curState)
+                RedrawObject();
+
+            if(blockKeys)
+                inputStatus.KeyInputBlockedObject = this;
         }
-
-        if(BlinkCaret != curState)
-            RedrawObject();
-
-        if(blockKeys)
-            inputStatus.KeyInputBlockedObject = this;
     }
 
     TextField::TextField() : LastBlinkTime(0), BlinkDuration(500), BlinkCaret(false), LastArrowNavStartTime(0), ArrowNavPauseDuration(500), 
