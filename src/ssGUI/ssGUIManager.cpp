@@ -3,6 +3,8 @@
 
 //Debug
 #include "ssGUI/Extensions/Layout.hpp"
+#include <thread>
+#include <chrono>
 
 
 
@@ -10,9 +12,25 @@ namespace ssGUI
 {
     void ssGUIManager::Internal_Update()
     {        
-        //Render to allow Main Window to clear the window with background color
-        Render();
-        
+        //Render to allow Main Window to clear the window with background color first
+        //Render();
+        for(auto mainWindow : MainWindowPList)
+        {
+            if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+            {
+                DEBUG_LINE("Invalid object type added to gui manager");
+                continue;
+            }
+
+            if(!mainWindow->IsVisible())
+                continue;
+
+            ssGUI::MainWindow* currentMainWindowP = dynamic_cast<ssGUI::MainWindow*>(mainWindow);
+
+            currentMainWindowP->Internal_Draw();
+            currentMainWindowP->ClearBackBuffer();
+        }
+
         while (!MainWindowPList.empty())
         {
             PollInputs();
@@ -113,6 +131,7 @@ namespace ssGUI
             #if REFRESH_CONSOLE
                 Clear();
             #endif
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     }
     

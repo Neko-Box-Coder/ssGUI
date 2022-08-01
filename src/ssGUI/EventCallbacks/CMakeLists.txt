@@ -18,4 +18,6 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/FocusedEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/FocusLostEventCallback.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/ItemSelectedEventCallback.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/SliderValueChangedEventCallback.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/SliderValueFinishedChangingEventCallback.cpp"
                     )
