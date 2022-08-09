@@ -137,4 +137,4 @@ SFML:
 _
 
 ## What's the progress status of the current library
-https://neko-box-coder.github.io/ssGUI/WekanBoard/ssGUI (Last Updated: 14/05/2022)
+https://ssGUI.nekoboxcoder.dev/b/ckQsLZToXDPFzsAzx/ssgui
