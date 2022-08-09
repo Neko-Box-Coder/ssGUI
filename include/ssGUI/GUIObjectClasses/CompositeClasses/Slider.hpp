@@ -25,6 +25,7 @@ namespace ssGUI
         float SnapInterval;
         float ScrollInternal;
         float KeyInputInterval;
+        float EndPadding;
 
         glm::vec2 KnobGlobalPosition;
         float CursorKnobOffset;
@@ -42,10 +43,10 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Slider::Slider() : Reverse(false), FillColor(glm::u8vec4(0, 0, 0, 0)), KnobObject(-1), KnobSize(15), SliderValue(0.5), Vertical(false),
-                        SnapInterval(0), ScrollInternal(0.05), KeyInputInterval(0.05), KnobGlobalPosition(glm::vec2()), CursorKnobOffset(0),
-                        LastSliderDragging(false), SliderDragging(false), LastGlobalPosition(glm::vec2()), LastSize(glm::vec2()), 
-                        LastSliderValue(SliderValue), LastValueChanged(false), LastKeyNavStartTime(0), KeyNavPauseDuration(500), 
-                        LastKeyNavTime(0), KeyNavInterval(20)
+                        SnapInterval(0), ScrollInternal(0.05), KeyInputInterval(0.05), EndPadding(5), KnobGlobalPosition(glm::vec2()), 
+                        CursorKnobOffset(0), LastSliderDragging(false), SliderDragging(false), LastGlobalPosition(glm::vec2()), 
+                        LastSize(glm::vec2()), LastSliderValue(SliderValue), LastValueChanged(false), LastKeyNavStartTime(0), 
+                        KeyNavPauseDuration(500), LastKeyNavTime(0), KeyNavInterval(20)
     {
         SetMinSize(glm::vec2(5, 5));
         SetSize(glm::vec2(300, 10));
@@ -123,6 +124,7 @@ namespace ssGUI
             float SnapInterval;
             float ScrollInternal;
             float KeyInputInterval;
+            float EndPadding;
 
             glm::vec2 KnobGlobalPosition;
             float CursorKnobOffset;
@@ -196,6 +198,14 @@ namespace ssGUI
             //Equivalent to GetSize() for the knob object.
             //This can return local knob size if no knob object is assigned.
             virtual float GetKnobSize() const;
+
+            //function: SetEndPadding
+            //Sets the number of pixels padding for both ends of the slider
+            virtual void SetEndPadding(float padding);
+
+            //function: GetEndPadding
+            //Gets the number of pixels padding for both ends of the slider
+            virtual float GetEndPadding() const;
 
             //function: SetSliderValue
             //Sets the value of the slider, ranging from 0 to 1.

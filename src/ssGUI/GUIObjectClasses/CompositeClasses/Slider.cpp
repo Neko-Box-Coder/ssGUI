@@ -50,8 +50,8 @@ namespace ssGUI
 
         if(!Vertical)
         {
-            float leftX = GetGlobalPosition().x;
-            float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x;
+            float leftX = GetGlobalPosition().x + GetEndPadding();
+            float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x - GetEndPadding();
 
             KnobGlobalPosition = glm::vec2
             (
@@ -61,8 +61,8 @@ namespace ssGUI
         }
         else
         {
-            float topY = GetGlobalPosition().y;
-            float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y;
+            float topY = GetGlobalPosition().y + GetEndPadding();
+            float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y - GetEndPadding();
             
             KnobGlobalPosition = glm::vec2
             (
@@ -84,8 +84,8 @@ namespace ssGUI
 
         if(!IsVertical())
         {
-            float leftX = GetGlobalPosition().x;
-            float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x;
+            float leftX = GetGlobalPosition().x + GetEndPadding();
+            float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x - GetEndPadding();
 
             SetSliderValue((KnobGlobalPosition.x - leftX) / (rightX - leftX));
             if(IsReverse())
@@ -93,8 +93,8 @@ namespace ssGUI
         }
         else
         {
-            float topY = GetGlobalPosition().y;
-            float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y;
+            float topY = GetGlobalPosition().y + GetEndPadding();
+            float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y - GetEndPadding();
 
             SetSliderValue((botY - KnobGlobalPosition.y) / (botY - topY));
             if(IsReverse())
@@ -204,8 +204,8 @@ namespace ssGUI
                     inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).y - CursorKnobOffset
                 );
 
-                float topY = GetGlobalPosition().y;
-                float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y;
+                float topY = GetGlobalPosition().y + GetEndPadding();
+                float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y - GetEndPadding();
 
                 //Do bound checks
                 if(KnobGlobalPosition.y < topY)
@@ -221,8 +221,8 @@ namespace ssGUI
                     GetGlobalPosition().y + (GetSize().y - curKnobSize.y) * 0.5
                 );
 
-                float leftX = GetGlobalPosition().x;
-                float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x;
+                float leftX = GetGlobalPosition().x + GetEndPadding();
+                float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x - GetEndPadding();
 
                 //Do bound checks
                 if(KnobGlobalPosition.x < leftX)
@@ -276,8 +276,8 @@ namespace ssGUI
                         SetSliderValue
                         ( 
                             IsVertical() ? 
-                            (mousePos.y - GetGlobalPosition().y) / (GetSize().y) : 
-                            (mousePos.x - GetGlobalPosition().x) / (GetSize().x)
+                            (mousePos.y - GetGlobalPosition().y - GetEndPadding()) / (GetSize().y - GetEndPadding() * 2) : 
+                            (mousePos.x - GetGlobalPosition().x - GetEndPadding()) / (GetSize().x - GetEndPadding() * 2)
                         );
 
                         if(IsReverse())
@@ -409,10 +409,10 @@ namespace ssGUI
     const std::string Slider::ListenerKey = "Slider";
     
     Slider::Slider() : Reverse(false), FillColor(glm::u8vec4(0, 0, 0, 0)), KnobObject(-1), KnobSize(15), SliderValue(0.5), Vertical(false),
-                        SnapInterval(0), ScrollInternal(0.05), KeyInputInterval(0.05), KnobGlobalPosition(glm::vec2()), CursorKnobOffset(0),
-                        LastSliderDragging(false), SliderDragging(false), LastGlobalPosition(glm::vec2()), LastSize(glm::vec2()), 
-                        LastSliderValue(SliderValue), LastValueChanged(false), LastKeyNavStartTime(0), KeyNavPauseDuration(500), 
-                        LastKeyNavTime(0), KeyNavInterval(20)
+                        SnapInterval(0), ScrollInternal(0.05), KeyInputInterval(0.05), EndPadding(5), KnobGlobalPosition(glm::vec2()), 
+                        CursorKnobOffset(0), LastSliderDragging(false), SliderDragging(false), LastGlobalPosition(glm::vec2()), 
+                        LastSize(glm::vec2()), LastSliderValue(SliderValue), LastValueChanged(false), LastKeyNavStartTime(0), 
+                        KeyNavPauseDuration(500), LastKeyNavTime(0), KeyNavInterval(20)
     {
         SetMinSize(glm::vec2(5, 5));
         SetSize(glm::vec2(300, 10));
@@ -537,6 +537,16 @@ namespace ssGUI
             return IsVertical() ? GetKnobObject()->GetSize().y : GetKnobObject()->GetSize().x;
 
         return KnobSize;
+    }
+
+    void Slider::SetEndPadding(float padding)
+    {
+        EndPadding = padding;
+    }
+
+    float Slider::GetEndPadding() const
+    {
+        return EndPadding;
     }
 
     void Slider::SetSliderValue(float sliderValue)
