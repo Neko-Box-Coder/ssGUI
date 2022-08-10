@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 
+// https://stackoverflow.com/questions/16683146/can-macros-be-overloaded-by-number-of-arguments
 // Overloadable Marco function =======================================================================
 #define CAT( A, B ) A ## B
 #define SELECT( NAME, NUM ) CAT( NAME ## _, NUM )
