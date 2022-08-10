@@ -276,7 +276,7 @@ namespace ssGUI
                         SetSliderValue
                         ( 
                             IsVertical() ? 
-                            (mousePos.y - GetGlobalPosition().y - GetEndPadding()) / (GetSize().y - GetEndPadding() * 2) : 
+                            1 - (mousePos.y - GetGlobalPosition().y - GetEndPadding()) / (GetSize().y - GetEndPadding() * 2) : 
                             (mousePos.x - GetGlobalPosition().x - GetEndPadding()) / (GetSize().x - GetEndPadding() * 2)
                         );
 
@@ -569,6 +569,14 @@ namespace ssGUI
         Vertical = vertical;
         float temp = GetSize().x;
         SetSize(glm::vec2(GetSize().y, temp));
+
+        if(KnobObject != -1 && CurrentObjectsReferences.GetObjectReference(KnobObject) != nullptr)
+        {
+            ssGUI::GUIObject* knobObj = CurrentObjectsReferences.GetObjectReference(KnobObject);
+            temp = knobObj->GetSize().x;
+            knobObj->SetSize(glm::vec2(knobObj->GetSize().y, temp));
+        }
+
         RedrawObject();
     }
 
