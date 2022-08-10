@@ -40,6 +40,7 @@ namespace ssGUI::Enums
     DROPDOWN        - Dropdown object type
     TEXT_FIELD      - Text field object type
     SLIDER          - Slider object type
+    SCROLLBAR       - Scrollbar object type
     */
     enum class GUIObjectType
     {
@@ -56,7 +57,8 @@ namespace ssGUI::Enums
         MENU_ITEM =         1 << 10,
         DROPDOWN =          1 << 11,
         TEXT_FIELD =        1 << 12,
-        SLIDER =            1 << 13
+        SLIDER =            1 << 13,
+        SCROLLBAR =         1 << 14
     };
 
     inline ssGUI::Enums::GUIObjectType operator|(ssGUI::Enums::GUIObjectType a, ssGUI::Enums::GUIObjectType b)

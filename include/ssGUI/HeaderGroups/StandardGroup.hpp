@@ -17,6 +17,7 @@
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Slider.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/Scrollbar.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 #include "ssGUI/ssGUIManager.hpp"
