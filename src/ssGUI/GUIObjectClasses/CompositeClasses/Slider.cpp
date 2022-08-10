@@ -409,7 +409,7 @@ namespace ssGUI
     const std::string Slider::ListenerKey = "Slider";
     
     Slider::Slider() : Reverse(false), FillColor(glm::u8vec4(0, 0, 0, 0)), KnobObject(-1), KnobSize(15), SliderValue(0.5), Vertical(false),
-                        SnapInterval(0), ScrollInternal(0.05), KeyInputInterval(0.05), EndPadding(5), KnobGlobalPosition(glm::vec2()), 
+                        SnapInterval(0), ScrollInternal(0.05), KeyInputInterval(0.05), EndPadding(0), KnobGlobalPosition(glm::vec2()), 
                         CursorKnobOffset(0), LastSliderDragging(false), SliderDragging(false), LastGlobalPosition(glm::vec2()), 
                         LastSize(glm::vec2()), LastSliderValue(SliderValue), LastValueChanged(false), LastKeyNavStartTime(0), 
                         KeyNavPauseDuration(500), LastKeyNavTime(0), KeyNavInterval(20)
