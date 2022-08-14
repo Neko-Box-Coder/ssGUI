@@ -81,7 +81,7 @@ int main()
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
 
-    guiManager.AddPreUpdateEventListener
+    guiManager.AddPreGUIUpdateEventListener
     (
         [&]()
         {

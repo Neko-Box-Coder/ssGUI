@@ -30,7 +30,7 @@ namespace ssGUI
     manager.StartRunning();
     =========================================
 
-    You can subscribe to the update function (called every frame) by adding a listener to <AddPostUpdateEventListener>
+    You can subscribe to the update function (called every frame) by adding a listener to <AddPostGUIUpdateEventListener>
 
     You can also get the current instance of ssGUIManager without having to get a reference of it.
     > ssGUIManager* currentInstance = ssGUIManager::GetInstance();
@@ -43,17 +43,17 @@ namespace ssGUI
             std::list<ssGUI::GUIObject*> MainWindowPList;      //TODO : Turn this into ssGUI::MainWindow* instead maybe
             //std::list<ssGUI::GUIObject*> GUIObjectPList;
 
-            std::vector<std::function<void()>> PreUpdateEventListeners;
-            std::vector<bool> PreUpdateEventListenersValid;
-            std::queue<int> PreUpdateEventListenersNextFreeIndices;
+            std::vector<std::function<void()>> PreGUIUpdateEventListeners;
+            std::vector<bool> PreGUIUpdateEventListenersValid;
+            std::queue<int> PreGUIUpdateEventListenersNextFreeIndices;
 
-            std::vector<std::function<void()>> PostUpdateEventListeners;
-            std::vector<bool> PostUpdateEventListenersValid;
-            std::queue<int> PostUpdateEventListenersNextFreeIndices;
+            std::vector<std::function<void()>> PostGUIUpdateEventListeners;
+            std::vector<bool> PostGUIUpdateEventListenersValid;
+            std::queue<int> PostGUIUpdateEventListenersNextFreeIndices;
 
-            std::vector<std::function<void()>> PostRenderingUpdateEventListeners;
-            std::vector<bool> PostRenderingUpdateEventListenersValid;
-            std::queue<int> PostRenderingUpdateEventListenersNextFreeIndices;
+            std::vector<std::function<void()>> PostGUIRenderingUpdateEventListeners;
+            std::vector<bool> PostGUIRenderingUpdateEventListenersValid;
+            std::queue<int> PostGUIRenderingUpdateEventListenersNextFreeIndices;
 
             std::vector<std::function<void( std::list<ssGUI::GUIObject*>& ) >> OnCustomRenderEventListeners;
             std::vector<bool> OnCustomRenderEventListenersValid;
@@ -103,23 +103,23 @@ namespace ssGUI
             //function: GetInstance
             static ssGUI::ssGUIManager* GetInstance();
 
-            //function: AddPreUpdateEventListener
-            int AddPreUpdateEventListener(std::function<void()> event);
+            //function: AddPreGUIUpdateEventListener
+            int AddPreGUIUpdateEventListener(std::function<void()> event);
 
-            //function: RemovePreUpdateEventListener
-            void RemovePreUpdateEventListener(int index);
+            //function: RemovePreGUIUpdateEventListener
+            void RemovePreGUIUpdateEventListener(int index);
 
-            //function: AddPostUpdateEventListener
-            int AddPostUpdateEventListener(std::function<void()> event);
+            //function: AddPostGUIUpdateEventListener
+            int AddPostGUIUpdateEventListener(std::function<void()> event);
 
-            //function: RemovePostUpdateEventListener
-            void RemovePostUpdateEventListener(int index);
+            //function: RemovePostGUIUpdateEventListener
+            void RemovePostGUIUpdateEventListener(int index);
 
-            //function: AddPostRenderingUpdateEventListener
-            int AddPostRenderingUpdateEventListener(std::function<void()> event);
+            //function: AddPostGUIRenderingUpdateEventListener
+            int AddPostGUIRenderingUpdateEventListener(std::function<void()> event);
 
-            //function: RemovePostRenderingUpdateEventListener
-            void RemovePostRenderingUpdateEventListener(int index);
+            //function: RemovePostGUIRenderingUpdateEventListener
+            void RemovePostGUIRenderingUpdateEventListener(int index);
 
             //function: AddOnCustomRenderEventListener
             int AddOnCustomRenderEventListener(std::function<void( std::list<ssGUI::GUIObject*>& ) > event);

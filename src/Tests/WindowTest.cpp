@@ -14,7 +14,7 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddPostUpdateEventListener
+    guiManager.AddPostGUIUpdateEventListener
     (
         [&]()
         {

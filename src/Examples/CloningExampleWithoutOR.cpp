@@ -43,7 +43,7 @@ int main()
     ssGUI::ssGUIManager guiManager;
 
     //When the user presses Enter, clone the window
-    guiManager.AddPostUpdateEventListener
+    guiManager.AddPostGUIUpdateEventListener
     (
         [&]()
         {
