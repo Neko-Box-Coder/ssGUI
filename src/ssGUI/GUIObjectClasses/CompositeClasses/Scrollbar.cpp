@@ -61,6 +61,7 @@ namespace ssGUI
     void Scrollbar::SetScrollbarSize(float size)
     {
         ScrollbarSize = size;
+        UpdateKnobSize();
     }
 
     float Scrollbar::GetScrollbarSize() const
