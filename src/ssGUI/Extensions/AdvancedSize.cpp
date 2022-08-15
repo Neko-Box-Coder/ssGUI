@@ -4,7 +4,7 @@ namespace ssGUI::Extensions
 {
     AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
                                     HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
-                                    VerticalPercentageValue(0.2), OverrideDefaultSize(true)
+                                    VerticalPercentageValue(0.2), LastParentSize()
     {}
 
     AdvancedSize::~AdvancedSize()
@@ -20,6 +20,7 @@ namespace ssGUI::Extensions
         VerticalPixelValue = other.GetVerticalPixel();
         HorizontalPercentageValue = other.GetHorizontalPercentage();
         VerticalPercentageValue = other.GetVerticalPercentage();
+        LastParentSize = other.LastParentSize;
     }
 
     void AdvancedSize::ConstructRenderInfo()
@@ -104,16 +105,19 @@ namespace ssGUI::Extensions
     {
         FUNC_DEBUG_ENTRY();
         
-        //TODO : Cache if parent's size hasn't changed
-        
         //This should be done in post update
         if(isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
             FUNC_DEBUG_EXIT();
             return;
         }
-        
+                
         ssGUI::GUIObject* parent = Container->GetParent();
+        if(parent->GetSize() == LastParentSize)
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
 
         glm::vec2 finalSize;
 
@@ -135,8 +139,10 @@ namespace ssGUI::Extensions
         else
             finalSize.y = GetVerticalPixel();
 
-        //Use finalPos
+        //Use finalSize
         Container->SetSize(finalSize);
+
+        LastParentSize = parent->GetSize();
         
         FUNC_DEBUG_EXIT();
     }
@@ -169,6 +175,7 @@ namespace ssGUI::Extensions
         VerticalPixelValue = as->GetVerticalPixel();
         HorizontalPercentageValue = as->GetHorizontalPercentage();
         VerticalPercentageValue = as->GetVerticalPercentage();
+        LastParentSize = as->LastParentSize;
     }
 
     ObjectsReferences* AdvancedSize::Internal_GetObjectsReferences()

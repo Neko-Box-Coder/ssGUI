@@ -34,12 +34,12 @@ namespace ssGUI::Extensions
         float HorizontalPercentageValue;
         float VerticalPercentageValue;
 
-        bool OverrideDefaultSize;
+        glm::vec2 LastParentSize;
     =================================================================
     ============================== C++ ==============================
     AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
                                     HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
-                                    VerticalPercentageValue(0.2), OverrideDefaultSize(true)
+                                    VerticalPercentageValue(0.2), LastParentSize()
     {}
     =================================================================
     */
@@ -64,7 +64,7 @@ namespace ssGUI::Extensions
             float HorizontalPercentageValue;
             float VerticalPercentageValue;
 
-            bool OverrideDefaultSize;
+            glm::vec2 LastParentSize;
 
             AdvancedSize();
             virtual ~AdvancedSize() override;
