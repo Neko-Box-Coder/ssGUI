@@ -40,6 +40,7 @@ namespace ssGUI
 
             //Set cursor default to normal. Save last cursor so don't need to load cursor every frame
             ssGUI::Enums::CursorType lastCursor = BackendInput->GetCursorType();
+            std::string lastCustomCursorName = BackendInput->GetCurrentCustomCursorName();
             BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
 
             //Dispatch Update event
@@ -114,8 +115,11 @@ namespace ssGUI
                 DEBUG_LINE("Post Render");
             #endif
 
-            if(lastCursor != BackendInput->GetCursorType())
-                UpdateCursor();
+            if(lastCursor != BackendInput->GetCursorType() || 
+                (lastCursor == ssGUI::Enums::CursorType::CUSTOM && lastCustomCursorName != BackendInput->GetCurrentCustomCursorName()))
+            {
+                UpdateCursor();   
+            }
 
             /* Don't know that this code is for. Seems like UpdateCursor is already got this sorted
             for(auto obj : MainWindowPList)
