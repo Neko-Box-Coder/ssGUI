@@ -166,8 +166,8 @@ namespace ssGUI::Backend
 
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
                                             CurrentMouseButtons(), LastMouseButtons(), MouseScrollDelta(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
-                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursorImage(),
-                                            Hotspot()
+                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursors(),
+                                            CurrentCustomCursor()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
@@ -357,7 +357,6 @@ namespace ssGUI::Backend
             CurrentInputInfos.push_back(curInfo);
         }
 
-        //TODO: Get Mouse scroll
         FUNC_DEBUG_EXIT();
     }
 
@@ -446,157 +445,207 @@ namespace ssGUI::Backend
         return CurrentCursor;
     }
 
-    void BackendSystemInputSFML::SetCustomCursor(ssGUI::ImageData* customCursor, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    //TODO: Store the hotspot and also shouldn't be setting the cursor 
+    void BackendSystemInputSFML::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         FUNC_DEBUG_ENTRY();
-        if(customCursor == nullptr)
+        
+        //Validation
+        if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            CustomCursorImage = sf::Image();
-            FUNC_DEBUG_EXIT();
+            DEBUG_LINE("Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
             return;
         }
 
-        if(customCursor->GetSize() == cursorSize)
-            CustomCursorImage = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+        //Check if we already have the cursor
+        if(CustomCursors.find(cursorName) != CustomCursors.end() && CustomCursors[cursorName].first.getSize().x == cursorSize.x && 
+            CustomCursors[cursorName].first.getSize().y == cursorSize.y)
+        {
+            CustomCursors[cursorName].second = hotspot;
+            FUNC_DEBUG_EXIT();
+            return;
+        }
         else
-        {            
-            //Original cursor image
-            auto oriCursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+        {
+            if(customCursor->GetSize() == cursorSize)
+                CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+            else
+            {            
+                //Original cursor image
+                auto oriCursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
 
-            //temporary image pointers for resizing
-            uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
-            uint8_t* cursorPtr1 = new uint8_t[1];
-            uint8_t* cursorPtrArr[] = {cursorPtr, cursorPtr1};
+                //temporary image pointers for resizing
+                uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
+                uint8_t* cursorPtr1 = new uint8_t[1];
+                uint8_t* cursorPtrArr[] = {cursorPtr, cursorPtr1};
 
-            //Flag for indicating which pointer has just been populated
-            int populatedImg = 0;
+                //Flag for indicating which pointer has just been populated
+                int populatedImg = 0;
 
-            //Populate the first temporary image pointer
-            for(int i = 0; i < oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4; i++)
-                cursorPtr[i] = (*(oriCursorImg.getPixelsPtr() + i));
+                //Populate the first temporary image pointer
+                for(int i = 0; i < oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4; i++)
+                    cursorPtr[i] = (*(oriCursorImg.getPixelsPtr() + i));
 
-            //Record the current image size
-            glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
+                //Record the current image size
+                glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
 
-            //Resize width until the new cursor size is within 2x or 0.5x
-            while ((currentCursorSize.x > cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
-                    (currentCursorSize.x < cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
-            {
-                delete[] cursorPtrArr[(populatedImg + 1) % 2];
+                //Resize width until the new cursor size is within 2x or 0.5x
+                while ((currentCursorSize.x > cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
+                        (currentCursorSize.x < cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
+                {
+                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
+                    
+                    //Enlarging
+                    if(currentCursorSize.x > cursorSize.x)
+                    {
+                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
+
+                        ResizeBilinear
+                        (
+                            cursorPtrArr[populatedImg], 
+                            currentCursorSize.x, 
+                            currentCursorSize.y,
+                            cursorPtrArr[(populatedImg + 1) % 2],
+                            currentCursorSize.x * 2,
+                            currentCursorSize.y
+                        );
+
+                        currentCursorSize.x *= 2;
+                    }
+                    //Reducing
+                    else
+                    {
+                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
+
+                        ResizeBilinear
+                        (
+                            cursorPtrArr[populatedImg], 
+                            currentCursorSize.x, 
+                            currentCursorSize.y,
+                            cursorPtrArr[(populatedImg + 1) % 2],
+                            currentCursorSize.x * 0.5,
+                            currentCursorSize.y
+                        );
+
+                        currentCursorSize.x *= 0.5;
+                    }
+
+                    populatedImg = (populatedImg + 1) % 2;
+                }
                 
-                //Enlarging
-                if(currentCursorSize.x > cursorSize.x)
+                //Resize height until the new cursor size is within 2x or 0.5x
+                while ((currentCursorSize.y > cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
+                        (currentCursorSize.y < cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
                 {
-                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
+                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
+                    
+                    //Enlarging
+                    if(currentCursorSize.y > cursorSize.y)
+                    {
+                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
 
-                    ResizeBilinear
-                    (
-                        cursorPtrArr[populatedImg], 
-                        currentCursorSize.x, 
-                        currentCursorSize.y,
-                        cursorPtrArr[(populatedImg + 1) % 2],
-                        currentCursorSize.x * 2,
-                        currentCursorSize.y
-                    );
+                        ResizeBilinear
+                        (
+                            cursorPtrArr[populatedImg], 
+                            currentCursorSize.x, 
+                            currentCursorSize.y,
+                            cursorPtrArr[(populatedImg + 1) % 2],
+                            currentCursorSize.x,
+                            currentCursorSize.y * 2
+                        );
 
-                    currentCursorSize.x *= 2;
+                        currentCursorSize.y *= 2;
+                    }
+                    //Reducing
+                    else
+                    {
+                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
+
+                        ResizeBilinear
+                        (
+                            cursorPtrArr[populatedImg],
+                            currentCursorSize.x, 
+                            currentCursorSize.y,
+                            cursorPtrArr[(populatedImg + 1) % 2],
+                            currentCursorSize.x,
+                            currentCursorSize.y * 0.5
+                        );
+
+                        currentCursorSize.y *= 0.5;
+                    }
+
+                    populatedImg = (populatedImg + 1) % 2;
                 }
-                //Reducing
-                else
-                {
-                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
 
-                    ResizeBilinear
-                    (
-                        cursorPtrArr[populatedImg], 
-                        currentCursorSize.x, 
-                        currentCursorSize.y,
-                        cursorPtrArr[(populatedImg + 1) % 2],
-                        currentCursorSize.x * 0.5,
-                        currentCursorSize.y
-                    );
+                //Do the final round of resizing
+                cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
+                ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
+                CustomCursors[cursorName].first.create(cursorSize.x, cursorSize.y, cursorPtrArr[(populatedImg + 1) % 2]);
 
-                    currentCursorSize.x *= 0.5;
-                }
-
-                populatedImg = (populatedImg + 1) % 2;
+                delete[] cursorPtr;
+                delete[] cursorPtr1;
             }
-            
-            //Resize height until the new cursor size is within 2x or 0.5x
-            while ((currentCursorSize.y > cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
-                    (currentCursorSize.y < cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
-            {
-                delete[] cursorPtrArr[(populatedImg + 1) % 2];
-                
-                //Enlarging
-                if(currentCursorSize.y > cursorSize.y)
-                {
-                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
-
-                    ResizeBilinear
-                    (
-                        cursorPtrArr[populatedImg], 
-                        currentCursorSize.x, 
-                        currentCursorSize.y,
-                        cursorPtrArr[(populatedImg + 1) % 2],
-                        currentCursorSize.x,
-                        currentCursorSize.y * 2
-                    );
-
-                    currentCursorSize.y *= 2;
-                }
-                //Reducing
-                else
-                {
-                    cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
-
-                    ResizeBilinear
-                    (
-                        cursorPtrArr[populatedImg],
-                        currentCursorSize.x, 
-                        currentCursorSize.y,
-                        cursorPtrArr[(populatedImg + 1) % 2],
-                        currentCursorSize.x,
-                        currentCursorSize.y * 0.5
-                    );
-
-                    currentCursorSize.y *= 0.5;
-                }
-
-                populatedImg = (populatedImg + 1) % 2;
-            }
-
-            //Do the final round of resizing
-            cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
-            ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
-            CustomCursorImage.create(cursorSize.x, cursorSize.y, cursorPtrArr[(populatedImg + 1) % 2]);
-
-            delete[] cursorPtr;
-            delete[] cursorPtr1;
         }
         
-        if(CustomCursorImage.getPixelsPtr() != nullptr)
-        {            
-            if(!SFMLCursor.loadFromPixels(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize(), sf::Vector2u(hotspot.x, hotspot.y)))
-                DEBUG_LINE("Failed to load cursor");
-            
-            Hotspot = hotspot;
-        }
-        else
-            DEBUG_LINE("Failed to load cursor");
+        //Setting hotspot
+        CustomCursors[cursorName].second = hotspot;
 
         FUNC_DEBUG_EXIT();
     }
 
-    void BackendSystemInputSFML::GetCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
-    {        
-        if(CustomCursorImage.getPixelsPtr() == nullptr)
+    void BackendSystemInputSFML::SetCurrentCustomCursor(std::string cursorName)
+    {
+        if(!HasCustomCursor(cursorName))
+            return;
+        
+        if(CurrentCustomCursor == cursorName)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize().x, CustomCursorImage.getSize().y))
-            DEBUG_LINE("Failed to load custom cursor image");
+        CurrentCustomCursor = cursorName;
+    }
 
-        hotspot = Hotspot;
+    void BackendSystemInputSFML::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
+    {        
+        if(CurrentCustomCursor.empty())
+            return;
+
+        if(CustomCursors[CurrentCustomCursor].first.getPixelsPtr() == nullptr)
+            return;
+
+        if(!customCursor.LoadRawFromMemory(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize().x, 
+            CustomCursors[CurrentCustomCursor].first.getSize().y))
+        {
+            DEBUG_LINE("Failed to load custom cursor image");   
+        }
+
+        hotspot = CustomCursors[CurrentCustomCursor].second;
+    }
+
+    std::string BackendSystemInputSFML::GetCurrentCustomCursorName()
+    {
+        return CurrentCustomCursor;
+    }
+
+    void BackendSystemInputSFML::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    {
+        if(CustomCursors.find(cursorName) == CustomCursors.end())
+            return;
+        
+        if(CustomCursors[cursorName].first.getPixelsPtr() == nullptr)
+            return;
+
+        if(!customCursor.LoadRawFromMemory(CustomCursors[cursorName].first.getPixelsPtr(), CustomCursors[cursorName].first.getSize().x, 
+            CustomCursors[cursorName].first.getSize().y))
+        {
+            DEBUG_LINE("Failed to load custom cursor image");
+        }
+
+        hotspot = CustomCursors[cursorName].second;
+    }
+
+    bool BackendSystemInputSFML::HasCustomCursor(std::string cursorName)
+    {
+        return CustomCursors.find(cursorName) != CustomCursors.end();
     }
 
     void BackendSystemInputSFML::UpdateCursor()
@@ -664,9 +713,16 @@ namespace ssGUI::Backend
                     DEBUG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::CUSTOM:
-                if(CustomCursorImage.getPixelsPtr() != nullptr)
-                    if(!SFMLCursor.loadFromPixels(CustomCursorImage.getPixelsPtr(), CustomCursorImage.getSize(), sf::Vector2u(Hotspot.x, Hotspot.y)))
+                if(!CurrentCustomCursor.empty() && CustomCursors[CurrentCustomCursor].first.getPixelsPtr() != nullptr)
+                {
+                    if(!SFMLCursor.loadFromPixels(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize(), 
+                        sf::Vector2u(CustomCursors[CurrentCustomCursor].second.x, CustomCursors[CurrentCustomCursor].second.y)))
+                    {
                         DEBUG_LINE("Failed to load cursor");
+                    }
+                }
+                else
+                    DEBUG_LINE("Failed to load cursor");
         }
 
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)

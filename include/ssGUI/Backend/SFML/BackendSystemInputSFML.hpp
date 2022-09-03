@@ -10,6 +10,9 @@
 #include "glm/vec2.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/Mouse.hpp"
+
+#include <utility>
+#include <unordered_map>
 #include <unordered_set>
 #include <memory>
 #include <string>
@@ -42,8 +45,8 @@ namespace ssGUI::Backend
         ssGUI::Enums::CursorType CurrentCursor;
         std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
 
-        sf::Image CustomCursorImage;
-        glm::ivec2 Hotspot;
+        std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;
+        std::string CurrentCustomCursor;
 
         #if USE_SFML_TIME
             sf::Clock ElapsedTime;
@@ -54,8 +57,8 @@ namespace ssGUI::Backend
     ============================== C++ ==============================
     BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
                                             CurrentMouseButtons(), LastMouseButtons(), MouseScrollDelta(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
-                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursorImage(),
-                                            Hotspot()
+                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursors(),
+                                            CurrentCustomCursor()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
@@ -88,8 +91,8 @@ namespace ssGUI::Backend
             ssGUI::Enums::CursorType CurrentCursor;
             std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
 
-            sf::Image CustomCursorImage;
-            glm::ivec2 Hotspot;
+            std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;
+            std::string CurrentCustomCursor;
 
             #if USE_SFML_TIME
                 sf::Clock ElapsedTime;
@@ -170,13 +173,29 @@ namespace ssGUI::Backend
             //See <BackendSystemInputInterface::GetCursorType>
             ssGUI::Enums::CursorType GetCursorType() const override;
 
-            //function: SetCustomCursor
-            //See <BackendSystemInputInterface::SetCustomCursor>
-            void SetCustomCursor(ssGUI::ImageData* customCursor, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
+            //function: CreateCustomCursor
+            //See <BackendSystemInputInterface::CreateCustomCursor>
+            void CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
 
+            //function: SetCurrentCustomCursor
+            //See <BackendSystemInputInterface::SetCurrentCustomCursor>
+            void SetCurrentCustomCursor(std::string cursorName) override;
+
+            //function: GetCurrentCustomCursor
+            //See <BackendSystemInputInterface::GetCurrentCustomCursor>
+            void GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) override;
+
+            //function: GetCurrentCustomCursorName
+            //See <BackendSystemInputInterface::GetCurrentCustomCursorName>
+            std::string GetCurrentCustomCursorName() override;
+            
             //function: GetCustomCursor
             //See <BackendSystemInputInterface::GetCustomCursor>
-            void GetCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) override;
+            void GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot) override;
+            
+            //function: HasCustomCursor
+            //See <BackendSystemInputInterface::HasCustomCursor>
+            bool HasCustomCursor(std::string cursorName) override;
             
             //function: UpdateCursor
             //See <BackendSystemInputInterface::UpdateCursor>

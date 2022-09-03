@@ -102,15 +102,33 @@ namespace ssGUI::Backend
             //and don't need to care about setting it back to normal once you are done with it. 
             virtual ssGUI::Enums::CursorType GetCursorType() const = 0;
 
-            //function: SetCustomCursor
-            //Sets the custom cursor image and hotspot.
-            //The image data of customCursor is copied so it is fine to dispose it if needed.
-            virtual void SetCustomCursor(ssGUI::ImageData* customCursor, glm::ivec2 cursorSize, glm::ivec2 hotspot) = 0;
+            //function: CreateCustomCursor
+            //Creates a custom cursor. The image data of customCursor is copied so it is fine to dispose it if needed.
+            //The size of customCurrsor image will be resized to cursorSize if needed.
+            //The passed in hotspot must be smaller than cursorSize, (0, 0) as top-left corner.
+            virtual void CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) = 0;
+            
+            //function: SetCurrentCustomCursor
+            //Sets the current custom cursor from created custom cursor. Nothing is changed if the custom cursor name cannot be found.
+            virtual void SetCurrentCustomCursor(std::string cursorName) = 0;
 
-            //function: GetCustomCursor
-            //Copies the custom cursor image to customCursor and returns hotspot of cursor.
+            //function: GetCurrentCustomCursor
+            //Copies the (resized) current custom cursor image data to customCursor image data and returns the hotspot of the cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) = 0;
+            virtual void GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) = 0;
+
+            //function: GetCurrentCustomCursorName
+            //Gets the name of the current custom cursor. Empty string if nothing is set.
+            virtual std::string GetCurrentCustomCursorName() = 0;
+            
+            //function: GetCustomCursor
+            //Copies the (resized) custom cursor image data to customCursor image data and returns the hotspot of the cursor.
+            //customCursor & hotspot are unchanged if there's no custom cursor.
+            virtual void GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot) = 0;
+
+            //function: HasCustomCursor
+            //Returns if the target custom cursor with cursorName exists
+            virtual bool HasCustomCursor(std::string cursorName) = 0;
 
             //function: UpdateCursor
             //Updates the cursor. This needs to be called after a new cursor is set.
