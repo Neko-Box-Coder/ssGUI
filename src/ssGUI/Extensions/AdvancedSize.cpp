@@ -2,9 +2,9 @@
 
 namespace ssGUI::Extensions
 {
-    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
-                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
-                                    VerticalPercentageValue(0.2), LastParentSize()
+    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalPixelValue(0), 
+                                    VerticalPixelValue(0), HorizontalPercentageValue(0), 
+                                    VerticalPercentageValue(0), SettingsChanged(true), LastParentSize()
     {}
 
     AdvancedSize::~AdvancedSize()
@@ -14,8 +14,6 @@ namespace ssGUI::Extensions
     {
         Container = nullptr;
         Enabled = other.IsEnabled();
-        HorizontalUsePercentage = other.IsHorizontalUsePercentage();
-        VerticalUsePercentage = other.IsVerticalUsePercentage();
         HorizontalPixelValue = other.GetHorizontalPixel();
         VerticalPixelValue = other.GetVerticalPixel();
         HorizontalPercentageValue = other.GetHorizontalPercentage();
@@ -31,29 +29,10 @@ namespace ssGUI::Extensions
 
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
 
-    void AdvancedSize::SetHorizontalUsePercentage(bool percentage)
-    {
-        HorizontalUsePercentage = percentage;
-    }
-
-    bool AdvancedSize::IsHorizontalUsePercentage() const
-    {
-        return HorizontalUsePercentage;
-    }
-
-    void AdvancedSize::SetVerticalUsePercentage(bool percentage)
-    {
-        VerticalUsePercentage = percentage;
-    }
-
-    bool AdvancedSize::IsVerticalUsePercentage() const
-    {
-        return VerticalUsePercentage;
-    }
-
     void AdvancedSize::SetHorizontalPixel(float pixel)
     {
         HorizontalPixelValue = pixel;
+        SettingsChanged = true;
     }
 
     float AdvancedSize::GetHorizontalPixel() const
@@ -64,6 +43,7 @@ namespace ssGUI::Extensions
     void AdvancedSize::SetVerticalPixel(float pixel)
     {
         VerticalPixelValue = pixel;
+        SettingsChanged = true;
     }
 
     float AdvancedSize::GetVerticalPixel() const
@@ -74,6 +54,7 @@ namespace ssGUI::Extensions
     void AdvancedSize::SetHorizontalPercentage(float percentage)
     {
         HorizontalPercentageValue = percentage;
+        SettingsChanged = true;
     }
 
     float AdvancedSize::GetHorizontalPercentage() const
@@ -84,6 +65,7 @@ namespace ssGUI::Extensions
     void AdvancedSize::SetVerticalPercentage(float percentage)
     {
         VerticalPercentageValue = percentage;
+        SettingsChanged = true;
     }
 
     float AdvancedSize::GetVerticalPercentage() const
@@ -94,6 +76,7 @@ namespace ssGUI::Extensions
     void AdvancedSize::SetEnabled(bool enabled)
     {
         Enabled = enabled;
+        SettingsChanged = true;
     }
 
     bool AdvancedSize::IsEnabled() const
@@ -111,9 +94,10 @@ namespace ssGUI::Extensions
             FUNC_DEBUG_EXIT();
             return;
         }
-                
+
+        //Size caching if parent's size hasn't changed
         ssGUI::GUIObject* parent = Container->GetParent();
-        if(parent->GetSize() == LastParentSize)
+        if(parent->GetSize() == LastParentSize && !SettingsChanged)
         {
             FUNC_DEBUG_EXIT();
             return;
@@ -122,27 +106,20 @@ namespace ssGUI::Extensions
         glm::vec2 finalSize;
 
         //Horizontal
-        if(IsHorizontalUsePercentage())
-            finalSize.x = parent->GetSize().x * GetHorizontalPercentage();
-        else
-            finalSize.x = GetHorizontalPixel();
+        finalSize.x = parent->GetSize().x * GetHorizontalPercentage() + GetHorizontalPixel();
 
         //Vertical
-        if(IsVerticalUsePercentage())
-        {
-            float windowOffset = 0;
-            if(parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
-                windowOffset = static_cast<ssGUI::Window*>(parent)->GetTitlebarHeight();
+        float windowOffset = 0;
+        if(parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+            windowOffset = static_cast<ssGUI::Window*>(parent)->GetTitlebarHeight();
 
-            finalSize.y = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
-        }
-        else
-            finalSize.y = GetVerticalPixel();
+        finalSize.y = (parent->GetSize().y - windowOffset) * GetVerticalPercentage() + GetVerticalPixel();
 
         //Use finalSize
         Container->SetSize(finalSize);
 
         LastParentSize = parent->GetSize();
+        SettingsChanged = false;
         
         FUNC_DEBUG_EXIT();
     }
@@ -169,12 +146,11 @@ namespace ssGUI::Extensions
         
         ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(extension);
         Enabled = as->IsEnabled();
-        HorizontalUsePercentage = as->IsHorizontalUsePercentage();
-        VerticalUsePercentage = as->IsVerticalUsePercentage();
         HorizontalPixelValue = as->GetHorizontalPixel();
         VerticalPixelValue = as->GetVerticalPixel();
         HorizontalPercentageValue = as->GetHorizontalPercentage();
         VerticalPercentageValue = as->GetVerticalPercentage();
+        SettingsChanged = true;
         LastParentSize = as->LastParentSize;
     }
 

@@ -3,8 +3,7 @@
 namespace ssGUI::Extensions
 {
     AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalUsePercentage(true),
-                                            VerticalUsePercentage(true), HorizontalPixelValue(0), VerticalPixelValue(0),
+                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalPixelValue(0), VerticalPixelValue(0),
                                             HorizontalPercentageValue(0), VerticalPercentageValue(0)
     {}
 
@@ -17,8 +16,6 @@ namespace ssGUI::Extensions
         Enabled = other.IsEnabled();
         CurrentHorizontal = other.GetHorizontalAnchor();
         CurrentVertical = other.GetVerticalAnchor();
-        HorizontalUsePercentage = other.IsHorizontalUsePercentage();
-        VerticalUsePercentage = other.IsVerticalUsePercentage();
         HorizontalPixelValue = other.GetHorizontalPixel();
         VerticalPixelValue = other.GetVerticalPixel();
         HorizontalPercentageValue = other.GetHorizontalPercentage();
@@ -31,9 +28,7 @@ namespace ssGUI::Extensions
     void AdvancedPosition::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
-    const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";
-    
-    
+    const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";    
 
     void AdvancedPosition::SetHorizontalAnchor(HorizontalAnchor anchor)
     {
@@ -53,26 +48,6 @@ namespace ssGUI::Extensions
     AdvancedPosition::VerticalAnchor AdvancedPosition::GetVerticalAnchor() const
     {
         return CurrentVertical;
-    }
-
-    void AdvancedPosition::SetHorizontalUsePercentage(bool percentage)
-    {
-        HorizontalUsePercentage = percentage;
-    }
-
-    bool AdvancedPosition::IsHorizontalUsePercentage() const
-    {
-        return HorizontalUsePercentage;
-    }
-
-    void AdvancedPosition::SetVerticalUsePercentage(bool percentage)
-    {
-        VerticalUsePercentage = percentage;
-    }
-
-    bool AdvancedPosition::IsVerticalUsePercentage() const
-    {
-        return VerticalUsePercentage;
     }
 
     void AdvancedPosition::SetHorizontalPixel(float pixel)
@@ -136,7 +111,6 @@ namespace ssGUI::Extensions
             FUNC_DEBUG_EXIT();
             return;
         }
-
         
         ssGUI::GUIObject* parent = Container->GetParent();
 
@@ -150,43 +124,22 @@ namespace ssGUI::Extensions
             float anchorPointY; //Anchor point in parent local space 
             
             //Horizontal
-            if(HorizontalUsePercentage)
+            float distanceFromAnchor = parent->GetSize().x * GetHorizontalPercentage();
+            
+            switch (GetHorizontalAnchor())
             {
-                float distanceFromAnchor = parent->GetSize().x * GetHorizontalPercentage();
-                
-                switch (GetHorizontalAnchor())
-                {
-                    case AdvancedPosition::HorizontalAnchor::LEFT:
-                        anchorPointX = 0;
-                        finalPos.x = distanceFromAnchor;
-                        break;
-                    case AdvancedPosition::HorizontalAnchor::CENTER:
-                        anchorPointX = parent->GetSize().x * 0.5f;
-                        finalPos.x = anchorPointX - Container->GetSize().x * 0.5 + distanceFromAnchor;
-                        break;
-                    case AdvancedPosition::HorizontalAnchor::RIGHT:
-                        anchorPointX = parent->GetSize().x;
-                        finalPos.x = anchorPointX - Container->GetSize().x + distanceFromAnchor * -1.f;
-                        break;   
-                }
-            }
-            else
-            {
-                switch (GetHorizontalAnchor())
-                {
-                    case AdvancedPosition::HorizontalAnchor::LEFT:
-                        anchorPointX = 0;
-                        finalPos.x = GetHorizontalPixel();
-                        break;
-                    case AdvancedPosition::HorizontalAnchor::CENTER:
-                        anchorPointX = parent->GetSize().x * 0.5f;
-                        finalPos.x = anchorPointX - Container->GetSize().x * 0.5 + GetHorizontalPixel();
-                        break;
-                    case AdvancedPosition::HorizontalAnchor::RIGHT:
-                        anchorPointX = parent->GetSize().x;
-                        finalPos.x = anchorPointX - Container->GetSize().x + GetHorizontalPixel() * -1.f;
-                        break;   
-                }
+                case AdvancedPosition::HorizontalAnchor::LEFT:
+                    anchorPointX = 0;
+                    finalPos.x = distanceFromAnchor + GetHorizontalPixel();
+                    break;
+                case AdvancedPosition::HorizontalAnchor::CENTER:
+                    anchorPointX = parent->GetSize().x * 0.5f;
+                    finalPos.x = anchorPointX - Container->GetSize().x * 0.5 + distanceFromAnchor + GetHorizontalPixel();
+                    break;
+                case AdvancedPosition::HorizontalAnchor::RIGHT:
+                    anchorPointX = parent->GetSize().x;
+                    finalPos.x = anchorPointX - Container->GetSize().x + (distanceFromAnchor + GetHorizontalPixel()) * -1.f;
+                    break;   
             }
 
             //Vertical
@@ -194,43 +147,22 @@ namespace ssGUI::Extensions
             if(parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
                 windowOffset = static_cast<ssGUI::Window*>(parent)->GetTitlebarHeight();
             
-            if(VerticalUsePercentage)
-            {
-                float distanceFromAnchor = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
+            distanceFromAnchor = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
 
-                switch (GetVerticalAnchor())
-                {
-                    case AdvancedPosition::VerticalAnchor::TOP:
-                        anchorPointY = 0;
-                        finalPos.y = distanceFromAnchor;
-                        break;
-                    case AdvancedPosition::VerticalAnchor::CENTER:
-                        anchorPointY = (parent->GetSize().y - windowOffset) * 0.5f;
-                        finalPos.y = anchorPointY - Container->GetSize().y * 0.5 + distanceFromAnchor;
-                        break;
-                    case AdvancedPosition::VerticalAnchor::BOTTOM:
-                        anchorPointY = (parent->GetSize().y - windowOffset);
-                        finalPos.y = anchorPointY - Container->GetSize().y + distanceFromAnchor * -1.f;
-                        break;   
-                }
-            }
-            else
+            switch (GetVerticalAnchor())
             {
-                switch (GetVerticalAnchor())
-                {
-                    case AdvancedPosition::VerticalAnchor::TOP:
-                        anchorPointY = 0;
-                        finalPos.y = GetVerticalPixel();
-                        break;
-                    case AdvancedPosition::VerticalAnchor::CENTER:
-                        anchorPointY = (parent->GetSize().y - windowOffset) * 0.5f;
-                        finalPos.y = anchorPointY - Container->GetSize().y * 0.5 + GetVerticalPixel();
-                        break;
-                    case AdvancedPosition::VerticalAnchor::BOTTOM:
-                        anchorPointY = (parent->GetSize().y - windowOffset);
-                        finalPos.y = anchorPointY - Container->GetSize().y + GetVerticalPixel() * -1.f;
-                        break;   
-                }
+                case AdvancedPosition::VerticalAnchor::TOP:
+                    anchorPointY = 0;
+                    finalPos.y = distanceFromAnchor + GetVerticalPixel();
+                    break;
+                case AdvancedPosition::VerticalAnchor::CENTER:
+                    anchorPointY = (parent->GetSize().y - windowOffset) * 0.5f;
+                    finalPos.y = anchorPointY - Container->GetSize().y * 0.5 + distanceFromAnchor + GetVerticalPixel();
+                    break;
+                case AdvancedPosition::VerticalAnchor::BOTTOM:
+                    anchorPointY = (parent->GetSize().y - windowOffset);
+                    finalPos.y = anchorPointY - Container->GetSize().y + (distanceFromAnchor + GetVerticalPixel()) * -1.f;
+                    break;   
             }
         }
         //If there's isn't, use the default anchor point
@@ -250,19 +182,14 @@ namespace ssGUI::Extensions
             else
                 Container->SetAnchorType(ssGUI::Enums::AnchorType::BOTTOM_LEFT);
 
-            finalPos.x = IsHorizontalUsePercentage() ? parent->GetSize().x * GetHorizontalPercentage() : GetHorizontalPixel();
+            finalPos.x = parent->GetSize().x * GetHorizontalPercentage() + GetHorizontalPixel();
             
-            if(IsVerticalUsePercentage())
-            {
-                //Vertical
-                float windowOffset = 0;
-                if(parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
-                    windowOffset = static_cast<ssGUI::Window*>(parent)->GetTitlebarHeight();
-                
-                finalPos.y = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
-            }
-            else
-                finalPos.y = GetVerticalPixel();   
+            //Vertical
+            float windowOffset = 0;
+            if(parent->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && parent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+                windowOffset = static_cast<ssGUI::Window*>(parent)->GetTitlebarHeight();
+            
+            finalPos.y = (parent->GetSize().y - windowOffset) * GetVerticalPercentage() + GetVerticalPixel();
         }
 
         //Use finalPos
@@ -294,8 +221,6 @@ namespace ssGUI::Extensions
         Enabled = ap->IsEnabled();
         CurrentHorizontal = ap->GetHorizontalAnchor();
         CurrentVertical = ap->GetVerticalAnchor();
-        HorizontalUsePercentage = ap->IsHorizontalUsePercentage();
-        VerticalUsePercentage = ap->IsVerticalUsePercentage();
         HorizontalPixelValue = ap->GetHorizontalPixel();
         VerticalPixelValue = ap->GetVerticalPixel();
         HorizontalPercentageValue = ap->GetHorizontalPercentage();

@@ -17,7 +17,7 @@
 namespace ssGUI::Extensions
 {
     /*class: ssGUI::Extensions::AdvancedPosition
-    This extension allows extra option for positioning a GUI Object
+    This extension allows extra options for positioning a GUI Object
     
     Variables & Constructor:
     ============================== C++ ==============================
@@ -28,9 +28,6 @@ namespace ssGUI::Extensions
         HorizontalAnchor CurrentHorizontal;
         VerticalAnchor CurrentVertical;
 
-        bool HorizontalUsePercentage;
-        bool VerticalUsePercentage;
-
         float HorizontalPixelValue;
         float VerticalPixelValue;
 
@@ -39,8 +36,7 @@ namespace ssGUI::Extensions
     =================================================================
     ============================== C++ ==============================
     AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalUsePercentage(true),
-                                            VerticalUsePercentage(true), HorizontalPixelValue(0), VerticalPixelValue(0),
+                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalPixelValue(0), VerticalPixelValue(0),
                                             HorizontalPercentageValue(0), VerticalPercentageValue(0)
     {}
     =================================================================
@@ -62,9 +58,6 @@ namespace ssGUI::Extensions
 
             HorizontalAnchor CurrentHorizontal;
             VerticalAnchor CurrentVertical;
-
-            bool HorizontalUsePercentage;
-            bool VerticalUsePercentage;
 
             float HorizontalPixelValue;
             float VerticalPixelValue;
@@ -111,18 +104,6 @@ namespace ssGUI::Extensions
 
             //function: GetVerticalAnchor
             virtual VerticalAnchor GetVerticalAnchor() const;
-
-            //function: SetHorizontalUsePercentage
-            virtual void SetHorizontalUsePercentage(bool percentage);
-
-            //function: IsHorizontalUsePercentage
-            virtual bool IsHorizontalUsePercentage() const;
-
-            //function: SetVerticalUsePercentage
-            virtual void SetVerticalUsePercentage(bool percentage);
-
-            //function: IsVerticalUsePercentage
-            virtual bool IsVerticalUsePercentage() const;
 
             //function: SetHorizontalPixel
             virtual void SetHorizontalPixel(float pixel);

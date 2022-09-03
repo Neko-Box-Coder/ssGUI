@@ -51,18 +51,18 @@ namespace ssGUI
         ap = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
         as = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ap->SetHorizontalUsePercentage(true);
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
         ap->SetHorizontalPercentage(0);
-        ap->SetVerticalUsePercentage(false);
+        ap->SetHorizontalPixel(0);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
         ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
+        ap->SetVerticalPercentage(0);
 
-        as->SetHorizontalUsePercentage(true);
         as->SetHorizontalPercentage(1);
-        as->SetVerticalUsePercentage(false);
+        as->SetHorizontalPixel(0);
         int textHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
         as->SetVerticalPixel(textHeight);
+        as->SetVerticalPercentage(0);
 
         if(AutoFontSize)
         {
@@ -104,18 +104,18 @@ namespace ssGUI
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalUsePercentage(false);
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
         ap->SetHorizontalPixel(GetHorizontalPadding());
-        ap->SetVerticalUsePercentage(false);
+        ap->SetHorizontalPercentage(0);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
         ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
+        ap->SetVerticalPercentage(0);
         
         int iconHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
-        as->SetHorizontalUsePercentage(false);
         as->SetHorizontalPixel(iconHeight);
-        as->SetVerticalUsePercentage(false);
+        as->SetHorizontalPercentage(0);
         as->SetVerticalPixel(iconHeight);
+        as->SetVerticalPercentage(0);
 
         if(!windowIconObj->HasTag(ssGUI::Tags::OVERLAY))
             windowIconObj->AddTag(ssGUI::Tags::OVERLAY);
@@ -153,18 +153,18 @@ namespace ssGUI
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalUsePercentage(false);
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
         ap->SetHorizontalPixel(GetHorizontalPadding());
-        ap->SetVerticalUsePercentage(false);
+        ap->SetHorizontalPercentage(0);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
         ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding() + 2);
-        
+        ap->SetVerticalPercentage(0);
+
         int buttonHeight = GetTitlebarHeight() - GetVerticalPadding() * 2 - 4;
-        as->SetHorizontalUsePercentage(false);
         as->SetHorizontalPixel(buttonHeight);
-        as->SetVerticalUsePercentage(false);
+        as->SetHorizontalPercentage(0);
         as->SetVerticalPixel(buttonHeight);
+        as->SetVerticalPercentage(0);
 
         if(!closeButtonObj->HasTag(ssGUI::Tags::OVERLAY))
             closeButtonObj->AddTag(ssGUI::Tags::OVERLAY);

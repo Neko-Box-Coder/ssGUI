@@ -115,10 +115,8 @@ namespace ssGUI::Extensions
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
 
-        as->SetHorizontalUsePercentage(true);
-        as->SetVerticalUsePercentage(true);
-        as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
+        as->SetHorizontalPercentage(0.5);
         
         FUNC_DEBUG_EXIT();
     }
@@ -136,8 +134,6 @@ namespace ssGUI::Extensions
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
 
-        as->SetHorizontalUsePercentage(true);
-        as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
         
@@ -157,8 +153,6 @@ namespace ssGUI::Extensions
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
 
-        as->SetHorizontalUsePercentage(true);
-        as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
 
@@ -178,8 +172,6 @@ namespace ssGUI::Extensions
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::BOTTOM);
 
-        as->SetHorizontalUsePercentage(true);
-        as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
         
@@ -246,36 +238,35 @@ namespace ssGUI::Extensions
         ssGUI::Extensions::AdvancedPosition* apLeft = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockTriggerLeft->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         ssGUI::Extensions::AdvancedSize* asLeft = static_cast<ssGUI::Extensions::AdvancedSize*>(DockTriggerLeft->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        asTop->SetHorizontalUsePercentage(UseTriggerPercentage);
-        asTop->SetVerticalUsePercentage(UseTriggerPercentage);
-        asRight->SetHorizontalUsePercentage(UseTriggerPercentage);
-        asRight->SetVerticalUsePercentage(UseTriggerPercentage);
-        asBottom->SetHorizontalUsePercentage(UseTriggerPercentage);
-        asBottom->SetVerticalUsePercentage(UseTriggerPercentage);
-        asLeft->SetHorizontalUsePercentage(UseTriggerPercentage);
-        asLeft->SetVerticalUsePercentage(UseTriggerPercentage);
-
         if(UseTriggerPercentage)
         {
             apTop->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
             apTop->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
             asTop->SetHorizontalPercentage(1 - GetTriggerPercentage() * 2);
+            asTop->SetHorizontalPixel(0);
             asTop->SetVerticalPercentage(GetTriggerPercentage());
+            asTop->SetVerticalPixel(0);
 
             apRight->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
             apRight->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
             asRight->SetHorizontalPercentage(GetTriggerPercentage());
+            asRight->SetHorizontalPixel(0);
             asRight->SetVerticalPercentage(1 - GetTriggerPercentage() * 2);
+            asRight->SetVerticalPixel(0);
 
             apBottom->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
             apBottom->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::BOTTOM);
             asBottom->SetHorizontalPercentage(1 - GetTriggerPercentage() * 2);
+            asBottom->SetHorizontalPixel(0);
             asBottom->SetVerticalPercentage(GetTriggerPercentage());
+            asBottom->SetVerticalPixel(0);
 
             apLeft->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
             apLeft->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
             asLeft->SetHorizontalPercentage(GetTriggerPercentage());
+            asLeft->SetHorizontalPixel(0);
             asLeft->SetVerticalPercentage(1 - GetTriggerPercentage() * 2);
+            asLeft->SetVerticalPixel(0);
         }
         else
         {

@@ -17,7 +17,7 @@
 namespace ssGUI::Extensions
 {
     /*class: ssGUI::Extensions::AdvancedSize
-    This extension allows extra option for sizing a GUI Object
+    This extension allows extra options for sizing a GUI Object
     
     Variables & Constructor:
     ============================== C++ ==============================
@@ -25,21 +25,19 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* Container;
         bool Enabled;
 
-        bool HorizontalUsePercentage;
-        bool VerticalUsePercentage;
-
         float HorizontalPixelValue;
         float VerticalPixelValue;
 
         float HorizontalPercentageValue;
         float VerticalPercentageValue;
 
+        bool SettingsChanged;
         glm::vec2 LastParentSize;
     =================================================================
     ============================== C++ ==============================
-    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalUsePercentage(true), VerticalUsePercentage(true), 
-                                    HorizontalPixelValue(50), VerticalPixelValue(50), HorizontalPercentageValue(0.2), 
-                                    VerticalPercentageValue(0.2), LastParentSize()
+    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalPixelValue(0), 
+                                    VerticalPixelValue(0), HorizontalPercentageValue(0), 
+                                    VerticalPercentageValue(0), SettingsChanged(true), LastParentSize()
     {}
     =================================================================
     */
@@ -55,15 +53,13 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* Container;
             bool Enabled;
 
-            bool HorizontalUsePercentage;
-            bool VerticalUsePercentage;
-
             float HorizontalPixelValue;
             float VerticalPixelValue;
 
             float HorizontalPercentageValue;
             float VerticalPercentageValue;
 
+            bool SettingsChanged;
             glm::vec2 LastParentSize;
 
             AdvancedSize();
@@ -79,18 +75,6 @@ namespace ssGUI::Extensions
 
         public:
             static const std::string EXTENSION_NAME;
-
-            //function: SetHorizontalUsePercentage
-            virtual void SetHorizontalUsePercentage(bool percentage);
-
-            //function: IsHorizontalUsePercentage
-            virtual bool IsHorizontalUsePercentage() const;
-
-            //function: SetVerticalUsePercentage
-            virtual void SetVerticalUsePercentage(bool percentage);
-
-            //function: IsVerticalUsePercentage
-            virtual bool IsVerticalUsePercentage() const;
 
             //function: SetHorizontalPixel
             virtual void SetHorizontalPixel(float pixel);

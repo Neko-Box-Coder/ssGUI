@@ -100,8 +100,6 @@ namespace ssGUI::Extensions
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
 
-        as->SetHorizontalUsePercentage(true);
-        as->SetVerticalUsePercentage(true);
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(1);
 
@@ -127,22 +125,26 @@ namespace ssGUI::Extensions
         ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockTrigger->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockTrigger->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        as->SetHorizontalUsePercentage(UseTriggerPercentage);
-        as->SetVerticalUsePercentage(UseTriggerPercentage);
+        // as->SetHorizontalUsePercentage(UseTriggerPercentage);
+        // as->SetVerticalUsePercentage(UseTriggerPercentage);
 
         if(UseTriggerPercentage)
         {
             ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
             ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
             as->SetHorizontalPercentage(GetTriggerHorizontalPercentage());
+            as->SetHorizontalPixel(0);
             as->SetVerticalPercentage(GetTriggerVerticalPercentage());
+            as->SetVerticalPixel(0);
         }
         else
         {
             ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
             ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
             as->SetHorizontalPixel(GetTriggerHorizontalPixel());
+            as->SetHorizontalPercentage(0);
             as->SetVerticalPixel(GetTriggerVerticalPixel());
+            as->SetVerticalPercentage(0);
         }
 
         FUNC_DEBUG_EXIT();

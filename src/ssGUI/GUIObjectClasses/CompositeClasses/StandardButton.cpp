@@ -85,10 +85,10 @@ namespace ssGUI
 
         as = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
-        as->SetHorizontalUsePercentage(true);
         as->SetHorizontalPercentage(0.55);
-        as->SetVerticalUsePercentage(true);
+        as->SetHorizontalPixel(0);
         as->SetVerticalPercentage(0.55);
+        as->SetVerticalPixel(0);
 
         if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
             buttonImgObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
