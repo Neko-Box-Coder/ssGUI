@@ -5,6 +5,7 @@
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/EventCallbacks/SliderValueChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SliderValueFinishedChangingEventCallback.hpp"
+#include "ssGUI/EventCallbacks/SliderValueChangedViaGuiEventCallback.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
@@ -14,7 +15,7 @@ namespace ssGUI
     {
         SetReverse(other.IsReverse());
         SetFillColor(other.GetFillColor());
-        SetKnobObject(other.GetKnobObject());
+        KnobObject = other.KnobObject;
         SetSliderValue(other.GetSliderValue());
         SetVertical(other.IsVertical(), false);
         SetSnapInterval(other.GetSnapInterval());
@@ -79,6 +80,7 @@ namespace ssGUI
 
     void Slider::UpdateSliderValue()
     {
+        FUNC_DEBUG_ENTRY();
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
 
@@ -100,6 +102,7 @@ namespace ssGUI
             if(IsReverse())
                 SetSliderValue(1 - GetSliderValue());
         }
+        FUNC_DEBUG_EXIT();
     }
 
     void Slider::ConstructRenderInfo()
@@ -178,9 +181,13 @@ namespace ssGUI
 
     void Slider::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                             ssGUI::GUIObject* mainWindow)
-    {
+    {       
+        FUNC_DEBUG_ENTRY();
+
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
+
+        bool guiInteracted = false;
 
         if(!inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT))
             SliderDragging = false;
@@ -235,8 +242,13 @@ namespace ssGUI
 
             knob->SetFocus(true);
             
+            float oriSliderValue = GetSliderValue();
+
             //Update the slider value according to the slider position
             UpdateSliderValue();
+
+            //Record if slider value is changed via GUI
+            guiInteracted = oriSliderValue == GetSliderValue() ? false : true;
 
             //Apply snapping
             ApplySnapping();
@@ -250,13 +262,14 @@ namespace ssGUI
         {
             //Check if user clicked on the slider instead. If so, move the knob to the cursor
             glm::vec2 mousePos = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow));
+            
+            bool mouseWithinWidget = 
+                mousePos.x >= GetGlobalPosition().x && mousePos.x <= GetGlobalPosition().x + GetSize().x &&
+                mousePos.y >= GetGlobalPosition().y && mousePos.y <= GetGlobalPosition().y + GetSize().y;
+            
             if
             (
-                (
-                    mousePos.x >= GetGlobalPosition().x && mousePos.x <= GetGlobalPosition().x + GetSize().x &&
-                    mousePos.y >= GetGlobalPosition().y && mousePos.y <= GetGlobalPosition().y + GetSize().y
-                ) 
-                &&
+                mouseWithinWidget &&
                 (
                     inputStatus.MouseInputBlockedObject == nullptr || 
                     (GetKnobObject() != nullptr && inputStatus.MouseInputBlockedObject == GetKnobObject())
@@ -269,6 +282,8 @@ namespace ssGUI
                 {
                     inputInterface->SetCursorType(ssGUI::Enums::CursorType::HAND);
                     
+                    float oriSliderValue = GetSliderValue();
+
                     //Handle mouse clicking on the slider
                     if(!inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) && 
                         inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT))
@@ -291,6 +306,7 @@ namespace ssGUI
                     //Handle scrolling on the slider
                     else if(inputInterface->GetCurrentMouseScrollDelta().x != 0 || inputInterface->GetCurrentMouseScrollDelta().y != 0)
                     {
+                        SetFocus(true);
                         if(inputInterface->GetCurrentMouseScrollDelta().y != 0)
                         {
                             SetSliderValue
@@ -300,7 +316,7 @@ namespace ssGUI
                                     inputInterface->GetCurrentMouseScrollDelta().y > 0 ? 
                                         GetScrollInterval() * 1 :
                                         GetScrollInterval() * -1
-                                ) * (IsReverse() ? -1 : 1)
+                                ) * (IsReverse() ? -1 : 1) * (IsVertical() ? 1 : -1)
                             );
                         }
                         else if(inputInterface->GetCurrentMouseScrollDelta().x != 0)
@@ -316,14 +332,19 @@ namespace ssGUI
                             );
                         }
                     }
+
+                    //Record if slider value is changed via GUI
+                    guiInteracted = oriSliderValue == GetSliderValue() ? false : true;
                 }
 
                 inputStatus.MouseInputBlockedObject = this;
             }
             
             //Check for keyboard input
-            if(inputStatus.KeyInputBlockedObject == NULL && IsFocused() && IsInteractable() && IsBlockInput())
+            if(inputStatus.KeyInputBlockedObject == NULL && (IsFocused() || mouseWithinWidget) && IsInteractable() && IsBlockInput() && !guiInteracted)
             {
+                float oriSliderValue = GetSliderValue();
+                
                 auto decreaseSliderValue = [&]()
                 {
                     SetSliderValue(GetSliderValue() + GetKeyInputMoveInterval() * -1);
@@ -343,6 +364,7 @@ namespace ssGUI
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? increaseSliderValue() : decreaseSliderValue();
                     inputStatus.KeyInputBlockedObject = this;
+                    SetFocus(true);
                 }
                 //Continuous input of left/down
                 else if((inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT) ||
@@ -353,6 +375,7 @@ namespace ssGUI
                     LastKeyNavTime = inputInterface->GetElapsedTime();
                     IsReverse() ? increaseSliderValue() : decreaseSliderValue();
                     inputStatus.KeyInputBlockedObject = this;
+                    SetFocus(true);
                 }
 
                 //Start of right/up input
@@ -364,6 +387,7 @@ namespace ssGUI
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? decreaseSliderValue() : increaseSliderValue();
                     inputStatus.KeyInputBlockedObject = this;
+                    SetFocus(true);
                 }
                 //Continuous input of right/up
                 else if((inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT) ||
@@ -374,7 +398,11 @@ namespace ssGUI
                     LastKeyNavTime = inputInterface->GetElapsedTime();
                     IsReverse() ? decreaseSliderValue() : increaseSliderValue();
                     inputStatus.KeyInputBlockedObject = this;
+                    SetFocus(true);
                 }
+
+                //Record if slider value is changed via GUI
+                guiInteracted = oriSliderValue == GetSliderValue() ? false : true;
             }
         }
 
@@ -384,6 +412,12 @@ namespace ssGUI
         LastSliderDragging = SliderDragging;
         LastGlobalPosition = GetGlobalPosition();
         LastSize = GetSize();
+
+        if(guiInteracted)
+        {
+            if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::SliderValueChangedViaGuiEventCallback>())
+                GetAnyEventCallback<ssGUI::EventCallbacks::SliderValueChangedViaGuiEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
+        }
 
         if(LastSliderValue != GetSliderValue())
         {
@@ -404,6 +438,8 @@ namespace ssGUI
         }
 
         LastSliderValue = GetSliderValue();
+
+        FUNC_DEBUG_EXIT();
     }
 
     const std::string Slider::ListenerKey = "Slider";
@@ -551,12 +587,15 @@ namespace ssGUI
 
     void Slider::SetSliderValue(float sliderValue)
     {
+        FUNC_DEBUG_ENTRY();
         SliderValue = sliderValue;
         SliderValue = SliderValue < 0 ? 0 : SliderValue;
         SliderValue = SliderValue > 1 ? 1 : SliderValue;
 
         ApplySnapping();
         UpdateKnobPosition(false);
+
+        FUNC_DEBUG_EXIT();
     }
 
     float Slider::GetSliderValue() const
@@ -566,18 +605,24 @@ namespace ssGUI
 
     void Slider::SetVertical(bool vertical, bool swapWidthHeight)
     {
-        Vertical = vertical;
-        float temp = GetSize().x;
-        SetSize(glm::vec2(GetSize().y, temp));
-
-        if(KnobObject != -1 && CurrentObjectsReferences.GetObjectReference(KnobObject) != nullptr)
+        if(swapWidthHeight && IsVertical() != vertical)
         {
-            ssGUI::GUIObject* knobObj = CurrentObjectsReferences.GetObjectReference(KnobObject);
-            temp = knobObj->GetSize().x;
-            knobObj->SetSize(glm::vec2(knobObj->GetSize().y, temp));
+            float temp = GetSize().x;
+            SetSize(glm::vec2(GetSize().y, temp));
+
+            if(KnobObject != -1 && CurrentObjectsReferences.GetObjectReference(KnobObject) != nullptr)
+            {
+                ssGUI::GUIObject* knobObj = CurrentObjectsReferences.GetObjectReference(KnobObject);
+                temp = knobObj->GetSize().x;
+                knobObj->SetSize(glm::vec2(knobObj->GetSize().y, temp));
+            }
         }
 
-        RedrawObject();
+        bool oriVertical = IsVertical();
+        Vertical = vertical;
+        
+        if(oriVertical != IsVertical())
+            RedrawObject();
     }
 
     bool Slider::IsVertical() const

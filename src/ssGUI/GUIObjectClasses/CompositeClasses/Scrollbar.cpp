@@ -51,6 +51,7 @@ namespace ssGUI
 
         UpdateKnobSize();
         SetVertical(true, true);
+        SetReverse(true);
     }
 
     Scrollbar::~Scrollbar()
@@ -60,6 +61,9 @@ namespace ssGUI
 
     void Scrollbar::SetScrollbarSize(float size)
     {
+        if(ScrollbarSize == size)
+            return;
+
         ScrollbarSize = size;
         UpdateKnobSize();
     }
@@ -87,6 +91,16 @@ namespace ssGUI
     float Scrollbar::GetSidePadding() const
     {
         return SidePadding;
+    }
+
+    void Scrollbar::SetVertical(bool vertical, bool swapWidthHeight)
+    {
+        if(vertical)
+            SetReverse(true);
+        else
+            SetReverse(false);
+        
+        Slider::SetVertical(vertical, swapWidthHeight);
     }
 
     ssGUI::Enums::GUIObjectType Scrollbar::GetType() const

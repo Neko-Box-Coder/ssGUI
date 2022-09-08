@@ -3,6 +3,9 @@
 
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Slider.hpp"
+#include "ssGUI/EventCallbacks/ScrollbarValueChangedEventCallback.hpp"
+#include "ssGUI/EventCallbacks/ScrollbarValueChangedViaGuiEventCallback.hpp"
+#include "ssGUI/EventCallbacks/ScrollbarValueFinishedChangingEventCallback.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -81,7 +84,11 @@ namespace ssGUI
             //function: GetSidePadding
             //Gets the number of pixels padding for the side of the scrollbar (button)
             virtual float GetSidePadding() const;
-            
+
+            //function: SetVertical
+            //See <Slider::SetVertical>
+            virtual void SetVertical(bool vertical, bool swapWidthHeight) override;
+
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
