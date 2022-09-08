@@ -23,6 +23,9 @@ namespace ssGUI::Extensions
         {
             auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName)
             {
+                if(!target->IsEventCallbackExist(eventCallbackName))
+                    return;
+
                 target->GetEventCallback(eventCallbackName)->RemoveEventListener(EXTENSION_NAME);
             
                 if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)

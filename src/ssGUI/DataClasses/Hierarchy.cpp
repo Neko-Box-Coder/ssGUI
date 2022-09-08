@@ -41,8 +41,12 @@ namespace ssGUI
 
     void Hierarchy::NotifyAndRemoveOnObjectDestroyEventCallbackIfExist()
     {
+        FUNC_DEBUG_ENTRY();
         if(DestroyEventCalled)
+        {
+            FUNC_DEBUG_EXIT();
             return;
+        }
         
         DestroyEventCalled = true;
         if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
@@ -50,6 +54,7 @@ namespace ssGUI
             CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME)->Notify(CurrentObject);
             CurrentEventCallbackManager->RemoveEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME);
         }
+        FUNC_DEBUG_EXIT();
     }
 
     Hierarchy::Hierarchy() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true),

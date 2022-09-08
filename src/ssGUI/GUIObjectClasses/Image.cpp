@@ -34,10 +34,12 @@ namespace ssGUI
         DrawingCounts.push_back(4);
         DrawingProperties.push_back(ssGUI::DrawingProperty());
         
+        if(GetImageData() == nullptr)
+            return;
 
         //TODO: The code below can be moved to its own function
         glm::vec2 imgDrawPosition = GetGlobalPosition();
-        glm::vec2 imgSize = ImageData->GetSize();
+        glm::vec2 imgSize = GetImageData()->GetSize();
 
         DrawingColours.push_back(ImageTint);
         DrawingColours.push_back(ImageTint);

@@ -207,6 +207,7 @@ namespace ssGUI
 
     GUIObject::~GUIObject()
     {
+        FUNC_DEBUG_ENTRY();
         if(!ObjectDelete)
         {
             NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
@@ -220,6 +221,8 @@ namespace ssGUI
         
         for(auto it : EventCallbacks)
             ssGUI::Factory::Dispose(it.second);
+        
+        FUNC_DEBUG_EXIT();
     }
 
     ssGUI::Enums::GUIObjectType GUIObject::GetType() const
