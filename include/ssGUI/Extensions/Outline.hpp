@@ -86,7 +86,7 @@ namespace ssGUI::Extensions
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
             constexpr double pi() { return std::atan(1)*4; };
 
-            //Return angle in radians. Positive if angle between a and b is anti-clockwise
+            //Return angle in radians. Positive if angle between a and b is clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
 
             virtual bool FindInnerOutlinesIntersection(glm::vec2 curVertex, glm::vec2 prevVertex, glm::vec2 nextVertex, float outlineThickness, glm::vec2& intersection);

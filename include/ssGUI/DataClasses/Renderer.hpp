@@ -149,12 +149,23 @@ namespace ssGUI
             //This function is mainly be called by <Extension::Internal_Draw>.
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties();
 
-            //function: Extension_GetGUIObjectFirstShapeIndex
-            //This returns the first shape index on the GUI Object for extensions
+            /*function: Extension_GetGUIObjectFirstShapeIndex
+            This returns the index of first shape created by the GUI Object.
+            So for example, 
+            ================ Text ====================
+            [Extension created Shape A] [Extension created Shape B] [GUI Object created Shape C] [Extension created Shape D]
+             rendered first ────────────────────────────────────────────────────────────────────────────────────► rendered last
+            ==========================================
+            This will return shape C as this is the first shape created by GUI object.
+            So to get shape A, you will need to -2 from this index.
+            Note that this doesn't check if the GUI Object creates any shapes, 
+            it just returns the index *if* the GUI object creates any shapes.
+            So it will be invalid to use this index on any empty GUI objects that does not create any shapes.*/
             virtual int Extension_GetGUIObjectFirstShapeIndex() const;
 
             //function: Extension_GetGUIObjectFirstVertexIndex
-            //This returns the first vertex index on the GUI Object for extensions
+            //This returns the index of first vertex created by the GUI Object
+            //Again similar to <Extension_GetGUIObjectFirstShapeIndex> but with indices instead
             virtual int Extension_GetGUIObjectFirstVertexIndex() const;
 
             //function: RedrawObject

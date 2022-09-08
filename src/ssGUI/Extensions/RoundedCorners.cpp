@@ -1,5 +1,6 @@
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 
+#include <cmath>
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 namespace ssGUI::Extensions
