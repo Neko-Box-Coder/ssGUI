@@ -2,10 +2,28 @@
 
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 
+#include <cmath>
+#include <algorithm>    // std::sort
 
 namespace ssGUI::Extensions
 {
-    bool Mask::IsContained(glm::vec2 point, glm::vec2 min, glm::vec2 max) const
+    bool Mask::IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices, int startOffset, int shapeCount) const
+    {
+        for(int i = startOffset; i < startOffset + shapeCount; i++)
+        {
+            int nextIndex = i+1 >= startOffset + shapeCount ? startOffset : i+1;
+            glm::vec3 curLine = glm::vec3(shapeVertices[i] - point, 0);
+            glm::vec3 nextLine = glm::vec3(shapeVertices[nextIndex] - point, 0);
+
+            float cross = glm::cross(curLine, nextLine).z;
+            if(cross < 0)
+                return false;
+        }
+
+        return true;
+    }
+    
+    bool Mask::IsPointContainedInMask(glm::vec2 point, glm::vec2 min, glm::vec2 max) const
     {
         bool isXIn = point.x >= min.x && point.x <= max.x;
 
@@ -124,261 +142,128 @@ namespace ssGUI::Extensions
         auto addNewVertexInfo = [&currentShapeVertices, &currentShapeUVs, &currentShapeColours, &currentVertexChanged]
         (glm::vec2 newVertex, glm::u8vec4 newColour, bool changed, glm::vec2 uv = glm::vec2())
         {
+            // DEBUG_LINE("newVertex: "<<newVertex.x<<", "<<newVertex.y);
             currentShapeVertices.push_back(newVertex);
             currentShapeUVs.push_back(uv);
             currentShapeColours.push_back(newColour);
             currentVertexChanged.push_back(changed);
         };
-        
-        int lastOpenIntersectionIndex = -1;     //Intersection index
-        int lastCloseIntersectionIndex = -1;    //Intersection index
+
+        //Get all the mask vertices that are contained within the shape
+        std::vector<int> containedMaskVertices;
+        for(int i = 0; i < maskVerticies.size(); i++)
+        {
+            if(IsPointContainedInShape(maskVerticies[i], originalVerticies, shapeOffset, shapeVertexCount))
+                containedMaskVertices.push_back(i);
+        }
+
+        // DEBUG_LINE("start");
         //Iterating each vertex in the shape
         for(int currentShapeVertexIndex = shapeOffset; currentShapeVertexIndex < shapeOffset + shapeVertexCount; currentShapeVertexIndex++)
         {
-            //If both shape vertices are inside the mask, add the current vertex
-            if(IsContained(originalVerticies[currentShapeVertexIndex], maskMin, maskMax) && 
-                IsContained(originalVerticies[GetNextIndex(shapeOffset, shapeVertexCount, currentShapeVertexIndex)], maskMin, maskMax))
-            {                        
-                addNewVertexInfo(originalVerticies[currentShapeVertexIndex], originalColours[shapeOffset], false, originalUVs[currentShapeVertexIndex]);
-            }
-            //If the line is going outside the mask from inside (Open intersection)
-            else if(IsContained(originalVerticies[currentShapeVertexIndex], maskMin, maskMax) && 
-                !IsContained(originalVerticies[GetNextIndex(shapeOffset, shapeVertexCount, currentShapeVertexIndex)], maskMin, maskMax))
+            // DEBUG_LINE("currentShapeVertexIndex: "<<currentShapeVertexIndex);
+
+            bool isCurVertexContained = IsPointContainedInMask(originalVerticies[currentShapeVertexIndex], maskMin, maskMax);
+            std::vector<int> curIntersectionIndices;
+
+            //Get all the related intersections
+            for(int i = 0; i < shapeIntersectIndices.size(); i++)
             {
-                //If the closing intersection index is not recorded, then record the current index for open intersection and add the intersection
-                if(lastCloseIntersectionIndex == -1)
-                {
-                    addNewVertexInfo(originalVerticies[currentShapeVertexIndex], originalColours[shapeOffset], false, originalUVs[currentShapeVertexIndex]);
-
-                    //Find the mask intersection index and it
-                    int openIntersectionIndex = -1;
-                    for(int j = 0; j < intersections.size(); j++)
-                    {
-                        //This block gets triggered when one of the points are sitting on the mask line
-                        if(openIntersectionIndex != -1 && shapeIntersectIndices[j] == currentShapeVertexIndex)
-                        {
-                            //If the last intersection is closer to the start point of the line, use this intersection instead
-                            if(glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[openIntersectionIndex])) <
-                                glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[j])))
-                            {
-                                openIntersectionIndex = j;
-                            }
-                            break;
-                        }
-                        else if(shapeIntersectIndices[j] == currentShapeVertexIndex)
-                        {
-                            openIntersectionIndex = j;
-                        }
-                    }
-
-                    lastOpenIntersectionIndex = openIntersectionIndex;
-                    addNewVertexInfo(intersections[openIntersectionIndex], originalColours[shapeOffset], true);
-                }
-                //If there's a closing intersection, then add the open intersection until it reaches the close intersection
-                else
-                {
-                    addNewVertexInfo(originalVerticies[currentShapeVertexIndex], originalColours[shapeOffset], false, originalUVs[currentShapeVertexIndex]);
-
-                    int maskCloseIntersectionIndex = maskIntersectIndices[lastCloseIntersectionIndex];
-                    int maskOpenIntersectionIndex = -1;
-
-                    //Find the mask intersection indices first
-                    int openIntersectionIndex = -1;
-                    for(int j = 0; j < intersections.size(); j++)
-                    {
-                        //This block gets triggered when one of the points are sitting on the mask line
-                        if(openIntersectionIndex != -1 && shapeIntersectIndices[j] == currentShapeVertexIndex)
-                        {
-                            //If the last intersection is closer to the start point of the line, use this intersection instead
-                            if(glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[openIntersectionIndex])) <
-                                glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[j])))
-                            {
-                                maskOpenIntersectionIndex = maskIntersectIndices[j];
-                                openIntersectionIndex = j;
-                            }
-                            break;
-                        }
-                        else if(shapeIntersectIndices[j] == currentShapeVertexIndex)
-                        {
-                            maskOpenIntersectionIndex = maskIntersectIndices[j];
-                            openIntersectionIndex = j;
-                        }
-                    }
-
-                    //Add open intersection first
-                    addNewVertexInfo(intersections[openIntersectionIndex], originalColours[shapeOffset], true);
-
-                    //Then add all the mask vertices until reaches close intersection
-                    int currentMaskIndex = GetNextIndex(0, maskVerticies.size(), maskOpenIntersectionIndex);
-                    int endMaskIndex = GetNextIndex(0, maskVerticies.size(), maskCloseIntersectionIndex);
-                    while (currentMaskIndex != endMaskIndex)
-                    {
-                        addNewVertexInfo(maskVerticies[currentMaskIndex], originalColours[shapeOffset], true);
-
-                        currentMaskIndex = GetNextIndex(0, maskVerticies.size(), currentMaskIndex);
-                    }
-
-                    //Reset intersection index
-                    lastOpenIntersectionIndex = -1;
-                    lastCloseIntersectionIndex = -1;
-                }
-
+                if(shapeIntersectIndices[i] == currentShapeVertexIndex)
+                    curIntersectionIndices.push_back(i);
             }
-            //If the line is going inside the mask from outside (Close intersection)
-            else if(!IsContained(originalVerticies[currentShapeVertexIndex], maskMin, maskMax) && 
-                IsContained(originalVerticies[GetNextIndex(shapeOffset, shapeVertexCount, currentShapeVertexIndex)], maskMin, maskMax))
+
+            if(isCurVertexContained)
             {
-                //If the open intersection index is not recorded, then record the current index for close intersection and add the intersection
-                if(lastOpenIntersectionIndex == -1)
+                // DEBUG_LINE("in");
+                //If current vertex is inside the mask, add it to new shape
+                addNewVertexInfo(originalVerticies[currentShapeVertexIndex], originalColours[currentShapeVertexIndex], false, originalUVs[currentShapeVertexIndex]);
+
+                //If there's any intersection, add it
+                if(!curIntersectionIndices.empty())
                 {
-                    //Find the mask intersection index and add it
-                    int closeIntersectionIndex = -1;
-                    for(int j = 0; j < intersections.size(); j++)
+                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true);
+                    
+                    //Find if there's any mask vertices contained in the shape, if so add them
+                    if(!containedMaskVertices.empty())
                     {
-                        //This block gets triggered when one of the points are sitting on the mask line
-                        if(closeIntersectionIndex != -1 && shapeIntersectIndices[j] == currentShapeVertexIndex)
+                        int curMaskIndex = maskIntersectIndices[curIntersectionIndices[0]];
+                        int maskVertexCounter = 0;
+
+                        while (true)
                         {
-                            //If the last intersection is further to the start point of the line, use this intersection instead
-                            if(glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[closeIntersectionIndex])) > 
-                                glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[j])))
+                            curMaskIndex = GetNextIndex(0, maskVerticies.size(), curMaskIndex);
+                            bool found = false;
+                            for(int i = 0; i < containedMaskVertices.size(); i++)
                             {
-                                closeIntersectionIndex = j;
+                                if(containedMaskVertices[i] == curMaskIndex)
+                                {
+                                    addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true);
+                                    maskVertexCounter++;
+                                    found = true;
+                                    break;
+                                }
                             }
-                            break;
-                        }
-                        else if(shapeIntersectIndices[j] == currentShapeVertexIndex)
-                        {
-                            closeIntersectionIndex = j;
+
+                            if(!found || maskVertexCounter >= maskVerticies.size())
+                                break;
                         }
                     }
-
-                    lastCloseIntersectionIndex = closeIntersectionIndex;
-                    addNewVertexInfo(intersections[closeIntersectionIndex], originalColours[shapeOffset], true);
-                }
-                //If there's a open intersection, then add the mask indices until it reaches the close intersection
-                else
-                {                                                        
-                    int maskCloseIntersectionIndex = -1;
-                    int maskOpenIntersectionIndex = maskIntersectIndices[lastOpenIntersectionIndex];
-
-                    //Find the mask close intersection index first
-                    int closeIntersectionIndex = -1;
-                    for(int j = 0; j < intersections.size(); j++)
-                    {
-                        if(closeIntersectionIndex != -1 && shapeIntersectIndices[j] == currentShapeVertexIndex)
-                        {
-                            //If the last intersection is further to the start point of the line, use this intersection instead
-                            if(glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[closeIntersectionIndex])) > 
-                                glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[j])))
-                            {
-                                maskCloseIntersectionIndex = maskIntersectIndices[j];
-                                closeIntersectionIndex = j;
-                            }
-                            break;
-                        }
-                        else if(shapeIntersectIndices[j] == currentShapeVertexIndex)
-                        {
-                            maskCloseIntersectionIndex = maskIntersectIndices[j];
-                            closeIntersectionIndex = j;
-                        }
-                    }
-
-                    //Then add all the mask vertices until reaches close intersection
-                    int currentMaskIndex = GetNextIndex(0, maskVerticies.size(), maskOpenIntersectionIndex);
-                    int endMaskIndex = GetNextIndex(0, maskVerticies.size(), maskCloseIntersectionIndex);
-                    while (currentMaskIndex != endMaskIndex)
-                    {
-                        addNewVertexInfo(maskVerticies[currentMaskIndex], originalColours[shapeOffset], true);
-                        currentMaskIndex = GetNextIndex(0, maskVerticies.size(), currentMaskIndex);
-                    }
-
-                    //Add close intersection last
-                    addNewVertexInfo(intersections[closeIntersectionIndex], originalColours[shapeOffset], true);
-
-                    //Reset intersection index
-                    lastOpenIntersectionIndex = -1;
-                    lastCloseIntersectionIndex = -1;
                 }
             }
-            //If the line is totally outside the mask **OR** passing through the mask
-            else /*if(!IsContained(originalVerticies[currentShapeVertexIndex], maskMin, maskMax) && 
-                !IsContained(originalVerticies[GetNextIndex(currentOffset, originalVerticies.size(), currentShapeVertexIndex)], maskMin, maskMax))*/
+            else
             {
-                //Check if the line is intersecting at all
-                int passThroughIntersectionIndices[2];
-                bool intersectionFound = false;
-
-                for(int j = 0; j < intersections.size(); j++)
+                // DEBUG_LINE("out");
+                //If there are intersections, check how many are there
+                if(!curIntersectionIndices.empty())
                 {
-                    if(shapeIntersectIndices[j] == currentShapeVertexIndex)
+                    if(curIntersectionIndices.size() > 1)
                     {
-                        if(!intersectionFound)
+                        //Find the closing intersection first
+                        if(glm::distance2(originalVerticies[currentShapeVertexIndex], intersections[curIntersectionIndices.at(0)]) > 
+                            glm::distance2(originalVerticies[currentShapeVertexIndex], intersections[curIntersectionIndices.at(1)]))
                         {
-                            intersectionFound = true;
-                            passThroughIntersectionIndices[0] = j;
-                        }
-                        else
+                            auto temp = curIntersectionIndices[0];
+                            curIntersectionIndices[0] = curIntersectionIndices[1];
+                            curIntersectionIndices[1] = temp; 
+                        }   
+                    }
+
+                    //Add closing intersection first
+                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true);
+
+                    //Add opening intersection (if there's any)
+                    if(curIntersectionIndices.size() > 1)
+                    {
+                        addNewVertexInfo(intersections[curIntersectionIndices[1]], originalColours[shapeOffset], true);
+                        
+                        //Find if there's any mask vertices contained in the shape, if so add them
+                        if(!containedMaskVertices.empty())
                         {
-                            passThroughIntersectionIndices[1] = j;
-                            break;
+                            int curMaskIndex = maskIntersectIndices[curIntersectionIndices[1]];
+                            int maskVertexCounter = 0;
+
+                            while (true)
+                            {
+                                curMaskIndex = GetNextIndex(0, maskVerticies.size(), curMaskIndex);
+                                bool found = false;
+                                for(int i = 0; i < containedMaskVertices.size(); i++)
+                                {
+                                    if(containedMaskVertices[i] == curMaskIndex)
+                                    {
+                                        addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true);
+                                        maskVertexCounter++;
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if(!found || maskVertexCounter >= maskVerticies.size())
+                                    break;
+                            }
                         }
                     }
                 }
-
-                //If the line is indeed passing through the mask, add both intersections
-                if(intersectionFound)
-                {
-                    //If the first intersection is closer to the starting point of the line
-                    if(glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[passThroughIntersectionIndices[0]])) < 
-                        glm::distance2(glm::vec2(originalVerticies[currentShapeVertexIndex]), glm::vec2(intersections[passThroughIntersectionIndices[1]])))
-                    {   
-                        addNewVertexInfo(intersections[passThroughIntersectionIndices[0]], originalColours[shapeOffset], true);
-                        addNewVertexInfo(intersections[passThroughIntersectionIndices[1]], originalColours[shapeOffset], true);
-
-                        lastCloseIntersectionIndex = passThroughIntersectionIndices[0];
-                        lastOpenIntersectionIndex = passThroughIntersectionIndices[1];
-                    }
-                    else
-                    {
-                        addNewVertexInfo(intersections[passThroughIntersectionIndices[1]], originalColours[shapeOffset], true);
-                        addNewVertexInfo(intersections[passThroughIntersectionIndices[0]], originalColours[shapeOffset], true);
-
-                        lastCloseIntersectionIndex = passThroughIntersectionIndices[1];
-                        lastOpenIntersectionIndex = passThroughIntersectionIndices[0];
-                    }
-                }
-
-                //Special Case check:
-                /*
-                            Mask
-                            ▼
-                        ┌───────┐
-                    ┌───┼───────┼───┐
-                    │   │///////│   │
-                    │   │///////│   │
-                    │   └───────┘   │
-                    │               │ ◄── Shape
-                    └───────────────┘
-
-                */
-                if(currentShapeVertexIndex == shapeOffset + shapeVertexCount - 1 &&
-                    currentShapeVertices.size() == 2 && lastOpenIntersectionIndex != -1 &&
-                    lastCloseIntersectionIndex != -1)
-                {
-                    int maskCloseIntersectionIndex = maskIntersectIndices[lastCloseIntersectionIndex];
-                    int maskOpenIntersectionIndex = maskIntersectIndices[lastOpenIntersectionIndex];
-
-                    //Then add all the mask vertices until reaches close intersection
-                    int currentMaskIndex = GetNextIndex(0, maskVerticies.size(), maskOpenIntersectionIndex);
-                    int endMaskIndex = GetNextIndex(0, maskVerticies.size(), maskCloseIntersectionIndex);
-                    while (currentMaskIndex != endMaskIndex)
-                    {
-                        addNewVertexInfo(maskVerticies[currentMaskIndex], originalColours[shapeOffset], true);
-
-                        currentMaskIndex = GetNextIndex(0, maskVerticies.size(), currentMaskIndex);
-                    }
-                }
-
             }
         }
 
@@ -393,6 +278,7 @@ namespace ssGUI::Extensions
         int currentOffset = 0;
         int oldOffset = 0;
 
+        // DEBUG_LINE("Sampling....");
         for(int shapeIndex = 0; shapeIndex < newVerticesCount.size(); shapeIndex++)
         {
             std::vector<glm::vec2> currentShapeVertices;
@@ -401,14 +287,22 @@ namespace ssGUI::Extensions
             
             for(int vertexIndex = currentOffset; vertexIndex < currentOffset + newVerticesCount[shapeIndex]; vertexIndex++)
             {
+                // DEBUG_LINE("vertexIndex: "<<vertexIndex);
+
                 if(!changed[vertexIndex])
                     continue;
 
+                // DEBUG_LINE("Changed");
+
                 int closestIndicies[] = {0, 0, 0};
+
 
                 if(!GetSampleIndicesFromShape(currentShapeVertices, closestIndicies, newVertices[vertexIndex]))
                     break;
                 
+                // DEBUG_LINE("closestIndicies[0]: "<<closestIndicies[0]);
+                // DEBUG_LINE("closestIndicies[1]: "<<closestIndicies[1]);
+                // DEBUG_LINE("closestIndicies[2]: "<<closestIndicies[2]);
 
                 glm::vec2 axis = currentShapeVertices[closestIndicies[1]] - currentShapeVertices[closestIndicies[0]];
                 glm::vec2 axis2 = currentShapeVertices[closestIndicies[2]] - currentShapeVertices[closestIndicies[0]];
@@ -418,10 +312,18 @@ namespace ssGUI::Extensions
                 if(!GetAxesValues(axis, axis2, newVertices[vertexIndex] - currentShapeVertices[closestIndicies[0]], axisValue, axis2Value))  
                     break;
 
+                // DEBUG_LINE("axisValue: "<<axisValue);
+                // DEBUG_LINE("axis2Value: "<<axis2Value);
+
                 glm::vec2 uvAxis = originalUVs[oldOffset + closestIndicies[1]] - originalUVs[oldOffset + closestIndicies[0]];
                 glm::vec2 uvAxis2 = originalUVs[oldOffset + closestIndicies[2]] - originalUVs[oldOffset + closestIndicies[0]];
-                glm::u8vec4 colourAxis = originalColours[oldOffset + closestIndicies[1]] - originalColours[oldOffset + closestIndicies[0]];
-                glm::u8vec4 colourAxis2 = originalColours[oldOffset + closestIndicies[2]] - originalColours[oldOffset + closestIndicies[0]];
+                glm::vec4 colourAxis = (glm::vec4)originalColours[oldOffset + closestIndicies[1]] - (glm::vec4)originalColours[oldOffset + closestIndicies[0]];
+                glm::vec4 colourAxis2 = (glm::vec4)originalColours[oldOffset + closestIndicies[2]] - (glm::vec4)originalColours[oldOffset + closestIndicies[0]];
+
+                // DEBUG_LINE("originalColours[oldOffset + closestIndicies[0]]: "<<(int)originalColours[oldOffset + closestIndicies[0]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].g<<", "
+                // <<(int)originalColours[oldOffset + closestIndicies[0]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].a);
+                // DEBUG_LINE("colourAxis: "<<(int)colourAxis.r<<", "<<(int)colourAxis.g<<", "<<(int)colourAxis.b<<", "<<(int)colourAxis.a);
+                // DEBUG_LINE("colourAxis2: "<<(int)colourAxis2.r<<", "<<(int)colourAxis2.g<<", "<<(int)colourAxis2.b<<", "<<(int)colourAxis2.a);
 
                 newUVs[vertexIndex] = (originalUVs[oldOffset + closestIndicies[0]]) +
                                         (uvAxis) * axisValue +
@@ -430,8 +332,6 @@ namespace ssGUI::Extensions
                 newColours[vertexIndex] = glm::vec4(originalColours[oldOffset + closestIndicies[0]]) +
                                             glm::vec4(colourAxis) * axisValue +
                                             glm::vec4(colourAxis2) * axis2Value;
-
-
             }
 
             currentOffset += newVerticesCount[shapeIndex];
@@ -855,6 +755,9 @@ namespace ssGUI::Extensions
         {
             auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName)
             {
+                if(!target->IsEventCallbackExist(eventCallbackName))
+                    return;
+
                 target->GetEventCallback(eventCallbackName)->RemoveEventListener(EXTENSION_NAME);
             
                 if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
@@ -886,6 +789,12 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_ENTRY();
         
         MaskChildren = maskChildren;
+
+        if(Container == nullptr)
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
 
         std::queue<ssGUI::GUIObject*> children;
 
@@ -944,7 +853,7 @@ namespace ssGUI::Extensions
         else
         {
             RemoveMaskEnforcerToChildren(Container, IsMaskContainer());
-            if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME))
+            if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME))
             {
                 Container->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME)->
                     RemoveEventListener(EXTENSION_NAME);
@@ -969,7 +878,14 @@ namespace ssGUI::Extensions
 
     void Mask::SetMaskContainer(bool maskContainer)
     {
+        FUNC_DEBUG_ENTRY();
         MaskContainer = maskContainer;
+
+        if(Container == nullptr)
+        {
+            FUNC_DEBUG_EXIT();
+            return;
+        }
 
         if(maskContainer)
         {
@@ -987,7 +903,6 @@ namespace ssGUI::Extensions
                 if(!enforcer->HasTargetMaskObject(Container))
                     enforcer->AddTargetMaskObject(Container);
             }
-                
         }
         else
         {
@@ -1003,6 +918,8 @@ namespace ssGUI::Extensions
                     enforcer->RemoveTargetMaskObject(Container);
             }
         }
+
+        FUNC_DEBUG_EXIT();
     }
 
     bool Mask::IsMaskContainer() const
@@ -1076,7 +993,7 @@ namespace ssGUI::Extensions
 
     bool Mask::IsPointContainedInMask(glm::vec2 point) const
     {
-        return IsContained(point, GetGlobalPosition(), GetGlobalPosition() + GetSize());
+        return IsPointContainedInMask(point, GetGlobalPosition(), GetGlobalPosition() + GetSize());
     }
 
     void Mask::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
@@ -1093,8 +1010,7 @@ namespace ssGUI::Extensions
         FUNC_DEBUG_EXIT();
     }
 
-
-    void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset)
+    void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset, const std::vector<int>& applyShapeIndices)
     {
         FUNC_DEBUG_ENTRY();
         
@@ -1123,9 +1039,50 @@ namespace ssGUI::Extensions
         maskShape.push_back(maskMax);
         maskShape.push_back(maskMin + glm::vec2(0, GetSize().y));
 
+        //DEBUG PRINTING SHAPES
+        // int debugVertexOffset = 0;
+        // DEBUG_LINE("Before:");
+        // for(int i = 0; i < verticesCount.size(); i++)
+        // {
+        //     DEBUG_LINE("Current shape: "<<i);
+        //     for(int j = debugVertexOffset; j < debugVertexOffset + verticesCount[i]; j++)
+        //     {
+        //         DEBUG_LINE("originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
+        //         DEBUG_LINE("originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
+        //     }
+
+        //     debugVertexOffset += verticesCount[i];
+        // }
+
         //Iterating each shape
         for(int shapeIndex = 0; shapeIndex < verticesCount.size(); shapeIndex++)
         {
+            if(!applyShapeIndices.empty())
+            {
+                //Check if the current shape needs to be masked or not
+                bool applyMask = false;
+                for(int i = 0; i < applyShapeIndices.size(); i++)
+                {
+                    if(applyShapeIndices[i] + obj->Extension_GetGUIObjectFirstShapeIndex() == shapeIndex)
+                    {
+                        applyMask = true;
+                        break;
+                    }
+                }
+
+                //If we don't need to apply any masks, just go to next shape
+                if(!applyMask)
+                {
+                    newVertices.insert(     newVertices.end(),      originalVerticies.begin() + currentOffset,  originalVerticies.begin() + currentOffset + verticesCount[shapeIndex]);
+                    newUVs.insert(          newUVs.end(),           originalUVs.begin() + currentOffset,        originalUVs.begin() + currentOffset + verticesCount[shapeIndex]);
+                    newColours.insert(      newColours.end(),       originalColours.begin() + currentOffset,    originalColours.begin() + currentOffset + verticesCount[shapeIndex]);
+                    changed.insert(         changed.end(),          verticesCount[shapeIndex],   false);
+                    newVerticesCount.insert(newVerticesCount.end(), verticesCount[shapeIndex]);
+                    goto nextShape;
+                }
+            }
+            
+
             //Do AABB test for the shape and the mask
             glm::vec2 shapeMin;
             glm::vec2 shapeMax;
@@ -1143,6 +1100,8 @@ namespace ssGUI::Extensions
                 std::vector<int> maskIntersectIndices;
 
                 GetIntersections(intersections, shapeIntersectIndices, maskIntersectIndices, originalVerticies, currentOffset, verticesCount[shapeIndex], maskShape);
+
+                // DEBUG_LINE("intersections count: "<<intersections.size());
 
                 /*
                 std::cout<<"\n";
@@ -1187,7 +1146,13 @@ namespace ssGUI::Extensions
                                                     verticesCount[shapeIndex], maskShape, intersections, shapeIntersectIndices,
                                                     maskIntersectIndices);
                 }
-                //If there's no intersection, that means the shape is inside the mask
+                //If the first vertex is outside of the mask, this means the shape is outside the mask
+                else if(!IsPointContainedInMask(originalVerticies[currentOffset], maskMin, maskMax))
+                {
+                    newVerticesCount.push_back(0);
+                    goto nextShape;
+                }
+                //Otherwise there's no intersection and that means the shape is inside the mask
                 else
                 {
                     newVertices.insert(     newVertices.end(),      originalVerticies.begin() + currentOffset,  originalVerticies.begin() + currentOffset + verticesCount[shapeIndex]);
@@ -1224,6 +1189,21 @@ namespace ssGUI::Extensions
         originalColours.assign(newColours.begin(), newColours.end());
 
         verticesCount.assign(newVerticesCount.begin(), newVerticesCount.end());
+
+        //DEBUG PRINTING SHAPES
+        // debugVertexOffset = 0;
+        // DEBUG_LINE("After:");
+        // for(int i = 0; i < verticesCount.size(); i++)
+        // {
+        //     DEBUG_LINE("Current shape: "<<i);
+        //     for(int j = debugVertexOffset; j < debugVertexOffset + verticesCount[i]; j++)
+        //     {
+        //         DEBUG_LINE("originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
+        //         DEBUG_LINE("originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
+        //     }
+
+        //     debugVertexOffset += verticesCount[i];
+        // }
 
         FUNC_DEBUG_EXIT();
     }
@@ -1294,7 +1274,12 @@ namespace ssGUI::Extensions
     void Mask::BindToObject(ssGUI::GUIObject* bindObj)
     {
         Container = bindObj;
-        SetMaskChildren(true);  //Setting it to true in order to add mask enforcer extension as well as event callbacks
+        
+        if(GetMaskChildren())
+            SetMaskChildren(true);  //Setting it to true in order to add mask enforcer extension as well as event callbacks
+        
+        if(IsMaskContainer())
+            SetMaskContainer(true); //Same thing here
     }
 
     void Mask::Copy(ssGUI::Extensions::Extension* extension)

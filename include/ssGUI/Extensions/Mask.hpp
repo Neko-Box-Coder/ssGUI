@@ -64,7 +64,8 @@ namespace ssGUI::Extensions
             glm::vec2 GlobalPosition;
             glm::vec2 Size;
 
-            virtual bool IsContained(glm::vec2 point, glm::vec2 min, glm::vec2 max) const;
+            virtual bool IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices, int startOffset, int shapeCount) const;
+            virtual bool IsPointContainedInMask(glm::vec2 point, glm::vec2 min, glm::vec2 max) const;
             virtual bool LineToLineIntersection(glm::vec2 linePointA, glm::vec2 linePointB, 
                                                 glm::vec2 linePointC, glm::vec2 linePointD, glm::vec2& intersection);
             virtual bool GetAxesValues(glm::vec2 axis, glm::vec2 axis2, glm::vec2 samplePoint, float& axisValue, float& axis2Value);
@@ -115,6 +116,9 @@ namespace ssGUI::Extensions
             //function: SetMaskChildren
             //If true, this will add <MaskEnforcer> automatically to the children
             virtual void SetMaskChildren(bool maskChildren);
+            
+            //TODO: Rename this function to IsMaskChildren, 
+            //a bit retarded to have GetMaskChildren and IsMaskContainer, 2 different naming style in the same file.
             
             //function: GetMaskChildren
             //If true, this will add <MaskEnforcer> automatically to the children
@@ -181,8 +185,12 @@ namespace ssGUI::Extensions
             virtual void Internal_OnRecursiveChildRemoved(ssGUI::GUIObject* child);
             
             //function: MaskObject
-            //Public function for masking a GUI object
-            virtual void MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset);
+            //Public function for masking a GUI object.
+            //Offset of the mask position can be set by passing renderOffset.
+            //Shapes can be specified to be masked by passing the index of the shapes.
+            //If no shape indices are passed, masking will be applied to all shapes.
+            //GUI Object shape index can be obtained with <ssGUI::Renderer:Extension_GetGUIObjectFirstShapeIndex>.
+            virtual void MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset, const std::vector<int>& applyShapeIndices);
 
             //Override from Extension
             //function: SetEnabled
