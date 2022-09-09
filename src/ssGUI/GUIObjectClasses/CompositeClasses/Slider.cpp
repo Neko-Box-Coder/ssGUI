@@ -267,6 +267,7 @@ namespace ssGUI
                 mousePos.x >= GetGlobalPosition().x && mousePos.x <= GetGlobalPosition().x + GetSize().x &&
                 mousePos.y >= GetGlobalPosition().y && mousePos.y <= GetGlobalPosition().y + GetSize().y;
             
+            //TODO: Tidy this
             if
             (
                 mouseWithinWidget &&
@@ -406,9 +407,10 @@ namespace ssGUI
             }
         }
 
-        if(GetSize() != LastSize)
+        //If there's any size or position change, we need to update the knob position
+        if(GetSize() != LastSize || GetGlobalPosition() != LastGlobalPosition)
             UpdateKnobPosition(true);
-        
+
         LastSliderDragging = SliderDragging;
         LastGlobalPosition = GetGlobalPosition();
         LastSize = GetSize();
