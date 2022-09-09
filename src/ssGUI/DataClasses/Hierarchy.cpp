@@ -590,7 +590,8 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        auto disableChildrenFocus = [&](ssGUI::GUIObject* searchParent)
+        //This goes down the hierarchy tree from the searchParent and disable any focus
+        auto disableChildrenFocus = [&](ssGUI::GUIObject* searchParent, ssGUI::GUIObject* excludeChild)
         {
             std::vector<ssGUI::GUIObject*> objsToDisableFocus;
             
@@ -598,7 +599,7 @@ namespace ssGUI
             searchParent->MoveChildrenIteratorToFirst();
             while (!searchParent->IsChildrenIteratorEnd())
             {
-                if(searchParent->GetCurrentChild()->IsFocused() && searchParent->GetCurrentChild() != CurrentObject)
+                if(searchParent->GetCurrentChild()->IsFocused() && searchParent->GetCurrentChild() != excludeChild)
                     objsToDisableFocus.push_back(searchParent->GetCurrentChild());
                 searchParent->MoveChildrenIteratorNext();
             }
@@ -643,21 +644,23 @@ namespace ssGUI
 
         if(focus)
         {
+            auto lastParent = CurrentObject;
             auto currentParent = GetParent();
-            //Set the focus of other children from the parent to be false
-            if(currentParent != nullptr)
-                disableChildrenFocus(currentParent);
 
             //Set all recursive parents' focus to true
             while(currentParent != nullptr)
             {
                 currentParent->Internal_SetSelfFocus(true);
+                
+                //Set the focus of other children from the parent to be false
+                disableChildrenFocus(currentParent, lastParent);
+                lastParent = currentParent;
                 currentParent = currentParent->GetParent();
             }
         }
         
         //Set the focus of the children of this GUI object to be false
-        disableChildrenFocus(CurrentObject);
+        disableChildrenFocus(CurrentObject, nullptr);
 
         FUNC_DEBUG_EXIT();
     }
