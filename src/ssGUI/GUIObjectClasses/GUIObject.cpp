@@ -268,7 +268,6 @@ namespace ssGUI
             return;
         }
 
-        Redraw = true;
         if(Redraw)
         {
             DisableRedrawObjectRequest();
