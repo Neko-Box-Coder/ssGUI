@@ -261,7 +261,7 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
 
-        if(!IsVisible())
+        if(!IsEnabled())
         {
             Redraw = false;
             FUNC_DEBUG_EXIT();
@@ -304,8 +304,8 @@ namespace ssGUI
     {
         FUNC_DEBUG_ENTRY();
         
-        //If it is not visible, don't even update/draw it
-        if(!IsVisible())
+        //If it is not enabled, don't even update/draw it
+        if(!IsEnabled())
         {
             FUNC_DEBUG_EXIT();
             return;

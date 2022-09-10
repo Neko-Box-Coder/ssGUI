@@ -19,12 +19,12 @@ namespace ssGUI
     {
         if(!IsFocused())
         {
-            SetVisible(false);
+            SetEnabled(false);
             return;
         }
 
         //The reason for putting this here is because layout can change the size of the menu,
-        //and it changes the size only after this is set to visible
+        //and it changes the size only after this is set to enabled
         switch (CurrentMenuSpawnDirection)
         {
             case ssGUI::Enums::MenuSpawnDirection::TOP_LEFT:
@@ -86,7 +86,7 @@ namespace ssGUI
     {
         SpawnGlobalPosition = globalPosition;
         CurrentMenuSpawnDirection = GetMenuSpawnDirection(globalPosition);
-        SetVisible(true);
+        SetEnabled(true);
         SetFocus(true);
     }
 
@@ -133,7 +133,7 @@ namespace ssGUI
     {
         SpawnGlobalPosition = globalPosition;
         CurrentMenuSpawnDirection = direction;
-        SetVisible(true);
+        SetEnabled(true);
         SetFocus(true);
     }
 
@@ -159,7 +159,7 @@ namespace ssGUI
                         
                         while (true)
                         {
-                            curParent->SetVisible(false);
+                            curParent->SetEnabled(false);
                             auto newParent = curParent->GetParent();
                             if(newParent != nullptr && newParent->GetType() == ssGUI::Enums::GUIObjectType::MENU)
                                 curParent = newParent;
@@ -167,7 +167,7 @@ namespace ssGUI
                                 break;
                         }
                         
-                        curParent->SetVisible(false);
+                        curParent->SetEnabled(false);
                     }
                 }
                 else if(btn->GetButtonState() == ssGUI::Enums::ButtonState::HOVER)

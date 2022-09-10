@@ -314,7 +314,7 @@ namespace ssGUI::Extensions
                     childLeft->MoveChildrenIteratorToFirst();
                     while(!childLeft->IsChildrenIteratorEnd())
                     {
-                        childLeft->GetCurrentChild()->SetVisible(true);
+                        childLeft->GetCurrentChild()->SetEnabled(true);
                         childLeft->MoveChildrenIteratorNext();
                     }
                     childLeft->PopChildrenIterator();

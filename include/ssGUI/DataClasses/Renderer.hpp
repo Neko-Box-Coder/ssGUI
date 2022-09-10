@@ -20,7 +20,7 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        bool Visible;
+        bool Enabled;
         glm::u8vec4 BackgroundColour;
         bool Redraw;
         bool AcceptRedrawRequest;
@@ -46,7 +46,7 @@ namespace ssGUI
         ssGUI::GUIObject* CurrentObject;
     =================================================================
     ============================== C++ ==============================
-    Renderer::Renderer() : Visible(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), Redraw(true), AcceptRedrawRequest(true),
+    Renderer::Renderer() : Enabled(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), Redraw(true), AcceptRedrawRequest(true),
                             DrawingVerticies(), DrawingUVs(), DrawingColours(), DrawingCounts(), DrawingProperties(), GUIObjectShapeIndex(-1), 
                             GUIObjectVertexIndex(-1), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
                             LastDrawingCounts(), LastDrawingProperties(), CurrentHierarchy(nullptr), CurrentEventCallbackManager(nullptr),
@@ -57,7 +57,7 @@ namespace ssGUI
     class Renderer
     {
         protected:
-            bool Visible;
+            bool Enabled;
             glm::u8vec4 BackgroundColour;
             bool Redraw;
             bool AcceptRedrawRequest;
@@ -96,20 +96,19 @@ namespace ssGUI
 
             virtual void SetDependentComponents(ssGUI::Hierarchy* hierarchy, ssGUI::EventCallbackManager* eventCallbackManager, ssGUI::GUIObject* obj);
             
-            //TODO : Maybe change Visible to Enabled?
-
-            //function: SetVisible
-            //Sets the visibility of this GUI Object. Note that the logic of this GUI Object will not be called if not visible.
-            virtual void SetVisible(bool visible);
+            //function: SetEnabled
+            //Sets if this GUI Object is enabled. Note that the logic of this GUI Object will not be called if not enabled.
+            virtual void SetEnabled(bool enabled);
             
-            //function: IsVisible
-            //Returns the visibility of this GUI Object. Note that the logic of this GUI Object will not be called if not visible.
-            virtual bool IsVisible() const;
+            //function: IsEnabled
+            //Returns if this GUI Object is enabled. Note that the logic of this GUI Object will not be called if not enabled.
+            //Also Note that this can be affected by parent's enable status.
+            virtual bool IsEnabled() const;
 
-            //function: IsSelfVisible
-            //Returns the visibility of itself excluding the visiblity status of its parent. 
-            //Meaning even if the parent with visibility is false, it will return true if this GUI Object's visibility is not set to false.
-            virtual bool IsSelfVisible() const;
+            //function: IsSelfEnabled
+            //Returns if itself is enabled excluding the enable status of its parent. 
+            //Meaning even if the parent with visibility is false, it will return true if this GUI Object's enable is not set to false.
+            virtual bool IsSelfEnabled() const;
 
             //function: SetBackgroundColor
             //Sets the background color of this GUI Object

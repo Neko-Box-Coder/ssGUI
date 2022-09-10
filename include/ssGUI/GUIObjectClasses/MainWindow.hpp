@@ -126,11 +126,23 @@ namespace ssGUI
 
             //function: SetVisible
             //See <BackendMainWindowInterface::SetVisible>
-            virtual void SetVisible(bool visible) override;
+            virtual void SetVisible(bool visible);
             
-            //function: IsSelfVisible
+            //function: IsVisible
             //See <BackendMainWindowInterface::IsVisible>
-            virtual bool IsSelfVisible() const override;
+            virtual bool IsVisible() const;
+
+            //function: SetEnabled
+            //Proxy function for <SetVisible>
+            virtual void SetEnabled(bool enabled) override;
+            
+            //function: IsEnabled
+            //Proxy function for <IsVisible>
+            virtual bool IsEnabled() const override;
+
+            //function: IsSelfEnabled
+            //Proxy function for <IsVisible>
+            virtual bool IsSelfEnabled() const override;
 
             //function: IsFocused
             //See <BackendMainWindowInterface::IsFocused>

@@ -96,7 +96,7 @@ namespace ssGUI
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
         dropdownMenu->SetParent(this);
-        dropdownMenu->SetVisible(false);
+        dropdownMenu->SetEnabled(false);
         dropdownMenu->SetUserCreated(false);
         dropdownMenu->SetMenuTarget(this);
         dropdownMenu->SetSize(glm::vec2(GetSize().x, dropdownMenu->GetSize().y));
@@ -121,7 +121,7 @@ namespace ssGUI
                 if(dropdownContainer->GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
                 {
                     dropdownMenu->SetSize(glm::vec2(dropdownContainer->GetSize().x, dropdownMenu->GetSize().y));
-                    if(!dropdownMenu->IsVisible())
+                    if(!dropdownMenu->IsEnabled())
                         dropdownContainer->Toggle = false;
                 }
 

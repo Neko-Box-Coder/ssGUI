@@ -34,12 +34,12 @@ namespace ssGUI
         
         if(GetButtonMode() == StandardButton::Mode::ICON)
         {
-            buttonTextObj->SetVisible(false);
+            buttonTextObj->SetEnabled(false);
             FUNC_DEBUG_EXIT();
             return;
         }
 
-        buttonTextObj->SetVisible(true);
+        buttonTextObj->SetEnabled(true);
 
         ssGUI::Extensions::AdvancedSize* as;
         
@@ -70,12 +70,12 @@ namespace ssGUI
 
         if(GetButtonMode() == StandardButton::Mode::TEXT)
         {
-            buttonImgWrapper->SetVisible(false);
+            buttonImgWrapper->SetEnabled(false);
             FUNC_DEBUG_EXIT();
             return;
         }
         
-        buttonImgWrapper->SetVisible(true);
+        buttonImgWrapper->SetEnabled(true);
         
         ssGUI::Extensions::AdvancedSize* as;
         ssGUI::Extensions::AdvancedPosition* ap;

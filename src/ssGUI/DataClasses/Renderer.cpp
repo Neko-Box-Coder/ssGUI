@@ -9,7 +9,7 @@ namespace ssGUI
 {
     Renderer::Renderer(Renderer const& other)
     {
-        Visible = other.IsSelfVisible(); 
+        Enabled = other.IsSelfEnabled(); 
         BackgroundColour = other.GetBackgroundColor();
         Redraw = other.Redraw;
         AcceptRedrawRequest = other.AcceptRedrawRequest;
@@ -66,7 +66,7 @@ namespace ssGUI
         GUIObjectVertexIndex = DrawingVerticies.size();
     }
     
-    Renderer::Renderer() : Visible(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), Redraw(true), AcceptRedrawRequest(true),
+    Renderer::Renderer() : Enabled(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), Redraw(true), AcceptRedrawRequest(true),
                             DrawingVerticies(), DrawingUVs(), DrawingColours(), DrawingCounts(), DrawingProperties(), GUIObjectShapeIndex(-1), 
                             GUIObjectVertexIndex(-1), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
                             LastDrawingCounts(), LastDrawingProperties(), CurrentHierarchy(nullptr), CurrentEventCallbackManager(nullptr),
@@ -83,22 +83,22 @@ namespace ssGUI
         CurrentObject = obj;
     }
 
-    void Renderer::SetVisible(bool visible)
+    void Renderer::SetEnabled(bool enabled)
     {
-        Visible = visible;
+        Enabled = enabled;
         RedrawObject();
     }
 
-    bool Renderer::IsVisible() const
+    bool Renderer::IsEnabled() const
     {
-        if(!IsSelfVisible())
+        if(!IsSelfEnabled())
             return false;
         else
         {
             auto currentParent = CurrentHierarchy->GetParent();
             while (currentParent != nullptr)
             {
-                if(!currentParent->IsSelfVisible())
+                if(!currentParent->IsSelfEnabled())
                     return false;
 
                 currentParent = currentParent->GetParent();   
@@ -108,9 +108,9 @@ namespace ssGUI
         }
     }
 
-    bool Renderer::IsSelfVisible() const
+    bool Renderer::IsSelfEnabled() const
     {
-        return Visible;
+        return Enabled;
     }
 
     void Renderer::SetBackgroundColor(glm::u8vec4 color)

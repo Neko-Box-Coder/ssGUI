@@ -147,7 +147,22 @@ namespace ssGUI
         BackendMainWindow->SetVisible(visible);
     }
 
-    bool MainWindow::IsSelfVisible() const
+    bool MainWindow::IsVisible() const
+    {
+        return BackendMainWindow->IsVisible();
+    }
+
+    void MainWindow::SetEnabled(bool enabled)
+    {
+        BackendMainWindow->SetVisible(enabled);
+    }
+
+    bool MainWindow::IsEnabled() const
+    {
+        return BackendMainWindow->IsVisible();
+    }
+
+    bool MainWindow::IsSelfEnabled() const
     {
         return BackendMainWindow->IsVisible();
     }

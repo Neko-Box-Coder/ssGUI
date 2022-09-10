@@ -123,9 +123,9 @@ namespace ssGUI
         auto imageData = static_cast<ssGUI::Image*>(windowIconObj)->GetImageData();
 
         if(imageData == nullptr || !imageData->IsValid())
-            windowIconObj->SetVisible(false);
+            windowIconObj->SetEnabled(false);
         else
-            windowIconObj->SetVisible(true);
+            windowIconObj->SetEnabled(true);
         
         FUNC_DEBUG_EXIT();
     }
@@ -563,29 +563,29 @@ namespace ssGUI
         if(set)
         {
             if(windowTitleObj != nullptr)
-                windowTitleObj->SetVisible(true);
+                windowTitleObj->SetEnabled(true);
             
             if(windowIconObj != nullptr)
-                windowIconObj->SetVisible(true);
+                windowIconObj->SetEnabled(true);
             
             if(closeButtonObj != nullptr)
             {
                 if(IsClosable())
-                    closeButtonObj->SetVisible(true);
+                    closeButtonObj->SetEnabled(true);
                 else
-                    closeButtonObj->SetVisible(false);
+                    closeButtonObj->SetEnabled(false);
             }
         }
         else
         {
             if(windowTitleObj != nullptr)
-                windowTitleObj->SetVisible(false);
+                windowTitleObj->SetEnabled(false);
             
             if(windowIconObj != nullptr)
-                windowIconObj->SetVisible(false);
+                windowIconObj->SetEnabled(false);
             
             if(closeButtonObj != nullptr)
-                closeButtonObj->SetVisible(false);
+                closeButtonObj->SetEnabled(false);
         }
         
         Window::SetTitlebar(set);
@@ -602,12 +602,12 @@ namespace ssGUI
         if(closable)
         {
             if(HasTitlebar())
-                closeButtonObj->SetVisible(true);
+                closeButtonObj->SetEnabled(true);
             else
-                closeButtonObj->SetVisible(false);
+                closeButtonObj->SetEnabled(false);
         }
         else
-            closeButtonObj->SetVisible(false);
+            closeButtonObj->SetEnabled(false);
 
         Window::SetClosable(closable);
     }

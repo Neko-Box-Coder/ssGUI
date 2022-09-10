@@ -463,12 +463,12 @@ namespace ssGUI::Extensions
                 // newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
             }
             
-            //Set all the children to be not visible since it is not floating
+            //Set all the children to be disabled since it is not floating
             newParent->StashChildrenIterator();
             newParent->MoveChildrenIteratorToFirst();
             while(!newParent->IsChildrenIteratorEnd())
             {
-                newParent->GetCurrentChild()->SetVisible(false);
+                newParent->GetCurrentChild()->SetEnabled(false);
                 newParent->MoveChildrenIteratorNext();
             }
             newParent->PopChildrenIterator();

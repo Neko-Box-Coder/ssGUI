@@ -71,7 +71,7 @@
 //     if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
 //         !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
 //     {
-//         window.SetVisible(window.IsVisible() ? false : true);
+//         window.SetEnabled(window.IsEnabled() ? false : true);
 //         //std::cout<<"WindowPos: "<<window.GetGlobalPosition().x<<", "<<window.GetGlobalPosition().y<<"\n";
 //         //std::cout<<"childWindowPos: "<<childWindow.GetGlobalPosition().x<<", "<<childWindow.GetGlobalPosition().y<<"\n";
 //     }

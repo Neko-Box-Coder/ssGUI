@@ -22,7 +22,7 @@ namespace ssGUI
                 continue;
             }
 
-            if(!mainWindow->IsVisible())
+            if(!mainWindow->IsEnabled())
                 continue;
 
             ssGUI::MainWindow* currentMainWindowP = dynamic_cast<ssGUI::MainWindow*>(mainWindow);
@@ -182,7 +182,7 @@ namespace ssGUI
                 continue;
             }
 
-            if(!mainWindow->IsVisible())
+            if(!mainWindow->IsEnabled())
                 continue;
 
             std::list<ssGUI::GUIObject*> objToRender;

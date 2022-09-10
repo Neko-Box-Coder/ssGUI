@@ -457,7 +457,7 @@ namespace ssGUI::Extensions
             //If it needs to be in the layout
             else if(!CurrentObjectsReferences.GetObjectReference(it)->HasTag(ssGUI::Tags::OVERLAY) && 
                     !CurrentObjectsReferences.GetObjectReference(it)->HasTag(ssGUI::Tags::FLOATING) && 
-                    CurrentObjectsReferences.GetObjectReference(it)->IsVisible())
+                    CurrentObjectsReferences.GetObjectReference(it)->IsEnabled())
             {
                 objsToRemove.push_back(it);
             }
@@ -490,7 +490,7 @@ namespace ssGUI::Extensions
             if(childIndex == -1)
                 childIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
             
-            if(Container->GetCurrentChild()->HasTag(ssGUI::Tags::OVERLAY) || Container->GetCurrentChild()->HasTag(ssGUI::Tags::FLOATING) || !Container->GetCurrentChild()->IsVisible())
+            if(Container->GetCurrentChild()->HasTag(ssGUI::Tags::OVERLAY) || Container->GetCurrentChild()->HasTag(ssGUI::Tags::FLOATING) || !Container->GetCurrentChild()->IsEnabled())
             {
                 ObjectsToExclude.insert(childIndex);
                 SpecialObjectsToExclude.insert(childIndex);

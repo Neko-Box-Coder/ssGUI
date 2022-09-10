@@ -15,7 +15,7 @@ int main()
     ssGUI::Menu menu;
     menu.SetPosition(glm::vec2(100, 100));
     menu.SetParent(&mainWindow);
-    menu.SetVisible(false);
+    menu.SetEnabled(false);
 
     ssGUI::MenuItem menuItem;
     menuItem.GetButtonTextObject()->SetText("Test menu item");
@@ -62,7 +62,7 @@ int main()
             {
                 DEBUG_LINE("menu.IsFocused(): "<<menu.IsFocused());
                 DEBUG_LINE("menu.IsRedrawNeeded(): "<<menu.IsRedrawNeeded());
-                DEBUG_LINE("menuItem5.IsVisible(): "<<menuItem5->IsVisible());
+                DEBUG_LINE("menuItem5.IsEnabled(): "<<menuItem5->IsEnabled());
             }
         }
     );

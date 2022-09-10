@@ -94,10 +94,10 @@ namespace ssGUI
         if(GetImageData() == nullptr)
         {
             if(GetHorizontalScrollbar() != nullptr)
-                GetHorizontalScrollbar()->SetVisible(false);
+                GetHorizontalScrollbar()->SetEnabled(false);
             
             if(GetVerticalScrollbar() != nullptr)
-                GetVerticalScrollbar()->SetVisible(false);
+                GetVerticalScrollbar()->SetEnabled(false);
 
             return;
         }
@@ -169,7 +169,7 @@ namespace ssGUI
         if(GetHorizontalScrollbar() != nullptr)
         {
             if(!IsShowHorizontalScrollbar())
-                GetHorizontalScrollbar()->SetVisible(false);
+                GetHorizontalScrollbar()->SetEnabled(false);
             else
             {
                 //Find min and max x
@@ -186,12 +186,12 @@ namespace ssGUI
 
                 if(GetSize().x < (maxX - minX))
                 {
-                    GetHorizontalScrollbar()->SetVisible(true);
+                    GetHorizontalScrollbar()->SetEnabled(true);
                     GetHorizontalScrollbar()->SetScrollbarSize(GetSize().x / (maxX - minX));
                     GetHorizontalScrollbar()->SetScrollbarValue((drawPosition.x - minX) / ((maxX - minX) - GetSize().x));
                 }
                 else
-                    GetHorizontalScrollbar()->SetVisible(false);       
+                    GetHorizontalScrollbar()->SetEnabled(false);       
 
                 ImageMinX = minX;
                 ImageMaxX = maxX;
@@ -201,7 +201,7 @@ namespace ssGUI
         if(GetVerticalScrollbar() != nullptr)
         {
             if(!IsShowVerticalScrollbar())
-                GetVerticalScrollbar()->SetVisible(false);
+                GetVerticalScrollbar()->SetEnabled(false);
             else
             {
                 //Find min and max y
@@ -218,12 +218,12 @@ namespace ssGUI
 
                 if(GetSize().y < (maxY - minY))
                 {
-                    GetVerticalScrollbar()->SetVisible(true);
+                    GetVerticalScrollbar()->SetEnabled(true);
                     GetVerticalScrollbar()->SetScrollbarSize(GetSize().y / (maxY - minY));
                     GetVerticalScrollbar()->SetScrollbarValue((drawPosition.y - minY) / ((maxY - minY) - GetSize().y));
                 }
                 else
-                    GetVerticalScrollbar()->SetVisible(false); 
+                    GetVerticalScrollbar()->SetEnabled(false); 
 
                 ImageMinY = minY;
                 ImageMaxY = maxY;      
