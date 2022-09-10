@@ -24,6 +24,7 @@ namespace ssGUI::Backend
         
         public:
             BackendDrawingInterface(){}
+            virtual ~BackendDrawingInterface() = 0;
 
             //function: DrawEntities
             //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. *Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
@@ -78,6 +79,7 @@ namespace ssGUI::Backend
                                     int startIndex, int endIndex) = 0;
 
     };
+    inline BackendDrawingInterface::~BackendDrawingInterface(){}   //Pure virtual destructor needs to be defined
 }
 
 #endif

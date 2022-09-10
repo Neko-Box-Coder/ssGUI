@@ -16,6 +16,7 @@ namespace ssGUI::Backend
         
         public:
             BackendFontInterface(){}
+            virtual ~BackendFontInterface() = 0;
             
             //function: IsValid
             //Returns true if the font is loaded.
@@ -64,6 +65,8 @@ namespace ssGUI::Backend
             //Clones the backend font object
             virtual BackendFontInterface* Clone() = 0;
     };
+    
+    inline BackendFontInterface::~BackendFontInterface(){}   //Pure virtual destructor needs to be defined
 }
 
 

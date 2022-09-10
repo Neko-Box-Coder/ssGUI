@@ -115,7 +115,7 @@ namespace ssGUI::Backend
         
         public:
             BackendSystemInputSFML();
-            virtual ~BackendSystemInputSFML();
+            ~BackendSystemInputSFML() override;
 
             //function: UpdateInput
             //See <BackendSystemInputInterface::UpdateInput>

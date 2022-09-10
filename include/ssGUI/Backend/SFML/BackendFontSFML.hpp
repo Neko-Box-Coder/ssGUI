@@ -34,7 +34,7 @@ namespace ssGUI::Backend
 
         public:
             BackendFontSFML();
-            virtual ~BackendFontSFML();
+            ~BackendFontSFML() override;
             
             //function: GetSFMLFont
             //Gets the pointer of sf::font object

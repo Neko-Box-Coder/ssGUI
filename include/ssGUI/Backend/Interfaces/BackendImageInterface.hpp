@@ -17,6 +17,7 @@ namespace ssGUI::Backend
         
         public:
             BackendImageInterface(){}
+            virtual ~BackendImageInterface() = 0;
 
             //function: GetRawHandle
             //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr 
@@ -49,6 +50,8 @@ namespace ssGUI::Backend
             //function: Clone
             virtual BackendImageInterface* Clone() = 0;
     };
+
+    inline BackendImageInterface::~BackendImageInterface(){}   //Pure virtual destructor needs to be defined
 }
 
 #endif

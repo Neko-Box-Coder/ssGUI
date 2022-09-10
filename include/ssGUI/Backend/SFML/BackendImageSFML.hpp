@@ -36,7 +36,7 @@ namespace ssGUI::Backend
 
         public:
             BackendImageSFML();
-            virtual ~BackendImageSFML();
+            ~BackendImageSFML() override;
             
             //function: GetGPUTextureP
             //Gets the SFML Texture object

@@ -71,7 +71,7 @@ namespace ssGUI::Backend
 
         public:
             BackendDrawingSFML();
-            virtual ~BackendDrawingSFML();
+            ~BackendDrawingSFML() override;
 
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>
@@ -83,11 +83,11 @@ namespace ssGUI::Backend
 
             //function: Render
             //See <BackendDrawingInterface::Render>
-            virtual void Render(glm::u8vec3 clearColor) override;
+            void Render(glm::u8vec3 clearColor) override;
 
             //function: ClearBackBuffer
             //See <BackendDrawingInterface::ClearBackBuffer>
-            virtual void ClearBackBuffer(glm::u8vec3 clearColor) override;
+            void ClearBackBuffer(glm::u8vec3 clearColor) override;
 
     };
 }

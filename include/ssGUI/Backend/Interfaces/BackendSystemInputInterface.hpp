@@ -29,6 +29,7 @@ namespace ssGUI::Backend
 
         public:
             BackendSystemInputInterface(){}
+            virtual ~BackendSystemInputInterface() = 0;
             
             //function: UpdateInput
             //Poll and updates the input
@@ -166,6 +167,7 @@ namespace ssGUI::Backend
             //Returns elapsed time since application startup in millisecond
             virtual uint64_t GetElapsedTime() const = 0;
     };
+    inline BackendSystemInputInterface::~BackendSystemInputInterface(){}   //Pure virtual destructor needs to be defined
 }
 
 

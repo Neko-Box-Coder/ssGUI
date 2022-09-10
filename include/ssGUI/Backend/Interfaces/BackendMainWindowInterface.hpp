@@ -20,6 +20,7 @@ namespace ssGUI::Backend
         
         public:
             BackendMainWindowInterface(){}
+            virtual ~BackendMainWindowInterface() = 0;
             //function: SetPosition
             //Sets the MainWindow position (distance from top-left) on the screen
             virtual void SetPosition(glm::ivec2 pos) = 0;
@@ -156,6 +157,8 @@ namespace ssGUI::Backend
             //function: GetRawHandle
             virtual void* GetRawHandle() = 0;
     };
+
+    inline BackendMainWindowInterface::~BackendMainWindowInterface(){}   //Pure virtual destructor needs to be defined
 }
 
 #endif

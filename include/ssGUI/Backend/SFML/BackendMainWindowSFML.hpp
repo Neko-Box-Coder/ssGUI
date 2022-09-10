@@ -70,7 +70,7 @@ namespace ssGUI::Backend
         public:
             //BackendMainWindowSFML(const BackendDrawingSFML& backendDrawing) = default;
             BackendMainWindowSFML();
-            virtual ~BackendMainWindowSFML();
+            ~BackendMainWindowSFML() override;
 
             //function: SyncPositionOffset
             //See <BackendMainWindowInterface::SyncPositionOffset>
@@ -208,7 +208,7 @@ namespace ssGUI::Backend
             
             //function: GetRawHandle
             //This returns sf::RenderWindow object
-            virtual void* GetRawHandle() override;
+            void* GetRawHandle() override;
     };
 }
 
