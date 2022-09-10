@@ -11,9 +11,7 @@
 namespace ssGUI
 {
     void ssGUIManager::Internal_Update()
-    {        
-        //Render to allow Main Window to clear the window with background color first
-        //Render();
+    {
         for(auto mainWindow : MainWindowPList)
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
@@ -88,15 +86,6 @@ namespace ssGUI
                 DEBUG_LINE("Render");
             #endif
 
-            // //Dispatch Update event
-            // FUNC_DEBUG_ENTRY("ssGUIManagerCustomUpdateEvent");
-            // for(int i = 0; i < OnUpdateEventListeners.size(); i++)
-            // {                
-            //     if(OnUpdateEventListenersValid[i])
-            //         OnUpdateEventListeners[i]();
-            // }
-            // FUNC_DEBUG_EXIT("ssGUIManagerCustomUpdateEvent");
-
             //Dispatch Custom Rendering event
             if(IsCustomRendering)
             {
@@ -121,21 +110,15 @@ namespace ssGUI
                 UpdateCursor();   
             }
 
-            /* Don't know that this code is for. Seems like UpdateCursor is already got this sorted
-            for(auto obj : MainWindowPList)
-            {
-                static_cast<ssGUI::Backend::BackendMainWindowSFML&>(dynamic_cast<ssGUI::MainWindow*>(obj)->
-                GetBackendWindowInterface()).GetSFWindow().setMouseCursorVisible(true);
-            }
-            */
             #if SLOW_UPDATE
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             #endif
 
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
             #if REFRESH_CONSOLE
                 Clear();
             #endif
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     }
     
@@ -311,16 +294,6 @@ namespace ssGUI
                 continue;
 
             ssGUI::MainWindow* currentMainWindowP = dynamic_cast<ssGUI::MainWindow*>(mainWindow);
-
-            //Populate the update stack first
-            /*
-            for(std::list<ssGUI::GUIObject*>::iterator childIt = currentMainWindowP->GetChildrenStartIterator();
-                childIt != currentMainWindowP->GetChildrenEndIterator(); childIt++)
-            {
-                objToUpdate.push(*childIt);
-                childrenEvaluated.push(false);
-            }
-            */
             
             objToUpdate.push(mainWindow);
             childrenEvaluated.push(false);
@@ -392,16 +365,6 @@ namespace ssGUI
         return currentParentP;
     }
 
-    // void ssGUIManager::AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP)
-    // {        
-    //     targetObj.MoveChildrenIteratorToFirst();
-    //     while (targetObj.IsChildrenIteratorEnd())
-    //     {
-    //         targetObj.GetCurrentChild()->SetParent(newParentP);
-    //         targetObj.MoveChildrenIteratorNext();
-    //     }
-    // }
-
     ssGUI::ssGUIManager* ssGUIManager::CurrentInstanceP = nullptr;
 
     ssGUIManager::ssGUIManager() :  BackendInput(), MainWindowPList(), PreGUIUpdateEventListeners(), 
@@ -420,8 +383,6 @@ namespace ssGUI
     ssGUIManager::~ssGUIManager()
     {
         delete BackendInput;
-
-        //TODO : Remove all non user created objects
     }
     
     void ssGUIManager::AddGUIObject(ssGUI::GUIObject* obj)
@@ -443,32 +404,6 @@ namespace ssGUI
     {
         MainWindowPList.remove(obj);
     }
-
-    /* void ssGUIManager::ChangeGUIObjectOrder(ssGUI::GUIObject& obj, int order)
-    {
-        if(order >= GUIObjectPList.size() || order < 0)
-            return;
-        
-        int currentOrder = GetGUIObjectOrder(obj);
-        if(currentOrder < 0)
-            return;
-
-        ssGUI::GUIObject* curObjP = GUIObjectPList[currentOrder];
-        GUIObjectPList.erase(GUIObjectPList.begin() + currentOrder);
-        GUIObjectPList.insert(GUIObjectPList.begin() + order, curObjP);
-    }
-
-    int ssGUIManager::GetGUIObjectOrder(ssGUI::GUIObject& obj)
-    {
-        std::vector<ssGUI::GUIObject*>::iterator it;
-        it = std::find_if(GUIObjectPList.begin(), GUIObjectPList.end(), 
-                            [&obj](ssGUI::GUIObject* curObjP){return &obj == curObjP;});
-
-        if(it == GUIObjectPList.end())
-            return -1;
-        else
-            return it - GUIObjectPList.begin();
-    } */
 
     int ssGUIManager::GetGUIObjectCount()
     {

@@ -30,7 +30,7 @@ namespace ssGUI
     manager.StartRunning();
     =========================================
 
-    You can subscribe to the update function (called every frame) by adding a listener to <AddPostGUIUpdateEventListener>
+    You can subscribe to the update function (called every frame) by adding a listener using <AddPostGUIUpdateEventListener>
 
     You can also get the current instance of ssGUIManager without having to get a reference of it.
     > ssGUIManager* currentInstance = ssGUIManager::GetInstance();
@@ -41,7 +41,6 @@ namespace ssGUI
             ssGUI::Backend::BackendSystemInputInterface* BackendInput;
             
             std::list<ssGUI::GUIObject*> MainWindowPList;      //TODO : Turn this into ssGUI::MainWindow* instead maybe
-            //std::list<ssGUI::GUIObject*> GUIObjectPList;
 
             std::vector<std::function<void()>> PreGUIUpdateEventListeners;
             std::vector<bool> PreGUIUpdateEventListenersValid;
@@ -71,63 +70,78 @@ namespace ssGUI
             void UpdateCursor();
             
             ssGUI::GUIObject* FindParentWindowP(ssGUI::GUIObject& obj);
-            //void AssginParentToChildren(ssGUI::GUIObject& targetObj, ssGUI::GUIObject* newParentP);
 
         public:
             ssGUIManager();
             virtual ~ssGUIManager();
 
             //function: AddGUIObject
-            //Only main window should be added
+            //Only main window should be added, the reason why it is accepting <ssGUI::GUIObject> is for future compatibility.
             void AddGUIObject(ssGUI::GUIObject* obj);
 
             //function :UseCustomRendering
+            //If true, it will not render any objects and call the custom rendering event, which you can add using <AddOnCustomRenderEventListener>.
             void UseCustomRendering(bool customRendering);
 
-            //function: RemoveGUIObject
+            //function: RemoveGUIObject (Obselete)
+            //Removes the main window object added by <AddGUIObject>. <ssGUI::Hierarchy::Delete> should be used instead to remove any <ssGUI::MainWindow>.
             void RemoveGUIObject(ssGUI::GUIObject* obj);
 
-            //void ChangeGUIObjectOrder(ssGUI::GUIObject& obj, int order);
-            //int GetGUIObjectOrder(ssGUI::GUIObject& obj);
-
             //function: GetGUIObjectCount
+            //Returns the number of main window added by <AddGUIObject>
             int GetGUIObjectCount();
 
             //function: StartRunning
+            //Starts the ssGUIManager.
             //This will block the thread until all <MainWindow>s are closed
             void StartRunning();
 
             //function: GetBackendInputInterface
+            //Gets the <ssGUI::Backend::BackendSystemInputInterface> used by <ssGUIManager>
             ssGUI::Backend::BackendSystemInputInterface* GetBackendInputInterface();
 
             //function: GetInstance
+            //Static method that allow accessing <ssGUIManager> from anywhere. If there's no instance found, nullptr is returned.
             static ssGUI::ssGUIManager* GetInstance();
 
             //function: AddPreGUIUpdateEventListener
+            //Adds event callback that gets triggered before the update function is called for GUI objects.
+            //Returns index that can be used to remove the event callback later.
             int AddPreGUIUpdateEventListener(std::function<void()> event);
 
             //function: RemovePreGUIUpdateEventListener
+            //Removes event callback that gets triggered before the update function is called for GUI objects
             void RemovePreGUIUpdateEventListener(int index);
 
             //function: AddPostGUIUpdateEventListener
+            //Adds event callback that gets triggered after the update function (before render function) is called for GUI objects.
+            //Returns index that can be used to remove the event callback later.
             int AddPostGUIUpdateEventListener(std::function<void()> event);
 
             //function: RemovePostGUIUpdateEventListener
+            //Removes event callback that gets triggered after the update function (before render function) is called for GUI objects
             void RemovePostGUIUpdateEventListener(int index);
 
             //function: AddPostGUIRenderingUpdateEventListener
+            //Adds event callback that gets triggered after the render function is called for GUI objects.
+            //Returns index that can be used to remove the event callback later.
             int AddPostGUIRenderingUpdateEventListener(std::function<void()> event);
 
             //function: RemovePostGUIRenderingUpdateEventListener
+            //Removes event callback that gets triggered after the render function is called for GUI objects
             void RemovePostGUIRenderingUpdateEventListener(int index);
 
             //function: AddOnCustomRenderEventListener
+            //Adds event callback that is responsible of rendering all the GUI Objects instead of using the default rendering by <ssGUIManager>
+            //Returns index that can be used to remove the event callback later.
             int AddOnCustomRenderEventListener(std::function<void( std::list<ssGUI::GUIObject*>& ) > event);
 
             //function: RemoveOnCustomRenderEventListener
+            //Removes the event callback that is responsible of rendering all the GUI Objects instead of using the default rendering by <ssGUIManager>
             void RemoveOnCustomRenderEventListener(int index);
 
             //function: Clear
+            //Clears the console
             inline void Clear()
             {
                 #if defined (_WIN32)
