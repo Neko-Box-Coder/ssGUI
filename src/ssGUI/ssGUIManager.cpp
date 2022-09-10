@@ -208,16 +208,21 @@ namespace ssGUI
             //Check if render is needed
             bool renderNeeded = false;
 
-            if(!currentMainWindowP->IsRedrawNeeded())
+            if(!IsForceRendering())
             {
-                for(auto it = renderQueue.begin(); it != renderQueue.end(); it++)
+                if(!currentMainWindowP->IsRedrawNeeded())
                 {
-                    if((*it)->IsRedrawNeeded())
+                    for(auto it = renderQueue.begin(); it != renderQueue.end(); it++)
                     {
-                        renderNeeded = true;
-                        break;
+                        if((*it)->IsRedrawNeeded())
+                        {
+                            renderNeeded = true;
+                            break;
+                        }
                     }
                 }
+                else
+                    renderNeeded = true;
             }
             else
                 renderNeeded = true;
@@ -238,6 +243,9 @@ namespace ssGUI
 
                     if(currentObjP->Internal_IsDeleted())
                         continue;
+
+                    if(IsForceRendering())
+                        currentObjP->RedrawObject();
 
                     (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
                                                     dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
@@ -374,7 +382,7 @@ namespace ssGUI
                                     PostGUIRenderingUpdateEventListeners(), PostGUIRenderingUpdateEventListenersValid(), 
                                     PostGUIRenderingUpdateEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
                                     OnCustomRenderEventListenersValid(), OnCustomRenderEventListenersNextFreeIndices(), 
-                                    IsCustomRendering(false)
+                                    IsCustomRendering(false), ForceRendering(false)
     {
         BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
         CurrentInstanceP = this;
@@ -531,5 +539,15 @@ namespace ssGUI
     {
         OnCustomRenderEventListenersValid[index] = false;
         OnCustomRenderEventListenersNextFreeIndices.push(index);
+    }
+
+    void ssGUIManager::SetForceRendering(bool force)
+    {
+        ForceRendering = force;
+    }
+
+    bool ssGUIManager::IsForceRendering()
+    {
+        return ForceRendering;
     }
 }

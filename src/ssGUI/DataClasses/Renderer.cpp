@@ -83,6 +83,7 @@ namespace ssGUI
         CurrentObject = obj;
     }
 
+    //TODO: It was called SetVisible before so that's why it is in Renderer. Maybe move this to Hierarachy class?
     void Renderer::SetEnabled(bool enabled)
     {
         Enabled = enabled;

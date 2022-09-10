@@ -59,6 +59,7 @@ namespace ssGUI
             std::queue<int> OnCustomRenderEventListenersNextFreeIndices;
 
             bool IsCustomRendering;
+            bool ForceRendering;
             
             static ssGUI::ssGUIManager* CurrentInstanceP;
 
@@ -139,6 +140,14 @@ namespace ssGUI
             //function: RemoveOnCustomRenderEventListener
             //Removes the event callback that is responsible of rendering all the GUI Objects instead of using the default rendering by <ssGUIManager>
             void RemoveOnCustomRenderEventListener(int index);
+
+            //function: SetForceRendering
+            //Sets if we force all GUI objects to redraw
+            void SetForceRendering(bool force);
+
+            //function: IsForceRendering
+            //Returns if we force all GUI objects to redraw
+            bool IsForceRendering();
 
             //function: Clear
             //Clears the console
