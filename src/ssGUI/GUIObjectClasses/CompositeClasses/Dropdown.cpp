@@ -116,7 +116,6 @@ namespace ssGUI
                 if(dropdownMenu == nullptr)
                     return;
 
-
                 //Update size
                 if(dropdownContainer->GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
                 {

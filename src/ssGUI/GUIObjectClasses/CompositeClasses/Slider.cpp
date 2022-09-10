@@ -475,6 +475,7 @@ namespace ssGUI
         button->RemoveAnyExtension<ssGUI::Extensions::Border>();
         auto outline2 = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         outline2->SetOutlineThickness(1.5);
+        button->SetUserCreated(false);
         button->AddExtension(outline2);
         button->SetParent(this);
 
