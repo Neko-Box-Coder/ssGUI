@@ -60,6 +60,11 @@ namespace ssGUI
 
             bool IsCustomRendering;
             bool ForceRendering;
+
+            float TargetFrameInterval;
+            int FrameTimeIndex;
+            std::vector<int> FrameTimes;
+
             
             static ssGUI::ssGUIManager* CurrentInstanceP;
 
@@ -148,6 +153,14 @@ namespace ssGUI
             //function: IsForceRendering
             //Returns if we force all GUI objects to redraw
             bool IsForceRendering();
+
+            //function: SetTargetFramerate
+            //Sets the target framerate (FPS), negative to disable it
+            void SetTargetFramerate(float framerate);
+
+            //function: GetTargetFramerate
+            //Returns the target framerate (FPS), negative if disabled
+            float GetTargetFramerate();
 
             //function: Clear
             //Clears the console

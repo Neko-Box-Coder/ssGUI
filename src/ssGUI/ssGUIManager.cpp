@@ -31,6 +31,8 @@ namespace ssGUI
 
         while (!MainWindowPList.empty())
         {
+            uint64_t startFrameTime = BackendInput->GetElapsedTime();
+            
             PollInputs();
 
             //Clear up any main windows that are closed
@@ -114,7 +116,26 @@ namespace ssGUI
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             #endif
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+            if(TargetFrameInterval > 0)
+            {
+                if(FrameTimes.size() < 100)
+                    FrameTimes.push_back(BackendInput->GetElapsedTime() - startFrameTime);
+                else
+                {
+                    FrameTimes[FrameTimeIndex++] = BackendInput->GetElapsedTime() - startFrameTime;
+                    FrameTimeIndex %= 100;
+                }
+                
+                float averageFrameTime = 0;
+
+                for(int i = 0; i < FrameTimes.size(); i++)
+                    averageFrameTime += FrameTimes[i];
+                
+                averageFrameTime /= FrameTimes.size();
+                // DEBUG_LINE("averageFrameTime: "<<averageFrameTime);
+                // DEBUG_LINE("TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
+                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(TargetFrameInterval - averageFrameTime)));
+            }
 
             #if REFRESH_CONSOLE
                 Clear();
@@ -382,7 +403,8 @@ namespace ssGUI
                                     PostGUIRenderingUpdateEventListeners(), PostGUIRenderingUpdateEventListenersValid(), 
                                     PostGUIRenderingUpdateEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
                                     OnCustomRenderEventListenersValid(), OnCustomRenderEventListenersNextFreeIndices(), 
-                                    IsCustomRendering(false), ForceRendering(false)
+                                    IsCustomRendering(false), ForceRendering(false), TargetFrameInterval(20),
+                                    FrameTimeIndex(0), FrameTimes()
     {
         BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
         CurrentInstanceP = this;
@@ -549,5 +571,18 @@ namespace ssGUI
     bool ssGUIManager::IsForceRendering()
     {
         return ForceRendering;
+    }
+
+    void ssGUIManager::SetTargetFramerate(float framerate)
+    {
+        if(framerate <= 0)
+            TargetFrameInterval = -1;
+        else
+            TargetFrameInterval = 1000 / framerate; 
+    }
+
+    float ssGUIManager::GetTargetFramerate()
+    {
+        return 1000 / TargetFrameInterval;
     }
 }
