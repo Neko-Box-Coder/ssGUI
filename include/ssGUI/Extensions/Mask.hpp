@@ -27,20 +27,19 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;
-        bool Enabled;
-        bool MaskChildren;
-        bool MaskContainer;
-        bool FollowContainer;
-        glm::vec2 FollowPositionOffset;
-        glm::vec2 FollowSizePadding;
+        ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
+        bool Enabled = true;                                    //See <IsEnabled>
+        bool MaskChildren = true;                               //See <GetMaskChildren>
+        bool MaskContainer = false;                             //See <IsMaskContainer>
+        bool FollowContainer = true;                            //See <GetFollowContainer>
+        glm::vec2 FollowPositionOffset = glm::vec2(1, 1);       //See <GetFollowPositionOffset>
+        glm::vec2 FollowSizePadding = glm::vec2(-2, -2);        //See <GetFollowSizePadding>
 
-        glm::vec2 GlobalPosition;
-        glm::vec2 Size;
+        glm::vec2 GlobalPosition = glm::vec2();                 //See <GetGlobalPosition>
+        glm::vec2 Size = glm::vec2();                           //See <GetSize>
     =================================================================
     ============================== C++ ==============================
-    Mask::Mask() :  Container(nullptr), Enabled(true), MaskChildren(true), MaskContainer(false), FollowContainer(true), 
-                    FollowPositionOffset(glm::vec2(1, 1)), FollowSizePadding(glm::vec2(-2, -2)), GlobalPosition(), Size()
+    Mask::Mask()
     {}
     =================================================================    
     */
@@ -53,16 +52,16 @@ namespace ssGUI::Extensions
             Mask& operator=(Mask const& other);
         
         protected:
-            ssGUI::GUIObject* Container;
-            bool Enabled;
-            bool MaskChildren;
-            bool MaskContainer;
-            bool FollowContainer;
-            glm::vec2 FollowPositionOffset;
-            glm::vec2 FollowSizePadding;
+            ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
+            bool Enabled = true;                                    //See <IsEnabled>
+            bool MaskChildren = true;                               //See <GetMaskChildren>
+            bool MaskContainer = false;                             //See <IsMaskContainer>
+            bool FollowContainer = true;                            //See <GetFollowContainer>
+            glm::vec2 FollowPositionOffset = glm::vec2(1, 1);       //See <GetFollowPositionOffset>
+            glm::vec2 FollowSizePadding = glm::vec2(-2, -2);        //See <GetFollowSizePadding>
 
-            glm::vec2 GlobalPosition;
-            glm::vec2 Size;
+            glm::vec2 GlobalPosition = glm::vec2();                 //See <GetGlobalPosition>
+            glm::vec2 Size = glm::vec2();                           //See <GetSize>
 
             virtual bool IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices, int startOffset, int shapeCount) const;
             virtual bool IsPointContainedInMask(glm::vec2 point, glm::vec2 min, glm::vec2 max) const;

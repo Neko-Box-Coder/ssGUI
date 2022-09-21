@@ -3,7 +3,7 @@
 
 namespace ssGUI::EventCallbacks
 {    
-    BaseEventCallback::BaseEventCallback() : EventListeners(), Container(nullptr), CurrentObjectsReferences()
+    BaseEventCallback::BaseEventCallback()
     {}
 
     BaseEventCallback::~BaseEventCallback()

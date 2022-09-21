@@ -1189,13 +1189,7 @@ namespace ssGUI
     
     const std::string Text::ListenerKey = "Text";
 
-    Text::Text() :  RecalculateTextNeeded(false), CurrentCharactersDetails(), 
-                    CharactersRenderInfos(), ProcessedCharacterDetails(), Overflow(false), FontSize(15), TextColor(glm::u8vec4(0, 0, 0, 255)), 
-                    TextUnderline(false), MultilineAllowed(true), WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING), 
-                    HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT), VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP), 
-                    CurrentFonts(), HorizontalPadding(5), VerticalPadding(5), CharacterSpace(0), LineSpace(0), TabSize(4), SelectionAllowed(true),
-                    StartSelectionIndex(-1), EndSelectionIndex(-1), SelectionColor(51, 153, 255, 255), TextSelectedColor(255, 255, 255, 255), 
-                    LastDefaultFonts()
+    Text::Text()
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);

@@ -5,8 +5,7 @@
 
 namespace ssGUI::Extensions
 {
-    RoundedCorners::RoundedCorners() : Container(nullptr), Enabled(true), RoundedCornersRadius(10), TargetShapes{0}, TargetVertices(), VerticesToRound(), 
-                                        VerticesToRoundPrevVertices(), VerticesToRoundNextVertices()
+    RoundedCorners::RoundedCorners()
     {}
 
     RoundedCorners::~RoundedCorners()

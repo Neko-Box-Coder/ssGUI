@@ -17,11 +17,11 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::Enums::ButtonState CurrentState;
-        glm::u8vec4 ButtonColor;
+        ssGUI::Enums::ButtonState CurrentState = ssGUI::Enums::ButtonState::NORMAL;     //See <GetButtonState>
+        glm::u8vec4 ButtonColor = glm::u8vec4(100, 100, 100, 255);                      //See <GetButtonColor> 
     =================================================================
     ============================== C++ ==============================
-    Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), ButtonColor(glm::u8vec4(100, 100, 100, 255))
+    Button::Button()
     {
         SetSize(glm::vec2(25, 25));
         auto stateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
@@ -67,8 +67,8 @@ namespace ssGUI
             Button& operator=(Button const& other);
         
         protected:
-            ssGUI::Enums::ButtonState CurrentState;
-            glm::u8vec4 ButtonColor;
+            ssGUI::Enums::ButtonState CurrentState = ssGUI::Enums::ButtonState::NORMAL;     //See <GetButtonState>
+            glm::u8vec4 ButtonColor = glm::u8vec4(100, 100, 100, 255);                      //See <GetButtonColor>
             
             Button(Button const& other);
 

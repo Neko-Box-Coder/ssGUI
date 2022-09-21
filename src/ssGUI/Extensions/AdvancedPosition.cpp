@@ -2,9 +2,7 @@
 
 namespace ssGUI::Extensions
 {
-    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalPixelValue(0), VerticalPixelValue(0),
-                                            HorizontalPercentageValue(0), VerticalPercentageValue(0)
+    AdvancedPosition::AdvancedPosition()
     {}
 
     AdvancedPosition::~AdvancedPosition()

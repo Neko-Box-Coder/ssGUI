@@ -14,21 +14,22 @@ namespace ssGUI::Backend
     Variables & Constructor:
     ========================== C++ ==========================
     private:
-        sf::Texture GPUTexture;
-        sf::Image MemoryImage;
-        bool GPUTextureValid;
+        sf::Texture GPUTexture = sf::Texture();     //See <GetRawHandle>
+        sf::Image MemoryImage = sf::Image();        //Underlying copy in host memory, which can get the pixel pointer with <GetPixelPtr>
+        bool GPUTextureValid = false;               //See <IsValid>
     =========================================================
     ========================== C++ ==========================
-    BackendImageSFML::BackendImageSFML() : GPUTexture(), GPUTextureValid(false)
+    BackendImageSFML::BackendImageSFML()
     {}
     =========================================================
     */
     class BackendImageSFML : public BackendImageInterface
     {
         private:
-            sf::Texture GPUTexture;
-            sf::Image MemoryImage;
-            bool GPUTextureValid;
+            sf::Texture GPUTexture = sf::Texture();     //See <GetRawHandle>
+            sf::Image MemoryImage = sf::Image();        //Underlying copy in host memory, which can get the pixel pointer with <GetPixelPtr>
+            bool GPUTextureValid = false;               //See <IsValid>
+
             BackendImageSFML& operator=(BackendImageSFML const& other);
 
         protected:

@@ -22,22 +22,20 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;
-        bool Enabled;
+        ssGUI::GUIObject* Container = nullptr;      //See <BindToObject>
+        bool Enabled = true;                        //See <IsEnabled>
 
-        float HorizontalPixelValue;
-        float VerticalPixelValue;
+        float HorizontalPixelValue = 0;             //See <GetHorizontalPixel>
+        float VerticalPixelValue = 0;               //See <GetVerticalPixel>
 
-        float HorizontalPercentageValue;
-        float VerticalPercentageValue;
+        float HorizontalPercentageValue = 0;        //See <GetHorizontalPercentage>
+        float VerticalPercentageValue = 0;          //See <GetVerticalPercentage>
 
-        bool SettingsChanged;
-        glm::vec2 LastParentSize;
+        bool SettingsChanged = true;                //(Internal variable) Used to cache the size
+        glm::vec2 LastParentSize = glm::vec2();     //(Internal variable) Used to cache the size
     =================================================================
     ============================== C++ ==============================
-    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalPixelValue(0), 
-                                    VerticalPixelValue(0), HorizontalPercentageValue(0), 
-                                    VerticalPercentageValue(0), SettingsChanged(true), LastParentSize()
+    AdvancedSize::AdvancedSize()
     {}
     =================================================================
     */
@@ -50,17 +48,17 @@ namespace ssGUI::Extensions
             AdvancedSize& operator=(AdvancedSize const& other);
         
         protected:
-            ssGUI::GUIObject* Container;
-            bool Enabled;
+            ssGUI::GUIObject* Container = nullptr;      //See <BindToObject>
+            bool Enabled = true;                        //See <IsEnabled>
 
-            float HorizontalPixelValue;
-            float VerticalPixelValue;
+            float HorizontalPixelValue = 0;             //See <GetHorizontalPixel>
+            float VerticalPixelValue = 0;               //See <GetVerticalPixel>
 
-            float HorizontalPercentageValue;
-            float VerticalPercentageValue;
+            float HorizontalPercentageValue = 0;        //See <GetHorizontalPercentage>
+            float VerticalPercentageValue = 0;          //See <GetVerticalPercentage>
 
-            bool SettingsChanged;
-            glm::vec2 LastParentSize;
+            bool SettingsChanged = true;                //(Internal variable) Used to cache the size
+            glm::vec2 LastParentSize = glm::vec2();     //(Internal variable) Used to cache the size
 
             AdvancedSize();
             virtual ~AdvancedSize() override;

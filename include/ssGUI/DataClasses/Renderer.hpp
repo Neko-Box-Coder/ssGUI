@@ -20,67 +20,63 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        bool Enabled;
-        glm::u8vec4 BackgroundColour;
-        bool Redraw;
-        bool AcceptRedrawRequest;
+        bool Enabled = true;                                                    //See <IsEnabled>
+        glm::u8vec4 BackgroundColour = glm::u8vec4(255, 255, 255, 255);         //See <GetBackgroundColor>
+        bool Redraw = true;                                                     //See <IsRedrawNeeded>
+        bool AcceptRedrawRequest = true;                                        //(Internal variable) Used to disable self-calling when calling draw logic
 
         //Rendering
-        std::vector<glm::vec2> DrawingVerticies;
-        std::vector<glm::vec2> DrawingUVs;
-        std::vector<glm::u8vec4> DrawingColours;
-        std::vector<int> DrawingCounts;
-        std::vector<ssGUI::DrawingProperty> DrawingProperties;
-        int GUIObjectShapeIndex;
-        int GUIObjectVertexIndex;
+        std::vector<glm::vec2> DrawingVerticies = {};                           //See <Extension_GetDrawingVertices>
+        std::vector<glm::vec2> DrawingUVs = {};                                 //See <Extension_GetDrawingUVs>
+        std::vector<glm::u8vec4> DrawingColours = {};                           //See <Extension_GetDrawingColours>
+        std::vector<int> DrawingCounts = {};                                    //See <Extension_GetDrawingCounts>
+        std::vector<ssGUI::DrawingProperty> DrawingProperties = {};             //See <Extension_GetDrawingProperties>
+        int GUIObjectShapeIndex = -1;                                           //See <Extension_GetGUIObjectFirstShapeIndex>
+        int GUIObjectVertexIndex = -1;                                          //See <Extension_GetGUIObjectFirstVertexIndex>
 
         //Cache rendering
-        std::vector<glm::vec2> LastDrawingVerticies;
-        std::vector<glm::vec2> LastDrawingUVs;
-        std::vector<glm::u8vec4> LastDrawingColours;
-        std::vector<int> LastDrawingCounts;
-        std::vector<ssGUI::DrawingProperty> LastDrawingProperties;
+        std::vector<glm::vec2> LastDrawingVerticies = {};                       //(Internal variable) Used to do cached rendering
+        std::vector<glm::vec2> LastDrawingUVs = {};                             //(Internal variable) Used to do cached rendering
+        std::vector<glm::u8vec4> LastDrawingColours = {};                       //(Internal variable) Used to do cached rendering
+        std::vector<int> LastDrawingCounts = {};                                //(Internal variable) Used to do cached rendering
+        std::vector<ssGUI::DrawingProperty> LastDrawingProperties = {};         //(Internal variable) Used to do cached rendering
 
-        ssGUI::Hierarchy* CurrentHierarchy;
-        ssGUI::EventCallbackManager* CurrentEventCallbackManager;
-        ssGUI::GUIObject* CurrentObject;
+        ssGUI::Hierarchy* CurrentHierarchy = nullptr;                           //(Internal variable) Used to get parent when <IsEnabled> is called
+        ssGUI::EventCallbackManager* CurrentEventCallbackManager = nullptr;     //(Internal variable) Used to call event callbacks listeners
+        ssGUI::GUIObject* CurrentObject = nullptr;                              //(Internal variable) Used to register the container for event callbacks listeners 
     =================================================================
     ============================== C++ ==============================
-    Renderer::Renderer() : Enabled(true), BackgroundColour(glm::u8vec4(255, 255, 255, 255)), Redraw(true), AcceptRedrawRequest(true),
-                            DrawingVerticies(), DrawingUVs(), DrawingColours(), DrawingCounts(), DrawingProperties(), GUIObjectShapeIndex(-1), 
-                            GUIObjectVertexIndex(-1), LastDrawingVerticies(), LastDrawingUVs(), LastDrawingColours(), 
-                            LastDrawingCounts(), LastDrawingProperties(), CurrentHierarchy(nullptr), CurrentEventCallbackManager(nullptr),
-                            CurrentObject(nullptr)
+    Renderer::Renderer()
     {}
     =================================================================
     */
     class Renderer
     {
         protected:
-            bool Enabled;
-            glm::u8vec4 BackgroundColour;
-            bool Redraw;
-            bool AcceptRedrawRequest;
+            bool Enabled = true;                                                    //See <IsEnabled>
+            glm::u8vec4 BackgroundColour = glm::u8vec4(255, 255, 255, 255);         //See <GetBackgroundColor>
+            bool Redraw = true;                                                     //See <IsRedrawNeeded>
+            bool AcceptRedrawRequest = true;                                        //(Internal variable) Used to disable self-calling when calling draw logic
 
             //Rendering
-            std::vector<glm::vec2> DrawingVerticies;
-            std::vector<glm::vec2> DrawingUVs;
-            std::vector<glm::u8vec4> DrawingColours;
-            std::vector<int> DrawingCounts;
-            std::vector<ssGUI::DrawingProperty> DrawingProperties;
-            int GUIObjectShapeIndex;
-            int GUIObjectVertexIndex;
+            std::vector<glm::vec2> DrawingVerticies = {};                           //See <Extension_GetDrawingVertices>
+            std::vector<glm::vec2> DrawingUVs = {};                                 //See <Extension_GetDrawingUVs>
+            std::vector<glm::u8vec4> DrawingColours = {};                           //See <Extension_GetDrawingColours>
+            std::vector<int> DrawingCounts = {};                                    //See <Extension_GetDrawingCounts>
+            std::vector<ssGUI::DrawingProperty> DrawingProperties = {};             //See <Extension_GetDrawingProperties>
+            int GUIObjectShapeIndex = -1;                                           //See <Extension_GetGUIObjectFirstShapeIndex>
+            int GUIObjectVertexIndex = -1;                                          //See <Extension_GetGUIObjectFirstVertexIndex>
 
             //Cache rendering
-            std::vector<glm::vec2> LastDrawingVerticies;
-            std::vector<glm::vec2> LastDrawingUVs;
-            std::vector<glm::u8vec4> LastDrawingColours;
-            std::vector<int> LastDrawingCounts;
-            std::vector<ssGUI::DrawingProperty> LastDrawingProperties;
+            std::vector<glm::vec2> LastDrawingVerticies = {};                       //(Internal variable) Used to do cached rendering
+            std::vector<glm::vec2> LastDrawingUVs = {};                             //(Internal variable) Used to do cached rendering
+            std::vector<glm::u8vec4> LastDrawingColours = {};                       //(Internal variable) Used to do cached rendering
+            std::vector<int> LastDrawingCounts = {};                                //(Internal variable) Used to do cached rendering
+            std::vector<ssGUI::DrawingProperty> LastDrawingProperties = {};         //(Internal variable) Used to do cached rendering
 
-            ssGUI::Hierarchy* CurrentHierarchy;
-            ssGUI::EventCallbackManager* CurrentEventCallbackManager;
-            ssGUI::GUIObject* CurrentObject;
+            ssGUI::Hierarchy* CurrentHierarchy = nullptr;                           //(Internal variable) Used to get parent when <IsEnabled> is called
+            ssGUI::EventCallbackManager* CurrentEventCallbackManager = nullptr;     //(Internal variable) Used to call event callbacks listeners
+            ssGUI::GUIObject* CurrentObject = nullptr;                              //(Internal variable) Used to register the container for event callbacks listeners 
 
             Renderer(Renderer const& other);
             virtual void ConstructRenderInfo();

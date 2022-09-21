@@ -13,19 +13,18 @@ namespace ssGUI
 
     Variables & Constructor:
     ============================== C++ ==============================
-    protected:
-        ssGUIObjectIndex ButtonText;
-        ssGUIObjectIndex ButtonImage;
-        bool AdaptiveButtonTextColor;
-        glm::ivec4 ButtonTextColorDifference;
-        bool AdaptiveButtonTextContrast;
-        Mode ButtonMode;
-        
-        ssGUIObjectIndex ButtonImageWrapper;
+     protected:
+        ssGUIObjectIndex ButtonText = -1;                                   //See <GetButtonTextObject>
+        ssGUIObjectIndex ButtonImage = -1;                                  //See <GetButtonIconObject>
+        bool AdaptiveButtonTextColor = true;                                //See <IsAdaptiveButtonTextColor>
+        glm::ivec4 ButtonTextColorDifference = glm::ivec4(0, 0, 0, 0);      //See <GetAdaptiveButtonTextColorDifference>
+        bool AdaptiveButtonTextContrast = true;                             //See <IsAdaptiveButtonTextContrast>
+        Mode ButtonMode = StandardButton::Mode::TEXT;                       //See <GetButtonMode>
+
+        ssGUIObjectIndex ButtonImageWrapper = -1;                           //(Internal variable) Allow the button image's size to be set by AdvancedSize
     =================================================================
     ============================== C++ ==============================
-    StandardButton::StandardButton() : ButtonText(-1), ButtonImage(-1), AdaptiveButtonTextColor(true), ButtonTextColorDifference(glm::ivec4(0, 0, 0, 0)), 
-                                        AdaptiveButtonTextContrast(true), ButtonMode(StandardButton::Mode::TEXT)
+    StandardButton::StandardButton()
     {
         FUNC_DEBUG_ENTRY();
         SetSize(glm::vec2(100, 40));
@@ -180,14 +179,14 @@ namespace ssGUI
             StandardButton& operator=(StandardButton const& other) = default;
 
         protected:
-            ssGUIObjectIndex ButtonText;
-            ssGUIObjectIndex ButtonImage;
-            bool AdaptiveButtonTextColor;
-            glm::ivec4 ButtonTextColorDifference;
-            bool AdaptiveButtonTextContrast;
-            Mode ButtonMode;
+            ssGUIObjectIndex ButtonText = -1;                                   //See <GetButtonTextObject>
+            ssGUIObjectIndex ButtonImage = -1;                                  //See <GetButtonIconObject>
+            bool AdaptiveButtonTextColor = true;                                //See <IsAdaptiveButtonTextColor>
+            glm::ivec4 ButtonTextColorDifference = glm::ivec4(0, 0, 0, 0);      //See <GetAdaptiveButtonTextColorDifference>
+            bool AdaptiveButtonTextContrast = true;                             //See <IsAdaptiveButtonTextContrast>
+            Mode ButtonMode = StandardButton::Mode::TEXT;                       //See <GetButtonMode>
 
-            ssGUIObjectIndex ButtonImageWrapper;
+            ssGUIObjectIndex ButtonImageWrapper = -1;                           //(Internal variable) Allow the button image's size to be set by AdvancedSize
 
             StandardButton(StandardButton const& other);
 

@@ -4,7 +4,7 @@
 
 namespace ssGUI::Extensions
 {
-    MaskEnforcer::MaskEnforcer() : Container(nullptr), Enabled(true), TargetMasks(), BlockingContainerInput(false), CurrentObjectsReferences()
+    MaskEnforcer::MaskEnforcer()
     {}
 
     MaskEnforcer::~MaskEnforcer()

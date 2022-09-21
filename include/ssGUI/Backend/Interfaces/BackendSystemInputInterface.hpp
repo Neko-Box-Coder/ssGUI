@@ -21,6 +21,8 @@ namespace ssGUI
 namespace ssGUI::Backend
 {
     //class: ssGUI::Backend::BackendSystemInputInterface
+    //This class is the interface for getting all the inputs needed. 
+    //**There will be changes regarding on how to get key presses and realtime input info soon.**
     class BackendSystemInputInterface
     {   
         private:

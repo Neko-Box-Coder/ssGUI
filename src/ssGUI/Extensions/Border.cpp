@@ -3,7 +3,7 @@
 
 namespace ssGUI::Extensions
 {
-    Border::Border() : Container(nullptr), Enabled(true), BorderColor(glm::u8vec4(0, 0, 0, 255)), BorderWidth(1), BorderSides(15)
+    Border::Border()
     {}
     
     Border::~Border()

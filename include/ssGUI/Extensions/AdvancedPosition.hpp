@@ -22,22 +22,20 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;
-        bool Enabled;
+        ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
+        bool Enabled = true;                                                                //See <IsEnabled>
 
-        HorizontalAnchor CurrentHorizontal;
-        VerticalAnchor CurrentVertical;
+        HorizontalAnchor CurrentHorizontal = AdvancedPosition::HorizontalAnchor::CENTER;    //See <GetHorizontalAnchor>
+        VerticalAnchor CurrentVertical = AdvancedPosition::VerticalAnchor::CENTER;          //See <GetVerticalAnchor>
 
-        float HorizontalPixelValue;
-        float VerticalPixelValue;
+        float HorizontalPixelValue = 0;                                                     //See <GetHorizontalPixel>
+        float VerticalPixelValue = 0;                                                       //See <GetVerticalPixel>
 
-        float HorizontalPercentageValue;
-        float VerticalPercentageValue;
+        float HorizontalPercentageValue = 0;                                                //See <GetHorizontalPercentage>
+        float VerticalPercentageValue = 0;                                                  //See <GetVerticalPercentage>
     =================================================================
     ============================== C++ ==============================
-    AdvancedPosition::AdvancedPosition() : Container(nullptr), Enabled(true), CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER), 
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER), HorizontalPixelValue(0), VerticalPixelValue(0),
-                                            HorizontalPercentageValue(0), VerticalPercentageValue(0)
+    AdvancedPosition::AdvancedPosition()
     {}
     =================================================================
     */
@@ -53,17 +51,17 @@ namespace ssGUI::Extensions
             AdvancedPosition& operator=(AdvancedPosition const& other);
         
         protected:
-            ssGUI::GUIObject* Container;
-            bool Enabled;
+            ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
+            bool Enabled = true;                                                                //See <IsEnabled>
 
-            HorizontalAnchor CurrentHorizontal;
-            VerticalAnchor CurrentVertical;
+            HorizontalAnchor CurrentHorizontal = AdvancedPosition::HorizontalAnchor::CENTER;    //See <GetHorizontalAnchor>
+            VerticalAnchor CurrentVertical = AdvancedPosition::VerticalAnchor::CENTER;          //See <GetVerticalAnchor>
 
-            float HorizontalPixelValue;
-            float VerticalPixelValue;
+            float HorizontalPixelValue = 0;                                                     //See <GetHorizontalPixel>
+            float VerticalPixelValue = 0;                                                       //See <GetVerticalPixel>
 
-            float HorizontalPercentageValue;
-            float VerticalPercentageValue;
+            float HorizontalPercentageValue = 0;                                                //See <GetHorizontalPercentage>
+            float VerticalPercentageValue = 0;                                                  //See <GetVerticalPercentage>
 
             AdvancedPosition();
             virtual ~AdvancedPosition() override;

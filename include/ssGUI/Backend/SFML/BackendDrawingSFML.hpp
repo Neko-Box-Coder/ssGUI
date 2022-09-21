@@ -18,10 +18,10 @@ namespace ssGUI::Backend
     Variables & Constructor:
     ======================== C++ =======================
     private:
-        int BackendIndex;
+        int BackendIndex = 0;   //(Internal variable) This is used to check if we are drawing on the correct MainWindow
     ====================================================
     ======================== C++ =======================
-    BackendDrawingSFML::BackendDrawingSFML() : BackendIndex(0)
+    BackendDrawingSFML::BackendDrawingSFML()
     {
         ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
@@ -30,7 +30,7 @@ namespace ssGUI::Backend
     class BackendDrawingSFML : public BackendDrawingInterface
     {        
         private:
-            int BackendIndex; 
+            int BackendIndex = 0;   //(Internal variable) This is used to check if we are drawing on the correct MainWindow
 
             //Non index variants exist only for legacy purposes
             bool DrawShape( const std::vector<glm::vec2>& vertices, 

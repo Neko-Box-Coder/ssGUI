@@ -21,28 +21,25 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;
-        bool Enabled;
+        ssGUI::GUIObject* Container = nullptr;                      //See <BindToObject>
+        bool Enabled = true;                                        //See <IsEnabled>
 
-        float OutlineThickness;
-        bool SimpleOutline;
-        bool InnerOutline;
-        glm::u8vec4 OutlineColor;
-        std::vector<int> TargetShapes;
-        std::vector<int> TargetVertices;
+        float OutlineThickness = 1.1;                               //See <GetOutlineThickness>
+        bool SimpleOutline = false;                                 //See <IsSimpleOutline>
+        bool InnerOutline = true;                                   //See <IsInnerOutline>
+        glm::u8vec4 OutlineColor = glm::u8vec4(0, 0, 0, 255);       //See <GetOutlineColor>
+        std::vector<int> TargetShapes = {0};                        //See <GetTargetShape>
+        std::vector<int> TargetVertices = {};                       //See <GetTargetVertex>
 
-        std::vector<int> VerticesToOutline;
-        std::vector<int> VerticesToOutlinePrevVertices;
-        std::vector<int> VerticesToOutlineNextVertices;
-        std::vector<int> VerticesToOutlineNextNextVertices;
-        std::vector<int> VerticesToOutlineShapeIndex;
-        std::vector<bool> VerticesToOutlineShapeStartFlag;
+        std::vector<int> VerticesToOutline = {};                    //(Internal variable) Used to identify vertices indices to outline
+        std::vector<int> VerticesToOutlinePrevVertices = {};        //(Internal variable) Used to identify the previous vertex of vertex index to outline
+        std::vector<int> VerticesToOutlineNextVertices = {};        //(Internal variable) Used to identify the next vertex of vertex index to outline
+        std::vector<int> VerticesToOutlineNextNextVertices = {};    //(Internal variable) Used to identify the one after next vertex of vertex index to outline
+        std::vector<int> VerticesToOutlineShapeIndex = {};          //(Internal variable) Used to identify the shapes index to outline
+        std::vector<bool> VerticesToOutlineShapeStartFlag = {};     //(Internal variable) Used to identify which vertex is the start vertex of the shapes
     =================================================================
     ============================== C++ ==============================
-    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1.1), SimpleOutline(false), InnerOutline(true), 
-                            OutlineColor(glm::u8vec4(0, 0, 0, 255)), TargetShapes{0}, TargetVertices(), VerticesToOutline(), 
-                            VerticesToOutlinePrevVertices(), VerticesToOutlineNextVertices(), VerticesToOutlineNextNextVertices(), 
-                            VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
+    Outline::Outline()
     {}
     =================================================================
     */
@@ -55,22 +52,22 @@ namespace ssGUI::Extensions
             Outline& operator=(Outline const& other);
 
         protected:
-            ssGUI::GUIObject* Container;
-            bool Enabled;
+            ssGUI::GUIObject* Container = nullptr;                      //See <BindToObject>
+            bool Enabled = true;                                        //See <IsEnabled>
 
-            float OutlineThickness;
-            bool SimpleOutline;
-            bool InnerOutline;
-            glm::u8vec4 OutlineColor;
-            std::vector<int> TargetShapes;
-            std::vector<int> TargetVertices;
+            float OutlineThickness = 1.1;                               //See <GetOutlineThickness>
+            bool SimpleOutline = false;                                 //See <IsSimpleOutline>
+            bool InnerOutline = true;                                   //See <IsInnerOutline>
+            glm::u8vec4 OutlineColor = glm::u8vec4(0, 0, 0, 255);       //See <GetOutlineColor>
+            std::vector<int> TargetShapes = {0};                        //See <GetTargetShape>
+            std::vector<int> TargetVertices = {};                       //See <GetTargetVertex>
 
-            std::vector<int> VerticesToOutline;
-            std::vector<int> VerticesToOutlinePrevVertices;
-            std::vector<int> VerticesToOutlineNextVertices;
-            std::vector<int> VerticesToOutlineNextNextVertices;
-            std::vector<int> VerticesToOutlineShapeIndex;
-            std::vector<bool> VerticesToOutlineShapeStartFlag;
+            std::vector<int> VerticesToOutline = {};                    //(Internal variable) Used to identify vertices indices to outline
+            std::vector<int> VerticesToOutlinePrevVertices = {};        //(Internal variable) Used to identify the previous vertex of vertex index to outline
+            std::vector<int> VerticesToOutlineNextVertices = {};        //(Internal variable) Used to identify the next vertex of vertex index to outline
+            std::vector<int> VerticesToOutlineNextNextVertices = {};    //(Internal variable) Used to identify the one after next vertex of vertex index to outline
+            std::vector<int> VerticesToOutlineShapeIndex = {};          //(Internal variable) Used to identify the shapes index to outline
+            std::vector<bool> VerticesToOutlineShapeStartFlag = {};     //(Internal variable) Used to identify which vertex is the start vertex of the shapes
 
             Outline();
             virtual ~Outline() override;

@@ -13,8 +13,8 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        float InnerBoxSpace;
-        bool Checked;
+        float InnerBoxSpace = 2;    //See <GetInnerBoxSpace>
+        bool Checked = true;        //See <IsChecked>
     =================================================================
     ============================== C++ ==============================
     Checkbox::Checkbox() : InnerBoxSpace(2), Checked(true)
@@ -72,8 +72,8 @@ namespace ssGUI
             Checkbox& operator=(Checkbox const& other) = default;
 
         protected:
-            float InnerBoxSpace;
-            bool Checked;
+            float InnerBoxSpace = 2;    //See <GetInnerBoxSpace>
+            bool Checked = true;        //See <IsChecked>
 
             Checkbox(Checkbox const& other);
             virtual void ConstructRenderInfo() override;

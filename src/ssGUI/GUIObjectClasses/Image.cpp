@@ -126,7 +126,7 @@ namespace ssGUI
         DrawingProperties.push_back(currentProperty);
     }
     
-    Image::Image() : ImageData(nullptr), Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE), ImageTint(glm::u8vec4(255, 255, 255, 255))
+    Image::Image()
     {
         // AddExtension(new ssGUI::Extensions::Border());
     }

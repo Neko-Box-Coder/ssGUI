@@ -72,7 +72,7 @@ namespace ssGUI
 
     const std::string Dropdown::ListenerKey = "Dropdown";
     
-    Dropdown::Dropdown() : DropdownMenu(-1), SelectedIndex(-1), Items(), Toggle(false)
+    Dropdown::Dropdown()
     {
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();

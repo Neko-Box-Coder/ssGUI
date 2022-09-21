@@ -28,21 +28,14 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        glm::vec2 LastGlobalPosition;//Cache rendering
-        std::unordered_set<std::string> CurrentTags;
-        ssGUI::Menu* RightClickMenu;
+        glm::vec2 LastGlobalPosition = glm::vec2();             //(Internal variable) Used for cache rendering
+        std::unordered_set<std::string> CurrentTags = {};       //See <HasTag>
+        ssGUI::Menu* RightClickMenu = nullptr;                  //See <RegisterRightClickMenu>
     =================================================================
     ============================== C++ ==============================
-    GUIObject::GUIObject(GUIObject const& other) : Transform(other), Renderer(other), Hierarchy(other), ExtensionManager(other),
-                                                    EventCallbackManager(other)
+    GUIObject::GUIObject()
     {
-        LastGlobalPosition = other.LastGlobalPosition;
-        CurrentTags = other.CurrentTags;// std::unordered_set<std::string>();
-        RightClickMenu = other.RightClickMenu;
-
         SetupComponents();
-
-        SetParent(other.GetParent()); //Note : Reason of using SetParent is to inform the parent to add this as a child
     }
     =================================================================
     */
@@ -52,9 +45,9 @@ namespace ssGUI
             GUIObject& operator=(GUIObject const& other);
 
         protected:
-            glm::vec2 LastGlobalPosition;//Cache rendering
-            std::unordered_set<std::string> CurrentTags;
-            ssGUI::Menu* RightClickMenu;
+            glm::vec2 LastGlobalPosition = glm::vec2();             //(Internal variable) Used for cache rendering
+            std::unordered_set<std::string> CurrentTags = {};       //See <HasTag>
+            ssGUI::Menu* RightClickMenu = nullptr;                  //See <RegisterRightClickMenu>
 
             GUIObject(GUIObject const& other);
 

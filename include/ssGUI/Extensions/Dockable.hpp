@@ -41,7 +41,7 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        enum class DockSide
+        enum class DockSide                                                     //(Internal structure) Used to identify which side is being docked
         {
             NONE,
             TOP,
@@ -51,41 +51,38 @@ namespace ssGUI::Extensions
             CENTER
         };
 
-        ssGUI::GUIObject* Container;
-        bool Enabled;
-        ssGUIObjectIndex TopLevelParent;
+        ssGUI::GUIObject* Container = nullptr;                                  //See <BindToObject>
+        bool Enabled = true;                                                    //See <IsEnabled>
+        ssGUIObjectIndex TopLevelParent = -1;                                   //See <GetTopLevelParent>
 
-        ObjectsReferences CurrentObjectsReferences;
+        ObjectsReferences CurrentObjectsReferences = ObjectsReferences();       //(Internal variable) Used to manage Top Level Parent
 
-        bool UseTriggerPercentage;
-        float TriggerPercentage;
-        int TriggerPixel;
-        glm::u8vec4 TriggerAreaColor;
-        glm::u8vec4 DockPreviewColor;
+        bool UseTriggerPercentage = true;                                       //See <IsUseTriggerPercentage>
+        float TriggerPercentage = 0.25f;                                        //See <GetTriggerPercentage>
+        int TriggerPixel = 15;                                                  //See <GetTriggerPixel>
+        glm::u8vec4 TriggerAreaColor = glm::u8vec4(87, 207, 255, 127);          //See <GetTriggerAreaColor>
+        glm::u8vec4 DockPreviewColor = glm::u8vec4(255, 255, 255, 127);         //See <GetDockPreviewColor>
 
-        ssGUI::GUIObject* OriginalParent;
-        bool ContainerIsDocking;
+        ssGUI::GUIObject* OriginalParent = nullptr;                             //(Internal variable) Used to keep track of the parent being be dragged/docked
+        bool ContainerIsDocking = false;                                        //(Internal variable) Flag for indicating if the container is being dragged/docked
 
-        ssGUI::GUIObject* DockPreivewTop;
-        ssGUI::GUIObject* DockPreivewRight;
-        ssGUI::GUIObject* DockPreivewBottom;
-        ssGUI::GUIObject* DockPreivewLeft;
-        ssGUI::GUIObject* DockTriggerTop;
-        ssGUI::GUIObject* DockTriggerRight;
-        ssGUI::GUIObject* DockTriggerBottom;
-        ssGUI::GUIObject* DockTriggerLeft;
+        ssGUI::GUIObject* DockPreivewTop = nullptr;                             //(Internal variable) Dock preview GUI visual object
+        ssGUI::GUIObject* DockPreivewRight = nullptr;                           //(Internal variable) Dock preview GUI visual object
+        ssGUI::GUIObject* DockPreivewBottom = nullptr;                          //(Internal variable) Dock preview GUI visual object
+        ssGUI::GUIObject* DockPreivewLeft = nullptr;                            //(Internal variable) Dock preview GUI visual object
+        ssGUI::GUIObject* DockTriggerTop = nullptr;                             //(Internal variable) Dock trigger GUI visual object
+        ssGUI::GUIObject* DockTriggerRight = nullptr;                           //(Internal variable) Dock trigger GUI visual object
+        ssGUI::GUIObject* DockTriggerBottom = nullptr;                          //(Internal variable) Dock trigger GUI visual object
+        ssGUI::GUIObject* DockTriggerLeft = nullptr;                            //(Internal variable) Dock trigger GUI visual object
 
-        static bool GlobalDockMode;
-        static ssGUI::MainWindow* MainWindowUnderDocking;
-        static ssGUI::GUIObject* DockingTopLevelParent;
-        static ssGUI::GUIObject* TargetDockObject;          //Target Dockable Object to dock next to. This can be a docker as well. (This is NOT the object being docked)
-        static Dockable::DockSide TargetDockSide;
+        static bool GlobalDockMode;                                             //(Internal variable) Flag if there's any window being docked atm
+        static ssGUI::MainWindow* MainWindowUnderDocking;                       //(Internal variable) Target main window where the docking is happening
+        static ssGUI::GUIObject* DockingTopLevelParent;                         //(Internal variable) The top level parent where the docking is happening, see <GetTopLevelParent>
+        static ssGUI::GUIObject* TargetDockObject;                              //(Internal variable) Target Dockable Object to dock next to. This can be a docker as well. (This is **NOT** the object being docked)
+        static Dockable::DockSide TargetDockSide;                               //(Internal variable) The current side it is trying to dock atm
     =================================================================
     ============================== C++ ==============================
-    Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(-1), CurrentObjectsReferences(), UseTriggerPercentage(true), 
-                            TriggerPercentage(0.25f), TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
-                            ContainerIsDocking(false), DockPreivewTop(nullptr), DockPreivewRight(nullptr), DockPreivewBottom(nullptr), DockPreivewLeft(nullptr),
-                            DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr)
+    Dockable::Dockable()
     {}
 
     bool Dockable::GlobalDockMode = false;
@@ -104,7 +101,7 @@ namespace ssGUI::Extensions
             Dockable& operator=(Dockable const& other);
         
         protected:
-            enum class DockSide
+            enum class DockSide                                                     //(Internal structure) Used to identify which side is being docked
             {
                 NONE,
                 TOP,
@@ -114,35 +111,35 @@ namespace ssGUI::Extensions
                 CENTER
             };
 
-            ssGUI::GUIObject* Container;
-            bool Enabled;
-            ssGUIObjectIndex TopLevelParent;
+            ssGUI::GUIObject* Container = nullptr;                                  //See <BindToObject>
+            bool Enabled = true;                                                    //See <IsEnabled>
+            ssGUIObjectIndex TopLevelParent = -1;                                   //See <GetTopLevelParent>
 
-            ObjectsReferences CurrentObjectsReferences;
+            ObjectsReferences CurrentObjectsReferences = ObjectsReferences();       //(Internal variable) Used to manage Top Level Parent
 
-            bool UseTriggerPercentage;
-            float TriggerPercentage;
-            int TriggerPixel;
-            glm::u8vec4 TriggerAreaColor;
-            glm::u8vec4 DockPreviewColor;
+            bool UseTriggerPercentage = true;                                       //See <IsUseTriggerPercentage>
+            float TriggerPercentage = 0.25f;                                        //See <GetTriggerPercentage>
+            int TriggerPixel = 15;                                                  //See <GetTriggerPixel>
+            glm::u8vec4 TriggerAreaColor = glm::u8vec4(87, 207, 255, 127);          //See <GetTriggerAreaColor>
+            glm::u8vec4 DockPreviewColor = glm::u8vec4(255, 255, 255, 127);         //See <GetDockPreviewColor>
 
-            ssGUI::GUIObject* OriginalParent;
-            bool ContainerIsDocking;
+            ssGUI::GUIObject* OriginalParent = nullptr;                             //(Internal variable) Used to keep track of the parent being be dragged/docked
+            bool ContainerIsDocking = false;                                        //(Internal variable) Flag for indicating if the container is being dragged/docked
 
-            ssGUI::GUIObject* DockPreivewTop;
-            ssGUI::GUIObject* DockPreivewRight;
-            ssGUI::GUIObject* DockPreivewBottom;
-            ssGUI::GUIObject* DockPreivewLeft;
-            ssGUI::GUIObject* DockTriggerTop;
-            ssGUI::GUIObject* DockTriggerRight;
-            ssGUI::GUIObject* DockTriggerBottom;
-            ssGUI::GUIObject* DockTriggerLeft;
+            ssGUI::GUIObject* DockPreivewTop = nullptr;                             //(Internal variable) Dock preview GUI visual object
+            ssGUI::GUIObject* DockPreivewRight = nullptr;                           //(Internal variable) Dock preview GUI visual object
+            ssGUI::GUIObject* DockPreivewBottom = nullptr;                          //(Internal variable) Dock preview GUI visual object
+            ssGUI::GUIObject* DockPreivewLeft = nullptr;                            //(Internal variable) Dock preview GUI visual object
+            ssGUI::GUIObject* DockTriggerTop = nullptr;                             //(Internal variable) Dock trigger GUI visual object
+            ssGUI::GUIObject* DockTriggerRight = nullptr;                           //(Internal variable) Dock trigger GUI visual object
+            ssGUI::GUIObject* DockTriggerBottom = nullptr;                          //(Internal variable) Dock trigger GUI visual object
+            ssGUI::GUIObject* DockTriggerLeft = nullptr;                            //(Internal variable) Dock trigger GUI visual object
 
-            static bool GlobalDockMode;
-            static ssGUI::MainWindow* MainWindowUnderDocking;
-            static ssGUI::GUIObject* DockingTopLevelParent;
-            static ssGUI::GUIObject* TargetDockObject;          //Target Dockable Object to dock next to. This can be a docker as well. (This is NOT the object being docked)
-            static Dockable::DockSide TargetDockSide;
+            static bool GlobalDockMode;                                             //(Internal variable) Flag if there's any window being docked atm
+            static ssGUI::MainWindow* MainWindowUnderDocking;                       //(Internal variable) Target main window where the docking is happening
+            static ssGUI::GUIObject* DockingTopLevelParent;                         //(Internal variable) The top level parent where the docking is happening, see <GetTopLevelParent>
+            static ssGUI::GUIObject* TargetDockObject;                              //(Internal variable) Target Dockable Object to dock next to. This can be a docker as well. (This is **NOT** the object being docked)
+            static Dockable::DockSide TargetDockSide;                               //(Internal variable) The current side it is trying to dock atm
 
             Dockable();
             virtual ~Dockable() override;

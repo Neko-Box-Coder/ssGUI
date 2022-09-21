@@ -18,19 +18,20 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        int HorizontalPadding;
-        int VerticalPadding;
-        bool AdaptiveTitleColor;
-        glm::ivec4 TitleColorDifference;
-        bool AdaptiveTitleContrast;
+        int HorizontalPadding = 5;                          //See <GetHorizontalPadding>
+        int VerticalPadding = 4;                            //See <GetVerticalPadding>
+        bool AdaptiveTitleColor = true;                     //See <SetAdaptiveTitleColor>
+        glm::ivec4 TitleColorDifference = glm::ivec4();     //See <GetAdaptiveTitleColorDifference>
+        bool AdaptiveTitleContrast = true;                  //See <IsAdaptiveTitleContrast>
+        bool AutoFontSize = true;                           //See <IsAutoFontSize>
+        float FontSizeMultiplier = 0.8;                     //See <GetAutoFontSizeMultiplier>
         
-        ssGUIObjectIndex WindowTitle;
-        ssGUIObjectIndex WindowIcon;
-        ssGUIObjectIndex CloseButton;
+        ssGUIObjectIndex WindowTitle = -1;                  //See <GetWindowTitleObject>
+        ssGUIObjectIndex WindowIcon = -1;                   //See <GetWindowIconObject>
+        ssGUIObjectIndex CloseButton = -1;                  //See <GetCloseButtonObject>
     =================================================================
     ============================== C++ ==============================
-    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(4), AdaptiveTitleColor(true), TitleColorDifference(0, 0, 0, 0), AdaptiveTitleContrast(true), 
-                                        AutoFontSize(true), FontSizeMultiplier(0.8), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
+    StandardWindow::StandardWindow()
     {        
         FUNC_DEBUG_ENTRY();
         SetMinSize(glm::vec2(100, 100));
@@ -174,17 +175,17 @@ namespace ssGUI
             StandardWindow& operator=(StandardWindow const& other) = default;
         
         protected:
-            int HorizontalPadding;
-            int VerticalPadding;
-            bool AdaptiveTitleColor;
-            glm::ivec4 TitleColorDifference;
-            bool AdaptiveTitleContrast;
-            bool AutoFontSize;
-            float FontSizeMultiplier;
+            int HorizontalPadding = 5;                          //See <GetHorizontalPadding>
+            int VerticalPadding = 4;                            //See <GetVerticalPadding>
+            bool AdaptiveTitleColor = true;                     //See <SetAdaptiveTitleColor>
+            glm::ivec4 TitleColorDifference = glm::ivec4();     //See <GetAdaptiveTitleColorDifference>
+            bool AdaptiveTitleContrast = true;                  //See <IsAdaptiveTitleContrast>
+            bool AutoFontSize = true;                           //See <IsAutoFontSize>
+            float FontSizeMultiplier = 0.8;                     //See <GetAutoFontSizeMultiplier>
             
-            ssGUIObjectIndex WindowTitle;
-            ssGUIObjectIndex WindowIcon;
-            ssGUIObjectIndex CloseButton;
+            ssGUIObjectIndex WindowTitle = -1;                  //See <GetWindowTitleObject>
+            ssGUIObjectIndex WindowIcon = -1;                   //See <GetWindowIconObject>
+            ssGUIObjectIndex CloseButton = -1;                  //See <GetCloseButtonObject>
 
             StandardWindow(StandardWindow const& other);
 
@@ -221,7 +222,7 @@ namespace ssGUI
             //Set the font size multiplier to have a finer adjustment over it
             virtual void SetAutoFontSizeMultiplier(float multiplier);
 
-            //function: SetAutoFontSizeMultiplier
+            //function: GetAutoFontSizeMultiplier
             //Gets the font size multiplier to have a finer adjustment over it
             virtual float GetAutoFontSizeMultiplier() const;
 

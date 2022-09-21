@@ -382,11 +382,7 @@ namespace ssGUI
         }
     }
 
-    ImageCanvas::ImageCanvas() : HorizontalScrollbar(-1), ShowHorizontalScrollbar(true), VerticalScrollbar(-1), ShowVerticalScrollbar(true),
-                                    ImageVertices(), ImageMinX(0), ImageMaxX(0), ImageMinY(0), ImageMaxY(0), Panable(true), 
-                                    CurrentPosition(glm::vec2(0.5, 0.5)), Zoomable(true), MinZoom(0), MaxZoom(10), CurrentZoom(1), ZoomAmount(0.1),
-                                    MeasureScaleByHeight(true), Rotatable(true), CurrentRotation(0), OnRotateStartRotation(0), OnRotateStartPosition(),
-                                    InnerCircleId(0), BackgroundCircleId(0), OuterCircleId(0), MousePressed(false), MouseButtonDownPosition()
+    ImageCanvas::ImageCanvas()
     {
         ssGUI::Extensions::Mask* mask = ssGUI::Factory::Create<ssGUI::Extensions::Mask>();
         mask->SetMaskChildren(false);

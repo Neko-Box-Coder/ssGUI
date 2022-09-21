@@ -19,19 +19,20 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-        ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;
-        ssGUI::Backend::BackendDrawingInterface* BackendDrawing;
-        glm::vec2 LastSize;
-        int RedrawCount;
+        ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow = nullptr;    //See <GetBackendWindowInterface>
+        ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;          //See <GetBackendDrawingInterface>
+        glm::vec2 LastSize = glm::vec2();                                           //(Internal variable) Used to trigger redraw and <SizeChangedEventCallback>
+        int RedrawCount = 0;                                                        //(Internal variable) Used to make sure the redraw is actually done
 
-        uint64_t LastSyncTime;
+        uint64_t LastSyncTime = 0;                                                  //(Internal variable) Used to update the window every half a second
     =================================================================
     ============================== C++ ==============================
-    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::vec2(0, 0)), RedrawCount(0), LastSyncTime(0)
+    MainWindow::MainWindow()
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
+        BackendMainWindow->AddFocusChangedByUserEvent(std::bind(&ssGUI::MainWindow::Internal_FocusChanged, this, std::placeholders::_1));
         BackendMainWindow->SetMSAA(8);
         SetBackgroundColor(glm::u8vec4(255, 255, 255, 255));
     }
@@ -40,12 +41,13 @@ namespace ssGUI
     class MainWindow : public Window
     {
         private:
-            ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;
-            ssGUI::Backend::BackendDrawingInterface* BackendDrawing;
-            glm::vec2 LastSize;
-            int RedrawCount;
+            ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow = nullptr;    //See <GetBackendWindowInterface>
+            ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;          //See <GetBackendDrawingInterface>
+            glm::vec2 LastSize = glm::vec2();                                           //(Internal variable) Used to trigger redraw and <SizeChangedEventCallback>
+            int RedrawCount = 0;                                                        //(Internal variable) Used to make sure the redraw is actually done
 
-            uint64_t LastSyncTime;
+            uint64_t LastSyncTime = 0;                                                  //(Internal variable) Used to update the window every half a second
+            
             MainWindow& operator=(MainWindow const& other);
 
         protected:

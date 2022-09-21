@@ -7,7 +7,7 @@
 
 namespace ssGUI::Extensions
 {
-    Shape::Shape() : Container(nullptr), Enabled(true), ExtensionPreRender(true), AdditionalShapes(), GUIObjectShapesToRemove(), NextID(0)
+    Shape::Shape()
     {}
 
     Shape::~Shape()

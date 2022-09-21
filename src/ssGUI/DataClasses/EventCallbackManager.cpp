@@ -12,7 +12,7 @@ namespace ssGUI
         CurrentObject = nullptr;
     }
     
-    EventCallbackManager::EventCallbackManager() : EventCallbacks(), CurrentRenderer(nullptr), CurrentObject(nullptr)
+    EventCallbackManager::EventCallbackManager()
     {}
 
     EventCallbackManager::~EventCallbackManager()
@@ -69,8 +69,4 @@ namespace ssGUI
         
         return returnVector;
     }
-
-
-
-
 }

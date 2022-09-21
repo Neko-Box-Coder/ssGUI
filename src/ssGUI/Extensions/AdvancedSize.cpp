@@ -2,9 +2,7 @@
 
 namespace ssGUI::Extensions
 {
-    AdvancedSize::AdvancedSize() : Container(nullptr), Enabled(true), HorizontalPixelValue(0), 
-                                    VerticalPixelValue(0), HorizontalPercentageValue(0), 
-                                    VerticalPercentageValue(0), SettingsChanged(true), LastParentSize()
+    AdvancedSize::AdvancedSize()
     {}
 
     AdvancedSize::~AdvancedSize()

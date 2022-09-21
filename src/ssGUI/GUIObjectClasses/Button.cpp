@@ -128,7 +128,7 @@ namespace ssGUI
 
     const std::string Button::ListenerKey = "Button";
 
-    Button::Button() : CurrentState(ssGUI::Enums::ButtonState::NORMAL), ButtonColor(glm::u8vec4(100, 100, 100, 255))
+    Button::Button()
     {
         SetSize(glm::vec2(25, 25));
         auto stateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();

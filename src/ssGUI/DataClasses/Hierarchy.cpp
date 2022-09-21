@@ -57,11 +57,7 @@ namespace ssGUI
         FUNC_DEBUG_EXIT();
     }
 
-    Hierarchy::Hierarchy() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true),
-                                CurrentChildIteratorBackEnd(true), UserCreated(true), ObjectDelete(false), HeapAllocated(false), 
-                                CurrentObjectsReferences(), DestroyEventCalled(false), StashedChildIterators(), Focused(false),
-                                CurrentRenderer(nullptr), CurrentEventCallbackManager(nullptr), CurrentTransform(nullptr), 
-                                CurrentObject(nullptr)
+    Hierarchy::Hierarchy()
     {}
 
     Hierarchy::~Hierarchy()

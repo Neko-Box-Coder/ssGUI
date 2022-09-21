@@ -11,10 +11,7 @@ namespace ssGUI::Extensions
 {
     ssGUI::Window* Docker::DefaultGeneratedDockerWindow = nullptr;
 
-    Docker::Docker() : Container(nullptr), Enabled(true), ChildrenDockerUseThisSettings(true), UseTriggerPercentage(true),
-                        TriggerHorizontalPercentage(0.5), TriggerVerticalPercentage(0.5), TriggerHorizontalPixel(15), TriggerVerticalPixel(15),
-                        TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), DockPreivew(nullptr),
-                        DockTrigger(nullptr), ChildRemoveGuard(false)
+    Docker::Docker()
     {}
 
     Docker::~Docker()

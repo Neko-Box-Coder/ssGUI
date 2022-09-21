@@ -50,9 +50,7 @@ namespace ssGUI::Backend
         */
     }
 
-    BackendMainWindowSFML::BackendMainWindowSFML() : CurrentWindow(sf::VideoMode(800, 600), ""), Visible(true), VSync(false), Closed(false),
-                                                        CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL), Titlebar(true), Resizable(true), 
-                                                        CloseButton(true), Title(), IsClosingAborted(false), PositionOffset()
+    BackendMainWindowSFML::BackendMainWindowSFML()
     {
         ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }

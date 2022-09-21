@@ -22,9 +22,9 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        glm::vec2 SpawnGlobalPosition;
-        ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection;
-        ssGUI::GUIObject* MenuTarget;
+            glm::vec2 SpawnGlobalPosition = glm::vec2();                                                                        //See <SpawnMenu>
+            ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection = ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT;        //See <GetMenuSpawnDirection>
+            ssGUI::GUIObject* MenuTarget = nullptr;                                                                             //See <GetMenuTarget>
     =================================================================
     ============================== C++ ==============================
     Menu::Menu() : SpawnGlobalPosition(), CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT), MenuTarget(nullptr)
@@ -45,9 +45,9 @@ namespace ssGUI
             Menu& operator=(Menu const& other) = default;
 
         protected:
-            glm::vec2 SpawnGlobalPosition;
-            ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection;
-            ssGUI::GUIObject* MenuTarget;
+            glm::vec2 SpawnGlobalPosition = glm::vec2();                                                                        //See <SpawnMenu>
+            ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection = ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT;        //See <GetMenuSpawnDirection>
+            ssGUI::GUIObject* MenuTarget = nullptr;                                                                             //See <GetMenuTarget>
 
             Menu(Menu const& other);
 

@@ -16,23 +16,24 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        struct AdditionalShape
+        struct AdditionalShape                                  //(Internal structure) Used to store the additional shape apply on the GUI Object
         {
             std::vector<glm::vec2> Vertices;
             std::vector<glm::u8vec4> Colors;
+            int ID;
             bool BehindGUI;
         };
 
-        ssGUI::GUIObject* Container;
-        bool Enabled;
+        ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
+        bool Enabled = true;                                    //See <IsEnabled>
 
-        bool ExtensionPreRender;
-        std::vector<AdditionalShape> AdditionalShapes;
-        std::unordered_set<int> GUIObjectShapesToRemove;
-        int NextID;
+        bool ExtensionPreRender = true;                         //(Internal variable) Used to track if the current drawing is before or after the GUI Object
+        std::vector<AdditionalShape> AdditionalShapes = {};     //See <AddAdditionalPolygon>
+        std::unordered_set<int> GUIObjectShapesToRemove = {};   //See <RemoveGUIObjectShape>
+        int NextID = 0;                                         //(Internal variable) Used to return unique shape ID
     =================================================================
     ============================== C++ ==============================
-    Shape::Shape() : Container(nullptr), Enabled(true), ExtensionPreRender(true), AdditionalShapes(), GUIObjectShapesToRemove(), NextID(0)
+    Shape::Shape()
     {}
     =================================================================
     */
@@ -45,7 +46,7 @@ namespace ssGUI::Extensions
             Shape& operator=(Shape const& other);
 
         protected:
-            struct AdditionalShape
+            struct AdditionalShape                                  //(Internal structure) Used to store the additional shape apply on the GUI Object
             {
                 std::vector<glm::vec2> Vertices;
                 std::vector<glm::u8vec4> Colors;
@@ -53,13 +54,13 @@ namespace ssGUI::Extensions
                 bool BehindGUI;
             };
 
-            ssGUI::GUIObject* Container;
-            bool Enabled;
+            ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
+            bool Enabled = true;                                    //See <IsEnabled>
 
-            bool ExtensionPreRender;
-            std::vector<AdditionalShape> AdditionalShapes;
-            std::unordered_set<int> GUIObjectShapesToRemove;
-            int NextID;
+            bool ExtensionPreRender = true;                         //(Internal variable) Used to track if the current drawing is before or after the GUI Object
+            std::vector<AdditionalShape> AdditionalShapes = {};     //See <AddAdditionalPolygon>
+            std::unordered_set<int> GUIObjectShapesToRemove = {};   //See <RemoveGUIObjectShape>
+            int NextID = 0;                                         //(Internal variable) Used to return unique shape ID
 
             Shape();
             virtual ~Shape() override;

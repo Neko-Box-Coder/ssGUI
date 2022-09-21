@@ -21,7 +21,7 @@ namespace ssGUI
                                 ssGUI::GUIObject* mainWindow)
     {}
     
-    MainWindow::MainWindow() : BackendMainWindow(), BackendDrawing(), LastSize(glm::vec2(0, 0)), RedrawCount(0), LastSyncTime(0)
+    MainWindow::MainWindow()
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();

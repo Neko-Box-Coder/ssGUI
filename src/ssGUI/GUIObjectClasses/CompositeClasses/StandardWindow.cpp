@@ -174,8 +174,7 @@ namespace ssGUI
 
     const std::string StandardWindow::ListenerKey = "Standard Window";
 
-    StandardWindow::StandardWindow() : HorizontalPadding(5), VerticalPadding(4), AdaptiveTitleColor(true), TitleColorDifference(0, 0, 0, 0), AdaptiveTitleContrast(true), 
-                                        AutoFontSize(true), FontSizeMultiplier(0.8), WindowTitle(-1), WindowIcon(-1), CloseButton(-1)
+    StandardWindow::StandardWindow()
     {        
         FUNC_DEBUG_ENTRY();
         SetMinSize(glm::vec2(100, 100));

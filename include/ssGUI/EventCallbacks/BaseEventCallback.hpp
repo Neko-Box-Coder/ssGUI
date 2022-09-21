@@ -15,13 +15,17 @@ namespace ssGUI::EventCallbacks
     ============================== C++ ==============================
     private:
         //Events
-        std::unordered_map<std::string, std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*)>> EventListeners;
-        ssGUI::GUIObject* Container;
-
-        ssGUI::ObjectsReferences CurrentObjectsReferences;
+        std::unordered_map
+        <
+            std::string, 
+            std::function<void(ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)>
+        > EventListeners = {};                                                              //See <AddEventListener>
+        
+        ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
+        ssGUI::ObjectsReferences CurrentObjectsReferences = ssGUI::ObjectsReferences();     //See <GetObjectReference> and <Internal_GetObjectsReferences>
     =================================================================
     ============================== C++ ==============================
-    BaseEventCallback::BaseEventCallback() : EventListeners(), Container(nullptr), CurrentObjectsReferences()
+    BaseEventCallback::BaseEventCallback()
     {}
     =================================================================
     */
@@ -32,10 +36,14 @@ namespace ssGUI::EventCallbacks
         
         private:
             //Events
-            std::unordered_map<std::string, std::function<void(ssGUI::GUIObject*, ssGUI::GUIObject*, ssGUI::ObjectsReferences*)>> EventListeners;
-            ssGUI::GUIObject* Container;
-
-            ssGUI::ObjectsReferences CurrentObjectsReferences;
+            std::unordered_map
+            <
+                std::string, 
+                std::function<void(ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)>
+            > EventListeners = {};                                                              //See <AddEventListener>
+            
+            ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
+            ssGUI::ObjectsReferences CurrentObjectsReferences = ssGUI::ObjectsReferences();     //See <GetObjectReference> and <Internal_GetObjectsReferences>
         
         protected:
             BaseEventCallback();
@@ -103,7 +111,7 @@ namespace ssGUI::EventCallbacks
             virtual void RemoveObjectReference(ssGUI::ssGUIObjectIndex index) override;
 
             //function: Internal_GetObjectsReferences
-            //Returns all the referenced GUI Objects. If nullptr is returned, this extension is not referencing any GUI Object (exception for container).
+            //(Internal ssGUI function) Returns all the referenced GUI Objects. If nullptr is returned, this extension is not referencing any GUI Object (exception for container).
             virtual ssGUI::ObjectsReferences* Internal_GetObjectsReferences() override;
 
             //function: GetEventCallbackName

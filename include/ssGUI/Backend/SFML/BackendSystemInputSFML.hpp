@@ -31,34 +31,31 @@ namespace ssGUI::Backend
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-        ssGUI::KeyPresses CurrentKeyPresses;
-        ssGUI::KeyPresses LastKeyPresses;
-        std::wstring InputText;
-        glm::ivec2 CurrentMousePosition;
-        glm::ivec2 LastMousePosition;
-        std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;
-        std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;
-        glm::vec2 MouseScrollDelta;
-        std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;
-        std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;
-        sf::Cursor SFMLCursor;
-        ssGUI::Enums::CursorType CurrentCursor;
-        std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
+        ssGUI::KeyPresses CurrentKeyPresses = ssGUI::KeyPresses();                                  //See <GetCurrentKeyPresses>
+        ssGUI::KeyPresses LastKeyPresses = ssGUI::KeyPresses();                                     //See <GetLastKeyPresses>
+        std::wstring InputText = L"";                                                               //See <GetTextInput>
+        glm::ivec2 CurrentMousePosition = glm::ivec2();                                             //See <GetCurrentMousePosition>
+        glm::ivec2 LastMousePosition = glm::ivec2();                                                //See <GetLastMousePosition>
+        std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons = {};                            //See <GetCurrentMouseButton>
+        std::vector<ssGUI::Enums::MouseButton> LastMouseButtons = {};                               //See <GetLastMouseButton>
+        glm::vec2 MouseScrollDelta = glm::vec2();                                                   //See <GetCurrentMouseScrollDelta>
+        std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos = {};                               //See <GetCurrentRealtimeInputs>
+        std::vector<ssGUI::RealtimeInputInfo> LastInputInfos = {};                                  //See <GetLastRealtimeInputs>
+        sf::Cursor SFMLCursor = sf::Cursor();                                                       //(Internal variable) Underlying cursor object
+        ssGUI::Enums::CursorType CurrentCursor = ssGUI::Enums::CursorType::NORMAL;                  //See <GetCursorType>
+        std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow = {};    //TODO: Not used, remove it
 
-        std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;
-        std::string CurrentCustomCursor;
+        std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors = {};       //See <GetCustomCursor>
+        std::string CurrentCustomCursor = "";                                                       //See <GetCurrentCustomCursorName>
 
         #if USE_SFML_TIME
-            sf::Clock ElapsedTime;
+            sf::Clock ElapsedTime = sf::Clock();                                                    //See <GetElapsedTime>
         #else
-            std::chrono::high_resolution_clock::time_point ElapsedTime;
+            std::chrono::high_resolution_clock::time_point ElapsedTime = {};                        //See <GetElapsedTime>
         #endif
     =================================================================
     ============================== C++ ==============================
-    BackendSystemInputSFML::BackendSystemInputSFML() : CurrentKeyPresses(), LastKeyPresses(), InputText(), CurrentMousePosition(), LastMousePosition(),
-                                            CurrentMouseButtons(), LastMouseButtons(), MouseScrollDelta(), CurrentInputInfos(), LastInputInfos(), SFMLCursor(), 
-                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL), CursorMappedWindow(), ElapsedTime(), CustomCursors(),
-                                            CurrentCustomCursor()
+    BackendSystemInputSFML::BackendSystemInputSFML()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
@@ -77,27 +74,27 @@ namespace ssGUI::Backend
     class BackendSystemInputSFML : public BackendSystemInputInterface
     {
         private:
-            ssGUI::KeyPresses CurrentKeyPresses;
-            ssGUI::KeyPresses LastKeyPresses;
-            std::wstring InputText;
-            glm::ivec2 CurrentMousePosition;
-            glm::ivec2 LastMousePosition;
-            std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;
-            std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;
-            glm::vec2 MouseScrollDelta;
-            std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;
-            std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;
-            sf::Cursor SFMLCursor;
-            ssGUI::Enums::CursorType CurrentCursor;
-            std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow;
+            ssGUI::KeyPresses CurrentKeyPresses = ssGUI::KeyPresses();                                  //See <GetCurrentKeyPresses>
+            ssGUI::KeyPresses LastKeyPresses = ssGUI::KeyPresses();                                     //See <GetLastKeyPresses>
+            std::wstring InputText = L"";                                                               //See <GetTextInput>
+            glm::ivec2 CurrentMousePosition = glm::ivec2();                                             //See <GetCurrentMousePosition>
+            glm::ivec2 LastMousePosition = glm::ivec2();                                                //See <GetLastMousePosition>
+            std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons = {};                            //See <GetCurrentMouseButton>
+            std::vector<ssGUI::Enums::MouseButton> LastMouseButtons = {};                               //See <GetLastMouseButton>
+            glm::vec2 MouseScrollDelta = glm::vec2();                                                   //See <GetCurrentMouseScrollDelta>
+            std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos = {};                               //See <GetCurrentRealtimeInputs>
+            std::vector<ssGUI::RealtimeInputInfo> LastInputInfos = {};                                  //See <GetLastRealtimeInputs>
+            sf::Cursor SFMLCursor = sf::Cursor();                                                       //(Internal variable) Underlying cursor object
+            ssGUI::Enums::CursorType CurrentCursor = ssGUI::Enums::CursorType::NORMAL;                  //See <GetCursorType>
+            std::unordered_set<ssGUI::Backend::BackendMainWindowInterface*> CursorMappedWindow = {};    //TODO: Not used, remove it
 
-            std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;
-            std::string CurrentCustomCursor;
+            std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors = {};       //See <GetCustomCursor>
+            std::string CurrentCustomCursor = "";                                                       //See <GetCurrentCustomCursorName>
 
             #if USE_SFML_TIME
-                sf::Clock ElapsedTime;
+                sf::Clock ElapsedTime = sf::Clock();                                                    //See <GetElapsedTime>
             #else
-                std::chrono::high_resolution_clock::time_point ElapsedTime;
+                std::chrono::high_resolution_clock::time_point ElapsedTime = {};                        //See <GetElapsedTime>
             #endif
 
             template <class T>

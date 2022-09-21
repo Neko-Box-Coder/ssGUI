@@ -44,7 +44,7 @@ namespace ssGUI
 
     const std::string Menu::ListenerKey = "Menu";
     
-    Menu::Menu() : SpawnGlobalPosition(), CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT), MenuTarget(nullptr)
+    Menu::Menu()
     {
         SetSize(glm::vec2(200, GetSize().y));
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());

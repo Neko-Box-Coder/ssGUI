@@ -20,35 +20,34 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        bool HorizontalLayout;
-        std::vector<float> PreferredSizeMultipliers;
-        bool DisableChildrenResizing;
-        bool OverrideChildrenResizeTypesAndOnTop;
+        bool HorizontalLayout = false;                                                                      //See <IsHorizontalLayout>
+        std::vector<float> PreferredSizeMultipliers = {};                                                   //See <GetPreferredSizeMultiplier>
+        bool DisableChildrenResizing = false;                                                               //See <IsChildrenResizingDisabled>
+        bool OverrideChildrenResizeTypesAndOnTop = true;                                                    //See <IsOverrideChildrenResizeTypeAndOnTop>
 
-        bool UpdateContainerMinMaxSize;
-        bool ReverseOrder;
-        bool CoverFullLength; 
-        ssGUI::GUIObject* Container;
-        bool Enabled;
-        float Padding;
-        float Spacing;
-        bool Overflow;
+        bool UpdateContainerMinMaxSize = true;                                                              //See <GetUpdateContainerMinMaxSize>
+        bool ReverseOrder = false;                                                                          //See <IsReverseOrder>
+        bool CoverFullLength = true;                                                                        //See <IsCoverFullLength>
+        ssGUI::GUIObject* Container = nullptr;                                                              //See <BindToObject>
+        bool Enabled = true;                                                                                //See <IsEnabled>
+        float Padding = 0;                                                                                  //See <GetPadding>
+        float Spacing = 5;                                                                                  //See <GetSpacing>
+        bool Overflow = false;                                                                              //See <GetOverflow>
 
-        ObjectsReferences CurrentObjectsReferences;
+        ObjectsReferences CurrentObjectsReferences = ObjectsReferences();                                   //(Internal variable) Used to keep track of all the children and event callbacks
 
-        std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
-        std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
-        std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
-        std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
-        std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
-        std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
+        std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize {};                          //(Internal variable) Used for figuring out if the child has change it size
+        std::unordered_set<ssGUIObjectIndex> ObjectsToExclude = {};                                         //See <ExcludeObject>
+        std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude = {};                                  //(Internal variable) Used to exclude special objects from being layout
+                                                                                                            //NOTE: subset of ObjectsToExclude that indicates for special objects 
+                                                                                                            //that are not excluded by the user, which is maintain by the extension itself.
+
+        std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize = {};                          //(Internal variable) Used to restore the size of the child when its parent being set to other GUI object
+        std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType = {};     //(Internal variable) Used to restore the resize type of the child when its parent being set to other GUI object
+        std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop = {};                              //(Internal variable) Used to restore if the child moves to top if focused when its parent being set to other GUI object
     =================================================================
     ============================== C++ ==============================
-    Layout::Layout() : HorizontalLayout(false), PreferredSizeMultipliers(), DisableChildrenResizing(false), 
-                        OverrideChildrenResizeTypesAndOnTop(true), UpdateContainerMinMaxSize(true), ReverseOrder(false), CoverFullLength(true),
-                        Container(nullptr), Enabled(true), Padding(0), Spacing(5), Overflow(false), 
-                        CurrentObjectsReferences(), LastUpdateChildrenSize(), 
-                        ObjectsToExclude(), SpecialObjectsToExclude(), OriginalChildrenSize(), OriginalChildrenResizeType(), OriginalChildrenOnTop()
+    Layout::Layout()
     {}
     =================================================================
     */
@@ -61,28 +60,31 @@ namespace ssGUI::Extensions
             Layout& operator=(Layout const& other);
         
         protected:
-            bool HorizontalLayout;
-            std::vector<float> PreferredSizeMultipliers;
-            bool DisableChildrenResizing;
-            bool OverrideChildrenResizeTypesAndOnTop;
+            bool HorizontalLayout = false;                                                                      //See <IsHorizontalLayout>
+            std::vector<float> PreferredSizeMultipliers = {};                                                   //See <GetPreferredSizeMultiplier>
+            bool DisableChildrenResizing = false;                                                               //See <IsChildrenResizingDisabled>
+            bool OverrideChildrenResizeTypesAndOnTop = true;                                                    //See <IsOverrideChildrenResizeTypeAndOnTop>
 
-            bool UpdateContainerMinMaxSize;
-            bool ReverseOrder;
-            bool CoverFullLength; 
-            ssGUI::GUIObject* Container;
-            bool Enabled;
-            float Padding;
-            float Spacing;
-            bool Overflow;
+            bool UpdateContainerMinMaxSize = true;                                                              //See <GetUpdateContainerMinMaxSize>
+            bool ReverseOrder = false;                                                                          //See <IsReverseOrder>
+            bool CoverFullLength = true;                                                                        //See <IsCoverFullLength>
+            ssGUI::GUIObject* Container = nullptr;                                                              //See <BindToObject>
+            bool Enabled = true;                                                                                //See <IsEnabled>
+            float Padding = 0;                                                                                  //See <GetPadding>
+            float Spacing = 5;                                                                                  //See <GetSpacing>
+            bool Overflow = false;                                                                              //See <GetOverflow>
 
-            ObjectsReferences CurrentObjectsReferences;
+            ObjectsReferences CurrentObjectsReferences = ObjectsReferences();                                   //(Internal variable) Used to keep track of all the children and event callbacks
 
-            std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize;
-            std::unordered_set<ssGUIObjectIndex> ObjectsToExclude;
-            std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude;  //NOTE: subset of ObjectsToExclude that indicates for special objects that are not excluded by the user, which is matain by the extension itself.
-            std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;
-            std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;
-            std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;
+            std::unordered_map<ssGUIObjectIndex, glm::vec2> LastUpdateChildrenSize {};                          //(Internal variable) Used for figuring out if the child has change it size
+            std::unordered_set<ssGUIObjectIndex> ObjectsToExclude = {};                                         //See <ExcludeObject>
+            std::unordered_set<ssGUIObjectIndex> SpecialObjectsToExclude = {};                                  //(Internal variable) Used to exclude special objects from being layout
+                                                                                                                //NOTE: subset of ObjectsToExclude that indicates for special objects 
+                                                                                                                //that are not excluded by the user, which is maintain by the extension itself.
+
+            std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize = {};                          //(Internal variable) Used to restore the size of the child when its parent being set to other GUI object
+            std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType = {};     //(Internal variable) Used to restore the resize type of the child when its parent being set to other GUI object
+            std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop = {};                              //(Internal variable) Used to restore if the child moves to top if focused when its parent being set to other GUI object
 
             Layout(Layout const& other);
             Layout();
@@ -219,7 +221,7 @@ namespace ssGUI::Extensions
             //If true, the layout extension will not try to cover the full length of the container even if it is set so.
             virtual void SetOverflow(bool overflow);
 
-            //function: SetOverflow
+            //function: GetOverflow
             //Gets if allows the children to overflow the container. 
             //If true, the layout extension will not try to cover the full length of the container even if it is set so.
             virtual bool GetOverflow() const;

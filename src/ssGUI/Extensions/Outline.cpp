@@ -7,10 +7,7 @@
 
 namespace ssGUI::Extensions
 {
-    Outline::Outline() : Container(nullptr), Enabled(true), OutlineThickness(1.1), SimpleOutline(false), InnerOutline(true), 
-                            OutlineColor(glm::u8vec4(0, 0, 0, 255)), TargetShapes{0}, TargetVertices(), VerticesToOutline(), 
-                            VerticesToOutlinePrevVertices(), VerticesToOutlineNextVertices(), VerticesToOutlineNextNextVertices(), 
-                            VerticesToOutlineShapeIndex(), VerticesToOutlineShapeStartFlag()
+    Outline::Outline()
     {}
 
     Outline::~Outline()

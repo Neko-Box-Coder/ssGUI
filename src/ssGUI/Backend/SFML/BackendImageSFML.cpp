@@ -9,7 +9,7 @@ namespace ssGUI::Backend
         GPUTextureValid = other.GPUTextureValid;
     }
     
-    BackendImageSFML::BackendImageSFML() : GPUTexture(), MemoryImage(), GPUTextureValid(false)
+    BackendImageSFML::BackendImageSFML()
     {}
 
     BackendImageSFML::~BackendImageSFML()

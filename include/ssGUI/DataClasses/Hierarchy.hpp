@@ -20,53 +20,49 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUIObjectIndex Parent;
-        std::list<ssGUIObjectIndex> Children;
-        std::list<ssGUIObjectIndex>::iterator CurrentChild;
-        bool CurrentChildIteratorFrontEnd;
-        bool CurrentChildIteratorBackEnd;
-        bool UserCreated;
-        bool ObjectDelete;
-        bool HeapAllocated;
-        ObjectsReferences CurrentObjectsReferences;
-        bool DestroyEventCalled;
-        std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;
-        bool Focused;
+        ssGUIObjectIndex Parent = -1;                                                                               //See <GetParent>
+        std::list<ssGUIObjectIndex> Children = {};                                                                  //See <GetListOfChildren>
+        std::list<ssGUIObjectIndex>::iterator CurrentChild = Children.end();                                        //See <GetCurrentChild> and <GetCurrentChildReferenceIterator> 
+        bool CurrentChildIteratorFrontEnd = true;                                                                   //See <IsChildrenIteratorEnd>
+        bool CurrentChildIteratorBackEnd = true;                                                                    //See <IsChildrenIteratorEnd>
+        bool UserCreated = true;                                                                                    //See <IsUserCreated>
+        bool ObjectDelete = false;                                                                                  //See <Delete>
+        bool HeapAllocated = false;                                                                                 //See <IsHeapAllocated>
+        ObjectsReferences CurrentObjectsReferences = ObjectsReferences();                                           //See <Internal_GetObjectsReferences>
+        bool DestroyEventCalled = false;                                                                            //(Internal variable) Flag for calling <OnObjectDestroyEventCallback>
+        std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators = {};      //See <StashChildrenIterator>
+        bool Focused = false;                                                                                       //See <IsFocused>
     
-        ssGUI::Renderer* CurrentRenderer;
-        ssGUI::EventCallbackManager* CurrentEventCallbackManager;
-        ssGUI::Transform* CurrentTransform;
-        ssGUI::GUIObject* CurrentObject;
+        ssGUI::Renderer* CurrentRenderer = nullptr;                                                                 //(Internal variable) Used to send redraw signal
+        ssGUI::EventCallbackManager* CurrentEventCallbackManager = nullptr;                                         //(Internal variable) Used to call any event callbacks listeners
+        ssGUI::Transform* CurrentTransform = nullptr;                                                               //(Internal variable) Used to set the global position when the parent is being set
+        ssGUI::GUIObject* CurrentObject = nullptr;                                                                  //(Internal variable) Used to <Internal_AddChild> for the new parent when it is being set
     =================================================================
     ============================== C++ ==============================
-    Hierarchy::Hierarchy() : Parent(-1), Children(), CurrentChild(Children.end()), CurrentChildIteratorFrontEnd(true),
-                                CurrentChildIteratorBackEnd(true), UserCreated(true), ObjectDelete(false), HeapAllocated(false), 
-                                CurrentObjectsReferences(), DestroyEventCalled(false), StashedChildIterators(), Focused(false),
-                                CurrentRenderer(nullptr), CurrentEventCallbackManager(nullptr), CurrentTransform(nullptr), 
-                                CurrentObject(nullptr)
+    Hierarchy::Hierarchy()
     {}
     =================================================================
     */
     class Hierarchy
     {
         protected:
-            ssGUIObjectIndex Parent;
-            std::list<ssGUIObjectIndex> Children;
-            std::list<ssGUIObjectIndex>::iterator CurrentChild;
-            bool CurrentChildIteratorFrontEnd;
-            bool CurrentChildIteratorBackEnd;
-            bool UserCreated;
-            bool ObjectDelete;
-            bool HeapAllocated;
-            ObjectsReferences CurrentObjectsReferences;
-            bool DestroyEventCalled;
-            std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;
-            bool Focused;
+            ssGUIObjectIndex Parent = -1;                                                                               //See <GetParent>
+            std::list<ssGUIObjectIndex> Children = {};                                                                  //See <GetListOfChildren>
+            std::list<ssGUIObjectIndex>::iterator CurrentChild = Children.end();                                        //See <GetCurrentChild> and <GetCurrentChildReferenceIterator> 
+            bool CurrentChildIteratorFrontEnd = true;                                                                   //See <IsChildrenIteratorEnd>
+            bool CurrentChildIteratorBackEnd = true;                                                                    //See <IsChildrenIteratorEnd>
+            bool UserCreated = true;                                                                                    //See <IsUserCreated>
+            bool ObjectDelete = false;                                                                                  //See <Delete>
+            bool HeapAllocated = false;                                                                                 //See <IsHeapAllocated>
+            ObjectsReferences CurrentObjectsReferences = ObjectsReferences();                                           //See <Internal_GetObjectsReferences>
+            bool DestroyEventCalled = false;                                                                            //(Internal variable) Flag for calling <OnObjectDestroyEventCallback>
+            std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators = {};      //See <StashChildrenIterator>
+            bool Focused = false;                                                                                       //See <IsFocused>
         
-            ssGUI::Renderer* CurrentRenderer;
-            ssGUI::EventCallbackManager* CurrentEventCallbackManager;
-            ssGUI::Transform* CurrentTransform;
-            ssGUI::GUIObject* CurrentObject;
+            ssGUI::Renderer* CurrentRenderer = nullptr;                                                                 //(Internal variable) Used to send redraw signal
+            ssGUI::EventCallbackManager* CurrentEventCallbackManager = nullptr;                                         //(Internal variable) Used to call any event callbacks listeners
+            ssGUI::Transform* CurrentTransform = nullptr;                                                               //(Internal variable) Used to set the global position when the parent is being set
+            ssGUI::GUIObject* CurrentObject = nullptr;                                                                  //(Internal variable) Used to <Internal_AddChild> for the new parent when it is being set
 
             Hierarchy(Hierarchy const& other);
 
@@ -182,7 +178,7 @@ namespace ssGUI
             //Sets the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.
             virtual void SetUserCreated(bool created);
 
-            //function: IsUserCreated()
+            //function: IsUserCreated
             //Returns the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.
             virtual bool IsUserCreated() const;
 

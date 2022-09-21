@@ -13,7 +13,7 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::Backend::BackendImageInterface* BackendImage;
+        ssGUI::Backend::BackendImageInterface* BackendImage = nullptr;      //See <GetBackendImageInterface>
     =================================================================
     ============================== C++ ==============================
     ImageData::ImageData()
@@ -28,8 +28,9 @@ namespace ssGUI
             ImageData& operator=(ImageData const& other) = default;
 
         protected:
+            ssGUI::Backend::BackendImageInterface* BackendImage = nullptr;      //See <GetBackendImageInterface>
+
             ImageData(ImageData const& other);
-            ssGUI::Backend::BackendImageInterface* BackendImage;
         
         public:
             ImageData();

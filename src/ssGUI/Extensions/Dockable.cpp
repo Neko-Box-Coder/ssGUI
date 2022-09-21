@@ -15,10 +15,7 @@ namespace ssGUI::Extensions
     ssGUI::GUIObject* Dockable::TargetDockObject = nullptr;
     Dockable::DockSide Dockable::TargetDockSide = Dockable::DockSide::NONE;
     
-    Dockable::Dockable() : Container(nullptr), Enabled(true), TopLevelParent(-1), CurrentObjectsReferences(), UseTriggerPercentage(true), 
-                            TriggerPercentage(0.25f), TriggerPixel(15), TriggerAreaColor(glm::u8vec4(87, 207, 255, 127)), DockPreviewColor(glm::u8vec4(255, 255, 255, 127)), OriginalParent(nullptr),
-                            ContainerIsDocking(false), DockPreivewTop(nullptr), DockPreivewRight(nullptr), DockPreivewBottom(nullptr), DockPreivewLeft(nullptr),
-                            DockTriggerTop(nullptr), DockTriggerRight(nullptr), DockTriggerBottom(nullptr), DockTriggerLeft(nullptr)
+    Dockable::Dockable()
     {}
     
     Dockable::~Dockable()

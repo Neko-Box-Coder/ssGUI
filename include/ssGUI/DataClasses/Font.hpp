@@ -13,10 +13,10 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-        ssGUI::Backend::BackendFontInterface* BackendFont;
+        ssGUI::Backend::BackendFontInterface* BackendFont = nullptr;    //See <GetBackendFontInterface>
     =================================================================
     ============================== C++ ==============================
-    Font::Font() : BackendFont()
+    Font::Font()
     {
         BackendFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
     }
@@ -25,7 +25,7 @@ namespace ssGUI
     class Font
     {
         private:
-            ssGUI::Backend::BackendFontInterface* BackendFont;
+            ssGUI::Backend::BackendFontInterface* BackendFont = nullptr;    //See <GetBackendFontInterface>
 
             Font(Font const& other);
             Font& operator=(Font const& other);

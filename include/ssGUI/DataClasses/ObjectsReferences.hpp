@@ -41,28 +41,27 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        std::unordered_map<ssGUIObjectIndex, ssGUI::GUIObject*> ObjectsReferencesTable;
-        std::unordered_map<ssGUI::GUIObject*, ssGUIObjectIndex> ReverseObjectsReferencesTable;
+        std::unordered_map<ssGUIObjectIndex, ssGUI::GUIObject*> ObjectsReferencesTable = {};            //See <GetObjectReference>
+        std::unordered_map<ssGUI::GUIObject*, ssGUIObjectIndex> ReverseObjectsReferencesTable = {};     //(Internal variable) See <Internal_AddExternalDependency>
 
-        ssGUIObjectIndex NextFreeIndex;
-        std::unordered_map<ObjectsReferences*, ssGUIObjectIndex> ExternalObjectsDependencies;
-        bool CleanedUp;
+        ssGUIObjectIndex NextFreeIndex = 0;                                                             //(Internal variable) Used to generate unique ssGUIObjectIndex
+        std::unordered_map<ObjectsReferences*, ssGUIObjectIndex> ExternalObjectsDependencies = {};      //(Internal variable) See <Internal_AddExternalDependency>
+        bool CleanedUp = false;                                                                         //(Internal variable) See <CleanUp>
     =================================================================
     ============================== C++ ==============================
-    ObjectsReferences::ObjectsReferences() : ObjectsReferencesTable(), ReverseObjectsReferencesTable(), NextFreeIndex(0), 
-                                                ExternalObjectsDependencies(), CleanedUp(false)
+    ObjectsReferences::ObjectsReferences()
     {}
     =================================================================
     */
     class ObjectsReferences
     {
         protected:
-            std::unordered_map<ssGUIObjectIndex, ssGUI::GUIObject*> ObjectsReferencesTable;
-            std::unordered_map<ssGUI::GUIObject*, ssGUIObjectIndex> ReverseObjectsReferencesTable;
+            std::unordered_map<ssGUIObjectIndex, ssGUI::GUIObject*> ObjectsReferencesTable = {};            //See <GetObjectReference>
+            std::unordered_map<ssGUI::GUIObject*, ssGUIObjectIndex> ReverseObjectsReferencesTable = {};     //(Internal variable) See <Internal_AddExternalDependency>
 
-            ssGUIObjectIndex NextFreeIndex;
-            std::unordered_map<ObjectsReferences*, ssGUIObjectIndex> ExternalObjectsDependencies;
-            bool CleanedUp;
+            ssGUIObjectIndex NextFreeIndex = 0;                                                             //(Internal variable) Used to generate unique ssGUIObjectIndex
+            std::unordered_map<ObjectsReferences*, ssGUIObjectIndex> ExternalObjectsDependencies = {};      //(Internal variable) See <Internal_AddExternalDependency>
+            bool CleanedUp = false;                                                                         //(Internal variable) See <CleanUp>
 
         public:
             ObjectsReferences();
