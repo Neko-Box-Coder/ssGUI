@@ -66,7 +66,25 @@ namespace ssGUI
         GUIObjectVertexIndex = DrawingVerticies.size();
     }
     
-    Renderer::Renderer()
+    Renderer::Renderer() :  Enabled(true),
+                            BackgroundColour(255, 255, 255, 255),
+                            Redraw(true),
+                            AcceptRedrawRequest(true),
+                            DrawingVerticies(),
+                            DrawingUVs(),
+                            DrawingColours(),
+                            DrawingCounts(),
+                            DrawingProperties(),
+                            GUIObjectShapeIndex(-1),
+                            GUIObjectVertexIndex(-1),
+                            LastDrawingVerticies(),
+                            LastDrawingUVs(),
+                            LastDrawingColours(),
+                            LastDrawingCounts(),
+                            LastDrawingProperties(),
+                            CurrentHierarchy(nullptr),
+                            CurrentEventCallbackManager(nullptr),
+                            CurrentObject(nullptr)
     {}
 
     Renderer::~Renderer()

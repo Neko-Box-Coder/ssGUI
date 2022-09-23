@@ -12,7 +12,9 @@ namespace ssGUI
         CurrentObject = nullptr;
     }
     
-    EventCallbackManager::EventCallbackManager()
+    EventCallbackManager::EventCallbackManager() :  EventCallbacks(),
+                                                    CurrentRenderer(nullptr),
+                                                    CurrentObject(nullptr)
     {}
 
     EventCallbackManager::~EventCallbackManager()

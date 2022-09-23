@@ -17,15 +17,19 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container = nullptr;                                      //See <BindToObject>
-        bool Enabled = true;                                                        //See <IsEnabled>
-        std::unordered_map<ssGUIObjectIndex, std::vector<int>> TargetMasks = {};    //See <AddTargetMaskObject>
-        bool BlockingContainerInput = false;                                        //(Internal variable) Used to block inputs outside the mask area
+        ssGUI::GUIObject* Container;                                            //See <BindToObject>
+        bool Enabled;                                                           //See <IsEnabled>
+        std::unordered_map<ssGUIObjectIndex, std::vector<int>> TargetMasks;     //See <AddTargetMaskObject>
+        bool BlockingContainerInput;                                            //(Internal variable) Used to block inputs outside the mask area
 
-        ObjectsReferences CurrentObjectsReferences = ObjectsReferences();           //(Internal variable) Used to track the object that has the mask
+        ObjectsReferences CurrentObjectsReferences;                             //(Internal variable) Used to track the object that has the mask
     =================================================================
     ============================== C++ ==============================
-    MaskEnforcer::MaskEnforcer()
+    MaskEnforcer::MaskEnforcer() :  Container(nullptr),
+                                    Enabled(true),
+                                    TargetMasks(),
+                                    BlockingContainerInput(false),
+                                    CurrentObjectsReferences()
     {}
     =================================================================
     */
@@ -38,12 +42,12 @@ namespace ssGUI::Extensions
             MaskEnforcer& operator=(MaskEnforcer const& other);
 
         protected:
-            ssGUI::GUIObject* Container = nullptr;                                      //See <BindToObject>
-            bool Enabled = true;                                                        //See <IsEnabled>
-            std::unordered_map<ssGUIObjectIndex, std::vector<int>> TargetMasks = {};    //See <AddTargetMaskObject>
-            bool BlockingContainerInput = false;                                        //(Internal variable) Used to block inputs outside the mask area
+            ssGUI::GUIObject* Container;                                            //See <BindToObject>
+            bool Enabled;                                                           //See <IsEnabled>
+            std::unordered_map<ssGUIObjectIndex, std::vector<int>> TargetMasks;     //See <AddTargetMaskObject>
+            bool BlockingContainerInput;                                            //(Internal variable) Used to block inputs outside the mask area
 
-            ObjectsReferences CurrentObjectsReferences = ObjectsReferences();           //(Internal variable) Used to track the object that has the mask
+            ObjectsReferences CurrentObjectsReferences;                             //(Internal variable) Used to track the object that has the mask
 
             MaskEnforcer();
             virtual ~MaskEnforcer() override;

@@ -369,7 +369,27 @@ namespace ssGUI
         }
     }
         
-    Window::Window()
+    Window::Window() :  Titlebar(true),
+                        TitlebarHeight(20),
+                        ResizeType(ssGUI::Enums::ResizeType::ALL),
+                        Draggable(true),
+                        Closable(true),
+                        Closed(false),
+                        IsClosingAborted(false),
+                        TitlebarColorDifference(-40, -40, -40, 0),
+                        AdaptiveTitlebarColor(false),
+                        DeleteAfterClosed(true),
+                        OnTopWhenFocused(true),
+                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE),
+                        ResizeHitbox(5),
+                        ResizingTop(false),
+                        ResizingBot(false),
+                        ResizingLeft(false),
+                        ResizingRight(false),
+                        Dragging(false),
+                        TransformTotalMovedDistance(),
+                        OnTransformBeginSize(),
+                        MouseDownPosition()
     {       
         AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnWindowCloseEventCallback>());
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());

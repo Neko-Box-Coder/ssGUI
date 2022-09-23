@@ -14,7 +14,11 @@ namespace ssGUI
         CurrentObject = nullptr;
     }
     
-    ExtensionManager::ExtensionManager()
+    ExtensionManager::ExtensionManager() :  Extensions(),
+                                            ExtensionsDrawOrder(),
+                                            ExtensionsUpdateOrder(),
+                                            CurrentRenderer(nullptr),
+                                            CurrentObject(nullptr)
     {}
 
     ExtensionManager::~ExtensionManager()

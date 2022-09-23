@@ -200,7 +200,9 @@ namespace ssGUI
     {
     }
 
-    GUIObject::GUIObject()
+    GUIObject::GUIObject() :    LastGlobalPosition(),
+                                CurrentTags(),
+                                RightClickMenu(nullptr)
     {
         SetupComponents();
     }

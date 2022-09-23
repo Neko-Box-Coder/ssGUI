@@ -3,11 +3,22 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-//Remember to add the .cpp file to the cmake list if you are using cmake
-
 namespace ssGUI::Extensions
 {
-    Outline::Outline()
+    Outline::Outline() :    Container(nullptr),
+                            Enabled(true),
+                            OutlineThickness(1.1),
+                            SimpleOutline(false),
+                            InnerOutline(true),
+                            OutlineColor(0, 0, 0, 255),
+                            TargetShapes{0},
+                            TargetVertices(),
+                            VerticesToOutline(),
+                            VerticesToOutlinePrevVertices(),
+                            VerticesToOutlineNextVertices(),
+                            VerticesToOutlineNextNextVertices(),
+                            VerticesToOutlineShapeIndex(),
+                            VerticesToOutlineShapeStartFlag()
     {}
 
     Outline::~Outline()

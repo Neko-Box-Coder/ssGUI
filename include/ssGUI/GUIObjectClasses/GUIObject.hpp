@@ -28,12 +28,14 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        glm::vec2 LastGlobalPosition = glm::vec2();             //(Internal variable) Used for cache rendering
-        std::unordered_set<std::string> CurrentTags = {};       //See <HasTag>
-        ssGUI::Menu* RightClickMenu = nullptr;                  //See <RegisterRightClickMenu>
+        glm::vec2 LastGlobalPosition;                   //(Internal variable) Used for cache rendering
+        std::unordered_set<std::string> CurrentTags;    //See <HasTag>
+        ssGUI::Menu* RightClickMenu;                    //See <RegisterRightClickMenu>
     =================================================================
     ============================== C++ ==============================
-    GUIObject::GUIObject()
+    GUIObject::GUIObject() :    LastGlobalPosition(),
+                                CurrentTags(),
+                                RightClickMenu(nullptr)
     {
         SetupComponents();
     }
@@ -45,9 +47,9 @@ namespace ssGUI
             GUIObject& operator=(GUIObject const& other);
 
         protected:
-            glm::vec2 LastGlobalPosition = glm::vec2();             //(Internal variable) Used for cache rendering
-            std::unordered_set<std::string> CurrentTags = {};       //See <HasTag>
-            ssGUI::Menu* RightClickMenu = nullptr;                  //See <RegisterRightClickMenu>
+            glm::vec2 LastGlobalPosition;                   //(Internal variable) Used for cache rendering
+            std::unordered_set<std::string> CurrentTags;    //See <HasTag>
+            ssGUI::Menu* RightClickMenu;                    //See <RegisterRightClickMenu>
 
             GUIObject(GUIObject const& other);
 

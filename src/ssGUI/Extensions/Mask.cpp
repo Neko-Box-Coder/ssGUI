@@ -745,7 +745,15 @@ namespace ssGUI::Extensions
     void Mask::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
-    Mask::Mask()
+    Mask::Mask() :  Container(nullptr),
+                    Enabled(true),
+                    MaskChildren(true),
+                    MaskContainer(false),
+                    FollowContainer(true),
+                    FollowPositionOffset(1, 1),
+                    FollowSizePadding(-2, -2),
+                    GlobalPosition(),
+                    Size()
     {}
 
     Mask::~Mask()

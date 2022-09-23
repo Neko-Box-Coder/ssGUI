@@ -47,7 +47,8 @@ namespace ssGUI
     
     const std::string Checkbox::ListenerKey = "Checkbox";
 
-    Checkbox::Checkbox()
+    Checkbox::Checkbox() :  InnerBoxSpace(2),
+                            Checked(true)
     {
         SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
         auto border = GetAnyExtension<ssGUI::Extensions::Border>();

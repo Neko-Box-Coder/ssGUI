@@ -19,16 +19,19 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::ssGUIObjectIndex DropdownMenu = -1;                                  //See <GetDropdownMenu>
-        int SelectedIndex = -1;                                                     //See <GetSelectedIndex>
-        std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items = {};    //See <GetItem>
-        bool Toggle = false;                                                        //(Internal variable) Used to set focus
+        ssGUI::ssGUIObjectIndex DropdownMenu;                                   //See <GetDropdownMenu>
+        int SelectedIndex;                                                      //See <GetSelectedIndex>
+        std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;     //See <GetItem>
+        bool Toggle;                                                            //(Internal variable) Used to set focus
 
-        static ssGUI::ImageData* DefaultDropdownArrowImageData;                     //(Internal variable) used to store default arrow image
-                                                                                    //TODO: Allow this to be configured
+        static ssGUI::ImageData* DefaultDropdownArrowImageData;                 //(Internal variable) used to store default arrow image
+                                                                                //TODO: Allow this to be configured
     =================================================================
     ============================== C++ ==============================
-    Dropdown::Dropdown()
+    Dropdown::Dropdown() :  DropdownMenu(-1),
+                            SelectedIndex(-1),
+                            Items(),
+                            Toggle(false)
     {
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();
@@ -46,16 +49,15 @@ namespace ssGUI
         layout->SetPreferredSizeMultiplier(1, iconMulti);
 
         //Set icon to dropdown arrow
-        auto dropdownArrow = ssGUI::Factory::Create<ssGUI::ImageData>();
-        dropdownArrow->LoadFromPath("Resources/DownArrow.png");
-        GetButtonIconObject()->SetImageData(dropdownArrow);
-        DropdownArrowImageData = dropdownArrow;
+        if(DefaultDropdownArrowImageData != nullptr)
+            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData);
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
         dropdownMenu->SetParent(this);
-        dropdownMenu->SetEnable(false);
+        dropdownMenu->SetEnabled(false);
         dropdownMenu->SetUserCreated(false);
+        dropdownMenu->SetMenuTarget(this);
         dropdownMenu->SetSize(glm::vec2(GetSize().x, dropdownMenu->GetSize().y));
         DropdownMenu = CurrentObjectsReferences.AddObjectReference(dropdownMenu);
 
@@ -72,7 +74,6 @@ namespace ssGUI
                 auto dropdownMenu = dropdownContainer->Internal_GetObjectsReferences()->GetObjectReference(dropdownContainer->DropdownMenu);
                 if(dropdownMenu == nullptr)
                     return;
-
 
                 //Update size
                 if(dropdownContainer->GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
@@ -114,13 +115,13 @@ namespace ssGUI
             Dropdown& operator=(Dropdown const& other) = default;
 
         protected:
-            ssGUI::ssGUIObjectIndex DropdownMenu = -1;                                  //See <GetDropdownMenu>
-            int SelectedIndex = -1;                                                     //See <GetSelectedIndex>
-            std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items = {};    //See <GetItem>
-            bool Toggle = false;                                                        //(Internal variable) Used to set focus
+            ssGUI::ssGUIObjectIndex DropdownMenu;                                   //See <GetDropdownMenu>
+            int SelectedIndex;                                                      //See <GetSelectedIndex>
+            std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;     //See <GetItem>
+            bool Toggle;                                                            //(Internal variable) Used to set focus
 
-            static ssGUI::ImageData* DefaultDropdownArrowImageData;                     //(Internal variable) used to store default arrow image
-                                                                                        //TODO: Allow this to be configured
+            static ssGUI::ImageData* DefaultDropdownArrowImageData;                 //(Internal variable) used to store default arrow image
+                                                                                    //TODO: Allow this to be configured
 
             Dropdown(Dropdown const& other);
 

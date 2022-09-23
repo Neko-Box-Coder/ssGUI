@@ -6,7 +6,11 @@
 
 namespace ssGUI
 {
-    ObjectsReferences::ObjectsReferences()
+    ObjectsReferences::ObjectsReferences() :    ObjectsReferencesTable(),
+                                                ReverseObjectsReferencesTable(),
+                                                NextFreeIndex(0),
+                                                ExternalObjectsDependencies(),
+                                                CleanedUp(false)
     {}
 
     ObjectsReferences::ObjectsReferences(ObjectsReferences const& other)

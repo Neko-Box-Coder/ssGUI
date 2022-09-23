@@ -22,20 +22,27 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
-        bool Enabled = true;                                                                //See <IsEnabled>
+        ssGUI::GUIObject* Container;            //See <BindToObject>
+        bool Enabled;                           //See <IsEnabled>
 
-        HorizontalAnchor CurrentHorizontal = AdvancedPosition::HorizontalAnchor::CENTER;    //See <GetHorizontalAnchor>
-        VerticalAnchor CurrentVertical = AdvancedPosition::VerticalAnchor::CENTER;          //See <GetVerticalAnchor>
+        HorizontalAnchor CurrentHorizontal;     //See <GetHorizontalAnchor>
+        VerticalAnchor CurrentVertical;         //See <GetVerticalAnchor>
 
-        float HorizontalPixelValue = 0;                                                     //See <GetHorizontalPixel>
-        float VerticalPixelValue = 0;                                                       //See <GetVerticalPixel>
+        float HorizontalPixelValue;             //See <GetHorizontalPixel>
+        float VerticalPixelValue;               //See <GetVerticalPixel>
 
-        float HorizontalPercentageValue = 0;                                                //See <GetHorizontalPercentage>
-        float VerticalPercentageValue = 0;                                                  //See <GetVerticalPercentage>
+        float HorizontalPercentageValue;        //See <GetHorizontalPercentage>
+        float VerticalPercentageValue;          //See <GetVerticalPercentage>
     =================================================================
     ============================== C++ ==============================
-    AdvancedPosition::AdvancedPosition()
+    AdvancedPosition::AdvancedPosition() :  Container(nullptr),
+                                            Enabled(true),
+                                            CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER),
+                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER),
+                                            HorizontalPixelValue(0),
+                                            VerticalPixelValue(0),
+                                            HorizontalPercentageValue(0),
+                                            VerticalPercentageValue(0)
     {}
     =================================================================
     */
@@ -51,17 +58,17 @@ namespace ssGUI::Extensions
             AdvancedPosition& operator=(AdvancedPosition const& other);
         
         protected:
-            ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
-            bool Enabled = true;                                                                //See <IsEnabled>
+            ssGUI::GUIObject* Container;            //See <BindToObject>
+            bool Enabled;                           //See <IsEnabled>
 
-            HorizontalAnchor CurrentHorizontal = AdvancedPosition::HorizontalAnchor::CENTER;    //See <GetHorizontalAnchor>
-            VerticalAnchor CurrentVertical = AdvancedPosition::VerticalAnchor::CENTER;          //See <GetVerticalAnchor>
+            HorizontalAnchor CurrentHorizontal;     //See <GetHorizontalAnchor>
+            VerticalAnchor CurrentVertical;         //See <GetVerticalAnchor>
 
-            float HorizontalPixelValue = 0;                                                     //See <GetHorizontalPixel>
-            float VerticalPixelValue = 0;                                                       //See <GetVerticalPixel>
+            float HorizontalPixelValue;             //See <GetHorizontalPixel>
+            float VerticalPixelValue;               //See <GetVerticalPixel>
 
-            float HorizontalPercentageValue = 0;                                                //See <GetHorizontalPercentage>
-            float VerticalPercentageValue = 0;                                                  //See <GetVerticalPercentage>
+            float HorizontalPercentageValue;        //See <GetHorizontalPercentage>
+            float VerticalPercentageValue;          //See <GetVerticalPercentage>
 
             AdvancedPosition();
             virtual ~AdvancedPosition() override;

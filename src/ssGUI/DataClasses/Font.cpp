@@ -7,7 +7,7 @@ namespace ssGUI
         BackendFont = other.BackendFont->Clone();
     }
     
-    Font::Font()
+    Font::Font() :  BackendFont(nullptr)
     {
         BackendFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
     }

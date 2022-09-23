@@ -7,7 +7,12 @@
 
 namespace ssGUI::Extensions
 {
-    BoxShadow::BoxShadow()
+    BoxShadow::BoxShadow() :    Container(nullptr),
+                                Enabled(true),
+                                PositionOffset(0, 0),
+                                SizeOffset(5, 5),
+                                BlurRadius(10),
+                                ShadowColor(0, 0, 0, 127)
     {}
 
     BoxShadow::~BoxShadow()

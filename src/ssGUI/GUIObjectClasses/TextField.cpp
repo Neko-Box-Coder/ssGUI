@@ -897,7 +897,13 @@ namespace ssGUI
         }
     }
 
-    TextField::TextField()
+    TextField::TextField() :    LastBlinkTime(0),
+                                BlinkDuration(500),
+                                BlinkCaret(false),
+                                LastArrowNavStartTime(0),
+                                ArrowNavPauseDuration(500),
+                                LastArrowNavTime(0),
+                                ArrowNavInterval(20)
     {
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 

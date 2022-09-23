@@ -23,7 +23,16 @@ namespace ssGUI
         CurrentObject = nullptr;
     }
     
-    Transform::Transform()
+    Transform::Transform() :    Position(0, 0),
+                                GlobalPosition(0, 0),
+                                Size(25, 25),
+                                MinSize(25, 25),
+                                MaxSize(std::numeric_limits<float>::max(), std::numeric_limits<float>::max()),
+                                Anchor(ssGUI::Enums::AnchorType::TOP_LEFT),
+                                CurrentHierarchy(nullptr),
+                                CurrentRenderer(nullptr),
+                                CurrentEventCallbackManager(nullptr),
+                                CurrentObject(nullptr)
     {}
 
     Transform::~Transform()

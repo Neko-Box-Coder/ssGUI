@@ -102,7 +102,13 @@ namespace ssGUI
 
     const std::string StandardButton::ListenerKey = "Standard Button";
 
-    StandardButton::StandardButton()
+    StandardButton::StandardButton() :  ButtonText(-1),
+                                        ButtonImage(-1),
+                                        AdaptiveButtonTextColor(true),
+                                        ButtonTextColorDifference(0, 0, 0, 0),
+                                        AdaptiveButtonTextContrast(true),
+                                        ButtonMode(StandardButton::Mode::TEXT),
+                                        ButtonImageWrapper(-1)
     {
         FUNC_DEBUG_ENTRY();
         SetSize(glm::vec2(100, 40));

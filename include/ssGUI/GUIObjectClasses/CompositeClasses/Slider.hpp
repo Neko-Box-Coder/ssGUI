@@ -16,34 +16,55 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        bool Reverse = false;                                   //See <IsReverse>
-        glm::u8vec4 FillColor = glm::u8vec4(0, 0, 0, 0);        //See <GetFillColor>
-        ssGUIObjectIndex KnobObject = -1;                       //See <GetKnobObject>
-        float KnobSize = 15;                                    //See <GetKnobSize>
-        float SliderValue = 0.5;                                //See <GetSliderValue>
-        bool Vertical = false;                                  //See <IsVertical>
-        float SnapInterval = 0;                                 //See <GetSnapInterval>
-        float ScrollInternal = 0.05;                            //See <GetScrollInterval>
-        float KeyInputInterval = 0.05;                          //See <GetKeyInputMoveInterval>
-        float EndPadding = 0;
+        bool Reverse;                       //See <IsReverse>
+        glm::u8vec4 FillColor;              //See <GetFillColor>
+        ssGUIObjectIndex KnobObject;        //See <GetKnobObject>
+        float KnobSize;                     //See <GetKnobSize>
+        float SliderValue;                  //See <GetSliderValue>
+        bool Vertical;                      //See <IsVertical>
+        float SnapInterval;                 //See <GetSnapInterval>
+        float ScrollInternal;               //See <GetScrollInterval>
+        float KeyInputInterval;             //See <GetKeyInputMoveInterval>
+        float EndPadding;                   //See <GetEndPadding>
 
-        glm::vec2 KnobGlobalPosition = glm::vec2();             //(Internal variable) This is used for syncing the slider value and knob position
-        float CursorKnobOffset = 0;                             //(Internal variable) Offset between the cursor down position and the knob
-        bool LastSliderDragging = false;                        //(Internal variable) Used to see if the slider is being dragged last frame
-        bool SliderDragging = false;                            //(Internal variable) Flag if slider is being dragged right now
-        glm::vec2 LastGlobalPosition = glm::vec2();             //(Internal variable) Used to update the knob position accordingly if the size or position changed
-                                                                //TODO: Use <ssGUI::GUIObject::LastGlobalPosition> instead maybe?
-        glm::vec2 LastSize = glm::vec2();                       //(Internal variable) Used to update the knob position accordingly if the size or position changed
-        float LastSliderValue = SliderValue;                    //(Internal variable) Used to trigger <SliderValueChangedEventCallback>
-        bool LastValueChanged = false;                          //(Internal variable) Used to trigger <SliderValueFinishedChangingEventCallback>
+        glm::vec2 KnobGlobalPosition;       //(Internal variable) This is used for syncing the slider value and knob position
+        float CursorKnobOffset;             //(Internal variable) Offset between the cursor down position and the knob
+        bool LastSliderDragging;            //(Internal variable) Used to see if the slider is being dragged last frame
+        bool SliderDragging;                //(Internal variable) Flag if slider is being dragged right now
+        glm::vec2 LastGlobalPosition;       //(Internal variable) Used to update the knob position accordingly if the size or position changed
+                                            //TODO: Use <ssGUI::GUIObject::LastGlobalPosition> instead maybe?
+        glm::vec2 LastSize;                 //(Internal variable) Used to update the knob position accordingly if the size or position changed
+        float LastSliderValue;              //(Internal variable) Used to trigger <SliderValueChangedEventCallback>
+        bool LastValueChanged;              //(Internal variable) Used to trigger <SliderValueFinishedChangingEventCallback>
 
-        uint64_t LastKeyNavStartTime = 0;                       //(Internal variable) Used to control slider with keys
-        int KeyNavPauseDuration = 500;                          //(Internal variable) Used to control slider with keys
-        uint64_t LastKeyNavTime = 0;                            //(Internal variable) Used to control slider with keys
-        int KeyNavInterval = 20;                                //(Internal variable) Used to control slider with keys
+        uint64_t LastKeyNavStartTime;       //(Internal variable) Used to control slider with keys
+        int KeyNavPauseDuration;            //(Internal variable) Used to control slider with keys
+        uint64_t LastKeyNavTime;            //(Internal variable) Used to control slider with keys
+        int KeyNavInterval;                 //(Internal variable) Used to control slider with keys
     =================================================================
     ============================== C++ ==============================
-    Slider::Slider()
+    Slider::Slider() :  Reverse(false),
+                        FillColor(0, 0, 0, 0),
+                        KnobObject(-1),
+                        KnobSize(15),
+                        SliderValue(0.5),
+                        Vertical(false),
+                        SnapInterval(0),
+                        ScrollInternal(0.05),
+                        KeyInputInterval(0.05),
+                        EndPadding(0),
+                        KnobGlobalPosition(),
+                        CursorKnobOffset(0),
+                        LastSliderDragging(false),
+                        SliderDragging(false),
+                        LastGlobalPosition(),
+                        LastSize(),
+                        LastSliderValue(SliderValue),
+                        LastValueChanged(false),
+                        LastKeyNavStartTime(0),
+                        KeyNavPauseDuration(500),
+                        LastKeyNavTime(0),
+                        KeyNavInterval(20)
     {
         SetMinSize(glm::vec2(5, 5));
         SetSize(glm::vec2(300, 10));
@@ -68,6 +89,7 @@ namespace ssGUI
         button->RemoveAnyExtension<ssGUI::Extensions::Border>();
         auto outline2 = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
         outline2->SetOutlineThickness(1.5);
+        button->SetUserCreated(false);
         button->AddExtension(outline2);
         button->SetParent(this);
 
@@ -112,31 +134,31 @@ namespace ssGUI
             Slider& operator=(Slider const& other) = default;
 
         protected:
-            bool Reverse = false;                                   //See <IsReverse>
-            glm::u8vec4 FillColor = glm::u8vec4(0, 0, 0, 0);        //See <GetFillColor>
-            ssGUIObjectIndex KnobObject = -1;                       //See <GetKnobObject>
-            float KnobSize = 15;                                    //See <GetKnobSize>
-            float SliderValue = 0.5;                                //See <GetSliderValue>
-            bool Vertical = false;                                  //See <IsVertical>
-            float SnapInterval = 0;                                 //See <GetSnapInterval>
-            float ScrollInternal = 0.05;                            //See <GetScrollInterval>
-            float KeyInputInterval = 0.05;                          //See <GetKeyInputMoveInterval>
-            float EndPadding = 0;
+            bool Reverse;                       //See <IsReverse>
+            glm::u8vec4 FillColor;              //See <GetFillColor>
+            ssGUIObjectIndex KnobObject;        //See <GetKnobObject>
+            float KnobSize;                     //See <GetKnobSize>
+            float SliderValue;                  //See <GetSliderValue>
+            bool Vertical;                      //See <IsVertical>
+            float SnapInterval;                 //See <GetSnapInterval>
+            float ScrollInternal;               //See <GetScrollInterval>
+            float KeyInputInterval;             //See <GetKeyInputMoveInterval>
+            float EndPadding;                   //See <GetEndPadding>
 
-            glm::vec2 KnobGlobalPosition = glm::vec2();             //(Internal variable) This is used for syncing the slider value and knob position
-            float CursorKnobOffset = 0;                             //(Internal variable) Offset between the cursor down position and the knob
-            bool LastSliderDragging = false;                        //(Internal variable) Used to see if the slider is being dragged last frame
-            bool SliderDragging = false;                            //(Internal variable) Flag if slider is being dragged right now
-            glm::vec2 LastGlobalPosition = glm::vec2();             //(Internal variable) Used to update the knob position accordingly if the size or position changed
-                                                                    //TODO: Use <ssGUI::GUIObject::LastGlobalPosition> instead maybe?
-            glm::vec2 LastSize = glm::vec2();                       //(Internal variable) Used to update the knob position accordingly if the size or position changed
-            float LastSliderValue = SliderValue;                    //(Internal variable) Used to trigger <SliderValueChangedEventCallback>
-            bool LastValueChanged = false;                          //(Internal variable) Used to trigger <SliderValueFinishedChangingEventCallback>
+            glm::vec2 KnobGlobalPosition;       //(Internal variable) This is used for syncing the slider value and knob position
+            float CursorKnobOffset;             //(Internal variable) Offset between the cursor down position and the knob
+            bool LastSliderDragging;            //(Internal variable) Used to see if the slider is being dragged last frame
+            bool SliderDragging;                //(Internal variable) Flag if slider is being dragged right now
+            glm::vec2 LastGlobalPosition;       //(Internal variable) Used to update the knob position accordingly if the size or position changed
+                                                //TODO: Use <ssGUI::GUIObject::LastGlobalPosition> instead maybe?
+            glm::vec2 LastSize;                 //(Internal variable) Used to update the knob position accordingly if the size or position changed
+            float LastSliderValue;              //(Internal variable) Used to trigger <SliderValueChangedEventCallback>
+            bool LastValueChanged;              //(Internal variable) Used to trigger <SliderValueFinishedChangingEventCallback>
 
-            uint64_t LastKeyNavStartTime = 0;                       //(Internal variable) Used to control slider with keys
-            int KeyNavPauseDuration = 500;                          //(Internal variable) Used to control slider with keys
-            uint64_t LastKeyNavTime = 0;                            //(Internal variable) Used to control slider with keys
-            int KeyNavInterval = 20;                                //(Internal variable) Used to control slider with keys
+            uint64_t LastKeyNavStartTime;       //(Internal variable) Used to control slider with keys
+            int KeyNavPauseDuration;            //(Internal variable) Used to control slider with keys
+            uint64_t LastKeyNavTime;            //(Internal variable) Used to control slider with keys
+            int KeyNavInterval;                 //(Internal variable) Used to control slider with keys
 
             Slider(Slider const& other);
 

@@ -18,21 +18,23 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*> EventCallbacks = {}; //See <GetEventCallback>
-        ssGUI::Renderer* CurrentRenderer = nullptr;                                                 //(Internal variable) Used for sending redraw signal
-        ssGUI::GUIObject* CurrentObject = nullptr;                                                  //(Internal variable) Used to register container
+        std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*> EventCallbacks;  //See <GetEventCallback>
+        ssGUI::Renderer* CurrentRenderer;                                                       //(Internal variable) Used for sending redraw signal
+        ssGUI::GUIObject* CurrentObject;                                                        //(Internal variable) Used to register container
     =================================================================
     ============================== C++ ==============================
-    EventCallbackManager::EventCallbackManager()
+    EventCallbackManager::EventCallbackManager() :  EventCallbacks(),
+                                                    CurrentRenderer(nullptr),
+                                                    CurrentObject(nullptr)
     {}
     =================================================================
     */
     class EventCallbackManager
     {
         protected:
-            std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*> EventCallbacks = {}; //See <GetEventCallback>
-            ssGUI::Renderer* CurrentRenderer = nullptr;                                                 //(Internal variable) Used for sending redraw signal
-            ssGUI::GUIObject* CurrentObject = nullptr;                                                  //(Internal variable) Used to register container
+            std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*> EventCallbacks;  //See <GetEventCallback>
+            ssGUI::Renderer* CurrentRenderer;                                                       //(Internal variable) Used for sending redraw signal
+            ssGUI::GUIObject* CurrentObject;                                                        //(Internal variable) Used to register container
 
             EventCallbackManager(EventCallbackManager const& other);
 

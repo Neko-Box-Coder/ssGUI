@@ -7,7 +7,7 @@ namespace ssGUI
         BackendImage = BackendImage->Clone();
     }
 
-    ImageData::ImageData()
+    ImageData::ImageData() :    BackendImage(nullptr)
     {
         BackendImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
     }

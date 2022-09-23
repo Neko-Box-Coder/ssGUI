@@ -19,44 +19,69 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUIObjectIndex HorizontalScrollbar = -1;          //See <GetHorizontalScrollbar>
-        bool ShowHorizontalScrollbar = true;                //See <IsShowHorizontalScrollbar>
-        ssGUIObjectIndex VerticalScrollbar = -1;            //See <GetVerticalScrollbar>
-        bool ShowVerticalScrollbar = true;                  //See <IsShowVerticalScrollbar>
+        ssGUIObjectIndex HorizontalScrollbar;               //See <GetHorizontalScrollbar>
+        bool ShowHorizontalScrollbar;                       //See <IsShowHorizontalScrollbar>
+        ssGUIObjectIndex VerticalScrollbar;                 //See <GetVerticalScrollbar>
+        bool ShowVerticalScrollbar;                         //See <IsShowVerticalScrollbar>
         
-        std::vector<glm::vec2> ImageVertices = {};          //See <GetImageVertices>
-        float ImageMinX = 0;                                //See <GetImageMinX>
-        float ImageMaxX = 0;                                //See <GetImageMaxX>
-        float ImageMinY = 0;                                //See <GetImageMinY>
-        float ImageMaxY = 0;                                //See <GetImageMaxY>
+        std::vector<glm::vec2> ImageVertices;               //See <GetImageVertices>
+        float ImageMinX;                                    //See <GetImageMinX>
+        float ImageMaxX;                                    //See <GetImageMaxX>
+        float ImageMinY;                                    //See <GetImageMinY>
+        float ImageMaxY;                                    //See <GetImageMaxY>
 
-        bool Panable = true;                                //See <IsUsingDefaultPanning>
-        glm::vec2 CurrentPosition = glm::vec2(0.5, 0.5);    //See <GetImagePosition>
+        bool Panable;                                       //See <IsUsingDefaultPanning>
+        glm::vec2 CurrentPosition;                          //See <GetImagePosition>
         //TODO: Maybe implement these at some point
-        // float HorizontalPanBound = 0;
-        // float VerticalPanBound = 0;
+        // float HorizontalPanBound;
+        // float VerticalPanBound;
 
-        bool Zoomable = true;                               //See <IsUsingDefaultZooming>
-        float MinZoom = 0;                                  //See <GetDefaultMinZoom>
-        float MaxZoom = 10;                                 //See <GetDefaultMaxZoom>
-        float CurrentZoom = 1;                              //See <GetImageScale>
-        float ZoomAmount = 0.1;                             //(Internal variable) Amount of zoom.
+        bool Zoomable;                                      //See <IsUsingDefaultZooming>
+        float MinZoom;                                      //See <GetDefaultMinZoom>
+        float MaxZoom;                                      //See <GetDefaultMaxZoom>
+        float CurrentZoom;                                  //See <GetImageScale>
+        float ZoomAmount;                                   //(Internal variable) Amount of zoom.
                                                             //TODO: Will have public method for this in the future
-        bool MeasureScaleByHeight = true;                   //See <IsMeasureScaleByHeight>
+        bool MeasureScaleByHeight;                          //See <IsMeasureScaleByHeight>
 
-        bool Rotatable = true;                              //See <IsUsingDefaultRotating>
-        float CurrentRotation = 0;                          //See <GetImageRotation>
-        float OnRotateStartRotation = 0;                    //(Internal variable) Start rotation when user is rotating the image
-        glm::vec2 OnRotateStartPosition = glm::vec2();      //(Internal variable) Start position when user is rotating the image
-        int InnerCircleId = 0;                              //(Internal variable) Shape ID for the inner circle when user is rotating
-        int BackgroundCircleId = 0;                         //(Internal variable) Shape ID for the background circle when user is rotating
-        int OuterCircleId = 0;                              //(Internal variable) Shape ID for the outer circle when user is rotating
+        bool Rotatable;                                     //See <IsUsingDefaultRotating>
+        float CurrentRotation;                              //See <GetImageRotation>
+        float OnRotateStartRotation;                        //(Internal variable) Start rotation when user is rotating the image
+        glm::vec2 OnRotateStartPosition;                    //(Internal variable) Start position when user is rotating the image
+        int InnerCircleId;                                  //(Internal variable) Shape ID for the inner circle when user is rotating
+        int BackgroundCircleId;                             //(Internal variable) Shape ID for the background circle when user is rotating
+        int OuterCircleId;                                  //(Internal variable) Shape ID for the outer circle when user is rotating
 
-        bool MousePressed = false;                          //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
-        glm::vec2 MouseButtonDownPosition = glm::vec2();    //(Internal variable) The initial position when the user clicked on this widget
+        bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
+        glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
     =================================================================
     ============================== C++ ==============================
-    ImageCanvas::ImageCanvas()
+    ImageCanvas::ImageCanvas() :    HorizontalScrollbar(-1),
+                                    ShowHorizontalScrollbar(true),
+                                    VerticalScrollbar(-1),
+                                    ShowVerticalScrollbar(true),
+                                    ImageVertices(),
+                                    ImageMinX(0),
+                                    ImageMaxX(0),
+                                    ImageMinY(0),
+                                    ImageMaxY(0),
+                                    Panable(true),
+                                    CurrentPosition(0.5, 0.5),
+                                    Zoomable(true),
+                                    MinZoom(0),
+                                    MaxZoom(10),
+                                    CurrentZoom(1),
+                                    ZoomAmount(0.1),
+                                    MeasureScaleByHeight(true),
+                                    Rotatable(true),
+                                    CurrentRotation(0),
+                                    OnRotateStartRotation(0),
+                                    OnRotateStartPosition(),
+                                    InnerCircleId(0),
+                                    BackgroundCircleId(0),
+                                    OuterCircleId(0),
+                                    MousePressed(false),
+                                    MouseButtonDownPosition()
     {
         ssGUI::Extensions::Mask* mask = ssGUI::Factory::Create<ssGUI::Extensions::Mask>();
         mask->SetMaskChildren(false);
@@ -166,41 +191,41 @@ namespace ssGUI
             ImageCanvas& operator=(ImageCanvas const& other) = default;
 
         protected:
-            ssGUIObjectIndex HorizontalScrollbar = -1;          //See <GetHorizontalScrollbar>
-            bool ShowHorizontalScrollbar = true;                //See <IsShowHorizontalScrollbar>
-            ssGUIObjectIndex VerticalScrollbar = -1;            //See <GetVerticalScrollbar>
-            bool ShowVerticalScrollbar = true;                  //See <IsShowVerticalScrollbar>
+            ssGUIObjectIndex HorizontalScrollbar;               //See <GetHorizontalScrollbar>
+            bool ShowHorizontalScrollbar;                       //See <IsShowHorizontalScrollbar>
+            ssGUIObjectIndex VerticalScrollbar;                 //See <GetVerticalScrollbar>
+            bool ShowVerticalScrollbar;                         //See <IsShowVerticalScrollbar>
             
-            std::vector<glm::vec2> ImageVertices = {};          //See <GetImageVertices>
-            float ImageMinX = 0;                                //See <GetImageMinX>
-            float ImageMaxX = 0;                                //See <GetImageMaxX>
-            float ImageMinY = 0;                                //See <GetImageMinY>
-            float ImageMaxY = 0;                                //See <GetImageMaxY>
+            std::vector<glm::vec2> ImageVertices;               //See <GetImageVertices>
+            float ImageMinX;                                    //See <GetImageMinX>
+            float ImageMaxX;                                    //See <GetImageMaxX>
+            float ImageMinY;                                    //See <GetImageMinY>
+            float ImageMaxY;                                    //See <GetImageMaxY>
 
-            bool Panable = true;                                //See <IsUsingDefaultPanning>
-            glm::vec2 CurrentPosition = glm::vec2(0.5, 0.5);    //See <GetImagePosition>
+            bool Panable;                                       //See <IsUsingDefaultPanning>
+            glm::vec2 CurrentPosition;                          //See <GetImagePosition>
             //TODO: Maybe implement these at some point
-            // float HorizontalPanBound = 0;
-            // float VerticalPanBound = 0;
+            // float HorizontalPanBound;
+            // float VerticalPanBound;
 
-            bool Zoomable = true;                               //See <IsUsingDefaultZooming>
-            float MinZoom = 0;                                  //See <GetDefaultMinZoom>
-            float MaxZoom = 10;                                 //See <GetDefaultMaxZoom>
-            float CurrentZoom = 1;                              //See <GetImageScale>
-            float ZoomAmount = 0.1;                             //(Internal variable) Amount of zoom.
+            bool Zoomable;                                      //See <IsUsingDefaultZooming>
+            float MinZoom;                                      //See <GetDefaultMinZoom>
+            float MaxZoom;                                      //See <GetDefaultMaxZoom>
+            float CurrentZoom;                                  //See <GetImageScale>
+            float ZoomAmount;                                   //(Internal variable) Amount of zoom.
                                                                 //TODO: Will have public method for this in the future
-            bool MeasureScaleByHeight = true;                   //See <IsMeasureScaleByHeight>
+            bool MeasureScaleByHeight;                          //See <IsMeasureScaleByHeight>
 
-            bool Rotatable = true;                              //See <IsUsingDefaultRotating>
-            float CurrentRotation = 0;                          //See <GetImageRotation>
-            float OnRotateStartRotation = 0;                    //(Internal variable) Start rotation when user is rotating the image
-            glm::vec2 OnRotateStartPosition = glm::vec2();      //(Internal variable) Start position when user is rotating the image
-            int InnerCircleId = 0;                              //(Internal variable) Shape ID for the inner circle when user is rotating
-            int BackgroundCircleId = 0;                         //(Internal variable) Shape ID for the background circle when user is rotating
-            int OuterCircleId = 0;                              //(Internal variable) Shape ID for the outer circle when user is rotating
+            bool Rotatable;                                     //See <IsUsingDefaultRotating>
+            float CurrentRotation;                              //See <GetImageRotation>
+            float OnRotateStartRotation;                        //(Internal variable) Start rotation when user is rotating the image
+            glm::vec2 OnRotateStartPosition;                    //(Internal variable) Start position when user is rotating the image
+            int InnerCircleId;                                  //(Internal variable) Shape ID for the inner circle when user is rotating
+            int BackgroundCircleId;                             //(Internal variable) Shape ID for the background circle when user is rotating
+            int OuterCircleId;                                  //(Internal variable) Shape ID for the outer circle when user is rotating
 
-            bool MousePressed = false;                          //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
-            glm::vec2 MouseButtonDownPosition = glm::vec2();    //(Internal variable) The initial position when the user clicked on this widget
+            bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
+            glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
 
 
             ImageCanvas(ImageCanvas const& other);

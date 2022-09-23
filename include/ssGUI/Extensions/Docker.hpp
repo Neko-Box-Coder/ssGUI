@@ -27,29 +27,41 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container = nullptr;                              //See <BindToObject>
-        bool Enabled = true;                                                //See <IsEnabled>
-        bool ChildrenDockerUseThisSettings = true;                          //See <IsChildrenDockerUseThisSettings>
-                                                                            //This works by having the child checking if parent has docker or not. 
-                                                                            //Therefore if the docker extension is added after the child being added, this won't work.
+        ssGUI::GUIObject* Container;                                //See <BindToObject>
+        bool Enabled;                                               //See <IsEnabled>
+        bool ChildrenDockerUseThisSettings;                         //See <IsChildrenDockerUseThisSettings>
+                                                                    //This works by having the child checking if parent has docker or not. 
+                                                                    //Therefore if the docker extension is added after the child being added, this won't work.
 
-        bool UseTriggerPercentage = true;                                   //See <IsUseTriggerPercentage>
-        float TriggerHorizontalPercentage = 0.5;                            //See <GetTriggerHorizontalPercentage>
-        float TriggerVerticalPercentage = 0.5;                              //See <GetTriggerVerticalPercentage>
-        int TriggerHorizontalPixel = 15;                                    //See <GetTriggerHorizontalPixel>
-        int TriggerVerticalPixel = 15;                                      //See <GetTriggerVerticalPixel>
-        glm::u8vec4 TriggerAreaColor = glm::u8vec4(87, 207, 255, 127);      //See <GetTriggerAreaColor>
-        glm::u8vec4 DockPreviewColor = glm::u8vec4(255, 255, 255, 127);     //See <GetDockPreviewColor>
+        bool UseTriggerPercentage;                                  //See <IsUseTriggerPercentage>
+        float TriggerHorizontalPercentage;                          //See <GetTriggerHorizontalPercentage>
+        float TriggerVerticalPercentage;                            //See <GetTriggerVerticalPercentage>
+        int TriggerHorizontalPixel;                                 //See <GetTriggerHorizontalPixel>
+        int TriggerVerticalPixel;                                   //See <GetTriggerVerticalPixel>
+        glm::u8vec4 TriggerAreaColor;                               //See <GetTriggerAreaColor>
+        glm::u8vec4 DockPreviewColor;                               //See <GetDockPreviewColor>
 
-        ssGUI::GUIObject* DockPreivew = nullptr;                            //(Internal variable) Dock preview GUI visual object
-        ssGUI::GUIObject* DockTrigger = nullptr;                            //(Internal variable) Dock trigger GUI visual object
+        ssGUI::GUIObject* DockPreivew;                              //(Internal variable) Dock preview GUI visual object
+        ssGUI::GUIObject* DockTrigger;                              //(Internal variable) Dock trigger GUI visual object
 
-        bool ChildRemoveGuard = false;                                      //(Internal variable) Used to prevent listener triggering itself
+        bool ChildRemoveGuard;                                      //(Internal variable) Used to prevent listener triggering itself
 
-        static ssGUI::Window* DefaultGeneratedDockerWindow;                 //See <GetDefaultGeneratedDockerWindow>
+        static ssGUI::Window* DefaultGeneratedDockerWindow;         //See <GetDefaultGeneratedDockerWindow>
     =================================================================
     ============================== C++ ==============================
-    Docker::Docker()
+    Docker::Docker() :  Container(nullptr),
+                        Enabled(true),
+                        ChildrenDockerUseThisSettings(true),
+                        UseTriggerPercentage(true),
+                        TriggerHorizontalPercentage(0.5),
+                        TriggerVerticalPercentage(0.5),
+                        TriggerHorizontalPixel(15),
+                        TriggerVerticalPixel(15),
+                        TriggerAreaColor(87, 207, 255, 127),
+                        DockPreviewColor(255, 255, 255, 127),
+                        DockPreivew(nullptr),
+                        DockTrigger(nullptr),
+                        ChildRemoveGuard(false)
     {}
 
     ssGUI::Window* Docker::DefaultGeneratedDockerWindow = nullptr;
@@ -64,26 +76,26 @@ namespace ssGUI::Extensions
             Docker& operator=(Docker const& other);
 
         protected:
-            ssGUI::GUIObject* Container = nullptr;                              //See <BindToObject>
-            bool Enabled = true;                                                //See <IsEnabled>
-            bool ChildrenDockerUseThisSettings = true;                          //See <IsChildrenDockerUseThisSettings>
-                                                                                //This works by having the child checking if parent has docker or not. 
-                                                                                //Therefore if the docker extension is added after the child being added, this won't work.
+            ssGUI::GUIObject* Container;                                //See <BindToObject>
+            bool Enabled;                                               //See <IsEnabled>
+            bool ChildrenDockerUseThisSettings;                         //See <IsChildrenDockerUseThisSettings>
+                                                                        //This works by having the child checking if parent has docker or not. 
+                                                                        //Therefore if the docker extension is added after the child being added, this won't work.
 
-            bool UseTriggerPercentage = true;                                   //See <IsUseTriggerPercentage>
-            float TriggerHorizontalPercentage = 0.5;                            //See <GetTriggerHorizontalPercentage>
-            float TriggerVerticalPercentage = 0.5;                              //See <GetTriggerVerticalPercentage>
-            int TriggerHorizontalPixel = 15;                                    //See <GetTriggerHorizontalPixel>
-            int TriggerVerticalPixel = 15;                                      //See <GetTriggerVerticalPixel>
-            glm::u8vec4 TriggerAreaColor = glm::u8vec4(87, 207, 255, 127);      //See <GetTriggerAreaColor>
-            glm::u8vec4 DockPreviewColor = glm::u8vec4(255, 255, 255, 127);     //See <GetDockPreviewColor>
+            bool UseTriggerPercentage;                                  //See <IsUseTriggerPercentage>
+            float TriggerHorizontalPercentage;                          //See <GetTriggerHorizontalPercentage>
+            float TriggerVerticalPercentage;                            //See <GetTriggerVerticalPercentage>
+            int TriggerHorizontalPixel;                                 //See <GetTriggerHorizontalPixel>
+            int TriggerVerticalPixel;                                   //See <GetTriggerVerticalPixel>
+            glm::u8vec4 TriggerAreaColor;                               //See <GetTriggerAreaColor>
+            glm::u8vec4 DockPreviewColor;                               //See <GetDockPreviewColor>
 
-            ssGUI::GUIObject* DockPreivew = nullptr;                            //(Internal variable) Dock preview GUI visual object
-            ssGUI::GUIObject* DockTrigger = nullptr;                            //(Internal variable) Dock trigger GUI visual object
+            ssGUI::GUIObject* DockPreivew;                              //(Internal variable) Dock preview GUI visual object
+            ssGUI::GUIObject* DockTrigger;                              //(Internal variable) Dock trigger GUI visual object
 
-            bool ChildRemoveGuard = false;                                      //(Internal variable) Used to prevent listener triggering itself
+            bool ChildRemoveGuard;                                      //(Internal variable) Used to prevent listener triggering itself
 
-            static ssGUI::Window* DefaultGeneratedDockerWindow;                 //See <GetDefaultGeneratedDockerWindow>
+            static ssGUI::Window* DefaultGeneratedDockerWindow;         //See <GetDefaultGeneratedDockerWindow>
 
             Docker();
             virtual ~Docker() override;

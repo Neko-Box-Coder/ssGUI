@@ -18,16 +18,21 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
-        bool Enabled = true;                                    //See <IsEnabled>
+        ssGUI::GUIObject* Container;    //See <BindToObject>
+        bool Enabled;                   //See <IsEnabled>
 
-        glm::vec2 PositionOffset = glm::vec2(0, 0);             //See <GetPositionOffset>
-        glm::vec2 SizeOffset = glm::vec2(5, 5);                 //See <GetSizeOffset>
-        float BlurRadius = 10;                                  //See <GetBlurRadius>
-        glm::u8vec4 ShadowColor = glm::u8vec4(0, 0, 0, 127);    //See <GetShadowColor>
+        glm::vec2 PositionOffset;       //See <GetPositionOffset>
+        glm::vec2 SizeOffset;           //See <GetSizeOffset>
+        float BlurRadius;               //See <GetBlurRadius>
+        glm::u8vec4 ShadowColor;        //See <GetShadowColor>
     =================================================================
     ============================== C++ ==============================
-    BoxShadow::BoxShadow()
+    BoxShadow::BoxShadow() :    Container(nullptr),
+                                Enabled(true),
+                                PositionOffset(0, 0),
+                                SizeOffset(5, 5),
+                                BlurRadius(10),
+                                ShadowColor(0, 0, 0, 127)
     {}
     =================================================================
     */
@@ -40,13 +45,13 @@ namespace ssGUI::Extensions
             BoxShadow& operator=(BoxShadow const& other);
 
         protected:
-            ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
-            bool Enabled = true;                                    //See <IsEnabled>
+            ssGUI::GUIObject* Container;    //See <BindToObject>
+            bool Enabled;                   //See <IsEnabled>
 
-            glm::vec2 PositionOffset = glm::vec2(0, 0);             //See <GetPositionOffset>
-            glm::vec2 SizeOffset = glm::vec2(5, 5);                 //See <GetSizeOffset>
-            float BlurRadius = 10;                                  //See <GetBlurRadius>
-            glm::u8vec4 ShadowColor = glm::u8vec4(0, 0, 0, 127);    //See <GetShadowColor>
+            glm::vec2 PositionOffset;       //See <GetPositionOffset>
+            glm::vec2 SizeOffset;           //See <GetSizeOffset>
+            float BlurRadius;               //See <GetBlurRadius>
+            glm::u8vec4 ShadowColor;        //See <GetShadowColor>
 
             BoxShadow();
             virtual ~BoxShadow() override;

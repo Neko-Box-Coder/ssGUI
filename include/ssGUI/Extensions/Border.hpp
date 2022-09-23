@@ -15,17 +15,21 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
-        bool Enabled = true;                                    //See <IsEnabled>
-        glm::u8vec4 BorderColor = glm::u8vec4(0, 0, 0, 255);    //See <GetBorderColor>
-        float BorderWidth = 1;                                  //See <GetBorderWidth>
+        ssGUI::GUIObject* Container;    //See <BindToObject>
+        bool Enabled;                   //See <IsEnabled>
+        glm::u8vec4 BorderColor;        //See <GetBorderColor>
+        float BorderWidth;              //See <GetBorderWidth>
 
         //TODO : Maybe change to private enum class. Just too lazy to do it atm :P
-        int8_t BorderSides = 15;                                //(Internal variable) Used to identify which sides need to apply the border 
-                                                                //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
+        int8_t BorderSides;             //(Internal variable) Used to identify which sides need to apply the border 
+                                        //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
     =================================================================
     ============================== C++ ==============================
-    Border::Border()
+    Border::Border() :  Container(nullptr),
+                        Enabled(true),
+                        BorderColor(0, 0, 0, 255),
+                        BorderWidth(1),
+                        BorderSides(15)
     {}
     =================================================================
     */
@@ -38,14 +42,14 @@ namespace ssGUI::Extensions
             Border& operator=(Border const& other);
         
         protected:
-            ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
-            bool Enabled = true;                                    //See <IsEnabled>
-            glm::u8vec4 BorderColor = glm::u8vec4(0, 0, 0, 255);    //See <GetBorderColor>
-            float BorderWidth = 1;                                  //See <GetBorderWidth>
+            ssGUI::GUIObject* Container;    //See <BindToObject>
+            bool Enabled;                   //See <IsEnabled>
+            glm::u8vec4 BorderColor;        //See <GetBorderColor>
+            float BorderWidth;              //See <GetBorderWidth>
 
             //TODO : Maybe change to private enum class. Just too lazy to do it atm :P
-            int8_t BorderSides = 15;                                //(Internal variable) Used to identify which sides need to apply the border 
-                                                                    //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
+            int8_t BorderSides;             //(Internal variable) Used to identify which sides need to apply the border 
+                                            //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
 
             virtual void DrawBorder();
             virtual void ConstructRenderInfo() override;

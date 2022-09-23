@@ -16,11 +16,12 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        float ScrollbarSize = 0.25;     //See <GetScrollbarSize>
-        float SidePadding = 2;          //See <GetSidePadding>
+        float ScrollbarSize;    //See <GetScrollbarSize>
+        float SidePadding;      //See <GetSidePadding>
     =================================================================
     ============================== C++ ==============================
-    Scrollbar::Scrollbar()
+    Scrollbar::Scrollbar() :    ScrollbarSize(0.25),
+                                SidePadding(2)
     {
         SetKnobSize(10, false);
         SetEndPadding(5);
@@ -42,6 +43,7 @@ namespace ssGUI
 
         UpdateKnobSize();
         SetVertical(true, true);
+        SetReverse(true);
     }
     =================================================================
     */
@@ -51,8 +53,8 @@ namespace ssGUI
             Scrollbar& operator=(Scrollbar const& other) = default;
 
         protected:
-            float ScrollbarSize = 0.25;     //See <GetScrollbarSize>
-            float SidePadding = 2;          //See <GetSidePadding>
+            float ScrollbarSize;    //See <GetScrollbarSize>
+            float SidePadding;      //See <GetSidePadding>
 
             virtual void UpdateKnobSize();
             Scrollbar(Scrollbar const& other);

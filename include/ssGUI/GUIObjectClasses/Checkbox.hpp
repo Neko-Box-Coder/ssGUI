@@ -13,11 +13,12 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        float InnerBoxSpace = 2;    //See <GetInnerBoxSpace>
-        bool Checked = true;        //See <IsChecked>
+        float InnerBoxSpace;    //See <GetInnerBoxSpace>
+        bool Checked;           //See <IsChecked>
     =================================================================
     ============================== C++ ==============================
-    Checkbox::Checkbox() : InnerBoxSpace(2), Checked(true)
+    Checkbox::Checkbox() :  InnerBoxSpace(2),
+                            Checked(true)
     {
         SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
         auto border = GetAnyExtension<ssGUI::Extensions::Border>();
@@ -72,8 +73,8 @@ namespace ssGUI
             Checkbox& operator=(Checkbox const& other) = default;
 
         protected:
-            float InnerBoxSpace = 2;    //See <GetInnerBoxSpace>
-            bool Checked = true;        //See <IsChecked>
+            float InnerBoxSpace;    //See <GetInnerBoxSpace>
+            bool Checked;           //See <IsChecked>
 
             Checkbox(Checkbox const& other);
             virtual void ConstructRenderInfo() override;

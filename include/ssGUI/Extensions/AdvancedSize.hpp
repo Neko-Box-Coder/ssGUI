@@ -22,20 +22,27 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container = nullptr;      //See <BindToObject>
-        bool Enabled = true;                        //See <IsEnabled>
+        ssGUI::GUIObject* Container;        //See <BindToObject>
+        bool Enabled;                       //See <IsEnabled>
 
-        float HorizontalPixelValue = 0;             //See <GetHorizontalPixel>
-        float VerticalPixelValue = 0;               //See <GetVerticalPixel>
+        float HorizontalPixelValue;         //See <GetHorizontalPixel>
+        float VerticalPixelValue;           //See <GetVerticalPixel>
 
-        float HorizontalPercentageValue = 0;        //See <GetHorizontalPercentage>
-        float VerticalPercentageValue = 0;          //See <GetVerticalPercentage>
+        float HorizontalPercentageValue;    //See <GetHorizontalPercentage>
+        float VerticalPercentageValue;      //See <GetVerticalPercentage>
 
-        bool SettingsChanged = true;                //(Internal variable) Used to cache the size
-        glm::vec2 LastParentSize = glm::vec2();     //(Internal variable) Used to cache the size
+        bool SettingsChanged;               //(Internal variable) Used to cache the size
+        glm::vec2 LastParentSize;           //(Internal variable) Used to cache the size
     =================================================================
     ============================== C++ ==============================
-    AdvancedSize::AdvancedSize()
+    AdvancedSize::AdvancedSize() :  Container(nullptr),
+                                    Enabled(true),
+                                    HorizontalPixelValue(0),
+                                    VerticalPixelValue(0),
+                                    HorizontalPercentageValue(0),
+                                    VerticalPercentageValue(0),
+                                    SettingsChanged(true),
+                                    LastParentSize()
     {}
     =================================================================
     */
@@ -48,17 +55,17 @@ namespace ssGUI::Extensions
             AdvancedSize& operator=(AdvancedSize const& other);
         
         protected:
-            ssGUI::GUIObject* Container = nullptr;      //See <BindToObject>
-            bool Enabled = true;                        //See <IsEnabled>
+            ssGUI::GUIObject* Container;        //See <BindToObject>
+            bool Enabled;                       //See <IsEnabled>
 
-            float HorizontalPixelValue = 0;             //See <GetHorizontalPixel>
-            float VerticalPixelValue = 0;               //See <GetVerticalPixel>
+            float HorizontalPixelValue;         //See <GetHorizontalPixel>
+            float VerticalPixelValue;           //See <GetVerticalPixel>
 
-            float HorizontalPercentageValue = 0;        //See <GetHorizontalPercentage>
-            float VerticalPercentageValue = 0;          //See <GetVerticalPercentage>
+            float HorizontalPercentageValue;    //See <GetHorizontalPercentage>
+            float VerticalPercentageValue;      //See <GetVerticalPercentage>
 
-            bool SettingsChanged = true;                //(Internal variable) Used to cache the size
-            glm::vec2 LastParentSize = glm::vec2();     //(Internal variable) Used to cache the size
+            bool SettingsChanged;               //(Internal variable) Used to cache the size
+            glm::vec2 LastParentSize;           //(Internal variable) Used to cache the size
 
             AdvancedSize();
             virtual ~AdvancedSize() override;

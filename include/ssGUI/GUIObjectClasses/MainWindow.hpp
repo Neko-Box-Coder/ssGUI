@@ -19,15 +19,19 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-        ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow = nullptr;    //See <GetBackendWindowInterface>
-        ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;          //See <GetBackendDrawingInterface>
-        glm::vec2 LastSize = glm::vec2();                                           //(Internal variable) Used to trigger redraw and <SizeChangedEventCallback>
-        int RedrawCount = 0;                                                        //(Internal variable) Used to make sure the redraw is actually done
+        ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;      //See <GetBackendWindowInterface>
+        ssGUI::Backend::BackendDrawingInterface* BackendDrawing;            //See <GetBackendDrawingInterface>
+        glm::vec2 LastSize;                                                 //(Internal variable) Used to trigger redraw and <SizeChangedEventCallback>
+        int RedrawCount;                                                    //(Internal variable) Used to make sure the redraw is actually done
 
-        uint64_t LastSyncTime = 0;                                                  //(Internal variable) Used to update the window every half a second
+        uint64_t LastSyncTime;                                              //(Internal variable) Used to update the window every half a second
     =================================================================
     ============================== C++ ==============================
-    MainWindow::MainWindow()
+    MainWindow::MainWindow() :  BackendMainWindow(nullptr),
+                                BackendDrawing(nullptr),
+                                LastSize(),
+                                RedrawCount(0),
+                                LastSyncTime(0)
     {
         BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
@@ -41,12 +45,12 @@ namespace ssGUI
     class MainWindow : public Window
     {
         private:
-            ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow = nullptr;    //See <GetBackendWindowInterface>
-            ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;          //See <GetBackendDrawingInterface>
-            glm::vec2 LastSize = glm::vec2();                                           //(Internal variable) Used to trigger redraw and <SizeChangedEventCallback>
-            int RedrawCount = 0;                                                        //(Internal variable) Used to make sure the redraw is actually done
+            ssGUI::Backend::BackendMainWindowInterface* BackendMainWindow;      //See <GetBackendWindowInterface>
+            ssGUI::Backend::BackendDrawingInterface* BackendDrawing;            //See <GetBackendDrawingInterface>
+            glm::vec2 LastSize;                                                 //(Internal variable) Used to trigger redraw and <SizeChangedEventCallback>
+            int RedrawCount;                                                    //(Internal variable) Used to make sure the redraw is actually done
 
-            uint64_t LastSyncTime = 0;                                                  //(Internal variable) Used to update the window every half a second
+            uint64_t LastSyncTime;                                              //(Internal variable) Used to update the window every half a second
             
             MainWindow& operator=(MainWindow const& other);
 

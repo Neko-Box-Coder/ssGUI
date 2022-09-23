@@ -18,27 +18,31 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions = {}; //See <GetExtension>
-        std::vector<std::string> ExtensionsDrawOrder = {};                              //See <GetExtensionDrawOrder>
-        std::vector<std::string> ExtensionsUpdateOrder = {};                            //See <GetExtensionUpdateOrder>
+        std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;      //See <GetExtension>
+        std::vector<std::string> ExtensionsDrawOrder;                                   //See <GetExtensionDrawOrder>
+        std::vector<std::string> ExtensionsUpdateOrder;                                 //See <GetExtensionUpdateOrder>
 
-        ssGUI::Renderer* CurrentRenderer = nullptr;                                     //(Internal variable) Used to send redraw signal
-        ssGUI::GUIObject* CurrentObject = nullptr;                                      //(Internal variable) Used to register container
+        ssGUI::Renderer* CurrentRenderer;                                               //(Internal variable) Used to send redraw signal
+        ssGUI::GUIObject* CurrentObject;                                                //(Internal variable) Used to register container
     =================================================================
     ============================== C++ ==============================
-    ExtensionManager::ExtensionManager()
+    ExtensionManager::ExtensionManager() :  Extensions(),
+                                            ExtensionsDrawOrder(),
+                                            ExtensionsUpdateOrder(),
+                                            CurrentRenderer(nullptr),
+                                            CurrentObject(nullptr)
     {}
     =================================================================
     */
     class ExtensionManager
     {
         protected:
-            std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions = {}; //See <GetExtension>
-            std::vector<std::string> ExtensionsDrawOrder = {};                              //See <GetExtensionDrawOrder>
-            std::vector<std::string> ExtensionsUpdateOrder = {};                            //See <GetExtensionUpdateOrder>
+            std::unordered_map<std::string, ssGUI::Extensions::Extension*> Extensions;      //See <GetExtension>
+            std::vector<std::string> ExtensionsDrawOrder;                                   //See <GetExtensionDrawOrder>
+            std::vector<std::string> ExtensionsUpdateOrder;                                 //See <GetExtensionUpdateOrder>
 
-            ssGUI::Renderer* CurrentRenderer = nullptr;                                     //(Internal variable) Used to send redraw signal
-            ssGUI::GUIObject* CurrentObject = nullptr;                                      //(Internal variable) Used to register container
+            ssGUI::Renderer* CurrentRenderer;                                               //(Internal variable) Used to send redraw signal
+            ssGUI::GUIObject* CurrentObject;                                                //(Internal variable) Used to register container
 
             ExtensionManager(ExtensionManager const&);
 

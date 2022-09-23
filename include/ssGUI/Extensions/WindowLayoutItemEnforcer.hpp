@@ -15,15 +15,20 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-        ssGUI::GUIObject* Container = nullptr;          //See <BindToObject>
-        bool Enabled = true;                            //See <IsEnabled>
-        glm::vec2 ContainerStartPos = glm::vec2();      //(Internal variable) Used to store the starting position of the window to allow pushing/pulling
-        glm::vec2 ContainerStartSize = glm::vec2();     //(Internal variable) Used to store the starting size of the window to allow pushing/pulling
-        bool ContainerResizeStarted = false;            //(Internal variable) Flag to indicate if the coontainer is being resized and allow pushing/pulling
-        glm::vec2 LastContainerSize = glm::vec2();      //(Internal variable) Used to skip recalcuating the position and size if the size is not changed
+        ssGUI::GUIObject* Container;    //See <BindToObject>
+        bool Enabled;                   //See <IsEnabled>
+        glm::vec2 ContainerStartPos;    //(Internal variable) Used to store the starting position of the window to allow pushing/pulling
+        glm::vec2 ContainerStartSize;   //(Internal variable) Used to store the starting size of the window to allow pushing/pulling
+        bool ContainerResizeStarted;    //(Internal variable) Flag to indicate if the coontainer is being resized and allow pushing/pulling
+        glm::vec2 LastContainerSize;    //(Internal variable) Used to skip recalcuating the position and size if the size is not changed
     =================================================================
     ============================== C++ ==============================
-    WindowLayoutItemEnforcer::WindowLayoutItemEnforcer()
+    WindowLayoutItemEnforcer::WindowLayoutItemEnforcer() :  Container(nullptr),
+                                                            Enabled(true),
+                                                            ContainerStartPos(),
+                                                            ContainerStartSize(),
+                                                            ContainerResizeStarted(false),
+                                                            LastContainerSize()
     {}
     =================================================================
     */
@@ -33,12 +38,12 @@ namespace ssGUI::Extensions
             friend class ssGUI::Factory;
 
         private:
-            ssGUI::GUIObject* Container = nullptr;          //See <BindToObject>
-            bool Enabled = true;                            //See <IsEnabled>
-            glm::vec2 ContainerStartPos = glm::vec2();      //(Internal variable) Used to store the starting position of the window to allow pushing/pulling
-            glm::vec2 ContainerStartSize = glm::vec2();     //(Internal variable) Used to store the starting size of the window to allow pushing/pulling
-            bool ContainerResizeStarted = false;            //(Internal variable) Flag to indicate if the coontainer is being resized and allow pushing/pulling
-            glm::vec2 LastContainerSize = glm::vec2();      //(Internal variable) Used to skip recalcuating the position and size if the size is not changed
+            ssGUI::GUIObject* Container;    //See <BindToObject>
+            bool Enabled;                   //See <IsEnabled>
+            glm::vec2 ContainerStartPos;    //(Internal variable) Used to store the starting position of the window to allow pushing/pulling
+            glm::vec2 ContainerStartSize;   //(Internal variable) Used to store the starting size of the window to allow pushing/pulling
+            bool ContainerResizeStarted;    //(Internal variable) Flag to indicate if the coontainer is being resized and allow pushing/pulling
+            glm::vec2 LastContainerSize;    //(Internal variable) Used to skip recalcuating the position and size if the size is not changed
 
             WindowLayoutItemEnforcer& operator=(WindowLayoutItemEnforcer const& other);
 

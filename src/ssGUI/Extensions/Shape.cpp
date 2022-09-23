@@ -3,11 +3,14 @@
 #include <cmath>
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-//Remember to add the .cpp file to the cmake list if you are using cmake
-
 namespace ssGUI::Extensions
 {
-    Shape::Shape()
+    Shape::Shape() :    Container(nullptr),
+                        Enabled(true),
+                        ExtensionPreRender(true),
+                        AdditionalShapes(),
+                        GUIObjectShapesToRemove(),
+                        NextID(0)
     {}
 
     Shape::~Shape()

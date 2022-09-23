@@ -164,7 +164,22 @@ namespace ssGUI::Backend
         FUNC_DEBUG_EXIT();
     }
 
-    BackendSystemInputSFML::BackendSystemInputSFML()
+    BackendSystemInputSFML::BackendSystemInputSFML() :  CurrentKeyPresses(),
+                                                        LastKeyPresses(),
+                                                        InputText(L""),
+                                                        CurrentMousePosition(),
+                                                        LastMousePosition(),
+                                                        CurrentMouseButtons(),
+                                                        LastMouseButtons(),
+                                                        MouseScrollDelta(),
+                                                        CurrentInputInfos(),
+                                                        LastInputInfos(),
+                                                        SFMLCursor(),
+                                                        CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
+                                                        CursorMappedWindow(),
+                                                        CustomCursors(),
+                                                        CurrentCustomCursor(""),
+                                                        ElapsedTime()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {

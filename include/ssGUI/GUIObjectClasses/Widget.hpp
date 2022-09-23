@@ -13,11 +13,12 @@ namespace ssGUI
     ============================== C++ ==============================
     private:
         //Widget status
-        bool Interactable = true;   //See <IsInteractable>
-        bool BlockInput = true;     //See <IsBlockInput>
+        bool Interactable;      //See <IsInteractable>
+        bool BlockInput;        //See <IsBlockInput>
     =================================================================
     ============================== C++ ==============================
-    Widget::Widget()
+    Widget::Widget() :  Interactable(true),
+                        BlockInput(true)
     {}
     =================================================================
     */
@@ -25,8 +26,8 @@ namespace ssGUI
     {
         private:
             //Widget status
-            bool Interactable = true;   //See <IsInteractable>
-            bool BlockInput = true;     //See <IsBlockInput>
+            bool Interactable;      //See <IsInteractable>
+            bool BlockInput;        //See <IsBlockInput>
 
             Widget& operator=(Widget const& other) = default;
 

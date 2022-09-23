@@ -8,7 +8,12 @@
 
 namespace ssGUI::Extensions
 {
-    WindowLayoutItemEnforcer::WindowLayoutItemEnforcer()
+    WindowLayoutItemEnforcer::WindowLayoutItemEnforcer() :  Container(nullptr),
+                                                            Enabled(true),
+                                                            ContainerStartPos(),
+                                                            ContainerStartSize(),
+                                                            ContainerResizeStarted(false),
+                                                            LastContainerSize()
     {}
 
     WindowLayoutItemEnforcer::~WindowLayoutItemEnforcer()

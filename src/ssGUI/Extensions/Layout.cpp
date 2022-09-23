@@ -10,7 +10,25 @@
 
 namespace ssGUI::Extensions
 {    
-    Layout::Layout()
+    Layout::Layout() :  HorizontalLayout(false),
+                        PreferredSizeMultipliers(),
+                        DisableChildrenResizing(false),
+                        OverrideChildrenResizeTypesAndOnTop(true),
+                        UpdateContainerMinMaxSize(true),
+                        ReverseOrder(false),
+                        CoverFullLength(true),
+                        Container(nullptr),
+                        Enabled(true),
+                        Padding(0),
+                        Spacing(5),
+                        Overflow(false),
+                        CurrentObjectsReferences(),
+                        LastUpdateChildrenSize(),
+                        ObjectsToExclude(),
+                        SpecialObjectsToExclude(),
+                        OriginalChildrenSize(),
+                        OriginalChildrenResizeType(),
+                        OriginalChildrenOnTop()
     {}
 
     Layout::~Layout()

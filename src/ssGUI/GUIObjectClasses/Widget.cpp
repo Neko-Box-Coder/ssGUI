@@ -65,7 +65,8 @@ namespace ssGUI
         }
     }
     
-    Widget::Widget()
+    Widget::Widget() :  Interactable(true),
+                        BlockInput(true)
     {}
 
     Widget::~Widget()

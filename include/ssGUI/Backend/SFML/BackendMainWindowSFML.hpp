@@ -17,24 +17,36 @@ namespace ssGUI::Backend
     Variables & Constructor:
     ============================= C++ =============================
     private:
-        sf::RenderWindow CurrentWindow = sf::RenderWindow(sf::VideoMode(800, 600), "");     //See <GetRawHandle>
-        std::vector<std::function<void()>> OnCloseCallback = {};                            //See <AddOnCloseEvent>
-        std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback = {};   //See <AddFocusChangedByUserEvent>
-        bool Visible = true;                                                                //See <IsVisible>
-        bool VSync = false;                                                                 //See <IsVSync>
-        bool Closed = false;                                                                //See <IsClosed>
-        ssGUI::Enums::WindowMode CurrentWindowMode = ssGUI::Enums::WindowMode::NORMAL;      //See <GetWindowMode>
+        sf::RenderWindow CurrentWindow;                                                 //See <GetRawHandle>
+        std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
+        std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
+        bool Visible;                                                                   //See <IsVisible>
+        bool VSync;                                                                     //See <IsVSync>
+        bool Closed;                                                                    //See <IsClosed>
+        ssGUI::Enums::WindowMode CurrentWindowMode;                                     //See <GetWindowMode>
 
-        bool Titlebar = true;                                                               //See <HasTitlebar>
-        bool Resizable = true;                                                              //See <IsResizable>
-        bool CloseButton = true;                                                            //See <HasCloseButton>
-        std::wstring Title = L"";                                                           //See <GetTitle>
-        bool IsClosingAborted = false;                                                      //(Internal variable) Flag to stop closing operation, see <AbortClosing>
+        bool Titlebar;                                                                  //See <HasTitlebar>
+        bool Resizable;                                                                 //See <IsResizable>
+        bool CloseButton;                                                               //See <HasCloseButton>
+        std::wstring Title;                                                             //See <GetTitle>
+        bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
 
-        glm::vec2 PositionOffset = glm::vec2();                                             //See <GetPositionOffset>
+        glm::vec2 PositionOffset;                                                       //See <GetPositionOffset>
     ===============================================================
     ============================= C++ =============================
-    BackendMainWindowSFML::BackendMainWindowSFML()
+    BackendMainWindowSFML::BackendMainWindowSFML() :    CurrentWindow(sf::VideoMode(800, 600), ""),
+                                                        OnCloseCallback(),
+                                                        ExternalFocusChangedCallback(),
+                                                        Visible(true),
+                                                        VSync(false),
+                                                        Closed(false),
+                                                        CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL),
+                                                        Titlebar(true),
+                                                        Resizable(true),
+                                                        CloseButton(true),
+                                                        Title(L""),
+                                                        IsClosingAborted(false),
+                                                        PositionOffset()
     {
         ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
@@ -43,21 +55,21 @@ namespace ssGUI::Backend
     class BackendMainWindowSFML : public BackendMainWindowInterface
     {
         private:
-            sf::RenderWindow CurrentWindow = sf::RenderWindow(sf::VideoMode(800, 600), "");     //See <GetRawHandle>
-            std::vector<std::function<void()>> OnCloseCallback = {};                            //See <AddOnCloseEvent>
-            std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback = {};   //See <AddFocusChangedByUserEvent>
-            bool Visible = true;                                                                //See <IsVisible>
-            bool VSync = false;                                                                 //See <IsVSync>
-            bool Closed = false;                                                                //See <IsClosed>
-            ssGUI::Enums::WindowMode CurrentWindowMode = ssGUI::Enums::WindowMode::NORMAL;      //See <GetWindowMode>
+            sf::RenderWindow CurrentWindow;                                                 //See <GetRawHandle>
+            std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
+            std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
+            bool Visible;                                                                   //See <IsVisible>
+            bool VSync;                                                                     //See <IsVSync>
+            bool Closed;                                                                    //See <IsClosed>
+            ssGUI::Enums::WindowMode CurrentWindowMode;                                     //See <GetWindowMode>
 
-            bool Titlebar = true;                                                               //See <HasTitlebar>
-            bool Resizable = true;                                                              //See <IsResizable>
-            bool CloseButton = true;                                                            //See <HasCloseButton>
-            std::wstring Title = L"";                                                           //See <GetTitle>
-            bool IsClosingAborted = false;                                                      //(Internal variable) Flag to stop closing operation, see <AbortClosing>
+            bool Titlebar;                                                                  //See <HasTitlebar>
+            bool Resizable;                                                                 //See <IsResizable>
+            bool CloseButton;                                                               //See <HasCloseButton>
+            std::wstring Title;                                                             //See <GetTitle>
+            bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
 
-            glm::vec2 PositionOffset = glm::vec2();                                             //See <GetPositionOffset>
+            glm::vec2 PositionOffset;                                                       //See <GetPositionOffset>
 
             BackendMainWindowSFML& operator=(BackendMainWindowSFML const& other);
             void ResetWindow(ssGUI::Enums::WindowMode mode, bool resize, bool titlebar, bool canClose, int msaa);

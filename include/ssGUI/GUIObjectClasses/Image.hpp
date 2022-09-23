@@ -17,12 +17,14 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::ImageData* ImageData = nullptr;                                                  //See <GetImageData>
-        ssGUI::Enums::ImageFitting Fitting = ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE;       //See <GetFitting>
-        glm::u8vec4 ImageTint = glm::u8vec4(255, 255, 255, 255);                                //See <GetImageTint>
+        ssGUI::ImageData* ImageData;                //See <GetImageData>
+        ssGUI::Enums::ImageFitting Fitting;         //See <GetFitting>
+        glm::u8vec4 ImageTint;                      //See <GetImageTint>
     =================================================================
     ============================== C++ ==============================
-    Image::Image()
+    Image::Image() :    ImageData(nullptr),
+                        Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE),
+                        ImageTint(255, 255, 255, 255)
     {
         // AddExtension(new ssGUI::Extensions::Border());
     }
@@ -34,9 +36,9 @@ namespace ssGUI
             Image& operator=(Image const& other);
         
         protected:
-            ssGUI::ImageData* ImageData = nullptr;                                                  //See <GetImageData>
-            ssGUI::Enums::ImageFitting Fitting = ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE;       //See <GetFitting>
-            glm::u8vec4 ImageTint = glm::u8vec4(255, 255, 255, 255);                                //See <GetImageTint>
+            ssGUI::ImageData* ImageData;                //See <GetImageData>
+            ssGUI::Enums::ImageFitting Fitting;         //See <GetFitting>
+            glm::u8vec4 ImageTint;                      //See <GetImageTint>
             
             Image(Image const& other);
 

@@ -13,21 +13,26 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        uint64_t LastBlinkTime = 0;             //(Internal variable) Used to do the caret blinking animation
-        int32_t BlinkDuration = 500;            //(Internal variable) Used for the duration of the caret blinking
-        bool BlinkCaret = false;                //(Internal variable) Flag for controlling the blinking of the caret
+        uint64_t LastBlinkTime;             //(Internal variable) Used to do the caret blinking animation
+        int32_t BlinkDuration;              //(Internal variable) Used for the duration of the caret blinking
+        bool BlinkCaret;                    //(Internal variable) Flag for controlling the blinking of the caret
 
-        uint64_t LastArrowNavStartTime = 0;     //(Internal variable) Used to control the character navigation with arrow keys
-        int ArrowNavPauseDuration = 500;        //(Internal variable) Used to control the character navigation with arrow keys
-        uint64_t LastArrowNavTime = 0;          //(Internal variable) Used to control the character navigation with arrow keys
-        int ArrowNavInterval = 20;              //(Internal variable) Used to control the character navigation with arrow keys
+        uint64_t LastArrowNavStartTime;     //(Internal variable) Used to control the character navigation with arrow keys
+        int ArrowNavPauseDuration;          //(Internal variable) Used to control the character navigation with arrow keys
+        uint64_t LastArrowNavTime;          //(Internal variable) Used to control the character navigation with arrow keys
+        int ArrowNavInterval;               //(Internal variable) Used to control the character navigation with arrow keys
     =================================================================
     ============================== C++ ==============================
-    TextField::TextField() : LastBlinkTime(0), BlinkDuration(500), BlinkCaret(false), LastArrowNavStartTime(0), ArrowNavPauseDuration(500), 
-                                LastArrowNavTime(0), ArrowNavInterval(20)
+    TextField::TextField() :    LastBlinkTime(0),
+                                BlinkDuration(500),
+                                BlinkCaret(false),
+                                LastArrowNavStartTime(0),
+                                ArrowNavPauseDuration(500),
+                                LastArrowNavTime(0),
+                                ArrowNavInterval(20)
     {
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
-        
+
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>());
         
         auto outlineEx = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
@@ -48,14 +53,14 @@ namespace ssGUI
             TextField& operator=(TextField const& other) = default;
 
         protected:
-            uint64_t LastBlinkTime = 0;             //(Internal variable) Used to do the caret blinking animation
-            int32_t BlinkDuration = 500;            //(Internal variable) Used for the duration of the caret blinking
-            bool BlinkCaret = false;                //(Internal variable) Flag for controlling the blinking of the caret
+            uint64_t LastBlinkTime;             //(Internal variable) Used to do the caret blinking animation
+            int32_t BlinkDuration;              //(Internal variable) Used for the duration of the caret blinking
+            bool BlinkCaret;                    //(Internal variable) Flag for controlling the blinking of the caret
 
-            uint64_t LastArrowNavStartTime = 0;     //(Internal variable) Used to control the character navigation with arrow keys
-            int ArrowNavPauseDuration = 500;        //(Internal variable) Used to control the character navigation with arrow keys
-            uint64_t LastArrowNavTime = 0;          //(Internal variable) Used to control the character navigation with arrow keys
-            int ArrowNavInterval = 20;              //(Internal variable) Used to control the character navigation with arrow keys
+            uint64_t LastArrowNavStartTime;     //(Internal variable) Used to control the character navigation with arrow keys
+            int ArrowNavPauseDuration;          //(Internal variable) Used to control the character navigation with arrow keys
+            uint64_t LastArrowNavTime;          //(Internal variable) Used to control the character navigation with arrow keys
+            int ArrowNavInterval;               //(Internal variable) Used to control the character navigation with arrow keys
 
             TextField(TextField const& other);
 

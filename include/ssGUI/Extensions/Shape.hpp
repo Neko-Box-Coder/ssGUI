@@ -24,16 +24,21 @@ namespace ssGUI::Extensions
             bool BehindGUI;
         };
 
-        ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
-        bool Enabled = true;                                    //See <IsEnabled>
+        ssGUI::GUIObject* Container;                        //See <BindToObject>
+        bool Enabled;                                       //See <IsEnabled>
 
-        bool ExtensionPreRender = true;                         //(Internal variable) Used to track if the current drawing is before or after the GUI Object
-        std::vector<AdditionalShape> AdditionalShapes = {};     //See <AddAdditionalPolygon>
-        std::unordered_set<int> GUIObjectShapesToRemove = {};   //See <RemoveGUIObjectShape>
-        int NextID = 0;                                         //(Internal variable) Used to return unique shape ID
+        bool ExtensionPreRender;                            //(Internal variable) Used to track if the current drawing is before or after the GUI Object
+        std::vector<AdditionalShape> AdditionalShapes;      //See <AddAdditionalPolygon>
+        std::unordered_set<int> GUIObjectShapesToRemove;    //See <RemoveGUIObjectShape>
+        int NextID;                                         //(Internal variable) Used to return unique shape ID
     =================================================================
     ============================== C++ ==============================
-    Shape::Shape()
+    Shape::Shape() :    Container(nullptr),
+                        Enabled(true),
+                        ExtensionPreRender(true),
+                        AdditionalShapes(),
+                        GUIObjectShapesToRemove(),
+                        NextID(0)
     {}
     =================================================================
     */
@@ -54,13 +59,13 @@ namespace ssGUI::Extensions
                 bool BehindGUI;
             };
 
-            ssGUI::GUIObject* Container = nullptr;                  //See <BindToObject>
-            bool Enabled = true;                                    //See <IsEnabled>
+            ssGUI::GUIObject* Container;                        //See <BindToObject>
+            bool Enabled;                                       //See <IsEnabled>
 
-            bool ExtensionPreRender = true;                         //(Internal variable) Used to track if the current drawing is before or after the GUI Object
-            std::vector<AdditionalShape> AdditionalShapes = {};     //See <AddAdditionalPolygon>
-            std::unordered_set<int> GUIObjectShapesToRemove = {};   //See <RemoveGUIObjectShape>
-            int NextID = 0;                                         //(Internal variable) Used to return unique shape ID
+            bool ExtensionPreRender;                            //(Internal variable) Used to track if the current drawing is before or after the GUI Object
+            std::vector<AdditionalShape> AdditionalShapes;      //See <AddAdditionalPolygon>
+            std::unordered_set<int> GUIObjectShapesToRemove;    //See <RemoveGUIObjectShape>
+            int NextID;                                         //(Internal variable) Used to return unique shape ID
 
             Shape();
             virtual ~Shape() override;

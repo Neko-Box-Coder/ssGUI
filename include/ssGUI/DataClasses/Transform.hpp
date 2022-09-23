@@ -20,20 +20,29 @@ namespace ssGUI
     ============================== C++ ==============================
     protected:
         //Widget transform
-        glm::vec2 Position = glm::vec2(0, 0);                                                                   //See <GetPosition>
-        glm::vec2 GlobalPosition = glm::vec2(0, 0);                                                             //See <GetGlobalPosition>
-        glm::vec2 Size = glm::vec2(25, 25);                                                                     //See <GetSize>
-        glm::vec2 MinSize = glm::vec2(25, 25);                                                                  //See <GetMinSize>
-        glm::vec2 MaxSize = glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());    //See <GetMaxSize>
-        ssGUI::Enums::AnchorType Anchor = ssGUI::Enums::AnchorType::TOP_LEFT;                                   //See <GetAnchorType>
+        glm::vec2 Position;                                         //See <GetPosition>
+        glm::vec2 GlobalPosition;                                   //See <GetGlobalPosition>
+        glm::vec2 Size;                                             //See <GetSize>
+        glm::vec2 MinSize;                                          //See <GetMinSize>
+        glm::vec2 MaxSize;                                          //See <GetMaxSize>
+        ssGUI::Enums::AnchorType Anchor;                            //See <GetAnchorType>
         
-        ssGUI::Hierarchy* CurrentHierarchy = nullptr;                                                           //(Internal variable) Used to sync the position and global position
-        ssGUI::Renderer* CurrentRenderer = nullptr;                                                             //(Internal variable) Used to send redraw signal
-        ssGUI::EventCallbackManager* CurrentEventCallbackManager = nullptr;                                     //(Internal variable) Used to call event callbacks listeners 
-        ssGUI::GUIObject* CurrentObject = nullptr;                                                              //(Internal variable) used to register the container for event callbacks listeners
+        ssGUI::Hierarchy* CurrentHierarchy;                         //(Internal variable) Used to sync the position and global position
+        ssGUI::Renderer* CurrentRenderer;                           //(Internal variable) Used to send redraw signal
+        ssGUI::EventCallbackManager* CurrentEventCallbackManager;   //(Internal variable) Used to call event callbacks listeners 
+        ssGUI::GUIObject* CurrentObject;                            //(Internal variable) used to register the container for event callbacks listeners
     =================================================================
     ============================== C++ ==============================
-    Transform::Transform()
+    Transform::Transform() :    Position(0, 0),
+                                GlobalPosition(0, 0),
+                                Size(25, 25),
+                                MinSize(25, 25),
+                                MaxSize(std::numeric_limits<float>::max(), std::numeric_limits<float>::max()),
+                                Anchor(ssGUI::Enums::AnchorType::TOP_LEFT),
+                                CurrentHierarchy(nullptr),
+                                CurrentRenderer(nullptr),
+                                CurrentEventCallbackManager(nullptr),
+                                CurrentObject(nullptr)
     {}
     =================================================================
     */
@@ -41,17 +50,17 @@ namespace ssGUI
     {
         protected:
             //Widget transform
-            glm::vec2 Position = glm::vec2(0, 0);                                                                   //See <GetPosition>
-            glm::vec2 GlobalPosition = glm::vec2(0, 0);                                                             //See <GetGlobalPosition>
-            glm::vec2 Size = glm::vec2(25, 25);                                                                     //See <GetSize>
-            glm::vec2 MinSize = glm::vec2(25, 25);                                                                  //See <GetMinSize>
-            glm::vec2 MaxSize = glm::vec2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());    //See <GetMaxSize>
-            ssGUI::Enums::AnchorType Anchor = ssGUI::Enums::AnchorType::TOP_LEFT;                                   //See <GetAnchorType>
+            glm::vec2 Position;                                         //See <GetPosition>
+            glm::vec2 GlobalPosition;                                   //See <GetGlobalPosition>
+            glm::vec2 Size;                                             //See <GetSize>
+            glm::vec2 MinSize;                                          //See <GetMinSize>
+            glm::vec2 MaxSize;                                          //See <GetMaxSize>
+            ssGUI::Enums::AnchorType Anchor;                            //See <GetAnchorType>
             
-            ssGUI::Hierarchy* CurrentHierarchy = nullptr;                                                           //(Internal variable) Used to sync the position and global position
-            ssGUI::Renderer* CurrentRenderer = nullptr;                                                             //(Internal variable) Used to send redraw signal
-            ssGUI::EventCallbackManager* CurrentEventCallbackManager = nullptr;                                     //(Internal variable) Used to call event callbacks listeners 
-            ssGUI::GUIObject* CurrentObject = nullptr;                                                              //(Internal variable) used to register the container for event callbacks listeners
+            ssGUI::Hierarchy* CurrentHierarchy;                         //(Internal variable) Used to sync the position and global position
+            ssGUI::Renderer* CurrentRenderer;                           //(Internal variable) Used to send redraw signal
+            ssGUI::EventCallbackManager* CurrentEventCallbackManager;   //(Internal variable) Used to call event callbacks listeners 
+            ssGUI::GUIObject* CurrentObject;                            //(Internal variable) used to register the container for event callbacks listeners
 
             Transform(Transform const& other);
 

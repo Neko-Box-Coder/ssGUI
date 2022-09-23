@@ -22,12 +22,14 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-            glm::vec2 SpawnGlobalPosition = glm::vec2();                                                                        //See <SpawnMenu>
-            ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection = ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT;        //See <GetMenuSpawnDirection>
-            ssGUI::GUIObject* MenuTarget = nullptr;                                                                             //See <GetMenuTarget>
+        glm::vec2 SpawnGlobalPosition;                                  //See <SpawnMenu>
+        ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection;     //See <GetMenuSpawnDirection>
+        ssGUI::GUIObject* MenuTarget;                                   //See <GetMenuTarget>
     =================================================================
     ============================== C++ ==============================
-    Menu::Menu() : SpawnGlobalPosition(), CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT), MenuTarget(nullptr)
+    Menu::Menu() :  SpawnGlobalPosition(),
+                    CurrentMenuSpawnDirection(ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT),
+                    MenuTarget(nullptr)
     {
         SetSize(glm::vec2(200, GetSize().y));
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
@@ -45,9 +47,9 @@ namespace ssGUI
             Menu& operator=(Menu const& other) = default;
 
         protected:
-            glm::vec2 SpawnGlobalPosition = glm::vec2();                                                                        //See <SpawnMenu>
-            ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection = ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT;        //See <GetMenuSpawnDirection>
-            ssGUI::GUIObject* MenuTarget = nullptr;                                                                             //See <GetMenuTarget>
+            glm::vec2 SpawnGlobalPosition;                                  //See <SpawnMenu>
+            ssGUI::Enums::MenuSpawnDirection CurrentMenuSpawnDirection;     //See <GetMenuSpawnDirection>
+            ssGUI::GUIObject* MenuTarget;                                   //See <GetMenuTarget>
 
             Menu(Menu const& other);
 

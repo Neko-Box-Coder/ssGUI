@@ -26,19 +26,26 @@ namespace ssGUI::Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container = nullptr;                      //See <BindToObject>
-        bool Enabled = true;                                        //See <IsEnabled>
+        ssGUI::GUIObject* Container;                        //See <BindToObject>
+        bool Enabled;                                       //See <IsEnabled>
 
-        float RoundedCornersRadius = 10;                            //See <GetRoundedCornersRadius>
-        std::vector<int> TargetShapes = {0};                        //See <GetTargetShape>
-        std::vector<int> TargetVertices = {};                       //See <GetTargetVertex>
+        float RoundedCornersRadius;                         //See <GetRoundedCornersRadius>
+        std::vector<int> TargetShapes;                      //See <GetTargetShape>
+        std::vector<int> TargetVertices;                    //See <GetTargetVertex>
 
-        std::vector<int> VerticesToRound = {};                      //(Internal variable) Used to identify vertices indices to round
-        std::vector<int> VerticesToRoundPrevVertices = {};          //(Internal variable) Used to identify the previous vertex of vertices indices to round
-        std::vector<int> VerticesToRoundNextVertices = {};          //(Internal variable) Used to identify the next vertex of vertices indices to round
+        std::vector<int> VerticesToRound;                   //(Internal variable) Used to identify vertices indices to round
+        std::vector<int> VerticesToRoundPrevVertices;       //(Internal variable) Used to identify the previous vertex of vertices indices to round
+        std::vector<int> VerticesToRoundNextVertices;       //(Internal variable) Used to identify the next vertex of vertices indices to round
     =================================================================
     ============================== C++ ==============================
-    RoundedCorners::RoundedCorners()
+    RoundedCorners::RoundedCorners() :  Container(nullptr),
+                                        Enabled(true),
+                                        RoundedCornersRadius(10),
+                                        TargetShapes{0},
+                                        TargetVertices(),
+                                        VerticesToRound(),
+                                        VerticesToRoundPrevVertices(),
+                                        VerticesToRoundNextVertices()
     {}
     =================================================================
     */
@@ -51,16 +58,16 @@ namespace ssGUI::Extensions
             RoundedCorners& operator=(RoundedCorners const& other);
 
         protected:
-            ssGUI::GUIObject* Container = nullptr;                      //See <BindToObject>
-            bool Enabled = true;                                        //See <IsEnabled>
+            ssGUI::GUIObject* Container;                        //See <BindToObject>
+            bool Enabled;                                       //See <IsEnabled>
 
-            float RoundedCornersRadius = 10;                            //See <GetRoundedCornersRadius>
-            std::vector<int> TargetShapes = {0};                        //See <GetTargetShape>
-            std::vector<int> TargetVertices = {};                       //See <GetTargetVertex>
+            float RoundedCornersRadius;                         //See <GetRoundedCornersRadius>
+            std::vector<int> TargetShapes;                      //See <GetTargetShape>
+            std::vector<int> TargetVertices;                    //See <GetTargetVertex>
 
-            std::vector<int> VerticesToRound = {};                      //(Internal variable) Used to identify vertices indices to round
-            std::vector<int> VerticesToRoundPrevVertices = {};          //(Internal variable) Used to identify the previous vertex of vertices indices to round
-            std::vector<int> VerticesToRoundNextVertices = {};          //(Internal variable) Used to identify the next vertex of vertices indices to round
+            std::vector<int> VerticesToRound;                   //(Internal variable) Used to identify vertices indices to round
+            std::vector<int> VerticesToRoundPrevVertices;       //(Internal variable) Used to identify the previous vertex of vertices indices to round
+            std::vector<int> VerticesToRoundNextVertices;       //(Internal variable) Used to identify the next vertex of vertices indices to round
 
             RoundedCorners();
             virtual ~RoundedCorners() override;

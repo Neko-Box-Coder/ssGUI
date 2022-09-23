@@ -19,32 +19,52 @@ namespace ssGUI
     ============================== C++ ==============================
     protected:
         //Window status
-        bool Titlebar = true;                                                                       //See <HasTitlebar>
-        int TitlebarHeight = 20;                                                                    //See <GetTitlebarHeight>
-        ssGUI::Enums::ResizeType ResizeType = ssGUI::Enums::ResizeType::ALL;                        //See <GetResizeType>
-        bool Draggable = true;                                                                      //See <IsDraggable>
-        bool Closable = true;                                                                       //See <IsClosable>
-        bool Closed = false;                                                                        //See <IsClosed>
-        bool IsClosingAborted = false;                                                              //(Internal variable) See <AbortClosing>
-        glm::ivec4 TitlebarColorDifference = glm::ivec4(-40, -40, -40, 0);                          //(Internal variable) Used for <IsAdaptiveTitlebarColor>
-        bool AdaptiveTitlebarColor = false;                                                         //See <IsAdaptiveTitlebarColor>
-        bool DeleteAfterClosed = true;                                                              //See <IsDeleteAfterClosed>
-        bool OnTopWhenFocused = true;                                                               //See <IsOnTopWhenFocused>
+        bool Titlebar;                                          //See <HasTitlebar>
+        int TitlebarHeight;                                     //See <GetTitlebarHeight>
+        ssGUI::Enums::ResizeType ResizeType;                    //See <GetResizeType>
+        bool Draggable;                                         //See <IsDraggable>
+        bool Closable;                                          //See <IsClosable>
+        bool Closed;                                            //See <IsClosed>
+        bool IsClosingAborted;                                  //(Internal variable) See <AbortClosing>
+        glm::ivec4 TitlebarColorDifference;                     //(Internal variable) Used for <IsAdaptiveTitlebarColor>
+        bool AdaptiveTitlebarColor;                             //See <IsAdaptiveTitlebarColor>
+        bool DeleteAfterClosed;                                 //See <IsDeleteAfterClosed>
+        bool OnTopWhenFocused;                                  //See <IsOnTopWhenFocused>
 
         //Resize/Drag settings
-        ssGUI::Enums::WindowDragState CurrentDragState = ssGUI::Enums::WindowDragState::NONE;       //See <GetResizeDragData>
-        int ResizeHitbox = 5;                                                                       //See <GetResizeHitbox>
-        bool ResizingTop = false;                                                                   //(Internal variable) Used to keep track of resizing status
-        bool ResizingBot = false;                                                                   //(Internal variable) Used to keep track of resizing status
-        bool ResizingLeft = false;                                                                  //(Internal variable) Used to keep track of resizing status
-        bool ResizingRight = false;                                                                 //(Internal variable) Used to keep track of resizing status
-        bool Dragging = false;                                                                      //(Internal variable) Used to keep track of dragging status
-        glm::vec2 TransformTotalMovedDistance = glm::vec2();                                        //(Internal variable) Used for window dragging
-        glm::vec2 OnTransformBeginSize = glm::vec2();                                               //(Internal variable) Used for window resizing
-        glm::vec2 MouseDownPosition = glm::vec2();                                                  //(Internal variable) Used for <GetResizeDragData> 
+        ssGUI::Enums::WindowDragState CurrentDragState;         //See <GetResizeDragData>
+        int ResizeHitbox;                                       //See <GetResizeHitbox>
+        bool ResizingTop;                                       //(Internal variable) Used to keep track of resizing status
+        bool ResizingBot;                                       //(Internal variable) Used to keep track of resizing status
+        bool ResizingLeft;                                      //(Internal variable) Used to keep track of resizing status
+        bool ResizingRight;                                     //(Internal variable) Used to keep track of resizing status
+        bool Dragging;                                          //(Internal variable) Used to keep track of dragging status
+        glm::vec2 TransformTotalMovedDistance;                  //(Internal variable) Used for window dragging
+        glm::vec2 OnTransformBeginSize;                         //(Internal variable) Used for window resizing
+        glm::vec2 MouseDownPosition;                            //(Internal variable) Used for <GetResizeDragData> 
     =================================================================
     ============================== C++ ==============================
-    Window::Window()
+    Window::Window() :  Titlebar(true),
+                        TitlebarHeight(20),
+                        ResizeType(ssGUI::Enums::ResizeType::ALL),
+                        Draggable(true),
+                        Closable(true),
+                        Closed(false),
+                        IsClosingAborted(false),
+                        TitlebarColorDifference(-40, -40, -40, 0),
+                        AdaptiveTitlebarColor(false),
+                        DeleteAfterClosed(true),
+                        OnTopWhenFocused(true),
+                        CurrentDragState(ssGUI::Enums::WindowDragState::NONE),
+                        ResizeHitbox(5),
+                        ResizingTop(false),
+                        ResizingBot(false),
+                        ResizingLeft(false),
+                        ResizingRight(false),
+                        Dragging(false),
+                        TransformTotalMovedDistance(),
+                        OnTransformBeginSize(),
+                        MouseDownPosition()
     {       
         AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnWindowCloseEventCallback>());
         AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
@@ -61,29 +81,29 @@ namespace ssGUI
 
         protected:
             //Window status
-            bool Titlebar = true;                                                                       //See <HasTitlebar>
-            int TitlebarHeight = 20;                                                                    //See <GetTitlebarHeight>
-            ssGUI::Enums::ResizeType ResizeType = ssGUI::Enums::ResizeType::ALL;                        //See <GetResizeType>
-            bool Draggable = true;                                                                      //See <IsDraggable>
-            bool Closable = true;                                                                       //See <IsClosable>
-            bool Closed = false;                                                                        //See <IsClosed>
-            bool IsClosingAborted = false;                                                              //(Internal variable) See <AbortClosing>
-            glm::ivec4 TitlebarColorDifference = glm::ivec4(-40, -40, -40, 0);                          //(Internal variable) Used for <IsAdaptiveTitlebarColor>
-            bool AdaptiveTitlebarColor = false;                                                         //See <IsAdaptiveTitlebarColor>
-            bool DeleteAfterClosed = true;                                                              //See <IsDeleteAfterClosed>
-            bool OnTopWhenFocused = true;                                                               //See <IsOnTopWhenFocused>
+            bool Titlebar;                                          //See <HasTitlebar>
+            int TitlebarHeight;                                     //See <GetTitlebarHeight>
+            ssGUI::Enums::ResizeType ResizeType;                    //See <GetResizeType>
+            bool Draggable;                                         //See <IsDraggable>
+            bool Closable;                                          //See <IsClosable>
+            bool Closed;                                            //See <IsClosed>
+            bool IsClosingAborted;                                  //(Internal variable) See <AbortClosing>
+            glm::ivec4 TitlebarColorDifference;                     //(Internal variable) Used for <IsAdaptiveTitlebarColor>
+            bool AdaptiveTitlebarColor;                             //See <IsAdaptiveTitlebarColor>
+            bool DeleteAfterClosed;                                 //See <IsDeleteAfterClosed>
+            bool OnTopWhenFocused;                                  //See <IsOnTopWhenFocused>
 
             //Resize/Drag settings
-            ssGUI::Enums::WindowDragState CurrentDragState = ssGUI::Enums::WindowDragState::NONE;       //See <GetResizeDragData>
-            int ResizeHitbox = 5;                                                                       //See <GetResizeHitbox>
-            bool ResizingTop = false;                                                                   //(Internal variable) Used to keep track of resizing status
-            bool ResizingBot = false;                                                                   //(Internal variable) Used to keep track of resizing status
-            bool ResizingLeft = false;                                                                  //(Internal variable) Used to keep track of resizing status
-            bool ResizingRight = false;                                                                 //(Internal variable) Used to keep track of resizing status
-            bool Dragging = false;                                                                      //(Internal variable) Used to keep track of dragging status
-            glm::vec2 TransformTotalMovedDistance = glm::vec2();                                        //(Internal variable) Used for window dragging
-            glm::vec2 OnTransformBeginSize = glm::vec2();                                               //(Internal variable) Used for window resizing
-            glm::vec2 MouseDownPosition = glm::vec2();                                                  //(Internal variable) Used for <GetResizeDragData> 
+            ssGUI::Enums::WindowDragState CurrentDragState;         //See <GetResizeDragData>
+            int ResizeHitbox;                                       //See <GetResizeHitbox>
+            bool ResizingTop;                                       //(Internal variable) Used to keep track of resizing status
+            bool ResizingBot;                                       //(Internal variable) Used to keep track of resizing status
+            bool ResizingLeft;                                      //(Internal variable) Used to keep track of resizing status
+            bool ResizingRight;                                     //(Internal variable) Used to keep track of resizing status
+            bool Dragging;                                          //(Internal variable) Used to keep track of dragging status
+            glm::vec2 TransformTotalMovedDistance;                  //(Internal variable) Used for window dragging
+            glm::vec2 OnTransformBeginSize;                         //(Internal variable) Used for window resizing
+            glm::vec2 MouseDownPosition;                            //(Internal variable) Used for <GetResizeDragData> 
 
             virtual void SetWindowDragState(ssGUI::Enums::WindowDragState dragState);
             virtual void OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& inputStatus);

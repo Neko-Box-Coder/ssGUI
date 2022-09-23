@@ -29,7 +29,8 @@ namespace ssGUI
         }
     }
 
-    Scrollbar::Scrollbar()
+    Scrollbar::Scrollbar() :    ScrollbarSize(0.25),
+                                SidePadding(2)
     {
         SetKnobSize(10, false);
         SetEndPadding(5);

@@ -8,7 +8,8 @@ namespace ssGUI::Backend
         SFFontValid = other.SFFontValid;
     }
     
-    BackendFontSFML::BackendFontSFML()
+    BackendFontSFML::BackendFontSFML() :    Font(),
+                                            SFFontValid(false)
     {
     }
     BackendFontSFML::~BackendFontSFML()

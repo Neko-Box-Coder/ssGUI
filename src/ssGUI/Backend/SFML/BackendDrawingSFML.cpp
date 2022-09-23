@@ -2,7 +2,7 @@
 
 namespace ssGUI::Backend
 {
-    BackendDrawingSFML::BackendDrawingSFML()
+    BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0)
     {
         ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }

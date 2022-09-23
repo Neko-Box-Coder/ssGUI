@@ -19,13 +19,15 @@ namespace ssGUI::EventCallbacks
         <
             std::string, 
             std::function<void(ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)>
-        > EventListeners = {};                                                              //See <AddEventListener>
+        > EventListeners;                                   //See <AddEventListener>
         
-        ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
-        ssGUI::ObjectsReferences CurrentObjectsReferences = ssGUI::ObjectsReferences();     //See <GetObjectReference> and <Internal_GetObjectsReferences>
+        ssGUI::GUIObject* Container;                        //See <BindToObject>
+        ssGUI::ObjectsReferences CurrentObjectsReferences;  //See <GetObjectReference> and <Internal_GetObjectsReferences>
     =================================================================
     ============================== C++ ==============================
-    BaseEventCallback::BaseEventCallback()
+    BaseEventCallback::BaseEventCallback() :    EventListeners(),
+                                                Container(nullptr),
+                                                CurrentObjectsReferences()
     {}
     =================================================================
     */
@@ -40,10 +42,10 @@ namespace ssGUI::EventCallbacks
             <
                 std::string, 
                 std::function<void(ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)>
-            > EventListeners = {};                                                              //See <AddEventListener>
+            > EventListeners;                                   //See <AddEventListener>
             
-            ssGUI::GUIObject* Container = nullptr;                                              //See <BindToObject>
-            ssGUI::ObjectsReferences CurrentObjectsReferences = ssGUI::ObjectsReferences();     //See <GetObjectReference> and <Internal_GetObjectsReferences>
+            ssGUI::GUIObject* Container;                        //See <BindToObject>
+            ssGUI::ObjectsReferences CurrentObjectsReferences;  //See <GetObjectReference> and <Internal_GetObjectsReferences>
         
         protected:
             BaseEventCallback();

@@ -3,7 +3,11 @@
 
 namespace ssGUI::Extensions
 {
-    Border::Border()
+    Border::Border() :  Container(nullptr),
+                        Enabled(true),
+                        BorderColor(0, 0, 0, 255),
+                        BorderWidth(1),
+                        BorderSides(15)
     {}
     
     Border::~Border()

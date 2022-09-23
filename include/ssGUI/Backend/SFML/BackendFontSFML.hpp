@@ -13,11 +13,12 @@ namespace ssGUI::Backend
     Variables & Constructor:
     =============================== C++ ===============================
     private:
-        sf::Font Font = sf::Font();     //<GetRawHandle>
-        bool SFFontValid = false;       //<IsValid>
+        sf::Font Font;      //See <GetRawHandle>
+        bool SFFontValid;   //See <IsValid>
     ===================================================================
     =============================== C++ ===============================
-    BackendFontSFML::BackendFontSFML()
+    BackendFontSFML::BackendFontSFML() :    Font(),
+                                            SFFontValid(false)
     {
     }
     ===================================================================
@@ -25,8 +26,8 @@ namespace ssGUI::Backend
     class BackendFontSFML : public BackendFontInterface
     {
         private:
-            sf::Font Font = sf::Font();     //See <GetRawHandle>
-            bool SFFontValid = false;       //See <IsValid>
+            sf::Font Font;      //See <GetRawHandle>
+            bool SFFontValid;   //See <IsValid>
 
             BackendFontSFML& operator=(BackendFontSFML const& other);
 
