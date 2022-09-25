@@ -34,15 +34,19 @@
 # Exclude psd files
 *.psd
 
-
+# Editor files
 .vscode/
-
 .editorconfig
 
+# Build related
 builds/
-Internal_Documentation/ND_Config/Working\ Data
+Builds/
+Build/
 v0.*/
 
-.cache/
+# Natural Docs cache data
+Internal_Documentation/ND_Config/Working\ Data
 
+# Language server files
+.cache/
 compile_commands.json

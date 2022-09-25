@@ -1,6 +1,0 @@
-CustomCursor.png: https://www.pngwing.com/en/free-png-zgwrc
-BlueCursor.png: https://www.subpng.com/png-ttdxzq/
-arial.ttf: https://www.fonts.com/font/monotype/arial/licenses
-NotoSans-Regular.ttf, NotoSans-Bold.ttf: https://fonts.google.com/noto/use#faq
-SourceHanSansJP-Normal.otf: https://github.com/adobe-fonts/source-han-sans/blob/master/LICENSE.txt
-sd.png, WindowIcon: Created by Neko Box Coder (https://github.com/Neko-Box-Coder) 

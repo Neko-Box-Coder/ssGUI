@@ -1,0 +1,15 @@
+target_sources(ssGUI PRIVATE 
+                    "${CMAKE_CURRENT_LIST_DIR}/Layout.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Mask.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/MaskEnforcer.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Border.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/AdvancedPosition.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/AdvancedSize.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Dockable.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Docker.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/RoundedCorners.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Outline.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/BoxShadow.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Shape.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/WindowLayoutItemEnforcer.cpp"
+                    )
