@@ -1,3 +1,6 @@
 [submodule "External/clip"]
 	path = External/clip
 	url = https://github.com/dacap/clip.git
+[submodule "External/ssLogger"]
+	path = External/ssLogger
+	url = https://github.com/Neko-Box-Coder/ssLogger.git
