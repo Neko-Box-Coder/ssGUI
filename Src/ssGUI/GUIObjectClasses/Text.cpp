@@ -8,30 +8,10 @@
 
 namespace ssGUI
 {    
-    //TODO: Encapsulate it in class for deallocation
-    std::vector<ssGUI::Font*> Text::DefaultFonts = []()->std::vector<ssGUI::Font*>
-    {
-        FUNC_DEBUG_ENTRY("LoadDefaultFont");
+    std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> Text::DefaultFonts = std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>>();
+    bool Text::DefaultFontsInitialized = false;
+    uint32_t Text::DefaultFontsChangeID = 1;
 
-        std::vector<ssGUI::Font*> defaultFonts;
-
-        auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
-        {
-            DEBUG_LINE("Failed to load default font");
-            delete font;
-            FUNC_DEBUG_EXIT("LoadDefaultFont");
-            return defaultFonts;
-        }
-        else
-        {
-            defaultFonts.push_back(font);
-            FUNC_DEBUG_EXIT("LoadDefaultFont");
-            return defaultFonts;
-        }
-        FUNC_DEBUG_EXIT("LoadDefaultFont");
-    }();    //Brackets at the end to call this lambda, pretty cool.
-    
     Text::Text(Text const& other) : Widget(other)
     {
         RecalculateTextNeeded = true;
@@ -57,7 +37,7 @@ namespace ssGUI
         EndSelectionIndex = other.GetEndSelectionIndex();
         SelectionColor = other.GetSelectionColor();
         TextSelectedColor = other.GetTextSelectedColor();
-        LastDefaultFonts = other.LastDefaultFonts;
+        LastDefaultFontsID = other.LastDefaultFontsID;
     }
 
     ssGUI::CharacterDetails& Text::GetInternalCharacterDetail(int index)
@@ -1028,6 +1008,96 @@ namespace ssGUI
         }
     }
 
+//https://stackoverflow.com/questions/306533/how-do-i-get-a-list-of-files-in-a-directory-in-c
+    /* Returns a list of files in a directory (except the ones that begin with a dot) */
+// #include <dirent.h>
+// #include <sys/stat.h>
+//     void GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory)
+//     {
+//     #ifdef WINDOWS
+//         HANDLE dir;
+//         WIN32_FIND_DATA file_data;
+
+//         if ((dir = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
+//             return; /* No files found */
+
+//         do {
+//             const std::string file_name = file_data.cFileName;
+//             const std::string full_file_name = directory + "/" + file_name;
+//             const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+
+//             if (file_name[0] == '.')
+//                 continue;
+
+//             if (is_directory)
+//                 continue;
+
+//             out.push_back(full_file_name);
+//         } while (FindNextFile(dir, &file_data));
+
+//         FindClose(dir);
+//     #else
+//         DIR *dir;
+//         class dirent *ent;
+//         class stat st;
+
+//         dir = opendir(directory.c_str());
+//         while ((ent = readdir(dir)) != NULL) {
+//             const std::string file_name = ent->d_name;
+//             const std::string full_file_name = directory + "/" + file_name;
+
+//             if (file_name[0] == '.')
+//                 continue;
+
+//             if (stat(full_file_name.c_str(), &st) == -1)
+//                 continue;
+
+//             const bool is_directory = (st.st_mode & S_IFDIR) != 0;
+
+//             if (is_directory)
+//                 continue;
+
+//             out.push_back(full_file_name);
+//         }
+//         closedir(dir);
+//     #endif
+//     } // GetFilesInDirectory
+
+
+    void Text::InitializeDefaultFontIfNeeded()
+    {
+        ssLOG_FUNC_ENTRY();
+
+        if(DefaultFontsInitialized)
+        {
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        auto font = new ssGUI::Font();
+        if(!font->GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
+        {
+            ssLOG_LINE("Failed to load default font");
+            ssGUI::Factory::Dispose(font);
+        }
+        else
+        {
+            ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
+            wrapper.Obj = font;
+            wrapper.ssGUIDefault = true;
+            
+            DefaultFonts.push_back(wrapper);
+            DefaultFontsInitialized = true;
+            
+            //Needs to manually set the font for temp wrapper to be nullptr
+            //otherwise it will trigger the destructor and deallocate the font
+            wrapper.Obj = nullptr;
+
+            DefaultFontsChangeID++;
+        }
+        ssLOG_FUNC_EXIT();
+    }
+
     void Text::ConstructRenderInfo()
     {
         ssLOG_FUNC_ENTRY();
@@ -1082,23 +1152,12 @@ namespace ssGUI
         //Check any changes to default fonts
         //TODO: Maybe need optimization
         bool defaultFontsChanged = false; 
-        if(LastDefaultFonts.size() != DefaultFonts.size()) 
+        if(LastDefaultFontsID != DefaultFontsChangeID) 
             defaultFontsChanged = true; 
-        else 
-        { 
-            for(int i = 0; i < DefaultFonts.size(); i++) 
-            { 
-                if(LastDefaultFonts[i] != DefaultFonts[i]) 
-                { 
-                    defaultFontsChanged = true; 
-                    break; 
-                } 
-            } 
-        } 
  
         if(defaultFontsChanged) 
         { 
-            LastDefaultFonts = DefaultFonts; 
+            LastDefaultFontsID = DefaultFontsChangeID;
             RecalculateTextNeeded = true; 
             RedrawObject(); 
         }
@@ -1212,11 +1271,12 @@ namespace ssGUI
                     EndSelectionIndex(-1),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
-                    LastDefaultFonts()
+                    LastDefaultFontsID(0)
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
         SetInteractable(true);
+        Text::InitializeDefaultFontIfNeeded();
 
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
@@ -2006,16 +2066,35 @@ namespace ssGUI
     {
         if(font == nullptr)
             return;
-        
-        DefaultFonts.push_back(font);
+
+        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
+        wrapper.Obj = font;
+        wrapper.ssGUIDefault = false;
+
+        DefaultFonts.push_back(wrapper);
+
+        //Needs to manually set the font for temp wrapper to be nullptr
+        //otherwise it will trigger the destructor and deallocate the font
+        wrapper.Obj = nullptr;
+
+        DefaultFontsChangeID++;
     }
 
     void Text::AddDefaultFont(ssGUI::Font* font, int index)
     {
         if(font == nullptr)
             return;
-        
-        DefaultFonts.insert(DefaultFonts.begin() + index, font);
+
+        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
+        wrapper.Obj = font;
+        wrapper.ssGUIDefault = false;
+
+        DefaultFonts.insert(DefaultFonts.begin() + index, wrapper);
+    
+        //Needs to manually set the font for temp wrapper to be nullptr
+        //otherwise it will trigger the destructor and deallocate the font
+        wrapper.Obj = nullptr;
+        DefaultFontsChangeID++;
     }
     
     ssGUI::Font* Text::GetDefaultFont(int index)
@@ -2023,7 +2102,7 @@ namespace ssGUI
         if(index < 0 || index >= DefaultFonts.size())
             return nullptr;
         
-        return DefaultFonts[index];
+        return DefaultFonts[index].Obj;
     }
 
     void Text::SetDefaultFont(ssGUI::Font* font, int index)
@@ -2031,7 +2110,14 @@ namespace ssGUI
         if(index < 0 || index >= DefaultFonts.size() || font == nullptr)
             return;
 
-        DefaultFonts[index] = font;
+        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
+        wrapper.Obj = font->Clone();
+        wrapper.ssGUIDefault = false;
+
+        DefaultFonts[index] = wrapper;
+
+        wrapper.Obj = nullptr;
+        DefaultFontsChangeID++;
     }
 
     void Text::RemoveDefaultFont(int index)
@@ -2040,6 +2126,7 @@ namespace ssGUI
             return;
 
         DefaultFonts.erase(DefaultFonts.begin() + index);
+        DefaultFontsChangeID++;
     }
 
     int Text::GetDefaultFontsCount()

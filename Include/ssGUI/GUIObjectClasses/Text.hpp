@@ -1,6 +1,7 @@
 #ifndef SSGUI_TEXT
 #define SSGUI_TEXT
 
+#include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"
 #include "ssGUI/DataClasses/Font.hpp"
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/DataClasses/CharacterDetails.hpp"
@@ -57,9 +58,20 @@ namespace ssGUI
         glm::u8vec4 SelectionColor;                                                     //See <GetSelectionColor>
         glm::u8vec4 TextSelectedColor;                                                  //See <GetTextSelectedColor>
 
-        std::vector<ssGUI::Font*> LastDefaultFonts;                                     //(Internal variable) Used to keep track if there's any changes to the default fonts
+        uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
 
-        static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
+        class StaticDefaultFontWrapper                                                  //Internal static wrapper for deallocating static variables
+        {
+            public:
+                ssGUI::Font* Font = nullptr;
+                bool ssGUIDefault = false;
+                StaticDefaultFontWrapper() = default;
+                ~StaticDefaultFontWrapper();
+        };
+
+        static std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> DefaultFonts;      //See <GetDefaultFont>
+        static bool DefaultFontsInitialized;                                            //(Internal variable) Used to see if the default fonts need initializing
+        static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
     =================================================================
     ============================== C++ ==============================
     Text::Text() :  RecalculateTextNeeded(false),
@@ -85,7 +97,7 @@ namespace ssGUI
                     EndSelectionIndex(-1),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
-                    LastDefaultFonts()
+                    LastDefaultFontsID(0)
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
@@ -103,33 +115,10 @@ namespace ssGUI
 
         AddEventCallback(sizeChangedCallback);
     }
-    =================================================================
 
-    DefaultFonts initialization
-    ============================== C++ ==============================
-    //TODO: Encapsulate it in class for deallocation
-    std::vector<ssGUI::Font*> Text::DefaultFonts = []()->std::vector<ssGUI::Font*>
-    {
-        FUNC_DEBUG_ENTRY("LoadDefaultFont");
-
-        std::vector<ssGUI::Font*> defaultFonts;
-
-        auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
-        {
-            DEBUG_LINE("Failed to load default font");
-            delete font;
-            FUNC_DEBUG_EXIT("LoadDefaultFont");
-            return defaultFonts;
-        }
-        else
-        {
-            defaultFonts.push_back(font);
-            FUNC_DEBUG_EXIT("LoadDefaultFont");
-            return defaultFonts;
-        }
-        FUNC_DEBUG_EXIT("LoadDefaultFont");
-    }();    //Brackets at the end to call this lambda, pretty cool.
+    std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> Text::DefaultFonts = std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>>();
+    bool Text::DefaultFontsInitialized = false;
+    uint32_t Text::DefaultFontsChangeID = 1;
     =================================================================
     */
     class Text : public Widget
@@ -167,9 +156,12 @@ namespace ssGUI
             glm::u8vec4 SelectionColor;                                                     //See <GetSelectionColor>
             glm::u8vec4 TextSelectedColor;                                                  //See <GetTextSelectedColor>
 
-            std::vector<ssGUI::Font*> LastDefaultFonts;                                     //(Internal variable) Used to keep track if there's any changes to the default fonts
+            uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
 
-            static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
+            static std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> DefaultFonts;      //See <GetDefaultFont>
+            static bool DefaultFontsInitialized;                                            //(Internal variable) Used to see if the default fonts need initializing
+            static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
+
 
             Text(Text const& other);
 
@@ -201,6 +193,8 @@ namespace ssGUI
 
             virtual void DrawAllCharacters();
 
+            static void InitializeDefaultFontIfNeeded();
+            
             virtual void ConstructRenderInfo() override;
 
             virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 

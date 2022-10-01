@@ -10,6 +10,9 @@
 
 namespace ssGUI
 {
+    ssGUI::StaticDefaultWrapper<ssGUI::ImageData> Dropdown::DefaultDropdownArrowImageData = ssGUI::StaticDefaultWrapper<ssGUI::ImageData>();
+    bool Dropdown::DefaultDropdownInitialized = false;
+    
     Dropdown::Dropdown(Dropdown const& other) : StandardButton(other)
     {
         DropdownMenu = other.DropdownMenu;
@@ -18,25 +21,6 @@ namespace ssGUI
         Toggle = other.Toggle;
     }
 
-    ssGUI::ImageData* Dropdown::DefaultDropdownArrowImageData = []()->ssGUI::ImageData*
-    {
-        FUNC_DEBUG_ENTRY("LoadDefaultDropdownArrowImage");
-
-        ssGUI::ImageData* defaultImg;
-
-        auto dropdownArrow = ssGUI::Factory::Create<ssGUI::ImageData>();
-        if(!dropdownArrow->LoadFromPath("Resources/DownArrow.png"))
-        {
-            DEBUG_LINE("Failed to load default font");
-            ssGUI::Factory::Dispose<ssGUI::ImageData>(dropdownArrow);
-            FUNC_DEBUG_EXIT("LoadDefaultDropdownArrowImage");
-            return nullptr;
-        }
-        
-        FUNC_DEBUG_EXIT("LoadDefaultDropdownArrowImage");
-        return dropdownArrow;
-    }();    //Brackets at the end to call this lambda, pretty cool.
-    
     void Dropdown::AddItemListener(ssGUI::EventCallbacks::EventCallback* ecb, int index)
     {
         ssGUI::ssGUIObjectIndex dropdownRefIndex = ecb->AddObjectReference(this);
@@ -58,6 +42,30 @@ namespace ssGUI
         );
     }
 
+    void Dropdown::InitializeDefaultDropdownArrowIfNeeded()
+    {
+        ssLOG_FUNC_ENTRY();
+        if(DefaultDropdownInitialized)
+        {
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        ssGUI::ImageData* defaultImg;
+
+        auto dropdownArrow = ssGUI::Factory::Create<ssGUI::ImageData>();
+        if(!dropdownArrow->LoadFromPath("Resources/DownArrow.png"))
+        {
+            ssLOG_LINE("Failed to load default font");
+            ssGUI::Factory::Dispose<ssGUI::ImageData>(dropdownArrow);
+        }
+        else
+            DefaultDropdownArrowImageData.Obj = dropdownArrow;
+
+        ssLOG_FUNC_EXIT();
+    }
+
+
     void Dropdown::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
@@ -77,6 +85,8 @@ namespace ssGUI
                             Items(),
                             Toggle(false)
     {
+        InitializeDefaultDropdownArrowIfNeeded();
+        
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();
         auto firstIt = GetCurrentChildReferenceIterator();
@@ -93,8 +103,8 @@ namespace ssGUI
         layout->SetPreferredSizeMultiplier(1, iconMulti);
 
         //Set icon to dropdown arrow
-        if(DefaultDropdownArrowImageData != nullptr)
-            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData);
+        if(DefaultDropdownArrowImageData.Obj != nullptr)
+            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData.Obj);
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();

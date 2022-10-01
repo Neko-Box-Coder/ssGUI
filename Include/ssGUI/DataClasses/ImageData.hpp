@@ -44,6 +44,8 @@ namespace ssGUI
             //See <BackendImageInterface::IsValid>
             virtual bool IsValid() const;
 
+            //TODO: Add callback when the image is changed to allow <ssGUI::Image> widget to redraw
+
             //function: LoadFromPath
             //See <ssGUI::Backend::BackendImageInterface::LoadFromPath>
             virtual bool LoadFromPath(std::string path);
