@@ -7,7 +7,7 @@ int main()
     ssGUI::MainWindow mainWindow;
     mainWindow.SetSize(glm::ivec2(800, 800));
     mainWindow.GetBackendWindowInterface()->SetMSAA(4);
-    DEBUG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
+    ssLOG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
 
     ssGUI::Window window;
     window.SetSize(glm::ivec2(500, 500));

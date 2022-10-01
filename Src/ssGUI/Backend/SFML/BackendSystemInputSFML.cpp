@@ -12,7 +12,7 @@ namespace ssGUI::Backend
     template <class T>
     void BackendSystemInputSFML::AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         for(int i = 0; i < elementsToAdd.size(); i++)
         {
@@ -23,13 +23,13 @@ namespace ssGUI::Backend
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     template <class T>
     void BackendSystemInputSFML::RemoveExistElements(std::vector<T>& elementsToRemove, std::vector<T>& vectorRemoveFrom)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         for(int i = 0; i < elementsToRemove.size(); i++)
         {
@@ -40,34 +40,34 @@ namespace ssGUI::Backend
                 vectorRemoveFrom.erase(foundElement);
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputSFML::FetchKeysPressed(ssGUI::KeyPresses keysPressedDown, ssGUI::KeyPresses& destinationKeyPresses)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         AddNonExistElements<ssGUI::Enums::FunctionKey>(keysPressedDown.FunctionKey, destinationKeyPresses.FunctionKey);
         AddNonExistElements<ssGUI::Enums::LetterKey>(keysPressedDown.LetterKey, destinationKeyPresses.LetterKey);
         AddNonExistElements<ssGUI::Enums::NumberKey>(keysPressedDown.NumberKey, destinationKeyPresses.NumberKey);
         AddNonExistElements<ssGUI::Enums::SymbolKey>(keysPressedDown.SymbolKey, destinationKeyPresses.SymbolKey);
         AddNonExistElements<ssGUI::Enums::SystemKey>(keysPressedDown.SystemKey, destinationKeyPresses.SystemKey);
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputSFML::FetchKeysReleased(ssGUI::KeyPresses keysReleased , ssGUI::KeyPresses& destinationKeyPresses)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         RemoveExistElements<ssGUI::Enums::FunctionKey>(keysReleased.FunctionKey, destinationKeyPresses.FunctionKey);
         RemoveExistElements<ssGUI::Enums::LetterKey>(keysReleased.LetterKey, destinationKeyPresses.LetterKey);
         RemoveExistElements<ssGUI::Enums::NumberKey>(keysReleased.NumberKey, destinationKeyPresses.NumberKey);
         RemoveExistElements<ssGUI::Enums::SymbolKey>(keysReleased.SymbolKey, destinationKeyPresses.SymbolKey);
         RemoveExistElements<ssGUI::Enums::SystemKey>(keysReleased.SystemKey, destinationKeyPresses.SystemKey);
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputSFML::ResizeBilinear(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         const uint8_t* a;
         const uint8_t* b;
         const uint8_t* c;
@@ -151,7 +151,7 @@ namespace ssGUI::Backend
                         *(c + 3) * heightAndInverseWidth + 
                         *(d + 3) * widthHeight;
                                 
-                //DEBUG_LINE("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
+                //ssLOG_LINE("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
 
                 // range is 0 to 255 thus bitwise AND with 0xff
                 outputPixels[offset * 4] =      (uint8_t)(((int)red) & 0xff);
@@ -161,7 +161,7 @@ namespace ssGUI::Backend
                 offset++;
             }
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     BackendSystemInputSFML::BackendSystemInputSFML() :  CurrentKeyPresses(),
@@ -183,8 +183,8 @@ namespace ssGUI::Backend
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
-            DEBUG_LINE("Failed to load cursor!");
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("Failed to load cursor!");
+            ssLOG_EXIT_PROGRAM();
         }
 
         #if !USE_SFML_TIME
@@ -202,7 +202,7 @@ namespace ssGUI::Backend
 
     void BackendSystemInputSFML::UpdateInput(/*std::vector<ssGUI::Backend::BackendMainWindowInterface*>& mainWindows*/)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         InputText.clear();
         MouseScrollDelta = glm::vec2();
         
@@ -369,7 +369,7 @@ namespace ssGUI::Backend
             CurrentInputInfos.push_back(curInfo);
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     const ssGUI::KeyPresses& BackendSystemInputSFML::GetLastKeyPresses()
@@ -460,12 +460,12 @@ namespace ssGUI::Backend
     //TODO: Store the hotspot and also shouldn't be setting the cursor 
     void BackendSystemInputSFML::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            DEBUG_LINE("Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
+            ssLOG_LINE("Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
             return;
         }
 
@@ -474,7 +474,7 @@ namespace ssGUI::Backend
             CustomCursors[cursorName].first.getSize().y == cursorSize.y)
         {
             CustomCursors[cursorName].second = hotspot;
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         else
@@ -602,7 +602,7 @@ namespace ssGUI::Backend
         //Setting hotspot
         CustomCursors[cursorName].second = hotspot;
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputSFML::SetCurrentCustomCursor(std::string cursorName)
@@ -627,7 +627,7 @@ namespace ssGUI::Backend
         if(!customCursor.LoadRawFromMemory(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize().x, 
             CustomCursors[CurrentCustomCursor].first.getSize().y))
         {
-            DEBUG_LINE("Failed to load custom cursor image");   
+            ssLOG_LINE("Failed to load custom cursor image");   
         }
 
         hotspot = CustomCursors[CurrentCustomCursor].second;
@@ -649,7 +649,7 @@ namespace ssGUI::Backend
         if(!customCursor.LoadRawFromMemory(CustomCursors[cursorName].first.getPixelsPtr(), CustomCursors[cursorName].first.getSize().x, 
             CustomCursors[cursorName].first.getSize().y))
         {
-            DEBUG_LINE("Failed to load custom cursor image");
+            ssLOG_LINE("Failed to load custom cursor image");
         }
 
         hotspot = CustomCursors[cursorName].second;
@@ -662,67 +662,67 @@ namespace ssGUI::Backend
 
     void BackendSystemInputSFML::UpdateCursor()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         switch (CurrentCursor)
         {
             case ssGUI::Enums::CursorType::NONE:
                 break;
             case ssGUI::Enums::CursorType::NORMAL:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::TEXT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Text))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HAND:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Hand))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeRight))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_UP:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTop))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_DOWN:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::MOVE:
                 if (!SFMLCursor.loadFromSystem(sf::Cursor::SizeAll)) //Not supported natively for mac os
                     if(!SFMLCursor.loadFromSystem(sf::Cursor::Cross))
-                        DEBUG_LINE("Failed to load cursor");
+                        ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HELP:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Help))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::NOT_ALLOWED:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::CUSTOM:
                 if(!CurrentCustomCursor.empty() && CustomCursors[CurrentCustomCursor].first.getPixelsPtr() != nullptr)
@@ -730,11 +730,11 @@ namespace ssGUI::Backend
                     if(!SFMLCursor.loadFromPixels(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize(), 
                         sf::Vector2u(CustomCursors[CurrentCustomCursor].second.x, CustomCursors[CurrentCustomCursor].second.y)))
                     {
-                        DEBUG_LINE("Failed to load cursor");
+                        ssLOG_LINE("Failed to load cursor");
                     }
                 }
                 else
-                    DEBUG_LINE("Failed to load cursor");
+                    ssLOG_LINE("Failed to load cursor");
         }
 
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
@@ -754,7 +754,7 @@ namespace ssGUI::Backend
                 static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(true);
             }
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     bool BackendSystemInputSFML::ClearClipboard()

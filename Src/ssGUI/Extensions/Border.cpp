@@ -24,7 +24,7 @@ namespace ssGUI::Extensions
 
     void Border::DrawBorder()
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         glm::vec2 drawPosition = Container->GetGlobalPosition();
         
@@ -125,7 +125,7 @@ namespace ssGUI::Extensions
             drawingProperties.push_back(ssGUI::DrawingProperty()); 
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Border::ConstructRenderInfo()

@@ -59,7 +59,7 @@ int main()
             if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::U))
             {
                 auto uv = imageCanvas.GetUVFromGlobalPosition(guiManager.GetBackendInputInterface()->GetCurrentMousePosition(&mainWindow));
-                DEBUG_LINE("uv: "<<uv.x<<", "<<uv.y);
+                ssLOG_LINE("uv: "<<uv.x<<", "<<uv.y);
             }
 
             if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::G))
@@ -68,10 +68,10 @@ int main()
                 auto g2 = imageCanvas.GetGlobalPositionFromUV(glm::vec2(270, 20)) - imageCanvas.GetGlobalPosition();
                 auto g3 = imageCanvas.GetGlobalPositionFromUV(glm::vec2(265, 270)) - imageCanvas.GetGlobalPosition();
                 auto g4 = imageCanvas.GetGlobalPositionFromUV(glm::vec2(20, 280)) - imageCanvas.GetGlobalPosition();
-                DEBUG_LINE("g: "<<g.x<<", "<<g.y);
-                DEBUG_LINE("g2: "<<g2.x<<", "<<g2.y);
-                DEBUG_LINE("g3: "<<g3.x<<", "<<g3.y);
-                DEBUG_LINE("g4: "<<g4.x<<", "<<g4.y);
+                ssLOG_LINE("g: "<<g.x<<", "<<g.y);
+                ssLOG_LINE("g2: "<<g2.x<<", "<<g2.y);
+                ssLOG_LINE("g3: "<<g3.x<<", "<<g3.y);
+                ssLOG_LINE("g4: "<<g4.x<<", "<<g4.y);
             }
         }
     );

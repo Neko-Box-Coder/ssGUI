@@ -107,13 +107,13 @@ namespace ssGUI::Extensions
 
     void AdvancedPosition::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();        
+        ssLOG_FUNC_ENTRY();        
         //TODO : Cache if parent's global position and size hasn't changed
         
         //This should be done in post update
         if(isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -199,7 +199,7 @@ namespace ssGUI::Extensions
 
         //Use finalPos
         Container->SetPosition(finalPos);
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void AdvancedPosition::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)

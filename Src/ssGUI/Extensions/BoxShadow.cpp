@@ -47,22 +47,22 @@ namespace ssGUI::Extensions
         bool invalidAngle = false;
         if(startToEndAngle < 0)
         {
-            DEBUG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
+            ssLOG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
             invalidAngle = true;
         }
         else if(startToEndAngle > pi())
         {
-            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            DEBUG_LINE("startToEndAngle: "<<startToEndAngle);
-            DEBUG_LINE("start: "<<start.x<<", "<<start.y);
-            DEBUG_LINE("end: "<<end.x<<", "<<end.y);
-            DEBUG_LINE("circlePos: "<<circlePos.x<<", "<<circlePos.y);
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("startToEndAngle: "<<startToEndAngle);
+            ssLOG_LINE("start: "<<start.x<<", "<<start.y);
+            ssLOG_LINE("end: "<<end.x<<", "<<end.y);
+            ssLOG_LINE("circlePos: "<<circlePos.x<<", "<<circlePos.y);
+            ssLOG_EXIT_PROGRAM();
             return;
         }
 
@@ -72,7 +72,7 @@ namespace ssGUI::Extensions
         //https://stackoverflow.com/questions/15525941/find-points-on-circle
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // DEBUG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
+        // ssLOG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
         for(int i = 0; i < (int)(arcRadius * startToEndAngle * 1) + 2; i++)
         {
             double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)((int)(arcRadius * startToEndAngle * 1) + 1));
@@ -83,7 +83,7 @@ namespace ssGUI::Extensions
 
     void BoxShadow::ConstructRenderInfo()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         //Getting all the rendering details from container
         std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
@@ -228,7 +228,7 @@ namespace ssGUI::Extensions
         drawingUVs.insert(drawingUVs.end(), newUVs.begin(), newUVs.end());
         drawingCounts.insert(drawingCounts.end(), newCounts.begin(), newCounts.end());
         drawingProperties.insert(drawingProperties.end(), newProperties.begin(), newProperties.end());
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void BoxShadow::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
@@ -296,31 +296,31 @@ namespace ssGUI::Extensions
     //Extension methods
     void BoxShadow::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!Enabled || Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void BoxShadow::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!Enabled || Container == nullptr || !isPreRender)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     std::string BoxShadow::GetExtensionName()

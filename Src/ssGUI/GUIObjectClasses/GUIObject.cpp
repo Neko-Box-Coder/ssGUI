@@ -29,7 +29,7 @@ namespace ssGUI
 
     ssGUI::GUIObject* GUIObject::CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         //1. First get a list of objects needed to be cloned and create a hashmap of original objects with the index of it
         std::vector<ssGUI::GUIObject*> originalObjsToClone = std::vector<ssGUI::GUIObject*>();
@@ -127,21 +127,21 @@ namespace ssGUI
             auto oriParent = originalObjsToClone[i]->GetParent();
             if(originalObjsIndex.find(oriParent) == originalObjsIndex.end())
             {
-                DEBUG_LINE("Unable to clone, original parent can't be found: "<<oriParent);
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Unable to clone, original parent can't be found: "<<oriParent);
+                ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
             
             clonedObjs[i]->SetParent(clonedObjs[originalObjsIndex.at(oriParent)]);
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return clonedRoot;
     }
 
     void GUIObject::CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         for(auto extension : Extensions)
         {
             if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
@@ -165,7 +165,7 @@ namespace ssGUI
                 eventCallback.second->Clone(clonedObj, true);
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -209,7 +209,7 @@ namespace ssGUI
 
     GUIObject::~GUIObject()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         if(!ObjectDelete)
         {
             NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
@@ -224,7 +224,7 @@ namespace ssGUI
         for(auto it : EventCallbacks)
             ssGUI::Factory::Dispose(it.second);
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     ssGUI::Enums::GUIObjectType GUIObject::GetType() const
@@ -261,12 +261,12 @@ namespace ssGUI
 
     void GUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!IsEnabled())
         {
             Redraw = false;
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -298,18 +298,18 @@ namespace ssGUI
         else
             drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                                     ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         //If it is not enabled, don't even update/draw it
         if(!IsEnabled())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -340,12 +340,12 @@ namespace ssGUI
 
         LastGlobalPosition = GetGlobalPosition();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     GUIObject* GUIObject::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         GUIObject* temp = new GUIObject(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
@@ -353,12 +353,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

@@ -15,7 +15,7 @@ namespace ssGUI
 
     ObjectsReferences::ObjectsReferences(ObjectsReferences const& other)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         ObjectsReferencesTable = other.ObjectsReferencesTable;
         ReverseObjectsReferencesTable = other.ReverseObjectsReferencesTable;
@@ -29,18 +29,18 @@ namespace ssGUI
             if(it.second != nullptr)
             {
                 #if USE_DEBUG
-                DEBUG_LINE("Adding external dependency to "<<it.second);
+                ssLOG_LINE("Adding external dependency to "<<it.second);
                 #endif
                 it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
             }
             else
             {
-                DEBUG_LINE("Invalid object reference found!");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Invalid object reference found!");
+                ssLOG_EXIT_PROGRAM();
             }
         }
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     ObjectsReferences::~ObjectsReferences()
@@ -50,7 +50,7 @@ namespace ssGUI
 
     ObjectsReferences& ObjectsReferences::operator=(ObjectsReferences const& other)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         ObjectsReferencesTable = other.ObjectsReferencesTable;
         ReverseObjectsReferencesTable = other.ReverseObjectsReferencesTable;
         NextFreeIndex = other.NextFreeIndex;
@@ -63,18 +63,18 @@ namespace ssGUI
             if(it.second != nullptr)
             {
                 #if USE_DEBUG
-                DEBUG_LINE("Adding external dependency to "<<it.second);
+                ssLOG_LINE("Adding external dependency to "<<it.second);
                 #endif
                 it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
             }
             else
             {
-                DEBUG_LINE("Invalid object reference found!");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Invalid object reference found!");
+                ssLOG_EXIT_PROGRAM();
             }
         }
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return *this;
     }
 
@@ -90,8 +90,8 @@ namespace ssGUI
         
         if(obj == nullptr)
         {
-            DEBUG_LINE("Attempted to add nullptr");
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("Attempted to add nullptr");
+            ssLOG_EXIT_PROGRAM();
             return -1;
         }
 
@@ -121,8 +121,8 @@ namespace ssGUI
 
         if(obj == nullptr)
         {
-            DEBUG_LINE("Attempted to set nullptr");
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("Attempted to set nullptr");
+            ssLOG_EXIT_PROGRAM();
             return;
         }
         
@@ -138,11 +138,11 @@ namespace ssGUI
 
     void ObjectsReferences::RemoveObjectReference(ssGUIObjectIndex index, bool internalCleanUp)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(CleanedUp)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -155,7 +155,7 @@ namespace ssGUI
             if(!internalCleanUp)
                 obj->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);
         }   
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void ObjectsReferences::Internal_AddExternalDependency(ObjectsReferences* dependency, ssGUIObjectIndex index)
@@ -165,8 +165,8 @@ namespace ssGUI
 
         if(dependency == nullptr)
         {
-            DEBUG_LINE("Adding null dependency found");
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("Adding null dependency found");
+            ssLOG_EXIT_PROGRAM();
             return;
         }
 
@@ -213,18 +213,18 @@ namespace ssGUI
 
     void ObjectsReferences::CleanUp()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(CleanedUp)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         for(auto it : ExternalObjectsDependencies)
         {
             #if USE_DEBUG
-            DEBUG_LINE("Removing "<<it.first<<" external reference of this object");
+            ssLOG_LINE("Removing "<<it.first<<" external reference of this object");
             #endif
             it.first->RemoveObjectReference(it.second, true);
         }
@@ -232,30 +232,30 @@ namespace ssGUI
         for(auto it : ObjectsReferencesTable)
         {
             #if USE_DEBUG
-            DEBUG_LINE("Removing external depenency record stored on "<<it.second);
+            ssLOG_LINE("Removing external depenency record stored on "<<it.second);
             #endif
             it.second->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);
         }
         
         CleanedUp = true;
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void ObjectsReferences::CheckObjectsReferencesValidity()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
-        DEBUG_LINE("Object Reference: "<<this);
+        ssLOG_LINE("Object Reference: "<<this);
         //Iterate all objects references and check
         for(auto it : ObjectsReferencesTable)
         {
-            DEBUG_LINE("Checking record: "<<it.second<<" with index "<<it.first);
+            ssLOG_LINE("Checking record: "<<it.second<<" with index "<<it.first);
             
             if(it.second == nullptr)
             {
-                DEBUG_LINE("Invalid record found");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Invalid record found");
+                ssLOG_EXIT_PROGRAM();
             }
             else
                 it.second->Internal_GetObjectsReferences();
@@ -264,17 +264,17 @@ namespace ssGUI
         //Iterate all external objects references and check
         for(auto it : ExternalObjectsDependencies)
         {
-            DEBUG_LINE("Checking dependency: "<<it.first);
+            ssLOG_LINE("Checking dependency: "<<it.first);
             
             if(it.first == nullptr)
             {
-                DEBUG_LINE("Invalid dependency found");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Invalid dependency found");
+                ssLOG_EXIT_PROGRAM();
             }
             else
                 it.first->GetObjectsReferencesCount();
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 }

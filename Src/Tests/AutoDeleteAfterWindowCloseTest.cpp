@@ -52,8 +52,8 @@ int main()
             if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
                 !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
             {
-                DEBUG_LINE(window.Internal_IsDeleted());
-                DEBUG_LINE(button.Internal_IsDeleted());
+                ssLOG_LINE(window.Internal_IsDeleted());
+                ssLOG_LINE(button.Internal_IsDeleted());
             }
         }
     );    

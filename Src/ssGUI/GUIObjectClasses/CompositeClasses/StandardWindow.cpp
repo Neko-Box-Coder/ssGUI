@@ -31,11 +31,11 @@ namespace ssGUI
 
     void StandardWindow::UpdateTitleText()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         auto windowTitleObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
         if(windowTitleObj == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -75,17 +75,17 @@ namespace ssGUI
         if(!windowTitleObj->HasTag(ssGUI::Tags::OVERLAY))
             windowTitleObj->AddTag(ssGUI::Tags::OVERLAY);
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void StandardWindow::UpdateIconImage()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         auto windowIconObj = CurrentObjectsReferences.GetObjectReference(WindowIcon);
         
         if(windowIconObj == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -127,17 +127,17 @@ namespace ssGUI
         else
             windowIconObj->SetEnabled(true);
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void StandardWindow::UpdateCloseButton()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         auto closeButtonObj = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(CloseButton));
         
         if(closeButtonObj == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -169,7 +169,7 @@ namespace ssGUI
         if(!closeButtonObj->HasTag(ssGUI::Tags::OVERLAY))
             closeButtonObj->AddTag(ssGUI::Tags::OVERLAY);
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     const std::string StandardWindow::ListenerKey = "Standard Window";
@@ -185,7 +185,7 @@ namespace ssGUI
                                         WindowIcon(-1),
                                         CloseButton(-1)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         SetMinSize(glm::vec2(100, 100));
         SetTitlebarHeight(26);
         
@@ -317,7 +317,7 @@ namespace ssGUI
         UpdateIconImage();
         UpdateCloseButton();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     StandardWindow::~StandardWindow()
@@ -629,7 +629,7 @@ namespace ssGUI
     //function: Clone
     StandardWindow* StandardWindow::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         StandardWindow* temp = new StandardWindow(*this);
         CloneExtensionsAndEventCallbacks(temp);
 
@@ -637,12 +637,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 

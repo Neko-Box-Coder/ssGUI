@@ -9,35 +9,35 @@
 
 void PrintInternalState(ssGUI::IndexedList<int>& list)
 {
-    DEBUG_LINE("Stored Items")
+    ssLOG_LINE("Stored Items")
     int index = 0;
     for(auto it = list.InternalList.begin(); it != list.InternalList.end(); it++)
     {
-        DEBUG_LINE(index<<": "<<(*it));
+        ssLOG_LINE(index<<": "<<(*it));
         index++;
     }
 
-    /*DEBUG_LINE("Queue Cache");
+    /*ssLOG_LINE("Queue Cache");
     for(auto it = list.QueuedItems.begin(); it != list.QueuedItems.end(); it++)
     {
-        DEBUG_LINE(""<<(*it).first<<", "<<*(*it).second);
+        ssLOG_LINE(""<<(*it).first<<", "<<*(*it).second);
     }*/
 
-    DEBUG_LINE("Sequential Cache");
+    ssLOG_LINE("Sequential Cache");
     /*if(list.SequentialCacheValid)
     {
-        DEBUG_LINE(""<<list.SequentialCache.first<<", "<<*list.SequentialCache.second);
+        ssLOG_LINE(""<<list.SequentialCache.first<<", "<<*list.SequentialCache.second);
     }
     else
     {
-        DEBUG_LINE(""<<list.SequentialCache.first);
+        ssLOG_LINE(""<<list.SequentialCache.first);
     }
     */
 
-    DEBUG_LINE("Map Cache");
+    ssLOG_LINE("Map Cache");
     for(auto it = list.MappedItems.begin(); it != list.MappedItems.end(); it++)
     {
-        DEBUG_LINE(""<<it->first<<", "<<*it->second);
+        ssLOG_LINE(""<<it->first<<", "<<*it->second);
     }
 }
 
@@ -77,7 +77,7 @@ void AtAndSquareOperatorTest()
     assert(test[3] == 4);
     assert(test.At(3) == 4);
 
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void SizeTest()
@@ -86,14 +86,14 @@ void SizeTest()
     ConstructTestIndexedList(test, 1, 20);
     assert(test.Size() == 20);
 
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void EmptyTest()
 {
     ssGUI::IndexedList<int> test;
     assert(test.Empty());
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void RemoveSingleTest()
@@ -106,7 +106,7 @@ void RemoveSingleTest()
     // for(int i = 0; i < test.Size(); i++)
     // {
         // int t = test[i];
-        // DEBUG_LINE(i<<"th element: "<<t);
+        // ssLOG_LINE(i<<"th element: "<<t);
     // }
     
     assert(test[0] == 2);
@@ -116,7 +116,7 @@ void RemoveSingleTest()
     assert(test[4] == 7);
     assert(test[5] == 8);
     assert(test[6] == 9);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void RemoveRangeTest()
@@ -132,7 +132,7 @@ void RemoveRangeTest()
     assert(test[4] == 8);
     assert(test[5] == 9);
     assert(test[6] == 10);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void ClearTest()
@@ -141,7 +141,7 @@ void ClearTest()
     ConstructTestIndexedList(test, 1, 10);
     test.Clear();
     assert(test.Empty());
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddSingleTest()
@@ -151,7 +151,7 @@ void AddSingleTest()
     test.Add(11);
     int t = test[10];
     assert(test[10] == 11);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithIndexedListTest()
@@ -167,7 +167,7 @@ void AddRangeWithIndexedListTest()
     assert(test[12] == 13);
     assert(test[13] == 14);
     assert(test[14] == 15);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithVectorTest()
@@ -183,7 +183,7 @@ void AddRangeWithVectorTest()
     assert(test[12] == 13);
     assert(test[13] == 14);
     assert(test[14] == 15);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithListTest()
@@ -199,7 +199,7 @@ void AddRangeWithListTest()
     assert(test[12] == 13);
     assert(test[13] == 14);
     assert(test[14] == 15);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithArrayTest()
@@ -214,7 +214,7 @@ void AddRangeWithArrayTest()
     assert(test[12] == 13);
     assert(test[13] == 14);
     assert(test[14] == 15);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddSingleWithIndexTest()
@@ -227,7 +227,7 @@ void AddSingleWithIndexTest()
     assert(test[5] == 11);
     assert(test[6] == 6);
 
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithIndexedListWithIndexTest()
@@ -243,7 +243,7 @@ void AddRangeWithIndexedListWithIndexTest()
     assert(test[8] == 12);
     assert(test[11] == 15);
     assert(test[12] == 8);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithVectorWithIndexTest()
@@ -259,7 +259,7 @@ void AddRangeWithVectorWithIndexTest()
     assert(test[8] == 12);
     assert(test[11] == 15);
     assert(test[12] == 8);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithListWithIndexTest()
@@ -275,7 +275,7 @@ void AddRangeWithListWithIndexTest()
     assert(test[8] == 12);
     assert(test[11] == 15);
     assert(test[12] == 8);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void AddRangeWithArrayWithIndexTest()
@@ -290,7 +290,7 @@ void AddRangeWithArrayWithIndexTest()
     assert(test[8] == 12);
     assert(test[11] == 15);
     assert(test[12] == 8);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void SwapTest()
@@ -307,7 +307,7 @@ void SwapTest()
     assert(test[7] == 4);
     assert(test[8] == 9);
 
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void FrontTest()
@@ -316,7 +316,7 @@ void FrontTest()
     ConstructTestIndexedList(test, 1, 10);
 
     assert(test.Front() == 1);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void BackTest()
@@ -325,7 +325,7 @@ void BackTest()
     ConstructTestIndexedList(test, 1, 10);
 
     assert(test.Back() == 10);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void QueueCacheTest()
@@ -344,7 +344,7 @@ void QueueCacheTest()
     
     int t4 = test[4];           //This will hit sequential cache
     assert(t4 == 5);
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void MapCacheTest()
@@ -361,7 +361,7 @@ void MapCacheTest()
     int t3 = test[3];           //This will hit map cache
     assert(t3 == 4);
     
-    DEBUG_LINE("\u2705");
+    ssLOG_LINE("\u2705");
 }
 
 void ConstructTestObjects(ssGUI::IndexedList<int>& indexedList, std::list<int>& list, std::vector<int>& vector, int numOfItems)
@@ -430,11 +430,11 @@ void CacheBenchmarkTest()
     //================================================================================================================
     //Random Access Benchmark
     //================================================================================================================
-    DEBUG_LINE("Random access "<<readTimes<<" times with size "<<containerSize);
+    ssLOG_LINE("Random access "<<readTimes<<" times with size "<<containerSize);
     //List
     {
         std::vector<double> listTimes;
-        DEBUG_LINE("List:");
+        ssLOG_LINE("List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             auto t1 = std::chrono::high_resolution_clock::now();
@@ -451,13 +451,13 @@ void CacheBenchmarkTest()
             listTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
     }
     
     //Vector
     {
         std::vector<double> vectorTimes;
-        DEBUG_LINE("Vector:");
+        ssLOG_LINE("Vector:");
         for(int i = 0; i < numOfTrials; i++)
         {
             auto t1 = std::chrono::high_resolution_clock::now();
@@ -471,13 +471,13 @@ void CacheBenchmarkTest()
             vectorTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
     }
 
     //IndexedList
     {
         std::vector<double> indexedListTimes;
-        DEBUG_LINE("Indexed List:");
+        ssLOG_LINE("Indexed List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             auto t1 = std::chrono::high_resolution_clock::now();
@@ -491,20 +491,20 @@ void CacheBenchmarkTest()
             indexedListTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
     }
 
     //================================================================================================================
     //Random (linear search) Insert Benchmark
     //================================================================================================================
 
-    DEBUG_LINE();
-    DEBUG_LINE();
-    DEBUG_LINE("Random (linear search) insert "<<insertContainerSize<<" elements "<<insertTimes<<" times with size "<<containerSize);
+    ssLOG_LINE();
+    ssLOG_LINE();
+    ssLOG_LINE("Random (linear search) insert "<<insertContainerSize<<" elements "<<insertTimes<<" times with size "<<containerSize);
     //List
     {
         std::vector<double> listTimes;
-        DEBUG_LINE("List:");
+        ssLOG_LINE("List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             listTest.clear();
@@ -533,13 +533,13 @@ void CacheBenchmarkTest()
             listTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
     }
     
     //Vector
     {
         std::vector<double> vectorTimes;
-        DEBUG_LINE("Vector:");
+        ssLOG_LINE("Vector:");
         for(int i = 0; i < numOfTrials; i++)
         {
             vectorTest.clear();
@@ -566,13 +566,13 @@ void CacheBenchmarkTest()
             vectorTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
     }
 
     //IndexedList
     {
         std::vector<double> indexedListTimes;
-        DEBUG_LINE("Indexed List:");
+        ssLOG_LINE("Indexed List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             test.Clear();
@@ -598,20 +598,20 @@ void CacheBenchmarkTest()
             indexedListTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
     }
 
     //================================================================================================================
     //Front Insert Benchmark
     //================================================================================================================
 
-    DEBUG_LINE();
-    DEBUG_LINE();
-    DEBUG_LINE("Front insert "<<insertContainerSize<<" elements "<<insertTimes<<" times with size "<<containerSize);
+    ssLOG_LINE();
+    ssLOG_LINE();
+    ssLOG_LINE("Front insert "<<insertContainerSize<<" elements "<<insertTimes<<" times with size "<<containerSize);
     //List
     {
         std::vector<double> listTimes;
-        DEBUG_LINE("List:");
+        ssLOG_LINE("List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             listTest.clear();
@@ -628,13 +628,13 @@ void CacheBenchmarkTest()
             listTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
     }
     
     //Vector
     {
         std::vector<double> vectorTimes;
-        DEBUG_LINE("Vector:");
+        ssLOG_LINE("Vector:");
         for(int i = 0; i < numOfTrials; i++)
         {
             vectorTest.clear();
@@ -650,13 +650,13 @@ void CacheBenchmarkTest()
             vectorTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
     }
 
     //IndexedList
     {
         std::vector<double> indexedListTimes;
-        DEBUG_LINE("Indexed List:");
+        ssLOG_LINE("Indexed List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             test.Clear();
@@ -672,20 +672,20 @@ void CacheBenchmarkTest()
             indexedListTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
     }
 
     //================================================================================================================
     //Middle Insert Benchmark
     //================================================================================================================
 
-    DEBUG_LINE();
-    DEBUG_LINE();
-    DEBUG_LINE("Middle insert "<<insertContainerSize<<" elements "<<insertTimes<<" times with size "<<containerSize);
+    ssLOG_LINE();
+    ssLOG_LINE();
+    ssLOG_LINE("Middle insert "<<insertContainerSize<<" elements "<<insertTimes<<" times with size "<<containerSize);
     //List
     {
         std::vector<double> listTimes;
-        DEBUG_LINE("List:");
+        ssLOG_LINE("List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             listTest.clear();
@@ -703,13 +703,13 @@ void CacheBenchmarkTest()
             listTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(listTimes)<<", "<<GetMin(listTimes)<<", "<<GetMax(listTimes)<<" ms");
     }
     
     //Vector
     {
         std::vector<double> vectorTimes;
-        DEBUG_LINE("Vector:");
+        ssLOG_LINE("Vector:");
         for(int i = 0; i < numOfTrials; i++)
         {
             vectorTest.clear();
@@ -725,13 +725,13 @@ void CacheBenchmarkTest()
             vectorTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(vectorTimes)<<", "<<GetMin(vectorTimes)<<", "<<GetMax(vectorTimes)<<" ms");
     }
 
     //IndexedList
     {
         std::vector<double> indexedListTimes;
-        DEBUG_LINE("Indexed List:");
+        ssLOG_LINE("Indexed List:");
         for(int i = 0; i < numOfTrials; i++)
         {
             test.Clear();
@@ -749,7 +749,7 @@ void CacheBenchmarkTest()
             indexedListTimes.push_back(ms_double.count());
         }
 
-        DEBUG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
+        ssLOG_LINE("Time took with running "<<numOfTrials<<" times (average, min, max): \t\t"<<GetAverage(indexedListTimes)<<", "<<GetMin(indexedListTimes)<<", "<<GetMax(indexedListTimes)<<" ms");
     }
 
     //================================================================================================================

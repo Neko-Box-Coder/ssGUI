@@ -40,8 +40,8 @@ int main()
             if(!guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::SPACE) &&
                 guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::SPACE))
             {
-                DEBUG_LINE("text.GetStartSelectionIndex(): "<<text.GetStartSelectionIndex());    
-                DEBUG_LINE("text.GetEndSelectionIndex(): "<<text.GetEndSelectionIndex());    
+                ssLOG_LINE("text.GetStartSelectionIndex(): "<<text.GetStartSelectionIndex());    
+                ssLOG_LINE("text.GetEndSelectionIndex(): "<<text.GetEndSelectionIndex());    
             }
         }
     );

@@ -314,7 +314,7 @@ namespace ssGUI
                         ssGUI::ImageData rotationCursor;
                         if(!rotationCursor.LoadFromPath("Resources/RotationCursor.png"))
                         {
-                            DEBUG_LINE("Failed to load rotation cursor");
+                            ssLOG_LINE("Failed to load rotation cursor");
                             return;
                         }
 
@@ -753,7 +753,7 @@ namespace ssGUI
 
     ImageCanvas* ImageCanvas::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         ImageCanvas* temp = new ImageCanvas(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
@@ -761,12 +761,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

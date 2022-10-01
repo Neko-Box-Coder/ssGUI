@@ -11,7 +11,7 @@ int main()
     widget->SetSize(glm::ivec2(300, 300));
     widget->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
 
-    DEBUG_LINE(widget->IsHeapAllocated());
+    ssLOG_LINE(widget->IsHeapAllocated());
 
     ssGUI::Factory::Dispose<ssGUI::Widget>(widget);
 

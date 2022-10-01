@@ -24,18 +24,18 @@ namespace ssGUI
     
     void StandardButton::UpdateButtonText()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         auto buttonTextObj = CurrentObjectsReferences.GetObjectReference(ButtonText);
         if(buttonTextObj == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
         if(GetButtonMode() == StandardButton::Mode::ICON)
         {
             buttonTextObj->SetEnabled(false);
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -48,30 +48,30 @@ namespace ssGUI
 
         static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
         static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void StandardButton::UpdateButtonImage()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         auto buttonImgObj = CurrentObjectsReferences.GetObjectReference(ButtonImage);
         if(buttonImgObj == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         auto buttonImgWrapper = CurrentObjectsReferences.GetObjectReference(ButtonImageWrapper);
         if(buttonImgWrapper == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         if(GetButtonMode() == StandardButton::Mode::TEXT)
         {
             buttonImgWrapper->SetEnabled(false);
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -97,7 +97,7 @@ namespace ssGUI
         ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
         ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     const std::string StandardButton::ListenerKey = "Standard Button";
@@ -110,7 +110,7 @@ namespace ssGUI
                                         ButtonMode(StandardButton::Mode::TEXT),
                                         ButtonImageWrapper(-1)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         SetSize(glm::vec2(100, 40));
 
         //Adjust Extensions
@@ -245,7 +245,7 @@ namespace ssGUI
         UpdateButtonImage();
         NotifyButtonEventCallbackManually();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     StandardButton::~StandardButton()
@@ -273,7 +273,7 @@ namespace ssGUI
         if(buttonImgWrapper == nullptr)
         {
             ButtonImage = -1;
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -432,7 +432,7 @@ namespace ssGUI
 
     StandardButton* StandardButton::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         StandardButton* temp = new StandardButton(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
@@ -440,12 +440,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

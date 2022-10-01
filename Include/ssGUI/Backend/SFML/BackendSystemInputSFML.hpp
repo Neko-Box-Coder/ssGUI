@@ -74,8 +74,8 @@ namespace ssGUI::Backend
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
-            DEBUG_LINE("Failed to load cursor!");
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("Failed to load cursor!");
+            ssLOG_EXIT_PROGRAM();
         }
 
         #if !USE_SFML_TIME

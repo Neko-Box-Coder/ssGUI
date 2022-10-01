@@ -91,12 +91,12 @@ namespace ssGUI::Extensions
 
     void AdvancedSize::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         //This should be done in post update
         if(isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -104,7 +104,7 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* parent = Container->GetParent();
         if(parent->GetSize() == LastParentSize && !SettingsChanged)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -126,7 +126,7 @@ namespace ssGUI::Extensions
         LastParentSize = parent->GetSize();
         SettingsChanged = false;
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void AdvancedSize::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)

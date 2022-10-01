@@ -228,7 +228,7 @@ namespace ssGUI
 
     void MainWindow::Internal_OnClose()
     {
-        DEBUG_LINE("Main Window closing");
+        ssLOG_LINE("Main Window closing");
         
         //Forwarding signal to window
         Window::Internal_OnClose();
@@ -301,7 +301,7 @@ namespace ssGUI
     //TODO : Add WindowDragStateChangedEvent call
     void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         for(auto extension : ExtensionsUpdateOrder)
         {
@@ -403,12 +403,12 @@ namespace ssGUI
             Extensions.at(extension)->Internal_Update(false, inputInterface, inputStatus, mainWindow);
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     MainWindow* MainWindow::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         MainWindow* temp = new MainWindow(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
@@ -416,12 +416,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

@@ -136,13 +136,13 @@ namespace ssGUI::Extensions
                                                 std::vector<glm::vec2>& maskVerticies, std::vector<glm::vec2>& intersections,
                                                 std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         //Lambda function of adding new vertex infomation
         auto addNewVertexInfo = [&currentShapeVertices, &currentShapeUVs, &currentShapeColours, &currentVertexChanged]
         (glm::vec2 newVertex, glm::u8vec4 newColour, bool changed, glm::vec2 uv = glm::vec2())
         {
-            // DEBUG_LINE("newVertex: "<<newVertex.x<<", "<<newVertex.y);
+            // ssLOG_LINE("newVertex: "<<newVertex.x<<", "<<newVertex.y);
             currentShapeVertices.push_back(newVertex);
             currentShapeUVs.push_back(uv);
             currentShapeColours.push_back(newColour);
@@ -157,11 +157,11 @@ namespace ssGUI::Extensions
                 containedMaskVertices.push_back(i);
         }
 
-        // DEBUG_LINE("start");
+        // ssLOG_LINE("start");
         //Iterating each vertex in the shape
         for(int currentShapeVertexIndex = shapeOffset; currentShapeVertexIndex < shapeOffset + shapeVertexCount; currentShapeVertexIndex++)
         {
-            // DEBUG_LINE("currentShapeVertexIndex: "<<currentShapeVertexIndex);
+            // ssLOG_LINE("currentShapeVertexIndex: "<<currentShapeVertexIndex);
 
             bool isCurVertexContained = IsPointContainedInMask(originalVerticies[currentShapeVertexIndex], maskMin, maskMax);
             std::vector<int> curIntersectionIndices;
@@ -175,7 +175,7 @@ namespace ssGUI::Extensions
 
             if(isCurVertexContained)
             {
-                // DEBUG_LINE("in");
+                // ssLOG_LINE("in");
                 //If current vertex is inside the mask, add it to new shape
                 addNewVertexInfo(originalVerticies[currentShapeVertexIndex], originalColours[currentShapeVertexIndex], false, originalUVs[currentShapeVertexIndex]);
 
@@ -213,7 +213,7 @@ namespace ssGUI::Extensions
             }
             else
             {
-                // DEBUG_LINE("out");
+                // ssLOG_LINE("out");
                 //If there are intersections, check how many are there
                 if(!curIntersectionIndices.empty())
                 {
@@ -267,7 +267,7 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::SampleNewUVsAndColoursForShapes(std::vector<glm::vec2>& originalVerticies, std::vector<glm::vec2>& originalUVs, std::vector<glm::u8vec4>& originalColours,
@@ -278,7 +278,7 @@ namespace ssGUI::Extensions
         int currentOffset = 0;
         int oldOffset = 0;
 
-        // DEBUG_LINE("Sampling....");
+        // ssLOG_LINE("Sampling....");
         for(int shapeIndex = 0; shapeIndex < newVerticesCount.size(); shapeIndex++)
         {
             std::vector<glm::vec2> currentShapeVertices;
@@ -287,12 +287,12 @@ namespace ssGUI::Extensions
             
             for(int vertexIndex = currentOffset; vertexIndex < currentOffset + newVerticesCount[shapeIndex]; vertexIndex++)
             {
-                // DEBUG_LINE("vertexIndex: "<<vertexIndex);
+                // ssLOG_LINE("vertexIndex: "<<vertexIndex);
 
                 if(!changed[vertexIndex])
                     continue;
 
-                // DEBUG_LINE("Changed");
+                // ssLOG_LINE("Changed");
 
                 int closestIndicies[] = {0, 0, 0};
 
@@ -300,9 +300,9 @@ namespace ssGUI::Extensions
                 if(!GetSampleIndicesFromShape(currentShapeVertices, closestIndicies, newVertices[vertexIndex]))
                     break;
                 
-                // DEBUG_LINE("closestIndicies[0]: "<<closestIndicies[0]);
-                // DEBUG_LINE("closestIndicies[1]: "<<closestIndicies[1]);
-                // DEBUG_LINE("closestIndicies[2]: "<<closestIndicies[2]);
+                // ssLOG_LINE("closestIndicies[0]: "<<closestIndicies[0]);
+                // ssLOG_LINE("closestIndicies[1]: "<<closestIndicies[1]);
+                // ssLOG_LINE("closestIndicies[2]: "<<closestIndicies[2]);
 
                 glm::vec2 axis = currentShapeVertices[closestIndicies[1]] - currentShapeVertices[closestIndicies[0]];
                 glm::vec2 axis2 = currentShapeVertices[closestIndicies[2]] - currentShapeVertices[closestIndicies[0]];
@@ -312,18 +312,18 @@ namespace ssGUI::Extensions
                 if(!GetAxesValues(axis, axis2, newVertices[vertexIndex] - currentShapeVertices[closestIndicies[0]], axisValue, axis2Value))  
                     break;
 
-                // DEBUG_LINE("axisValue: "<<axisValue);
-                // DEBUG_LINE("axis2Value: "<<axis2Value);
+                // ssLOG_LINE("axisValue: "<<axisValue);
+                // ssLOG_LINE("axis2Value: "<<axis2Value);
 
                 glm::vec2 uvAxis = originalUVs[oldOffset + closestIndicies[1]] - originalUVs[oldOffset + closestIndicies[0]];
                 glm::vec2 uvAxis2 = originalUVs[oldOffset + closestIndicies[2]] - originalUVs[oldOffset + closestIndicies[0]];
                 glm::vec4 colourAxis = (glm::vec4)originalColours[oldOffset + closestIndicies[1]] - (glm::vec4)originalColours[oldOffset + closestIndicies[0]];
                 glm::vec4 colourAxis2 = (glm::vec4)originalColours[oldOffset + closestIndicies[2]] - (glm::vec4)originalColours[oldOffset + closestIndicies[0]];
 
-                // DEBUG_LINE("originalColours[oldOffset + closestIndicies[0]]: "<<(int)originalColours[oldOffset + closestIndicies[0]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].g<<", "
+                // ssLOG_LINE("originalColours[oldOffset + closestIndicies[0]]: "<<(int)originalColours[oldOffset + closestIndicies[0]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].g<<", "
                 // <<(int)originalColours[oldOffset + closestIndicies[0]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].a);
-                // DEBUG_LINE("colourAxis: "<<(int)colourAxis.r<<", "<<(int)colourAxis.g<<", "<<(int)colourAxis.b<<", "<<(int)colourAxis.a);
-                // DEBUG_LINE("colourAxis2: "<<(int)colourAxis2.r<<", "<<(int)colourAxis2.g<<", "<<(int)colourAxis2.b<<", "<<(int)colourAxis2.a);
+                // ssLOG_LINE("colourAxis: "<<(int)colourAxis.r<<", "<<(int)colourAxis.g<<", "<<(int)colourAxis.b<<", "<<(int)colourAxis.a);
+                // ssLOG_LINE("colourAxis2: "<<(int)colourAxis2.r<<", "<<(int)colourAxis2.g<<", "<<(int)colourAxis2.b<<", "<<(int)colourAxis2.a);
 
                 newUVs[vertexIndex] = (originalUVs[oldOffset + closestIndicies[0]]) +
                                         (uvAxis) * axisValue +
@@ -526,11 +526,11 @@ namespace ssGUI::Extensions
 
     bool Mask::GetSampleIndicesFromShape(std::vector<glm::vec2>& vertices, int closestIndices[], glm::vec2 samplePoint)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(vertices.size() < 3)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return false;
         }
 
@@ -616,17 +616,17 @@ namespace ssGUI::Extensions
             }
         }
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return true;
     }
 
     void Mask::AddMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -677,16 +677,16 @@ namespace ssGUI::Extensions
             children.pop();
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -736,7 +736,7 @@ namespace ssGUI::Extensions
             children.pop();
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::ConstructRenderInfo()
@@ -793,13 +793,13 @@ namespace ssGUI::Extensions
 
     void Mask::SetMaskChildren(bool maskChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         MaskChildren = maskChildren;
 
         if(Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -875,7 +875,7 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::GetMaskChildren() const
@@ -885,12 +885,12 @@ namespace ssGUI::Extensions
 
     void Mask::SetMaskContainer(bool maskContainer)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         MaskContainer = maskContainer;
 
         if(Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -926,7 +926,7 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::IsMaskContainer() const
@@ -1005,21 +1005,21 @@ namespace ssGUI::Extensions
 
     void Mask::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         AddMaskEnforcerToChildren(child, true);
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::Internal_OnRecursiveChildRemoved(ssGUI::GUIObject* child)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         RemoveMaskEnforcerToChildren(child, true);
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset, const std::vector<int>& applyShapeIndices)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         std::vector<glm::vec2> maskShape;
         std::vector<glm::vec2>& originalVerticies = obj->Extension_GetDrawingVertices();
@@ -1048,14 +1048,14 @@ namespace ssGUI::Extensions
 
         //DEBUG PRINTING SHAPES
         // int debugVertexOffset = 0;
-        // DEBUG_LINE("Before:");
+        // ssLOG_LINE("Before:");
         // for(int i = 0; i < verticesCount.size(); i++)
         // {
-        //     DEBUG_LINE("Current shape: "<<i);
+        //     ssLOG_LINE("Current shape: "<<i);
         //     for(int j = debugVertexOffset; j < debugVertexOffset + verticesCount[i]; j++)
         //     {
-        //         DEBUG_LINE("originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
-        //         DEBUG_LINE("originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
+        //         ssLOG_LINE("originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
+        //         ssLOG_LINE("originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
         //     }
 
         //     debugVertexOffset += verticesCount[i];
@@ -1108,7 +1108,7 @@ namespace ssGUI::Extensions
 
                 GetIntersections(intersections, shapeIntersectIndices, maskIntersectIndices, originalVerticies, currentOffset, verticesCount[shapeIndex], maskShape);
 
-                // DEBUG_LINE("intersections count: "<<intersections.size());
+                // ssLOG_LINE("intersections count: "<<intersections.size());
 
                 /*
                 std::cout<<"\n";
@@ -1199,20 +1199,20 @@ namespace ssGUI::Extensions
 
         //DEBUG PRINTING SHAPES
         // debugVertexOffset = 0;
-        // DEBUG_LINE("After:");
+        // ssLOG_LINE("After:");
         // for(int i = 0; i < verticesCount.size(); i++)
         // {
-        //     DEBUG_LINE("Current shape: "<<i);
+        //     ssLOG_LINE("Current shape: "<<i);
         //     for(int j = debugVertexOffset; j < debugVertexOffset + verticesCount[i]; j++)
         //     {
-        //         DEBUG_LINE("originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
-        //         DEBUG_LINE("originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
+        //         ssLOG_LINE("originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
+        //         ssLOG_LINE("originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
         //     }
 
         //     debugVertexOffset += verticesCount[i];
         // }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::SetEnabled(bool enabled)
@@ -1231,11 +1231,11 @@ namespace ssGUI::Extensions
     //Extension methods
     void Mask::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(isPreUpdate || Container == nullptr || !Enabled)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1265,7 +1265,7 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)

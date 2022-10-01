@@ -41,9 +41,9 @@ int main()
             /*if(!guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) &&
                 guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL))
             {
-                DEBUG_LINE("text.GetStartSelectionIndex(): "<<text.GetStartSelectionIndex());    
-                DEBUG_LINE("text.GetEndSelectionIndex(): "<<text.GetEndSelectionIndex());    
-                DEBUG_LINE("text.GetCurrentCharactersDetailsCount(): "<<text.GetCurrentCharactersDetailsCount());
+                ssLOG_LINE("text.GetStartSelectionIndex(): "<<text.GetStartSelectionIndex());    
+                ssLOG_LINE("text.GetEndSelectionIndex(): "<<text.GetEndSelectionIndex());    
+                ssLOG_LINE("text.GetCurrentCharactersDetailsCount(): "<<text.GetCurrentCharactersDetailsCount());
             }*/
         }
     );

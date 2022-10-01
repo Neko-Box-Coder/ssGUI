@@ -86,7 +86,7 @@ namespace ssGUI::Extensions
         //Vertices are either at the same place or on a line
         if(nba + nbc == glm::vec2())
         {
-            DEBUG_LINE("Vertices at same place or on a line");
+            ssLOG_LINE("Vertices at same place or on a line");
             return;
         }
 
@@ -117,25 +117,25 @@ namespace ssGUI::Extensions
         bool invalidAngle = false;
         if(angleT1CirT2 < 0)
         {
-            DEBUG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
+            ssLOG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
             invalidAngle = true;
         }
         else if(angleT1CirT2 > pi())
         {
-            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            DEBUG_LINE("angleT1CirT2: "<<angleT1CirT2);
-            DEBUG_LINE("a: "<<a.x<<", "<<a.y);
-            DEBUG_LINE("b: "<<b.x<<", "<<b.y);
-            DEBUG_LINE("c: "<<c.x<<", "<<c.y);
-            DEBUG_LINE("t1: "<<t1.x<<", "<<t1.y);
-            DEBUG_LINE("t2: "<<t2.x<<", "<<t2.y);
-            DEBUG_LINE("cir: "<<cir.x<<", "<<cir.y);
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("angleT1CirT2: "<<angleT1CirT2);
+            ssLOG_LINE("a: "<<a.x<<", "<<a.y);
+            ssLOG_LINE("b: "<<b.x<<", "<<b.y);
+            ssLOG_LINE("c: "<<c.x<<", "<<c.y);
+            ssLOG_LINE("t1: "<<t1.x<<", "<<t1.y);
+            ssLOG_LINE("t2: "<<t2.x<<", "<<t2.y);
+            ssLOG_LINE("cir: "<<cir.x<<", "<<cir.y);
+            ssLOG_EXIT_PROGRAM();
             return;
         }
 
@@ -147,26 +147,27 @@ namespace ssGUI::Extensions
         //Using the information with tangent points, angles between them and clockwise information
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // DEBUG_LINE("points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
+        // ssLOG_LINE("points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
         int minSamples = 5;
         int sampleCount = (int)(roundRadius * angleT1CirT2 * 1) + 2;
         int finalSampleCount = sampleCount < minSamples ? minSamples : sampleCount;
-        //DEBUG_LINE("originLineToT1Angle: "<<originLineToT1Angle);
-        //DEBUG_LINE("angleT1CirT2: "<<angleT1CirT2);
+        //ssLOG_LINE("originLineToT1Angle: "<<originLineToT1Angle);
+        //ssLOG_LINE("angleT1CirT2: "<<angleT1CirT2);
         for(int i = 1; i < finalSampleCount; i++)
         {
-            //DEBUG_LINE("i: "<<i<<"/"<<finalSampleCount);
-            //DEBUG_LINE("((double)i / (double)finalSampleCount): "<<((double)i / (double)finalSampleCount));
+            //ssLOG_LINE("i: "<<i<<"/"<<finalSampleCount);
+            //ssLOG_LINE("((double)i / (double)finalSampleCount): "<<((double)i / (double)finalSampleCount));
             double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)finalSampleCount);
-            //DEBUG_LINE("currentAngle: "<<currentAngle);
+            //ssLOG_LINE("currentAngle: "<<currentAngle);
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)roundRadius;
-            //DEBUG_LINE("plotPoint: "<<plotPoint.x<<", "<<plotPoint.y);
+            //ssLOG_LINE("plotPoint: "<<plotPoint.x<<", "<<plotPoint.y);
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + cir);
         }
     }
 
     void RoundedCorners::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts)
     {
+        ssLOG_FUNC_ENTRY();
         startIndex = 0;
         endIndex = 0;
         for(int i = 0; i < drawingCounts.size(); i++)
@@ -179,11 +180,12 @@ namespace ssGUI::Extensions
             
             startIndex += drawingCounts[i];
         }
+        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::UpdateVerticesForRounding()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         VerticesToRound.clear();
         VerticesToRoundPrevVertices.clear();
         VerticesToRoundNextVertices.clear();
@@ -202,8 +204,9 @@ namespace ssGUI::Extensions
                 //Invlaid index check
                 if(currentVertexIndex >= drawingVertices.size())
                 {
-                    VerticesToRound.erase(VerticesToRound.begin() + i);
-                    i--;
+                    ssLOG_LINE("Invalid target vertex detected: "<<TargetVertices[i]);
+                    ssLOG_LINE("currentVertexIndex: "<<currentVertexIndex);
+                    ssLOG_LINE("drawingVertices.size(): "<<drawingVertices.size());
                     continue;
                 }
 
@@ -223,7 +226,7 @@ namespace ssGUI::Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        DEBUG_LINE("Failed to construct rounded corner");
+                        ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                         VerticesToRound.clear();
                         VerticesToRoundPrevVertices.clear();
                         VerticesToRoundNextVertices.clear();
@@ -241,7 +244,7 @@ namespace ssGUI::Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        DEBUG_LINE("Failed to construct rounded corner");
+                        ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                         VerticesToRound.clear();
                         VerticesToRoundPrevVertices.clear();
                         VerticesToRoundNextVertices.clear();
@@ -287,7 +290,7 @@ namespace ssGUI::Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            DEBUG_LINE("Failed to construct rounded corner");
+                            ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                             VerticesToRound.clear();
                             VerticesToRoundPrevVertices.clear();
                             VerticesToRoundNextVertices.clear();
@@ -305,7 +308,7 @@ namespace ssGUI::Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            DEBUG_LINE("Failed to construct rounded corner");
+                            ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                             VerticesToRound.clear();
                             VerticesToRoundPrevVertices.clear();
                             VerticesToRoundNextVertices.clear();
@@ -317,12 +320,12 @@ namespace ssGUI::Extensions
                 }
             }
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::ConstructRenderInfo()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
         std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
@@ -342,7 +345,7 @@ namespace ssGUI::Extensions
 
         if(drawingCounts.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -437,7 +440,7 @@ namespace ssGUI::Extensions
                 drawingProperties.push_back(originalProperties[shapeIndex]);
             }
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -548,31 +551,31 @@ namespace ssGUI::Extensions
 
     void RoundedCorners::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!Enabled || Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(!Enabled || Container == nullptr || isPreRender)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     std::string RoundedCorners::GetExtensionName()

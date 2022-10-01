@@ -20,7 +20,7 @@ int main()
         {
             if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::A))
             {
-                // DEBUG_LINE(time(0)<<": A");
+                // ssLOG_LINE(time(0)<<": A");
                 mainWindow.SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
             }
             else

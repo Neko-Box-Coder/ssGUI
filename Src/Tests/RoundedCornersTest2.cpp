@@ -9,7 +9,7 @@ int main()
     ssGUI::MainWindow mainWindow;
     mainWindow.SetSize(glm::ivec2(800, 800));
     mainWindow.GetBackendWindowInterface()->SetMSAA(8);
-    DEBUG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
+    ssLOG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
 
     //Creating an image widget
     ssGUI::Image image;

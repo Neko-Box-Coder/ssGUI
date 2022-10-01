@@ -16,7 +16,7 @@ namespace ssGUI
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                DEBUG_LINE("Invalid object type added to gui manager");
+                ssLOG_LINE("Invalid object type added to gui manager");
                 continue;
             }
 
@@ -44,16 +44,16 @@ namespace ssGUI
             BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
 
             //Dispatch Update event
-            FUNC_DEBUG_ENTRY("ssGUIManagerPreUpdateEvent");
+            ssLOG_FUNC_ENTRY("ssGUIManagerPreUpdateEvent");
             for(int i = 0; i < PreGUIUpdateEventListeners.size(); i++)
             {                
                 if(PreGUIUpdateEventListenersValid[i])
                     PreGUIUpdateEventListeners[i]();
             }
-            FUNC_DEBUG_EXIT("ssGUIManagerPreUpdateEvent");
+            ssLOG_FUNC_EXIT("ssGUIManagerPreUpdateEvent");
 
             #if DEBUG_STATE 
-                DEBUG_LINE("Update");
+                ssLOG_LINE("Update");
             #endif
 
             UpdateObjects();
@@ -76,34 +76,34 @@ namespace ssGUI
             }
 
             //Dispatch Update event
-            FUNC_DEBUG_ENTRY("ssGUIManagerPostUpdateEvent");
+            ssLOG_FUNC_ENTRY("ssGUIManagerPostUpdateEvent");
             for(int i = 0; i < PostGUIUpdateEventListeners.size(); i++)
             {                
                 if(PostGUIUpdateEventListenersValid[i])
                     PostGUIUpdateEventListeners[i]();
             }
-            FUNC_DEBUG_EXIT("ssGUIManagerPostUpdateEvent");
+            ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
 
             #if DEBUG_STATE 
-                DEBUG_LINE("Render");
+                ssLOG_LINE("Render");
             #endif
 
             //Dispatch Custom Rendering event
             if(IsCustomRendering)
             {
-                FUNC_DEBUG_ENTRY("ssGUIManagerCustomRenderingEvent");
+                ssLOG_FUNC_ENTRY("ssGUIManagerCustomRenderingEvent");
                 for(int i = 0; i < OnCustomRenderEventListeners.size(); i++)
                 {
                     if(OnCustomRenderEventListenersValid[i])
                         OnCustomRenderEventListeners[i](MainWindowPList);
                 }
-                FUNC_DEBUG_EXIT("ssGUIManagerCustomRenderingEvent");
+                ssLOG_FUNC_EXIT("ssGUIManagerCustomRenderingEvent");
             }
             else
                 Render();
             
             #if DEBUG_STATE 
-                DEBUG_LINE("Post Render");
+                ssLOG_LINE("Post Render");
             #endif
 
             if(lastCursor != BackendInput->GetCursorType() || 
@@ -132,8 +132,8 @@ namespace ssGUI
                     averageFrameTime += FrameTimes[i];
                 
                 averageFrameTime /= FrameTimes.size();
-                // DEBUG_LINE("averageFrameTime: "<<averageFrameTime);
-                // DEBUG_LINE("TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
+                // ssLOG_LINE("averageFrameTime: "<<averageFrameTime);
+                // ssLOG_LINE("TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
                 std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(TargetFrameInterval - averageFrameTime)));
             }
 
@@ -150,7 +150,7 @@ namespace ssGUI
     
     void ssGUIManager::CheckMainWindowExistence()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         std::vector<ssGUI::GUIObject*> windowsToRemoved;
 
@@ -165,16 +165,16 @@ namespace ssGUI
             RemoveGUIObject(windowsToRemoved[i]);
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void ssGUIManager::Render()
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(MainWindowPList.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -182,7 +182,7 @@ namespace ssGUI
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                DEBUG_LINE("Invalid object type added to gui manager");
+                ssLOG_LINE("Invalid object type added to gui manager");
                 continue;
             }
 
@@ -252,7 +252,7 @@ namespace ssGUI
             if(renderNeeded)
             {
                 #if USE_DEBUG
-                    DEBUG_LINE("Rendering");
+                    ssLOG_LINE("Rendering");
                 #endif
 
                 while(!renderQueue.empty())
@@ -274,13 +274,13 @@ namespace ssGUI
                 }
 
                 //Dispatch Post Rendering Update event
-                FUNC_DEBUG_ENTRY("ssGUIManagerPostRenderingUpdateEvent");
+                ssLOG_FUNC_ENTRY("ssGUIManagerPostRenderingUpdateEvent");
                 for(int i = 0; i < PostGUIRenderingUpdateEventListeners.size(); i++)
                 {
                     if(PostGUIRenderingUpdateEventListenersValid[i])
                         PostGUIRenderingUpdateEventListeners[i]();
                 }
-                FUNC_DEBUG_EXIT("ssGUIManagerPostRenderingUpdateEvent");
+                ssLOG_FUNC_EXIT("ssGUIManagerPostRenderingUpdateEvent");
 
                 //Draw everything that is displayed on the mainWindow back buffer
                 currentMainWindowP->Render();
@@ -288,22 +288,22 @@ namespace ssGUI
             else
             {
                 #if USE_DEBUG
-                    DEBUG_LINE("Caching");
+                    ssLOG_LINE("Caching");
                 #endif
 
                 currentMainWindowP->ClearBackBuffer();
             }
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void ssGUIManager::UpdateObjects()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(MainWindowPList.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -316,7 +316,7 @@ namespace ssGUI
         {            
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                DEBUG_LINE("Invalid object type added to gui manager");
+                ssLOG_LINE("Invalid object type added to gui manager");
                 continue;
             }
             if(mainWindow->Internal_IsDeleted() || static_cast<ssGUI::Window*>(mainWindow)->IsClosed())
@@ -364,7 +364,7 @@ namespace ssGUI
                     updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), inputStatus, mainWindow);
                     
                     #if USE_DEBUG
-                    DEBUG_LINE("object "<<updateQueue.front()<<" checking validity");
+                    ssLOG_LINE("object "<<updateQueue.front()<<" checking validity");
                     updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
                     #endif
                 }
@@ -372,7 +372,7 @@ namespace ssGUI
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void ssGUIManager::UpdateCursor()

@@ -646,7 +646,7 @@ namespace ssGUI
     //You only need to override this when you are rendering anything.
     void TextField::ConstructRenderInfo()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         ssGUI::Text::ConstructRenderInfo();
 
         int lastValidIndex = GetLastValidCharacterIndex();
@@ -715,7 +715,7 @@ namespace ssGUI
             //Draw caret
             if(BlinkCaret || !IsInteractable() || !IsFocused())
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -764,7 +764,7 @@ namespace ssGUI
             //Draw caret
             if(BlinkCaret || !IsInteractable() || !IsFocused())
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -776,7 +776,7 @@ namespace ssGUI
                 fontInterface = GetDefaultFont(0)->GetBackendFontInterface();
             else
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -828,7 +828,7 @@ namespace ssGUI
             DrawingProperties.push_back(ssGUI::DrawingProperty());
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
     
     void TextField::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -932,7 +932,7 @@ namespace ssGUI
 
     TextField* TextField::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         TextField* temp = new TextField(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
@@ -940,12 +940,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

@@ -49,11 +49,11 @@ namespace ssGUI
 
     void Transform::SyncPosition()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(CurrentHierarchy->GetParent() == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -100,16 +100,16 @@ namespace ssGUI
         Position.x = (GlobalPosition.x + positionOffset.x - anchorPosition.x) * anchorDirection.x;
         Position.y = (GlobalPosition.y + positionOffset.y - anchorPosition.y) * anchorDirection.y;
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
     
     void Transform::SyncGlobalPosition()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(CurrentHierarchy->GetParent() == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -163,7 +163,7 @@ namespace ssGUI
         GlobalPosition.x = anchorPosition.x + Position.x * anchorDirection.x - positionOffset.x;
         GlobalPosition.y = anchorPosition.y + Position.y * anchorDirection.y - positionOffset.y;
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     glm::vec2 Transform::GetPosition() const

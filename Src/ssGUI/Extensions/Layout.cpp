@@ -65,7 +65,7 @@ namespace ssGUI::Extensions
     
     Layout::Layout(Layout const& other)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         HorizontalLayout = other.IsHorizontalLayout();
         PreferredSizeMultipliers = other.PreferredSizeMultipliers;
         DisableChildrenResizing = other.IsChildrenResizingDisabled();
@@ -85,14 +85,14 @@ namespace ssGUI::Extensions
         OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
         OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
         OriginalChildrenOnTop = other.OriginalChildrenOnTop;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
                                 std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
                                 float sizeDiff)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         float endPos = startPos + length;
         float currentPos = IsReverseOrder() ? endPos : startPos;
@@ -181,16 +181,16 @@ namespace ssGUI::Extensions
             currentPos = IsReverseOrder() ? currentPos - childrenLength[i] - GetSpacing() : currentPos + childrenLength[i] + GetSpacing();
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::UpdateChildrenResizeTypesAndOnTop()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -263,16 +263,16 @@ namespace ssGUI::Extensions
         }
         Container->PopChildrenIterator();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::SyncContainerMinMaxSize()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0 || !IsCoverFullLength())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -305,7 +305,7 @@ namespace ssGUI::Extensions
 
         if(validChildrenSize == 0)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -449,12 +449,12 @@ namespace ssGUI::Extensions
             Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::UpdateSpeicalObjectsToExclude()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         std::vector<ssGUIObjectIndex> objsToRemove;
         for(auto it : SpecialObjectsToExclude)
         {
@@ -482,12 +482,12 @@ namespace ssGUI::Extensions
             ObjectsToExclude.erase(objIndex);
             SpecialObjectsToExclude.erase(objIndex);
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::UpdateExcludedObjects()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
@@ -515,12 +515,12 @@ namespace ssGUI::Extensions
             Container->MoveChildrenIteratorNext();
         }
         Container->PopChildrenIterator();
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::DisableChildrenResizingInUpdate()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
@@ -540,13 +540,13 @@ namespace ssGUI::Extensions
             Container->MoveChildrenIteratorNext();
         }
         Container->PopChildrenIterator();
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::GetAndValidateChildrenDetails(std::vector<float>& childrenPos, std::vector<float>& childrenSize, std::vector<float>& childrenMinSize,
                                                 std::vector<float>& childrenMaxSize, glm::vec2 containerPos, glm::vec2 containerSize)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
         while(!Container->IsChildrenIteratorEnd())
@@ -604,18 +604,18 @@ namespace ssGUI::Extensions
             Container->MoveChildrenIteratorNext();
         }
         Container->PopChildrenIterator();
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::GetLastDifferentChild(std::vector<float>& childrenPos, std::vector<float>& childrenSize, float& sizeDiff, int& lastChildChangeIndex)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         lastChildChangeIndex = -1;
         sizeDiff = 0;
         //There are children added or deleted. No resizing is done
         if(LastUpdateChildrenSize.size() != childrenPos.size())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -680,12 +680,12 @@ namespace ssGUI::Extensions
             Container->MoveChildrenIteratorPrevious();
         }
         Container->PopChildrenIterator();
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::AssignPositionsAndSizesToChildren(std::vector<float>& childrenPos, std::vector<float>& childrenSize)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         int index = 0;
         Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
@@ -724,7 +724,7 @@ namespace ssGUI::Extensions
             Container->MoveChildrenIteratorNext();
         }
         Container->PopChildrenIterator();
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::ConstructRenderInfo()
@@ -804,13 +804,13 @@ namespace ssGUI::Extensions
 
     void Layout::SetOverrideChildrenResizeTypeAndOnTop(bool override)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         OverrideChildrenResizeTypesAndOnTop = override;
         
         if(Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -818,7 +818,7 @@ namespace ssGUI::Extensions
         const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
         UpdateChildrenResizeTypesAndOnTop();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     bool Layout::GetUpdateContainerMinMaxSize() const
@@ -828,13 +828,13 @@ namespace ssGUI::Extensions
 
     void Layout::SetUpdateContainerMinMaxSize(bool update)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         UpdateContainerMinMaxSize = update;
         
         if(Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -903,7 +903,7 @@ namespace ssGUI::Extensions
             Container->PopChildrenIterator();
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     float Layout::GetPadding() const
@@ -970,11 +970,11 @@ namespace ssGUI::Extensions
 
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(child->GetParent() != Container)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -986,7 +986,7 @@ namespace ssGUI::Extensions
 
         if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -994,7 +994,7 @@ namespace ssGUI::Extensions
         {
             ObjectsToExclude.insert(childIndex);
             SpecialObjectsToExclude.insert(childIndex);
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1018,21 +1018,21 @@ namespace ssGUI::Extensions
             );
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::Internal_OnRecursiveChildRemoved(ssGUI::GUIObject* child)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
-        // DEBUG_LINE("Container: "<<Container);
-        // DEBUG_LINE("child removed: "<<child);
+        // ssLOG_LINE("Container: "<<Container);
+        // ssLOG_LINE("child removed: "<<child);
 
         // //DEBUG
         // child->MoveChildrenIteratorToFirst();
         // while (!child->IsChildrenIteratorEnd())
         // {
-        //     DEBUG_LINE("child's child: "<<child->GetCurrentChild());
+        //     ssLOG_LINE("child's child: "<<child->GetCurrentChild());
         //     child->MoveChildrenIteratorNext();
         // }
 
@@ -1040,7 +1040,7 @@ namespace ssGUI::Extensions
         //If not present, no need to continue
         if(childIndex == -1)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1051,14 +1051,14 @@ namespace ssGUI::Extensions
             ObjectsToExclude.erase(childIndex);
             SpecialObjectsToExclude.erase(childIndex);
             CurrentObjectsReferences.RemoveObjectReference(childIndex);
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         //If this is one of the excluding objects, just don't do anything
         if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1096,12 +1096,12 @@ namespace ssGUI::Extensions
         //Remove the object reference to this child as it is no longer needed to be maintained
         CurrentObjectsReferences.RemoveObjectReference(childIndex);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::Internal_OnChildMinMaxSizeChanged(ssGUI::GUIObject* child)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
 
@@ -1111,7 +1111,7 @@ namespace ssGUI::Extensions
         
         if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -1120,7 +1120,7 @@ namespace ssGUI::Extensions
             SyncContainerMinMaxSize();
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::SetEnabled(bool enabled)
@@ -1136,11 +1136,11 @@ namespace ssGUI::Extensions
     //Override from Extension
     void Layout::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(isPreUpdate || Container == nullptr || Container->GetChildrenCount() == 0 || !Enabled)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1192,7 +1192,7 @@ namespace ssGUI::Extensions
         //Check if there's any child to resize. If not, just go back
         if(childrenSize.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1227,7 +1227,7 @@ namespace ssGUI::Extensions
         //Assigning position and size to children
         AssignPositionsAndSizesToChildren(childrenPos, childrenSize);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -1240,7 +1240,7 @@ namespace ssGUI::Extensions
 
     void Layout::BindToObject(ssGUI::GUIObject* bindObj)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         Container = bindObj;
 
@@ -1259,11 +1259,11 @@ namespace ssGUI::Extensions
             EXTENSION_NAME,
             [](ssGUI::GUIObject* child, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {
-                FUNC_DEBUG_ENTRY("OnRecursiveChildAddEventCallback");
+                ssLOG_FUNC_ENTRY("OnRecursiveChildAddEventCallback");
                 if(!container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 {
-                    DEBUG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
-                    DEBUG_EXIT_PROGRAM();
+                    ssLOG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    ssLOG_EXIT_PROGRAM();
                     return;
                 }
 
@@ -1278,7 +1278,7 @@ namespace ssGUI::Extensions
 
                 if(!child->IsExtensionExist(ssGUI::Extensions::WindowLayoutItemEnforcer::EXTENSION_NAME) && child->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
                     child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::WindowLayoutItemEnforcer>());
-                FUNC_DEBUG_EXIT("OnRecursiveChildAddEventCallback");
+                ssLOG_FUNC_EXIT("OnRecursiveChildAddEventCallback");
             }
         );
 
@@ -1312,11 +1312,11 @@ namespace ssGUI::Extensions
             EXTENSION_NAME,
             [](ssGUI::GUIObject* child, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
             {                    
-                FUNC_DEBUG_ENTRY("ChildPositionChangedEventCallback");
+                ssLOG_FUNC_ENTRY("ChildPositionChangedEventCallback");
                 if(!container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 {
-                    DEBUG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
-                    DEBUG_EXIT_PROGRAM();
+                    ssLOG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    ssLOG_EXIT_PROGRAM();
                     return;
                 }
 
@@ -1325,11 +1325,11 @@ namespace ssGUI::Extensions
 
                 if(containerLayout->IsOverrideChildrenResizeTypeAndOnTop())
                     containerLayout->UpdateChildrenResizeTypesAndOnTop();
-                FUNC_DEBUG_EXIT("ChildPositionChangedEventCallback");
+                ssLOG_FUNC_EXIT("ChildPositionChangedEventCallback");
             }
         );
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Layout::Copy(ssGUI::Extensions::Extension* extension)

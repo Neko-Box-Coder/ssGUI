@@ -53,16 +53,16 @@ int main()
             // if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) &&
             //     !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))
             // {
-            //     //DEBUG_LINE("menuItem.GetButtonState(): "<<(int)menuItem.GetButtonState());
+            //     //ssLOG_LINE("menuItem.GetButtonState(): "<<(int)menuItem.GetButtonState());
             //     menu.SpawnMenu(inputInterface->GetCurrentMousePosition(&mainWindow));
             // }
 
             if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
                 !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
             {
-                DEBUG_LINE("menu.IsFocused(): "<<menu.IsFocused());
-                DEBUG_LINE("menu.IsRedrawNeeded(): "<<menu.IsRedrawNeeded());
-                DEBUG_LINE("menuItem5.IsEnabled(): "<<menuItem5->IsEnabled());
+                ssLOG_LINE("menu.IsFocused(): "<<menu.IsFocused());
+                ssLOG_LINE("menu.IsRedrawNeeded(): "<<menu.IsRedrawNeeded());
+                ssLOG_LINE("menuItem5.IsEnabled(): "<<menuItem5->IsEnabled());
             }
         }
     );

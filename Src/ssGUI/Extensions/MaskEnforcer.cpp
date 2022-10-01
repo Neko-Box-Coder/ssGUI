@@ -28,7 +28,7 @@ namespace ssGUI::Extensions
 
     void MaskEnforcer::ConstructRenderInfo()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
         {
@@ -47,7 +47,7 @@ namespace ssGUI::Extensions
             currentMask->MaskObject(Container, /*- (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset)*/glm::vec2(), it->second);
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void MaskEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -64,7 +64,7 @@ namespace ssGUI::Extensions
 
     void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, std::vector<int> targetShapeIndices)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         if(CurrentObjectsReferences.IsObjectReferenceExist(targetMaskObj))
         {
             ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.GetObjectIndex(targetMaskObj);
@@ -80,7 +80,7 @@ namespace ssGUI::Extensions
         if(Container != nullptr)
             Container->RedrawObject();
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     bool MaskEnforcer::HasTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
@@ -157,11 +157,11 @@ namespace ssGUI::Extensions
     //Extension methods
     void MaskEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!Enabled || Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -220,23 +220,23 @@ namespace ssGUI::Extensions
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void MaskEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(!Enabled || Container == nullptr || isPreRender)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
         
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     std::string MaskEnforcer::GetExtensionName()

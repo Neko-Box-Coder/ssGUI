@@ -23,11 +23,11 @@ int main()
     window.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
     window.SetSize(glm::ivec2(150, 150));
     window.SetParent(&mainWindow);
-    DEBUG_LINE("window: "<<&window);
+    ssLOG_LINE("window: "<<&window);
 
     //Creating window
     ssGUI::Window window2;
-    DEBUG_LINE("window2: "<<&window2);
+    ssLOG_LINE("window2: "<<&window2);
     window2.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window2.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
     window2.SetSize(glm::ivec2(150, 150));
@@ -38,13 +38,13 @@ int main()
     window3->SetTitlebarColor(glm::u8vec4(255, 255, 255, 255));
     window3->SetSize(glm::ivec2(150, 150));
     window3->SetParent(&mainWindow);
-    DEBUG_LINE("window3: "<<&window3);
+    ssLOG_LINE("window3: "<<&window3);
 
     ssGUI::Window* window4 = new ssGUI::Window();
     window4->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
     window4->SetSize(glm::ivec2(150, 150));
     window4->SetParent(&mainWindow);
-    DEBUG_LINE("window4: "<<&window4);
+    ssLOG_LINE("window4: "<<&window4);
 
     ssGUI::Extensions::Dockable* dock = ssGUI::Factory::Create<ssGUI::Extensions::Dockable>();
     ssGUI::Extensions::Dockable* dock2 = ssGUI::Factory::Create<ssGUI::Extensions::Dockable>();
@@ -74,7 +74,7 @@ int main()
     as->SetVerticalPercentage(0.8);
     
     ssGUI::Widget mainWindowWidget;
-    DEBUG_LINE("mainWindowWidget: "<<&mainWindowWidget);
+    ssLOG_LINE("mainWindowWidget: "<<&mainWindowWidget);
     mainWindowWidget.AddExtension(docker);
     // auto dockerLayout = static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
     auto dockerLayout = mainWindowWidget.GetAnyExtension<ssGUI::Extensions::Layout>();
@@ -121,10 +121,10 @@ int main()
                 // else
                 //     window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
 
-                DEBUG_LINE(&window<<" window parent: "<<window.GetParent());
-                DEBUG_LINE(&window2<<" window2 parent: "<<window2.GetParent());
-                DEBUG_LINE(window3<<" window3 parent: "<<window3->GetParent());
-                DEBUG_LINE(window4<<" window4 parent: "<<window4->GetParent());
+                ssLOG_LINE(&window<<" window parent: "<<window.GetParent());
+                ssLOG_LINE(&window2<<" window2 parent: "<<window2.GetParent());
+                ssLOG_LINE(window3<<" window3 parent: "<<window3->GetParent());
+                ssLOG_LINE(window4<<" window4 parent: "<<window4->GetParent());
             }
         }
     );

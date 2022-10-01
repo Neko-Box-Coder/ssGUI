@@ -23,7 +23,7 @@ namespace ssGUI
 
     void Window::OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& inputStatus)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         MouseDownPosition = currentMousePos;
         TransformTotalMovedDistance = glm::vec2();
@@ -65,7 +65,7 @@ namespace ssGUI
         {
             inputStatus.MouseInputBlockedObject = this;
             SetFocus(true);
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
             
@@ -79,7 +79,7 @@ namespace ssGUI
             SetFocus(true);
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
             
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         //Input blocking
@@ -91,12 +91,12 @@ namespace ssGUI
         }
 
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Window::OnMouseDragOrResizeUpdate(ssGUI::InputStatus& inputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         inputStatus.MouseInputBlockedObject = this;
        
         if(ResizingLeft || ResizingRight || ResizingTop || ResizingBot)
@@ -178,12 +178,12 @@ namespace ssGUI
         else if(ResizingRight)
             inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(inputStatus.MouseInputBlockedObject == nullptr)
         {
@@ -269,7 +269,7 @@ namespace ssGUI
         TransformTotalMovedDistance = glm::vec2();
         MouseDownPosition = glm::vec2();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Window::ConstructRenderInfo()
@@ -629,7 +629,7 @@ namespace ssGUI
 
     Window* Window::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         Window* temp = new Window(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
@@ -637,12 +637,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

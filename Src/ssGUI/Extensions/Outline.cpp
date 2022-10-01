@@ -63,7 +63,7 @@ namespace ssGUI::Extensions
 
     void Outline::UpdateVerticesForOutline()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         VerticesToOutline.clear();
         VerticesToOutlinePrevVertices.clear();
         VerticesToOutlineNextVertices.clear();
@@ -110,7 +110,7 @@ namespace ssGUI::Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        DEBUG_LINE("Failed to construct outline");
+                        ssLOG_LINE("Failed to construct outline");
                         VerticesToOutline.clear();
                         VerticesToOutlinePrevVertices.clear();
                         VerticesToOutlineNextVertices.clear();
@@ -128,7 +128,7 @@ namespace ssGUI::Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        DEBUG_LINE("Failed to construct outline");
+                        ssLOG_LINE("Failed to construct outline");
                         VerticesToOutline.clear();
                         VerticesToOutlinePrevVertices.clear();
                         VerticesToOutlineNextVertices.clear();
@@ -146,7 +146,7 @@ namespace ssGUI::Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        DEBUG_LINE("Failed to construct outline");
+                        ssLOG_LINE("Failed to construct outline");
                         VerticesToOutline.clear();
                         VerticesToOutlinePrevVertices.clear();
                         VerticesToOutlineNextVertices.clear();
@@ -194,7 +194,7 @@ namespace ssGUI::Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            DEBUG_LINE("Failed to construct outline");
+                            ssLOG_LINE("Failed to construct outline");
                             VerticesToOutline.clear();
                             VerticesToOutlinePrevVertices.clear();
                             VerticesToOutlineNextVertices.clear();
@@ -212,7 +212,7 @@ namespace ssGUI::Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            DEBUG_LINE("Failed to construct rounded corner");
+                            ssLOG_LINE("Failed to construct rounded corner");
                             VerticesToOutline.clear();
                             VerticesToOutlinePrevVertices.clear();
                             VerticesToOutlineNextVertices.clear();
@@ -230,7 +230,7 @@ namespace ssGUI::Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            DEBUG_LINE("Failed to construct rounded corner");
+                            ssLOG_LINE("Failed to construct rounded corner");
                             VerticesToOutline.clear();
                             VerticesToOutlinePrevVertices.clear();
                             VerticesToOutlineNextVertices.clear();
@@ -242,7 +242,7 @@ namespace ssGUI::Extensions
                 }
             }
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     double Outline::GetAngle(glm::vec2 a, glm::vec2 b)
@@ -295,12 +295,12 @@ nextVertex (n)    (a)                   curVertex
         auto lineAngle = std::abs(GetAngle(prevVertex - curVertex, nextVertex - curVertex)) * 0.5;
         if(lineAngle < 0)
         {
-            DEBUG_LINE("anti-clockwise placements of vertices detected. inner outline failed.");
+            ssLOG_LINE("anti-clockwise placements of vertices detected. inner outline failed.");
             return false;
         }
         else if(lineAngle > pi() * 0.5)
         {
-            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. inner outline failed.");
+            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. inner outline failed.");
             return false;
         }
         else if(pi() * 0.5 - lineAngle < 0.001)
@@ -324,7 +324,7 @@ nextVertex (n)    (a)                   curVertex
 
     void Outline::PlotArc(glm::vec2 start, glm::vec2 end, glm::vec2 circlePos, std::vector<glm::vec2>& plottedPoints)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         glm::vec2 cirOriginline = glm::vec2(1, 0);
         glm::vec2 startDir = (start - circlePos);
         glm::vec2 endDir = (end - circlePos);
@@ -334,23 +334,23 @@ nextVertex (n)    (a)                   curVertex
         bool invalidAngle = false;
         if(startToEndAngle < 0)
         {
-            DEBUG_LINE("anti-clockwise placements of vertices detected. outline failed.");
+            ssLOG_LINE("anti-clockwise placements of vertices detected. outline failed.");
             invalidAngle = true;
         }
         else if(startToEndAngle > pi())
         {
-            DEBUG_LINE("Angle between 2 tangents should not be larger than 180 degrees. outline failed.");
+            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. outline failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            DEBUG_LINE("startToEndAngle: "<<startToEndAngle);
-            DEBUG_LINE("start: "<<start.x<<", "<<start.y);
-            DEBUG_LINE("end: "<<end.x<<", "<<end.y);
-            DEBUG_LINE("circlePos: "<<circlePos.x<<", "<<circlePos.y);
-            DEBUG_EXIT_PROGRAM();
-            FUNC_DEBUG_EXIT();
+            ssLOG_LINE("startToEndAngle: "<<startToEndAngle);
+            ssLOG_LINE("start: "<<start.x<<", "<<start.y);
+            ssLOG_LINE("end: "<<end.x<<", "<<end.y);
+            ssLOG_LINE("circlePos: "<<circlePos.x<<", "<<circlePos.y);
+            ssLOG_EXIT_PROGRAM();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -360,19 +360,19 @@ nextVertex (n)    (a)                   curVertex
         //https://stackoverflow.com/questions/15525941/find-points-on-circle
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // DEBUG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
+        // ssLOG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
         for(int i = 0; i <= (int)(arcRadius * startToEndAngle * 1) + 2; i++)
         {
             double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)(arcRadius * startToEndAngle * 1));
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)arcRadius;
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + circlePos);
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Outline::ConstructComplexOutline(bool isInner)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         //Getting all the rendering details from container
         std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
@@ -394,7 +394,7 @@ nextVertex (n)    (a)                   curVertex
 
         if(drawingCounts.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -474,13 +474,13 @@ nextVertex (n)    (a)                   curVertex
                 
                 if(!FindInnerOutlinesIntersection(curVertex, prevVertex, nextVertex, GetOutlineThickness(), outlinePos1))
                 {
-                    FUNC_DEBUG_EXIT();
+                    ssLOG_FUNC_EXIT();
                     return;
                 }
                 
                 if(!FindInnerOutlinesIntersection(nextVertex, curVertex, nextNextVertex, GetOutlineThickness(), outlinePos2))
                 {
-                    FUNC_DEBUG_EXIT();
+                    ssLOG_FUNC_EXIT();
                     return;
                 }
 
@@ -566,12 +566,12 @@ nextVertex (n)    (a)                   curVertex
                 drawingProperties.push_back(ssGUI::DrawingProperty());
             }
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Outline::ConstructSimpleOutline()
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         //Getting all the rendering details from container
         std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
         std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
@@ -584,7 +584,7 @@ nextVertex (n)    (a)                   curVertex
 
         if(drawingCounts.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -624,7 +624,7 @@ nextVertex (n)    (a)                   curVertex
         drawingColors.insert(drawingColors.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), drawingVertices.size() - drawingColors.size(), GetOutlineColor());
         drawingUVs.insert(drawingUVs.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), drawingVertices.size() - drawingUVs.size(), glm::vec2());
         drawingProperties.insert(drawingProperties.begin() + Container->Extension_GetGUIObjectFirstShapeIndex(), drawingCounts.size() - drawingProperties.size(), ssGUI::DrawingProperty());
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Outline::ConstructRenderInfo()
@@ -792,31 +792,31 @@ nextVertex (n)    (a)                   curVertex
     //Extension methods
     void Outline::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!Enabled || Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Outline::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!Enabled || Container == nullptr || isPreRender)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     std::string Outline::GetExtensionName()

@@ -41,10 +41,10 @@ namespace ssGUI
 
     void Hierarchy::NotifyAndRemoveOnObjectDestroyEventCallbackIfExist()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         if(DestroyEventCalled)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -54,7 +54,7 @@ namespace ssGUI
             CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME)->Notify(CurrentObject);
             CurrentEventCallbackManager->RemoveEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME);
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     Hierarchy::Hierarchy() :    Parent(-1),
@@ -96,10 +96,10 @@ namespace ssGUI
 
     void Hierarchy::SetParent(ssGUI::GUIObject* newParent)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         #if USE_DEBUG
-        DEBUG_LINE("Setting "<<CurrentObject<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
+        ssLOG_LINE("Setting "<<CurrentObject<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
         #endif
 
         CurrentRenderer->RedrawObject();
@@ -113,8 +113,8 @@ namespace ssGUI
             if(!result)
             {
                 PopChildrenIterator();
-                DEBUG_LINE("Invalid parent detected");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Invalid parent detected");
+                ssLOG_EXIT_PROGRAM();
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace ssGUI
             auto lastIt = newParent->GetCurrentChildReferenceIterator();
             newParent->ChangeChildOrderToAfterPosition(it, lastIt);
             PopChildrenIterator();
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -141,8 +141,8 @@ namespace ssGUI
                 {
                     if(checkParent == static_cast<ssGUI::GUIObject*>(CurrentObject))
                     {
-                        DEBUG_LINE("Invalid parent detected");
-                        DEBUG_EXIT_PROGRAM();
+                        ssLOG_LINE("Invalid parent detected");
+                        ssLOG_EXIT_PROGRAM();
                         return;
                     }
 
@@ -252,7 +252,7 @@ namespace ssGUI
         //Exit if this object is parented to nothing
         if(newParent == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -262,8 +262,8 @@ namespace ssGUI
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(CurrentObject))
             {
-                DEBUG_LINE("Invalid parent detected");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Invalid parent detected");
+                ssLOG_EXIT_PROGRAM();
                 return;
             }
             
@@ -293,8 +293,8 @@ namespace ssGUI
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(CurrentObject))
             {
-                DEBUG_LINE("Invalid parent detected");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("Invalid parent detected");
+                ssLOG_EXIT_PROGRAM();
                 return;
             }
             
@@ -304,7 +304,7 @@ namespace ssGUI
             currentParent = currentParent->GetParent();
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     int Hierarchy::GetChildrenCount() const
@@ -478,8 +478,8 @@ namespace ssGUI
         {
             if(CurrentObjectsReferences.GetObjectReference(*CurrentChild) == nullptr)
             {
-                DEBUG_LINE("invalid child found");
-                DEBUG_EXIT_PROGRAM();
+                ssLOG_LINE("invalid child found");
+                ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
             
@@ -544,18 +544,18 @@ namespace ssGUI
     
     void Hierarchy::Internal_RemoveChild(ssGUI::GUIObject* obj)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         #if USE_DEBUG
-        DEBUG_LINE(CurrentObject<<" removing child "<<obj);
+        ssLOG_LINE(CurrentObject<<" removing child "<<obj);
         #endif
         
         StashChildrenIterator();
         if(!FindChild(obj))
         {
             PopChildrenIterator();
-            DEBUG_LINE("Remove failed");
-            DEBUG_EXIT_PROGRAM();
+            ssLOG_LINE("Remove failed");
+            ssLOG_EXIT_PROGRAM();
             return;
         }
         
@@ -576,9 +576,9 @@ namespace ssGUI
         PopChildrenIterator();
 
         #if USE_DEBUG
-        DEBUG_LINE("Remove success");
+        ssLOG_LINE("Remove success");
         #endif
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
 
@@ -599,7 +599,7 @@ namespace ssGUI
 
     void Hierarchy::SetFocus(bool focus)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         //This goes down the hierarchy tree from the searchParent and disable any focus
         auto disableChildrenFocus = [&](ssGUI::GUIObject* searchParent, ssGUI::GUIObject* excludeChild)
@@ -673,7 +673,7 @@ namespace ssGUI
         //Set the focus of the children of this GUI object to be false
         disableChildrenFocus(CurrentObject, nullptr);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Hierarchy::Internal_SetSelfFocus(bool focus)
@@ -692,18 +692,18 @@ namespace ssGUI
 
     void Hierarchy::Delete()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         //To ensure delete is only called exactly once
         if(Internal_IsDeleted())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         ObjectDelete = true;
 
         #if USE_DEBUG
-        DEBUG_LINE(CurrentObject<<" object is getting deleted");
+        ssLOG_LINE(CurrentObject<<" object is getting deleted");
         #endif
 
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
@@ -728,7 +728,7 @@ namespace ssGUI
         CurrentObjectsReferences.CleanUp();
         ssGUI::GUIObject::ObjsToDelete.push_back(CurrentObject);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     bool Hierarchy::Internal_IsDeleted() const

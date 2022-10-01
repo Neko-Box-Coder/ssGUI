@@ -25,7 +25,7 @@ int main()
             {
                 lastCountTime = guiManager.GetBackendInputInterface()->GetElapsedTime();
                 
-                DEBUG_LINE("fps: "<<framecount);
+                ssLOG_LINE("fps: "<<framecount);
                 framecount = 0;
             }
             else

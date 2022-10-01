@@ -81,7 +81,7 @@ namespace ssGUI
 
     void Text::AssignSupportedFont()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
@@ -172,7 +172,7 @@ namespace ssGUI
                 ProcessedCharacterDetails[i] = newDetail;
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::DrawCharacter(glm::vec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details)
@@ -216,7 +216,7 @@ namespace ssGUI
 
     void Text::FormatNewlinesCharacters()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         //If multiline is disabled, replace all newline to spaces and remove all \r
         if(!MultilineAllowed)
@@ -248,7 +248,7 @@ namespace ssGUI
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     float Text::GetClosestTabSpace(float startPos, float tabSpace, float targetPos)
@@ -265,7 +265,7 @@ namespace ssGUI
 
     void Text::ConstructRenderInfosForWordWrapping()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         int currentWordIndex = 0;
         float currentLineLength = GetHorizontalPadding();
@@ -350,12 +350,12 @@ namespace ssGUI
             curRenderInfo.RenderPosition.x += drawXOffset;
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::ConstructRenderInfosForCharacterWrapping()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         float currentLineLength = GetHorizontalPadding();
         float drawXOffset = 0;
@@ -404,12 +404,12 @@ namespace ssGUI
             curRenderInfo.RenderPosition.x += drawXOffset;
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::ConstructRenderInfosForNoWrapping(bool checkValid)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         float drawXPos = GetHorizontalPadding();
 
         wchar_t prevChar = 0;
@@ -516,15 +516,15 @@ namespace ssGUI
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::ApplyFontLineSpacing()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         if(CharactersRenderInfos.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -619,16 +619,16 @@ namespace ssGUI
             currentIndex++;
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::ApplyTextAlignment()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         if(CharactersRenderInfos.empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -732,23 +732,23 @@ namespace ssGUI
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
             CharactersRenderInfos[i].RenderPosition.y += alignOffset;
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
     
     void Text::ApplyTextHighlight()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(StartSelectionIndex == EndSelectionIndex)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
         
         if(StartSelectionIndex < 0 || StartSelectionIndex > CharactersRenderInfos.size() ||
             EndSelectionIndex < 0 || EndSelectionIndex > CharactersRenderInfos.size())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -805,12 +805,12 @@ namespace ssGUI
                 drawHighlight(lineStartIndex, i, glm::u8vec4(51, 153, 255, 255));
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::ApplyTextUnderline()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
         {
@@ -975,7 +975,7 @@ namespace ssGUI
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::DrawAllCharacters()
@@ -1030,7 +1030,7 @@ namespace ssGUI
 
     void Text::ConstructRenderInfo()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         
         glm::vec2 drawPos = GetGlobalPosition();
 
@@ -1056,8 +1056,8 @@ namespace ssGUI
 
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
-            DEBUG_LINE("Failed to find any fonts");
-            FUNC_DEBUG_EXIT();
+            ssLOG_LINE("Failed to find any fonts");
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1073,7 +1073,7 @@ namespace ssGUI
         
         ApplyTextUnderline();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Text::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -1238,10 +1238,10 @@ namespace ssGUI
     
     void Text::ComputeCharactersPositionAndSize()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1261,7 +1261,7 @@ namespace ssGUI
         //Empty text guard
         if(CurrentCharactersDetails.Empty())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1279,7 +1279,7 @@ namespace ssGUI
         ApplyFontLineSpacing();
         ApplyTextAlignment();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
     
     void Text::SetText(std::wstring text)
@@ -2054,7 +2054,7 @@ namespace ssGUI
 
     Text* Text::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         Text* temp = new Text(*this);
         CloneExtensionsAndEventCallbacks(temp);
         
@@ -2062,12 +2062,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

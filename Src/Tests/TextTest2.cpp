@@ -66,13 +66,13 @@ int main()
     text.ComputeCharactersPositionAndSize();
 
 
-    DEBUG_LINE("overflow: "<<text.IsOverflow());
+    ssLOG_LINE("overflow: "<<text.IsOverflow());
 
     // text.SetText("Test text");
 
-    DEBUG_LINE("Character supp: "<<font.IsCharacterSupported(L'は'));
+    ssLOG_LINE("Character supp: "<<font.IsCharacterSupported(L'は'));
 
-    DEBUG_LINE(text.GetCharacterRenderInfo(0).RenderPosition.y);
+    ssLOG_LINE(text.GetCharacterRenderInfo(0).RenderPosition.y);
 
     text.SetParent(&mainWindow);
 

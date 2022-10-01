@@ -10,7 +10,7 @@ int main()
     ssGUI::Checkbox checkbox;
     checkbox.SetParent(&mainWindow);
     checkbox.SetPosition(glm::vec2(100, 100));
-    DEBUG_LINE("checkbox.GetSize(): "<<checkbox.GetSize().x<<", "<<checkbox.GetSize().y)
+    ssLOG_LINE("checkbox.GetSize(): "<<checkbox.GetSize().x<<", "<<checkbox.GetSize().y)
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;

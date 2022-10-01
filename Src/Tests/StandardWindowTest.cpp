@@ -9,7 +9,7 @@ int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    DEBUG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
+    ssLOG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
 
     ssGUI::StandardWindow sw;
     sw.GetWindowTitleObject()->SetText("Test title");

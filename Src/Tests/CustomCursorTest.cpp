@@ -24,7 +24,7 @@ int main()
     if(!img.LoadFromPath("Resources/CustomCursor.png"))           //https://www.pngwing.com/en/free-png-zgwrc
     // if(!img.LoadFromPath("Resources/BlueCursor.png"))          //https://www.subpng.com/png-ttdxzq/
     {
-        DEBUG_LINE("Failed to load");
+        ssLOG_LINE("Failed to load");
         return 0;
     }
 
@@ -37,7 +37,7 @@ int main()
     ssGUI::ImageData imagedata;
     glm::ivec2 hotspot;
     guiManager.GetBackendInputInterface()->GetCustomCursor(imagedata, "custom normal cursor", hotspot);
-    DEBUG_LINE("cursor2: "<<imagedata.IsValid());
+    ssLOG_LINE("cursor2: "<<imagedata.IsValid());
 
     guiManager.AddPostGUIUpdateEventListener
     (

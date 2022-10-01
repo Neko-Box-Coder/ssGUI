@@ -80,7 +80,7 @@ namespace ssGUI
 
     void Slider::UpdateSliderValue()
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
 
@@ -102,7 +102,7 @@ namespace ssGUI
             if(IsReverse())
                 SetSliderValue(1 - GetSliderValue());
         }
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void Slider::ConstructRenderInfo()
@@ -182,7 +182,7 @@ namespace ssGUI
     void Slider::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {       
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
@@ -441,7 +441,7 @@ namespace ssGUI
 
         LastSliderValue = GetSliderValue();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     const std::string Slider::ListenerKey = "Slider";
@@ -607,7 +607,7 @@ namespace ssGUI
 
     void Slider::SetSliderValue(float sliderValue)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         SliderValue = sliderValue;
         SliderValue = SliderValue < 0 ? 0 : SliderValue;
         SliderValue = SliderValue > 1 ? 1 : SliderValue;
@@ -615,7 +615,7 @@ namespace ssGUI
         ApplySnapping();
         UpdateKnobPosition(false);
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     float Slider::GetSliderValue() const
@@ -687,7 +687,7 @@ namespace ssGUI
 
     Slider* Slider::Clone(bool cloneChildren)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         Slider* temp = new Slider(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
@@ -695,12 +695,12 @@ namespace ssGUI
         {
             if(CloneChildren(this, temp) == nullptr)
             {
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return nullptr;
             }
         }
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

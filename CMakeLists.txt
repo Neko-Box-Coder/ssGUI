@@ -18,6 +18,11 @@ set(ssGUI_BUILD_TESTS TRUE CACHE BOOL "Build tests")
 set(ssGUI_BUILD_EXAMPLES TRUE CACHE BOOL "Build examples")
 set(ssGUI_USE_LOCAL_SFML TRUE CACHE BOOL "Use the SFML that comes with ssGUI")
 
+# Overriding ssLogger options
+set(ssLOG_BUILD_TESTS "FALSE" CACHE BOOL "If true, this will build tests")
+set(ssLOG_CALL_STACK "FALSE" CACHE BOOL "If true, this will build tests")
+set(ssLOG_THREAD_SAFE "FALSE" CACHE BOOL "Use std::thread and ensure thread safety for all logged functions")
+
 # This might not be needed 
 set(ssGUI_SFML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml/include" CACHE PATH "Provide the directory of ")
 
@@ -71,6 +76,12 @@ if(ssGUI_USE_LOCAL_SFML)
 endif()
 
 # ==========================================================
+# ssLogger 
+# ==========================================================
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/ssLogger")
+
+# ==========================================================
 # ssGUI 
 # ==========================================================
 if(ssGUI_OUTPUT_STATIC)
@@ -102,20 +113,24 @@ target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Include"
                                         "${CMAKE_CURRENT_SOURCE_DIR}/External/glm"
                                         "${ssGUI_SFML_INCLUDE_DIR}")                            # This might not be needed
 
+# DEBUG
 # Get the include directories for the target.
-get_target_property(LIBA_INCLUDES ssGUI INCLUDE_DIRECTORIES)
+# get_target_property(LIBA_INCLUDES ssGUI INCLUDE_DIRECTORIES)
 
 # Construct the compiler string for the include directories.
-foreach(dir ${LIBA_INCLUDES} ${LIBB_INCLUDES})
-    string(APPEND INCLUDE_COMPILER_STRING "${dir}\n")
-endforeach()
-message("${INCLUDE_COMPILER_STRING}")
+# foreach(dir ${LIBA_INCLUDES} ${LIBB_INCLUDES})
+#     string(APPEND INCLUDE_COMPILER_STRING "${dir}\n")
+# endforeach()
+# message("${INCLUDE_COMPILER_STRING}")
 
 # Linking clip to ssGUI
 target_link_libraries(ssGUI PUBLIC clip)
 
 # Linking SFML to ssGUI
 target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
+
+# Linking ssLogger to ssGUI
+target_link_libraries(ssGUI PUBLIC ssLogger)
 
 # Copy resources for the library 
 file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"

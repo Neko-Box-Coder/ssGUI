@@ -42,7 +42,7 @@ namespace ssGUI
                                         WindowIcon(-1),
                                         CloseButton(-1)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         SetMinSize(glm::vec2(100, 100));
         SetTitlebarHeight(26);
         
@@ -174,7 +174,7 @@ namespace ssGUI
         UpdateIconImage();
         UpdateCloseButton();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
     =================================================================
     */

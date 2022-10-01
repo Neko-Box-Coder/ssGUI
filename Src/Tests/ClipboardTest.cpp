@@ -40,13 +40,13 @@ int main()
             /*if(!inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V) && 
                 inputInterface->GetLastKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V))
             {
-                DEBUG_LINE("v pressed: "<<inputInterface->GetElapsedTime());
+                ssLOG_LINE("v pressed: "<<inputInterface->GetElapsedTime());
             }
 
             if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) ||
                 inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL))
             {
-                DEBUG_LINE("ctrl pressed"<<inputInterface->GetElapsedTime());
+                ssLOG_LINE("ctrl pressed"<<inputInterface->GetElapsedTime());
             }*/
 
             //Pasting
@@ -66,12 +66,12 @@ int main()
                 {               
                     if(inputInterface->GetClipboardImage(imgData))
                     {
-                        DEBUG_LINE("Image Size: "<<imgData.GetSize().x<<", "<<imgData.GetSize().y);
+                        ssLOG_LINE("Image Size: "<<imgData.GetSize().x<<", "<<imgData.GetSize().y);
                         const uint8_t* rawData = static_cast<const uint8_t*>(imgData.GetBackendImageInterface()->GetPixelPtr());
-                        DEBUG_LINE("("<<(int)rawData[0]<<", "<<(int)rawData[1]<<", "<<(int)rawData[2]<<", "<<(int)rawData[3]<<")");
-                        DEBUG_LINE("("<<(int)rawData[4]<<", "<<(int)rawData[5]<<", "<<(int)rawData[6]<<", "<<(int)rawData[7]<<")");
-                        DEBUG_LINE("("<<(int)rawData[8]<<", "<<(int)rawData[9]<<", "<<(int)rawData[10]<<", "<<(int)rawData[11]<<")");
-                        DEBUG_LINE("("<<(int)rawData[12]<<", "<<(int)rawData[13]<<", "<<(int)rawData[14]<<", "<<(int)rawData[15]<<")");
+                        ssLOG_LINE("("<<(int)rawData[0]<<", "<<(int)rawData[1]<<", "<<(int)rawData[2]<<", "<<(int)rawData[3]<<")");
+                        ssLOG_LINE("("<<(int)rawData[4]<<", "<<(int)rawData[5]<<", "<<(int)rawData[6]<<", "<<(int)rawData[7]<<")");
+                        ssLOG_LINE("("<<(int)rawData[8]<<", "<<(int)rawData[9]<<", "<<(int)rawData[10]<<", "<<(int)rawData[11]<<")");
+                        ssLOG_LINE("("<<(int)rawData[12]<<", "<<(int)rawData[13]<<", "<<(int)rawData[14]<<", "<<(int)rawData[15]<<")");
                     }
                 }
             }

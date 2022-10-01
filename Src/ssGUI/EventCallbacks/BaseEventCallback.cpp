@@ -82,10 +82,10 @@ namespace ssGUI::EventCallbacks
 
     void BaseEventCallback::Notify(ssGUI::GUIObject* source)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         for(auto it = EventListeners.begin(); it != EventListeners.end(); it++)
             it->second(source, Container, &CurrentObjectsReferences);
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void BaseEventCallback::BindToObject(ssGUI::GUIObject* bindObj)

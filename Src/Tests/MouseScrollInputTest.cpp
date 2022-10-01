@@ -23,7 +23,7 @@ int main()
             glm::vec2 mouseScroll = guiManager.GetBackendInputInterface()->GetCurrentMouseScrollDelta();
             
             if(mouseScroll != glm::vec2())
-                DEBUG_LINE("Mouse Scroll: "<<mouseScroll.x<<", "<<mouseScroll.y);
+                ssLOG_LINE("Mouse Scroll: "<<mouseScroll.x<<", "<<mouseScroll.y);
         }
     );
 

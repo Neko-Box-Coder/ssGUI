@@ -58,16 +58,16 @@ int main()
             {
                 auto obj = window2.GetParent();
                 auto obj2 = window5.GetParent();
-                DEBUG_LINE("window: "<<&window);
-                DEBUG_LINE("window2: "<<&window2);
-                DEBUG_LINE("window3: "<<&window3);
-                DEBUG_LINE("window4: "<<&window4);
-                DEBUG_LINE("window5: "<<&window5);
+                ssLOG_LINE("window: "<<&window);
+                ssLOG_LINE("window2: "<<&window2);
+                ssLOG_LINE("window3: "<<&window3);
+                ssLOG_LINE("window4: "<<&window4);
+                ssLOG_LINE("window5: "<<&window5);
 
-                DEBUG_LINE("window2 parent: "<<obj);
-                DEBUG_LINE("window5 parent: "<<obj2);
-                DEBUG_LINE("window2 parent min size: "<<obj->GetMinSize().x<<", "<<obj->GetMinSize().y);
-                DEBUG_LINE("window5 parent min size2: "<<obj2->GetMinSize().x<<", "<<obj2->GetMinSize().y);
+                ssLOG_LINE("window2 parent: "<<obj);
+                ssLOG_LINE("window5 parent: "<<obj2);
+                ssLOG_LINE("window2 parent min size: "<<obj->GetMinSize().x<<", "<<obj->GetMinSize().y);
+                ssLOG_LINE("window5 parent min size2: "<<obj2->GetMinSize().x<<", "<<obj2->GetMinSize().y);
             }
         }
     );

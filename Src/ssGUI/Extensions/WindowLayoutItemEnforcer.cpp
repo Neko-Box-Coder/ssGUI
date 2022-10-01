@@ -54,11 +54,11 @@ namespace ssGUI::Extensions
     //Extension methods
     void WindowLayoutItemEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
 
         if(!Enabled || Container == nullptr)
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -69,7 +69,7 @@ namespace ssGUI::Extensions
                 LastContainerSize = Container->GetSize();
             }
             
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -78,7 +78,7 @@ namespace ssGUI::Extensions
             !Container->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
         {
             Container->RemoveExtension(GetExtensionName());
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -87,13 +87,13 @@ namespace ssGUI::Extensions
         if(!windowContainer->IsResizing())
         {
             ContainerResizeStarted = false;
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
         if(LastContainerSize != Container->GetSize())
         {
-            FUNC_DEBUG_EXIT();
+            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -113,7 +113,7 @@ namespace ssGUI::Extensions
                 temp.OnTransformBeginSize = Container->GetSize();
                 windowContainer->SetResizeDragData(temp);
                 LastContainerSize = Container->GetSize();
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -202,7 +202,7 @@ namespace ssGUI::Extensions
                 ContainerResizeStarted = true;
                 ContainerStartPos = Container->GetGlobalPosition();
                 ContainerStartSize = Container->GetSize();
-                FUNC_DEBUG_EXIT();
+                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -270,14 +270,14 @@ namespace ssGUI::Extensions
         else
             ContainerResizeStarted = false;
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     void WindowLayoutItemEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         //Don't need to draw anything
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
 
     std::string WindowLayoutItemEnforcer::GetExtensionName()

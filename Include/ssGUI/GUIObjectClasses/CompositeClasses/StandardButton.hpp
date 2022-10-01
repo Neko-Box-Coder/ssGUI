@@ -32,7 +32,7 @@ namespace ssGUI
                                         ButtonMode(StandardButton::Mode::TEXT),
                                         ButtonImageWrapper(-1)
     {
-        FUNC_DEBUG_ENTRY();
+        ssLOG_FUNC_ENTRY();
         SetSize(glm::vec2(100, 40));
 
         //Adjust Extensions
@@ -167,7 +167,7 @@ namespace ssGUI
         UpdateButtonImage();
         NotifyButtonEventCallbackManually();
 
-        FUNC_DEBUG_EXIT();
+        ssLOG_FUNC_EXIT();
     }
     =================================================================
     */

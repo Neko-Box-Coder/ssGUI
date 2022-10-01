@@ -1,5 +1,6 @@
 // #include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/DataClasses/SegmentedVector.hpp"
+#include <iostream>
 #include <assert.h>
 #include <vector>
 #include <chrono>
