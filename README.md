@@ -16,13 +16,15 @@
 
 ### ❓ What is ssGUI?
 ![](./DocsGeneration/ND_Config/Images/Logo.png)
+
 ssGUI stands for Super Simple GUI. The goal for this library is "Simple to Use, Simple to Customize, Simple to Extend".
+
 This is a verbose library 💬, meaning you have high flexibility on changing different aspects of the GUI objects.
+
 But that doesn't mean you need to go and set every value, most of the default values should work out of the box 📤.
 
-
-
 This library can be used for both *graphical intensive* applications 🔥 such as games or 2D/3D applications or *normal* day to day GUI applications 🎹.
+
 Allowing user to build GUI with ease, and the ability to customize it with `ssGUI::Extensions::Extension`.
 
 You can visit the amazing documentation [here](https://neko-box-coder.github.io/ssGUI/)
