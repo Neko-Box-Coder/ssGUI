@@ -15,7 +15,8 @@
 ---
 
 ### ❓ What is ssGUI?
-![](./DocsGeneration/ND_Config/Images/Logo.png)
+
+![](DocsGeneration/ND_Config/Images/Logo.png "Logo")
 
 ssGUI stands for Super Simple GUI. The goal for this library is "Simple to Use, Simple to Customize, Simple to Extend".
 
@@ -35,50 +36,50 @@ Currently, ssGUI only supports SFML but it is architectured to also be compatibl
 
 ### ✨ What makes ssGUI special?
 
-![](./DocsGeneration/ND_Config/Images/EasyToUse.png)
+![](DocsGeneration/ND_Config/Images/EasyToUse.png)
 **Simple To Use**
 
-![](./DocsGeneration/ND_Config/Images/CrossPlatform.png)
+![](DocsGeneration/ND_Config/Images/CrossPlatform.png)
 **Cross Platform (Depends on Backend)**
 
-![](./DocsGeneration/ND_Config/Images/Documentation.png)
+![](DocsGeneration/ND_Config/Images/Documentation.png)
 **Awesome Documentations**
 
-![](./DocsGeneration/ND_Config/Images/Extension.png)
+![](DocsGeneration/ND_Config/Images/Extension.png)
 **Customization With Extensions**
 
-![](./DocsGeneration/ND_Config/Images/Compatible.png)
+![](DocsGeneration/ND_Config/Images/Compatible.png)
 **Source Compatible (WIP)**
 
-![](./DocsGeneration/ND_Config/Images/Independent.png)
+![](DocsGeneration/ND_Config/Images/Independent.png)
 **GUI Code Is Independent From Backend**
 
-![](./DocsGeneration/ND_Config/Images/Swap.png)
+![](DocsGeneration/ND_Config/Images/Swap.png)
 **Decopuled Backend Architecture**
 
-![](./DocsGeneration/ND_Config/Images/Template.png)
+![](DocsGeneration/ND_Config/Images/Template.png)
 **Code Templates For Creating Your Own Widgets, Windows, Extensions And EventCallbacks**
 
-![](./DocsGeneration/ND_Config/Images/Builder.png)
+![](DocsGeneration/ND_Config/Images/Builder.png)
 **GUI Builder (WIP)**
 
 ---
 
 ### 📌 Cool Features
 #### Window Docking & Auto Layout:
-![](./DocsGeneration/ND_Config/Images/DockingAndLayout.gif)
+![](DocsGeneration/ND_Config/Images/DockingAndLayout.gif)
 
 #### Mask:
-![](./DocsGeneration/ND_Config/Images/Mask.gif)
+![](DocsGeneration/ND_Config/Images/Mask.gif)
 
 #### Text Alignment:
-![](./DocsGeneration/ND_Config/Images/TextAlignment.gif)
+![](DocsGeneration/ND_Config/Images/TextAlignment.gif)
 
 #### Text Character Level Customization:
-![](./DocsGeneration/ND_Config/Images/CharAdjust.gif)
+![](DocsGeneration/ND_Config/Images/CharAdjust.gif)
 
 #### Extension To Provide Modularity:
-![](./DocsGeneration/ND_Config/Images/ExtensionExample.gif)
+![](DocsGeneration/ND_Config/Images/ExtensionExample.gif)
 
 #### And more to come...
 
@@ -105,7 +106,7 @@ Currently, ssGUI only supports SFML but it is architectured to also be compatibl
 ---
 
 ### 🧮 Okay, what does it look like in code?
-![](./DocsGeneration/ND_Config/Images/IntroductionExample.gif) 
+![](DocsGeneration/ND_Config/Images/IntroductionExample.gif) 
 ```C++
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 
@@ -153,7 +154,7 @@ int main()
 ---
 
 ### 🛣️ [Roadmap](https://ssGUI.nekoboxcoder.dev/b/ckQsLZToXDPFzsAzx/ssgui)
-![](./DocsGeneration/ND_Config/Images/Roadmap.png)
+![](DocsGeneration/ND_Config/Images/Roadmap.png)
 
 ---
 
@@ -161,15 +162,15 @@ int main()
 
 #### SFML With Awesome Documentation:
 
-![](./DocsGeneration/ND_Config/Images/SFML.png)
+![](DocsGeneration/ND_Config/Images/SFML.png)
 
 #### GLM With Great Math Structs And Math Functions: 
 
-![](./DocsGeneration/ND_Config/Images/Glm.png)
+![](DocsGeneration/ND_Config/Images/Glm.png)
 
 #### Natural Docs With Amazing And Intuative Documentation Generation::
 
-![](./DocsGeneration/ND_Config/Images/NaturalDocs.svg) 
+![](DocsGeneration/ND_Config/Images/NaturalDocs.svg) 
 
 ---
 
