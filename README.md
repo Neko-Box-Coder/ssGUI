@@ -94,7 +94,7 @@ Currently, ssGUI only supports SFML but it is architectured to also be compatibl
 - 🈶 Text
 - ✏️ TextField
 - 📦 GUIObject, Widget & Window (Base GUI Objcet)
-- 🗄️ Compose GUI Objects
+- 🗄️ Composite GUI Objects
     - 📄 Dropdown
     - 🩻 ImageCanvas
     - 🗃️ MenuItem
@@ -179,13 +179,13 @@ This project is under Apache-2.0 License.
 Licenses for resoureces used by testing and examples are stored as "Credits.txt" under the same folder.
 
 GLM:
-    - The Happy Bunny License or MIT License
+- The Happy Bunny License or MIT License
 
 SFML:
-    - zlib/png license
-    - Components used by ssGUI:
-        - freetype is under the FreeType license or the GPL license
-        - stb_image and stb_image_write are public domain
-    - If you want to use other components, please visit https://github.com/SFML/SFML/blob/master/license.md for their licenses
+- zlib/png license
+- Components used by ssGUI:
+    - freetype is under the FreeType license or the GPL license
+    - stb_image and stb_image_write are public domain
+- If you want to use other components, please visit https://github.com/SFML/SFML/blob/master/license.md for their licenses
 
 
