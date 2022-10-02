@@ -11,11 +11,11 @@ namespace ssGUI
         public:
             T* Obj = nullptr;
             bool ssGUIDefault = false;
-            StaticDefaultWrapper() = default;
+            inline StaticDefaultWrapper() = default;
             inline ~StaticDefaultWrapper()
             {
                 if(Obj != nullptr && ssGUIDefault)
-                ssGUI::Factory::Dispose(Obj);
+                    ssGUI::Factory::Dispose(Obj);
             };
     };
 }

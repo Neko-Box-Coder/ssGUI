@@ -25,7 +25,7 @@ namespace ssGUI
         std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;                     //See <GetItem>
         bool Toggle;                                                                            //(Internal variable) Used to set focus
 
-        static ssGUI::StaticDefaultWrapper<ssGUI::ImageData> DefaultDropdownArrowImageData;     //(Internal variable) used to store default arrow image
+        static ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* DefaultDropdownArrowImageData;     //(Internal variable) used to store default arrow image
                                                                                                 //TODO: Allow this to be configured
         static bool DefaultDropdownInitialized;                                                 //(Internal variable) Used to see if the default dropdown image needs initializing
     =================================================================
@@ -35,6 +35,8 @@ namespace ssGUI
                             Items(),
                             Toggle(false)
     {
+        InitializeDefaultDropdownArrowIfNeeded();
+
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();
         auto firstIt = GetCurrentChildReferenceIterator();
@@ -110,7 +112,7 @@ namespace ssGUI
         );
     }
 
-    ssGUI::StaticDefaultWrapper<ssGUI::ImageData> Dropdown::DefaultDropdownArrowImageData = ssGUI::StaticDefaultWrapper<ssGUI::ImageData>();
+    ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* Dropdown::DefaultDropdownArrowImageData = nullptr;
     bool Dropdown::DefaultDropdownInitialized = false;
     =================================================================
     */
@@ -125,7 +127,7 @@ namespace ssGUI
             std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;                     //See <GetItem>
             bool Toggle;                                                                            //(Internal variable) Used to set focus
 
-            static ssGUI::StaticDefaultWrapper<ssGUI::ImageData> DefaultDropdownArrowImageData;     //(Internal variable) used to store default arrow image
+            static ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* DefaultDropdownArrowImageData;     //(Internal variable) used to store default arrow image
                                                                                                     //TODO: Allow this to be configured
             static bool DefaultDropdownInitialized;                                                 //(Internal variable) Used to see if the default dropdown image needs initializing
 
@@ -185,7 +187,10 @@ namespace ssGUI
             //function: SetDropdownMenu
             //Sets the dropdown menu GUI object
             virtual void SetDropdownMenu(ssGUI::Menu* menu);
-            
+
+            //function: CleanUpAllDefaultDropdownImage
+            static void CleanUpAllDefaultDropdownImage();
+
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;

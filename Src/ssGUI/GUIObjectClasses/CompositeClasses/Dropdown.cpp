@@ -10,7 +10,7 @@
 
 namespace ssGUI
 {
-    ssGUI::StaticDefaultWrapper<ssGUI::ImageData> Dropdown::DefaultDropdownArrowImageData = ssGUI::StaticDefaultWrapper<ssGUI::ImageData>();
+    ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* Dropdown::DefaultDropdownArrowImageData = nullptr;
     bool Dropdown::DefaultDropdownInitialized = false;
     
     Dropdown::Dropdown(Dropdown const& other) : StandardButton(other)
@@ -60,7 +60,10 @@ namespace ssGUI
             ssGUI::Factory::Dispose<ssGUI::ImageData>(dropdownArrow);
         }
         else
-            DefaultDropdownArrowImageData.Obj = dropdownArrow;
+        {
+            DefaultDropdownArrowImageData = ssGUI::Factory::Create<ssGUI::StaticDefaultWrapper, ssGUI::ImageData>();
+            DefaultDropdownArrowImageData->Obj = dropdownArrow;
+        }
 
         ssLOG_FUNC_EXIT();
     }
@@ -103,8 +106,8 @@ namespace ssGUI
         layout->SetPreferredSizeMultiplier(1, iconMulti);
 
         //Set icon to dropdown arrow
-        if(DefaultDropdownArrowImageData.Obj != nullptr)
-            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData.Obj);
+        if(DefaultDropdownArrowImageData->Obj != nullptr)
+            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData->Obj);
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
@@ -317,6 +320,13 @@ namespace ssGUI
         Items.clear();
         for(int i = 0; i < Items.size(); i++)
             AddItem(Items[i].first);
+    }
+
+    void Dropdown::CleanUpAllDefaultDropdownImage()
+    {
+        //This will trigger the static wrapper to do deallocation
+        ssGUI::Factory::Dispose(DefaultDropdownArrowImageData);
+        DefaultDropdownArrowImageData = nullptr; 
     }
 
     ssGUI::Enums::GUIObjectType Dropdown::GetType() const

@@ -60,15 +60,6 @@ namespace ssGUI
 
         uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
 
-        class StaticDefaultFontWrapper                                                  //Internal static wrapper for deallocating static variables
-        {
-            public:
-                ssGUI::Font* Font = nullptr;
-                bool ssGUIDefault = false;
-                StaticDefaultFontWrapper() = default;
-                ~StaticDefaultFontWrapper();
-        };
-
         static std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> DefaultFonts;      //See <GetDefaultFont>
         static bool DefaultFontsInitialized;                                            //(Internal variable) Used to see if the default fonts need initializing
         static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
@@ -102,6 +93,7 @@ namespace ssGUI
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
         SetInteractable(true);
+        Text::InitializeDefaultFontIfNeeded();
 
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
@@ -503,6 +495,9 @@ namespace ssGUI
             //function:GetDefaultFontsCount 
             static int GetDefaultFontsCount();
             
+            //function: CleanUpAllDefaultFonts
+            static void CleanUpAllDefaultFonts();
+
             //function: GetType
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;

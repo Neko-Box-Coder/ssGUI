@@ -1,5 +1,6 @@
 #include "ssGUI/ssGUIManager.hpp"
-
+#include "ssGUI/GUIObjectClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 
 //Debug
 #include "ssGUI/Extensions/Layout.hpp"
@@ -12,6 +13,8 @@ namespace ssGUI
 {
     void ssGUIManager::Internal_Update()
     {
+        ssLOG_FUNC_ENTRY();
+
         for(auto mainWindow : MainWindowPList)
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
@@ -141,6 +144,7 @@ namespace ssGUI
                 Clear();
             #endif
         }
+        ssLOG_FUNC_EXIT();
     }
     
     void ssGUIManager::PollInputs()
@@ -442,7 +446,10 @@ namespace ssGUI
 
     void ssGUIManager::StartRunning()
     {
+        ssLOG_FUNC_ENTRY();
         Internal_Update();
+        CleanUpDefaultSystemGUIObjects();
+        ssLOG_FUNC_EXIT();
     }
 
     ssGUI::Backend::BackendSystemInputInterface* ssGUIManager::GetBackendInputInterface()
@@ -584,5 +591,11 @@ namespace ssGUI
     float ssGUIManager::GetTargetFramerate()
     {
         return 1000 / TargetFrameInterval;
+    }
+
+    void ssGUIManager::CleanUpDefaultSystemGUIObjects()
+    {
+        Text::CleanUpAllDefaultFonts();
+        Dropdown::CleanUpAllDefaultDropdownImage();
     }
 }

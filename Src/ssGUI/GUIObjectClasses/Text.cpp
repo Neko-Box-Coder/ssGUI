@@ -2111,7 +2111,7 @@ namespace ssGUI
             return;
 
         ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-        wrapper.Obj = font->Clone();
+        wrapper.Obj = font;
         wrapper.ssGUIDefault = false;
 
         DefaultFonts[index] = wrapper;
@@ -2132,6 +2132,12 @@ namespace ssGUI
     int Text::GetDefaultFontsCount()
     {
         return DefaultFonts.size();
+    }
+
+    void Text::CleanUpAllDefaultFonts()
+    {
+        //This will trigger the static wrapper to do deallocation
+        DefaultFonts.clear();        
     }
 
     ssGUI::Enums::GUIObjectType Text::GetType() const

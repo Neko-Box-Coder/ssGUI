@@ -162,6 +162,10 @@ namespace ssGUI
             //Returns the target framerate (FPS), negative if disabled
             float GetTargetFramerate();
 
+            //function: CleanUpDefaultSystemGUIObjects
+            //Clean up any default GUI Objects created by ssGUI. This is automatically called.
+            void CleanUpDefaultSystemGUIObjects();
+
             //function: Clear
             //Clears the console
             inline void Clear()

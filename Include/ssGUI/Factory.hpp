@@ -16,7 +16,15 @@ namespace ssGUI
         public:
             static void SetHeapAllocatedFlagForGUIObject(ssGUI::GUIObject* obj);
             
-            //function: Create
+            //function: Create< template<typename T> class Wrapper, typename T>
+            //Creates the object on the heap
+            template< template<typename T> class Wrapper, typename T> 
+            static Wrapper<T>* Create()
+            {
+                return new Wrapper<T>();
+            };
+
+            //function: Create<typename T> 
             //Creates the object on the heap
             template<typename T> 
             static T* Create()
