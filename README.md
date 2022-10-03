@@ -11,6 +11,7 @@
 
 - #### 📈 Current Status
     - ⬛⬛⬛⬛⬛⬛⬛⬛⬛🔲 *v0.93 (90%)* 
+        - ✏️ Rewriting all documentation
 
 ---
 
