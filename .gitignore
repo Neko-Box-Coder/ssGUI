@@ -43,9 +43,10 @@ builds/
 Builds/
 Build/
 v0.*/
+*.bak
 
 # Natural Docs cache data
-Internal_Documentation/ND_Config/Working\ Data
+DocsGeneration/ND_Config/Working\ Data
 
 # Language server files
 .cache/

@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("pop",["Function"],[["PopChildrenIterator",,[["ssGUI::GUIObject",,,,0,"File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject.PopChildrenIterator","CClass:ssGUI.GUIObject:PopChildrenIterator"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("pop",["Function"],[["PopChildrenIterator",,[["ssGUI::Hierarchy",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/Hierarchy.hpp:ssGUI.Hierarchy.PopChildrenIterator","CClass:ssGUI.Hierarchy:PopChildrenIterator"]]]]);

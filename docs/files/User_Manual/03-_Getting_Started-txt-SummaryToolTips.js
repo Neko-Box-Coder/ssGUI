@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:User_Manual/03._Getting_Started.txt",{16:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">ssGUI is made up of <b>GUI Objects</b>, <b>Extensions</b>, <b>Event Callbacks</b>, <b>Backends</b>, <b>ssGUIManager</b>, and some other miscellaneous classes such as enums and data classes.</div></div>"});

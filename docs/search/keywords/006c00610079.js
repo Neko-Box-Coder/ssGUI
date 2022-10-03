@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("lay",["Class"],[["Layout",,[["ssGUI::Extensions",,,,0,"File:ssGUI/Extensions/Layout.hpp:ssGUI.Extensions.Layout","CClass:ssGUI.Extensions.Layout"]]],["LayoutEnforcer",,[["ssGUI::Extensions",,,,0,"File:ssGUI/Extensions/LayoutEnforcer.hpp:ssGUI.Extensions.LayoutEnforcer","CClass:ssGUI.Extensions.LayoutEnforcer"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("lay",["Class"],[["Layout",,[["ssGUI::Extensions",,,,0,"File:◀️_ssGUI_API_▶️/Extensions/Layout.hpp:ssGUI.Extensions.Layout","CClass:ssGUI.Extensions.Layout"]]]]);

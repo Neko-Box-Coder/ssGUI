@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:User_Manual/06__GUI_Object_Hierarchy.txt",{10:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">As you might have known, you can parent different GUI Objects to other GUI Objects.</div></div>"});

@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("uvo",["Variable"],[["UVOrigin",,[["ssGUI::CharacterRenderInfo",,,,0,"File:ssGUI/DataClasses/CharacterRenderInfo.hpp:ssGUI.CharacterRenderInfo.UVOrigin","CClass:ssGUI.CharacterRenderInfo:UVOrigin"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("uvo",["Variable"],[["UVOrigin",,[["ssGUI::CharacterRenderInfo",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/CharacterRenderInfo.hpp:ssGUI.CharacterRenderInfo.UVOrigin","CClass:ssGUI.CharacterRenderInfo:UVOrigin"]]]]);

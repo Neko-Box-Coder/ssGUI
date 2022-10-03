@@ -1,1 +1,1 @@
-﻿NDSummary.OnToolTipsLoaded("CClass:ssGUI.EventCallbacks.ssGUI.EventCallbacks",{});
+﻿NDSummary.OnToolTipsLoaded("CClass:ssGUI.EventCallbacks.ssGUI.EventCallbacks",{96:"<div class=\"NDToolTip TClass LC\"><div class=\"NDClassPrototype\" id=\"NDClassPrototype96\"><div class=\"CPEntry TClass Current\"><div class=\"CPModifiers\"><span class=\"SHKeyword\">namespace</span> </div><div class=\"CPName\"><span class=\"Qualifier\">ssGUI::&#8203;EventCallbacks::&#8203;ssGUI::</span>&#8203;EventCallbacks</div></div></div></div>"});

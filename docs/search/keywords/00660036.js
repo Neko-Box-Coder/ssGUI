@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("f6",["Constant"],[["F6",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/FunctionKey.hpp:ssGUI.Enums.F6","CClass:ssGUI.Enums:F6"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("f6",["Constant"],[["F6",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/FunctionKey.hpp:ssGUI.Enums.F6","CClass:ssGUI.Enums:F6"]]]]);

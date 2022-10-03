@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("File:User_Manual/03._Getting_Started.txt","03. Getting Started.txt");NDSummary.OnSummaryLoaded("File:User_Manual/03._Getting_Started.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[16,0,0,"Getting Started","Getting_Started"]]);

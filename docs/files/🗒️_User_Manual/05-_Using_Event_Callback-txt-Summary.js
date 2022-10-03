@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("File:🗒️_User_Manual/05._Using_Event_Callback.txt","05. Using Event Callback.txt");NDSummary.OnSummaryLoaded("File:🗒️_User_Manual/05._Using_Event_Callback.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[1660,0,0,"Using Event Callback","Using_Event_Callback"]]);

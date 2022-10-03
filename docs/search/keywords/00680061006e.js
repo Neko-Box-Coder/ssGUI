@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("han",["Constant"],[["HAND",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/CursorType.hpp:ssGUI.Enums.HAND","CClass:ssGUI.Enums:HAND"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("han",["Constant"],[["HAND",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/CursorType.hpp:ssGUI.Enums.HAND","CClass:ssGUI.Enums:HAND"]]]]);

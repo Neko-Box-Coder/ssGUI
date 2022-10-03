@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:User_Manual/Intermediate/1._Rendering_Custom_Graphics.txt",{3:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div>"});

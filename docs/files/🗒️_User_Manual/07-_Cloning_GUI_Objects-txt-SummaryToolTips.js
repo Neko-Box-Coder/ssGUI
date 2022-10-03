@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("File:🗒️_User_Manual/07._Cloning_GUI_Objects.txt",{1656:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">When you have a hierarchy of GUI Objects, it is good to be able to clone GUI objects including their children (and recursively).</div></div>"});

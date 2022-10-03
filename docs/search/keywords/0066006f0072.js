@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("for",["Constant"],[["FORWARD_SLASH",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/SymbolKey.hpp:ssGUI.Enums.FORWARD_SLASH","CClass:ssGUI.Enums:FORWARD_SLASH"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("for",["Function","Constant"],[["ForceSpawnMenu",,[["ssGUI::Menu",,,,0,"File:◀️_ssGUI_API_▶️/GUIObjectClasses/Menu.hpp:ssGUI.Menu.ForceSpawnMenu","CClass:ssGUI.Menu:ForceSpawnMenu"]]],["FORWARD_SLASH",,[["ssGUI::Enums",,,,1,"File:◀️_ssGUI_API_▶️/Enums/SymbolKey.hpp:ssGUI.Enums.FORWARD_SLASH","CClass:ssGUI.Enums:FORWARD_SLASH"]]]]);

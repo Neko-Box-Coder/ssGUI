@@ -1,0 +1,294 @@
+﻿/* Font & Font Size settings */
+* {
+    font: none;
+    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+}
+
+/* Code Fonts */
+.CTopic pre.CCode,
+.SHKeyword,
+.SHComment,
+.PSection * {
+    font-family: monospace;
+}
+
+/* Home page box */
+.HTitle,
+.HSubtitle {
+    font: none;
+    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+}
+
+.HTitle {
+    font-size: 2.0rem;
+    margin-bottom: 1.5rem;
+}
+
+.HSubtitle {
+    font-size: 1.2rem;
+}
+
+#HTitle {
+    text-shadow: 0;
+}
+
+.HContent {
+    border-width: 0 0 0.3rem 0;
+    box-shadow: 1rem 1rem 1.0rem rgba(0,0,0,0.1);
+}
+
+.NDHomePage body{
+    padding: 0;
+    margin: 0;
+    background-color: #E0E0E0;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100%
+}
+
+/* Header */
+#NDHeader {
+    background-color: #3b3b3b;
+    padding: .65rem .65rem .65rem .65rem;
+    border-bottom: 1rem solid #202020;
+    z-index: 2;
+}
+
+/* Content */
+.CTopic .CTitle {
+    font: none;
+    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.TGroup .CTitle{
+    font-size: 1.8rem;
+}
+
+.TFunction .CTitle {
+    font-size: 1.5rem;
+}
+
+.TConstant .CTitle{
+    font-size: 1.5rem;
+}
+
+.CHeading {
+    font: none;
+    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Enum title */
+td.CDLEntry {
+    font: none;
+    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 1.0rem;
+}
+
+/* Removing the class tab */
+#MClassTab {
+    display: none !important
+}
+
+
+/* Background color, padding, borders, etc.. */
+
+/* Side menu */
+#MFileTab {
+    font-size: 1.5rem;
+    padding: .50rem;
+    font-weight: Normal;
+    display: block;
+}
+
+.MTabTitle {
+    font-style: normal;
+}
+
+#MFileTab .MTabIcon {
+    background-size: 1.5rem 1.5rem;
+}
+
+.MTabIcon {
+    display: none;
+/*     width: 2rem; */
+/*     height: 2rem; */
+}
+
+.MFolder{
+    font-weight: 500;
+}
+
+.MEntry{
+    padding: .30rem .30rem .30rem .30rem;
+}
+
+.MTab {
+    border: 0;
+}
+
+.MTab.Selected {
+    border-left: 1rem solid #404040;
+}
+
+.MEntry.MFolder,
+.MEntry.MFile {
+    padding-left: 2rem;
+}
+
+.MEntry.MFile {
+    padding-left: 2rem;
+}
+
+.MEntry.MFolder.Selected,
+.MEntry.MFolder.Parent {
+    padding-left: 0.5rem;
+}
+
+.Selected {
+    border-left: 0.5rem solid #404040;
+    background-color: #FFFFFF;
+    font-weight: bold;
+}
+
+/* Menu pane width */
+#NDMenu {
+    width: 25rem;
+}
+
+/* Summary pane width */
+#NDSummary {
+    width: 25rem;
+}
+
+/* No idea what this is for */
+.CICaption {
+    display: none;
+}
+
+a.SeeImageLink {
+    display: none;
+}
+
+/* Menu Sizer */
+#NDMenuSizer {
+    background-color: #757575;
+/*     border-left: 1px solid #202020; */
+/*     border-right: 1px solid #202020; */
+    width: 0.25rem;
+}
+
+#NDMenuSizer:hover,
+#NDMenuSizer.Dragging {
+    background-color: #353535;
+/*     border-left: 1px solid #202020; */
+/*     border-right: 1px solid #202020; */
+}
+
+/* Menu item icons */
+.MFolder::before {
+    content: '🖿';
+    font-size: 1.2rem;
+    margin: 0 0.5rem 0 0.1rem;
+    display: inline-block;
+    height: 1.3rem;
+}
+
+.MFile::before {
+    content: '📦';
+    font-size: 1.2rem;
+/*     vertical-align: 25%; */
+    margin: 0 0.5rem 0 0.1rem;
+    display: inline-block;
+    height: 1.3rem;
+}
+
+
+
+.NDClassPrototype .CPEntry.TInterface {
+    background-color: #ffffff;
+    border-color: #7a7a7a;
+    scrollbar-color: #dddddd #ffffff;
+}
+
+/* Summary items */
+.SuEntry {
+    padding: 0.25rem 0 0.25rem 2rem;
+}
+
+/* Comment color */
+.SHComment {
+    color: #058a1b;
+}
+
+
+/* Class or namespace box */
+.CPEntry {
+    border-radius: 0.5rem;
+}
+
+
+/* Search box */
+#NDSearchField {
+    border-radius: 0.5rem;
+}
+
+
+/* Content page of the class */
+body.NDContentPage {
+    padding: 5vh 20vw 5vh 20vw;
+}
+
+
+/* Images */
+.CImage {
+    text-align: left;
+    margin: 1rem 0;
+    display: inline-block;
+    border: 0.2rem solid black;
+    margin-left: 1rem;
+}
+
+/* To remove weird gap at the bottom */
+.CImage img {
+    vertical-align: bottom;
+}
+
+/* Paragraph fomatting */
+.CTopic p {
+    margin: 0 0 1rem 0;
+    text-indent: 0;
+}
+
+
+/* Code block border color */
+.CTopic pre {
+    border-color: #797979;
+}
+
+
+/* Hyperlink color */
+.CTopic a:link,
+.CTopic a:visited,
+.CTopic a:hover {
+    color: #ca0000;
+    font-weight: bold;
+}
+
+
+/* Hyperlink hover preview */
+.NDToolTip {
+    background-color: #FFF;
+    border-style: solid;
+    border-width: 0.1rem;
+    border-color: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.3);
+}

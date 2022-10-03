@@ -1,1 +1,0 @@
-﻿NDContentPage.OnToolTipsLoaded({434:"<div class=\"NDToolTip TClass LC\"><div class=\"TTSummary\">This allows transferring the image data from the host memory to the gpu memory</div></div>"});

@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("anc",["Enumeration"],[["AnchorType",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/AnchorType.hpp:ssGUI.Enums.AnchorType","CClass:ssGUI.Enums:AnchorType"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("anc",["Enumeration"],[["AnchorType",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/AnchorType.hpp:ssGUI.Enums.AnchorType","CClass:ssGUI.Enums:AnchorType"]]]]);

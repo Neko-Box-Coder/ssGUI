@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:User_Manual/04._Position_System.txt",{711:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">There\'s a local and global position for a GUI object.</div></div>"});

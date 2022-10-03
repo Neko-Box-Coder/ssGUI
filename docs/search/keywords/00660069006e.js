@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("fin",["Function"],[["FindChild",,[["ssGUI::BaseGUIObject",,,,0,"File:ssGUI/GUIObjectClasses/BaseGUIObject.hpp:ssGUI.BaseGUIObject.FindChild","CClass:ssGUI.BaseGUIObject:FindChild"],["ssGUI::GUIObject",,,,0,"File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject.FindChild","CClass:ssGUI.GUIObject:FindChild"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("fin",["Function"],[["FindChild",,[["ssGUI::Hierarchy",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/Hierarchy.hpp:ssGUI.Hierarchy.FindChild","CClass:ssGUI.Hierarchy:FindChild"]]]]);

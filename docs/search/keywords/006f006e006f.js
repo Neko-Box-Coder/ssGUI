@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("ono",["Class"],[["OnObjectDestroyEventCallback",,[["ssGUI::EventCallbacks",,,,0,"File:ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp:ssGUI.EventCallbacks.OnObjectDestroyEventCallback","CClass:ssGUI.EventCallbacks.OnObjectDestroyEventCallback"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("ono",["Class"],[["OnObjectDestroyEventCallback",,[["ssGUI::EventCallbacks",,,,0,"File:◀️_ssGUI_API_▶️/EventCallbacks/OnObjectDestroyEventCallback.hpp:ssGUI.EventCallbacks.OnObjectDestroyEventCallback","CClass:ssGUI.EventCallbacks.OnObjectDestroyEventCallback"]]]]);

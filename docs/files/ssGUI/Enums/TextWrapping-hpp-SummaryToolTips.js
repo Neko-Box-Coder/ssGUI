@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:ssGUI/Enums/TextWrapping.hpp",{202:"<div class=\"NDToolTip TClass LC\"><div class=\"NDClassPrototype\" id=\"NDClassPrototype202\"><div class=\"CPEntry TClass Current\"><div class=\"CPModifiers\"><span class=\"SHKeyword\">namespace</span> </div><div class=\"CPName\"><span class=\"Qualifier\">ssGUI::</span>&#8203;Enums</div></div></div></div>"});

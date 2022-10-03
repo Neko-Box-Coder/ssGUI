@@ -1,0 +1,208 @@
+Title: 🔨 Using ssGUI
+
+This page goes through all the necessary steps to setup ssGUI. 
+
+At the moment, *only SFML* is supported but in the future, we are aiming to support native backend (such as Win32) with OpenGL.
+
+Title: 🔎 Pre-Requisite
+
+Group: SFML:
+
+(See SFML.png)
+
+There are two ways you can do with SFML, either <a. Upgrade your project with the latest SFML snapshot> or <b. Use ssGUI as it is with SFML>
+
+Topic: a. Upgrade your project with the latest SFML snapshot
+
+In order to use ssGUI, you first need to have a *working SFML project*.
+
+Please see the <offical SFML tutorial: https://www.sfml-dev.org/tutorials/2.5/#getting-started> if you don't know how to set it up.
+
+You cannot be using the stable version of SFML, since ssGUI uses some features from SFML Master.
+
+You will need to be using the <Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> (at least within recent few months) from SFML.
+
+Finally, you need to make sure the following include statements can access SFML modules as this is how ssGUI access SFML.
+
+================= C++ =================
+#include "SFML/Graphics.hpp"
+#include "SFML/Window/Keyboard.hpp"
+#include "SFML/Window/Mouse.hpp"
+=======================================
+
+Topic: b. Use ssGUI as it is with SFML
+
+If you are using ssGUI as it is, or just want to try it out, you first need to download the snapshot for your OS. 
+
+By default, Linux SFML libraries are included in the repo. 
+
+If you are not using Linux, please download the <Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> (at least within recent few months) from SFML.
+
+After that, you will need to place those files in _External/sfml_ folder if you are not using the ones in the repo.
+
+⠀
+
+Group: CMake:
+
+(See CMake_Resized.png)
+
+Although CMake is not required, it is strongly recommended as it greatly unifies how to generate make files cross platform.
+
+Again, this will cover both scenario <a. Using ssGUI in your CMake project> and <b. Using ssGUI as it is>
+
+Topic: a. Using ssGUI in your CMake project
+
+- *1.* First, you need to git clone recursive ssGUI to the directory you like.
+    - *a.* Go to the directory you like ssGUI to be in.
+    - *b.* Run
+    > git clone https://github.com/Neko-Box-Coder/ssGUI.git --recursive 
+
+⠀
+
+- *2.* Add _ssGUI_ to your _CMakeLists.txt_ with
+    
+    > add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/directory/to/ssGUI") 
+    
+    - Note that this line *MUST* be after adding SFML packages, so after this line in your _CMakeLists.txt_:
+    
+    > find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
+
+    - This is because ssGUI will automatically link SFML package.
+
+⠀
+
+- *3.* After adding ssGUI to your CMake project, you will have to link ssGUI to your project.
+
+    So if your project target name is _example_, then this should work.
+
+    > target_link_libraries(example PUBLIC ssGUI)
+
+    - So your CMakeLists.txt might look something like this:
+
+============================== python ==============================
+cmake_minimum_required(VERSION 3.14)
+
+# set the project name
+project(example)
+
+# add the executable
+add_executable(example "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+
+# Set the SFML directory
+set(SFML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Directory/To/SFML/lib/cmake/SFML")
+
+# If you are not sure if it is set correctly, you can print it
+# message("${SFML_DIR}")
+
+# Import SFML
+find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
+
+# Import ssGUI
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/directory/to/ssGUI") 
+
+# Link ssGUI to executable
+target_link_libraries(example PUBLIC ssGUI)
+
+==================================================================
+
+- *4.* After finishing your _CMakeLists.txt_, you will need to re-configure it in order to show the ssGUI CMake options. 
+
+Topic: b. Using ssGUI as it is
+
+- *1.* You need to configure CMake, here I am using CMake GUI, it might look slightly different than yours.
+
+- *2.* Select ssGUI root directory as "source" and a directory for the build, here I created a directory called "Build" at ssGUI root directory. 
+
+(See CMakeGUI.png)
+
+- *3.* Finally, you need to configure it and select the generator for CMake. 
+
+(See CMakeGUI_2.png)
+
+Here I am just using native default generator. This is normally compilers that can be accessed with the PATH environment variable.
+
+(See CMakeGUI_3.png)
+
+If your development environment revolve around Visual Studio, you will want to choose Visual Studio as your generator.
+
+Topic: CMake ssGUI options:
+
+Here should be what it looks like after you first configured ssGUI in CMake, you can hover each option to see the details of it.
+
+(See CMakeGUI_4.png)
+
+> ⚠️ Please note that by default it uses the SFML that comes with the repo.
+
+If you already have your SFML somewhere else, you will need to disable the _ssGUI_USE_LOCAL_SFML_ option 
+
+and set the _ssGUI_SFML_INCLUDE_DIR_ option accordingly.
+
+⠀
+
+Group: Manually including
+
+If CMake is not an option, you will need to manually include the header and source files.
+
+This is really not recommended because there will be more dependencies added in the future.
+
+Fortunitely, ssGUI's folder structure is very clear and easy to understand.
+
+> ⚠️ Please note SFML stuff are not mentioned here, you will need to apply these changes on top of SFML
+
+> ⚠️ If you encountered any problem, taking a look at the dependencies' CMakeLists.txt might be a good idea.
+
+Topic: Include paths:
+    > External
+    > External/glm
+    > External/ssLogger/include
+    > Include
+
+⠀
+
+Topic: Source files:
+    
+    - Corresponding .cpp file according to your OS in _External/clip_
+    > External/ssLogger/src/srcLogInit.cpp
+    > Src/ssGUI/*.cpp
+
+⠀
+
+Topic: Macros needed to be defined:
+    - Common
+        > ssLOG_CALL_STACK=0
+        > ssLOG_SHOW_FILE_NAME=1
+        > ssLOG_SHOW_LINE_NUM=1
+        > ssLOG_SHOW_FUNC_NAME=1
+        > ssLOG_SHOW_TIME=1
+        > ssLOG_THREAD_SAFE=0
+        > ssLOG_LOG_TO_FILE=0
+
+    - Windows
+        > _SCL_SECURE_NO_WARNINGS
+    
+    - Linux
+        > HAVE_PNG_H
+        > HAVE_XCB_XLIB_H
+    
+    - MacOS
+        > fobjc-arc
+
+⠀
+
+Topic: Flags/System Libraries:
+    > -Wl,-rpath -Wl,$ORIGIN
+    > -fpermissive
+    > -std=c++0x
+
+    - Windows
+        > shlwapi
+        > windowscodecs (Only MinGW)
+
+    - MacOS
+        > Cocoa
+        > -stdlib=libc++
+
+    - Linux
+        > png
+        > xcb
+        > pthread

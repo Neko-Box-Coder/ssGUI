@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("und",["Variable"],[["Underlined",,[["ssGUI::CharacterDetails",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/CharacterDetails.hpp:ssGUI.CharacterDetails.Underlined","CClass:ssGUI.CharacterDetails:Underlined"]]]]);

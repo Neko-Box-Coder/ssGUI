@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("dro",["Class","Constant"],[["Dropdown",,[["ssGUI",,,,0,"File:◀️_ssGUI_API_▶️/GUIObjectClasses/CompositeClasses/Dropdown.hpp:ssGUI.Dropdown","CClass:ssGUI.Dropdown"],["ssGUI::Enums","DROPDOWN",,,1,"File:◀️_ssGUI_API_▶️/Enums/GUIObjectType.hpp:ssGUI.Enums.DROPDOWN","CClass:ssGUI.Enums:DROPDOWN"]]]]);

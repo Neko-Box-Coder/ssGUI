@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("val",["Variable"],[["Valid",,[["ssGUI::CharacterRenderInfo",,,,0,"File:ssGUI/DataClasses/CharacterRenderInfo.hpp:ssGUI.CharacterRenderInfo.Valid","CClass:ssGUI.CharacterRenderInfo:Valid"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("val",["Variable"],[["Valid",,[["ssGUI::CharacterRenderInfo",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/CharacterRenderInfo.hpp:ssGUI.CharacterRenderInfo.Valid","CClass:ssGUI.CharacterRenderInfo:Valid"]]]]);

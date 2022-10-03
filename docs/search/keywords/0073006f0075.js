@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("sou",["Section"],[["Source",,[[,,,,0,"File:User_Manual/Intermediate/2._Creating_A_Custom_Event_Callback.txt:Source"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("sou",["Section","Information"],[["Source",,[[,,,,0,"File:🗒️_User_Manual/Intermediate/2._Creating_A_Custom_Event_Callback.txt:Source"],[,"Source files:",,,1,"File:🗒️_User_Manual/02._Using_ssGUI.txt:Source_files_"]]]]);

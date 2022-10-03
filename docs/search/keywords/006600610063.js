@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("fac",["Class"],[["Factory",,[["ssGUI",,,,0,"File:ssGUI/Factory.hpp:ssGUI.Factory","CClass:ssGUI.Factory"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("fac",["Class"],[["Factory",,[["ssGUI",,,,0,"File:◀️_ssGUI_API_▶️/Factory.hpp:ssGUI.Factory","CClass:ssGUI.Factory"]]]]);

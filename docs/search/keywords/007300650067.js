@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("seg",["Class"],[["SegmentedVector",,[["ssGUI",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/SegmentedVector.hpp:ssGUI.SegmentedVector","CClass:ssGUI.SegmentedVector"]]]]);

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("can",["Function"],[["CanForceSpawnMenu",,[["ssGUI::Menu",,,,0,"File:◀️_ssGUI_API_▶️/GUIObjectClasses/Menu.hpp:ssGUI.Menu.CanForceSpawnMenu","CClass:ssGUI.Menu:CanForceSpawnMenu"]]]]);

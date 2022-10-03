@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("File:🗒️_User_Manual/06__GUI_Object_Hierarchy.txt","06  GUI Object Hierarchy.txt");NDSummary.OnSummaryLoaded("File:🗒️_User_Manual/06__GUI_Object_Hierarchy.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[1663,0,0,"GUI Object Hierarchy","GUI_Object_Hierarchy"]]);

@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("red",["Function"],[["RedrawObject",,[["ssGUI::BaseGUIObject",,,,0,"File:ssGUI/GUIObjectClasses/BaseGUIObject.hpp:ssGUI.BaseGUIObject.RedrawObject","CClass:ssGUI.BaseGUIObject:RedrawObject"],["ssGUI::GUIObject",,,,0,"File:ssGUI/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject.RedrawObject","CClass:ssGUI.GUIObject:RedrawObject"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("red",["Function"],[["RedrawObject",,[["ssGUI::Renderer",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/Renderer.hpp:ssGUI.Renderer.RedrawObject","CClass:ssGUI.Renderer:RedrawObject"]]]]);

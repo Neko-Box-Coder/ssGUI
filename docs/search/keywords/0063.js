@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("c",["Constant"],[["C",,[["ssGUI::Enums",,,,0,"File:ssGUI/Enums/LetterKey.hpp:ssGUI.Enums.C","CClass:ssGUI.Enums:C"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("c",["Constant"],[["C",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/LetterKey.hpp:ssGUI.Enums.C","CClass:ssGUI.Enums:C"]]]]);
