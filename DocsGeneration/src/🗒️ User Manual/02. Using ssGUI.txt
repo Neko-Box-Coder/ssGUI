@@ -13,6 +13,7 @@ On Windows, you will need to match the compiler version for SFML or depending on
 - If you are using the latest Visual Studio (2022), you should be fine without any tweaks. _VC17_ should be the one that you are using.
 
 - If you are using the latest Visual Studio (2022) but want to build with Visual Studio 2019 toolset, you can install it from the Visual Studio Installer.
+(See VisualStudioInstaller.png)
 
 - If you are using GCC/MingGW, you should get the correct *GCC* version of compiler from <here: https://github.com/niXman/mingw-builds-binaries/releases>
 
@@ -151,6 +152,8 @@ If your development environment revolve around Visual Studio, you will want to c
 > ⚠️ If you using Visual Studio and using VC16 or below, you will have to specify 
 > the toolset version number, _v142_ for example for VC16 (Visual Studio 2019)  
 
+(See CMakeToolset.png)
+
 Topic: CMake ssGUI options:
 
 Here should be what it looks like after you first configured ssGUI in CMake, you can hover each option to see the details of it.
@@ -174,6 +177,12 @@ This is really not recommended because there will be more dependencies added in 
 Fortunitely, ssGUI's folder structure is very clear and easy to understand.
 
 > ⚠️ Please note SFML stuff are not mentioned here, you will need to apply these changes on top of SFML
+
+Topic: Default Resources
+
+First, you will need to copy the Resources folder to either your project's binary folder or porject's root folder.
+
+⠀
 
 Topic: Include paths:
     > External/clip

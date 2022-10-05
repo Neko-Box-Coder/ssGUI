@@ -128,7 +128,7 @@ target_link_libraries(ssGUI PUBLIC ssLogger)
 
 # Copy resources for the library 
 file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-        DESTINATION "${CMAKE_BINARY_DIR") 
+        DESTINATION "${CMAKE_BINARY_DIR}") 
 
 # ==========================================================
 # Building tests and examples 

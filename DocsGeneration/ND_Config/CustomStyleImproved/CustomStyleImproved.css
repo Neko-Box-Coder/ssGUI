@@ -64,7 +64,7 @@
 .CTopic .CTitle {
     font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
     font-size: 1.5rem;
-    text-transform: capitalize;
+    text-transform: none;
 }
 
 .CTopic.TInformation .CTitle {
