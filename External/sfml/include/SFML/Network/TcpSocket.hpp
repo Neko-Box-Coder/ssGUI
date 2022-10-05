@@ -29,8 +29,11 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Network/Export.hpp>
+
 #include <SFML/Network/Socket.hpp>
 #include <SFML/System/Time.hpp>
+
+#include <optional>
 
 
 namespace sf
@@ -46,7 +49,6 @@ class Packet;
 class SFML_NETWORK_API TcpSocket : public Socket
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -69,14 +71,14 @@ public:
     /// \brief Get the address of the connected peer
     ///
     /// If the socket is not connected, this function returns
-    /// sf::IpAddress::None.
+    /// an unset optional.
     ///
     /// \return Address of the remote peer
     ///
     /// \see getRemotePort
     ///
     ////////////////////////////////////////////////////////////
-    IpAddress getRemoteAddress() const;
+    std::optional<IpAddress> getRemoteAddress() const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Get the port of the connected peer to which
@@ -177,7 +179,7 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Send a formatted packet of data to the remote peer
     ///
-    /// In non-blocking mode, if this function returns sf::Socket::Partial,
+    /// In non-blocking mode, if this function returns sf::Socket::Status::Partial,
     /// you \em must retry sending the same unmodified packet before sending
     /// anything else in order to guarantee the packet arrives at the remote
     /// peer uncorrupted.
@@ -209,7 +211,6 @@ public:
     [[nodiscard]] Status receive(Packet& packet);
 
 private:
-
     friend class TcpListener;
 
     ////////////////////////////////////////////////////////////
@@ -220,7 +221,7 @@ private:
     {
         PendingPacket();
 
-        Uint32            Size;         //!< Data of packet size
+        std::uint32_t     Size;         //!< Data of packet size
         std::size_t       SizeReceived; //!< Number of size bytes received so far
         std::vector<char> Data;         //!< Data of the packet
     };
@@ -228,7 +229,8 @@ private:
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    PendingPacket m_pendingPacket; //!< Temporary data of the packet currently being received
+    PendingPacket     m_pendingPacket;     //!< Temporary data of the packet currently being received
+    std::vector<char> m_blockToSendBuffer; //!< Buffer used to prepare data being sent from the socket
 };
 
 } // namespace sf
@@ -298,7 +300,7 @@ private:
 /// // Wait for a connection
 /// sf::TcpSocket socket;
 /// listener.accept(socket);
-/// std::cout << "New client connected: " << socket.getRemoteAddress() << std::endl;
+/// std::cout << "New client connected: " << socket.getRemoteAddress().value() << std::endl;
 ///
 /// // Receive a message from the client
 /// char buffer[1024];

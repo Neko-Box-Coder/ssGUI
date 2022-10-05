@@ -5,6 +5,7 @@
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 
 #include "clip.h"   //TODO: Add macro for switching between this and SFML one.
+#include <codecvt>
 // #include "SFML/Window/Clipboard.hpp"
 
 namespace ssGUI::Backend
@@ -592,7 +593,7 @@ namespace ssGUI::Backend
                 //Do the final round of resizing
                 cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
                 ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
-                CustomCursors[cursorName].first.create(cursorSize.x, cursorSize.y, cursorPtrArr[(populatedImg + 1) % 2]);
+                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), cursorPtrArr[(populatedImg + 1) % 2]);
 
                 delete[] cursorPtr;
                 delete[] cursorPtr1;

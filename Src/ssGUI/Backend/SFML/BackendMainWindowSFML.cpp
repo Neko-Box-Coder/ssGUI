@@ -3,7 +3,7 @@
 namespace ssGUI::Backend
 {
     BackendMainWindowSFML::BackendMainWindowSFML(BackendMainWindowSFML const& other) : 
-        CurrentWindow(sf::VideoMode(other.CurrentWindow.getSize().x, other.CurrentWindow.getSize().y), other.GetTitle()), 
+        CurrentWindow(sf::VideoMode(sf::Vector2u(other.CurrentWindow.getSize().x, other.CurrentWindow.getSize().y)), other.GetTitle()), 
         Visible(other.IsVisible()), VSync(other.IsVSync()), Closed(other.IsClosed()), CurrentWindowMode(other.GetWindowMode()), Titlebar(other.HasTitlebar()), 
         Resizable(other.IsResizable()), CloseButton(other.HasCloseButton()), Title(other.GetTitle()), IsClosingAborted(other.IsClosingAborted),
         PositionOffset(other.GetPositionOffset())
@@ -29,7 +29,7 @@ namespace ssGUI::Backend
         sf::ContextSettings settings;
         settings.antialiasingLevel = msaa;
 
-        CurrentWindow.create(sf::VideoMode(CurrentWindow.getSize().x, CurrentWindow.getSize().y), GetTitle(), newStyle, settings);
+        CurrentWindow.create(sf::VideoMode(sf::Vector2u(CurrentWindow.getSize().x, CurrentWindow.getSize().y)), GetTitle(), newStyle, settings);
     }
 
     void BackendMainWindowSFML::SyncPositionOffset()
@@ -50,7 +50,7 @@ namespace ssGUI::Backend
         */
     }
 
-    BackendMainWindowSFML::BackendMainWindowSFML() :    CurrentWindow(sf::VideoMode(800, 600), ""),
+    BackendMainWindowSFML::BackendMainWindowSFML() :    CurrentWindow(sf::VideoMode(sf::Vector2u(800, 600)), ""),
                                                         OnCloseCallback(),
                                                         ExternalFocusChangedCallback(),
                                                         Visible(true),
@@ -158,7 +158,7 @@ namespace ssGUI::Backend
         ssGUI::Backend::BackendImageSFML& castedIcon = (ssGUI::Backend::BackendImageSFML&)iconImage;
         sf::Image sfImg = (*static_cast<sf::Texture*>(castedIcon.GetRawHandle())).copyToImage();
         
-        CurrentWindow.setIcon(sfImg.getSize().x, sfImg.getSize().y, sfImg.getPixelsPtr());
+        CurrentWindow.setIcon(sf::Vector2u(sfImg.getSize().x, sfImg.getSize().y), sfImg.getPixelsPtr());
     }
 
     void BackendMainWindowSFML::SetVisible(bool visible)

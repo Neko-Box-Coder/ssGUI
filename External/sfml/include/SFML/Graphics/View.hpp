@@ -29,6 +29,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Graphics/Export.hpp>
+
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Transform.hpp>
 #include <SFML/System/Angle.hpp>
@@ -44,7 +45,6 @@ namespace sf
 class SFML_GRAPHICS_API View
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -79,17 +79,6 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     void setCenter(const Vector2f& center);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Set the size of the view
-    ///
-    /// \param width  New width of the view
-    /// \param height New height of the view
-    ///
-    /// \see setCenter, getCenter
-    ///
-    ////////////////////////////////////////////////////////////
-    void setSize(float width, float height);
 
     ////////////////////////////////////////////////////////////
     /// \brief Set the size of the view
@@ -185,17 +174,6 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Move the view relatively to its current position
     ///
-    /// \param offsetX X coordinate of the move offset
-    /// \param offsetY Y coordinate of the move offset
-    ///
-    /// \see setCenter, rotate, zoom
-    ///
-    ////////////////////////////////////////////////////////////
-    void move(float offsetX, float offsetY);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Move the view relatively to its current position
-    ///
     /// \param offset Move offset
     ///
     /// \see setCenter, rotate, zoom
@@ -255,7 +233,6 @@ public:
     const Transform& getInverseTransform() const;
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////

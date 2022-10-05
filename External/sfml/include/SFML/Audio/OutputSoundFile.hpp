@@ -29,6 +29,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Audio/Export.hpp>
+
 #include <filesystem>
 #include <memory>
 #include <string>
@@ -45,7 +46,6 @@ class SoundFileWriter;
 class SFML_AUDIO_API OutputSoundFile
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -93,7 +93,7 @@ public:
     /// \param count       Number of samples to write
     ///
     ////////////////////////////////////////////////////////////
-    void write(const Int16* samples, Uint64 count);
+    void write(const std::int16_t* samples, std::uint64_t count);
 
     ////////////////////////////////////////////////////////////
     /// \brief Close the current file
@@ -102,7 +102,6 @@ public:
     void close();
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
@@ -134,7 +133,7 @@ private:
 /// while (...)
 /// {
 ///     // Read or generate audio samples from your custom source
-///     std::vector<sf::Int16> samples = ...;
+///     std::vector<std::int16_t> samples = ...;
 ///
 ///     // Write them to the file
 ///     file.write(samples.data(), samples.size());

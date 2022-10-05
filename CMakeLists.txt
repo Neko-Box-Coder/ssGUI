@@ -54,13 +54,7 @@ target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/External/clip")
 
 if(ssGUI_USE_LOCAL_SFML)
 
-    # Use different library directory depending on the static or shared
-    set(LIB_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml")
-    if (ssGUI_OUTPUT_STATIC)
-        set(SFML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml/static/SFML/lib/cmake/SFML")
-    else()
-        set(SFML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml/shared/SFML/lib/cmake/SFML")
-    endif()
+    set(SFML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml/lib/cmake/SFML")
 
     # set(INCLUDE_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../include")
     # message("${SFML_DIR}")

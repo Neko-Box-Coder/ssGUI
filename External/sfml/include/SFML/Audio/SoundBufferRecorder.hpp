@@ -29,8 +29,10 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Audio/Export.hpp>
+
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/SoundRecorder.hpp>
+
 #include <vector>
 
 
@@ -44,7 +46,6 @@ namespace sf
 class SFML_AUDIO_API SoundBufferRecorder : public SoundRecorder
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief destructor
     ///
@@ -65,7 +66,6 @@ public:
     const SoundBuffer& getBuffer() const;
 
 protected:
-
     ////////////////////////////////////////////////////////////
     /// \brief Start capturing audio data
     ///
@@ -83,7 +83,7 @@ protected:
     /// \return True to continue the capture, or false to stop it
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool onProcessSamples(const Int16* samples, std::size_t sampleCount) override;
+    [[nodiscard]] bool onProcessSamples(const std::int16_t* samples, std::size_t sampleCount) override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Stop capturing audio data
@@ -92,12 +92,11 @@ protected:
     void onStop() override;
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    std::vector<Int16> m_samples; //!< Temporary sample buffer to hold the recorded data
-    SoundBuffer        m_buffer;  //!< Sound buffer that will contain the recorded data
+    std::vector<std::int16_t> m_samples; //!< Temporary sample buffer to hold the recorded data
+    SoundBuffer               m_buffer;  //!< Sound buffer that will contain the recorded data
 };
 
 } // namespace sf

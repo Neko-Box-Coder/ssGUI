@@ -29,18 +29,19 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Config.hpp>
+
+#include <cstdlib>
 #include <iterator>
 #include <locale>
 #include <string>
-#include <cstdlib>
 
 
 namespace sf
 {
 namespace priv
 {
-    template<class InputIt, class OutputIt>
-    OutputIt copy(InputIt first, InputIt last, OutputIt d_first);
+template <class InputIt, class OutputIt>
+OutputIt copy(InputIt first, InputIt last, OutputIt d_first);
 }
 
 template <unsigned int N>
@@ -54,7 +55,6 @@ template <>
 class Utf<8>
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Decode a single UTF-8 character
     ///
@@ -70,7 +70,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename In>
-    static In decode(In begin, In end, Uint32& output, Uint32 replacement = 0);
+    static In decode(In begin, In end, std::uint32_t& output, std::uint32_t replacement = 0);
 
     ////////////////////////////////////////////////////////////
     /// \brief Encode a single UTF-8 character
@@ -86,7 +86,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename Out>
-    static Out encode(Uint32 input, Out output, Uint8 replacement = 0);
+    static Out encode(std::uint32_t input, Out output, std::uint8_t replacement = 0);
 
     ////////////////////////////////////////////////////////////
     /// \brief Advance to the next UTF-8 character
@@ -261,7 +261,6 @@ template <>
 class Utf<16>
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Decode a single UTF-16 character
     ///
@@ -277,7 +276,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename In>
-    static In decode(In begin, In end, Uint32& output, Uint32 replacement = 0);
+    static In decode(In begin, In end, std::uint32_t& output, std::uint32_t replacement = 0);
 
     ////////////////////////////////////////////////////////////
     /// \brief Encode a single UTF-16 character
@@ -293,7 +292,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename Out>
-    static Out encode(Uint32 input, Out output, Uint16 replacement = 0);
+    static Out encode(std::uint32_t input, Out output, std::uint16_t replacement = 0);
 
     ////////////////////////////////////////////////////////////
     /// \brief Advance to the next UTF-16 character
@@ -468,7 +467,6 @@ template <>
 class Utf<32>
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Decode a single UTF-32 character
     ///
@@ -485,7 +483,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename In>
-    static In decode(In begin, In end, Uint32& output, Uint32 replacement = 0);
+    static In decode(In begin, In end, std::uint32_t& output, std::uint32_t replacement = 0);
 
     ////////////////////////////////////////////////////////////
     /// \brief Encode a single UTF-32 character
@@ -502,7 +500,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename Out>
-    static Out encode(Uint32 input, Out output, Uint32 replacement = 0);
+    static Out encode(std::uint32_t input, Out output, std::uint32_t replacement = 0);
 
     ////////////////////////////////////////////////////////////
     /// \brief Advance to the next UTF-32 character
@@ -681,7 +679,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename In>
-    static Uint32 decodeAnsi(In input, const std::locale& locale = std::locale());
+    static std::uint32_t decodeAnsi(In input, const std::locale& locale = std::locale());
 
     ////////////////////////////////////////////////////////////
     /// \brief Decode a single wide character to UTF-32
@@ -696,7 +694,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename In>
-    static Uint32 decodeWide(In input);
+    static std::uint32_t decodeWide(In input);
 
     ////////////////////////////////////////////////////////////
     /// \brief Encode a single UTF-32 character to ANSI
@@ -714,7 +712,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename Out>
-    static Out encodeAnsi(Uint32 codepoint, Out output, char replacement = 0, const std::locale& locale = std::locale());
+    static Out encodeAnsi(std::uint32_t codepoint, Out output, char replacement = 0, const std::locale& locale = std::locale());
 
     ////////////////////////////////////////////////////////////
     /// \brief Encode a single UTF-32 character to wide
@@ -731,13 +729,13 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     template <typename Out>
-    static Out encodeWide(Uint32 codepoint, Out output, wchar_t replacement = 0);
+    static Out encodeWide(std::uint32_t codepoint, Out output, wchar_t replacement = 0);
 };
 
 #include <SFML/System/Utf.inl>
 
 // Make type aliases to get rid of the template syntax
-using Utf8 = Utf<8>;
+using Utf8  = Utf<8>;
 using Utf16 = Utf<16>;
 using Utf32 = Utf<32>;
 

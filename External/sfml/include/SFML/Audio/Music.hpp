@@ -29,8 +29,10 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Audio/Export.hpp>
-#include <SFML/Audio/SoundStream.hpp>
+
 #include <SFML/Audio/InputSoundFile.hpp>
+#include <SFML/Audio/SoundStream.hpp>
+
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -48,7 +50,6 @@ class InputStream;
 class SFML_AUDIO_API Music : public SoundStream
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Structure defining a time range using the template type
     ///
@@ -62,7 +63,6 @@ public:
         ////////////////////////////////////////////////////////////
         Span()
         {
-
         }
 
         ////////////////////////////////////////////////////////////
@@ -72,11 +72,8 @@ public:
         /// \param len Initial Length
         ///
         ////////////////////////////////////////////////////////////
-        Span(T off, T len):
-        offset(off),
-        length(len)
+        Span(T off, T len) : offset(off), length(len)
         {
-
         }
 
         T offset; //!< The beginning offset of the time range
@@ -189,11 +186,11 @@ public:
     TimeSpan getLoopPoints() const;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Sets the beginning and end of the sound's looping sequence using sf::Time
+    /// \brief Sets the beginning and duration of the sound's looping sequence using sf::Time
     ///
-    /// Loop points allow one to specify a pair of positions such that, when the music
+    /// setLoopPoints() allows for specifying the beginning offset and the duration of the loop such that, when the music
     /// is enabled for looping, it will seamlessly seek to the beginning whenever it
-    /// encounters the end. Valid ranges for timePoints.offset and timePoints.length are
+    /// encounters the end of the duration. Valid ranges for timePoints.offset and timePoints.length are
     /// [0, Dur) and (0, Dur-offset] respectively, where Dur is the value returned by getDuration().
     /// Note that the EOF "loop point" from the end to the beginning of the stream is still honored,
     /// in case the caller seeks to a point after the end of the loop range. This function can be
@@ -211,7 +208,6 @@ public:
     void setLoopPoints(TimeSpan timePoints);
 
 protected:
-
     ////////////////////////////////////////////////////////////
     /// \brief Request a new chunk of audio samples from the stream source
     ///
@@ -243,10 +239,9 @@ protected:
     /// \return The seek position after looping (or -1 if there's no loop)
     ///
     ////////////////////////////////////////////////////////////
-    Int64 onLoop() override;
+    std::int64_t onLoop() override;
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Initialize the internal state after loading a new music
     ///
@@ -261,7 +256,7 @@ private:
     /// \return The number of samples elapsed at the given time
     ///
     ////////////////////////////////////////////////////////////
-    Uint64 timeToSamples(Time position) const;
+    std::uint64_t timeToSamples(Time position) const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Helper to convert a sample position to an sf::Time
@@ -271,15 +266,15 @@ private:
     /// \return The Time position of the given sample
     ///
     ////////////////////////////////////////////////////////////
-    Time samplesToTime(Uint64 samples) const;
+    Time samplesToTime(std::uint64_t samples) const;
 
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    InputSoundFile       m_file;     //!< The streamed music file
-    std::vector<Int16>   m_samples;  //!< Temporary buffer of samples
-    std::recursive_mutex m_mutex;    //!< Mutex protecting the data
-    Span<Uint64>         m_loopSpan; //!< Loop Range Specifier
+    InputSoundFile            m_file;     //!< The streamed music file
+    std::vector<std::int16_t> m_samples;  //!< Temporary buffer of samples
+    std::recursive_mutex      m_mutex;    //!< Mutex protecting the data
+    Span<std::uint64_t>       m_loopSpan; //!< Loop Range Specifier
 };
 
 } // namespace sf

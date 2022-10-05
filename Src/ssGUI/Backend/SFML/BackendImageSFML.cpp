@@ -59,7 +59,7 @@ namespace ssGUI::Backend
 
     bool BackendImageSFML::LoadRawFromMemory(void const * dataPtr, int width, int height)
     {
-        MemoryImage.create(width, height, (sf::Uint8*)dataPtr);
+        MemoryImage.create(sf::Vector2u(width, height), (uint8_t*)dataPtr);
         if(GPUTexture.loadFromImage(MemoryImage))
         {
             GPUTextureValid = true;
