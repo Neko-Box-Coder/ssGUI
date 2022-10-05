@@ -6,7 +6,7 @@
 
 - #### 🖥️ OS support
     - Linux: Working ✅
-    - Windows: Will be tested soon 🔜
+    - Windows: Working ✅
     - MacOS: Unknown ❓
 
 - #### 📈 Current Status
@@ -144,7 +144,7 @@ int main()
         [&]()
         {
             if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText("(`oωo´)");
+                text.SetText(L"(`oωo´)");
         }
     );
     guiManager.StartRunning();

@@ -131,7 +131,7 @@ int main()
         [&]()
         {
             if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText("(`oωo´)");
+                text.SetText(L"(`oωo´)");
         }
     );
     guiManager.StartRunning();

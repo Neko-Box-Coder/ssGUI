@@ -1,6 +1,6 @@
 Title: 👟 Getting Started
 
-Section: 🗄️ What makes up ssGUI::
+Section: 🗄️ What makes up ssGUI:
 
 ssGUI is mainly made up of:
 

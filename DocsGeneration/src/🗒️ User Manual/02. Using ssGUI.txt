@@ -6,13 +6,27 @@ At the moment, *only SFML* is supported but in the future, we are aiming to supp
 
 Title: 🔎 Pre-Requisite
 
-Group: SFML:
+Group: ⚠️ Matching your compiler version (Windows):
+
+On Windows, you will need to match the compiler version for SFML or depending on what compiler you are using.
+
+- If you are using the latest Visual Studio (2022), you should be fine without any tweaks. _VC17_ should be the one that you are using.
+
+- If you are using the latest Visual Studio (2022) but want to build with Visual Studio 2019 toolset, you can install it from the Visual Studio Installer.
+
+- If you are using GCC/MingGW, you should get the correct *GCC* version of compiler from <here: https://github.com/niXman/mingw-builds-binaries/releases>
+
+    For the differences between seh and sjlj, see <here: https://stackoverflow.com/questions/15670169/what-is-difference-between-sjlj-vs-dwarf-vs-seh>
+
+⠀
+
+Group: 🟩 SFML:
 
 (See SFML.png)
 
-There are two ways you can do with SFML, either <a. Upgrade your project with the latest SFML snapshot> or <b. Use ssGUI as it is with SFML>
+There are two ways you can do with SFML, either <a. Upgrade your project with the specific SFML snapshot> or <b. Use ssGUI as it is with SFML>
 
-Topic: a. Upgrade your project with the latest SFML snapshot
+Topic: a. Upgrade your project with the specific SFML snapshot
 
 In order to use ssGUI, you first need to have a *working SFML project*.
 
@@ -20,7 +34,12 @@ Please see the <offical SFML tutorial: https://www.sfml-dev.org/tutorials/2.5/#g
 
 You cannot be using the stable version of SFML, since ssGUI uses some features from SFML Master.
 
-You will need to be using the <Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> (at least within recent few months) from SFML.
+You will need to be using the <(Specific) Snapshot: https://artifacts.sfml-dev.org/by-revision/939ec267dfa98e97438a5b76f79317c7e0738a92/> from SFML.
+
+> ⚠️ Some of those library files are stale and should not be used.
+> ⚠️ Since those files are copied automatically from master folder, that's why the dates are not correctly reflected.
+
+> ⚠️ The updated library files are all unix library files, vc16 and vc17.
 
 Finally, you need to make sure the following include statements can access SFML modules as this is how ssGUI access SFML.
 
@@ -36,17 +55,21 @@ If you are using ssGUI as it is, or just want to try it out, you first need to d
 
 By default, Linux SFML libraries are included in the repo. 
 
-If you are not using Linux, please download the <Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> (at least within recent few months) from SFML.
+If you are not using Linux, please download the <(Specific) Snapshot: https://artifacts.sfml-dev.org/by-revision/939ec267dfa98e97438a5b76f79317c7e0738a92/> from SFML.
 
 After that, you will need to place those files in _External/sfml_ folder if you are not using the ones in the repo.
 
 ⠀
 
-Group: CMake:
+Group: 🟦 CMake:
 
 (See CMake_Resized.png)
 
-Although CMake is not required, it is strongly recommended as it greatly unifies how to generate make files cross platform.
+Although CMake is not required, it is strongly recommended as it greatly reduce the effort sorting out compiling and linking
+
+and also unifies how to generate make files cross platform.
+
+You can still use Visual Studio by generating a solution file.
 
 Again, this will cover both scenario <a. Using ssGUI in your CMake project> and <b. Using ssGUI as it is>
 
@@ -119,11 +142,14 @@ Topic: b. Using ssGUI as it is
 
 (See CMakeGUI_2.png)
 
-Here I am just using native default generator. This is normally compilers that can be accessed with the PATH environment variable.
+Here I am just using native default generator.
 
 (See CMakeGUI_3.png)
 
 If your development environment revolve around Visual Studio, you will want to choose Visual Studio as your generator.
+
+> ⚠️ If you using Visual Studio and using VC16 or below, you will have to specify 
+> the toolset version number, _v142_ for example for VC16 (Visual Studio 2019)  
 
 Topic: CMake ssGUI options:
 
@@ -133,13 +159,13 @@ Here should be what it looks like after you first configured ssGUI in CMake, you
 
 > ⚠️ Please note that by default it uses the SFML that comes with the repo.
 
-If you already have your SFML somewhere else, you will need to disable the _ssGUI_USE_LOCAL_SFML_ option 
+If you already have your SFML somewhere else, you will need to disable the *_ssGUI_USE_LOCAL_SFML_* option 
 
-and set the _ssGUI_SFML_INCLUDE_DIR_ option accordingly.
+and set the *_ssGUI_SFML_INCLUDE_DIR_* option accordingly.
 
 ⠀
 
-Group: Manually including
+Group: 🛅 Manually including
 
 If CMake is not an option, you will need to manually include the header and source files.
 
@@ -149,10 +175,8 @@ Fortunitely, ssGUI's folder structure is very clear and easy to understand.
 
 > ⚠️ Please note SFML stuff are not mentioned here, you will need to apply these changes on top of SFML
 
-> ⚠️ If you encountered any problem, taking a look at the dependencies' CMakeLists.txt might be a good idea.
-
 Topic: Include paths:
-    > External
+    > External/clip
     > External/glm
     > External/ssLogger/include
     > Include
@@ -160,10 +184,23 @@ Topic: Include paths:
 ⠀
 
 Topic: Source files:
+
+⚠️ To add source files recursively for a given folder for Visual Studio, please see <this post: https://stackoverflow.com/questions/392473/how-do-i-add-an-existing-directory-tree-to-a-project-in-visual-studio>
+
+    - Common
+        > External/ssLogger/src/srcLogInit.cpp
+        > Src/ssGUI/*.cpp
+        > External/clip/clip.cpp
+        > External/clip/image.cpp
     
-    - Corresponding .cpp file according to your OS in _External/clip_
-    > External/ssLogger/src/srcLogInit.cpp
-    > Src/ssGUI/*.cpp
+    - Windows
+        > External/clip/clip_win.cpp
+    
+    - MacOS
+        > External/clip/clip_osx.mm
+    
+    - Linux
+        > External/clip/clip_x11.cpp
 
 ⠀
 
@@ -176,9 +213,12 @@ Topic: Macros needed to be defined:
         > ssLOG_SHOW_TIME=1
         > ssLOG_THREAD_SAFE=0
         > ssLOG_LOG_TO_FILE=0
+        > ssLOG_USE_SOURCE
 
     - Windows
         > _SCL_SECURE_NO_WARNINGS
+        > _CRT_SECURE_NO_WARNINGS
+        > _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
     
     - Linux
         > HAVE_PNG_H
@@ -190,12 +230,14 @@ Topic: Macros needed to be defined:
 ⠀
 
 Topic: Flags/System Libraries:
+_(The ones without "-" are system libraries)_
+
     > -Wl,-rpath -Wl,$ORIGIN
-    > -fpermissive
-    > -std=c++0x
+    > -fpermissive (GCC)
+    > -std=c++0x (GCC)
 
     - Windows
-        > shlwapi
+        > shlwapi (shlwapi.lib for MSVC)
         > windowscodecs (Only MinGW)
 
     - MacOS
