@@ -374,7 +374,13 @@ namespace ssGUI::Extensions
 
                 newColors.push_back(glm::vec4(drawingColors[prevIndex]) * coord.x + 
                                     glm::vec4(drawingColors[currentIndex]) * coord.y + 
-                                    glm::vec4(drawingColors[nextIndex]) * coord.z);
+                                    glm::vec4(drawingColors[nextIndex]) * coord.z +
+                                    0.5001f);   //0.5 for the rounding
+
+                // ssLOG_LINE("drawingColors[prevIndex]: "<<(int)drawingColors[prevIndex].r<<", "<<(int)drawingColors[prevIndex].g<<", "<<(int)drawingColors[prevIndex].b<<", "<<(int)drawingColors[prevIndex].a);
+                // ssLOG_LINE("drawingColors[currentIndex]: "<<(int)drawingColors[currentIndex].r<<", "<<(int)drawingColors[currentIndex].g<<", "<<(int)drawingColors[currentIndex].b<<", "<<(int)drawingColors[currentIndex].a);
+                // ssLOG_LINE("drawingColors[nextIndex]: "<<(int)drawingColors[nextIndex].r<<", "<<(int)drawingColors[nextIndex].g<<", "<<(int)drawingColors[nextIndex].b<<", "<<(int)drawingColors[prevIndex].a);
+                // ssLOG_LINE("newColors.back(): "<<(int)newColors.back().r<<", "<<(int)newColors.back().g<<", "<<(int)newColors.back().b<<", "<<(int)newColors.back().a);
             }
         }
 
