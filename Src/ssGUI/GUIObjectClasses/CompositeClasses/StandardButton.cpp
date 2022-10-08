@@ -8,6 +8,7 @@
 #include "ssGUI/Extensions/Outline.hpp"
 #include "ssGUI/Extensions/BoxShadow.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
+#include "ssGUI/ssGUITags.hpp"
 
 namespace ssGUI
 {
@@ -40,6 +41,8 @@ namespace ssGUI
         }
 
         buttonTextObj->SetEnabled(true);
+        if(!buttonTextObj->HasTag(ssGUI::Tags::FLOATING))
+            buttonTextObj->AddTag(ssGUI::Tags::FLOATING);
 
         ssGUI::Extensions::AdvancedSize* as;
         
@@ -76,6 +79,8 @@ namespace ssGUI
         }
         
         buttonImgWrapper->SetEnabled(true);
+        if(!buttonImgWrapper->HasTag(ssGUI::Tags::FLOATING))
+            buttonImgWrapper->AddTag(ssGUI::Tags::FLOATING);
         
         ssGUI::Extensions::AdvancedSize* as;
         ssGUI::Extensions::AdvancedPosition* ap;
@@ -111,7 +116,7 @@ namespace ssGUI
                                         ButtonImageWrapper(-1)
     {
         ssLOG_FUNC_ENTRY();
-        SetSize(glm::vec2(100, 40));
+        SetSize(glm::vec2(70, 35));
 
         //Adjust Extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
@@ -138,7 +143,7 @@ namespace ssGUI
 
         //Add Button Image
         auto wrapper = ssGUI::Factory::Create<ssGUI::Widget>();
-        wrapper->SetParent(this);
+        wrapper->SetParent(this, true);
         wrapper->SetBlockInput(false);
         wrapper->SetUserCreated(false);
         wrapper->SetBackgroundColor(glm::u8vec4(0, 0, 0, 25));
@@ -157,7 +162,7 @@ namespace ssGUI
         auto buttonText = new ssGUI::Text();
         buttonText->SetUserCreated(false);
         buttonText->SetHeapAllocated(true);
-        buttonText->SetParent(this);
+        buttonText->SetParent(this, true);
         buttonText->SetMinSize(glm::vec2(5, 5));
         buttonText->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
         ButtonText = CurrentObjectsReferences.AddObjectReference(buttonText);
@@ -277,7 +282,9 @@ namespace ssGUI
             return;
         }
 
-        image->SetParent(this);
+        glm::vec2 globalPos = image->GetGlobalPosition();
+        image->SetParent(buttonImgWrapper);
+        image->SetGlobalPosition(globalPos);
 
         ssGUIObjectIndex newImageIndex = CurrentObjectsReferences.GetObjectIndex(image);
 
@@ -313,7 +320,9 @@ namespace ssGUI
             return;
         }
 
-        text->SetParent(this);
+        glm::vec2 globalPos = text->GetGlobalPosition();
+        text->SetParent(this, true);
+        text->SetGlobalPosition(globalPos);
 
         ssGUIObjectIndex newTextIndex = CurrentObjectsReferences.GetObjectIndex(text);
 

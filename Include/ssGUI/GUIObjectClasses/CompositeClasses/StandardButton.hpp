@@ -33,7 +33,7 @@ namespace ssGUI
                                         ButtonImageWrapper(-1)
     {
         ssLOG_FUNC_ENTRY();
-        SetSize(glm::vec2(100, 40));
+        SetSize(glm::vec2(70, 35));
 
         //Adjust Extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
@@ -60,7 +60,7 @@ namespace ssGUI
 
         //Add Button Image
         auto wrapper = ssGUI::Factory::Create<ssGUI::Widget>();
-        wrapper->SetParent(this);
+        wrapper->SetParent(this, true);
         wrapper->SetBlockInput(false);
         wrapper->SetUserCreated(false);
         wrapper->SetBackgroundColor(glm::u8vec4(0, 0, 0, 25));
@@ -79,7 +79,7 @@ namespace ssGUI
         auto buttonText = new ssGUI::Text();
         buttonText->SetUserCreated(false);
         buttonText->SetHeapAllocated(true);
-        buttonText->SetParent(this);
+        buttonText->SetParent(this, true);
         buttonText->SetMinSize(glm::vec2(5, 5));
         buttonText->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
         ButtonText = CurrentObjectsReferences.AddObjectReference(buttonText);

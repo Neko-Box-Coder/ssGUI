@@ -111,7 +111,7 @@ namespace ssGUI
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
-        dropdownMenu->SetParent(this);
+        dropdownMenu->SetParent(this, true);
         dropdownMenu->SetEnabled(false);
         dropdownMenu->SetUserCreated(false);
         dropdownMenu->SetMenuTarget(this);
@@ -315,7 +315,11 @@ namespace ssGUI
             DropdownMenu = -1;
         else
             DropdownMenu = CurrentObjectsReferences.AddObjectReference(menu);
-        
+
+        glm::vec2 globalPos = menu->GetGlobalPosition();
+        menu->SetParent(this, true);
+        menu->SetGlobalPosition(globalPos);
+
         auto itemsCopy = Items;
         Items.clear();
         for(int i = 0; i < Items.size(); i++)

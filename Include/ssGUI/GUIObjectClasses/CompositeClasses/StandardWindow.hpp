@@ -50,7 +50,7 @@ namespace ssGUI
         auto windowTitle = new ssGUI::Text();
         windowTitle->SetUserCreated(false);
         windowTitle->SetHeapAllocated(true);
-        windowTitle->SetParent(this);
+        windowTitle->SetParent(this, true);
         windowTitle->SetMinSize(glm::vec2(5, 5));
         windowTitle->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
         windowTitle->SetText("Window");
@@ -62,7 +62,7 @@ namespace ssGUI
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
         windowIcon->SetUserCreated(false);
         windowIcon->SetHeapAllocated(true);
-        windowIcon->SetParent(this);
+        windowIcon->SetParent(this, true);
         windowIcon->SetMinSize(glm::vec2(5, 5));
         WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
@@ -74,7 +74,7 @@ namespace ssGUI
         auto closeButton = new ssGUI::Button();
         closeButton->SetUserCreated(false);
         closeButton->SetHeapAllocated(true);
-        closeButton->SetParent(this);
+        closeButton->SetParent(this, true);
         closeButton->SetMinSize(glm::vec2(5, 5));
         closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 

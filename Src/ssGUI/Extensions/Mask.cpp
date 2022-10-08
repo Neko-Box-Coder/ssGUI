@@ -671,6 +671,16 @@ namespace ssGUI::Extensions
         {
             ssGUI::GUIObject* child = children.front();
 
+            //Don't mask container's composite children
+            Container->StashChildrenIterator();
+            if(Container->FindChild(child))
+            {
+                Container->PopChildrenIterator();
+                children.pop();
+                continue;
+            }
+            Container->PopChildrenIterator();
+
             if(!child->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
             {
                 auto enforcer = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();

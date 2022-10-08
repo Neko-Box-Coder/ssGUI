@@ -91,7 +91,7 @@ namespace ssGUI
         outline2->SetOutlineThickness(1.5);
         button->SetUserCreated(false);
         button->AddExtension(outline2);
-        button->SetParent(this);
+        button->SetParent(this, true);
 
         auto ecb = button->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         ecb->ClearEventListeners();

@@ -996,6 +996,18 @@ namespace ssGUI::Extensions
             return;
         }
 
+        Container->StashChildrenIterator();
+        if(Container->FindChild(child) && Container->IsChildComposite())
+        {
+            Container->PopChildrenIterator();
+            ObjectsToExclude.insert(childIndex);
+            SpecialObjectsToExclude.insert(childIndex);
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+        Container->PopChildrenIterator();
+
+
         if(IsOverrideChildrenResizeTypeAndOnTop())
             UpdateChildrenResizeTypesAndOnTop();
         

@@ -36,12 +36,12 @@ namespace ssGUI
                             Toggle(false)
     {
         InitializeDefaultDropdownArrowIfNeeded();
-
+        
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();
-        auto firstIt = GetCurrentChildToken();
+        ssGUI::Hierarchy::ChildToken firstIt = GetCurrentChildToken();
         MoveChildrenIteratorToLast();
-        auto lastIt = GetCurrentChildToken();
+        ssGUI::Hierarchy::ChildToken lastIt = GetCurrentChildToken();
         ChangeChildOrderToAfterPosition(firstIt, lastIt);
 
         //Swap size multiplier
@@ -53,12 +53,12 @@ namespace ssGUI
         layout->SetPreferredSizeMultiplier(1, iconMulti);
 
         //Set icon to dropdown arrow
-        if(DefaultDropdownArrowImageData != nullptr)
-            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData);
+        if(DefaultDropdownArrowImageData->Obj != nullptr)
+            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData->Obj);
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
-        dropdownMenu->SetParent(this);
+        dropdownMenu->SetParent(this, true);
         dropdownMenu->SetEnabled(false);
         dropdownMenu->SetUserCreated(false);
         dropdownMenu->SetMenuTarget(this);

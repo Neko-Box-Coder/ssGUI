@@ -503,8 +503,8 @@ namespace ssGUI
         vScrollbar->AddExtension(as);
         vScrollbar->AddExtension(ap);
 
-        hScrollbar->SetParent(this);
-        vScrollbar->SetParent(this);
+        hScrollbar->SetParent(this, true);
+        vScrollbar->SetParent(this, true);
 
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
@@ -717,6 +717,10 @@ namespace ssGUI
             SetShowHorizontalScrollbar(false);
 
         HorizontalScrollbar = CurrentObjectsReferences.AddObjectReference(scrollbar);
+
+        glm::vec2 globalPos = scrollbar->GetGlobalPosition();
+        scrollbar->SetParent(this, true);
+        scrollbar->SetGlobalPosition(globalPos);
     }
 
     ssGUI::Scrollbar* ImageCanvas::GetHorizontalScrollbar() const
@@ -730,6 +734,10 @@ namespace ssGUI
             SetShowVerticalScrollbar(false);
 
         VerticalScrollbar = CurrentObjectsReferences.AddObjectReference(scrollbar);
+
+        glm::vec2 globalPos = scrollbar->GetGlobalPosition();
+        scrollbar->SetParent(this, true);
+        scrollbar->SetGlobalPosition(globalPos);
     }
 
     ssGUI::Scrollbar* ImageCanvas::GetVerticalScrollbar() const

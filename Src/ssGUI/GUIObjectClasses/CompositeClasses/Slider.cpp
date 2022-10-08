@@ -494,7 +494,7 @@ namespace ssGUI
         outline2->SetOutlineThickness(1.5);
         button->SetUserCreated(false);
         button->AddExtension(outline2);
-        button->SetParent(this);
+        button->SetParent(this, true);
 
         auto ecb = button->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         ecb->ClearEventListeners();
@@ -569,6 +569,10 @@ namespace ssGUI
         
         int index = CurrentObjectsReferences.AddObjectReference(knob);
         KnobObject = index;
+
+        glm::vec2 globalPos = knob->GetGlobalPosition();
+        knob->SetParent(this, true);
+        knob->SetGlobalPosition(globalPos);
     }
 
     ssGUI::GUIObject* Slider::GetKnobObject() const

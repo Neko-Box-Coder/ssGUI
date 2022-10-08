@@ -177,8 +177,8 @@ namespace ssGUI
         vScrollbar->AddExtension(as);
         vScrollbar->AddExtension(ap);
 
-        hScrollbar->SetParent(this);
-        vScrollbar->SetParent(this);
+        hScrollbar->SetParent(this, true);
+        vScrollbar->SetParent(this, true);
 
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
