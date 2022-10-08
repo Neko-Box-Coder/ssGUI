@@ -99,10 +99,24 @@ namespace ssGUI::Extensions
         targetShape.Colors.clear();
         
         glm::vec2 curLine = end - start;
-        glm::vec2 curLineNormalized = glm::normalize(curLine);
-        
-        //This vector will have a direction of a ◄─── b  (b to a)
-        glm::vec2 perpendcularVector = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1)));
+
+        glm::vec2 curLineNormalized;
+        glm::vec2 perpendcularVector;
+
+        //Special case of checking of the line has any length
+        if(curLine.x == 0 && curLine.y == 0)
+        {
+            curLineNormalized = glm::vec2(0, 1);
+            perpendcularVector = glm::vec2(1, 0);
+        }
+        else
+        {
+            curLineNormalized = glm::normalize(curLine);
+            
+            //This vector will have a direction of a ◄─── b  (b to a)
+            perpendcularVector = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1)));
+        }
+
 
         //Find the position of all vertices based on the thickness
         //Get a and b
@@ -137,7 +151,11 @@ namespace ssGUI::Extensions
         std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
         std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
-        glm::vec2 curPos = Container->GetGlobalPosition();
+
+        using GUIType = ssGUI::Enums::GUIObjectType;
+        glm::vec2 curPos = Container->GetType() == GUIType::WINDOW && Container->GetType() != GUIType::MAIN_WINDOW ? 
+            Container->GetGlobalPosition() + glm::vec2(0, static_cast<ssGUI::Window*>(Container)->GetTitlebarHeight()) :
+            Container->GetGlobalPosition();
 
         for(int i = 0; i < AdditionalShapes.size(); i++)
         {

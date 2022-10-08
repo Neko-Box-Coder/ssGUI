@@ -428,6 +428,11 @@ namespace ssGUI::Extensions
         return DockPreviewColor;
     }
 
+    bool Docker::IsValidDocking() const
+    {
+        return ValidDocking;
+    }
+
     void Docker::SetEnabled(bool enabled)
     {
         Enabled = enabled;
@@ -476,17 +481,40 @@ namespace ssGUI::Extensions
         if(Dockable::GlobalDockMode && inputStatus.DockingBlockedObject == nullptr)
         {
             ssGUI::GUIObject* curParent = Container;
-            while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr && curParent != Dockable::DockingTopLevelParent)
-            {
+            bool underDockingTopLevel = false;
+
+            //Find out if the top level parent for the object to be docked is deeping than the this object's top parent
+            //If so, we can proceed to dock
+            do
+            {                
                 curParent = curParent->GetParent();
+
+                if(curParent == nullptr)
+                    break;
+
+                if(curParent == Dockable::DockingTopLevelParent)
+                    underDockingTopLevel = true;
+            }
+            while (curParent != nullptr && curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW);
+
+            ssGUI::GUIObject* mainWindow = curParent != nullptr && curParent->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW ?
+                                            curParent :
+                                            nullptr;
+
+            //This is not supposed to happen
+            if(mainWindow == nullptr)
+            {
+                ssLOG_LINE("what?");
+                ssLOG_FUNC_EXIT();
+                return;
             }
 
             //If this is not the same parent as the one which is being docked, exit
-            if((Dockable::DockingTopLevelParent == Dockable::MainWindowUnderDocking && curParent != Dockable::MainWindowUnderDocking) || 
-                curParent != Dockable::DockingTopLevelParent)
+            if(mainWindow != Dockable::MainWindowUnderDocking || !underDockingTopLevel)
             {
                 DiscardPreview();
                 DiscardTriggerArea();
+                ValidDocking = false;
                 ssLOG_FUNC_EXIT();
                 return;
             }
@@ -502,6 +530,21 @@ namespace ssGUI::Extensions
 
             bool previewDrawn = false;
 
+            //Check if the cursor is inside the window
+            bool mouseInsideWindow = (inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + containerSize.x &&
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset && 
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + containerSize.y);
+
+            if(!mouseInsideWindow)
+            {
+                DiscardPreview();
+                DiscardTriggerArea();
+                ValidDocking = false;
+                ssLOG_FUNC_EXIT();
+                return;
+            }
+
             //Center
             if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x + (containerSize.x - triggerSize.x) * 0.5 && 
                 inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + (containerSize.x + triggerSize.x) * 0.5 &&
@@ -509,40 +552,27 @@ namespace ssGUI::Extensions
                 inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + titleBarOffset + (containerSize.y + triggerSize.y) * 0.5)
             {
                 DrawPreview();
+                DiscardTriggerArea();
                 previewDrawn = true;
+                ValidDocking = true;
                 Dockable::TargetDockSide = Dockable::DockSide::CENTER;
             }
             else
             {                
+                Dockable::TargetDockSide = Dockable::DockSide::NONE;
+                ValidDocking = false;
+                DrawTriggerArea();
                 DiscardPreview();
             }
-            
-            //Check if the cursor is inside the window
-            if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + containerSize.x &&
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset && inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + containerSize.y)
-            {
-                if(!previewDrawn)
-                {
-                    Dockable::TargetDockSide = Dockable::DockSide::NONE;
-                    DrawTriggerArea();
-                }
-                else
-                    DiscardTriggerArea();
-                    
-                inputStatus.DockingBlockedObject = Container;
-                Dockable::TargetDockObject = Container;
-            }
-            else
-            {
-                    Dockable::TargetDockSide = Dockable::DockSide::NONE;
-                
-                DiscardTriggerArea();
-            }
+
+            inputStatus.DockingBlockedObject = Container;
+            Dockable::ObjectToDockNextTo = Container;
         }
         else
         {
             DiscardPreview();
             DiscardTriggerArea();
+            ValidDocking = false;
         }
 
         ssLOG_FUNC_EXIT();

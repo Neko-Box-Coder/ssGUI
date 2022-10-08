@@ -81,6 +81,8 @@ namespace ssGUI::Extensions
     bool Mask::IsAABBOverlap(std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, glm::vec2 maskMin, glm::vec2 maskMax,
                             glm::vec2& shapeMin, glm::vec2& shapeMax)
     {
+        ssLOG_FUNC_ENTRY();
+        
         shapeMin = shapeVerticies[shapeOffset];
         shapeMax = shapeVerticies[shapeOffset];
         for(int j = shapeOffset + 1; j < shapeOffset + shapeVertexCount; j++)
@@ -96,17 +98,25 @@ namespace ssGUI::Extensions
         }
         
         if(!CheckLinesOverlapping(shapeMin.x, shapeMax.x, maskMin.x, maskMax.x))
+        {
+            ssLOG_FUNC_EXIT();
             return false;
+        }
         
         if(!CheckLinesOverlapping(shapeMin.y, shapeMax.y, maskMin.y, maskMax.y))
+        {
+            ssLOG_FUNC_EXIT();
             return false;
-        
+        }
+
+        ssLOG_FUNC_EXIT();
         return true;
     }
 
     void Mask::GetIntersections(std::vector<glm::vec2>& intersections, std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices,
                                 std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, std::vector<glm::vec2>& maskVerticies)
     {
+        ssLOG_FUNC_ENTRY();
         //For each vertices for this shape
         for(int currentShapeVertexIndex = shapeOffset; currentShapeVertexIndex < shapeOffset + shapeVertexCount; currentShapeVertexIndex++)
         {
@@ -126,6 +136,7 @@ namespace ssGUI::Extensions
                 }
             }   
         }
+        ssLOG_FUNC_EXIT();
     }
 
     void Mask::FromNewShapeWithIntersections(std::vector<glm::vec2>& currentShapeVertices, std::vector<glm::vec2>& currentShapeUVs, 
@@ -274,6 +285,8 @@ namespace ssGUI::Extensions
                                                 std::vector<int>& verticesCount, std::vector<glm::vec2>& newVertices, std::vector<glm::vec2>& newUVs, 
                                                 std::vector<glm::u8vec4>& newColours, std::vector<bool>& changed, std::vector<int>& newVerticesCount)
     {
+        ssLOG_FUNC_ENTRY();
+        
         //Sample the new UVs and colours
         int currentOffset = 0;
         int oldOffset = 0;
@@ -322,8 +335,15 @@ namespace ssGUI::Extensions
 
                 // ssLOG_LINE("originalColours[oldOffset + closestIndicies[0]]: "<<(int)originalColours[oldOffset + closestIndicies[0]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].g<<", "
                 // <<(int)originalColours[oldOffset + closestIndicies[0]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].a);
-                // ssLOG_LINE("colourAxis: "<<(int)colourAxis.r<<", "<<(int)colourAxis.g<<", "<<(int)colourAxis.b<<", "<<(int)colourAxis.a);
-                // ssLOG_LINE("colourAxis2: "<<(int)colourAxis2.r<<", "<<(int)colourAxis2.g<<", "<<(int)colourAxis2.b<<", "<<(int)colourAxis2.a);
+                // ssLOG_LINE("originalColours[oldOffset + closestIndicies[1]]: "<<(int)originalColours[oldOffset + closestIndicies[1]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[1]].g<<", "
+                // <<(int)originalColours[oldOffset + closestIndicies[1]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[1]].a);
+                // ssLOG_LINE("originalColours[oldOffset + closestIndicies[2]]: "<<(int)originalColours[oldOffset + closestIndicies[2]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[2]].g<<", "
+                // <<(int)originalColours[oldOffset + closestIndicies[2]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[2]].a);
+                // ssLOG_LINE("colourAxis: "<<(float)colourAxis.r<<", "<<(float)colourAxis.g<<", "<<(float)colourAxis.b<<", "<<(float)colourAxis.a);
+                // ssLOG_LINE("colourAxis2: "<<(float)colourAxis2.r<<", "<<(float)colourAxis2.g<<", "<<(float)colourAxis2.b<<", "<<(float)colourAxis2.a);
+                // ssLOG_LINE();
+
+
 
                 newUVs[vertexIndex] = (originalUVs[oldOffset + closestIndicies[0]]) +
                                         (uvAxis) * axisValue +
@@ -337,6 +357,7 @@ namespace ssGUI::Extensions
             currentOffset += newVerticesCount[shapeIndex];
             oldOffset += verticesCount[shapeIndex];
         }
+        ssLOG_FUNC_EXIT();
     }
 
 
@@ -496,7 +517,7 @@ namespace ssGUI::Extensions
             return true;
 
         //Should never be able to reach this point
-        std::cout<<"Unexpected input. minA: "<<minA<<", maxA: "<<maxA<<", minB: "<<minB<<", maxB: "<<maxB<<std::endl;
+        ssLOG_LINE("Unexpected input. minA: "<<minA<<", maxA: "<<maxA<<", minB: "<<minB<<", maxB: "<<maxB);
         return false;
     }
 

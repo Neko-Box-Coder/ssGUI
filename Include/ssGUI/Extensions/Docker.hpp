@@ -45,6 +45,7 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* DockTrigger;                              //(Internal variable) Dock trigger GUI visual object
 
         bool ChildRemoveGuard;                                      //(Internal variable) Used to prevent listener triggering itself
+        bool ValidDocking;                                          //See <IsValidDocking>
 
         static ssGUI::Window* DefaultGeneratedDockerWindow;         //See <GetDefaultGeneratedDockerWindow>
     =================================================================
@@ -94,6 +95,7 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* DockTrigger;                              //(Internal variable) Dock trigger GUI visual object
 
             bool ChildRemoveGuard;                                      //(Internal variable) Used to prevent listener triggering itself
+            bool ValidDocking;                                          //See <IsValidDocking>
 
             static ssGUI::Window* DefaultGeneratedDockerWindow;         //See <GetDefaultGeneratedDockerWindow>
 
@@ -179,6 +181,9 @@ namespace ssGUI::Extensions
 
             //function: GetDockPreviewColor
             virtual glm::u8vec4 GetDockPreviewColor() const;
+
+            //function: IsValidDocking
+            virtual bool IsValidDocking() const;
  
             //Override from Extension
             //function: SetEnabled

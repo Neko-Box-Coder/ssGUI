@@ -12,7 +12,7 @@ namespace ssGUI::Extensions
     bool Dockable::GlobalDockMode = false;
     ssGUI::MainWindow* Dockable::MainWindowUnderDocking = nullptr;
     ssGUI::GUIObject* Dockable::DockingTopLevelParent = nullptr;
-    ssGUI::GUIObject* Dockable::TargetDockObject = nullptr;
+    ssGUI::GUIObject* Dockable::ObjectToDockNextTo = nullptr;
     Dockable::DockSide Dockable::TargetDockSide = Dockable::DockSide::NONE;
     
     Dockable::Dockable() :  Container(nullptr),
@@ -318,8 +318,7 @@ namespace ssGUI::Extensions
         GlobalDockMode = true;
 
         //Find the Main Window
-        ssGUI::GUIObject* curParent = TopLevelParent == -1 || CurrentObjectsReferences.GetObjectReference(TopLevelParent) == nullptr ? 
-                                        Container->GetParent() : CurrentObjectsReferences.GetObjectReference(TopLevelParent);
+        ssGUI::GUIObject* curParent = Container;
         while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr)
         {
             curParent = curParent->GetParent();
@@ -339,40 +338,34 @@ namespace ssGUI::Extensions
 
         MainWindowUnderDocking = static_cast<ssGUI::MainWindow*>(curParent);
 
-        Container->AddTag(ssGUI::Tags::FLOATING);
+        Container->AddTag(ssGUI::Tags::OVERLAY);
         ssGUI::GUIObject* containerParent = Container->GetParent();
 
         //Docking mechanism
         //Check if container is docked under docker. If so, set the size for the child after container to fill the gap
-        if(containerParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && containerParent->GetChildrenCount() > 1)
-        {
-            containerParent->StashChildrenIterator();
-            containerParent->FindChild(Container);
-            if(!containerParent->IsChildrenIteratorLast())
-            {
-                containerParent->MoveChildrenIteratorNext();
-                glm::vec2 childSize = containerParent->GetCurrentChild()->GetSize();
-                if(static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsHorizontalLayout())
-                    containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x + Container->GetSize().x, childSize.y));
-                else
-                    containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x, childSize.y + Container->GetSize().y));                
-            }
-            containerParent->PopChildrenIterator();
-        }
+        // if(containerParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && containerParent->GetChildrenCount() > 1)
+        // {
+        //     containerParent->StashChildrenIterator();
+        //     containerParent->FindChild(Container);
+        //     if(!containerParent->IsChildrenIteratorLast())
+        //     {
+        //         containerParent->MoveChildrenIteratorNext();
+        //         glm::vec2 childSize = containerParent->GetCurrentChild()->GetSize();
+        //         if(static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsHorizontalLayout())
+        //             containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x + Container->GetSize().x, childSize.y));
+        //         else
+        //             containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x, childSize.y + Container->GetSize().y));                
+        //     }
+        //     containerParent->PopChildrenIterator();
+        // }
 
         //Parent the container to the MainWindow.
         OriginalParent = Container->GetParent();
 
-        if(TopLevelParent == -1 || CurrentObjectsReferences.GetObjectReference(TopLevelParent) == nullptr)
-        {
-            Container->SetParent(MainWindowUnderDocking);
+        if(GetTopLevelParent() == nullptr)
             DockingTopLevelParent = MainWindowUnderDocking;
-        }
         else
-        {
-            Container->SetParent(CurrentObjectsReferences.GetObjectReference(TopLevelParent));
             DockingTopLevelParent = CurrentObjectsReferences.GetObjectReference(TopLevelParent);
-        }
 
         ssLOG_FUNC_EXIT();
     }
@@ -381,9 +374,9 @@ namespace ssGUI::Extensions
     {
         ssLOG_FUNC_ENTRY();
         
-        ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(TargetDockObject->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(ObjectToDockNextTo->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
 
-        if(TargetDockObject->GetParent()->GetChildrenCount() > 1)
+        if(ObjectToDockNextTo->GetParent()->GetChildrenCount() > 1)
         {
             if(parentLayout->IsHorizontalLayout() && (TargetDockSide == DockSide::LEFT || TargetDockSide == DockSide::RIGHT))
                 dockLayout = parentLayout;
@@ -414,10 +407,10 @@ namespace ssGUI::Extensions
 
         newParent->SetUserCreated(false);
         newParent->SetHeapAllocated(true);
-        newParent->SetSize(TargetDockObject->GetSize());
-        newParent->SetAnchorType(TargetDockObject->GetAnchorType());
-        newParent->SetPosition(TargetDockObject->GetPosition());
-        newParent->SetParent(TargetDockObject->GetParent());
+        newParent->SetSize(ObjectToDockNextTo->GetSize());
+        newParent->SetAnchorType(ObjectToDockNextTo->GetAnchorType());
+        newParent->SetPosition(ObjectToDockNextTo->GetPosition());
+        newParent->SetParent(ObjectToDockNextTo->GetParent());
 
         //The docker will automatically create docker & layout extension if not exist
         if(!newParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
@@ -452,8 +445,8 @@ namespace ssGUI::Extensions
             dockLayout->SetHorizontalLayout(false);
 
         //If not floating, turn window to invisible
-        if(TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
-            TargetDockObject->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->IsEnabled())
+        if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
+            ObjectToDockNextTo->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->IsEnabled())
         {
             newParent->SetTitlebar(false);
             auto newBGColor = newParent->GetBackgroundColor();
@@ -490,18 +483,19 @@ namespace ssGUI::Extensions
         }
 
         //Restore order
-        TargetDockObject->GetParent()->StashChildrenIterator();
-        TargetDockObject->GetParent()->FindChild(TargetDockObject);
+        ObjectToDockNextTo->GetParent()->StashChildrenIterator();
+        ObjectToDockNextTo->GetParent()->FindChild(ObjectToDockNextTo);
         ssGUI::Hierarchy::ChildToken dockObjectIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
-        TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
+        ObjectToDockNextTo->GetParent()->MoveChildrenIteratorToLast();
         ssGUI::Hierarchy::ChildToken lastIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
         
-        TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
-        TargetDockObject->SetParent(newParent);
+        ObjectToDockNextTo->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
+        ObjectToDockNextTo->SetParent(newParent);
+        
         //Setting a new parent from the dock will causes it to revert to original size. 
         //Therefore will need to set the size to match the new parent again.
-        TargetDockObject->SetSize(newParent->GetSize());
-        TargetDockObject->GetParent()->PopChildrenIterator();
+        ObjectToDockNextTo->SetSize(newParent->GetSize());
+        ObjectToDockNextTo->GetParent()->PopChildrenIterator();
         ssLOG_FUNC_EXIT();
     }
 
@@ -511,60 +505,79 @@ namespace ssGUI::Extensions
         ssLOG_FUNC_ENTRY();
 
         //Remove the floating tag to allow docking
-        Container->RemoveTag(ssGUI::Tags::FLOATING);
+        Container->RemoveTag(ssGUI::Tags::OVERLAY);
+        Container->RedrawObject();
 
         //Docking mechanism for dockable window
-        if(TargetDockObject != nullptr && TargetDockObject->GetParent() != nullptr && TargetDockSide != DockSide::NONE)
+        //Dock when everything is valid
+        if(ObjectToDockNextTo != nullptr && ObjectToDockNextTo->GetParent() != nullptr && TargetDockSide != DockSide::NONE)
         {
             //If it is just docker, just need to add it as a child
-            if(TargetDockObject->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            if(ObjectToDockNextTo->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
             {
-                Container->SetParent(TargetDockObject);
+                //Check if we can dock or not.
+                if(ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Docker>()->IsValidDocking())
+                    Container->SetParent(ObjectToDockNextTo);
+
                 goto reset;
             }
+            else if(ObjectToDockNextTo->IsAnyExtensionExist<ssGUI::Extensions::Dockable>())
+            {
+                //Check if we can dock or not.
+                if(!ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Dockable>()->IsValidDocking())
+                    goto reset;
+            }
+
             //Otherwise dock as normal
             ssGUI::Extensions::Layout* dockLayout = nullptr;
             
-            //Check if the parent of the targetDockObject has the Docker extension
-            if(TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && TargetDockObject->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            //Check if the parent of the ObjectToDockNextTo has the Docker extension
+            if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
                 FindDockLayout(dockLayout);
 
             //Create an empty parent and add Layout extension if dock layout isn't found
             if(dockLayout == nullptr)
                 CreateEmptyParentForDocking(dockLayout);
             
-            //This inserts the container to the end. Halfing the size for TargetDockObject and Container so they fit the original space
-            TargetDockObject->SetSize(glm::vec2(TargetDockObject->GetSize().x * 0.5, TargetDockObject->GetSize().y * 0.5));
-            glm::vec2 newContainerSize = TargetDockObject->GetSize();
-            Container->SetParent(TargetDockObject->GetParent());
+            //This inserts the container to the end. Halfing the size for ObjectToDockNextTo and Container so they fit the original space
+            ObjectToDockNextTo->SetSize(glm::vec2(ObjectToDockNextTo->GetSize().x * 0.5, ObjectToDockNextTo->GetSize().y * 0.5));
+            glm::vec2 newContainerSize = ObjectToDockNextTo->GetSize();
+            Container->SetParent(ObjectToDockNextTo->GetParent());
             Container->SetSize(newContainerSize);
 
             //Insert the Container after/before it
-            TargetDockObject->GetParent()->StashChildrenIterator();
-            TargetDockObject->GetParent()->FindChild(TargetDockObject);
+            ObjectToDockNextTo->GetParent()->StashChildrenIterator();
+            ObjectToDockNextTo->GetParent()->FindChild(ObjectToDockNextTo);
             ssGUI::Hierarchy::ChildToken dockObjectIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
-            TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
+            ObjectToDockNextTo->GetParent()->MoveChildrenIteratorToLast();
             ssGUI::Hierarchy::ChildToken lastIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
-            TargetDockObject->GetParent()->PopChildrenIterator();
+            ObjectToDockNextTo->GetParent()->PopChildrenIterator();
 
             if(!dockLayout->IsReverseOrder())
             {                
                 //Before
                 if(TargetDockSide == DockSide::LEFT || TargetDockSide == DockSide::TOP)
-                    TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
+                    ObjectToDockNextTo->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
                 //After
                 else
-                    TargetDockObject->GetParent()->ChangeChildOrderToAfterPosition(lastIt, dockObjectIt);
+                    ObjectToDockNextTo->GetParent()->ChangeChildOrderToAfterPosition(lastIt, dockObjectIt);
             }
             else
             {
                 //Before
                 if(TargetDockSide == DockSide::RIGHT || TargetDockSide == DockSide::BOTTOM)
-                    TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
+                    ObjectToDockNextTo->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
                 //After
                 else
-                    TargetDockObject->GetParent()->ChangeChildOrderToAfterPosition(lastIt, dockObjectIt);
+                    ObjectToDockNextTo->GetParent()->ChangeChildOrderToAfterPosition(lastIt, dockObjectIt);
             }
+        }
+        //If we are not docking, set the parent of the window to top level parent if floating
+        else if(Floatable && OriginalParent->IsAnyExtensionExist<ssGUI::Extensions::Docker>())
+        {            
+            auto globalPos = Container->GetGlobalPosition();
+            Container->SetParent(DockingTopLevelParent);
+            Container->SetGlobalPosition(globalPos);
         }
         
         reset:            
@@ -574,7 +587,7 @@ namespace ssGUI::Extensions
         GlobalDockMode = false;
         MainWindowUnderDocking = nullptr;
         DockingTopLevelParent = nullptr;
-        TargetDockObject = nullptr;
+        ObjectToDockNextTo = nullptr;
         TargetDockSide = DockSide::NONE;
 
         ssLOG_FUNC_EXIT();
@@ -661,6 +674,8 @@ namespace ssGUI::Extensions
 
     void Dockable::SetTopLevelParent(ssGUI::GUIObject* parent)
     {
+        ssLOG_FUNC_ENTRY();
+        
         if(parent != nullptr)
         {
             if(TopLevelParent != -1 && CurrentObjectsReferences.GetObjectReference(TopLevelParent) != nullptr)
@@ -670,15 +685,37 @@ namespace ssGUI::Extensions
         }
         else
             TopLevelParent = -1;
+        
+        ssLOG_FUNC_EXIT();
     }
 
     ssGUI::GUIObject* Dockable::GetTopLevelParent() const
     {
-        if(TopLevelParent != -1 && CurrentObjectsReferences.GetObjectReference(TopLevelParent) != nullptr)
+        if(TopLevelParent != -1 && CurrentObjectsReferences.GetObjectReference(TopLevelParent) == nullptr)
+        {
+            ssLOG_LINE("Invalid TopLevelParent detected, probably something wrong internally or bug happened");
+            return nullptr;
+        }
+        else if(TopLevelParent == -1)
             return nullptr;
         else
             return CurrentObjectsReferences.GetObjectReference(TopLevelParent);
     }   
+
+    bool Dockable::IsValidDocking() const
+    {
+        return ValidDocking;
+    }
+
+    void Dockable::SetFloatable(bool floatable)
+    {
+        Floatable = floatable;
+    }
+
+    bool Dockable::IsFloatable() const
+    {
+        return Floatable;
+    }
 
     void Dockable::SetEnabled(bool enabled)
     {
@@ -704,20 +741,52 @@ namespace ssGUI::Extensions
         if(GlobalDockMode && !ContainerIsDocking && inputStatus.DockingBlockedObject == nullptr)
         {
             ssGUI::GUIObject* curParent = Container;
-            while (curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && curParent != nullptr && curParent != DockingTopLevelParent)
+            ssGUI::GUIObject* topLevel = GetTopLevelParent();
+            bool foundCurTopLevel = false;
+            bool curTopLevelUnderDockingTopLevel = false;
+
+            //Find out if the top level parent for the object to be docked is deeping than the this object's top parent
+            //If so, we can proceed to dock
+            do
             {
                 curParent = curParent->GetParent();
+
+                if(curParent == nullptr)
+                    break;
+
+                if(curParent == topLevel)
+                    foundCurTopLevel = true;
+                
+                if(curParent == DockingTopLevelParent)
+                    curTopLevelUnderDockingTopLevel = foundCurTopLevel;
+            }
+            while (curParent != nullptr && curParent->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW);
+
+
+            ssGUI::GUIObject* mainWindow = curParent != nullptr && curParent->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW ?
+                                            curParent :
+                                            nullptr;
+
+            //This is not supposed to happen
+            if(mainWindow == nullptr)
+            {
+                ssLOG_LINE("what?");
+                ssLOG_FUNC_EXIT();
+                return;
             }
 
+            if(topLevel == nullptr && mainWindow == DockingTopLevelParent)
+                curTopLevelUnderDockingTopLevel = true;
+
             //If this is not the same parent as the one which is being docked, exit
-            if((DockingTopLevelParent == MainWindowUnderDocking && curParent != MainWindowUnderDocking) || 
-                curParent != DockingTopLevelParent)
+            if(!curTopLevelUnderDockingTopLevel)
             {
                 DiscardLeftPreview();
                 DiscardTopPreview();
                 DiscardRightPreview();
                 DiscardBottomPreview();
                 DiscardTriggerAreas();
+                ValidDocking = false;
                 ssLOG_FUNC_EXIT();
                 return;
             }
@@ -733,6 +802,24 @@ namespace ssGUI::Extensions
 
             bool previewDrawn = false;
 
+            //Check if the cursor is inside the window
+            bool mouseInsideWindow = (inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + windowContentSize.x &&
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset && 
+                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + containerSize.y);
+            
+            if(!mouseInsideWindow)
+            {
+                DiscardLeftPreview();
+                DiscardTopPreview();
+                DiscardRightPreview();
+                DiscardBottomPreview();
+                DiscardTriggerAreas();
+                ValidDocking = false;
+                ssLOG_FUNC_EXIT();
+                return;
+            }
+
             //Left
             if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
                 inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + triggerSize.x &&
@@ -744,8 +831,10 @@ namespace ssGUI::Extensions
                 DiscardRightPreview();
                 DiscardBottomPreview();
                 DrawLeftPreview();
+                DiscardTriggerAreas();
                 previewDrawn = true;
-                TargetDockSide = DockSide::LEFT;                
+                TargetDockSide = DockSide::LEFT;
+                ValidDocking = true;
             }
             //Top
             else if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x + triggerSize.x && 
@@ -757,8 +846,11 @@ namespace ssGUI::Extensions
                 DiscardRightPreview();
                 DiscardBottomPreview();
                 DrawTopPreview();
+                DiscardTriggerAreas();
                 previewDrawn = true;
                 TargetDockSide = DockSide::TOP;
+                ValidDocking = true;
+
             }
             //Right
             else if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x + windowContentSize.x - triggerSize.x && 
@@ -770,8 +862,10 @@ namespace ssGUI::Extensions
                 DiscardTopPreview();
                 DiscardBottomPreview();
                 DrawRightPreview();
+                DiscardTriggerAreas();
                 previewDrawn = true;
                 TargetDockSide = DockSide::RIGHT;
+                ValidDocking = true;
             }
             //Bottom
             else if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x + triggerSize.x && 
@@ -783,8 +877,10 @@ namespace ssGUI::Extensions
                 DiscardTopPreview();
                 DiscardRightPreview();
                 DrawBottomPreview();  
+                DiscardTriggerAreas();
                 previewDrawn = true;
                 TargetDockSide = DockSide::BOTTOM;
+                ValidDocking = true;
             }
             else
             {                
@@ -792,31 +888,13 @@ namespace ssGUI::Extensions
                 DiscardTopPreview();
                 DiscardRightPreview();
                 DiscardBottomPreview();
+                TargetDockSide = DockSide::NONE;
+                ValidDocking = false;
+                DrawTriggerAreas();
             }
             
-            //Check if the cursor is inside the window
-            if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + windowContentSize.x &&
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset && 
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + containerSize.y)
-            {
-                if(!previewDrawn)
-                {
-                    TargetDockSide = DockSide::NONE;
-                    DrawTriggerAreas();
-                }
-                else                    
-                    DiscardTriggerAreas();
-                
-                    
-                inputStatus.DockingBlockedObject = Container;
-                TargetDockObject = Container;
-            }
-            else
-            {
-                TargetDockSide = DockSide::NONE;
-                DiscardTriggerAreas();
-            }
+            inputStatus.DockingBlockedObject = Container;
+            ObjectToDockNextTo = Container;
         }
         else
         {   
@@ -825,6 +903,7 @@ namespace ssGUI::Extensions
             DiscardRightPreview();
             DiscardBottomPreview();
             DiscardTriggerAreas();
+            ValidDocking = false;
         }
 
         ssLOG_FUNC_EXIT();

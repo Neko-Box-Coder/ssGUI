@@ -54,6 +54,7 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* Container;                            //See <BindToObject>
         bool Enabled;                                           //See <IsEnabled>
         ssGUIObjectIndex TopLevelParent;                        //See <GetTopLevelParent>
+        bool Floatable = true;                                  //See <IsFloatable>
 
         ObjectsReferences CurrentObjectsReferences;             //(Internal variable) Used to manage Top Level Parent
 
@@ -74,11 +75,14 @@ namespace ssGUI::Extensions
         ssGUI::GUIObject* DockTriggerRight;                     //(Internal variable) Dock trigger GUI visual object
         ssGUI::GUIObject* DockTriggerBottom;                    //(Internal variable) Dock trigger GUI visual object
         ssGUI::GUIObject* DockTriggerLeft;                      //(Internal variable) Dock trigger GUI visual object
+        bool ValidDocking = false;                              //See <IsValidDocking>
+
 
         static bool GlobalDockMode;                             //(Internal variable) Flag if there's any window being docked atm
-        static ssGUI::MainWindow* MainWindowUnderDocking;       //(Internal variable) Target main window where the docking is happening
+        
+        static ssGUI::MainWindow* MainWindowUnderDocking;       //(Internal variable) Target main window where the docking is happening            
         static ssGUI::GUIObject* DockingTopLevelParent;         //(Internal variable) The top level parent where the docking is happening, see <GetTopLevelParent>
-        static ssGUI::GUIObject* TargetDockObject;              //(Internal variable) Target Dockable Object to dock next to. This can be a docker as well. (This is **NOT** the object being docked)
+        static ssGUI::GUIObject* ObjectToDockNextTo;            //(Internal variable) Object to dock next to. This can be a docker as well. (This is **NOT** the object being docked)
         static Dockable::DockSide TargetDockSide;               //(Internal variable) The current side it is trying to dock atm
     =================================================================
     ============================== C++ ==============================
@@ -106,7 +110,7 @@ namespace ssGUI::Extensions
     bool Dockable::GlobalDockMode = false;
     ssGUI::MainWindow* Dockable::MainWindowUnderDocking = nullptr;
     ssGUI::GUIObject* Dockable::DockingTopLevelParent = nullptr;
-    ssGUI::GUIObject* Dockable::TargetDockObject = nullptr;
+    ssGUI::GUIObject* Dockable::ObjectToDockNextTo = nullptr;
     Dockable::DockSide Dockable::TargetDockSide = Dockable::DockSide::NONE;
     =================================================================
     */
@@ -132,6 +136,7 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* Container;                            //See <BindToObject>
             bool Enabled;                                           //See <IsEnabled>
             ssGUIObjectIndex TopLevelParent;                        //See <GetTopLevelParent>
+            bool Floatable = true;                                  //See <IsFloatable>
 
             ObjectsReferences CurrentObjectsReferences;             //(Internal variable) Used to manage Top Level Parent
 
@@ -152,11 +157,14 @@ namespace ssGUI::Extensions
             ssGUI::GUIObject* DockTriggerRight;                     //(Internal variable) Dock trigger GUI visual object
             ssGUI::GUIObject* DockTriggerBottom;                    //(Internal variable) Dock trigger GUI visual object
             ssGUI::GUIObject* DockTriggerLeft;                      //(Internal variable) Dock trigger GUI visual object
+            bool ValidDocking = false;                              //See <IsValidDocking>
+
 
             static bool GlobalDockMode;                             //(Internal variable) Flag if there's any window being docked atm
-            static ssGUI::MainWindow* MainWindowUnderDocking;       //(Internal variable) Target main window where the docking is happening
+            
+            static ssGUI::MainWindow* MainWindowUnderDocking;       //(Internal variable) Target main window where the docking is happening            
             static ssGUI::GUIObject* DockingTopLevelParent;         //(Internal variable) The top level parent where the docking is happening, see <GetTopLevelParent>
-            static ssGUI::GUIObject* TargetDockObject;              //(Internal variable) Target Dockable Object to dock next to. This can be a docker as well. (This is **NOT** the object being docked)
+            static ssGUI::GUIObject* ObjectToDockNextTo;            //(Internal variable) Object to dock next to. This can be a docker as well. (This is **NOT** the object being docked)
             static Dockable::DockSide TargetDockSide;               //(Internal variable) The current side it is trying to dock atm
 
             Dockable();
@@ -235,6 +243,15 @@ namespace ssGUI::Extensions
 
             //function: GetTopLevelParent
             virtual ssGUI::GUIObject* GetTopLevelParent() const;
+
+            //function: IsValidDocking
+            virtual bool IsValidDocking() const;
+
+            //function: SetFloatable
+            virtual void SetFloatable(bool floatable);
+
+            //function: IsFloatable
+            virtual bool IsFloatable() const;
 
             //Override from Extension
             //function: SetEnabled

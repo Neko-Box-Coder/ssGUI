@@ -458,9 +458,6 @@ namespace ssGUI::Extensions
         std::vector<ssGUIObjectIndex> objsToRemove;
         for(auto it : SpecialObjectsToExclude)
         {
-            if(CurrentObjectsReferences.GetObjectReference(it) == nullptr)
-                continue;
-            
             //Don't need to hold reference for it as it is not a child
             if(CurrentObjectsReferences.GetObjectReference(it) == nullptr || 
                 CurrentObjectsReferences.GetObjectReference(it)->GetParent() != Container)
@@ -958,10 +955,11 @@ namespace ssGUI::Extensions
         
         if(ObjectsToExclude.find(objIndex) != ObjectsToExclude.end())
         {
-            ObjectsToExclude.erase(objIndex);
-
+            //If this is a special object, ignore the unexclude request
             if(SpecialObjectsToExclude.find(objIndex) != SpecialObjectsToExclude.end())
-                SpecialObjectsToExclude.erase(objIndex);
+                return;
+            
+            ObjectsToExclude.erase(objIndex);
 
             if(obj->GetParent() == Container)
                 Internal_OnRecursiveChildAdded(obj);
@@ -1025,17 +1023,6 @@ namespace ssGUI::Extensions
     {        
         ssLOG_FUNC_ENTRY();
 
-        // ssLOG_LINE("Container: "<<Container);
-        // ssLOG_LINE("child removed: "<<child);
-
-        // //DEBUG
-        // child->MoveChildrenIteratorToFirst();
-        // while (!child->IsChildrenIteratorEnd())
-        // {
-        //     ssLOG_LINE("child's child: "<<child->GetCurrentChild());
-        //     child->MoveChildrenIteratorNext();
-        // }
-
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(child);
         //If not present, no need to continue
         if(childIndex == -1)
@@ -1044,23 +1031,13 @@ namespace ssGUI::Extensions
             return;
         }
 
-        //If this is one of the special excluding objects, remove it to prevent invalid object pointer
-        if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end() &&
-            SpecialObjectsToExclude.find(childIndex) != SpecialObjectsToExclude.end())
-        {
-            ObjectsToExclude.erase(childIndex);
-            SpecialObjectsToExclude.erase(childIndex);
-            CurrentObjectsReferences.RemoveObjectReference(childIndex);
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-
-        //If this is one of the excluding objects, just don't do anything
+        //If this is one of the excluding objects, remove it to prevent invalid object pointer
         if(ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
-        {
-            ssLOG_FUNC_EXIT();
-            return;
-        }
+            ObjectsToExclude.erase(childIndex);
+
+        //If this is one of the special excluding objects, remove it to prevent invalid object pointer
+        if(SpecialObjectsToExclude.find(childIndex) != SpecialObjectsToExclude.end())
+            SpecialObjectsToExclude.erase(childIndex);
 
         //Restore resize type and OnTop if it is recorded
         if(OriginalChildrenResizeType.find(childIndex) != OriginalChildrenResizeType.end())
@@ -1087,11 +1064,12 @@ namespace ssGUI::Extensions
         if(IsOverrideChildrenResizeTypeAndOnTop())
             UpdateChildrenResizeTypesAndOnTop();
 
-        if(OriginalChildrenSize.find(childIndex) != OriginalChildrenSize.end())
-        {
-            child->SetSize(OriginalChildrenSize[childIndex]);
-            OriginalChildrenSize.erase(childIndex);   
-        }
+        //TODO: Maybe this is not needed
+        // if(OriginalChildrenSize.find(childIndex) != OriginalChildrenSize.end())
+        // {
+        //     child->SetSize(OriginalChildrenSize[childIndex]);
+        //     OriginalChildrenSize.erase(childIndex);   
+        // }
 
         //Remove the object reference to this child as it is no longer needed to be maintained
         CurrentObjectsReferences.RemoveObjectReference(childIndex);
