@@ -264,13 +264,13 @@ namespace ssGUI::Extensions
                 {
                     containerParent->StashChildrenIterator();
                     containerParent->FindChild(Container);
-                    auto posIt = containerParent->GetCurrentChildReferenceIterator();
+                    ssGUI::Hierarchy::ChildToken posIt = containerParent->GetCurrentChildToken();
                     // posIt++;
 
                     //Move the only child to the container's parent and restore order
                     childLeft->SetParent(containerParent);
                     containerParent->MoveChildrenIteratorToLast();
-                    auto childIt = containerParent->GetCurrentChildReferenceIterator();
+                    ssGUI::Hierarchy::ChildToken childIt = containerParent->GetCurrentChildToken();
                     containerParent->ChangeChildOrderToAfterPosition(childIt, posIt);
                     containerParent->PopChildrenIterator();
                 }

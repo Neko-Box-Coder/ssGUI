@@ -22,7 +22,7 @@ namespace ssGUI
     Hierarchy::Hierarchy(Hierarchy const& other)
     {
         Parent = -1; 
-        Children = std::list<ssGUIObjectIndex>(); 
+        Children = std::list<ChildInfo>(); 
         CurrentChild = Children.end(); 
         CurrentChildIteratorFrontEnd = true; 
         CurrentChildIteratorBackEnd = true; 
@@ -94,7 +94,7 @@ namespace ssGUI
         return Parent == -1 ? nullptr : CurrentObjectsReferences.GetObjectReference(Parent);
     }
 
-    void Hierarchy::SetParent(ssGUI::GUIObject* newParent)
+    void Hierarchy::SetParent(ssGUI::GUIObject* newParent, bool compositeChild)
     {        
         ssLOG_FUNC_ENTRY();
         
@@ -118,10 +118,11 @@ namespace ssGUI
                 return;
             }
 
-            auto it = newParent->GetCurrentChildReferenceIterator();
+            ChildToken it = newParent->GetCurrentChildToken();
             newParent->MoveChildrenIteratorToLast();
-            auto lastIt = newParent->GetCurrentChildReferenceIterator();
+            ChildToken lastIt = newParent->GetCurrentChildToken();
             newParent->ChangeChildOrderToAfterPosition(it, lastIt);
+            (*it).CompositeChild = compositeChild;
             PopChildrenIterator();
             ssLOG_FUNC_EXIT();
             return;
@@ -274,7 +275,7 @@ namespace ssGUI
         }
 
         //Inform new parent to add this as child
-        newParent->Internal_AddChild(CurrentObject);
+        newParent->Internal_AddChild(CurrentObject, compositeChild);
         
         //Update local position
         CurrentTransform->SetGlobalPosition(CurrentTransform->GetGlobalPosition());
@@ -305,6 +306,14 @@ namespace ssGUI
         }
 
         ssLOG_FUNC_EXIT();
+    }
+
+    bool Hierarchy::IsChildComposite() const
+    {
+        if(CurrentChildIteratorFrontEnd || CurrentChildIteratorBackEnd)
+            return false;
+
+        return CurrentChild->CompositeChild;
     }
 
     int Hierarchy::GetChildrenCount() const
@@ -427,7 +436,7 @@ namespace ssGUI
     void Hierarchy::StashChildrenIterator()
     {
         StashedChildIterators.push_back(
-            std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>
+            std::tuple<bool, bool, ChildToken>
             (CurrentChildIteratorFrontEnd, CurrentChildIteratorBackEnd, CurrentChild));
     }
 
@@ -436,7 +445,7 @@ namespace ssGUI
         if(StashedChildIterators.empty())
             return;
         
-        auto poppedTuple = StashedChildIterators.back();
+        std::tuple<bool, bool, ChildToken> poppedTuple = StashedChildIterators.back();
         CurrentChildIteratorFrontEnd = std::get<0>(poppedTuple);
         CurrentChildIteratorBackEnd = std::get<1>(poppedTuple);
         CurrentChild = std::get<2>(poppedTuple);
@@ -448,8 +457,8 @@ namespace ssGUI
         if(child == nullptr)
             return false;
         
-        std::list<ssGUIObjectIndex>::iterator it = Children.begin();
-        std::list<ssGUIObjectIndex>::iterator endIt = Children.end();
+        ChildToken it = Children.begin();
+        ChildToken endIt = Children.end();
         bool found = false;
 
         while (true)
@@ -457,7 +466,7 @@ namespace ssGUI
             if(it == endIt)
                 break;
             
-            if(CurrentObjectsReferences.GetObjectReference(*it) == child)
+            if(CurrentObjectsReferences.GetObjectReference(it->ChildIndex) == child)
             {
                 found = true;
                 break;
@@ -476,47 +485,55 @@ namespace ssGUI
     {
         if(!IsChildrenIteratorEnd())
         {
-            if(CurrentObjectsReferences.GetObjectReference(*CurrentChild) == nullptr)
+            if(CurrentObjectsReferences.GetObjectReference(CurrentChild->ChildIndex) == nullptr)
             {
                 ssLOG_LINE("invalid child found");
                 ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
             
-            return CurrentObjectsReferences.GetObjectReference(*CurrentChild);
+            return CurrentObjectsReferences.GetObjectReference(CurrentChild->ChildIndex);
         }
         else
             return nullptr;
     }
 
-    std::list<ssGUIObjectIndex>::iterator Hierarchy::GetCurrentChildReferenceIterator()
+    ssGUI::Hierarchy::ChildToken Hierarchy::GetCurrentChildToken()
     {
         return CurrentChild;
     }
 
-    void Hierarchy::ChangeChildOrderToBeforePosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position)
+    void Hierarchy::ChangeChildOrderToBeforePosition(ssGUI::Hierarchy::ChildToken child, 
+                                                        ssGUI::Hierarchy::ChildToken position)
     {
         Children.splice(position, Children, child);
 
-        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME))
-            CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME)->Notify(CurrentObjectsReferences.GetObjectReference(*child));   
+        if(CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>())
+        {
+            CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>()->
+                Notify(CurrentObjectsReferences.GetObjectReference(child->ChildIndex));   
+        }
     }
     
-    void Hierarchy::ChangeChildOrderToAfterPosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position)
+    void Hierarchy::ChangeChildOrderToAfterPosition(ssGUI::Hierarchy::ChildToken child, 
+                                                    ssGUI::Hierarchy::ChildToken position)
     {
         Children.splice(++position, Children, child);
 
-        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME))
-            CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME)->Notify(CurrentObjectsReferences.GetObjectReference(*child));   
+        if(CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>())
+        {
+            CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>()->
+                Notify(CurrentObjectsReferences.GetObjectReference(child->ChildIndex));   
+        }
     }   
     
     std::vector<ssGUI::GUIObject*> Hierarchy::GetListOfChildren() const
     {
         std::vector<ssGUI::GUIObject*> childrenCopy;
 
-        for(auto childIndex : Children)
+        for(auto childInfo : Children)
         {
-            auto child = CurrentObjectsReferences.GetObjectReference(childIndex);
+            auto child = CurrentObjectsReferences.GetObjectReference(childInfo.ChildIndex);
             if(child == nullptr)
                 continue;
 
@@ -526,7 +543,7 @@ namespace ssGUI
         return childrenCopy;
     }
 
-    void Hierarchy::Internal_AddChild(ssGUI::GUIObject* obj)
+    void Hierarchy::Internal_AddChild(ssGUI::GUIObject* obj, bool compositeChild)
     {
         StashChildrenIterator();
         
@@ -539,7 +556,10 @@ namespace ssGUI
 
         ssGUIObjectIndex childIndex = CurrentObjectsReferences.AddObjectReference(obj);
         
-        Children.push_back(childIndex);
+        ChildInfo newChild;
+        newChild.ChildIndex = childIndex;
+        newChild.CompositeChild = compositeChild;
+        Children.push_back(newChild);
     }
     
     void Hierarchy::Internal_RemoveChild(ssGUI::GUIObject* obj)
@@ -563,15 +583,17 @@ namespace ssGUI
         for(int i = 0; i < StashedChildIterators.size(); i++)
         {
             auto curStashedTuple = StashedChildIterators[i];
-            if(CurrentObjectsReferences.GetObjectReference(*(std::get<2>(curStashedTuple))) == obj)
+            if( !std::get<0>(curStashedTuple) && 
+                !std::get<1>(curStashedTuple) &&
+                CurrentObjectsReferences.GetObjectReference((*std::get<2>(curStashedTuple)).ChildIndex) == obj)
             {
-                std::get<0>(curStashedTuple) = false;
-                std::get<1>(curStashedTuple) = false;
+                std::get<0>(curStashedTuple) = true;
+                std::get<1>(curStashedTuple) = true;
                 StashedChildIterators[i] = curStashedTuple;
             }
         }
 
-        std::list<ssGUIObjectIndex>::iterator it = GetCurrentChildReferenceIterator();
+        ChildToken it = GetCurrentChildToken();
         Children.remove(*it);
         PopChildrenIterator();
 
@@ -710,9 +732,9 @@ namespace ssGUI
 
         //Delete children first
         std::vector<ssGUI::GUIObject*> childrenToDelete;
-        for(auto childIndex : Children)
+        for(auto childPair : Children)
         {
-            ssGUI::GUIObject* child = CurrentObjectsReferences.GetObjectReference(childIndex);
+            ssGUI::GUIObject* child = CurrentObjectsReferences.GetObjectReference(childPair.ChildIndex);
             if(child != nullptr)
                 childrenToDelete.push_back(child);
         }

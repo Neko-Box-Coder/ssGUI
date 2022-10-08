@@ -19,10 +19,28 @@ namespace ssGUI
 
     Variables & Constructor:
     ============================== C++ ==============================
+    public:
+        struct ChildInfo                                                                                    //Holds infomation about a child, used internally
+        {
+            public:
+                friend class Hierarchy;
+
+                bool operator==(ChildInfo const& other)
+                {
+                    return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
+                };
+
+            private:
+                ssGUIObjectIndex ChildIndex = -1;
+                bool CompositeChild = false;
+        };
+    
+        using ChildToken = std::list<ChildInfo>::iterator;                                                  //See <GetCurrentChildToken>
+    
     protected:
         ssGUIObjectIndex Parent;                                                                            //See <GetParent>
-        std::list<ssGUIObjectIndex> Children;                                                               //See <GetListOfChildren>
-        std::list<ssGUIObjectIndex>::iterator CurrentChild;                                                 //See <GetCurrentChild> and <GetCurrentChildReferenceIterator> 
+        std::list<ChildInfo> Children;                                                                      //See <GetListOfChildren>
+        ChildToken CurrentChild;                                                                            //See <GetCurrentChild> and <GetCurrentChildToken> 
         bool CurrentChildIteratorFrontEnd;                                                                  //See <IsChildrenIteratorEnd>
         bool CurrentChildIteratorBackEnd;                                                                   //See <IsChildrenIteratorEnd>
         bool UserCreated;                                                                                   //See <IsUserCreated>
@@ -30,7 +48,7 @@ namespace ssGUI
         bool HeapAllocated;                                                                                 //See <IsHeapAllocated>
         ObjectsReferences CurrentObjectsReferences;                                                         //See <Internal_GetObjectsReferences>
         bool DestroyEventCalled;                                                                            //(Internal variable) Flag for calling <OnObjectDestroyEventCallback>
-        std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;   //See <StashChildrenIterator>
+        std::vector<std::tuple<bool, bool, ChildToken>> StashedChildIterators;                              //See <StashChildrenIterator>
         bool Focused;                                                                                       //See <IsFocused>
     
         ssGUI::Renderer* CurrentRenderer;                                                                   //(Internal variable) Used to send redraw signal
@@ -60,10 +78,28 @@ namespace ssGUI
     */
     class Hierarchy
     {
+        public:
+            struct ChildInfo                                                                                    //Holds infomation about a child, used internally
+            {
+                public:
+                    friend class Hierarchy;
+
+                    bool operator==(ChildInfo const& other)
+                    {
+                        return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
+                    };
+
+                private:
+                    ssGUIObjectIndex ChildIndex = -1;
+                    bool CompositeChild = false;
+            };
+        
+            using ChildToken = std::list<ChildInfo>::iterator;                                                  //See <GetCurrentChildToken>
+        
         protected:
             ssGUIObjectIndex Parent;                                                                            //See <GetParent>
-            std::list<ssGUIObjectIndex> Children;                                                               //See <GetListOfChildren>
-            std::list<ssGUIObjectIndex>::iterator CurrentChild;                                                 //See <GetCurrentChild> and <GetCurrentChildReferenceIterator> 
+            std::list<ChildInfo> Children;                                                                      //See <GetListOfChildren>
+            ChildToken CurrentChild;                                                                            //See <GetCurrentChild> and <GetCurrentChildToken> 
             bool CurrentChildIteratorFrontEnd;                                                                  //See <IsChildrenIteratorEnd>
             bool CurrentChildIteratorBackEnd;                                                                   //See <IsChildrenIteratorEnd>
             bool UserCreated;                                                                                   //See <IsUserCreated>
@@ -71,7 +107,7 @@ namespace ssGUI
             bool HeapAllocated;                                                                                 //See <IsHeapAllocated>
             ObjectsReferences CurrentObjectsReferences;                                                         //See <Internal_GetObjectsReferences>
             bool DestroyEventCalled;                                                                            //(Internal variable) Flag for calling <OnObjectDestroyEventCallback>
-            std::vector<std::tuple<bool, bool, std::list<ssGUIObjectIndex>::iterator>> StashedChildIterators;   //See <StashChildrenIterator>
+            std::vector<std::tuple<bool, bool, ChildToken>> StashedChildIterators;                              //See <StashChildrenIterator>
             bool Focused;                                                                                       //See <IsFocused>
         
             ssGUI::Renderer* CurrentRenderer;                                                                   //(Internal variable) Used to send redraw signal
@@ -96,7 +132,11 @@ namespace ssGUI
             
             //function: SetParent
             //Sets the parent of the GUI Object. Setting nullptr will unset the parent.
-            virtual void SetParent(ssGUI::GUIObject* newParent);
+            virtual void SetParent(ssGUI::GUIObject* newParent, bool compositeChild = false);
+
+            //function: IsChildComposite
+            //True if the current child (see <FindChild>) belongs to this composite object
+            virtual bool IsChildComposite() const;
 
             //function: GetChildrenCount
             //Returns the number of children parented to this GUI Object. (Non recursive)
@@ -165,17 +205,19 @@ namespace ssGUI
             //To check if the current children iterator is valid, use <IsChildrenIteratorEnd>.
             virtual ssGUI::GUIObject* GetCurrentChild();
 
-            //function: GetCurrentChildReferenceIterator
+            //function: GetCurrentChildToken
             //Returns the underlying childrenIterator used for this GUI Object
-            virtual std::list<ssGUIObjectIndex>::iterator GetCurrentChildReferenceIterator();
+            virtual ssGUI::Hierarchy::ChildToken GetCurrentChildToken();
             
             //function: ChangeChildOrderToBeforePosition
-            //Changes the child's position to be in front of said position. Use <GetCurrentChildReferenceIterator> to get the iterator.
-            virtual void ChangeChildOrderToBeforePosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position);
+            //Changes the child's position to be in front of said position. Use <GetCurrentChildToken> to get the iterator.
+            virtual void ChangeChildOrderToBeforePosition(ssGUI::Hierarchy::ChildToken child, 
+                                                            ssGUI::Hierarchy::ChildToken position);
             
             //function: ChangeChildOrderToAfterPosition
-            //Changes the child's position to be in behind of said position. Use <GetCurrentChildReferenceIterator> to get the iterator.
-            virtual void ChangeChildOrderToAfterPosition(std::list<ssGUIObjectIndex>::iterator child, std::list<ssGUIObjectIndex>::iterator position);
+            //Changes the child's position to be in behind of said position. Use <GetCurrentChildToken> to get the iterator.
+            virtual void ChangeChildOrderToAfterPosition(ssGUI::Hierarchy::ChildToken child, 
+                                                            ssGUI::Hierarchy::ChildToken position);
 
             //function: GetListOfChildren
             //Gets a list of children
@@ -183,11 +225,14 @@ namespace ssGUI
 
             //function: Internal_AddChild
             //(Internal ssGUI function) Adds the GUI Object to the children record. Use <SetParent> instead for adding or removing child.
-            virtual void Internal_AddChild(ssGUI::GUIObject* obj);
+            virtual void Internal_AddChild(ssGUI::GUIObject* obj, bool compositeChild);
             
             //function: Internal_RemoveChild
             //(Internal ssGUI function) Removes the GUI Object to the children record. Use <SetParent> instead for adding or removing child.
             virtual void Internal_RemoveChild(ssGUI::GUIObject* obj);
+
+            //TODO: This is probably not needed. I am not sure
+            // virtual void Internal_SetChildAsComposite(bool compositeChild);
 
             //function: SetUserCreated
             //Sets the UserCreated flag. True if this GUI Object's lifetime is managed explcitly, otherwise managed by ssGUI object/extension.

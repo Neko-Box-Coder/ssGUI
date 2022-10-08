@@ -42,9 +42,9 @@ int main()
     mainWindow.AddExtension(layout);
 
     mainWindow.MoveChildrenIteratorToLast();
-    std::list<ssGUI::ssGUIObjectIndex>::iterator lastIt = mainWindow.GetCurrentChildReferenceIterator();
+    ssGUI::Hierarchy::ChildToken lastIt = mainWindow.GetCurrentChildToken();
     mainWindow.MoveChildrenIteratorToFirst();
-    std::list<ssGUI::ssGUIObjectIndex>::iterator firstIt = mainWindow.GetCurrentChildReferenceIterator();
+    ssGUI::Hierarchy::ChildToken firstIt = mainWindow.GetCurrentChildToken();
     mainWindow.ChangeChildOrderToBeforePosition(lastIt, firstIt);
 
     //Creating ssGUIManager and run it

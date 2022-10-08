@@ -72,8 +72,8 @@ namespace ssGUI
         windowTitleObj->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
         windowTitleObj->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
 
-        if(!windowTitleObj->HasTag(ssGUI::Tags::OVERLAY))
-            windowTitleObj->AddTag(ssGUI::Tags::OVERLAY);
+        if(!windowTitleObj->HasTag(ssGUI::Tags::FLOATING))
+            windowTitleObj->AddTag(ssGUI::Tags::FLOATING);
         
         ssLOG_FUNC_EXIT();
     }
@@ -117,8 +117,8 @@ namespace ssGUI
         as->SetVerticalPixel(iconHeight);
         as->SetVerticalPercentage(0);
 
-        if(!windowIconObj->HasTag(ssGUI::Tags::OVERLAY))
-            windowIconObj->AddTag(ssGUI::Tags::OVERLAY);
+        if(!windowIconObj->HasTag(ssGUI::Tags::FLOATING))
+            windowIconObj->AddTag(ssGUI::Tags::FLOATING);
         
         auto imageData = static_cast<ssGUI::Image*>(windowIconObj)->GetImageData();
 
@@ -166,8 +166,8 @@ namespace ssGUI
         as->SetVerticalPixel(buttonHeight);
         as->SetVerticalPercentage(0);
 
-        if(!closeButtonObj->HasTag(ssGUI::Tags::OVERLAY))
-            closeButtonObj->AddTag(ssGUI::Tags::OVERLAY);
+        if(!closeButtonObj->HasTag(ssGUI::Tags::FLOATING))
+            closeButtonObj->AddTag(ssGUI::Tags::FLOATING);
         
         ssLOG_FUNC_EXIT();
     }
@@ -193,7 +193,7 @@ namespace ssGUI
         auto windowTitle = new ssGUI::Text();
         windowTitle->SetUserCreated(false);
         windowTitle->SetHeapAllocated(true);
-        windowTitle->SetParent(this);
+        windowTitle->SetParent(this, true);
         windowTitle->SetMinSize(glm::vec2(5, 5));
         windowTitle->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
         windowTitle->SetText("Window");
@@ -205,7 +205,7 @@ namespace ssGUI
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
         windowIcon->SetUserCreated(false);
         windowIcon->SetHeapAllocated(true);
-        windowIcon->SetParent(this);
+        windowIcon->SetParent(this, true);
         windowIcon->SetMinSize(glm::vec2(5, 5));
         WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
@@ -217,7 +217,7 @@ namespace ssGUI
         auto closeButton = new ssGUI::Button();
         closeButton->SetUserCreated(false);
         closeButton->SetHeapAllocated(true);
-        closeButton->SetParent(this);
+        closeButton->SetParent(this, true);
         closeButton->SetMinSize(glm::vec2(5, 5));
         closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
@@ -336,10 +336,7 @@ namespace ssGUI
         if(oldTitleObj != nullptr)
         {
             oldTitle = oldTitleObj->GetText();
-            if(!oldTitleObj->IsUserCreated())
-                oldTitleObj->Delete();
-            else
-                oldTitleObj->SetParent(nullptr);
+            oldTitleObj->Delete();
         }
         
         if(text == nullptr)
@@ -348,7 +345,7 @@ namespace ssGUI
             return;
         }
 
-        text->SetParent(this);
+        text->SetParent(this, true);
 
         ssGUIObjectIndex newTextIndex = CurrentObjectsReferences.GetObjectIndex(text);
 
@@ -393,12 +390,7 @@ namespace ssGUI
         auto oldIcon = CurrentObjectsReferences.GetObjectReference(WindowIcon);
         
         if(oldIcon != nullptr)
-        {
-            if(!oldIcon->IsUserCreated())
-                oldIcon->Delete();
-            else
-                oldIcon->SetParent(nullptr);
-        }
+            oldIcon->Delete();
         
         if(image == nullptr)
         {
@@ -406,7 +398,7 @@ namespace ssGUI
             return;
         }
         
-        image->SetParent(this);
+        image->SetParent(this, true);
 
         ssGUIObjectIndex newIconIndex = CurrentObjectsReferences.GetObjectIndex(image);
 
@@ -427,12 +419,7 @@ namespace ssGUI
     {
         auto oldButton = CurrentObjectsReferences.GetObjectReference(CloseButton);
         if(oldButton != nullptr)
-        {
-            if(!oldButton->IsUserCreated())
-                oldButton->Delete();
-            else
-                oldButton->SetParent(nullptr);
-        }
+            oldButton->Delete();
         
         if(button == nullptr)
         {
@@ -440,7 +427,7 @@ namespace ssGUI
             return;
         }
         
-        button->SetParent(this);
+        button->SetParent(this, true);
 
         ssGUIObjectIndex newButtonIndex = CurrentObjectsReferences.GetObjectIndex(button);
 

@@ -39,9 +39,9 @@ namespace ssGUI
 
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();
-        auto firstIt = GetCurrentChildReferenceIterator();
+        auto firstIt = GetCurrentChildToken();
         MoveChildrenIteratorToLast();
-        auto lastIt = GetCurrentChildReferenceIterator();
+        auto lastIt = GetCurrentChildToken();
         ChangeChildOrderToAfterPosition(firstIt, lastIt);
 
         //Swap size multiplier

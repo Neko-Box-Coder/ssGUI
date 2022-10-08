@@ -33,7 +33,7 @@ namespace ssGUI::Extensions
         for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
         {
             if(CurrentObjectsReferences.GetObjectReference(it->first) == nullptr || 
-            !CurrentObjectsReferences.GetObjectReference(it->first)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
+                !CurrentObjectsReferences.GetObjectReference(it->first)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
             {
                 continue;
             }

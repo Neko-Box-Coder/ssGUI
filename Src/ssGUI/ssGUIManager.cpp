@@ -1,6 +1,7 @@
 #include "ssGUI/ssGUIManager.hpp"
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
+#include "ssGUI/ssGUITags.hpp"
 
 //Debug
 #include "ssGUI/Extensions/Layout.hpp"
@@ -193,8 +194,10 @@ namespace ssGUI
             if(!mainWindow->IsEnabled())
                 continue;
 
-            std::list<ssGUI::GUIObject*> objToRender;
+            //TODO: Change from list to vector
+            std::list<std::pair<ssGUI::GUIObject*, bool>> objToRender;      //Object to render, has overlay parent flag
             std::list<ssGUI::GUIObject*> renderQueue;
+            std::vector<ssGUI::GUIObject*> overlayQueue;
             ssGUI::MainWindow* currentMainWindowP = dynamic_cast<ssGUI::MainWindow*>(mainWindow);
 
             currentMainWindowP->Internal_Draw();
@@ -204,16 +207,22 @@ namespace ssGUI
             currentMainWindowP->MoveChildrenIteratorToFirst();
             while (!currentMainWindowP->IsChildrenIteratorEnd())
             {
-                objToRender.push_back(currentMainWindowP->GetCurrentChild());
+                objToRender.push_back(std::pair(currentMainWindowP->GetCurrentChild(), false));
                 currentMainWindowP->MoveChildrenIteratorNext();
             }
             currentMainWindowP->PopChildrenIterator();
 
             while (!objToRender.empty())
             {
-                ssGUI::GUIObject* currentObjP = objToRender.front();
+                ssGUI::GUIObject* currentObjP = objToRender.front().first;
+                bool isParentOverlay = objToRender.front().second;
                 objToRender.pop_front();
-                renderQueue.push_back(currentObjP);
+
+                bool overlay = isParentOverlay || currentObjP->HasTag(ssGUI::Tags::OVERLAY);
+                if(overlay)
+                    overlayQueue.push_back(currentObjP);
+                else
+                    renderQueue.push_back(currentObjP);
 
                 //Add children to draw queue
                 if(currentObjP->GetChildrenCount() > 0)
@@ -223,7 +232,7 @@ namespace ssGUI
                     currentObjP->MoveChildrenIteratorToLast();
                     while (!currentObjP->IsChildrenIteratorEnd())
                     {
-                        objToRender.push_front(currentObjP->GetCurrentChild());
+                        objToRender.push_front(std::pair(currentObjP->GetCurrentChild(), overlay));
                         currentObjP->MoveChildrenIteratorPrevious();
                     }
                     currentObjP->PopChildrenIterator();
@@ -238,6 +247,15 @@ namespace ssGUI
                 if(!currentMainWindowP->IsRedrawNeeded())
                 {
                     for(auto it = renderQueue.begin(); it != renderQueue.end(); it++)
+                    {
+                        if((*it)->IsRedrawNeeded())
+                        {
+                            renderNeeded = true;
+                            break;
+                        }
+                    }
+
+                    for(auto it = overlayQueue.begin(); it != overlayQueue.end(); it++)
                     {
                         if((*it)->IsRedrawNeeded())
                         {
@@ -273,6 +291,13 @@ namespace ssGUI
                         currentObjP->RedrawObject();
 
                     (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
+                                                    dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
+                                                    currentMainWindowP->GetPositionOffset());
+                }
+
+                for(int i = 0; i < overlayQueue.size(); i++)
+                {
+                    overlayQueue[i]->Internal_Draw(  currentMainWindowP->GetBackendDrawingInterface(), 
                                                     dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
                                                     currentMainWindowP->GetPositionOffset());
                 }

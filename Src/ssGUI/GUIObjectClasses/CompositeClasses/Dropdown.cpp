@@ -92,9 +92,9 @@ namespace ssGUI
         
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();
-        auto firstIt = GetCurrentChildReferenceIterator();
+        ssGUI::Hierarchy::ChildToken firstIt = GetCurrentChildToken();
         MoveChildrenIteratorToLast();
-        auto lastIt = GetCurrentChildReferenceIterator();
+        ssGUI::Hierarchy::ChildToken lastIt = GetCurrentChildToken();
         ChangeChildOrderToAfterPosition(firstIt, lastIt);
 
         //Swap size multiplier

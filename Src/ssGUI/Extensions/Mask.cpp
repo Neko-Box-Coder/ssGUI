@@ -1110,24 +1110,6 @@ namespace ssGUI::Extensions
 
                 // ssLOG_LINE("intersections count: "<<intersections.size());
 
-                /*
-                std::cout<<"\n";
-                std::cout<<"\n";
-                std::cout<<"Mask:\n";
-                for(int j = 0; j < maskIntersectionsCount.size(); j++)
-                {
-                    std::cout<<maskIntersectionsCount[j]<<"\n";
-                }
-                std::cout<<"\n";
-
-                std::cout<<"Shape:\n";
-                for(int j = 0; j < shapeIntersectionsCount.size(); j++)
-                {
-                    std::cout<<shapeIntersectionsCount[j]<<"\n";
-                }
-                std::cout<<"\n";
-                */
-
                 std::vector<glm::vec2> currentShapeVertices;
                 std::vector<glm::vec2> currentShapeUVs;
                 std::vector<glm::u8vec4> currentShapeColours;

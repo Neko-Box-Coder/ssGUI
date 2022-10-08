@@ -492,9 +492,9 @@ namespace ssGUI::Extensions
         //Restore order
         TargetDockObject->GetParent()->StashChildrenIterator();
         TargetDockObject->GetParent()->FindChild(TargetDockObject);
-        std::list<ssGUIObjectIndex>::iterator dockObjectIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
+        ssGUI::Hierarchy::ChildToken dockObjectIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
         TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
-        std::list<ssGUIObjectIndex>::iterator lastIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
+        ssGUI::Hierarchy::ChildToken lastIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
         
         TargetDockObject->GetParent()->ChangeChildOrderToBeforePosition(lastIt, dockObjectIt);
         TargetDockObject->SetParent(newParent);
@@ -542,9 +542,9 @@ namespace ssGUI::Extensions
             //Insert the Container after/before it
             TargetDockObject->GetParent()->StashChildrenIterator();
             TargetDockObject->GetParent()->FindChild(TargetDockObject);
-            std::list<ssGUIObjectIndex>::iterator dockObjectIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
+            ssGUI::Hierarchy::ChildToken dockObjectIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
             TargetDockObject->GetParent()->MoveChildrenIteratorToLast();
-            std::list<ssGUIObjectIndex>::iterator lastIt = TargetDockObject->GetParent()->GetCurrentChildReferenceIterator();
+            ssGUI::Hierarchy::ChildToken lastIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
             TargetDockObject->GetParent()->PopChildrenIterator();
 
             if(!dockLayout->IsReverseOrder())
