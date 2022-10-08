@@ -673,7 +673,7 @@ namespace ssGUI::Extensions
 
             //Don't mask container's composite children
             Container->StashChildrenIterator();
-            if(Container->FindChild(child))
+            if(Container->FindChild(child) && Container->IsChildComposite())
             {
                 Container->PopChildrenIterator();
                 children.pop();
