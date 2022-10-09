@@ -8,6 +8,7 @@
 .CTopic pre.CCode,
 .SHKeyword,
 .SHComment,
+.SHString,
 .PSection * {
     font-family: monospace;
 }
@@ -85,6 +86,62 @@
     font-weight: bold;
     font-size: 1.5rem;
 }
+
+/* Inheritance graph */
+
+.NDClassPrototype.HasParents::before {
+    content: '🅿️ Parent:';
+    display: block;
+    position: absolute;
+    margin-top: -2rem;
+    color: #000000;
+    font-weight: bold;
+}
+
+.NDClassPrototype.HasParents{
+    padding-top: 2rem;
+}
+
+.NDClassPrototype.HasParents.HasChildren .CPEntry.TClass.Current::before,
+.NDClassPrototype.HasParents .CPEntry.TClass.Current::before,
+.NDClassPrototype.HasChildren .CPEntry.TClass.Current::before{
+    content: '🆑 Current Class:';
+    display: block;
+    position: absolute;
+    margin-top: -2rem;
+    margin-left: -0.5rem;
+    color: #000000;
+    font-weight: bold;
+}
+
+.NDClassPrototype.HasParents.HasChildren .CPEntry.TClass.Current::after,
+.NDClassPrototype.HasChildren .CPEntry.TClass.Current::after{
+    content: '🔽 Children:';
+    display: block;
+    position: absolute;
+    margin-top: 1.2rem;
+    margin-left: 1rem;
+    color: #000000;
+    font-weight: bold;
+}
+
+.CPEntry.Parent,
+.CPEntry.Child{
+  opacity: 1;
+}
+
+.CPEntry.Parent.TClass .CPModifiers,
+.CPEntry.Child.TClass .CPModifiers,
+.CPEntry.Parent.TClass .CPName,
+.CPEntry.Child.TClass .CPName{
+  opacity: 0.5;
+}
+
+.CPEntry.TClass.Current {
+    margin-bottom: 2.5rem;
+    margin-top: 2.5rem;
+}
+
 
 /* Enum title */
 td.CDLEntry {

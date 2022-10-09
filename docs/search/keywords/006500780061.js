@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("exa",["Section"],[["Example",,[[,,,,0,"File:🗒️_User_Manual/05._Using_Event_Callback.txt:Example"]]]]);

@@ -1,63 +1,181 @@
-Title: Using Event Callback
+Title: 🔊 Using Event Callback
 
-In order to react to any event, an <ssGUI::EventCallbacks::EventCallback> can be used by attaching it to the target GUI object you want to listen to.
+Until now, we have been using the <ssGUIManager::AddPostGUIUpdateEventListener> to react to any event/changes
 
-Below is from the readme example with further explaination for the event callback part.
+by checking the status for all the GUI objects every frame.
+
+This is fine for simple project or code base. But as the codebase grows 🌴, this quickly becomes unsustainable and non-performant.
+
+This is especially true if the user has the ability to create new GUI Objects in runtime.
+
+Section: ❓ What is Event Callback
+
+In essence, event callback allows you to assign more than 1 functions to a specific event in order to react to that event 
+
+before or after it has happened.
+
+At the moment, the default event callbacks are slightly lacking and unorganized but this will be looked into in the future (hopefully 😅).
+
+There are two types of event callback, inidcated by the name of it:
+
+- OnSomeEventHappenEventCallback: This notifies any listener *before* an event is going to happen
+
+- SomeEventHappenedEventCallback: This notifies any listener *after* an event has just happened either immediately or in the same frame.
+
+Section: 📥 Adding event callback to a GUI Object
+
+To create an event callback, we can just do this with <ssGUI::Factory::Create>:
+
+> auto focusLostEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::FocusLostEventCallback>();
+
+Then we can attach it to any GUI Objects like this:
 
 ========================================= C++ ==============================================
-#include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+ssGUI::Window window;
 
-//Readme example
-int main()
+//...
+
+//Add the event callback
+auto focusLostEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::FocusLostEventCallback>();
+window.AddEventCallback(focusLostEvent);
+============================================================================================
+
+> ⚠️ Please note that you cannot add the same type of eventCallback multiple times on the same GUI Object
+
+Some of the GUI Objects already has some event callbacks attached since it is used internally.
+
+This is often mentioned in that GUI Object's API, or in the constructor.
+
+To check for a given event callback exists, you can use <ssGUI::EventCallbackManager::IsAnyEventCallbackExist>:
+
+========================================= C++ ==============================================
+ssGUI::Window window;
+
+//...
+
+//Check if the event callback exists
+if(window.IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>())
 {
-    //Create the main window
-    ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::vec2(450, 125));
-    mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
-
-    //Create a text widget and set the respective properties
-    ssGUI::Text text;
-    text.SetSize(glm::vec2(450, 60));
-    text.SetText("Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
-
-    //Create a button and set an event callback to change the text when it is clicked
-    ssGUI::Button button;
-    button.SetSize(glm::vec2(50, 30));
-    button.SetPosition(glm::vec2(200, 75));
-    button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
-    (
-        //Key for ability to remove the listener later if needed
-        "AnyKey",
-        //*src* is the source that causes the event. In the case of <ButtonStateChangedEventCallback>, it would be the button itself.
-        //*container* is the GUI Object that this event callback attaches to. *container* doesn't always necessarily the same as *src*.
-        //*refs* is a class that holds all references for other GUI objects. This will be further explained and shown in the cloning tutorial. 
-        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
-        {
-            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText("(`oωo´)");
-        }
-    );
-
-    button.SetParent(&mainWindow);
-    text.SetParent(&mainWindow);
-
-    //Create the GUIManager, add the main window and start running
-    ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
-    guiManager.StartRunning();
-    return 0;
+    //....
 }
 ============================================================================================
 
-There are quite a number of built-in event callbacks you can use which is triggered automatically. 
-However, if you want to create you own event callback, you can create one by following the template on <Creating A Custom Event Callback>.
+To remove a given event callback, you can use <ssGUI::EventCallbackManager::RemoveAnyEventCallback>:
 
-Then you can create it and bind it by: 
-> auto eventCallback = ssGUI::Factory::Create<YourEventCallback>();
-> eventCallback->BindToObject(AnyGUIObject);
+========================================= C++ ==============================================
+ssGUI::Window window;
 
-And when there's an event which you want to trigger it, you can just do so by:
-> eventCallback->Notify(sourceGUIObject);
+//...
+
+//Remove the event callback if it exists
+window.RemoveAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>();
+============================================================================================
+
+Section: 👂 Adding Listener To A Event Callback
+
+In order to add a listener to a event callback, we first need to get the pointer of it.
+
+You can get a GUI object's event callback by calling <ssGUI::EventCallbackManager::GetAnyEventCallback>
+
+========================================= C++ ==============================================
+ssGUI::Window window;
+
+//...
+
+//Get the event callback. If it doesn't exist, this will be a nullptr.
+auto eventCallback = window.GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>();
+============================================================================================
+
+To add a listener using lambda, you need to call <ssGUI::EventCallbacks::EventCallback::AddEventListener>:
+
+========================================= C++ ==============================================
+ssGUI::Window window;
+
+//...
+
+//Get the event callback. If it doesn't exist, this will be a nullptr.
+auto eventCallback = window.GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>();
+
+//Add a listener to this event.
+eventCallback->AddEventListener
+(
+    "AnyKey",   //The identifier for this listener. 
+                //This is what you need to use in order do anything with this listener
+    
+    //source is what *triggered* the callback
+    //container is the GUI Object that this event callback is added to
+    //references are all the GUI object references this listener has, we will talk about this later.
+    [](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+    {
+        //...
+    }    
+);
+============================================================================================
+
+This is how you a listener using an object's function. The function signature must match:
+
+========================================= C++ ==============================================
+#include <functional>   //You will need to include this
+
+//..
+
+ssGUI::Window window;
+
+//...
+
+some::class* objectPointer = new some::class();  //Create an object for some::class
+
+//...
+
+//Get the event callback. If it doesn't exist, this will be a nullptr.
+auto eventCallback = window.GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>();
+
+//Add a listener to this event.
+eventCallback->AddEventListener
+(
+    "AnyKey",   //The identifier for this listener. 
+                //This is what you need to use in order do anything with this listener
+    
+    //Using <std::bind> to bind an object's function to the listener callback
+    std::bind(&some::class::function, objectPointer, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+);
+============================================================================================
+
+Section: Example
+
+Here's a full example of using event callback (Src/Examples/EventCallbackExample.cpp)
+========================================= C++ ==============================================
+#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
+#include "ssGUI/HeaderGroups/StandardGroup.hpp"
+
+//Event callback example
+int main()
+{
+    ssGUI::MainWindow mainWindow;
+
+    auto callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
+    callback->AddEventListener
+    (
+        "AnyKey",
+        [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs) 
+        {
+            std::cout<<"child added\n";
+        }
+    );
+
+    mainWindow.AddEventCallback(callback);
+
+    //Creating window
+    ssGUI::Window window;
+    window.SetSize(glm::vec2(400, 300));
+    window.SetPosition(glm::vec2(50, 200));
+    window.SetParent(&mainWindow);     //This should trigger the event callback
+
+    //Creating ssGUIManager and run it
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.StartRunning();
+
+    return 0;
+}
+============================================================================================
