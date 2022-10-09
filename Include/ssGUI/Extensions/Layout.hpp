@@ -160,6 +160,9 @@ namespace ssGUI::Extensions
             //Returns the sizeMultiplier of the child with the index.
             //0 = 0%, 1 = 100%
             virtual float GetPreferredSizeMultiplier(int index) const;
+
+            //function: RemovePreferredSizeMultiplier
+            virtual void RemovePreferredSizeMultiplier(int index);
             
             //function: GerPreferredSizeMultiplierCount
             //Returns the number of entries for PreferredSizeMultiplier. 

@@ -110,6 +110,8 @@ namespace ssGUI::Extensions
         //Don't need to exclude spacing for the last element, therefore adding it back 
         remainingLength += GetSpacing();
 
+        float lengthWithoutPaddingAndSpacing = remainingLength;
+
         //Change the children after the last size change child to fit the layout container
         if(lastChildChangeIndex != -1 && ++lastChildChangeIndex <= childrenPos.size() - 2)
         {
@@ -141,7 +143,7 @@ namespace ssGUI::Extensions
             float sizeMultiplier = GetPreferredSizeMultiplier(i);
 
             if(sizeMultiplier > 0)
-                currentLength = length * sizeMultiplier;
+                currentLength = lengthWithoutPaddingAndSpacing * sizeMultiplier;
             else
                 currentLength = childrenLength[i];
 
@@ -757,6 +759,14 @@ namespace ssGUI::Extensions
         return PreferredSizeMultipliers[index];
     }
 
+    void Layout::RemovePreferredSizeMultiplier(int index)
+    {
+        if(index < 0 || index >= PreferredSizeMultipliers.size())
+            return;
+        
+        PreferredSizeMultipliers.erase(PreferredSizeMultipliers.begin() + index);
+    }
+
     int Layout::GerPreferredSizeMultiplierCount() const
     {
         return PreferredSizeMultipliers.size();
@@ -996,16 +1006,17 @@ namespace ssGUI::Extensions
             return;
         }
 
-        Container->StashChildrenIterator();
-        if(Container->FindChild(child) && Container->IsChildComposite())
-        {
-            Container->PopChildrenIterator();
-            ObjectsToExclude.insert(childIndex);
-            SpecialObjectsToExclude.insert(childIndex);
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-        Container->PopChildrenIterator();
+        //Rely on tag instead
+        // Container->StashChildrenIterator();
+        // if(Container->FindChild(child) && Container->IsChildComposite())
+        // {
+        //     Container->PopChildrenIterator();
+        //     ObjectsToExclude.insert(childIndex);
+        //     SpecialObjectsToExclude.insert(childIndex);
+        //     ssLOG_FUNC_EXIT();
+        //     return;
+        // }
+        // Container->PopChildrenIterator();
 
 
         if(IsOverrideChildrenResizeTypeAndOnTop())
