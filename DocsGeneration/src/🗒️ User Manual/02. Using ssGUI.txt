@@ -225,9 +225,9 @@ Topic: Macros needed to be defined:
         > ssLOG_USE_SOURCE
 
     - Windows
-        > _SCL_SECURE_NO_WARNINGS
-        > _CRT_SECURE_NO_WARNINGS
-        > _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+        > _SCL_SECURE_NO_WARNINGS (MSVC)
+        > _CRT_SECURE_NO_WARNINGS (MSVC)
+        > _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING (MSVC)
     
     - Linux
         > HAVE_PNG_H

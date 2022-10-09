@@ -79,9 +79,9 @@
  <div class="CBody"><p>⚠️ To add source files recursively for a given folder for Visual Studio, please see <a href="https://stackoverflow.com/questions/392473/how-do-i-add-an-existing-directory-tree-to-a-project-in-visual-studio" target="_top">this post</a></p><ul><li><p>Common</p></li></ul><pre class="CText">External/ssLogger/src/srcLogInit.cpp<br />Src/ssGUI/*.cpp<br />External/clip/clip.cpp<br />External/clip/image.cpp</pre><ul><li><p>Windows</p></li></ul><pre class="CText">External/clip/clip_win.cpp</pre><ul><li><p>MacOS</p></li></ul><pre class="CText">External/clip/clip_osx.mm</pre><ul><li><p>Linux</p></li></ul><pre class="CText">External/clip/clip_x11.cpp</pre><p>⠀</p></div>
 </div>
 
-<a name="Macros_needed_to_be_defined_"></a><a name="Topic1684"></a><div class="CTopic TInformation LTextFile">
+<a name="Macros_needed_to_be_defined_"></a><a name="Topic1695"></a><div class="CTopic TInformation LTextFile">
  <div class="CTitle">Macros needed to be defined:</div>
- <div class="CBody"><ul><li><p>Common</p></li></ul><pre class="CText">ssLOG_CALL_STACK=0<br />ssLOG_SHOW_FILE_NAME=1<br />ssLOG_SHOW_LINE_NUM=1<br />ssLOG_SHOW_FUNC_NAME=1<br />ssLOG_SHOW_TIME=1<br />ssLOG_THREAD_SAFE=0<br />ssLOG_LOG_TO_FILE=0<br />ssLOG_USE_SOURCE</pre><ul><li><p>Windows</p></li></ul><pre class="CText">_SCL_SECURE_NO_WARNINGS<br />_CRT_SECURE_NO_WARNINGS<br />_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING</pre><ul><li><p>Linux</p></li></ul><pre class="CText">HAVE_PNG_H<br />HAVE_XCB_XLIB_H</pre><ul><li><p>MacOS</p></li></ul><pre class="CText">fobjc-arc</pre><p>⠀</p></div>
+ <div class="CBody"><ul><li><p>Common</p></li></ul><pre class="CText">ssLOG_CALL_STACK=0<br />ssLOG_SHOW_FILE_NAME=1<br />ssLOG_SHOW_LINE_NUM=1<br />ssLOG_SHOW_FUNC_NAME=1<br />ssLOG_SHOW_TIME=1<br />ssLOG_THREAD_SAFE=0<br />ssLOG_LOG_TO_FILE=0<br />ssLOG_USE_SOURCE</pre><ul><li><p>Windows</p></li></ul><pre class="CText">_SCL_SECURE_NO_WARNINGS (MSVC)<br />_CRT_SECURE_NO_WARNINGS (MSVC)<br />_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING (MSVC)</pre><ul><li><p>Linux</p></li></ul><pre class="CText">HAVE_PNG_H<br />HAVE_XCB_XLIB_H</pre><ul><li><p>MacOS</p></li></ul><pre class="CText">fobjc-arc</pre><p>⠀</p></div>
 </div>
 
 <a name="Flags/System_Libraries_"></a><a name="Topic1683"></a><div class="CTopic TInformation LTextFile last">
