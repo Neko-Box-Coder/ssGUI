@@ -41,13 +41,13 @@ namespace ssGUI
         }
 
         buttonTextObj->SetEnabled(true);
-        if(!buttonTextObj->HasTag(ssGUI::Tags::FLOATING))
-            buttonTextObj->AddTag(ssGUI::Tags::FLOATING);
+        // if(!buttonTextObj->HasTag(ssGUI::Tags::FLOATING))
+            // buttonTextObj->AddTag(ssGUI::Tags::FLOATING);
 
-        ssGUI::Extensions::AdvancedSize* as;
+        // ssGUI::Extensions::AdvancedSize* as;
         
-        if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
+        // if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+        //     buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
         static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
         static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
@@ -79,8 +79,8 @@ namespace ssGUI
         }
         
         buttonImgWrapper->SetEnabled(true);
-        if(!buttonImgWrapper->HasTag(ssGUI::Tags::FLOATING))
-            buttonImgWrapper->AddTag(ssGUI::Tags::FLOATING);
+        // if(!buttonImgWrapper->HasTag(ssGUI::Tags::FLOATING))
+            // buttonImgWrapper->AddTag(ssGUI::Tags::FLOATING);
         
         ssGUI::Extensions::AdvancedSize* as;
         ssGUI::Extensions::AdvancedPosition* ap;

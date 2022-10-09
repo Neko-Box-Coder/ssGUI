@@ -89,6 +89,7 @@ namespace ssGUI
                             Toggle(false)
     {
         InitializeDefaultDropdownArrowIfNeeded();
+        SetSize(glm::vec2(100, 35));
         
         //Swap the order of text and icon
         MoveChildrenIteratorToFirst();
