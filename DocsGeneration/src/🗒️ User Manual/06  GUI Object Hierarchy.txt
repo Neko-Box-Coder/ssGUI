@@ -1,4 +1,4 @@
-Title: GUI Object Hierarchy
+Title: 🪜 GUI Object Hierarchy
 
 As you might have known, you can parent different GUI Objects to other GUI Objects. 
 
@@ -22,6 +22,53 @@ mainWindow
 
 (See HierarchyExample.png)
 
+Section: 🗺️ Child Position
+
+All the (recursive) children of a parent inherits the parent's position. Meaning the children follows the position of the parent.
+
+(see Mask.gif)
+
+Section: 🖌️ Draw And Update Order
+
+When rendering the scene, the *draw order* is from *root to children*.
+
+This is because we want to have children drawn *in front of* the parent, 
+
+meaning it is *drawn last* over the *already drawn* parent.
+
+⠀
+
+This is however, the opposite for the update order.
+
+When updating the status and running the GUI Objects' logic in the scene,
+
+the order goes from *children to root*.
+
+This is because we want the children to receive any input and react to it *first*.
+
+It *wouldn't makes sense* for the window to receive the mouse click and react before the button does.
+
+And finally the GUI Objects are updated first *before* it gets drawn so any reaction to the input or any events are *immediately drawn*.
+
+⠀
+
+
+Below is the visualization of the draw and update order
+
+================================== Text ==================================
+mainWindow              
+│                       
+└─► window              
+    │                                       
+    ├─► window2         ▲                   │
+    │   │               │                   │ 
+    │   └─► text        │ Update Order      │ Draw Order
+    │                   │                   │
+    ├─► window3         │                   ▼
+    │                   
+    └─► window4         
+
+===========================================================================
 
 Source Code:
 ========================================= C++ ==============================================

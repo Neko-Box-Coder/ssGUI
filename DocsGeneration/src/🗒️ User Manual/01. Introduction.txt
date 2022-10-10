@@ -2,7 +2,7 @@ Title: Introduction
 
 > ⚠️ This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
-🔌 Status of ssGUI::
+🔌 Status of <ssGUI: https://github.com/Neko-Box-Coder/ssGUI>::
 - 🔀 Branches
     - Master: ✅
 - 🖥️ OS support
