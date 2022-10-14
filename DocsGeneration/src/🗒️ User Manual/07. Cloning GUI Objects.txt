@@ -93,6 +93,10 @@ But let's see what actually happens instead.
 
 As you can see, the button under the cloned window is changing the *original text* instead of the cloned one.
 
+This is because the cloned button is referencing the original text instead.
+
+(See CloningExplain.png)
+
 If we use <ssGUI::ObjectsReferences>, it will keep track of the references automatically if you add the objects to be referenced.
 
 And it will change the *cloned text* instead.
