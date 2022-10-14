@@ -1,105 +1,106 @@
-Title: Cloning GUI Objects
+Title: 🖇️ Cloning GUI Objects
 
-When you have a hierarchy of GUI Objects, it is good to be able to clone GUI objects including their children (and recursively).
+When you have a hierarchy of GUI Objects, 
 
-Luckily, ssGUI does provide such functionality, by calling the <ssGUI::GUIObject::Clone> function which has the option
+it is good to be able to clone GUI objects *including their children (and recursively)*.
+
+⠀
+
+Luckily, ssGUI does provide such functionality, 
+
+by calling the <ssGUI::GUIObject::Clone> function which has the option
+
 to clone only the GUI Object or together with the children recursively.
 
-That is all fine and well until the GUI object (or children) you are cloning references some other GUI Objects.
+⠀
+
+That is all fine and well until the GUI object (or children) you are cloning *references some other GUI Objects*.
+
 Then things get complicated.
 
-This is why <ssGUI::ObjectsReferences> exists. The job of this class is to track all the references between the GUI object and other GUI objects
+For example, if your button changes an attribute of another GUI Object under the same parent (recursively) that will be cloned.
+
+⠀
+
+This is why <ssGUI::ObjectsReferences> exists. 
+
+The job of this class is to track all the references between the GUI object and other GUI objects
+
 and map the references correctly and automatically when the GUI objects being cloned or deleted.
 
-Let's take a look at the modified readme example. 
-The modification is just moving the message from the <ssGUI::MainWindow> to <ssGUI::Window>, and the ability to clone that window by pressing the "Enter" key.
+Section: Example
 
-(See CloningExample.png)
+As an example, we have a window that can be cloned by hitting the "Enter" key.
 
-============================================ C++ ============================================
-#include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+And inside that window, we have a text widget and button which the text changes when the button is pressed.
 
-int main()
-{
-    //Create the main window
-    ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::ivec2(700, 300));
+(See CloningExample.gif)
 
-    //Create a window
-    ssGUI::Window window;
-    window.SetSize(glm::ivec2(450, 110 + window.GetTitlebarHeight()));      //The reason why adding titlebar height is because Window includes titlebar while MainWindow doesn't
-    window.SetResizeType(ssGUI::Enums::ResizeType::NONE);
-    window.SetParent(&mainWindow);
+============================= C++ =============================
+//...
 
-    //Create a text widget and set the respective properties
-    ssGUI::Text text;
-    text.SetSize(glm::vec2(450, 45));
-    text.SetText(L"Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
-    text.SetParent(&window);
-    
-    //Create a button and set an event callback to change the text when it is clicked
-    ssGUI::Button button;
-    button.SetSize(glm::ivec2(50, 30));
-    button.SetPosition(glm::vec2(200, 60));
-    button.SetParent(&window);
+//Create a window
+ssGUI::StandardWindow window;
 
-    //Gets the event callback for the button state change
-    auto ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
-    ecb->AddEventListener
-    (
-        "AnyId",
-        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
-        {
-            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText(L"(`oωo´)");
-        }
-    );
-
-    //Create the GUIManager, add the main window and start running
-    ssGUI::ssGUIManager guiManager;
-
-    //When the user presses Enter, clone the window
-    guiManager.AddOnUpdateEventListener
-    (
-        [&]()
-        {
-            ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
-            
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
-            {
-                window.Clone(true)->SetPosition(glm::vec2(window.GetPosition().x + 10, window.GetPosition().y + 10));
-            }
-        }
-    );    
-
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
-    guiManager.StartRunning();
-    return 0;
-}
-=============================================================================================
-
-Remember this is not utilizing the <ssGUI::ObjectsReferences> class at all and look at the what happens if I press on the button:
-
-(See CloningWithoutOR.gif)
-
-So when you press on the button from a cloned window, it doesn't change the text that was cloned. 
-Instead, it is changing the original text.
-
-For most of the scenarios, this is not the desired output. 
-So what can we do to allow the button (Event listener to be accurate) to reference (and change) the cloned text instead?
-
-This is what the <ssGUI::ObjectsReferences> class comes into play.
-
-The only thing we need to modify in order for it to work is to add the text to as reference and use that in the event listener instead.
-
-============================================ C++ ============================================
-...
+//Create a text widget and set the respective properties
 ssGUI::Text text;
-...
+
+//Create a button and set an event callback to change the text when it is clicked
+ssGUI::StandardButton button;
+
+//...
+
+//By default, button has state changed event callback attached to it
+//Gets the event callback for the button state change
+auto ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+ecb->AddEventListener
+(
+    "AnyKey",
+    [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+    {
+        //When the button is clicked, sets the text
+        if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            text.SetText(L"(`oωo´)");
+    }
+);
+
+//Create the GUIManager, add the main window and start running
+ssGUI::ssGUIManager guiManager;
+
+//When the user presses Enter, clone the window
+guiManager.AddPostGUIUpdateEventListener
+(
+    [&]()
+    {
+        ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
+        
+        if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
+            !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+        {
+            window.Clone(true)->SetPosition(glm::vec2(window.GetPosition().x + 10, window.GetPosition().y + 10));
+        }
+    }
+);
+
+//...
+===============================================================
+
+The expected behaviour is to change the text when the button is clicked *under the cloned window*.
+
+But let's see what actually happens instead.
+
+(See CloningExample2.gif)
+
+As you can see, the button under the cloned window is changing the *original text* instead of the cloned one.
+
+If we use <ssGUI::ObjectsReferences>, it will keep track of the references automatically if you add the objects to be referenced.
+
+And it will change the *cloned text* instead.
+
+============================= C++ =============================
+//...
+
+//By default, button has state changed event callback attached to it
 //Gets the event callback for the button state change
 auto ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
 
@@ -108,102 +109,19 @@ auto ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedE
 ssGUI::ssGUIObjectIndex textIndex = ecb->AddObjectReference(&text);
 ecb->AddEventListener
 (
-    "AnyId",
+    "AnyKey",
     [textIndex](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
     {
-        if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+        //When the button is clicked, sets the text
+        if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
         {
-            ssGUI::GUIObject* refText = refs->GetObjectReference(textIndex);
-
-            if(refText != nullptr)
-                static_cast<ssGUI::Text*>(refText)->SetText(L"(`oωo´)");
+            ssGUI::Text* text = static_cast<ssGUI::Text*>(refs->GetObjectReference(textIndex));
+            text->SetText(L"(`oωo´)");
         }
     }
 );
-...
-=============================================================================================
 
-This might be overkill for a small cloning like this but you can imagine it would be quite a pain if you cloning 
-a GUI object with a lot of children (recursively as well) and have to manage all the referencing by yourself.
+//...
+===============================================================
 
-The only thing you will need to be careful about is <ssGUI::ObjectsReferences::GetObjectReference> can return a nullptr if 
-it cannot resolve the reference. Therefore you should keep in mind to have a nullptr check just in case.
-
-So this will be what the whole code looks like with <ssGUI::ObjectsReferences> utilized.
-
-(See CloningWithOR.gif)
-
-============================================ C++ ============================================
-#include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
-
-int main()
-{
-    //Create the main window
-    ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::ivec2(700, 300));
-
-    //Create a window
-    ssGUI::Window window;
-    window.SetSize(glm::ivec2(450, 110 + window.GetTitlebarHeight()));      //The reason why adding titlebar height is because Window includes titlebar while MainWindow doesn't
-    window.SetResizeType(ssGUI::Enums::ResizeType::NONE);
-    window.SetParent(&mainWindow);
-
-    //Create a text widget and set the respective properties
-    ssGUI::Text text;
-    text.SetSize(glm::vec2(450, 45));
-    text.SetText(L"Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
-    text.SetParent(&window);
-    
-    //Create a button and set an event callback to change the text when it is clicked
-    ssGUI::Button button;
-    button.SetSize(glm::ivec2(50, 30));
-    button.SetPosition(glm::vec2(200, 60));
-    button.SetParent(&window);
-
-    //Gets the event callback for the button state change
-    auto ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
-    
-    //Adds the text widget parented to the window to the event callback so it can be referenced
-    //<AddObjectReference> return a <ssGUIObjectIndex> which is just an ID you can use to retrieve the text widget back
-    ssGUI::ssGUIObjectIndex textIndex = ecb->AddObjectReference(&text);
-    ecb->AddEventListener
-    (
-        "AnyKey",
-        [textIndex](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
-        {
-            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-            {
-                ssGUI::GUIObject* refText = refs->GetObjectReference(textIndex);
-
-                if(refText != nullptr)
-                    static_cast<ssGUI::Text*>(refText)->SetText(L"(`oωo´)");
-            }
-        }
-    );
-
-    //Create the GUIManager, add the main window and start running
-    ssGUI::ssGUIManager guiManager;
-
-    //When the user presses Enter, clone the window
-    guiManager.AddOnUpdateEventListener
-    (
-        [&]()
-        {
-            ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
-            
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
-            {
-                window.Clone(true)->SetPosition(glm::vec2(window.GetPosition().x + 10, window.GetPosition().y + 10));
-            }
-        }
-    );    
-
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
-    guiManager.StartRunning();
-    return 0;
-}
-=============================================================================================
+(See CloningExample3.gif)

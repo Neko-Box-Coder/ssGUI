@@ -1,12 +1,4 @@
 Title: Rendering Custom Graphics
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-
-Sit amet nisl suscipit adipiscing bibendum est. Velit aliquet sagittis id consectetur purus ut faucibus pulvinar.
-
-Ut pharetra sit amet aliquam id diam maecenas ultricies mi. Nulla at volutpat diam ut venenatis tellus in metus vulputate.
-
-Amet luctus venenatis lectus magna fringilla. In hendrerit gravida rutrum quisque non tellus orci ac auctor.
-
-Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Elit at imperdiet dui accumsan sit amet nulla facilisi. Urna et pharetra pharetra massa.
+Section: ⛏️ WIP 
 

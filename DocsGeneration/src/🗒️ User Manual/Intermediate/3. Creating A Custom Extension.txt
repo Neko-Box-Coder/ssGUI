@@ -1,6 +1,8 @@
 Title: Creating A Custom Extension
 
-Section: Header
+Section: ⛏️ WIP
+
+Section: Header [Outdated 🗑️]
 
 (Remove the "//" for the C++ divider for Natural Docs to work properly when parsing)
 
@@ -105,7 +107,7 @@ namespace ssGUI::Extensions
 #endif
 =========================================================================
 
-Section: Source
+Section: Source [Outdated 🗑️]
 ================================== C++ ==================================
 #include "ssGUI/Extensions/CustomExtension.hpp" //Or the location of your custom extension header
 
