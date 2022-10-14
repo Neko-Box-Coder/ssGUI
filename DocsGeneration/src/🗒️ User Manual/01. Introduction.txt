@@ -7,10 +7,10 @@ Title: Introduction
     - Master: ✅
 - 🖥️ OS support
     - Linux: Working ✅
-    - Windows: Will be tested soon 🔜
+    - Windows: Working ✅
     - MacOS: Unknown ❓
 - 📈 Current Status
-    - ⬛⬛⬛⬛⬛⬛⬛⬛⬛🔲 _v0.93 (90%)_  
+    - ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ _v0.93 (100%)_  
 
 ❓ What is ssGUI?::
 (see Logo.png)

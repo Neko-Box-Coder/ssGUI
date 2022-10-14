@@ -44,6 +44,7 @@ Builds/
 Build/
 v0.*/
 *.bak
+Releases/
 
 # Natural Docs cache data
 DocsGeneration/ND_Config/Working\ Data
