@@ -1,6 +1,8 @@
 Title: Creating A Custom Widget Or Window
 
-Section: Header
+Section: ⛏️ WIP
+
+Section: Header [Outdated 🗑️]
 This is the header template for creating a custom widget. Just replace widget with window for custom window.
 (Remove the "//" for the C++ divider for Natural Docs to work properly when parsing)
 
@@ -56,7 +58,7 @@ namespace ssGUI
 #endif
 ======================================================================
 
-Section: Source
+Section: Source [Outdated 🗑️]
 This is the source template for creating a custom widget. Just replace widget with window for custom window.
 
 ================================= C++ ===================================

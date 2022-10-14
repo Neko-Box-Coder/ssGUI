@@ -1,59 +1,225 @@
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"                     //Includes all the core ssGUI classes
-#include "ssGUI/Extensions/AdvancedPosition.hpp"
+#include "ssGUI/Extensions/Dockable.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
+#include "ssGUI/Extensions/Shape.hpp"
+#include "ssGUI/Extensions/Layout.hpp"
 
 //Position example
 int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::vec2(450, 450));
+    mainWindow.SetSize(glm::vec2(850, 600));
 
-    //A fixed non resizable non draggable window
-    ssGUI::Window fixedWindow;
-    fixedWindow.SetDraggable(false);
-    fixedWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
-    fixedWindow.SetParent(&mainWindow);
+    //A fixed parent widget
+    ssGUI::Widget parentWidget;
+    parentWidget.SetParent(&mainWindow);
+    parentWidget.SetPosition(glm::vec2(50, 70));
+    parentWidget.SetSize(glm::vec2(350, 350));
+    parentWidget.SetBackgroundColor(glm::vec4(200, 200, 200, 255));
+    parentWidget.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());                 //Adding a border to indicate where the widget is
+    parentWidget.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Mask>());                   //Adding a mask extension for masking the draggable window
 
-    //AdvancedSize extension allows sizing a GUI object by percentage.
-    auto sizeExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-    sizeExtension->SetHorizontalPercentage(0.6);
-    sizeExtension->SetVerticalPercentage(0.6);
-    fixedWindow.AddExtension(sizeExtension);
+    //A caption text for parent widget
+    ssGUI::Text parentWidgetCaption;
+    parentWidgetCaption.SetText("Parent widget GUI Object");
+    parentWidgetCaption.SetSize(glm::vec2(350, 40));                                                //We set the text widget size same as the parent
+    parentWidgetCaption.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);      //So if we align the text to center
+    parentWidgetCaption.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);          //It will be the center of the widget
+    parentWidgetCaption.SetParent(&parentWidget);
 
-    //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
-    fixedWindow.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
-    fixedWindow.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Mask>());            //Adding a mask extension for masking the draggable window
+    //Indicator line to visualize the position system
+    ssGUI::Widget lineWidget;
+    auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+    int lineIndex = shapeEx->AddAdditionalLine                                                      //The values of the line doesn't matter now
+                    (glm::vec2(), glm::vec2(), 0, 0, glm::u8vec4(), glm::u8vec4(), false);          //because we will set it later
 
-    //Draggable window inside the fixed window
-    ssGUI::Window draggableWindow;
-    draggableWindow.SetBackgroundColor(glm::vec4(200, 200, 200, 255));
-    draggableWindow.SetPosition(glm::vec2(50, 50));
-    draggableWindow.SetParent(&fixedWindow);
-    //draggableWindow.SetAnchorType(ssGUI::Enums::AnchorType::BOTTOM_RIGHT);    //You can uncomment this line to anchor the window to different anchor points
+    lineWidget.AddExtension(shapeEx); 
+    lineWidget.AddTag(ssGUI::Tags::OVERLAY);                                                        //By adding an overlay tag, it will always show in front
+    lineWidget.SetParent(&mainWindow);
+
+    //A child window
+    ssGUI::StandardWindow widgetChild;
+    widgetChild.GetWindowTitleObject()->SetText("Child GUI Object");
+    widgetChild.SetSize(glm::vec2(200, 200));
+    widgetChild.RemoveAnyExtension<ssGUI::Extensions::Dockable>();                                  //By default, it can dock to other windows, we don't need that
+    widgetChild.SetParent(&parentWidget);                                                           //Also by default, dockable extention reparent the GUI object
+                                                                                                    //After dragging the window and we don't want that.
+    //A different parent window
+    ssGUI::StandardWindow parentWindow;
+    parentWindow.SetPosition(glm::vec2(450, 70));
+    parentWindow.GetWindowTitleObject()->SetText("Parent Window GUI Object");
+    parentWindow.SetSize(glm::vec2(350, 350));
+    parentWindow.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Mask>());                   //Adding a mask extension for masking the child window
+    parentWindow.RemoveAnyExtension<ssGUI::Extensions::Dockable>();                                 //Remove it for now
+    parentWindow.SetParent(&mainWindow);
+
+
+    //A child window inside the parent window
+    ssGUI::StandardWindow* windowChild = widgetChild.Clone(true);                                   //We can just clone the child we created before
+    windowChild->SetBackgroundColor(glm::vec4(200, 200, 200, 255));
+    windowChild->SetParent(&parentWindow);
+
+    //A panel the holds the global and local position buttons
+    ssGUI::Widget positionPanel;
+    positionPanel.SetParent(&mainWindow);
+    positionPanel.SetPosition(glm::vec2(300, 445));
+    positionPanel.SetSize(glm::vec2(250, 40));
+    auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+    layout->SetHorizontalLayout(true);
+    layout->AddPreferredSizeMultiplier(0.5);
+    layout->AddPreferredSizeMultiplier(0.5);
+    layout->SetSpacing(layout->GetSpacing() * 2);
+    positionPanel.AddExtension(layout);
+    
+    //Global and local button to visualizing the position system
+    ssGUI::StandardButton globalButton;
+    globalButton.SetButtonColor(glm::u8vec4(59, 155, 245, 255));
+    globalButton.GetButtonTextObject()->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+    globalButton.GetButtonTextObject()->ApplyNewCharacterSettingsToText();
+    globalButton.GetButtonTextObject()->SetText("Global Position");
+    globalButton.SetParent(&positionPanel);
+
+    ssGUI::StandardButton* localButton = globalButton.Clone(true);
+    localButton->GetButtonTextObject()->SetText("Local Position");
+
+    //A panel the holds the anchor buttons
+    ssGUI::Widget anchorPanel;
+    anchorPanel.SetParent(&mainWindow);
+    anchorPanel.SetPosition(glm::vec2(125, 500));
+    anchorPanel.SetSize(glm::vec2(600, 40));
+
+    auto layout2 = layout->Clone(&anchorPanel);
+    layout2->SetPreferredSizeMultiplier(0, 0.25);
+    layout2->SetPreferredSizeMultiplier(1, 0.25);
+    layout2->AddPreferredSizeMultiplier(0.25);
+    layout2->AddPreferredSizeMultiplier(0.25);
+
+    //All the anchor buttons for the 4 corners
+    ssGUI::StandardButton* anchorTopLeftBtn = ssGUI::Factory::Create<ssGUI::StandardButton>();
+    anchorTopLeftBtn->SetParent(&anchorPanel);
+    anchorTopLeftBtn->SetButtonColor(glm::u8vec4(161, 59, 245, 255));
+    anchorTopLeftBtn->GetButtonTextObject()->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+    anchorTopLeftBtn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
+    anchorTopLeftBtn->GetButtonTextObject()->SetText("Anchor Top Left");
+
+    ssGUI::StandardButton* anchorTopRightBtn = anchorTopLeftBtn->Clone(true);
+    anchorTopRightBtn->GetButtonTextObject()->SetText("Anchor Top Right");
+
+    ssGUI::StandardButton* anchorBotLeftBtn = anchorTopRightBtn->Clone(true);
+    anchorBotLeftBtn->GetButtonTextObject()->SetText("Anchor Bot Left");
+
+    ssGUI::StandardButton* anchorBotRightBtn = anchorBotLeftBtn->Clone(true);
+    anchorBotRightBtn->GetButtonTextObject()->SetText("Anchor Bot Right");
 
     //Text of showing local and global position for draggableWindow
     ssGUI::Text positionText;
     positionText.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
     positionText.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
-    auto sizeExtension2 = sizeExtension->Clone(&positionText);
+    auto sizeExtension2 = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
     sizeExtension2->SetHorizontalPercentage(1.0);
-    sizeExtension2->SetVerticalPercentage(0.3);
+    sizeExtension2->SetVerticalPercentage(0.12);
+    positionText.AddExtension(sizeExtension2);
     positionText.SetParent(&mainWindow);
+
+    //Status to keep track of
+    ssGUI::GUIObject* currentFocusedObj = &widgetChild;
+    bool isLocal = true;
+    ssGUI::Enums::AnchorType currentAnchor = ssGUI::Enums::AnchorType::TOP_LEFT;
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
 
     //Add update event listener for updating the text for showing the local and global position of the text
+    //We could have used <ssGUI::EventCallback> but for the sake of simplicity, we are doing everything
+    //in the post GUI update listener.
     guiManager.AddPostGUIUpdateEventListener
     (
         [&]()
         {
+            //If the mainWindow is closed, just exit.
+            //The reason why we need this is because the parent for GUI objects will be nullptr (when mainWindow is closed)
+            //even though the GUI objects themselves are still valid
+            if(mainWindow.IsClosed())
+                return;
+
+            //Set the status variables depending which window is focused
+            if(currentFocusedObj == &widgetChild && windowChild->IsFocused())
+            {
+                currentFocusedObj = windowChild;
+                currentAnchor = currentFocusedObj->GetAnchorType();
+            }
+            else if(currentFocusedObj == windowChild && widgetChild.IsFocused())
+            {
+                currentFocusedObj = &widgetChild;
+                currentAnchor = currentFocusedObj->GetAnchorType();
+            }
+
+            //Set the isLocal if either of the buttons is clicked
+            if(globalButton.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+                isLocal = false;
+            else if(localButton->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+                isLocal = true;
+
+            //Set the anchor for the child GUI object depending which button is clicked
+            if(anchorTopLeftBtn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            {
+                currentAnchor = ssGUI::Enums::AnchorType::TOP_LEFT;
+                currentFocusedObj->SetAnchorType(currentAnchor);
+            }
+            else if(anchorTopRightBtn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            {
+                currentAnchor = ssGUI::Enums::AnchorType::TOP_RIGHT;
+                currentFocusedObj->SetAnchorType(currentAnchor);
+            }
+            else if(anchorBotLeftBtn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            {
+                currentAnchor = ssGUI::Enums::AnchorType::BOTTOM_LEFT;
+                currentFocusedObj->SetAnchorType(currentAnchor);
+            }
+            else if(anchorBotRightBtn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            {
+                currentAnchor = ssGUI::Enums::AnchorType::BOTTOM_RIGHT;
+                currentFocusedObj->SetAnchorType(currentAnchor);
+            }
+
+            //Modify the visualization line to show the position system
+            glm::vec2 startPos = isLocal ? currentFocusedObj->GetParent()->GetGlobalPosition() : glm::vec2();
+            glm::vec2 endPos = currentFocusedObj->GetGlobalPosition();
+
+            if(isLocal)
+            {
+                if(currentAnchor == ssGUI::Enums::AnchorType::TOP_RIGHT)
+                {
+                    startPos.x += currentFocusedObj->GetParent()->GetSize().x;
+                    endPos.x += currentFocusedObj->GetSize().x;
+                }
+                else if(currentAnchor == ssGUI::Enums::AnchorType::BOTTOM_RIGHT)
+                {
+                    startPos.x += currentFocusedObj->GetParent()->GetSize().x;
+                    startPos.y += currentFocusedObj->GetParent()->GetSize().y;
+                    endPos += currentFocusedObj->GetSize();
+                }
+                else if(currentAnchor == ssGUI::Enums::AnchorType::BOTTOM_LEFT)
+                {
+                    startPos.y += currentFocusedObj->GetParent()->GetSize().y;
+                    endPos.y += currentFocusedObj->GetSize().y;
+                }
+
+                if(currentFocusedObj == windowChild && 
+                    (currentAnchor == ssGUI::Enums::AnchorType::TOP_LEFT || currentAnchor == ssGUI::Enums::AnchorType::TOP_RIGHT))
+                {
+                    startPos += glm::vec2(0, static_cast<ssGUI::Window*>(currentFocusedObj->GetParent())->GetTitlebarHeight());   
+                }
+            }
+            
+            shapeEx->SetAdditionalLine(lineIndex, endPos, startPos, 2, 2, glm::u8vec4(0, 0, 0, 255), glm::u8vec4(0, 0, 0, 255), false);
+
+            //Show the local and global position in text
             std::string showText = 
-                "Local Position: " + std::to_string((int)draggableWindow.GetPosition().x) + ", " + std::to_string((int)draggableWindow.GetPosition().y) + "\n" +
-                "Global Position: " + std::to_string((int)draggableWindow.GetGlobalPosition().x) + ", " + std::to_string((int)draggableWindow.GetGlobalPosition().y);
+                "Local Position: " + std::to_string((int)currentFocusedObj->GetPosition().x) + ", " + std::to_string((int)currentFocusedObj->GetPosition().y) + "\n" +
+                "Global Position: " + std::to_string((int)currentFocusedObj->GetGlobalPosition().x) + ", " + std::to_string((int)currentFocusedObj->GetGlobalPosition().y);
             positionText.SetText(showText);
         }
     );

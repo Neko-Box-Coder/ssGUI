@@ -90,7 +90,7 @@
 /* Inheritance graph */
 
 .NDClassPrototype.HasParents::before {
-    content: '🅿️ Parent:';
+    content: '🅿️ Parent (Base) Classes:';
     display: block;
     position: absolute;
     margin-top: -2rem;
@@ -116,7 +116,7 @@
 
 .NDClassPrototype.HasParents.HasChildren .CPEntry.TClass.Current::after,
 .NDClassPrototype.HasChildren .CPEntry.TClass.Current::after{
-    content: '🔽 Children:';
+    content: '🔽 Children (Derived) Classes:';
     display: block;
     position: absolute;
     margin-top: 1.2rem;

@@ -1,5 +1,7 @@
+#include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Layout.hpp"
 
 int main()
 {
@@ -8,28 +10,40 @@ int main()
     mainWindow.SetSize(glm::ivec2(700, 300));
 
     //Create a window
-    ssGUI::Window window;
-    window.SetSize(glm::ivec2(450, 110 + window.GetTitlebarHeight()));      //The reason why adding titlebar height is because Window includes titlebar while MainWindow doesn't
-    window.SetResizeType(ssGUI::Enums::ResizeType::NONE);
+    ssGUI::StandardWindow window;
+    window.RemoveAnyExtension<ssGUI::Extensions::Dockable>();           //We don't need docking
+    window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
+
+    //Add automatic layout to the window
+    auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+    layout->AddPreferredSizeMultiplier(0.4);
+    layout->AddPreferredSizeMultiplier(0.6);
+    window.AddExtension(layout);
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
-    text.SetSize(glm::vec2(450, 45));
-    text.SetText(L"Click on the button to show the message");
+    text.SetNewCharacterFontSize(15);
+    text.SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+    text.SetText("Click button");
     text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
     text.SetParent(&window);
     
-    //Create a button and set an event callback to change the text when it is clicked
-    ssGUI::Button button;
-    button.SetSize(glm::ivec2(50, 30));
-    button.SetPosition(glm::vec2(200, 60));
-    button.SetParent(&window);
+    //Add wrapper for button so the layout extension is not directly sizing it
+    ssGUI::GUIObject wrapper;
+    wrapper.SetParent(&window);
 
+    //Create a button and set an event callback to change the text when it is clicked
+    ssGUI::StandardButton button;
+    auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+    button.AddExtension(ap);
+    button.SetParent(&wrapper);
+
+    //By default, button has state changed event callback attached to it
     //Gets the event callback for the button state change
     auto ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
-    
+
     //Adds the text widget parented to the window to the event callback so it can be referenced
     //<AddObjectReference> return a <ssGUIObjectIndex> which is just an ID you can use to retrieve the text widget back
     ssGUI::ssGUIObjectIndex textIndex = ecb->AddObjectReference(&text);
@@ -38,12 +52,11 @@ int main()
         "AnyKey",
         [textIndex](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
         {
-            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            //When the button is clicked, sets the text
+            if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                ssGUI::GUIObject* refText = refs->GetObjectReference(textIndex);
-
-                if(refText != nullptr)
-                    static_cast<ssGUI::Text*>(refText)->SetText(L"(`oωo´)");
+                ssGUI::Text* text = static_cast<ssGUI::Text*>(refs->GetObjectReference(textIndex));
+                text->SetText(L"(`oωo´)");
             }
         }
     );

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("⛏️",["Section"],[["⛏️",,[[,"⛏️ WIP",,"⛏️wip",0,"File:🗒️_User_Manual/08._Using_Composite_GUI_Object.txt:⛏️_WIP"]]]]);
