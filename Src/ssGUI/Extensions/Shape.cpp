@@ -213,6 +213,13 @@ namespace ssGUI::Extensions
     //Defining the extension name
     const std::string Shape::EXTENSION_NAME = "Shape";
     
+    int Shape::AddAdditionalPolygon()
+    {
+        AdditionalShapes.push_back(AdditionalShape());
+        AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+        return NextID++;
+    }
+
     int Shape::AddAdditionalPolygon(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
     {
         AdditionalShapes.push_back(AdditionalShape());
@@ -269,6 +276,11 @@ namespace ssGUI::Extensions
         return NextID++;
     }
 
+    int Shape::AddAdditionalRectangle()
+    {
+        return AddAdditionalPolygon();
+    }
+
     int Shape::AddAdditionalCircle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
     {
         AdditionalShapes.push_back(AdditionalShape());
@@ -297,6 +309,11 @@ namespace ssGUI::Extensions
         return NextID++;
     }
 
+    int Shape::AddAdditionalCircle()
+    {
+        return AddAdditionalPolygon();
+    }
+
     int Shape::AddAdditionalLine(glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject)
     {
         AdditionalShapes.push_back(AdditionalShape());
@@ -323,6 +340,11 @@ namespace ssGUI::Extensions
             Container->RedrawObject();
 
         return NextID++;
+    }
+
+    int Shape::AddAdditionalLine()
+    {
+        return AddAdditionalPolygon();
     }
 
     void Shape::SetAdditionalPolygon(int id, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
