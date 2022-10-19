@@ -169,6 +169,9 @@ endif()
 
 if(ssGUI_BUILD_EXAMPLES)
 
+    find_package(GLUT REQUIRED)
+    find_package(OpenGL REQUIRED)
+
     # set(ssGUITestFiles "" STRING)
     file(GLOB ssGUI_EXAMPLE_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/*.cpp")
     foreach(CUR_SOURCE_PATH ${ssGUI_EXAMPLE_CPP_FILES})
@@ -180,7 +183,10 @@ if(ssGUI_BUILD_EXAMPLES)
         add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
 
         # Link ssGUI to executable
-        target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
+        target_link_libraries("${CUR_NAME}" PUBLIC ssGUI ${OPENGL_LIBRARY})
+        set_target_properties("${CUR_NAME}" PROPERTIES LINK_FLAGS "-lGLU")
+        
+        # target_link_libraries("${CUR_NAME}" PUBLIC ${GLUT_LIBRARY})
 
         # Sub-directory for build
         set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Examples")

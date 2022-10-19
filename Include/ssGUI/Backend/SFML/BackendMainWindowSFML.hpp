@@ -34,7 +34,7 @@ namespace ssGUI::Backend
         glm::vec2 PositionOffset;                                                       //See <GetPositionOffset>
     ===============================================================
     ============================= C++ =============================
-    BackendMainWindowSFML::BackendMainWindowSFML() :    CurrentWindow(sf::VideoMode(800, 600), ""),
+    BackendMainWindowSFML::BackendMainWindowSFML() :    CurrentWindow(sf::VideoMode(sf::Vector2u(800, 600)), "", sf::Style::Default, sf::ContextSettings(24)),
                                                         OnCloseCallback(),
                                                         ExternalFocusChangedCallback(),
                                                         Visible(true),
@@ -212,6 +212,10 @@ namespace ssGUI::Backend
             //function: GetWindowMode
             //See <BackendMainWindowInterface::GetWindowMode>
             ssGUI::Enums::WindowMode GetWindowMode() const override;
+
+            //function: SetGLContext
+            //See <BackendMainWindowInterface::SetGLContext>
+            bool SetGLContext() override;
 
             //function: Clone
             ssGUI::Backend::BackendMainWindowInterface* Clone() override;

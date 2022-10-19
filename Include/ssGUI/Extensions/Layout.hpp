@@ -150,7 +150,10 @@ namespace ssGUI::Extensions
             //Adds a new entry for representing the size of the child to be the size of sizeMultiplier.
             //0 = 0%, 1 = 100%
             virtual void AddPreferredSizeMultiplier(float sizeMultiplier);
-            
+
+            //function: AddPreferredSizeMultiplier
+            virtual void AddPreferredSizeMultiplier(float sizeMultipliers[], int count);
+
             //function: SetPreferredSizeMultiplier
             //Sets the child with the index to be the size of sizeMultiplier.
             //0 = 0%, 1 = 100%
@@ -163,6 +166,9 @@ namespace ssGUI::Extensions
 
             //function: RemovePreferredSizeMultiplier
             virtual void RemovePreferredSizeMultiplier(int index);
+
+            //function: ClearAllPreferredSizeMultiplier
+            virtual void ClearAllPreferredSizeMultiplier();
             
             //function: GerPreferredSizeMultiplierCount
             //Returns the number of entries for PreferredSizeMultiplier. 
@@ -254,6 +260,10 @@ namespace ssGUI::Extensions
             //function: UnexcludeObject
             //If a GUI Object is excluded, it will be ignored
             virtual void UnexcludeObject(ssGUI::GUIObject* obj);
+
+            //function: AddChildWithWrapper
+            //Add a child to container with wrapper. This will return nullptr if this extension is not attached to a GUI object.
+            virtual ssGUI::GUIObject* AddChildWithWrapper(ssGUI::GUIObject* child);
 
             //function: Internal_OnRecursiveChildAdded
             //(Internal ssGUI function) Listener function when a child is being added

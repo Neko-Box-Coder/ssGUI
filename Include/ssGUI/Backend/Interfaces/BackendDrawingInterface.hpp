@@ -26,6 +26,14 @@ namespace ssGUI::Backend
             BackendDrawingInterface(){}
             virtual ~BackendDrawingInterface() = 0;
 
+            //function: SaveState
+            //Saves the OpenGL state
+            virtual void SaveState() = 0;
+
+            //function: RestoreState
+            //Restores the OpenGL state
+            virtual void RestoreState() = 0;
+
             //function: DrawEntities
             //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. *Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
             virtual bool DrawEntities(  const std::vector<glm::vec2>& vertices, 

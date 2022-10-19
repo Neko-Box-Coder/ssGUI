@@ -32,9 +32,7 @@ int main()
     //Indicator line to visualize the position system
     ssGUI::Widget lineWidget;
     auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
-    int lineIndex = shapeEx->AddAdditionalLine                                                      //The values of the line doesn't matter now
-                    (glm::vec2(), glm::vec2(), 0, 0, glm::u8vec4(), glm::u8vec4(), false);          //because we will set it later
-
+    int lineIndex = shapeEx->AddAdditionalLine();                                                   //we will set the values of the line later
     lineWidget.AddExtension(shapeEx); 
     lineWidget.AddTag(ssGUI::Tags::OVERLAY);                                                        //By adding an overlay tag, it will always show in front
     lineWidget.SetParent(&mainWindow);
@@ -55,72 +53,50 @@ int main()
     parentWindow.RemoveAnyExtension<ssGUI::Extensions::Dockable>();                                 //Remove it for now
     parentWindow.SetParent(&mainWindow);
 
-
     //A child window inside the parent window
     ssGUI::StandardWindow* windowChild = widgetChild.Clone(true);                                   //We can just clone the child we created before
     windowChild->SetBackgroundColor(glm::vec4(200, 200, 200, 255));
     windowChild->SetParent(&parentWindow);
-
-    //A panel the holds the global and local position buttons
-    ssGUI::Widget positionPanel;
-    positionPanel.SetParent(&mainWindow);
-    positionPanel.SetPosition(glm::vec2(300, 445));
-    positionPanel.SetSize(glm::vec2(250, 40));
-    auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
-    layout->SetHorizontalLayout(true);
-    layout->AddPreferredSizeMultiplier(0.5);
-    layout->AddPreferredSizeMultiplier(0.5);
-    layout->SetSpacing(layout->GetSpacing() * 2);
-    positionPanel.AddExtension(layout);
     
     //Global and local button to visualizing the position system
     ssGUI::StandardButton globalButton;
     globalButton.SetButtonColor(glm::u8vec4(59, 155, 245, 255));
     globalButton.GetButtonTextObject()->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
-    globalButton.GetButtonTextObject()->ApplyNewCharacterSettingsToText();
     globalButton.GetButtonTextObject()->SetText("Global Position");
-    globalButton.SetParent(&positionPanel);
+    globalButton.SetPosition(glm::vec2(300, 445));
+    globalButton.SetSize(glm::vec2(120, 40));
+    globalButton.SetParent(&mainWindow);
 
     ssGUI::StandardButton* localButton = globalButton.Clone(true);
+    localButton->SetPosition(glm::vec2(430, 445));
     localButton->GetButtonTextObject()->SetText("Local Position");
-
-    //A panel the holds the anchor buttons
-    ssGUI::Widget anchorPanel;
-    anchorPanel.SetParent(&mainWindow);
-    anchorPanel.SetPosition(glm::vec2(125, 500));
-    anchorPanel.SetSize(glm::vec2(600, 40));
-
-    auto layout2 = layout->Clone(&anchorPanel);
-    layout2->SetPreferredSizeMultiplier(0, 0.25);
-    layout2->SetPreferredSizeMultiplier(1, 0.25);
-    layout2->AddPreferredSizeMultiplier(0.25);
-    layout2->AddPreferredSizeMultiplier(0.25);
 
     //All the anchor buttons for the 4 corners
     ssGUI::StandardButton* anchorTopLeftBtn = ssGUI::Factory::Create<ssGUI::StandardButton>();
-    anchorTopLeftBtn->SetParent(&anchorPanel);
+    anchorTopLeftBtn->SetParent(&mainWindow);
     anchorTopLeftBtn->SetButtonColor(glm::u8vec4(161, 59, 245, 255));
     anchorTopLeftBtn->GetButtonTextObject()->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
-    anchorTopLeftBtn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
     anchorTopLeftBtn->GetButtonTextObject()->SetText("Anchor Top Left");
+    anchorTopLeftBtn->SetPosition(glm::vec2(130, 500));
+    anchorTopLeftBtn->SetSize(glm::vec2(140, 40));
 
     ssGUI::StandardButton* anchorTopRightBtn = anchorTopLeftBtn->Clone(true);
     anchorTopRightBtn->GetButtonTextObject()->SetText("Anchor Top Right");
+    anchorTopRightBtn->SetPosition(glm::vec2(280, 500));
 
     ssGUI::StandardButton* anchorBotLeftBtn = anchorTopRightBtn->Clone(true);
     anchorBotLeftBtn->GetButtonTextObject()->SetText("Anchor Bot Left");
+    anchorBotLeftBtn->SetPosition(glm::vec2(430, 500));
 
     ssGUI::StandardButton* anchorBotRightBtn = anchorBotLeftBtn->Clone(true);
     anchorBotRightBtn->GetButtonTextObject()->SetText("Anchor Bot Right");
+    anchorBotRightBtn->SetPosition(glm::vec2(580, 500));
 
     //Text of showing local and global position for draggableWindow
     ssGUI::Text positionText;
+    positionText.SetPosition(glm::vec2(320, 10));
+    positionText.SetSize(glm::vec2(200, 40));
     positionText.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    positionText.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
-    auto sizeExtension2 = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-    sizeExtension2->SetHorizontalPercentage(1.0);
-    sizeExtension2->SetVerticalPercentage(0.12);
-    positionText.AddExtension(sizeExtension2);
     positionText.SetParent(&mainWindow);
 
     //Status to keep track of

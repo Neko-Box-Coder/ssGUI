@@ -28,6 +28,9 @@ namespace ssGUI::Backend
 
         sf::ContextSettings settings;
         settings.antialiasingLevel = msaa;
+        settings.depthBits = 24;
+        settings.majorVersion = 3;
+        settings.minorVersion = 0;
 
         CurrentWindow.create(sf::VideoMode(sf::Vector2u(CurrentWindow.getSize().x, CurrentWindow.getSize().y)), GetTitle(), newStyle, settings);
     }
@@ -50,7 +53,7 @@ namespace ssGUI::Backend
         */
     }
 
-    BackendMainWindowSFML::BackendMainWindowSFML() :    CurrentWindow(sf::VideoMode(sf::Vector2u(800, 600)), ""),
+    BackendMainWindowSFML::BackendMainWindowSFML() :    CurrentWindow(sf::VideoMode(sf::Vector2u(800, 600)), "", sf::Style::Default, sf::ContextSettings(24)),
                                                         OnCloseCallback(),
                                                         ExternalFocusChangedCallback(),
                                                         Visible(true),
@@ -267,9 +270,9 @@ namespace ssGUI::Backend
         return CurrentWindowMode;
     }
 
-    void* BackendMainWindowSFML::GetRawHandle()
+    bool BackendMainWindowSFML::SetGLContext()
     {
-        return static_cast<void*>(&CurrentWindow);
+        return CurrentWindow.setActive();
     }
 
     ssGUI::Backend::BackendMainWindowInterface* BackendMainWindowSFML::Clone()
@@ -277,6 +280,10 @@ namespace ssGUI::Backend
         return new BackendMainWindowSFML(*this);
     }
 
+    void* BackendMainWindowSFML::GetRawHandle()
+    {
+        return static_cast<void*>(&CurrentWindow);
+    }
 }
 
 

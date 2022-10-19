@@ -749,6 +749,17 @@ namespace ssGUI::Extensions
         PreferredSizeMultipliers.push_back(sizeMultiplier);
     }
 
+    void Layout::AddPreferredSizeMultiplier(float sizeMultipliers[], int count)
+    {
+        for(int i = 0; i < count; i++)
+            PreferredSizeMultipliers.push_back(sizeMultipliers[i]);
+    }
+    
+    void Layout::ClearAllPreferredSizeMultiplier()
+    {
+        PreferredSizeMultipliers.clear();
+    }
+
     void Layout::SetPreferredSizeMultiplier(int index, float sizeMultiplier)
     {
         PreferredSizeMultipliers[index] = sizeMultiplier;
@@ -974,6 +985,19 @@ namespace ssGUI::Extensions
             if(obj->GetParent() == Container)
                 Internal_OnRecursiveChildAdded(obj);
         }
+    }
+
+    ssGUI::GUIObject* Layout::AddChildWithWrapper(ssGUI::GUIObject* child)
+    {
+        if(Container == nullptr)
+            return nullptr;
+
+        ssGUI::GUIObject* wrapper = ssGUI::Factory::Create<ssGUI::GUIObject>();
+        wrapper->SetParent(Container);
+        wrapper->SetUserCreated(false);
+
+        child->SetParent(wrapper);
+        return wrapper;
     }
 
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)

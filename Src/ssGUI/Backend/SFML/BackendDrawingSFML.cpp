@@ -121,6 +121,22 @@ namespace ssGUI::Backend
         return true;
     }
 
+    void BackendDrawingSFML::SaveState()
+    {
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
+            (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+        
+        targetWindow->pushGLStates();
+    }
+
+    void BackendDrawingSFML::RestoreState()
+    {
+        sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
+            (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
+        
+        targetWindow->popGLStates();
+    }
+
     bool BackendDrawingSFML::DrawEntities(  const std::vector<glm::vec2>& vertices, 
                                             const std::vector<glm::vec2>& texCoords,
                                             const std::vector<glm::u8vec4>& colors,

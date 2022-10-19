@@ -101,6 +101,12 @@ namespace ssGUI::Extensions
             This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
             virtual int AddAdditionalPolygon(std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject, int index);
 
+            /*function: AddAdditionalPolygon
+            Adding additional empty polygon in addition to GUI Object. 
+            The additional shape will be appended in the list of additional shapes stored in this extension.
+            This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
+            virtual int AddAdditionalPolygon();
+
             /*function: AddAdditionalRectangle
             Adding additional rectangle in addition to GUI Object. 
             The additional shape will be appended in the list of additional shapes stored in this extension.
@@ -112,6 +118,12 @@ namespace ssGUI::Extensions
             The additional shape will be added in the list of additional shapes at index position stored in this extension.
             This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
             virtual int AddAdditionalRectangle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index);
+
+            /*function: AddAdditionalRectangle
+            Adding additional empty rectangle in addition to GUI Object. 
+            The additional shape will be appended in the list of additional shapes stored in this extension.
+            This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
+            virtual int AddAdditionalRectangle();
 
             /*function: AddAdditionalCircle
             Adding additional circle in addition to GUI Object. 
@@ -125,6 +137,12 @@ namespace ssGUI::Extensions
             This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
             virtual int AddAdditionalCircle(glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject, int index);
 
+            /*function: AddAdditionalCircle
+            Adding additional empty circle in addition to GUI Object. 
+            The additional shape will be appended in the list of additional shapes stored in this extension.
+            This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
+            virtual int AddAdditionalCircle();
+
             /*function: AddAdditionalLine
             Adding additional line in addition to GUI Object. 
             The additional line will be appended in the list of additional shapes stored in this extension.
@@ -136,6 +154,12 @@ namespace ssGUI::Extensions
             The additional line will be added in the list of additional shapes at index position stored in this extension.
             This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
             virtual int AddAdditionalLine(glm::vec2 start, glm::vec2 end, float startThickness, float endThickness, glm::u8vec4 startColor, glm::u8vec4 endColor, bool behindGUIObject, int index);
+
+            /*function: AddAdditionalLine
+            Adding additional empty line in addition to GUI Object. 
+            The additional line will be appended in the list of additional shapes stored in this extension.
+            This returns an ID for uniquely identifying the shape just added within this extension for getting, setting and removing it.*/
+            virtual int AddAdditionalLine();
 
             /*function: SetAdditionalPolygon
             This sets the additional shape with target id. The additional shape with target id is not limited to the same type,
