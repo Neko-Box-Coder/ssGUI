@@ -73,6 +73,14 @@ namespace ssGUI::Backend
             BackendDrawingSFML();
             ~BackendDrawingSFML() override;
 
+            //function: SaveState
+            //See <BackendDrawingInterface::SaveState>
+            void SaveState() override;
+
+            //function: RestoreState
+            //See <BackendDrawingInterface::RestoreState>
+            void RestoreState() override;
+
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>
             bool DrawEntities(  const std::vector<glm::vec2>& vertices, 

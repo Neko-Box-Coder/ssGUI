@@ -150,6 +150,10 @@ namespace ssGUI::Backend
             //function: GetWindowMode
             //Gets the main window mode
             virtual ssGUI::Enums::WindowMode GetWindowMode() const = 0;
+
+            //function: SetGLContext
+            //Sets this window as the current MainWindow context
+            virtual bool SetGLContext() = 0;
             
             //function: Clone
             virtual BackendMainWindowInterface* Clone() = 0;

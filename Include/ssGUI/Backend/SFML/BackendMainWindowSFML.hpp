@@ -213,6 +213,10 @@ namespace ssGUI::Backend
             //See <BackendMainWindowInterface::GetWindowMode>
             ssGUI::Enums::WindowMode GetWindowMode() const override;
 
+            //function: SetGLContext
+            //See <BackendMainWindowInterface::SetGLContext>
+            bool SetGLContext() override;
+
             //function: Clone
             ssGUI::Backend::BackendMainWindowInterface* Clone() override;
             

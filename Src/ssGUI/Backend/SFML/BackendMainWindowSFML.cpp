@@ -270,9 +270,9 @@ namespace ssGUI::Backend
         return CurrentWindowMode;
     }
 
-    void* BackendMainWindowSFML::GetRawHandle()
+    bool BackendMainWindowSFML::SetGLContext()
     {
-        return static_cast<void*>(&CurrentWindow);
+        return CurrentWindow.setActive();
     }
 
     ssGUI::Backend::BackendMainWindowInterface* BackendMainWindowSFML::Clone()
@@ -280,6 +280,10 @@ namespace ssGUI::Backend
         return new BackendMainWindowSFML(*this);
     }
 
+    void* BackendMainWindowSFML::GetRawHandle()
+    {
+        return static_cast<void*>(&CurrentWindow);
+    }
 }
 
 

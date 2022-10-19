@@ -172,10 +172,8 @@ int main()
     window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
     window.GetAnyExtension<ssGUI::Extensions::Layout>()->SetUpdateContainerMinMaxSize(false);   //By default, layout extension overrides the min max size
     window.SetMinSize(glm::vec2(240, 200));
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.2);
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.2);
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.2);
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.4);       //It looks better to have some sort of space for padding at the bottom
+    float sizes[] = {0.2, 0.2, 0.2, 0.4};
+    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(sizes, 4);
 
     //Pyramid Rotation Speed Text
     ssGUI::Text pyramidText;
@@ -183,10 +181,6 @@ int main()
     pyramidText.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
     pyramidText.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
     pyramidText.SetParent(&window);
-
-    //Pyramid Slider Wrapper so that slider's size is not overriden by layout
-    ssGUI::GUIObject pyramidSliderWrapper;
-    pyramidSliderWrapper.SetParent(&window);
 
     //Pyramid Rotation Slider Slider
     ssGUI::Slider pyramidSlider;
@@ -202,15 +196,14 @@ int main()
     );
     pyramidSlider.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
     pyramidSlider.AddEventCallback(ecb);
-    pyramidSlider.SetParent(&pyramidSliderWrapper);
+    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddChildWithWrapper(&pyramidSlider);
 
     //Cube Rotation Speed Text
     ssGUI::Text* cubeText = pyramidText.Clone(true);
     cubeText->SetText("Cube Rotation Speed:");
 
     //Cube Slider Wrapper so that slider's size is not overriden by layout
-    ssGUI::GUIObject* cubeSliderWrapper = pyramidSliderWrapper.Clone(true);
-    ssGUI::Slider* cubeSlider = static_cast<ssGUI::Slider*>(cubeSliderWrapper->GetListOfChildren()[0]);
+    ssGUI::Slider* cubeSlider = static_cast<ssGUI::Slider*>(pyramidSlider.Clone(true));
     ecb = cubeSlider->GetAnyEventCallback<ssGUI::EventCallbacks::SliderValueFinishedChangingEventCallback>();
     ecb->RemoveEventListener("pyramidControl");
     ecb->AddEventListener
@@ -221,11 +214,9 @@ int main()
             CubeRotateSpeed = static_cast<ssGUI::Slider*>(container)->GetSliderValue() * 3;
         }
     );
+    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddChildWithWrapper(cubeSlider);
 
-    // This is needed for SFML if you have multiple main window
-    // if(!static_cast<sf::RenderWindow*>(mainWindow.GetBackendWindowInterface()->GetRawHandle())->setActive())
-    //     ssLOG_LINE("failed");
-
+    //Create ssGUIManager and start it
     ssGUI::ssGUIManager guiManager;
     guiManager.AddGUIObject(&mainWindow);
     guiManager.SetForceRendering(true);
@@ -237,12 +228,7 @@ int main()
         [&]()
         {
             //Save OpenGL status
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            glMatrixMode(GL_PROJECTION);
-            glPushMatrix();
-            glMatrixMode(GL_TEXTURE);
-            glPushMatrix();
+            mainWindow.GetBackendDrawingInterface()->SaveState();
             glPushAttrib(GL_VIEWPORT_BIT);
             glPushAttrib(GL_DEPTH_BUFFER_BIT);
 
@@ -252,14 +238,9 @@ int main()
             display();
             
             //Restore OpenGL status
+            mainWindow.GetBackendDrawingInterface()->RestoreState();
             glPopAttrib();
             glPopAttrib();
-            glMatrixMode(GL_MODELVIEW);
-            glPopMatrix();
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
-            glMatrixMode(GL_TEXTURE);
-            glPopMatrix();
         }
     );
 
