@@ -86,7 +86,7 @@ namespace ssGUI::Extensions
 
             (*widget)->AddExtension(ap);
             (*widget)->AddExtension(as);
-            (*widget)->AddTag(ssGUI::Tags::OVERLAY);
+            (*widget)->AddTag(ssGUI::Tags::FLOATING);
             (*widget)->SetBackgroundColor(color);
         }
 
@@ -239,7 +239,7 @@ namespace ssGUI::Extensions
             {
                 auto currentChild = Container->GetCurrentChild();
                 // Container->GetCurrentChild()->SetParent(Container);
-                if(!currentChild->HasTag(ssGUI::Tags::FLOATING) && !currentChild->HasTag(ssGUI::Tags::OVERLAY))
+                if(!currentChild->HasTag(ssGUI::Tags::FLOATING) && !currentChild->HasTag(ssGUI::Tags::FLOATING))
                 {
                     childLeft = currentChild;
                     break;
@@ -338,12 +338,12 @@ namespace ssGUI::Extensions
 
     const std::string Docker::EXTENSION_NAME = "Docker";
 
-    void Docker::SetDefaultGeneratedDockerWindow(ssGUI::Window* window)
+    void Docker::SetDefaultGeneratedFloatingDockerWindow(ssGUI::Window* window)
     {
         DefaultGeneratedDockerWindow = window;
     }
 
-    ssGUI::Window* Docker::GetDefaultGeneratedDockerWindow()
+    ssGUI::Window* Docker::GetDefaultGeneratedFloatingDockerWindow()
     {
         return DefaultGeneratedDockerWindow;
     }

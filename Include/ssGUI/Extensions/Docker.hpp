@@ -122,15 +122,15 @@ namespace ssGUI::Extensions
         public:
             static const std::string EXTENSION_NAME;
  
-            /*function: SetDefaultGeneratedDockerWindow
+            /*function: SetDefaultGeneratedFloatingDockerWindow
             Sets the default generated docker window. Set it to nullptr if you want to stop using the one passed it earlier.
             Do not pass in deleted or invalid pointer.
             The window will look as it is when floating, but invisible when not floating.*/
-            static void SetDefaultGeneratedDockerWindow(ssGUI::Window* window);
+            static void SetDefaultGeneratedFloatingDockerWindow(ssGUI::Window* window);
 
-            //function: GetDefaultGeneratedDockerWindow
+            //function: GetDefaultGeneratedFloatingDockerWindow
             //Returns the default generated docker window. Returns nullptr if it is not set and will just use <ssGUI::Window>. 
-            static ssGUI::Window* GetDefaultGeneratedDockerWindow();
+            static ssGUI::Window* GetDefaultGeneratedFloatingDockerWindow();
 
             //function: SetChildrenDockerUseThisSettings
             //If true, this will set any docker to use this settings *when it is added as a child*

@@ -363,7 +363,7 @@ namespace ssGUI
             OnMouseDragOrResizeUpdate(inputStatus, mouseDelta, inputInterface);
         }
         //Otherwise show resize cursor if necessary 
-        else if(inputStatus.MouseInputBlockedObject == nullptr)
+        else
         {
             BlockMouseInputAndUpdateCursor(inputStatus, currentMousePos, inputInterface);
         }
