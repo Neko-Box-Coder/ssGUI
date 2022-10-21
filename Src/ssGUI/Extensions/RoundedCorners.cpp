@@ -135,7 +135,7 @@ namespace ssGUI::Extensions
             ssLOG_LINE("t1: "<<t1.x<<", "<<t1.y);
             ssLOG_LINE("t2: "<<t2.x<<", "<<t2.y);
             ssLOG_LINE("cir: "<<cir.x<<", "<<cir.y);
-            ssLOG_EXIT_PROGRAM();
+            // ssLOG_EXIT_PROGRAM();
             return;
         }
 
