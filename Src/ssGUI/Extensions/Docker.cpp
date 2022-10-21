@@ -239,7 +239,7 @@ namespace ssGUI::Extensions
             {
                 auto currentChild = Container->GetCurrentChild();
                 // Container->GetCurrentChild()->SetParent(Container);
-                if(!currentChild->HasTag(ssGUI::Tags::FLOATING) && !currentChild->HasTag(ssGUI::Tags::FLOATING))
+                if(!currentChild->HasTag(ssGUI::Tags::FLOATING) && !currentChild->HasTag(ssGUI::Tags::OVERLAY))
                 {
                     childLeft = currentChild;
                     break;
