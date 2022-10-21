@@ -1,1 +1,5 @@
+<<<<<<< Updated upstream
 ﻿NDSummary.OnToolTipsLoaded("File:🗒️_User_Manual/04._Position_System.txt",{1678:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">In ssGUI, there\'s a <u>local</u> and <u>global</u> position for a GUI object.</div></div>",505:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">You can <b>anchor</b> a GUI Object against different corners of the parent GUI object.</div></div>",1704:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Since there\'s a titlebar ➖ in a window,</div></div>"});
+=======
+﻿NDSummary.OnToolTipsLoaded("File:🗒️_User_Manual/04._Position_System.txt",{1678:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">In ssGUI, there\'s a <u>local</u> and <u>global</u> position for a GUI object.</div></div>",505:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">You can <b>anchor</b> a GUI Object against different corners of the parent GUI object.</div></div>",1661:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">Since there\'s a titlebar ➖ in a window,</div></div>"});
+>>>>>>> Stashed changes

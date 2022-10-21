@@ -78,8 +78,11 @@ Topic: a. Using ssGUI in your CMake project
 
 - *1.* First, you need to git clone recursive ssGUI to the directory you like.
     - *a.* Go to the directory you like ssGUI to be in.
-    - *b.* Run
-    > git clone https://github.com/Neko-Box-Coder/ssGUI.git --recursive 
+    - *b.* To use latest stable release, Run
+    > git clone -b v0.93.00.a --recursive --single-branch https://github.com/Neko-Box-Coder/ssGUI.git 
+    
+    - Alternatively, if you want main branch, do
+    > git clone --recursive https://github.com/Neko-Box-Coder/ssGUI.git 
 
 ⠀
 
@@ -87,7 +90,7 @@ Topic: a. Using ssGUI in your CMake project
     
     > add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/directory/to/ssGUI") 
     
-    - Note that this line *MUST* be after adding SFML packages, so after this line in your _CMakeLists.txt_:
+    - Note that the above line *MUST* be after adding SFML packages, so after the line below in your _CMakeLists.txt_:
     
     > find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
 
@@ -133,13 +136,21 @@ target_link_libraries(example PUBLIC ssGUI)
 
 Topic: b. Using ssGUI as it is
 
-- *1.* You need to configure CMake, here I am using CMake GUI, it might look slightly different than yours.
+- *1.* First, you need to git clone recursive ssGUI to the directory you like.
+    - *a.* Go to the directory you like ssGUI to be in.
+    - *b.* To use latest stable release, Run
+    > git clone -b v0.93.00.a --recursive --single-branch https://github.com/Neko-Box-Coder/ssGUI.git 
+    
+    - Alternatively, if you want main branch, do
+    > git clone --recursive https://github.com/Neko-Box-Coder/ssGUI.git 
 
-- *2.* Select ssGUI root directory as "source" and a directory for the build, here I created a directory called "Build" at ssGUI root directory. 
+- *2.* You need to configure CMake, here I am using CMake GUI, it might look slightly different than yours.
+
+- *3.* Select ssGUI root directory as "source" and a directory for the build, here I created a directory called "Build" at ssGUI root directory. 
 
 (See CMakeGUI.png)
 
-- *3.* Finally, you need to configure it and select the generator for CMake. 
+- *4.* Finally, you need to configure it and select the generator for CMake. 
 
 (See CMakeGUI_2.png)
 
@@ -147,7 +158,7 @@ Here I am just using native default generator.
 
 (See CMakeGUI_3.png)
 
-If your development environment revolve around Visual Studio, you will want to choose Visual Studio as your generator.
+If your development environment revolves around Visual Studio, you will want to choose Visual Studio as your generator.
 
 > ⚠️ If you using Visual Studio and using VC16 or below, you will have to specify 
 > the toolset version number, _v142_ for example for VC16 (Visual Studio 2019)  
