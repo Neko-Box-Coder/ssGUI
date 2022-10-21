@@ -65,7 +65,7 @@ namespace ssGUI::Extensions
         glm::u8vec4 DockPreviewColor;                           //See <GetDockPreviewColor>
 
         ssGUI::GUIObject* OriginalParent;                       //(Internal variable) Used to keep track of the parent being be dragged/docked
-        bool ContainerIsDocking;                                //(Internal variable) Flag for indicating if the container is being dragged/docked
+        bool ContainerIsDocking;                                //See <IsCurrentlyDocking>
 
         ssGUI::GUIObject* DockPreivewTop;                       //(Internal variable) Dock preview GUI visual object
         ssGUI::GUIObject* DockPreivewRight;                     //(Internal variable) Dock preview GUI visual object
@@ -147,7 +147,7 @@ namespace ssGUI::Extensions
             glm::u8vec4 DockPreviewColor;                           //See <GetDockPreviewColor>
 
             ssGUI::GUIObject* OriginalParent;                       //(Internal variable) Used to keep track of the parent being be dragged/docked
-            bool ContainerIsDocking;                                //(Internal variable) Flag for indicating if the container is being dragged/docked
+            bool ContainerIsDocking;                                //See <IsCurrentlyDocking>
 
             ssGUI::GUIObject* DockPreivewTop;                       //(Internal variable) Dock preview GUI visual object
             ssGUI::GUIObject* DockPreivewRight;                     //(Internal variable) Dock preview GUI visual object
@@ -246,6 +246,10 @@ namespace ssGUI::Extensions
 
             //function: IsValidDocking
             virtual bool IsValidDocking() const;
+
+            //function: IsCurrentlyDocking
+            //Flag for indicating if the container is being dragged/docked
+            virtual bool IsCurrentlyDocking() const;
 
             //function: SetFloatable
             virtual void SetFloatable(bool floatable);

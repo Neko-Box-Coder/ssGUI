@@ -708,6 +708,11 @@ namespace ssGUI::Extensions
         return ValidDocking;
     }
 
+    bool Dockable::IsCurrentlyDocking() const
+    {
+        return ContainerIsDocking;
+    }
+
     void Dockable::SetFloatable(bool floatable)
     {
         Floatable = floatable;
