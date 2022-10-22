@@ -1,4 +1,4 @@
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
 #include "ssGUI/DataClasses/IndexedList.hpp"
 #include <assert.h>
 #include <vector>

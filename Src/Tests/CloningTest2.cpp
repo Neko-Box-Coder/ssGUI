@@ -1,8 +1,8 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/Dockable.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 //Clone test 2
 int main()

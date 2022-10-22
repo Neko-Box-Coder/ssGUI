@@ -1,5 +1,6 @@
 #include "ssGUI/GUIObjectClasses/Image.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
 {

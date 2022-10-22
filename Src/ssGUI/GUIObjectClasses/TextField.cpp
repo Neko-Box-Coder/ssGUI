@@ -7,6 +7,8 @@
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     TextField::TextField(TextField const& other) : Text(other)

@@ -6,6 +6,7 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI::Extensions
 {

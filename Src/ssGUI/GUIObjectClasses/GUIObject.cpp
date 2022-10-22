@@ -4,6 +4,8 @@
 #include "ssGUI/ssGUIManager.hpp"                   //This is for accessing DeletedObjs
 #include "ssGUI/GUIObjectClasses/Menu.hpp"          //This is for spawning right click menu
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {    
     GUIObject::GUIObject(GUIObject const& other) : Transform(other), Renderer(other), Hierarchy(other), ExtensionManager(other),

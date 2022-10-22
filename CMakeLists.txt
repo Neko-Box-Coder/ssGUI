@@ -13,10 +13,16 @@ project(ssGUI)
 # Variables 
 # ==========================================================
 
-set(ssGUI_OUTPUT_STATIC TRUE CACHE BOOL "Use and create static library instead")
-set(ssGUI_BUILD_TESTS TRUE CACHE BOOL "Build tests")
-set(ssGUI_BUILD_EXAMPLES TRUE CACHE BOOL "Build examples")
-set(ssGUI_USE_LOCAL_SFML TRUE CACHE BOOL "Use the SFML that comes with ssGUI")
+set(ssGUI_OUTPUT_STATIC ON CACHE BOOL "Use and create static library instead")
+set(ssGUI_BUILD_TESTS ON CACHE BOOL "Build tests")
+set(ssGUI_BUILD_EXAMPLES ON CACHE BOOL "Build examples")
+set(ssGUI_USE_LOCAL_SFML ON CACHE BOOL "Use the SFML that comes with ssGUI")
+set(ssGUI_USE_DEBUG OFF CACHE BOOL "Prints extra debug information")
+set(ssGUI_DEBUG_STATE OFF CACHE BOOL "Prints each stage in ssGUIManager")
+set(ssGUI_REFRESH_CONSOLE OFF CACHE BOOL "Clears the console at the end of each frame")
+set(ssGUI_SLOW_UPDATE OFF CACHE BOOL "Fps will be set to 1 for easier debugging")
+set(ssGUI_USE_SFML_TIME OFF CACHE BOOL "Use SFML time instead of chrono time")
+
 
 # Overriding ssLogger options
 set(ssLOG_BUILD_TESTS "FALSE" CACHE BOOL "If true, this will build tests")
@@ -125,6 +131,29 @@ target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML
 
 # Linking ssLogger to ssGUI
 target_link_libraries(ssGUI PUBLIC ssLogger)
+
+target_compile_definitions(ssGUI PRIVATE USE_SFML_BACKEND)
+
+if(ssGUI_USE_DEBUG)
+    target_compile_definitions(ssGUI PRIVATE SSGUI_USE_DEBUG=1)
+endif()
+
+if(ssGUI_DEBUG_STATE)
+    target_compile_definitions(ssGUI PRIVATE SSGUI_DEBUG_STATE=1)
+endif()
+
+if(ssGUI_REFRESH_CONSOLE)
+    target_compile_definitions(ssGUI PRIVATE SSGUI_REFRESH_CONSOLE=1)
+endif()
+
+if(ssGUI_SLOW_UPDATE)
+    target_compile_definitions(ssGUI PRIVATE SSGUI_SLOW_UPDATE=1)
+endif()
+
+if(ssGUI_USE_SFML_TIME)
+    target_compile_definitions(ssGUI PRIVATE SSGUI_USE_SFML_TIME=1)
+endif()
+
 
 # Copy resources for the library 
 file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"

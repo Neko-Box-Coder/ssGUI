@@ -8,6 +8,8 @@
 #include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI::Extensions
 {    
     Layout::Layout() :  HorizontalLayout(false),

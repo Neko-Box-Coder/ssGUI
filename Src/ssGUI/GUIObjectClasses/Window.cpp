@@ -8,6 +8,8 @@
 #include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     void Window::SetWindowDragState(ssGUI::Enums::WindowDragState dragState)

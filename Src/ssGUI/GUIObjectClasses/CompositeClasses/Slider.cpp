@@ -9,6 +9,8 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     Slider::Slider(Slider const& other) : Widget(other)

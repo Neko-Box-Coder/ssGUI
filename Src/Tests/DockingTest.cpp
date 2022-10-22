@@ -1,5 +1,3 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Dockable.hpp"
 #include "ssGUI/Extensions/Docker.hpp"

@@ -10,6 +10,8 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     StandardButton::StandardButton(StandardButton const& other) : Button(other)

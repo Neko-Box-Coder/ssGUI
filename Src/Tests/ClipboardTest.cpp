@@ -1,6 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 //Text font test
 int main()

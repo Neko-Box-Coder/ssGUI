@@ -7,6 +7,8 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     MenuItem::MenuItem(MenuItem const& other) : StandardButton(other)

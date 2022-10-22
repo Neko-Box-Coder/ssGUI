@@ -1,8 +1,8 @@
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 
-
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
 {
@@ -28,7 +28,7 @@ namespace ssGUI
         {
             if(it.second != nullptr)
             {
-                #if USE_DEBUG
+                #if SSGUI_USE_DEBUG
                 ssLOG_LINE("Adding external dependency to "<<it.second);
                 #endif
                 it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
@@ -62,7 +62,7 @@ namespace ssGUI
         {
             if(it.second != nullptr)
             {
-                #if USE_DEBUG
+                #if SSGUI_USE_DEBUG
                 ssLOG_LINE("Adding external dependency to "<<it.second);
                 #endif
                 it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
@@ -262,7 +262,7 @@ namespace ssGUI
 
         for(auto it : ExternalObjectsDependencies)
         {
-            #if USE_DEBUG
+            #if SSGUI_USE_DEBUG
             ssLOG_LINE("Removing "<<it.first<<" external reference of this object");
             #endif
             it.first->RemoveObjectReference(it.second, true);
@@ -270,7 +270,7 @@ namespace ssGUI
 
         for(auto it : ObjectsReferencesTable)
         {
-            #if USE_DEBUG
+            #if SSGUI_USE_DEBUG
             ssLOG_LINE("Removing external depenency record stored on "<<it.second);
             #endif
             it.second->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);

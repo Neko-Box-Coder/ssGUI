@@ -6,7 +6,6 @@
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "glm/vec2.hpp"
 #include <string>
 #include <type_traits>

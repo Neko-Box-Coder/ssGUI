@@ -1,4 +1,5 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI::Extensions
 {

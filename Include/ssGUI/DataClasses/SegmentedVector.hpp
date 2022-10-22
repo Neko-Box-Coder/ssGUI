@@ -1,7 +1,6 @@
 #ifndef SSGUI_SEGMENTED_VECTOR
 #define SSGUI_SEGMENTED_VECTOR
 
-#include "ssGUI//DebugAndBuild//ssGUIBuildAndDebugConfig.hpp"
 #include <vector>
 #include <utility>      //Swap
 #include <stdexcept>    //Exception

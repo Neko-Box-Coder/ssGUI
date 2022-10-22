@@ -1,7 +1,6 @@
 #ifndef SSGUI_MANAGER
 #define SSGUI_MANAGER
 
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 #include "ssGUI/Enums/GUIObjectType.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
@@ -10,7 +9,7 @@
 #include <stack>
 #include <queue>
 
-#if SLOW_UPDATE
+#if SSGUI_SLOW_UPDATE
     //For slowing update for debugging purposes
     #include <thread>
     #include <chrono>

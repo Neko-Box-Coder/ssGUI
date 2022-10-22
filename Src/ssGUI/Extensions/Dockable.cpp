@@ -7,6 +7,8 @@
 #include "ssGUI/Extensions/Docker.hpp"
 #include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI::Extensions
 {
     bool Dockable::GlobalDockMode = false;

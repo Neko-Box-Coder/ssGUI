@@ -5,6 +5,8 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     Menu::Menu(Menu const& other) : Widget(other)

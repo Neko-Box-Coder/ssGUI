@@ -1,7 +1,7 @@
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 #include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
 
 int main()
 {

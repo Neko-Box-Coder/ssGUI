@@ -1,5 +1,3 @@
-
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"

@@ -18,8 +18,8 @@
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+#include "ssLogger/ssLog.hpp"
+
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/Outline.hpp"

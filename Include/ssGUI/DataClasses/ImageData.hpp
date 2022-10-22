@@ -1,7 +1,6 @@
 #ifndef SSGUI_IMAGE_DATA
 #define SSGUI_IMAGE_DATA
 
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Backend/BackendFactory.hpp"
 
 //namespace: ssGUI

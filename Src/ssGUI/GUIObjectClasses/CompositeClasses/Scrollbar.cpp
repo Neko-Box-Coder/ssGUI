@@ -4,6 +4,8 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     Scrollbar::Scrollbar(Scrollbar const& other) : Slider(other)

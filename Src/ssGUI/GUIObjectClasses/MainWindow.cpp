@@ -4,6 +4,8 @@
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     MainWindow::MainWindow(MainWindow const& other) : Window(other)

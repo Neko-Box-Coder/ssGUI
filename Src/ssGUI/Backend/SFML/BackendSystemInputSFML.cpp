@@ -3,6 +3,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
+#include "ssLogger/ssLog.hpp"
 
 #include "clip.h"   //TODO: Add macro for switching between this and SFML one.
 #include <codecvt>
@@ -188,7 +189,7 @@ namespace ssGUI::Backend
             ssLOG_EXIT_PROGRAM();
         }
 
-        #if !USE_SFML_TIME
+        #if !SSGUI_USE_SFML_TIME
             ElapsedTime = std::chrono::high_resolution_clock::now();
         #endif
 
@@ -863,7 +864,7 @@ namespace ssGUI::Backend
 
     uint64_t BackendSystemInputSFML::GetElapsedTime() const
     {
-        #if USE_SFML_TIME
+        #if SSGUI_USE_SFML_TIME
             return ElapsedTime.getElapsedTime().asMilliseconds();
         #else
             //ElapsedTime is actually the start time but just keeping the name for compatibility

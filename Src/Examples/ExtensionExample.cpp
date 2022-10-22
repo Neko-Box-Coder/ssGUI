@@ -1,4 +1,3 @@
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/Extensions/BoxShadow.hpp"

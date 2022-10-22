@@ -1,4 +1,5 @@
 #include "ssGUI/Backend/SFML/BackendDrawingSFML.hpp"
+#include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
 
 namespace ssGUI::Backend
 {

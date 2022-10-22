@@ -1,5 +1,6 @@
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI::EventCallbacks
 {    

@@ -1,6 +1,5 @@
 #include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 
 
 //Event callback example

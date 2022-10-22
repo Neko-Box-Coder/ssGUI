@@ -1,10 +1,9 @@
 #include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 
-
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-//Remember to add the .cpp file to the cmake list if you are using cmake
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI::Extensions
 {

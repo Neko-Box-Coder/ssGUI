@@ -2,7 +2,6 @@
 #define SSGUI_BACKEND_IMAGE_SFML
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "SFML/Graphics.hpp"
 
 //namespace: ssGUI::Backend

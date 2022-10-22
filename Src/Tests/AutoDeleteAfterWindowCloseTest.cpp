@@ -1,8 +1,7 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 int main()
 {

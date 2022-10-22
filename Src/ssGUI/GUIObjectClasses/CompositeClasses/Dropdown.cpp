@@ -8,6 +8,8 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/EventCallbacks/ItemSelectedEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* Dropdown::DefaultDropdownArrowImageData = nullptr;

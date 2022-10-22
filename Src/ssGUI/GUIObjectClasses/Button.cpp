@@ -1,6 +1,8 @@
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     Button::Button(Button const& other) : Widget(other)

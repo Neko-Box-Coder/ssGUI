@@ -1,7 +1,7 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/Checkbox.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 int main()
 {

@@ -16,6 +16,8 @@
 #include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 
 namespace ssGUI
 {
@@ -98,7 +100,7 @@ namespace ssGUI
     {        
         ssLOG_FUNC_ENTRY();
         
-        #if USE_DEBUG
+        #if SSGUI_USE_DEBUG
         ssLOG_LINE("Setting "<<CurrentObject<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
         #endif
 
@@ -566,7 +568,7 @@ namespace ssGUI
     {
         ssLOG_FUNC_ENTRY();
         
-        #if USE_DEBUG
+        #if SSGUI_USE_DEBUG
         ssLOG_LINE(CurrentObject<<" removing child "<<obj);
         #endif
         
@@ -597,7 +599,7 @@ namespace ssGUI
         Children.remove(*it);
         PopChildrenIterator();
 
-        #if USE_DEBUG
+        #if SSGUI_USE_DEBUG
         ssLOG_LINE("Remove success");
         #endif
         ssLOG_FUNC_EXIT();
@@ -724,7 +726,7 @@ namespace ssGUI
         }
         ObjectDelete = true;
 
-        #if USE_DEBUG
+        #if SSGUI_USE_DEBUG
         ssLOG_LINE(CurrentObject<<" object is getting deleted");
         #endif
 

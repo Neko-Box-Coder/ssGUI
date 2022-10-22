@@ -1,4 +1,3 @@
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"                     //Includes all the core ssGUI classes
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 

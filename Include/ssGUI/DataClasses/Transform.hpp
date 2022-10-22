@@ -2,7 +2,6 @@
 #define SSGUI_TRANSFORM
 
 #include "glm/vec2.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Enums/AnchorType.hpp"
 
 //namespace: ssGUI

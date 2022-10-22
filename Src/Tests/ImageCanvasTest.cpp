@@ -1,9 +1,8 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/ImageCanvas.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 
 //Image Test
@@ -28,7 +27,7 @@ int main()
     data.LoadFromPath("Resources/sd.png");
     imageCanvas.SetImageData(&data);
     imageCanvas.SetParent(&mainWindow);
-    imageCanvas.SetImageTint(glm::u8vec4(255, 255, 255, 127));
+    imageCanvas.SetImageTint(glm::u8vec4(255, 255, 255, 255));
     // imageCanvas.GetHorizontalScrollbar()->SetReverse(!imageCanvas.GetHorizontalScrollbar()->IsReverse());
     // imageCanvas.GetVerticalScrollbar()->SetReverse(!imageCanvas.GetVerticalScrollbar()->IsReverse());
     

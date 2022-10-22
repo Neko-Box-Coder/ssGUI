@@ -12,6 +12,8 @@
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     StandardWindow::StandardWindow(StandardWindow const& other) : Window(other)

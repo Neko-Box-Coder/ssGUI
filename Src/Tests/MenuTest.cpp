@@ -1,9 +1,9 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
 #include "ssGUI/GUIObjectClasses/CompositeClasses/MenuItem.hpp"
 #include "ssGUI/GUIObjectClasses/Menu.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 //Mask test
 int main()

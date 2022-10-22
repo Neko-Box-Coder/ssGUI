@@ -2,6 +2,8 @@
 
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 #include <cmath>
 #include <algorithm>    // std::sort
 

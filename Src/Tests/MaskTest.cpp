@@ -1,10 +1,10 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/BoxShadow.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 //Mask test
 int main()
