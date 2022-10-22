@@ -234,6 +234,7 @@ Topic: Macros needed to be defined:
         > ssLOG_THREAD_SAFE=0
         > ssLOG_LOG_TO_FILE=0
         > ssLOG_USE_SOURCE
+        > USE_SFML_BACKEND
 
     - Windows
         > _SCL_SECURE_NO_WARNINGS (MSVC)

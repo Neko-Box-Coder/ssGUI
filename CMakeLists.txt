@@ -13,10 +13,13 @@ project(ssGUI)
 # Variables 
 # ==========================================================
 
+# Build Variables
 set(ssGUI_OUTPUT_STATIC ON CACHE BOOL "Use and create static library instead")
 set(ssGUI_BUILD_TESTS ON CACHE BOOL "Build tests")
 set(ssGUI_BUILD_EXAMPLES ON CACHE BOOL "Build examples")
 set(ssGUI_USE_LOCAL_SFML ON CACHE BOOL "Use the SFML that comes with ssGUI")
+
+# Debug Variables
 set(ssGUI_USE_DEBUG OFF CACHE BOOL "Prints extra debug information")
 set(ssGUI_DEBUG_STATE OFF CACHE BOOL "Prints each stage in ssGUIManager")
 set(ssGUI_REFRESH_CONSOLE OFF CACHE BOOL "Clears the console at the end of each frame")
