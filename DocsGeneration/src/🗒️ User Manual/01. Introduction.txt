@@ -11,6 +11,7 @@ Title: Introduction
     - MacOS: Unknown ❓
 - 📈 Current Status
     - ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ _v0.93 (100%)_  
+    - ⬛⬛🔲🔲🔲🔲🔲🔲🔲🔲 *v0.94 (20%)*
 
 ❓ What is ssGUI?::
 (see Logo.png)
