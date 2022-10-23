@@ -56,10 +56,13 @@ int main()
 
     ssGUI::Extensions::Docker* docker = ssGUI::Factory::Create<ssGUI::Extensions::Docker>();
     docker->SetChildrenDockerUseThisSettings(true);
-
-    // ssGUI::StandardWindow* defaultStandardWindow = new ssGUI::StandardWindow();
-    // defaultStandardWindow->GetWindowTitleObject()->SetText("Docker");
-    // ssGUI::Extensions::Docker::SetDefaultGeneratedDockerWindow(defaultStandardWindow);
+    
+    ssGUI::StandardWindow* defaultStandardWindow = new ssGUI::StandardWindow();
+    defaultStandardWindow->GetWindowTitleObject()->SetText("Docker");
+    auto defaultLayout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+    defaultLayout->SetPadding(10);
+    defaultStandardWindow->AddExtension(defaultLayout);
+    ssGUI::Extensions::Docker::SetDefaultGeneratedFloatingDockerWindow(defaultStandardWindow);
     
     ssGUI::Extensions::AdvancedPosition* ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
     ssGUI::Extensions::AdvancedSize* as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
@@ -104,6 +107,7 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
+    // guiManager.SetTargetFramerate(30);
 
     guiManager.AddPostGUIUpdateEventListener
     (
@@ -111,8 +115,8 @@ int main()
         {
             ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
             
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 // if(window.GetBackgroundColor().a == 255)
                 //     window.SetBackgroundColor(glm::u8vec4(127, 127, 127, 127));

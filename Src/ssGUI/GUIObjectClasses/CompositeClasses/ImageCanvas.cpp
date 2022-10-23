@@ -284,7 +284,7 @@ namespace ssGUI
             }
 
             //If space key is pressed, use delta cursor position to move image
-            if(IsUsingDefaultPanning() && inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::SPACE))
+            if(IsUsingDefaultPanning() && inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::SPACE))
             {
                 inputStatus.KeyInputBlockedObject = this;
                 
@@ -303,7 +303,7 @@ namespace ssGUI
             }
 
             //If r key is pressed, use start cursor position, start image position and current cursor position to rotate image
-            else if(IsUsingDefaultRotating() && inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::R))
+            else if(IsUsingDefaultRotating() && inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::R))
             {
                 inputStatus.KeyInputBlockedObject = this;
                 SetFocus(true);

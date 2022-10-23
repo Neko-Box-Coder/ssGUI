@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("gen",["Variable"],[["GenericButtonAndKeyInput",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/RealtimeInputInfo.hpp:ssGUI.Enums.GenericButtonAndKeyInput","CClass:ssGUI.Enums:GenericButtonAndKeyInput"]]]]);

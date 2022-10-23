@@ -1,6 +1,8 @@
 #ifndef SSGUI_SYMBOL_KEY
 #define SSGUI_SYMBOL_KEY
 
+#include <cstdint>
+
 //namespace: ssGUI::Enums
 namespace ssGUI::Enums
 {
@@ -25,11 +27,13 @@ namespace ssGUI::Enums
     NUMPAD_PLUS             - Plus key for numpad (+)
     NUMPAD_PERIOD           - Period key for numpad (.)
     */
-    enum class SymbolKey
+    enum class SymbolKey : uint16_t
     {
-        BACK_QUOTE, MINUS, EQUAL, LEFT_BRACKET, RIGHT_BRACKET, BACKSLASH, SEMICOLON,
-        QUOTE, HASH_UK, BACKSLASH_UK, COMMA, PERIOD, FORWARD_SLASH, NUMPAD_FORWARD_SLASH, NUMPAD_MULTIPLY,
-        NUMPAD_MINUS, NUMPAD_PLUS, NUMPAD_PERIOD 
+        BACK_QUOTE = 400, 
+        MINUS, EQUAL, LEFT_BRACKET, RIGHT_BRACKET, BACKSLASH, SEMICOLON,
+        QUOTE, HASH_UK, BACKSLASH_UK, COMMA, PERIOD, FORWARD_SLASH, NUMPAD_FORWARD_SLASH, 
+        NUMPAD_MULTIPLY, NUMPAD_MINUS, NUMPAD_PLUS, NUMPAD_PERIOD, 
+        COUNT = NUMPAD_PERIOD - BACK_QUOTE + 1
     };
 }
 

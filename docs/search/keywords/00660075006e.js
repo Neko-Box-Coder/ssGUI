@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("fun",["Enumeration","Variable"],[["FunctionKey",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/FunctionKey.hpp:ssGUI.Enums.FunctionKey","CClass:ssGUI.Enums:FunctionKey"],["ssGUI::KeyPresses",,,,1,"File:◀️_ssGUI_API_▶️/DataClasses/KeyPresses.hpp:ssGUI.KeyPresses.FunctionKey","CClass:ssGUI.KeyPresses:FunctionKey"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("fun",["Enumeration"],[["FunctionKey",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/FunctionKey.hpp:ssGUI.Enums.FunctionKey","CClass:ssGUI.Enums:FunctionKey"]]]]);

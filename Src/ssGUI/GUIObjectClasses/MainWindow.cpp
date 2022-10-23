@@ -158,6 +158,11 @@ namespace ssGUI
         return BackendMainWindow->IsVisible();
     }
 
+    glm::ivec2 MainWindow::GetRelativeMousePosition(glm::ivec2 mousePos) const
+    {
+        return mousePos - GetDisplayPosition() - GetPositionOffset();
+    }
+
     void MainWindow::SetEnabled(bool enabled)
     {
         BackendMainWindow->SetVisible(enabled);

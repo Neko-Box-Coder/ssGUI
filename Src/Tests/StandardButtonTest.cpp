@@ -37,8 +37,8 @@ int main()
         [&]()
         {
             auto backendInput = guiManager.GetBackendInputInterface();
-            if(backendInput->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !backendInput->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( backendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !backendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 auto buttonColor = glm::ivec4(button.GetButtonColor());
                 buttonColor.r += 20;

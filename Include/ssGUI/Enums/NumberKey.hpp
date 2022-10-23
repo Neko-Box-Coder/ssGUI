@@ -1,6 +1,8 @@
 #ifndef SSGUI_NUMBER_KEY
 #define SSGUI_NUMBER_KEY
 
+#include <cstdint>
+
 //namespace: ssGUI::Enums
 namespace ssGUI::Enums
 {
@@ -27,10 +29,13 @@ namespace ssGUI::Enums
     NUMPAD_NINE     - 9 numpad key on the right
     NUMPAD_ZERO     - 0 numpad key on the right
     */
-    enum class NumberKey
+    enum class NumberKey : uint16_t
     {
-        ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO,
-        NUMPAD_ONE,NUMPAD_TWO,NUMPAD_THREE,NUMPAD_FOUR,NUMPAD_FIVE,NUMPAD_SIX,NUMPAD_SEVEN,NUMPAD_EIGHT,NUMPAD_NINE,NUMPAD_ZERO
+        ONE = 300,
+        TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO,
+        NUMPAD_ONE,NUMPAD_TWO,NUMPAD_THREE,NUMPAD_FOUR,
+        NUMPAD_FIVE,NUMPAD_SIX,NUMPAD_SEVEN,NUMPAD_EIGHT,NUMPAD_NINE,NUMPAD_ZERO,
+        COUNT = NUMPAD_ZERO - ONE + 1
     };
 }
 

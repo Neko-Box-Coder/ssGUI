@@ -1,6 +1,8 @@
 #ifndef SSGUI_FUNCTION_KEY
 #define SSGUI_FUNCTION_KEY
 
+#include <cstdint>
+
 //namespace: ssGUI::Enums
 namespace ssGUI::Enums
 {
@@ -20,9 +22,11 @@ namespace ssGUI::Enums
     F12 - F12
     
     */
-    enum class FunctionKey
+    enum class FunctionKey : uint16_t
     {
-        F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12
+        F1 = 100,
+        F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12, 
+        COUNT = F12 - F1 + 1
     };
 }
 

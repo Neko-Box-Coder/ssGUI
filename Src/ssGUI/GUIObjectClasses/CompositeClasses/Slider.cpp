@@ -359,10 +359,26 @@ namespace ssGUI
                 };
                 
                 //Start of left/down input
-                if((inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT) &&
-                    !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT)) ||
-                    (inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN) &&
-                    !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN)))
+                bool leftKeyDown =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT) &&
+                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::LEFT);
+                
+                bool downKeyDown =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN) &&
+                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::DOWN);
+
+                bool leftOrDownKeyPressed = inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT) ||
+                                            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN);
+
+                bool rightKeyDown = inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT) &&
+                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::RIGHT);
+                
+                bool upKeyDown =    inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::UP) &&
+                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::UP);
+
+                bool rightOrUpKeyPressed =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT) ||
+                                            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::UP);
+
+
+                if(leftKeyDown || downKeyDown)
                 {
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? increaseSliderValue() : decreaseSliderValue();
@@ -370,8 +386,7 @@ namespace ssGUI
                     SetFocus(true);
                 }
                 //Continuous input of left/down
-                else if((inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT) ||
-                        inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN)) &&
+                else if(leftOrDownKeyPressed &&
                         inputInterface->GetElapsedTime() - LastKeyNavStartTime > KeyNavPauseDuration &&
                         inputInterface->GetElapsedTime() - LastKeyNavTime > KeyNavInterval)
                 {
@@ -382,10 +397,7 @@ namespace ssGUI
                 }
 
                 //Start of right/up input
-                if((inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT) &&
-                    !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT)) ||
-                    (inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP) &&
-                    !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP)))
+                if(rightKeyDown || upKeyDown)
                 {
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? decreaseSliderValue() : increaseSliderValue();
@@ -393,8 +405,7 @@ namespace ssGUI
                     SetFocus(true);
                 }
                 //Continuous input of right/up
-                else if((inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT) ||
-                        inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP)) &&
+                else if(rightOrUpKeyPressed &&
                         inputInterface->GetElapsedTime() - LastKeyNavStartTime > KeyNavPauseDuration &&
                         inputInterface->GetElapsedTime() - LastKeyNavTime > KeyNavInterval)
                 {

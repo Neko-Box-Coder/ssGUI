@@ -57,8 +57,8 @@ int main()
             //     menu.SpawnMenu(inputInterface->GetCurrentMousePosition(&mainWindow));
             // }
 
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 ssLOG_LINE("menu.IsFocused(): "<<menu.IsFocused());
                 ssLOG_LINE("menu.IsRedrawNeeded(): "<<menu.IsRedrawNeeded());
