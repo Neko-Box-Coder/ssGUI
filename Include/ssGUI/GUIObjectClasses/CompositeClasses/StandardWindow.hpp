@@ -97,10 +97,10 @@ namespace ssGUI
         buttonEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            [circleId](ssGUI::EventInfo info)
             {
-                auto closeButtonObj = static_cast<ssGUI::Button*>(src);
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                auto closeButtonObj = static_cast<ssGUI::Button*>(info.EventSource);
+                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
                 int amount = 60;
                 switch(closeButtonObj->GetButtonState())
                 {
@@ -119,7 +119,7 @@ namespace ssGUI
                             closeButtonObj->GetButtonColor() + glm::u8vec4(0, amount * 2, amount * 2, 0), false);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
-                        static_cast<ssGUI::Window*>(src->GetParent())->Close();
+                        static_cast<ssGUI::Window*>(info.EventSource->GetParent())->Close();
                         break;
                     case ssGUI::Enums::ButtonState::DISABLED:
                         shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), 
@@ -135,10 +135,10 @@ namespace ssGUI
         shapeEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            [circleId](ssGUI::EventInfo info)
             {
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(src->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
-                shape->SetAdditionalCircle(circleId, glm::vec2(), src->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
+                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                shape->SetAdditionalCircle(circleId, glm::vec2(), info.EventSource->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
         closeButton->AddEventCallback(shapeEvent);

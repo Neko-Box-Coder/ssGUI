@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("File:◀️_ssGUI_API_▶️/DataClasses/EventInfo.hpp",{});

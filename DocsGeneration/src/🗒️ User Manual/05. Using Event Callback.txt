@@ -148,6 +148,7 @@ Here's a full example of using event callback (Src/Examples/EventCallbackExample
 #include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 
+
 //Event callback example
 int main()
 {
@@ -157,7 +158,7 @@ int main()
     callback->AddEventListener
     (
         "AnyKey",
-        [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs) 
+        [](ssGUI::EventInfo info) 
         {
             std::cout<<"child added\n";
         }

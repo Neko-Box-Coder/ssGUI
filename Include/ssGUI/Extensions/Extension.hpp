@@ -64,6 +64,7 @@ namespace ssGUI::Extensions
             //Returns this extension's name
             virtual std::string GetExtensionName() = 0;
             
+            //TODO: CHange this to internal
             //function: BindToObject
             //Binds this extension to a GUI object
             virtual void BindToObject(ssGUI::GUIObject* bindObj) = 0;

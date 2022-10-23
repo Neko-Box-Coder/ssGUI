@@ -3,6 +3,7 @@
 
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
+#include "ssGUI/DataClasses/EventInfo.hpp"
 #include <functional>
 #include <string>
 #include <vector>
@@ -29,7 +30,7 @@ namespace ssGUI::EventCallbacks
         "AnyKey",
         //source is what *triggered* the callback
         //container is the GUI Object that holds this event callback
-        [](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+        [](ssGUI::EventInfo info)
         {
             //Do something
         }    
@@ -56,14 +57,12 @@ namespace ssGUI::EventCallbacks
             Parameters:
                 key - Key string for the ability to remove it later
                 adder - GUI Object that added the event listener, nullptr if non-GUI Object added the listener
-                src - GUI Object that triggered the callback
-                container - GUI Object that contains this eventcallback
-                references - <ObjectsReferences> that this event callback has*/ 
-            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) = 0;
+                callback - Listener callback function when the event happens*/
+            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback) = 0;
             
             //function: AddEventListener
             //Same as above but with adder as nullptr
-            virtual void AddEventListener(std::string key, std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) = 0;
+            virtual void AddEventListener(std::string key, std::function<void(EventInfo)> callback) = 0;
             
             //function: IsEventListenerExist
             //Check if the listener exists with key and adder specified. Note that same key but with different adder is diffentiated.

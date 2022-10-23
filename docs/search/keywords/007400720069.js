@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("tri",["Variable"],[["triggered",,[[,"GUI Object that triggered the callback",,,0,"File:◀️_ssGUI_API_▶️/DataClasses/EventInfo.hpp:GUI_Object_that_triggered_the_callback"]]]]);

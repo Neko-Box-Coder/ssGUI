@@ -19,11 +19,11 @@ int main()
     button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
         "AnyKey",
-        [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+        [](ssGUI::EventInfo info)
         {
-            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(((ssGUI::Button*)info.EventSource)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                container->GetParent()->Delete();
+                info.EventCallbackContainer->GetParent()->Delete();
             }
         }
     );

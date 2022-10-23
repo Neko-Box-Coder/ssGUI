@@ -8,12 +8,14 @@ int main()
     ssGUI::MainWindow mainWindow;
 
     auto callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
-    callback->AddEventListener(
+    callback->AddEventListener
+    (
         "AnyKey",
-        [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs) 
+        [](ssGUI::EventInfo info) 
         {
             std::cout<<"child added\n";
-        });
+        }
+    );
 
     mainWindow.AddEventCallback(callback);
 

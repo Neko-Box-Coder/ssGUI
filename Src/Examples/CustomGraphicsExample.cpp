@@ -189,9 +189,9 @@ int main()
     ecb->AddEventListener
     (
         "pyramidControl",
-        [&](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+        [&](ssGUI::EventInfo info)
         {
-            PyramidRotateSpeed = static_cast<ssGUI::Slider*>(container)->GetSliderValue() * 3;
+            PyramidRotateSpeed = static_cast<ssGUI::Slider*>(info.EventCallbackContainer)->GetSliderValue() * 3;
         }
     );
     pyramidSlider.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
@@ -209,9 +209,9 @@ int main()
     ecb->AddEventListener
     (
         "cubeControl",
-        [&](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+        [&](ssGUI::EventInfo info)
         {
-            CubeRotateSpeed = static_cast<ssGUI::Slider*>(container)->GetSliderValue() * 3;
+            CubeRotateSpeed = static_cast<ssGUI::Slider*>(info.EventCallbackContainer)->GetSliderValue() * 3;
         }
     );
     window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddChildWithWrapper(cubeSlider);

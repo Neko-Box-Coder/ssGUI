@@ -31,11 +31,11 @@ int main()
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
         "AnyKey",
-        [textIndex](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+        [textIndex](ssGUI::EventInfo info)
         {
-            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(((ssGUI::Button*)info.EventSource)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                ssGUI::GUIObject* refText = refs->GetObjectReference(textIndex);
+                ssGUI::GUIObject* refText = info.EventCallbackReferences->GetObjectReference(textIndex);
 
                 if(refText != nullptr)
                     static_cast<ssGUI::Text*>(refText)->SetText(L"(`oωo´)");

@@ -14,7 +14,7 @@ int main()
     callback->AddEventListener
     (
         "Key",
-        [](ssGUI::GUIObject*src,ssGUI::GUIObject*container,ssGUI::ObjectsReferences*references){ssLOG_LINE("size changed.")}
+        [](ssGUI::EventInfo info){ssLOG_LINE("size changed.")}
     );
     mainWindow.AddEventCallback(callback);
 

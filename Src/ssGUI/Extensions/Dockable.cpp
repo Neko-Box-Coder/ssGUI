@@ -945,9 +945,9 @@ namespace ssGUI::Extensions
             event->AddEventListener
             (
                 EXTENSION_NAME,
-                [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+                [](ssGUI::EventInfo info)
                 {
-                    if(!container->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
+                    if(!info.EventCallbackContainer->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
                     {
                         ssLOG_LINE("Failed to find Dockable extension. Probably something wrong with cloning");
                         ssLOG_EXIT_PROGRAM();
@@ -955,15 +955,15 @@ namespace ssGUI::Extensions
                     }
 
                     ssGUI::Extensions::Dockable* containerDockable = static_cast<ssGUI::Extensions::Dockable*>
-                            (container->GetExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME));
+                            (info.EventCallbackContainer->GetExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME));
                     
                     //When the current window started being dragged
-                    if(static_cast<ssGUI::Window*>(src)->GetWindowDragState() == ssGUI::Enums::WindowDragState::STARTED)
+                    if(static_cast<ssGUI::Window*>(info.EventSource)->GetWindowDragState() == ssGUI::Enums::WindowDragState::STARTED)
                     {
                         containerDockable->OnWindowDragStarted();
                     }
                     //When the current window finished being dragged
-                    else if(static_cast<ssGUI::Window*>(src)->GetWindowDragState() == ssGUI::Enums::WindowDragState::ENDED)
+                    else if(static_cast<ssGUI::Window*>(info.EventSource)->GetWindowDragState() == ssGUI::Enums::WindowDragState::ENDED)
                     {
                         containerDockable->OnWindowDragFinished();
                     }

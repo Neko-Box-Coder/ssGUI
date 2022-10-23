@@ -70,7 +70,7 @@ mainWindow
 
 ===========================================================================
 
-Source Code:
+Source Code (Src/Examples/MaskExample.cpp):
 ========================================= C++ ==============================================
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Layout.hpp"

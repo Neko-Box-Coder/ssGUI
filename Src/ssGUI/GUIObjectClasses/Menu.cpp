@@ -152,14 +152,14 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [menuIndex](auto src, auto container, auto refs)
+            [menuIndex](ssGUI::EventInfo info)
             {
-                auto btn = static_cast<ssGUI::Button*>(src);
+                auto btn = static_cast<ssGUI::Button*>(info.EventSource);
                 if(btn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
                 {
-                    if(refs->GetObjectReference(menuIndex) != nullptr)
+                    if(info.EventCallbackReferences->GetObjectReference(menuIndex) != nullptr)
                     {
-                        auto curParent = refs->GetObjectReference(menuIndex);
+                        auto curParent = info.EventCallbackReferences->GetObjectReference(menuIndex);
                         
                         while (true)
                         {
@@ -205,21 +205,21 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [subMenuIndex, menuIndex](auto src, auto container, auto refs)
+            [subMenuIndex, menuIndex](ssGUI::EventInfo info)
             {
-                auto btn = static_cast<ssGUI::Button*>(src);
+                auto btn = static_cast<ssGUI::Button*>(info.EventSource);
                 if(btn->GetButtonState() == ssGUI::Enums::ButtonState::HOVER)
                 {
                     btn->SetFocus(true);
                     
                     //Show the submenu when submenu item being hovered
-                    if(refs->GetObjectReference(subMenuIndex) != nullptr)
+                    if(info.EventCallbackReferences->GetObjectReference(subMenuIndex) != nullptr)
                     {
-                        auto curSubMenu = static_cast<ssGUI::Menu*>(refs->GetObjectReference(subMenuIndex));
+                        auto curSubMenu = static_cast<ssGUI::Menu*>(info.EventCallbackReferences->GetObjectReference(subMenuIndex));
 
                         //Update the menu target
-                        if(refs->GetObjectReference(menuIndex) != nullptr)
-                            curSubMenu->SetMenuTarget(static_cast<ssGUI::Menu*>(refs->GetObjectReference(menuIndex))->GetMenuTarget());
+                        if(info.EventCallbackReferences->GetObjectReference(menuIndex) != nullptr)
+                            curSubMenu->SetMenuTarget(static_cast<ssGUI::Menu*>(info.EventCallbackReferences->GetObjectReference(menuIndex))->GetMenuTarget());
                         
                         //Check Top right corner
                         if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0)) == ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT)
