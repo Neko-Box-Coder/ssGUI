@@ -1,5 +1,4 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
@@ -35,9 +34,9 @@ int main()
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
         "AnyKey",
-        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+        [&](ssGUI::EventInfo info)
         {
-            if(((ssGUI::Button*)src)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(((ssGUI::Button*)info.EventSource)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 text.SetText("Button pressed and this text has changed.");
             }

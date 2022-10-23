@@ -1,4 +1,3 @@
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
@@ -89,9 +88,9 @@ int main()
         button->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
         (
             "AnyKey",
-            [&text, i](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            [&text, i](ssGUI::EventInfo info)
             {
-                if(((ssGUI::Button*)src)->GetButtonState() != ssGUI::Enums::ButtonState::CLICKED)
+                if(((ssGUI::Button*)info.EventSource)->GetButtonState() != ssGUI::Enums::ButtonState::CLICKED)
                     return;
 
                 switch (i)

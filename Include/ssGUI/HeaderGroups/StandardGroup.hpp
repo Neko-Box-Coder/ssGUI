@@ -10,7 +10,6 @@
 #include "ssGUI/DataClasses/DrawingProperties.hpp"
 #include "ssGUI/DataClasses/Font.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
-#include "ssGUI/DataClasses/KeyPresses.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"
@@ -25,5 +24,6 @@
 #include "ssGUI/ssGUIManager.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "ssGUI/Factory.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 
 #endif

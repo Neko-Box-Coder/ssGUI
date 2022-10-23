@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("no_",["Constant"],[["NO_WRAPPING",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/TextWrapping.hpp:ssGUI.Enums.NO_WRAPPING","CClass:ssGUI.Enums:NO_WRAPPING"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("no_",["Constant"],[["NO_INPUT",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/RealtimeInputInfo.hpp:ssGUI.Enums.NO_INPUT","CClass:ssGUI.Enums:NO_INPUT"]]],["NO_WRAPPING",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/TextWrapping.hpp:ssGUI.Enums.NO_WRAPPING","CClass:ssGUI.Enums:NO_WRAPPING"]]]]);

@@ -6,6 +6,7 @@
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
 {

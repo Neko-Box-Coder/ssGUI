@@ -6,13 +6,13 @@
 #include <string>
 #include <stack>
 
-// #define USE_DEBUG 0         //This will show which function is not exited if crashes
-#define DEBUG_STATE 0       //This will print all the state of each update (Pre-Update, Render, Post-Render, etc..)
-#define REFRESH_CONSOLE 0   //Normally you have this on when DEBUG_STATE is on in order to refresh the console otherwise it will be spammed
-#define SLOW_UPDATE 0        //This will slow down the update for easier debugging
-#define USE_SFML_TIME 0     //Can use SFML time function instead, but it's limited to int32 which could be not enough though
+#define SSGUI_USE_DEBUG 0         //This will show which function is not exited if crashes
+#define SSGUI_DEBUG_STATE 0       //This will print all the state of each update (Pre-Update, Render, Post-Render, etc..)
+#define SSGUI_REFRESH_CONSOLE 0   //Normally you have this on when DEBUG_STATE is on in order to refresh the console otherwise it will be spammed
+#define SSGUI_SLOW_UPDATE 0        //This will slow down the update for easier debugging
+#define SSGUI_USE_SFML_TIME 0     //Can use SFML time function instead, but it's limited to int32 which could be not enough though
 
-// #if !USE_DEBUG
+// #if !SSGUI_USE_DEBUG
 
 //     #define FUNC_DEBUG_ENTRY( ... ) VA_SELECT( FUNC_DEBUG_ENTRY, __VA_ARGS__ )
 //     #define FUNC_DEBUG_EXIT( ... ) VA_SELECT( FUNC_DEBUG_EXIT, __VA_ARGS__ )

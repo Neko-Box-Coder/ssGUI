@@ -1,12 +1,10 @@
 #ifndef SSGUI_MAIN_WINDOW
 #define SSGUI_MAIN_WINDOW
 
-
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include <functional>
-
 
 //namespace: ssGUI
 namespace ssGUI
@@ -137,6 +135,10 @@ namespace ssGUI
             //function: IsVisible
             //See <BackendMainWindowInterface::IsVisible>
             virtual bool IsVisible() const;
+
+            //function: GetRelativeMousePosition
+            //A helper function that can return the relative position to mainWindow. Normally use with <RealtimeInputInfo>
+            virtual glm::ivec2 GetRelativeMousePosition(glm::ivec2 mousePos) const;
 
             //function: SetEnabled
             //Proxy function for <SetVisible>

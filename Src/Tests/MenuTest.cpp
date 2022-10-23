@@ -1,9 +1,9 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
 #include "ssGUI/GUIObjectClasses/CompositeClasses/MenuItem.hpp"
 #include "ssGUI/GUIObjectClasses/Menu.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 //Mask test
 int main()
@@ -57,8 +57,8 @@ int main()
             //     menu.SpawnMenu(inputInterface->GetCurrentMousePosition(&mainWindow));
             // }
 
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 ssLOG_LINE("menu.IsFocused(): "<<menu.IsFocused());
                 ssLOG_LINE("menu.IsRedrawNeeded(): "<<menu.IsRedrawNeeded());

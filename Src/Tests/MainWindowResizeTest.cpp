@@ -1,8 +1,7 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
-
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 int main()
 {
@@ -15,7 +14,7 @@ int main()
     callback->AddEventListener
     (
         "Key",
-        [](ssGUI::GUIObject*src,ssGUI::GUIObject*container,ssGUI::ObjectsReferences*references){ssLOG_LINE("size changed.")}
+        [](ssGUI::EventInfo info){ssLOG_LINE("size changed.")}
     );
     mainWindow.AddEventCallback(callback);
 

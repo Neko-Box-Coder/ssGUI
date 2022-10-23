@@ -3,7 +3,6 @@
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"
-#include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
 #include "ssGUI/Backend/SFML/BackendFontSFML.hpp"
 #include "SFML/Graphics.hpp"
 #include <functional>

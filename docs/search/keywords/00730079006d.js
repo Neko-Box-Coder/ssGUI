@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("sym",["Enumeration","Variable"],[["SymbolKey",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/SymbolKey.hpp:ssGUI.Enums.SymbolKey","CClass:ssGUI.Enums:SymbolKey"],["ssGUI::KeyPresses",,,,1,"File:◀️_ssGUI_API_▶️/DataClasses/KeyPresses.hpp:ssGUI.KeyPresses.SymbolKey","CClass:ssGUI.KeyPresses:SymbolKey"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("sym",["Enumeration"],[["SymbolKey",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/SymbolKey.hpp:ssGUI.Enums.SymbolKey","CClass:ssGUI.Enums:SymbolKey"]]]]);

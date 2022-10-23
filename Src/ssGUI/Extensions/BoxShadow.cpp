@@ -1,9 +1,9 @@
 #include "ssGUI/Extensions/BoxShadow.hpp" //Or the location of your custom extension header
 
-#include <cmath>
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
+#include "ssLogger/ssLog.hpp"
 
-//Remember to add the .cpp file to the cmake list if you are using cmake
+#include <cmath>
 
 namespace ssGUI::Extensions
 {

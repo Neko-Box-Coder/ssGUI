@@ -1,4 +1,5 @@
 #include "ssGUI/Extensions/Border.hpp"
+#include "ssLogger/ssLog.hpp"
 
 
 namespace ssGUI::Extensions

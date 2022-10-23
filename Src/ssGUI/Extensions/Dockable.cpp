@@ -7,6 +7,8 @@
 #include "ssGUI/Extensions/Docker.hpp"
 #include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI::Extensions
 {
     bool Dockable::GlobalDockMode = false;
@@ -106,7 +108,7 @@ namespace ssGUI::Extensions
 
             (*widget)->AddExtension(ap);
             (*widget)->AddExtension(as);
-            (*widget)->AddTag(ssGUI::Tags::OVERLAY);
+            (*widget)->AddTag(ssGUI::Tags::FLOATING);
             (*widget)->SetBackgroundColor(color);
         }
         
@@ -200,6 +202,7 @@ namespace ssGUI::Extensions
             DockPreivewLeft->Delete();
             DockPreivewLeft = nullptr;
         }
+        Container->RedrawObject();
     }
 
     void Dockable::DiscardTopPreview()
@@ -209,6 +212,7 @@ namespace ssGUI::Extensions
             DockPreivewTop->Delete();
             DockPreivewTop = nullptr;
         }
+        Container->RedrawObject();
     }
 
     void Dockable::DiscardRightPreview()
@@ -218,6 +222,7 @@ namespace ssGUI::Extensions
             DockPreivewRight->Delete();
             DockPreivewRight = nullptr;
         }
+        Container->RedrawObject();
     }
 
     void Dockable::DiscardBottomPreview()
@@ -227,6 +232,7 @@ namespace ssGUI::Extensions
             DockPreivewBottom->Delete();
             DockPreivewBottom = nullptr;
         }
+        Container->RedrawObject();
     }
 
 
@@ -400,10 +406,39 @@ namespace ssGUI::Extensions
     {
         ssLOG_FUNC_ENTRY();
         ssGUI::Window* newParent = nullptr;
-        if(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerWindow() == nullptr)
+        
+        //Validation check
+        if(ObjectToDockNextTo->GetParent() == nullptr)
+            ssLOG_EXIT_PROGRAM();
+
+        //If not floating, turn window to invisible
+        if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
+            ObjectToDockNextTo->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->IsEnabled())
+        {
+            newParent = new ssGUI::Window();
+            newParent->SetTitlebar(false);
+            auto newBGColor = newParent->GetBackgroundColor();
+            newBGColor.a = 0;
+            newParent->SetBackgroundColor(newBGColor);
+            newParent->SetResizeType(ssGUI::Enums::ResizeType::NONE);
+
+            //Disable all extensions except docker, assuming all extensions are enabled by default (When default is not overriden)
+            auto allExtensions = newParent->GetListOfExtensions();
+            for(auto extension : allExtensions)
+            {
+                if(extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME ||
+                    extension->GetExtensionName() == ssGUI::Extensions::Layout::EXTENSION_NAME)
+                {
+                    continue;
+                }
+                
+                extension->SetEnabled(false);
+            }
+        }
+        else if(ssGUI::Extensions::Docker::GetDefaultGeneratedFloatingDockerWindow() == nullptr)
             newParent = new ssGUI::Window();
         else
-            newParent = static_cast<ssGUI::Window*>(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerWindow()->Clone(true));
+            newParent = static_cast<ssGUI::Window*>(ssGUI::Extensions::Docker::GetDefaultGeneratedFloatingDockerWindow()->Clone(true));
 
         newParent->SetUserCreated(false);
         newParent->SetHeapAllocated(true);
@@ -423,15 +458,15 @@ namespace ssGUI::Extensions
             newParent->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
 
         //Check if the generated docker does not use parent docker & layout or not.
-        if(newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) 
-            && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsChildrenDockerUseThisSettings()
-            && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME))->IsEnabled())
+        if( newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
+            newParent->GetParent()->GetAnyExtension<ssGUI::Extensions::Docker>()->IsChildrenDockerUseThisSettings() && 
+            newParent->GetParent()->GetAnyExtension<ssGUI::Extensions::Docker>()->IsEnabled())
         {
             auto parentDocker = static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
             newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->Copy(parentDocker);
 
-            if(newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) 
-                && static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsEnabled())
+            if( newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && 
+                static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsEnabled())
             {
                 auto parentLayout = static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
                 newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME)->Copy(parentLayout);
@@ -443,44 +478,6 @@ namespace ssGUI::Extensions
             dockLayout->SetHorizontalLayout(true);
         else
             dockLayout->SetHorizontalLayout(false);
-
-        //If not floating, turn window to invisible
-        if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
-            ObjectToDockNextTo->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->IsEnabled())
-        {
-            newParent->SetTitlebar(false);
-            auto newBGColor = newParent->GetBackgroundColor();
-            newBGColor.a = 0;
-            newParent->SetBackgroundColor(newBGColor);
-            newParent->SetResizeType(ssGUI::Enums::ResizeType::NONE);
-
-            //Disable all extensions except docker, assuming all extensions are enabled by default (When default is not overriden)
-            if(ssGUI::Extensions::Docker::GetDefaultGeneratedDockerWindow() == nullptr)
-            {
-                auto allExtensions = newParent->GetListOfExtensions();
-                for(auto extension : allExtensions)
-                {
-                    if(extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME ||
-                        extension->GetExtensionName() == ssGUI::Extensions::Layout::EXTENSION_NAME)
-                    {
-                        continue;
-                    }
-                    
-                    extension->SetEnabled(false);
-                }
-                // newParent->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
-            }
-            
-            //Set all the children to be disabled since it is not floating
-            newParent->StashChildrenIterator();
-            newParent->MoveChildrenIteratorToFirst();
-            while(!newParent->IsChildrenIteratorEnd())
-            {
-                newParent->GetCurrentChild()->SetEnabled(false);
-                newParent->MoveChildrenIteratorNext();
-            }
-            newParent->PopChildrenIterator();
-        }
 
         //Restore order
         ObjectToDockNextTo->GetParent()->StashChildrenIterator();
@@ -508,32 +505,36 @@ namespace ssGUI::Extensions
         Container->RemoveTag(ssGUI::Tags::OVERLAY);
         Container->RedrawObject();
 
+        //Check if we can dock or not.
+        bool validDocking = false;
+        if(ObjectToDockNextTo != nullptr)
+        {
+            if(ObjectToDockNextTo->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+                validDocking = ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Docker>()->IsValidDocking();
+            else if(ObjectToDockNextTo->IsAnyExtensionExist<ssGUI::Extensions::Dockable>())
+                validDocking = ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Dockable>()->IsValidDocking();
+        }
+
         //Docking mechanism for dockable window
         //Dock when everything is valid
-        if(ObjectToDockNextTo != nullptr && ObjectToDockNextTo->GetParent() != nullptr && TargetDockSide != DockSide::NONE)
+        if( ObjectToDockNextTo != nullptr && ObjectToDockNextTo->GetParent() != nullptr && validDocking)
         {
             //If it is just docker, just need to add it as a child
             if(ObjectToDockNextTo->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
             {
-                //Check if we can dock or not.
-                if(ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Docker>()->IsValidDocking())
-                    Container->SetParent(ObjectToDockNextTo);
-
+                Container->SetParent(ObjectToDockNextTo);
                 goto reset;
-            }
-            else if(ObjectToDockNextTo->IsAnyExtensionExist<ssGUI::Extensions::Dockable>())
-            {
-                //Check if we can dock or not.
-                if(!ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Dockable>()->IsValidDocking())
-                    goto reset;
             }
 
             //Otherwise dock as normal
             ssGUI::Extensions::Layout* dockLayout = nullptr;
             
             //Check if the parent of the ObjectToDockNextTo has the Docker extension
-            if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && 
+                ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            {
                 FindDockLayout(dockLayout);
+            }
 
             //Create an empty parent and add Layout extension if dock layout isn't found
             if(dockLayout == nullptr)
@@ -618,6 +619,8 @@ namespace ssGUI::Extensions
             DockTriggerLeft->Delete();
             DockTriggerLeft = nullptr;
         }
+
+        Container->RedrawObject();
     }
     
     const std::string Dockable::EXTENSION_NAME = "Dockable";
@@ -705,6 +708,11 @@ namespace ssGUI::Extensions
     bool Dockable::IsValidDocking() const
     {
         return ValidDocking;
+    }
+
+    bool Dockable::IsCurrentlyDocking() const
+    {
+        return ContainerIsDocking;
     }
 
     void Dockable::SetFloatable(bool floatable)
@@ -937,9 +945,9 @@ namespace ssGUI::Extensions
             event->AddEventListener
             (
                 EXTENSION_NAME,
-                [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+                [](ssGUI::EventInfo info)
                 {
-                    if(!container->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
+                    if(!info.EventCallbackContainer->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
                     {
                         ssLOG_LINE("Failed to find Dockable extension. Probably something wrong with cloning");
                         ssLOG_EXIT_PROGRAM();
@@ -947,15 +955,15 @@ namespace ssGUI::Extensions
                     }
 
                     ssGUI::Extensions::Dockable* containerDockable = static_cast<ssGUI::Extensions::Dockable*>
-                            (container->GetExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME));
+                            (info.EventCallbackContainer->GetExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME));
                     
                     //When the current window started being dragged
-                    if(static_cast<ssGUI::Window*>(src)->GetWindowDragState() == ssGUI::Enums::WindowDragState::STARTED)
+                    if(static_cast<ssGUI::Window*>(info.EventSource)->GetWindowDragState() == ssGUI::Enums::WindowDragState::STARTED)
                     {
                         containerDockable->OnWindowDragStarted();
                     }
                     //When the current window finished being dragged
-                    else if(static_cast<ssGUI::Window*>(src)->GetWindowDragState() == ssGUI::Enums::WindowDragState::ENDED)
+                    else if(static_cast<ssGUI::Window*>(info.EventSource)->GetWindowDragState() == ssGUI::Enums::WindowDragState::ENDED)
                     {
                         containerDockable->OnWindowDragFinished();
                     }

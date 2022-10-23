@@ -3,11 +3,10 @@
 
 #include "SFML/Window.hpp"
 #include "SFML/Window/Keyboard.hpp"
+#include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/HeaderGroups/KeyGroup.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include <vector>
-#include "ssGUI/DataClasses/KeyPresses.hpp"
-
 
 //namespace: ssGUI::Backend
 namespace ssGUI::Backend
@@ -17,17 +16,14 @@ namespace ssGUI::Backend
     class SFMLInputConverter
     {
         public:
-            //function: ConvertKeys
+            //function: ConvertButtonAndKeys
             //This converts sfml key events into <KeyPresses> 
-            static ssGUI::KeyPresses ConvertKeys(const std::vector<sf::Event>& events);
+            static ssGUI::Enums::GenericButtonAndKeyInput ConvertButtonAndKeys(const sf::Event& event);
 
             //function: ConvertMouseButtons
             //This converts sfml mouse button events into <Enums::MouseButton>
-            static std::vector<ssGUI::Enums::MouseButton> ConvertMouseButtons(const std::vector<sf::Event>& events);
-
+            static ssGUI::Enums::GenericButtonAndKeyInput ConvertMouseButtons(const sf::Event& event);
     };
 }
-
-
 
 #endif

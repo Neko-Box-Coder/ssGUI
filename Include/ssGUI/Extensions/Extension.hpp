@@ -6,7 +6,6 @@
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "glm/vec2.hpp"
 #include <string>
 #include <type_traits>
@@ -65,6 +64,7 @@ namespace ssGUI::Extensions
             //Returns this extension's name
             virtual std::string GetExtensionName() = 0;
             
+            //TODO: CHange this to internal
             //function: BindToObject
             //Binds this extension to a GUI object
             virtual void BindToObject(ssGUI::GUIObject* bindObj) = 0;

@@ -2,6 +2,8 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     Checkbox::Checkbox(Checkbox const& other) : Button(other)
@@ -59,9 +61,9 @@ namespace ssGUI
         buttonEvent->ClearEventListeners();
         buttonEvent->AddEventListener(
             ListenerKey, this,
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            [](ssGUI::EventInfo info)
             {
-                ssGUI::Checkbox* btn = static_cast<ssGUI::Checkbox*>(src);
+                ssGUI::Checkbox* btn = static_cast<ssGUI::Checkbox*>(info.EventSource);
                 glm::u8vec4 bgcolor = btn->GetBackgroundColor();
                 switch(btn->GetButtonState())
                 {

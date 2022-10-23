@@ -1,6 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+#include "ssLogger/ssLog.hpp"
 
 
 //Text test
@@ -37,8 +36,8 @@ int main()
     (
         [&]()
         {
-            if(!guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::SPACE) &&
-                guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::SPACE))
+            if( !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::SPACE) &&
+                guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::SPACE))
             {
                 ssLOG_LINE("text.GetStartSelectionIndex(): "<<text.GetStartSelectionIndex());    
                 ssLOG_LINE("text.GetEndSelectionIndex(): "<<text.GetEndSelectionIndex());    

@@ -1,7 +1,7 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 int main()
 {
@@ -37,8 +37,8 @@ int main()
         [&]()
         {
             auto backendInput = guiManager.GetBackendInputInterface();
-            if(backendInput->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !backendInput->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( backendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !backendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 auto buttonColor = glm::ivec4(button.GetButtonColor());
                 buttonColor.r += 20;

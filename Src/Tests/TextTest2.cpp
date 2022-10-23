@@ -1,5 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
 
 
 //Text font test
@@ -85,8 +85,8 @@ int main()
     (
         [&]()
         {
-            if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::EQUAL) &&
-                !guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::EQUAL))
+            if( guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SymbolKey::EQUAL) &&
+                !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SymbolKey::EQUAL))
             {
                 for(int i = 0; i < text.GetCurrentCharactersDetailsCount(); i++)
                 {
@@ -95,8 +95,8 @@ int main()
                     text.SetCurrentCharacterDetails(i, curDetails);
                 }
             }
-            else if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::MINUS) &&
-                    !guiManager.GetBackendInputInterface()->GetLastKeyPresses().IsSymbolKeyPresent(ssGUI::Enums::SymbolKey::MINUS))
+            else if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SymbolKey::MINUS) &&
+                    !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SymbolKey::MINUS))
             {
                 for(int i = 0; i < text.GetCurrentCharactersDetailsCount(); i++)
                 {

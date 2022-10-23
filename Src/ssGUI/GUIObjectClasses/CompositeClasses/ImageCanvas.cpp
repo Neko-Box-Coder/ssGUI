@@ -10,6 +10,8 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Scrollbar.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
+#include "ssLogger/ssLog.hpp"
+
 #include "glm/geometric.hpp"
 #include <cmath>
 
@@ -282,7 +284,7 @@ namespace ssGUI
             }
 
             //If space key is pressed, use delta cursor position to move image
-            if(IsUsingDefaultPanning() && inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::SPACE))
+            if(IsUsingDefaultPanning() && inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::SPACE))
             {
                 inputStatus.KeyInputBlockedObject = this;
                 
@@ -301,7 +303,7 @@ namespace ssGUI
             }
 
             //If r key is pressed, use start cursor position, start image position and current cursor position to rotate image
-            else if(IsUsingDefaultRotating() && inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::R))
+            else if(IsUsingDefaultRotating() && inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::R))
             {
                 inputStatus.KeyInputBlockedObject = this;
                 SetFocus(true);
@@ -434,9 +436,9 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+            [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(references->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -444,7 +446,7 @@ namespace ssGUI
                 float minX = imageCanvas->GetImageMinX();
                 float maxX = imageCanvas->GetImageMaxX();
 
-                auto scrollbar = static_cast<ssGUI::Scrollbar*>(source);
+                auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
                 float imgHalfSize = (maxX - minX) * 0.5;
                 float imgScrollDist = (maxX - minX - imageCanvas->GetSize().x) * scrollbar->GetScrollbarValue();
                 float imgXPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().x;
@@ -473,9 +475,9 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+            [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(references->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -483,7 +485,7 @@ namespace ssGUI
                 float minY = imageCanvas->GetImageMinY();
                 float maxY = imageCanvas->GetImageMaxY();
 
-                auto scrollbar = static_cast<ssGUI::Scrollbar*>(source);
+                auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
                 float imgHalfSize = (maxY - minY) * 0.5;
                 float imgScrollDist = (maxY - minY - imageCanvas->GetSize().y) * scrollbar->GetScrollbarValue();
                 float imgYPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().y;

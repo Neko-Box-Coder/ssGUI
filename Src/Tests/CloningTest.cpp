@@ -1,10 +1,10 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Dockable.hpp"
 #include "ssGUI/Extensions/Docker.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 // Cloning test
 int main()
@@ -56,8 +56,8 @@ int main()
         {
             ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
             
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 mainWindowWidget.Clone(true);
             }

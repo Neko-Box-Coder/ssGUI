@@ -1,4 +1,3 @@
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/Extensions/BoxShadow.hpp"
@@ -42,9 +41,9 @@ int main()
     borderButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
         "AnyKey",
-        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+        [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::Border>())
                     window.RemoveAnyExtension<ssGUI::Extensions::Border>();
@@ -60,9 +59,9 @@ int main()
     boxShadowButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
         "AnyKey",
-        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+        [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::BoxShadow>())
                     window.RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
@@ -77,9 +76,9 @@ int main()
     roundedCornersButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
         "AnyKey",
-        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+        [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::RoundedCorners>())
                     window.RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
@@ -104,9 +103,9 @@ int main()
     outlineButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
     (
         "AnyKey",
-        [&](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+        [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::Outline>())
                     window.RemoveAnyExtension<ssGUI::Extensions::Outline>();

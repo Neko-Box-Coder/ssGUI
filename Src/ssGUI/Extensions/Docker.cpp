@@ -6,6 +6,7 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI::Extensions
 {
@@ -86,7 +87,7 @@ namespace ssGUI::Extensions
 
             (*widget)->AddExtension(ap);
             (*widget)->AddExtension(as);
-            (*widget)->AddTag(ssGUI::Tags::OVERLAY);
+            (*widget)->AddTag(ssGUI::Tags::FLOATING);
             (*widget)->SetBackgroundColor(color);
         }
 
@@ -338,12 +339,12 @@ namespace ssGUI::Extensions
 
     const std::string Docker::EXTENSION_NAME = "Docker";
 
-    void Docker::SetDefaultGeneratedDockerWindow(ssGUI::Window* window)
+    void Docker::SetDefaultGeneratedFloatingDockerWindow(ssGUI::Window* window)
     {
         DefaultGeneratedDockerWindow = window;
     }
 
-    ssGUI::Window* Docker::GetDefaultGeneratedDockerWindow()
+    ssGUI::Window* Docker::GetDefaultGeneratedFloatingDockerWindow()
     {
         return DefaultGeneratedDockerWindow;
     }
@@ -630,9 +631,9 @@ namespace ssGUI::Extensions
         Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener
         (
             EXTENSION_NAME,
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            [](ssGUI::EventInfo info)
             {
-                if(!container->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+                if(!info.EventCallbackContainer->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
                 {
                     ssLOG_LINE("Failed to find docker extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
@@ -643,9 +644,9 @@ namespace ssGUI::Extensions
                     // return;
 
                 ssGUI::Extensions::Docker* containerDocker = static_cast<ssGUI::Extensions::Docker*>
-                        (container->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
+                        (info.EventCallbackContainer->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
 
-                containerDocker->ChildRemoved(src);
+                containerDocker->ChildRemoved(info.EventSource);
             }
         );
 

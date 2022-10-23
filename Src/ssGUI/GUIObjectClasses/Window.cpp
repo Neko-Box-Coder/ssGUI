@@ -8,6 +8,8 @@
 #include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     void Window::SetWindowDragState(ssGUI::Enums::WindowDragState dragState)
@@ -363,7 +365,7 @@ namespace ssGUI
             OnMouseDragOrResizeUpdate(inputStatus, mouseDelta, inputInterface);
         }
         //Otherwise show resize cursor if necessary 
-        else if(inputStatus.MouseInputBlockedObject == nullptr)
+        else
         {
             BlockMouseInputAndUpdateCursor(inputStatus, currentMousePos, inputInterface);
         }

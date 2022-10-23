@@ -33,8 +33,8 @@ int main()
         [&]()
         {
             auto backendInput = guiManager.GetBackendInputInterface();
-            if(backendInput->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !backendInput->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( backendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !backendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 auto titlebarColor = glm::ivec4(sw.GetTitlebarColor());
                 titlebarColor.r += 20;

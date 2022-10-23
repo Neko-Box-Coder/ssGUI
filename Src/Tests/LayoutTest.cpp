@@ -1,7 +1,6 @@
-
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
 
 
 //Layout example
@@ -53,7 +52,7 @@ int main()
     buttonCallback->AddEventListener
     (
         "Key",
-        [&](ssGUI::GUIObject*src, ssGUI::GUIObject*container, ssGUI::ObjectsReferences*references)
+        [&](ssGUI::EventInfo info)
         {
             if(deleteButton.GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
             {

@@ -7,6 +7,8 @@
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     TextField::TextField(TextField const& other) : Text(other)
@@ -496,13 +498,13 @@ namespace ssGUI
     void TextField::CaretNavigationUpdate(ssGUI::Backend::BackendSystemInputInterface* inputInterface, bool& refreshBlinkTimer, bool& blockKeys, bool& wordMode)
     {
         //Holding shift to enable selection mode
-        bool selectionMode = inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_SHIFT) || 
-        inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_SHIFT);
+        bool selectionMode =    inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_SHIFT) || 
+                                inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_SHIFT);
         
         //Arrow navigation
         if(GetStartSelectionIndex() >= 0 && GetEndSelectionIndex() >= 0)
         {
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT))
+            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT))
             {
                 auto moveLeft = [&]()
                 {
@@ -523,12 +525,14 @@ namespace ssGUI
                             SetStartSelectionIndex(GetEndSelectionIndex());   
                     }
                 };
-                
-                if(!inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT))
+
+                //When the user first press the left arrow key                
+                if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::LEFT))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
                     moveLeft();
                 }
+                //When the user is holding down the left arrow key
                 else if(inputInterface->GetElapsedTime() - LastArrowNavStartTime > ArrowNavPauseDuration &&
                         inputInterface->GetElapsedTime() - LastArrowNavTime > ArrowNavInterval)
                 {
@@ -539,7 +543,7 @@ namespace ssGUI
                 refreshBlinkTimer = true;
                 blockKeys = true;
             }
-            else if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT))
+            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT))
             {
                 auto moveRight = [&]()
                 {
@@ -564,11 +568,13 @@ namespace ssGUI
                     }
                 };
 
-                if(!inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT))
+                //When the user first press the right arrow key                
+                if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::RIGHT))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
                     moveRight();
                 }
+                //When the user is holding down the right arrow key
                 else if(inputInterface->GetElapsedTime() - LastArrowNavStartTime > ArrowNavPauseDuration &&
                         inputInterface->GetElapsedTime() - LastArrowNavTime > ArrowNavInterval)
                 {
@@ -580,7 +586,7 @@ namespace ssGUI
                 blockKeys = true;
             }
             
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP))
+            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::UP))
             {
                 auto moveUp = [&]()
                 {
@@ -595,11 +601,13 @@ namespace ssGUI
                     }
                 };
 
-                if(!inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::UP))
+                //When the user first press the up arrow key                
+                if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::UP))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
                     moveUp();
                 }
+                //When the user is holding down the up arrow key
                 else if(inputInterface->GetElapsedTime() - LastArrowNavStartTime > ArrowNavPauseDuration &&
                         inputInterface->GetElapsedTime() - LastArrowNavTime > ArrowNavInterval)
                 {
@@ -610,7 +618,7 @@ namespace ssGUI
                 refreshBlinkTimer = true;
                 blockKeys = true;
             }
-            else if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN))
+            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN))
             {
                 auto moveDown = [&]()
                 {
@@ -625,11 +633,13 @@ namespace ssGUI
                     }
                 };
 
-                if(!inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::DOWN))
+                //When the user first press the right down key                
+                if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::DOWN))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
                     moveDown();
                 }
+                //When the user is holding down the down arrow key
                 else if(inputInterface->GetElapsedTime() - LastArrowNavStartTime > ArrowNavPauseDuration &&
                         inputInterface->GetElapsedTime() - LastArrowNavTime > ArrowNavInterval)
                 {
@@ -842,14 +852,14 @@ namespace ssGUI
             std::wstring textInput = inputInterface->GetTextInput();
 
             //Holding ctrl to enable word mode
-            wordMode = inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
-                            inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL);
+            wordMode =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
+                        inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL);
 
             //Pasting
-            if(inputStatus.KeyInputBlockedObject == nullptr && 
+            if( inputStatus.KeyInputBlockedObject == nullptr && 
                 inputInterface->ClipbaordHasText() && wordMode && 
-                inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V) &&
-                !inputInterface->GetLastKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::V))
+                inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::V) &&
+                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::V))
             {
                 std::wstring clipboardStr;
                 inputInterface->GetClipboardText(clipboardStr);

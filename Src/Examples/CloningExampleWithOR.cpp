@@ -50,12 +50,12 @@ int main()
     ecb->AddEventListener
     (
         "AnyKey",
-        [textIndex](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+        [textIndex](ssGUI::EventInfo info)
         {
             //When the button is clicked, sets the text
-            if(static_cast<ssGUI::Button*>(container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                ssGUI::Text* text = static_cast<ssGUI::Text*>(refs->GetObjectReference(textIndex));
+                ssGUI::Text* text = static_cast<ssGUI::Text*>(info.EventCallbackReferences->GetObjectReference(textIndex));
                 text->SetText(L"(`oωo´)");
             }
         }
@@ -71,8 +71,8 @@ int main()
         {
             ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
             
-            if(inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->GetLastKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            if( inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 window.Clone(true)->SetPosition(glm::vec2(window.GetPosition().x + 10, window.GetPosition().y + 10));
             }

@@ -1,6 +1,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssLogger/ssLog.hpp"
 #include "glm/gtx/norm.hpp"
 #include <cmath>
 #include <locale>
@@ -1221,12 +1222,16 @@ namespace ssGUI
 
         if(inputStatus.KeyInputBlockedObject == nullptr)
         {
-            //Text copying
-            if(IsTextSelectionAllowed() && GetStartSelectionIndex() >= 0 && GetEndSelectionIndex() >= 0 && 
-                (inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
-                inputInterface->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::RIGHT_CTRL)) &&
-                !inputInterface->GetLastKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::C) &&
-                inputInterface->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::C))
+            //Text copying when ctrl+c is pressed and there is something highlighted
+            bool ctrlPressed =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
+                                inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL);
+            
+            if( IsTextSelectionAllowed() && 
+                GetStartSelectionIndex() >= 0 && 
+                GetEndSelectionIndex() >= 0 && 
+                ctrlPressed &&
+                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::C) &&
+                inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::C))
             {
                 std::wstring curText = GetText();
 
@@ -1282,9 +1287,9 @@ namespace ssGUI
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            [](ssGUI::EventInfo info)
             {
-                static_cast<ssGUI::Text*>(src)->RecalculateTextNeeded = true;
+                static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
 

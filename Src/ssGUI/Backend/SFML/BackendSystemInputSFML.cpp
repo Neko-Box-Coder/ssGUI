@@ -3,66 +3,61 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
+#include "ssLogger/ssLog.hpp"
 
 #include "clip.h"   //TODO: Add macro for switching between this and SFML one.
 #include <codecvt>
+#include <algorithm>
+
 // #include "SFML/Window/Clipboard.hpp"
 
 namespace ssGUI::Backend
 {    
     template <class T>
-    void BackendSystemInputSFML::AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo)
+    void BackendSystemInputSFML::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
     {
         ssLOG_FUNC_ENTRY();
 
-        for(int i = 0; i < elementsToAdd.size(); i++)
+        if(std::find_if(vectorAddTo.begin(), vectorAddTo.end(), [&elementToAdd](T key){return elementToAdd == key;}) 
+            == vectorAddTo.end())
         {
-            if(std::find_if(vectorAddTo.begin(), vectorAddTo.end(), [&elementsToAdd, i](T key){return elementsToAdd[i] == key;}) 
-                == vectorAddTo.end())
-            {
-                vectorAddTo.push_back(elementsToAdd[i]);
-            }
+            vectorAddTo.push_back(elementToAdd);
         }
 
         ssLOG_FUNC_EXIT();
     }
 
     template <class T>
-    void BackendSystemInputSFML::RemoveExistElements(std::vector<T>& elementsToRemove, std::vector<T>& vectorRemoveFrom)
+    void BackendSystemInputSFML::RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom)
     {
         ssLOG_FUNC_ENTRY();
         
-        for(int i = 0; i < elementsToRemove.size(); i++)
-        {
-            typename std::vector<T>::iterator foundElement =
-                std::find_if(vectorRemoveFrom.begin(), vectorRemoveFrom.end(), [&elementsToRemove, i](T key){return elementsToRemove[i] == key;});
+        typename std::vector<T>::iterator foundElement =
+            std::find_if(vectorRemoveFrom.begin(), vectorRemoveFrom.end(), [&elementToRemove](T key){return elementToRemove == key;});
 
-            if(foundElement != vectorRemoveFrom.end())
-                vectorRemoveFrom.erase(foundElement);
-        }
+        if(foundElement != vectorRemoveFrom.end())
+            vectorRemoveFrom.erase(foundElement);
 
         ssLOG_FUNC_EXIT();
     }
 
-    void BackendSystemInputSFML::FetchKeysPressed(ssGUI::KeyPresses keysPressedDown, ssGUI::KeyPresses& destinationKeyPresses)
+    void BackendSystemInputSFML::FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
         ssLOG_FUNC_ENTRY();
-        AddNonExistElements<ssGUI::Enums::FunctionKey>(keysPressedDown.FunctionKey, destinationKeyPresses.FunctionKey);
-        AddNonExistElements<ssGUI::Enums::LetterKey>(keysPressedDown.LetterKey, destinationKeyPresses.LetterKey);
-        AddNonExistElements<ssGUI::Enums::NumberKey>(keysPressedDown.NumberKey, destinationKeyPresses.NumberKey);
-        AddNonExistElements<ssGUI::Enums::SymbolKey>(keysPressedDown.SymbolKey, destinationKeyPresses.SymbolKey);
-        AddNonExistElements<ssGUI::Enums::SystemKey>(keysPressedDown.SystemKey, destinationKeyPresses.SystemKey);
+        auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysPressedDown);
+        if(it == destinationKeyPresses.end())
+            destinationKeyPresses.push_back(keysPressedDown);
+
         ssLOG_FUNC_EXIT();
     }
 
-    void BackendSystemInputSFML::FetchKeysReleased(ssGUI::KeyPresses keysReleased , ssGUI::KeyPresses& destinationKeyPresses)
+    void BackendSystemInputSFML::FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
-        ssLOG_FUNC_ENTRY();
-        RemoveExistElements<ssGUI::Enums::FunctionKey>(keysReleased.FunctionKey, destinationKeyPresses.FunctionKey);
-        RemoveExistElements<ssGUI::Enums::LetterKey>(keysReleased.LetterKey, destinationKeyPresses.LetterKey);
-        RemoveExistElements<ssGUI::Enums::NumberKey>(keysReleased.NumberKey, destinationKeyPresses.NumberKey);
-        RemoveExistElements<ssGUI::Enums::SymbolKey>(keysReleased.SymbolKey, destinationKeyPresses.SymbolKey);
-        RemoveExistElements<ssGUI::Enums::SystemKey>(keysReleased.SystemKey, destinationKeyPresses.SystemKey);
+        ssLOG_FUNC_ENTRY();        
+        auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysReleased);
+        if(it != destinationKeyPresses.end())
+            destinationKeyPresses.erase(it);
+
         ssLOG_FUNC_EXIT();
     }
 
@@ -188,7 +183,7 @@ namespace ssGUI::Backend
             ssLOG_EXIT_PROGRAM();
         }
 
-        #if !USE_SFML_TIME
+        #if !SSGUI_USE_SFML_TIME
             ElapsedTime = std::chrono::high_resolution_clock::now();
         #endif
 
@@ -211,11 +206,10 @@ namespace ssGUI::Backend
         LastKeyPresses = CurrentKeyPresses;
         LastMouseButtons = CurrentMouseButtons;
         LastInputInfos = std::move(CurrentInputInfos);
-        
-        std::vector<sf::Event> keyPressedEvents;
-        std::vector<sf::Event> keyReleasedEvents;
-        std::vector<sf::Event> mousePressedEvents;
-        std::vector<sf::Event> mouseReleasedEvents;
+
+        //Get mouse position
+        LastMousePosition = CurrentMousePosition;
+        CurrentMousePosition = glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
 
         //Get text input
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
@@ -230,13 +224,7 @@ namespace ssGUI::Backend
                 //Add a new item to realtime input info, that continues from the last input state
                 ssGUI::RealtimeInputInfo curInfo;
                 if(CurrentInputInfos.empty())
-                {
-                    curInfo.CurrentKeyPresses = LastKeyPresses;
-                    curInfo.CurrentMouseButtonChanged = LastMouseButtons;
                     curInfo.CurrentMousePosition = LastMousePosition;
-                }
-                else
-                    curInfo = CurrentInputInfos.back();
 
                 //Check mouse position as mouseMove event is not reliable
                 if(event.type == sf::Event::MouseMoved) 
@@ -256,6 +244,8 @@ namespace ssGUI::Backend
                 {
                     curInfo.MouseMoved = true;
                     curInfo.CurrentMousePosition = glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+                    CurrentInputInfos.push_back(curInfo);
+                    curInfo = ssGUI::RealtimeInputInfo();
                 }
 
                 if (event.type == sf::Event::Closed)
@@ -286,53 +276,48 @@ namespace ssGUI::Backend
                     continue;
                 }
                 
-                //TODO : Not sure if this needs to be added to realtime infos, probably needs to be.
                 if (event.type == sf::Event::TextEntered)
                 {                   
                     InputText += event.text.unicode;
-
+                    curInfo.CharacterEntered = true;
+                    curInfo.CurrentCharacterEntered += event.text.unicode;
                     CurrentInputInfos.push_back(curInfo);
                     continue;
                 }
 
-                std::vector<sf::Event> tempEvent;
-                tempEvent.push_back(event);
-
                 if(event.type == sf::Event::KeyPressed)
                 {
-                    keyPressedEvents.push_back(event);
-                    auto keyPressed = SFMLInputConverter::ConvertKeys(tempEvent);
-                    curInfo.CurrentKeyChanged = keyPressed;
-                    FetchKeysPressed(keyPressed, curInfo.CurrentKeyPresses);
+                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
+                    curInfo.CurrentButtonAndKeyChanged = input;
+                    FetchKeysPressed(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
                     continue;
                 }
                 else if(event.type == sf::Event::KeyReleased)
                 {
-                    keyReleasedEvents.push_back(event);
-                    auto keyReleased = SFMLInputConverter::ConvertKeys(tempEvent);
-                    curInfo.CurrentKeyChanged = keyReleased;
-                    FetchKeysReleased(keyReleased, curInfo.CurrentKeyPresses);
+                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
+                    curInfo.CurrentButtonAndKeyChanged = input;
+                    FetchKeysReleased(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
                     continue;
                 }
 
                 if(event.type == sf::Event::MouseButtonPressed)
                 {
-                    mousePressedEvents.push_back(event);
-                    auto buttonPressed = SFMLInputConverter::ConvertMouseButtons(tempEvent);
-                    curInfo.CurrentMouseButtonChanged = buttonPressed;
-                    AddNonExistElements<ssGUI::Enums::MouseButton>(buttonPressed, curInfo.CurrentMouseButtonPresses);
+                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
+                    curInfo.CurrentButtonAndKeyChanged = input;
+                    FetchKeysReleased(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
+                    AddNonExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);
                     continue;
                 }
                 else if(event.type == sf::Event::MouseButtonReleased)
                 {
-                    mouseReleasedEvents.push_back(event);
-                    auto buttonReleased = SFMLInputConverter::ConvertMouseButtons(tempEvent);
-                    curInfo.CurrentMouseButtonChanged = buttonReleased;
-                    RemoveExistElements<ssGUI::Enums::MouseButton>(buttonReleased, curInfo.CurrentMouseButtonPresses);
+                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
+                    curInfo.CurrentButtonAndKeyChanged = input;
+                    FetchKeysReleased(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
+                    RemoveExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);
                     continue;
                 }
 
@@ -342,45 +327,32 @@ namespace ssGUI::Backend
                         MouseScrollDelta.y = event.mouseWheelScroll.delta;
                     else if (event.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel)
                         MouseScrollDelta.x = event.mouseWheelScroll.delta * -1;
-                    
                     continue;
                 }
             }
         }
 
-        FetchKeysPressed(SFMLInputConverter::ConvertKeys(keyPressedEvents), CurrentKeyPresses);
-        FetchKeysReleased(SFMLInputConverter::ConvertKeys(keyReleasedEvents), CurrentKeyPresses);
-
-        std::vector<ssGUI::Enums::MouseButton> mousePressedButtons = SFMLInputConverter::ConvertMouseButtons(mousePressedEvents);
-        std::vector<ssGUI::Enums::MouseButton> mouseReleasedButtons = SFMLInputConverter::ConvertMouseButtons(mouseReleasedEvents);
-
-        AddNonExistElements<ssGUI::Enums::MouseButton>(mousePressedButtons, CurrentMouseButtons);
-        RemoveExistElements<ssGUI::Enums::MouseButton>(mouseReleasedButtons, CurrentMouseButtons);
-        
-        //Get mouse position
-        LastMousePosition = CurrentMousePosition;
-        CurrentMousePosition = glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
-
-        if(CurrentInputInfos.empty())
-        {
-            ssGUI::RealtimeInputInfo curInfo;                
-            curInfo.CurrentKeyPresses = CurrentKeyPresses;
-            curInfo.CurrentMouseButtonPresses = CurrentMouseButtons;
-            curInfo.CurrentMousePosition = CurrentMousePosition;
-            CurrentInputInfos.push_back(curInfo);
-        }
-
         ssLOG_FUNC_EXIT();
     }
 
-    const ssGUI::KeyPresses& BackendSystemInputSFML::GetLastKeyPresses()
+    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputSFML::GetLastButtonAndKeyPresses()
     {
         return LastKeyPresses;
     }
 
-    const ssGUI::KeyPresses& BackendSystemInputSFML::GetCurrentKeyPresses()
+    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputSFML::GetCurrentButtonAndKeyPresses()
     {
         return CurrentKeyPresses;
+    }
+
+    bool BackendSystemInputSFML::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    {
+        return std::find(LastKeyPresses.begin(), LastKeyPresses.end(), input) != LastKeyPresses.end();
+    }
+
+    bool BackendSystemInputSFML::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    {
+        return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }
 
     glm::ivec2 BackendSystemInputSFML::GetLastMousePosition(ssGUI::MainWindow* mainWindow) const
@@ -863,7 +835,7 @@ namespace ssGUI::Backend
 
     uint64_t BackendSystemInputSFML::GetElapsedTime() const
     {
-        #if USE_SFML_TIME
+        #if SSGUI_USE_SFML_TIME
             return ElapsedTime.getElapsedTime().asMilliseconds();
         #else
             //ElapsedTime is actually the start time but just keeping the name for compatibility

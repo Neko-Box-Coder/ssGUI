@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include "glm/vec2.hpp"
+#include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
-#include "ssGUI/DataClasses/KeyPresses.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 
 namespace ssGUI
@@ -37,13 +37,37 @@ namespace ssGUI::Backend
             //Poll and updates the input
             virtual void UpdateInput() = 0;
 
-            //function: GetLastKeyPresses
+            //function: GetLastButtonAndKeyPresses
             //Get the key presses from last frame
-            virtual ssGUI::KeyPresses const & GetLastKeyPresses() = 0;
+            virtual const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetLastButtonAndKeyPresses() = 0;
             
-            //function: GetCurrentKeyPresses
+            //function: GetCurrentButtonAndKeyPresses
             //Get the key presses from current frame
-            virtual ssGUI::KeyPresses const & GetCurrentKeyPresses() = 0;
+            virtual const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetCurrentButtonAndKeyPresses() = 0;
+
+            //function: IsButtonOrKeyPressExistLastFrame
+            //Check if the button or key is pressed last frame
+            virtual bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const = 0;
+            
+            //function: IsButtonOrKeyPressExistLastFrame
+            //Check if the button or key is pressed last frame
+            template<typename T>
+            bool IsButtonOrKeyPressExistLastFrame(T input) const
+            {
+                return IsButtonOrKeyPressExistLastFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            };
+
+            //function: IsButtonOrKeyPressExistCurrentFrame
+            //Check if the button or key is pressed current frame
+            virtual bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const = 0;
+
+            //function: IsButtonOrKeyPressExistCurrentFrame
+            //Check if the button or key is pressed current frame
+            template<typename T>
+            bool IsButtonOrKeyPressExistCurrentFrame(T input) const
+            {
+                return IsButtonOrKeyPressExistCurrentFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            };
 
             //function: GetLastMousePosition
             //Get mouse position relative to the mainWindow from last frame. If nullptr is passed, it will return global mouse position instead.

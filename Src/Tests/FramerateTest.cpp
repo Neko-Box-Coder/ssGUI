@@ -31,15 +31,15 @@ int main()
             else
                 framecount++;
 
-            if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::A))
+            if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::A))
             {
                 guiManager.SetTargetFramerate(100);
             }
-            else if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::B))
+            else if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::B))
             {
                 guiManager.SetTargetFramerate(50);
             }
-            else if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsSystemKeyPresent(ssGUI::Enums::SystemKey::ENTER))
+            else if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 ssGUI::Factory::Create<ssGUI::StandardWindow>()->SetParent(&mainWindow);
             }

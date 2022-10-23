@@ -5,7 +5,6 @@
 #include "ssGUI/Backend/BackendManager.hpp"
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #include "ssGUI/Backend/SFML/SFMLInputConverter.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
 #include "ssGUI/HeaderGroups/KeyGroup.hpp"
 #include "glm/vec2.hpp"
 #include "SFML/Window/Keyboard.hpp"
@@ -18,7 +17,7 @@
 #include <string>
 #include <algorithm>
 
-#if !USE_SFML_TIME
+#if !SSGUI_USE_SFML_TIME
     #include <chrono>
 #endif
 
@@ -48,7 +47,7 @@ namespace ssGUI::Backend
         std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;        //See <GetCustomCursor>
         std::string CurrentCustomCursor;                                                        //See <GetCurrentCustomCursorName>
 
-        #if USE_SFML_TIME
+        #if SSGUI_USE_SFML_TIME
             sf::Clock ElapsedTime;                                                              //See <GetElapsedTime>
         #else
             std::chrono::high_resolution_clock::time_point ElapsedTime;                         //See <GetElapsedTime>
@@ -78,7 +77,7 @@ namespace ssGUI::Backend
             ssLOG_EXIT_PROGRAM();
         }
 
-        #if !USE_SFML_TIME
+        #if !SSGUI_USE_SFML_TIME
             ElapsedTime = std::chrono::high_resolution_clock::now();
         #endif
 
@@ -89,8 +88,8 @@ namespace ssGUI::Backend
     class BackendSystemInputSFML : public BackendSystemInputInterface
     {
         private:
-            ssGUI::KeyPresses CurrentKeyPresses;                                                    //See <GetCurrentKeyPresses>
-            ssGUI::KeyPresses LastKeyPresses;                                                       //See <GetLastKeyPresses>
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> CurrentKeyPresses;                  //See <GetCurrentButtonAndKeyPresses>
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> LastKeyPresses;                     //See <GetLastButtonAndKeyPresses>
             std::wstring InputText;                                                                 //See <GetTextInput>
             glm::ivec2 CurrentMousePosition;                                                        //See <GetCurrentMousePosition>
             glm::ivec2 LastMousePosition;                                                           //See <GetLastMousePosition>
@@ -106,20 +105,20 @@ namespace ssGUI::Backend
             std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;        //See <GetCustomCursor>
             std::string CurrentCustomCursor;                                                        //See <GetCurrentCustomCursorName>
 
-            #if USE_SFML_TIME
+            #if SSGUI_USE_SFML_TIME
                 sf::Clock ElapsedTime;                                                              //See <GetElapsedTime>
             #else
                 std::chrono::high_resolution_clock::time_point ElapsedTime;                         //See <GetElapsedTime>
             #endif
 
             template <class T>
-            void AddNonExistElements(std::vector<T>& elementsToAdd, std::vector<T>& vectorAddTo);
+            void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
 
             template <class T>
-            void RemoveExistElements(std::vector<T>& elementsToRemove, std::vector<T>& vectorRemoveFrom);
+            void RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom);
 
-            void FetchKeysPressed(ssGUI::KeyPresses keysPressedDown, ssGUI::KeyPresses& destinationKeyPresses);
-            void FetchKeysReleased(ssGUI::KeyPresses keysReleased, ssGUI::KeyPresses& destinationKeyPresses);
+            void FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
+            void FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
 
             //http://tech-algorithm.com/articles/bilinear-image-scaling/
             //https://stackoverflow.com/questions/21514075/bilinear-re-sizing-with-c-and-vector-of-rgba-pixels
@@ -135,11 +134,19 @@ namespace ssGUI::Backend
 
             //function: GetLastKeyPresses
             //See <BackendSystemInputInterface::GetLastKeyPresses>
-            ssGUI::KeyPresses const & GetLastKeyPresses() override;
-            
+            const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetLastButtonAndKeyPresses() override;
+
             //function: GetCurrentKeyPresses
             //See <BackendSystemInputInterface::GetCurrentKeyPresses>
-            ssGUI::KeyPresses const & GetCurrentKeyPresses() override;
+            const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetCurrentButtonAndKeyPresses() override;
+
+            //function: IsButtonOrKeyPressExistLastFrame
+            //See <IsButtonOrKeyPressExistLastFrame>
+            bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
+            
+            //function: IsButtonOrKeyPressExistCurrentFrame
+            //See <IsButtonOrKeyPressExistCurrentFrame>
+            bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
 
             //function: GetLastMousePosition
             //See <BackendSystemInputInterface::GetLastMousePosition>

@@ -4,6 +4,8 @@
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
     MainWindow::MainWindow(MainWindow const& other) : Window(other)
@@ -154,6 +156,11 @@ namespace ssGUI
     bool MainWindow::IsVisible() const
     {
         return BackendMainWindow->IsVisible();
+    }
+
+    glm::ivec2 MainWindow::GetRelativeMousePosition(glm::ivec2 mousePos) const
+    {
+        return mousePos - GetDisplayPosition() - GetPositionOffset();
     }
 
     void MainWindow::SetEnabled(bool enabled)

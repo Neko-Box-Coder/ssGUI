@@ -1,6 +1,8 @@
 #ifndef SSGUI_SYSTEM_KEY
 #define SSGUI_SYSTEM_KEY
 
+#include <cstdint>
+
 //namespace: ssGUI::Enums
 namespace ssGUI::Enums
 {
@@ -31,11 +33,13 @@ namespace ssGUI::Enums
     RIGHT           - Right arrow key
     NUMPAD_ENTER    - Numpad enter key (SFML backend doesn't support it)
     */
-    enum class SystemKey
+    enum class SystemKey : uint16_t
     {
-        TAB, CAPS_LOCK, LEFT_SHIFT, LEFT_CTRL, LEFT_SYSTEM, LEFT_ALT, SPACE, RIGHT_ALT,
+        TAB = 500, 
+        CAPS_LOCK, LEFT_SHIFT, LEFT_CTRL, LEFT_SYSTEM, LEFT_ALT, SPACE, RIGHT_ALT,
         RIGHT_SYSTEM, RIGHT_CTRL, RIGHT_SHIFT, ENTER, BACKSPACE, INSERT, HOME, PAGE_UP,
-        DELETE, END, PAGE_DOWN, LEFT, UP, DOWN, RIGHT, NUMPAD_ENTER
+        DELETE, END, PAGE_DOWN, LEFT, UP, DOWN, RIGHT, NUMPAD_ENTER, 
+        COUNT = NUMPAD_ENTER - TAB + 1
     };
 }
 

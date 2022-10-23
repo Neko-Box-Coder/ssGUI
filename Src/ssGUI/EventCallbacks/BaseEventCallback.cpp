@@ -1,5 +1,6 @@
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI::EventCallbacks
 {    
@@ -13,8 +14,7 @@ namespace ssGUI::EventCallbacks
         CurrentObjectsReferences.CleanUp();
     }
     
-    void BaseEventCallback::AddEventListener(std::string key, ssGUI::GUIObject* adder, 
-        std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback)
+    void BaseEventCallback::AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback)
     {
         if(adder != nullptr)
         {
@@ -25,8 +25,7 @@ namespace ssGUI::EventCallbacks
             EventListeners[key] = callback;
     }
 
-    void BaseEventCallback::AddEventListener(std::string key, 
-        std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback)
+    void BaseEventCallback::AddEventListener(std::string key, std::function<void(EventInfo)> callback)
     {
         AddEventListener(key, nullptr, callback);
     }
@@ -84,7 +83,7 @@ namespace ssGUI::EventCallbacks
     {
         ssLOG_FUNC_ENTRY();
         for(auto it = EventListeners.begin(); it != EventListeners.end(); it++)
-            it->second(source, Container, &CurrentObjectsReferences);
+            it->second({source, Container, &CurrentObjectsReferences});
         ssLOG_FUNC_EXIT();
     }
 

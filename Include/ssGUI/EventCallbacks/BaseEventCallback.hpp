@@ -15,14 +15,9 @@ namespace ssGUI::EventCallbacks
     ============================== C++ ==============================
     private:
         //Events
-        std::unordered_map
-        <
-            std::string, 
-            std::function<void(ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)>
-        > EventListeners;                                   //See <AddEventListener>
-        
-        ssGUI::GUIObject* Container;                        //See <BindToObject>
-        ssGUI::ObjectsReferences CurrentObjectsReferences;  //See <GetObjectReference> and <Internal_GetObjectsReferences>
+        std::unordered_map<std::string, std::function<void(EventInfo)>> EventListeners;     //See <AddEventListener>            
+        ssGUI::GUIObject* Container;                                                        //See <BindToObject>
+        ssGUI::ObjectsReferences CurrentObjectsReferences;                                  //See <GetObjectReference> and <Internal_GetObjectsReferences>
     =================================================================
     ============================== C++ ==============================
     BaseEventCallback::BaseEventCallback() :    EventListeners(),
@@ -38,14 +33,9 @@ namespace ssGUI::EventCallbacks
         
         private:
             //Events
-            std::unordered_map
-            <
-                std::string, 
-                std::function<void(ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)>
-            > EventListeners;                                   //See <AddEventListener>
-            
-            ssGUI::GUIObject* Container;                        //See <BindToObject>
-            ssGUI::ObjectsReferences CurrentObjectsReferences;  //See <GetObjectReference> and <Internal_GetObjectsReferences>
+            std::unordered_map<std::string, std::function<void(EventInfo)>> EventListeners;     //See <AddEventListener>            
+            ssGUI::GUIObject* Container;                                                        //See <BindToObject>
+            ssGUI::ObjectsReferences CurrentObjectsReferences;                                  //See <GetObjectReference> and <Internal_GetObjectsReferences>
         
         protected:
             BaseEventCallback();
@@ -60,13 +50,11 @@ namespace ssGUI::EventCallbacks
         public:
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
-            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, 
-                std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) override;
+            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback) override;
             
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
-            virtual void AddEventListener(std::string key, 
-                std::function<void(ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)> callback) override;
+            virtual void AddEventListener(std::string key, std::function<void(EventInfo)> callback) override;
             
             //function: IsEventListenerExist
             //See <EventCallback::IsEventListenerExist>

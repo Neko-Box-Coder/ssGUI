@@ -1,4 +1,6 @@
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
+#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssLogger/ssLog.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
@@ -32,14 +34,44 @@ namespace ssGUI::Extensions
 
         for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
         {
-            if(CurrentObjectsReferences.GetObjectReference(it->first) == nullptr || 
-                !CurrentObjectsReferences.GetObjectReference(it->first)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
+            ssGUI::GUIObject* curMaskObj = CurrentObjectsReferences.GetObjectReference(it->first);
+            if(curMaskObj == nullptr || !curMaskObj->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
             {
                 continue;
             }
 
-            if(!CurrentObjectsReferences.GetObjectReference(it->first)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
+            if(!curMaskObj->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
                 continue;
+
+            //Sepcial check to not mask any currently docking window that has TopLevelParent set to higher than the object that has the mask extension
+            if(Container->IsAnyExtensionExist<ssGUI::Extensions::Dockable>())
+            {
+                auto dockableEx = Container->GetAnyExtension<ssGUI::Extensions::Dockable>();
+                if(dockableEx->IsCurrentlyDocking())
+                {
+                    ssGUI::GUIObject* topLevelParent =  dockableEx->GetTopLevelParent();
+                    if(topLevelParent == nullptr && curMaskObj->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
+                        continue;
+                    else if(topLevelParent != nullptr)
+                    {
+                        ssGUI::GUIObject* curParent = curMaskObj;
+                        bool topLevelParentUnderCurMaskObj = true;
+                        while(curParent != nullptr) 
+                        {
+                            if(curParent != topLevelParent)
+                                curParent = curParent->GetParent();
+                            else
+                            {
+                                topLevelParentUnderCurMaskObj = false;
+                                break;
+                            }
+                        }
+
+                        if(topLevelParentUnderCurMaskObj)
+                            continue;
+                    }
+                }
+            }
 
             ssGUI::Extensions::Mask* currentMask = static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(it->first)->
                 GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME));

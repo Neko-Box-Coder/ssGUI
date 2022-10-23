@@ -1,9 +1,8 @@
-#include "ssGUI/DebugAndBuild/ssGUIDebugInit.hpp"
-
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/ImageCanvas.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include "ssGUI/DebugAndBuild/ssGUIBuildAndDebugConfig.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 
 //Image Test
@@ -28,7 +27,7 @@ int main()
     data.LoadFromPath("Resources/sd.png");
     imageCanvas.SetImageData(&data);
     imageCanvas.SetParent(&mainWindow);
-    imageCanvas.SetImageTint(glm::u8vec4(255, 255, 255, 127));
+    imageCanvas.SetImageTint(glm::u8vec4(255, 255, 255, 255));
     // imageCanvas.GetHorizontalScrollbar()->SetReverse(!imageCanvas.GetHorizontalScrollbar()->IsReverse());
     // imageCanvas.GetVerticalScrollbar()->SetReverse(!imageCanvas.GetVerticalScrollbar()->IsReverse());
     
@@ -56,13 +55,13 @@ int main()
             // else
             //     imageCanvas.SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
 
-            if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::U))
+            if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::U))
             {
                 auto uv = imageCanvas.GetUVFromGlobalPosition(guiManager.GetBackendInputInterface()->GetCurrentMousePosition(&mainWindow));
                 ssLOG_LINE("uv: "<<uv.x<<", "<<uv.y);
             }
 
-            if(guiManager.GetBackendInputInterface()->GetCurrentKeyPresses().IsLetterKeyPresent(ssGUI::Enums::LetterKey::G))
+            if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::G))
             {
                 auto g = imageCanvas.GetGlobalPositionFromUV(glm::vec2(20, 20)) - imageCanvas.GetGlobalPosition();
                 auto g2 = imageCanvas.GetGlobalPositionFromUV(glm::vec2(270, 20)) - imageCanvas.GetGlobalPosition();

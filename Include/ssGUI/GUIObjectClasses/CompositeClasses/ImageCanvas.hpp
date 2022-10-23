@@ -108,9 +108,9 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+            [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(references->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -118,7 +118,7 @@ namespace ssGUI
                 float minX = imageCanvas->GetImageMinX();
                 float maxX = imageCanvas->GetImageMaxX();
 
-                auto scrollbar = static_cast<ssGUI::Scrollbar*>(source);
+                auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
                 float imgHalfSize = (maxX - minX) * 0.5;
                 float imgScrollDist = (maxX - minX - imageCanvas->GetSize().x) * scrollbar->GetScrollbarValue();
                 float imgXPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().x;
@@ -147,9 +147,9 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::GUIObject* source, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* references)
+            [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(references->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -157,7 +157,7 @@ namespace ssGUI
                 float minY = imageCanvas->GetImageMinY();
                 float maxY = imageCanvas->GetImageMaxY();
 
-                auto scrollbar = static_cast<ssGUI::Scrollbar*>(source);
+                auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
                 float imgHalfSize = (maxY - minY) * 0.5;
                 float imgScrollDist = (maxY - minY - imageCanvas->GetSize().y) * scrollbar->GetScrollbarValue();
                 float imgYPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().y;

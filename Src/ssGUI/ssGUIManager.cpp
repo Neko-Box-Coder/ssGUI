@@ -2,6 +2,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 #include "ssGUI/ssGUITags.hpp"
+#include "ssLogger/ssLog.hpp"
 
 //Debug
 #include "ssGUI/Extensions/Layout.hpp"
@@ -56,7 +57,7 @@ namespace ssGUI
             }
             ssLOG_FUNC_EXIT("ssGUIManagerPreUpdateEvent");
 
-            #if DEBUG_STATE 
+            #if SSGUI_DEBUG_STATE 
                 ssLOG_LINE("Update");
             #endif
 
@@ -88,7 +89,7 @@ namespace ssGUI
             }
             ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
 
-            #if DEBUG_STATE 
+            #if SSGUI_DEBUG_STATE 
                 ssLOG_LINE("Render");
             #endif
 
@@ -106,7 +107,7 @@ namespace ssGUI
             else
                 Render();
             
-            #if DEBUG_STATE 
+            #if SSGUI_DEBUG_STATE 
                 ssLOG_LINE("Post Render");
             #endif
 
@@ -116,7 +117,7 @@ namespace ssGUI
                 UpdateCursor();   
             }
 
-            #if SLOW_UPDATE
+            #if SSGUI_SLOW_UPDATE
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             #endif
 
@@ -141,7 +142,7 @@ namespace ssGUI
                 std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(TargetFrameInterval - averageFrameTime)));
             }
 
-            #if REFRESH_CONSOLE
+            #if SSGUI_REFRESH_CONSOLE
                 Clear();
             #endif
         }
@@ -273,7 +274,7 @@ namespace ssGUI
             //Render if needed
             if(renderNeeded)
             {
-                #if USE_DEBUG
+                #if SSGUI_USE_DEBUG
                     ssLOG_LINE("Rendering");
                 #endif
 
@@ -316,7 +317,7 @@ namespace ssGUI
             }
             else
             {
-                #if USE_DEBUG
+                #if SSGUI_USE_DEBUG
                     ssLOG_LINE("Caching");
                 #endif
 
@@ -392,7 +393,7 @@ namespace ssGUI
                 {
                     updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), inputStatus, mainWindow);
                     
-                    #if USE_DEBUG
+                    #if SSGUI_USE_DEBUG
                     ssLOG_LINE("object "<<updateQueue.front()<<" checking validity");
                     updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
                     #endif

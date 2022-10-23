@@ -1,5 +1,7 @@
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI::Extensions
 {
     AdvancedPosition::AdvancedPosition() :  Container(nullptr),

@@ -22,7 +22,7 @@ namespace ssGUI
         RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
         RemoveAnyExtension<ssGUI::Extensions::Outline>();
 
-        GetButtonTextObject()->SetFontSize(15);
+        GetButtonTextObject()->SetNewCharacterFontSize(15);
         GetButtonTextObject()->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT);
         GetButtonTextObject()->SetHorizontalPadding(15);
 
@@ -31,9 +31,9 @@ namespace ssGUI
         buttonEventCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::GUIObject* src, ssGUI::GUIObject* container, ssGUI::ObjectsReferences* refs)
+            [](ssGUI::EventInfo info)
             {
-                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(container);
+                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.EventCallbackContainer);
                 int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();
                 switch(btn->GetButtonState())
@@ -62,14 +62,16 @@ namespace ssGUI
                         bgcolor.g = bgcolor.g + buttonReactAmount > 255 ? 255 : bgcolor.g + buttonReactAmount;
                         bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
-                        auto textColor = btn->GetButtonTextObject()->GetTextColor();
+                        auto textColor = btn->GetButtonTextObject()->GetNewCharacterColor();
                         textColor.r = (uint8_t)(textColor.r + buttonReactAmount * 4 & 255);
                         textColor.g = (uint8_t)(textColor.g + buttonReactAmount * 4 & 255);
                         textColor.b = (uint8_t)(textColor.b + buttonReactAmount * 4 & 255);
-                        btn->GetButtonTextObject()->SetTextColor(textColor);
+                        btn->GetButtonTextObject()->SetNewCharacterColor(textColor);
+                        btn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
                         break;
                 }
-            }); 
+            }
+        );
 
         ssLOG_FUNC_EXIT();
     }
