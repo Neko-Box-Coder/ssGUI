@@ -94,7 +94,7 @@ namespace ssGUI::Extensions
             virtual void UpdateVerticesForOutline();
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
-            constexpr double pi() { return std::atan(1)*4; };
+            const double pi() { return std::atan(1)*4; };
 
             //Return angle in radians. Positive if angle between a and b is clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
