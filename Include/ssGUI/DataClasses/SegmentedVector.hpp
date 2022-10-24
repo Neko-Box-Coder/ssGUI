@@ -8,6 +8,7 @@
 #include <cstdlib>      //Abs      
 #include <algorithm>    //Move
 #include <iterator>
+#include <string>
 
 //namespace: ssGUI
 namespace ssGUI
