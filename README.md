@@ -6,7 +6,7 @@
 
 - #### 🖥️ OS support
     - Linux: Working ✅
-    - Windows: Working ✅
+    - Windows: Broken ❌
     - MacOS: Unknown ❓
 
 - #### 📈 Current Status
