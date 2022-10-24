@@ -81,7 +81,7 @@ namespace ssGUI::Extensions
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
             
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
-            constexpr double pi() { return std::atan(1)*4; };
+            const double pi() { return std::atan(1)*4; };
             
             //https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
             virtual glm::vec3 Barycentric(glm::vec2 samplePoint, glm::vec2 a, glm::vec2 b, glm::vec2 c);

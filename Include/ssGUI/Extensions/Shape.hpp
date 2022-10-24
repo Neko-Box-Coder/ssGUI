@@ -76,7 +76,7 @@ namespace ssGUI::Extensions
             static void operator delete[](void* p)      {free(p);};
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
-            constexpr double pi() { return std::atan(1)*4; };
+            const double pi() { return std::atan(1)*4; };
 
             virtual void ConstructAdditionalPolygon(AdditionalShape& targetShape, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject);
             virtual void ConstructAdditionalRectangle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject);
