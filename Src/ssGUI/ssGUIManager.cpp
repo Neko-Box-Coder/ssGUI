@@ -35,6 +35,7 @@ namespace ssGUI
             currentMainWindowP->ClearBackBuffer();
         }
 
+        float threadSleepMultiplier = 1;
         while (!MainWindowPList.empty())
         {
             uint64_t startFrameTime = BackendInput->GetElapsedTime();
@@ -140,7 +141,14 @@ namespace ssGUI
                 averageFrameTime /= FrameTimes.size();
                 // ssLOG_LINE("averageFrameTime: "<<averageFrameTime);
                 // ssLOG_LINE("TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
-                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(TargetFrameInterval - averageFrameTime)));
+
+                //There's no guarantee that the thread will sleep for how long we ask for (especially on Windows *cough* *cough*)
+                //so we need to adjust the sleep time depending on how long will have actually slept
+                uint32_t preSleepTime = BackendInput->GetElapsedTime();
+                int64_t sleepDuration = static_cast<int64_t>(TargetFrameInterval - averageFrameTime) *threadSleepMultiplier;
+                std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
+                uint32_t actualSleptDuration = BackendInput->GetElapsedTime() - preSleepTime;
+                threadSleepMultiplier = (double)sleepDuration / (double)actualSleptDuration;
             }
 
             #if SSGUI_REFRESH_CONSOLE
