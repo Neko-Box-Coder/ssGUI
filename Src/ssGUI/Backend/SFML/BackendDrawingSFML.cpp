@@ -1,5 +1,6 @@
 #include "ssGUI/Backend/SFML/BackendDrawingSFML.hpp"
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
+#include "SFML/OpenGL.hpp"
 
 namespace ssGUI::Backend
 {
@@ -127,7 +128,19 @@ namespace ssGUI::Backend
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
-        targetWindow->pushGLStates();
+        targetWindow->setActive(true);
+
+        glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glMatrixMode(GL_TEXTURE);
+        glPushMatrix();
+
+        //This is not working for whatever reason
+        //targetWindow->pushGLStates();
     }
 
     void BackendDrawingSFML::RestoreState()
@@ -135,7 +148,19 @@ namespace ssGUI::Backend
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
-        targetWindow->popGLStates();
+        targetWindow->setActive(true);
+
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_TEXTURE);
+        glPopMatrix();
+        glPopClientAttrib();
+        glPopAttrib();
+
+        //This is not working for whatever reason
+        //targetWindow->popGLStates();
     }
 
     bool BackendDrawingSFML::DrawEntities(  const std::vector<glm::vec2>& vertices, 

@@ -3,15 +3,12 @@
 #include "ssGUI/Extensions/Layout.hpp"
 
 // I don't have macOS, so <GL/gl.h> might also work, idk.
-#if __APPLE__
-#   include <OpenGL/gl.h>
-#   include <OpenGL/glu.h>
-#else
-#   include <GL/gl.h>
-#   include <GL/glu.h>
-#endif
+//#include <GL/gl.h>
+//#include <GL/glu.h>
 
-#include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 //Modified version of this:
 //Credit to: https://www3.ntu.edu.sg/home/ehchua/programming/opengl/CG_Examples.html
@@ -154,7 +151,9 @@ void reshape(GLsizei width, GLsizei height)
     glLoadIdentity();             // Reset
     
     // Enable perspective projection with fovy, aspect, zNear and zFar
-    gluPerspective(45.0f, aspect, 0.1f, 100.0f);
+    //gluPerspective(45.0f, aspect, 0.1f, 100.0f);
+    glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
+    glLoadMatrixf(glm::value_ptr(perspective));
 }
 
 //===================================================================================
@@ -229,8 +228,6 @@ int main()
         {
             //Save OpenGL status
             mainWindow.GetBackendDrawingInterface()->SaveState();
-            glPushAttrib(GL_VIEWPORT_BIT);
-            glPushAttrib(GL_DEPTH_BUFFER_BIT);
 
             //Draw OpenGL scene
             initGL();
@@ -239,8 +236,6 @@ int main()
             
             //Restore OpenGL status
             mainWindow.GetBackendDrawingInterface()->RestoreState();
-            glPopAttrib();
-            glPopAttrib();
         }
     );
 

@@ -330,8 +330,6 @@ int main()
         {
             //Save OpenGL status
             mainWindow.GetBackendDrawingInterface()->SaveState();
-            glPushAttrib(GL_VIEWPORT_BIT);
-            glPushAttrib(GL_DEPTH_BUFFER_BIT);
 
             //Draw OpenGL scene
             initGL();
@@ -340,8 +338,6 @@ int main()
             
             //Restore OpenGL status
             mainWindow.GetBackendDrawingInterface()->RestoreState();
-            glPopAttrib();
-            glPopAttrib();
         }
     );
 
