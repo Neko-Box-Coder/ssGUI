@@ -2,6 +2,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 #include "ssGUI/ssGUITags.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 #include "ssLogger/ssLog.hpp"
 
 //Debug
@@ -623,5 +624,6 @@ namespace ssGUI
     {
         Text::CleanUpAllDefaultFonts();
         Dropdown::CleanUpAllDefaultDropdownImage();
+        StandardWindow::CleanUpDefaultIconData();
     }
 }
