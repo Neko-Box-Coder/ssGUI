@@ -37,6 +37,7 @@
 # Editor files
 .vscode/
 .editorconfig
+.vs/
 
 # Build related
 builds/
