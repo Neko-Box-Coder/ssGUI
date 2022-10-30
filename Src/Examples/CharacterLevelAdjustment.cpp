@@ -33,7 +33,7 @@ int main()
     text.SetParent(&mainWindow);
     std::string s = "Character Level Adjustment";
     
-    for(int i = 0; i < s.size(); i++)
+    for(int i = 0; i < (int)s.size(); i++)
     {
         ssGUI::CharacterDetails detail;
         detail.Character = s[i];

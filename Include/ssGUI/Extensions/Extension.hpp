@@ -15,8 +15,11 @@ namespace ssGUI
     class GUIObject;
 }
 
+namespace ssGUI 
+{
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     //class: ssGUI::Extensions::Extension
     //Extension provides additional functionality to a GUI object, without the need to create a new type of GUI object.
@@ -85,6 +88,7 @@ namespace ssGUI::Extensions
     inline Extension::~Extension(){}   //Pure virtual destructor needs to be defined
 }
 
+}
 
 
 #endif

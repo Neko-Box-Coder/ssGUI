@@ -4,8 +4,11 @@
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 #include "SFML/Graphics.hpp"
 
+namespace ssGUI
+{ 
+    
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendFontSFML
     For functions explainations, please see <BackendFontInterface>. Normally you don't need to deal with this class
@@ -88,6 +91,8 @@ namespace ssGUI::Backend
             //See <BackendFontInterface::Clone>
             ssGUI::Backend::BackendFontInterface* Clone() override;
     };
+}
+
 }
 
 #endif

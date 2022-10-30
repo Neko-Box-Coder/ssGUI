@@ -21,8 +21,11 @@
     #include <chrono>
 #endif
 
+namespace ssGUI 
+{ 
+    
 //namespace ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendSystemInputSFML
     For functions explainations, please see <BackendSystemInputInterface>. Normally you don't need to deal with this class
@@ -254,5 +257,6 @@ namespace ssGUI::Backend
     };
 }
 
+}
 
 #endif

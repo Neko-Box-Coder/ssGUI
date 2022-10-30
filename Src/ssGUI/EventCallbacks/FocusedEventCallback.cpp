@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string FocusedEventCallback::GetEventCallbackName() const
     {   
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string FocusedEventCallback::EVENT_NAME = "FocusedEvent";
+}
+
 }

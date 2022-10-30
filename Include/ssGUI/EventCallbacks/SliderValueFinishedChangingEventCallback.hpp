@@ -3,8 +3,11 @@
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::SliderValueFinishedChangingEventCallback
     //This event callback is triggered *shortly after* the value of the slider has *finished* changing.
@@ -39,6 +42,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

@@ -1,6 +1,9 @@
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     BackendMainWindowSFML::BackendMainWindowSFML(BackendMainWindowSFML const& other) : 
         CurrentWindow(sf::VideoMode(sf::Vector2u(other.CurrentWindow.getSize().x, other.CurrentWindow.getSize().y)), other.GetTitle()), 
@@ -286,5 +289,5 @@ namespace ssGUI::Backend
     }
 }
 
-
+}
 

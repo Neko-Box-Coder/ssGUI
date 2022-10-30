@@ -5,7 +5,10 @@
 
 #include <cmath>
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     Outline::Outline() :    Container(nullptr),
                             Enabled(true),
@@ -867,4 +870,6 @@ nextVertex (n)    (a)                   curVertex
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

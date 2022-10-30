@@ -5,7 +5,10 @@
 
 #include <cmath>
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     RoundedCorners::RoundedCorners() :  Container(nullptr),
                                         Enabled(true),
@@ -624,4 +627,6 @@ namespace ssGUI::Extensions
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

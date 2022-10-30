@@ -34,7 +34,7 @@ int main()
 
     std::wstring s = L"This is a very long test \nsentence!!!!!";
 
-    for(int i = 0; i < s.size(); i++)
+    for(int i = 0; i < (int)s.size(); i++)
     {
         ssGUI::CharacterDetails details;
 

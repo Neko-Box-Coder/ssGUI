@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string RecursiveChildRemovedEventCallback::GetEventCallbackName() const
     {   
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string RecursiveChildRemovedEventCallback::EVENT_NAME = "RecursiveChildRemovedEvent";
+}
+
 }

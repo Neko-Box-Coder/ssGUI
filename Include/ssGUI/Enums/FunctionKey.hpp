@@ -3,8 +3,11 @@
 
 #include <cstdint>
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: FunctionKey
     
@@ -30,5 +33,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

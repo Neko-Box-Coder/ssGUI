@@ -1,6 +1,9 @@
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     BackendImageSFML::BackendImageSFML(BackendImageSFML const& other)
     {
@@ -92,3 +95,4 @@ namespace ssGUI::Backend
     }
 }
 
+}

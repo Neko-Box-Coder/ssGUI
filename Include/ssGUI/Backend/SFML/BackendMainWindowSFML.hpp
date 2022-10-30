@@ -8,8 +8,11 @@
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"
 
+namespace ssGUI
+{ 
+    
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendMainWindowSFML
     For functions explainations, please see <BackendMainWindowInterface>. Normally you don't need to deal with this class
@@ -224,6 +227,8 @@ namespace ssGUI::Backend
             //This returns sf::RenderWindow object
             void* GetRawHandle() override;
     };
+}
+
 }
 
 #endif

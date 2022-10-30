@@ -12,8 +12,11 @@
 
 #include <iostream>
 
+namespace ssGUI
+{ 
+
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     //class: ssGUI::Backend::BackendDrawingInterface
     class BackendDrawingInterface
@@ -88,6 +91,8 @@ namespace ssGUI::Backend
 
     };
     inline BackendDrawingInterface::~BackendDrawingInterface(){}   //Pure virtual destructor needs to be defined
+} 
+
 }
 
 #endif

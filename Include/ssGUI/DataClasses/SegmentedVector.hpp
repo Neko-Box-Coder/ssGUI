@@ -136,6 +136,8 @@ namespace ssGUI
                         operator--();
                         return old;
                     };
+
+                    Iterator& operator= ( const Iterator& ) = default; 	
             };
         
         private:
@@ -172,7 +174,7 @@ namespace ssGUI
             inline T& GetItem(size_t index)
             {
                 //Check out of range
-                if(index < 0 || index >= CurrentSize)
+                if(index >= CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
                 if(SequentialCacheValid)
@@ -315,7 +317,7 @@ namespace ssGUI
             //function: operator[]
             //This returns the reference to the item. This operation is *not* thread safe.
             //Use <ssGUI::SegmentedVector::Iterator> instead to be thread safe.
-            inline T& operator[](int index)
+            inline T& operator[](size_t index)
             {
                 return GetItem(index);
             };
@@ -337,10 +339,10 @@ namespace ssGUI
 
             //function: GetIterator
             //Returns an <ssGUI::SegmentedVector::Iterator> pointing at index position
-            inline Iterator GetIterator(int index)
+            inline Iterator GetIterator(size_t index)
             {
                 //Check out of range
-                if(index < 0 || index >= CurrentSize)
+                if(index >= CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
                 
                 //Not sequential read, find element
@@ -362,7 +364,7 @@ namespace ssGUI
 
             //function: At
             //See operator[]
-            inline T& At(int index)
+            inline T& At(size_t index)
             {
                 return GetItem(index);
             };
@@ -386,7 +388,7 @@ namespace ssGUI
             inline void Remove(size_t index)
             {
                 //Check out of range
-                if(index < 0 || index >= CurrentSize)
+                if(index >= CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
                 size_t startIndex = 0;
@@ -408,7 +410,7 @@ namespace ssGUI
             inline void Remove(size_t startIndex, size_t endExclusiveIndex)
             {
                 //Check out of range
-                if(startIndex < 0 || startIndex >= CurrentSize)
+                if(startIndex >= CurrentSize)
                     throw std::out_of_range(std::string("Invalid start index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(startIndex));
 
                 if(endExclusiveIndex <= 0 || endExclusiveIndex > CurrentSize)
@@ -545,10 +547,10 @@ namespace ssGUI
             };
 
             //function: Add
-            inline void Add(const T& obj, int index)
+            inline void Add(const T& obj, size_t index)
             {
                 //Check out of range
-                if(index < 0 || index > CurrentSize)
+                if(index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
                 if(index == CurrentSize)
@@ -568,10 +570,10 @@ namespace ssGUI
             };
 
             //function: Add
-            inline void Add(const T&& obj, int index)
+            inline void Add(const T&& obj, size_t index)
             {
                 //Check out of range
-                if(index < 0 || index > CurrentSize)
+                if(index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
                 if(index == CurrentSize)
@@ -591,10 +593,10 @@ namespace ssGUI
             };
 
             //function: Add
-            inline void Add(const SegmentedVector<T>& objs, int index)
+            inline void Add(const SegmentedVector<T>& objs, size_t index)
             {
                 //Check out of range
-                if(index < 0 || index > CurrentSize)
+                if(index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
                 size_t startIndex = 0;
@@ -615,10 +617,10 @@ namespace ssGUI
             };
 
             //function: Add
-            inline void Add(const std::vector<T>& objs, int index)
+            inline void Add(const std::vector<T>& objs, size_t index)
             {
                 //Check out of range
-                if(index < 0 || index > CurrentSize)
+                if(index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
                 if(index == CurrentSize)
@@ -638,10 +640,10 @@ namespace ssGUI
             };
 
             //function: Add
-            inline void Add(const T objs[], size_t len, int index)
+            inline void Add(const T objs[], size_t len, size_t index)
             {
                 //Check out of range
-                if(index < 0 || index > CurrentSize)
+                if(index > CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
 
                 if(index == CurrentSize)
@@ -662,12 +664,12 @@ namespace ssGUI
 
             //function: Swap
             //Swap two elements at position index and index2
-            inline void Swap(int index, int index2)
+            inline void Swap(size_t index, size_t index2)
             {
                 //Check out of range
-                if(index < 0 || index >= CurrentSize)
+                if(index >= CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index));
-                if(index2 < 0 || index2 >= CurrentSize)
+                if(index2 >= CurrentSize)
                     throw std::out_of_range(std::string("Invalid index in SegmentedVector (Line "+std::to_string(__LINE__)+" in function "+__func__+"): ")+std::to_string(index2));
                 
                 std::swap(GetItem(index), GetItem(index2));

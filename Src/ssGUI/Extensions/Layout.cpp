@@ -10,7 +10,10 @@
 
 #include "ssLogger/ssLog.hpp"
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {    
     Layout::Layout() :  HorizontalLayout(false),
                         PreferredSizeMultipliers(),
@@ -1401,4 +1404,6 @@ namespace ssGUI::Extensions
         
         return temp;
     }
+}
+
 }

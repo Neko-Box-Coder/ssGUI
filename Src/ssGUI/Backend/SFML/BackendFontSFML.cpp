@@ -1,6 +1,9 @@
 #include "ssGUI/Backend/SFML/BackendFontSFML.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     BackendFontSFML::BackendFontSFML(BackendFontSFML const& other)
     {
@@ -116,5 +119,7 @@ namespace ssGUI::Backend
     {
         return new BackendFontSFML(*this);
     }
+
+}
 
 }

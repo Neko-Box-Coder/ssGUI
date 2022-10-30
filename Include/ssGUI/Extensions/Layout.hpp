@@ -8,8 +8,11 @@
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
 
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::Layout
     This extensions allows the children of this GUI object to be positioned and sized in a row or column fashion.
@@ -316,6 +319,7 @@ namespace ssGUI::Extensions
     };
 }
 
+}
 
 
 

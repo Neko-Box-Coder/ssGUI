@@ -3,8 +3,11 @@
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::BackgroundColorChangedEventCallback
     //This event callback is triggered *after* the background color is changed. (Container) will be the source for triggering this event callback.
@@ -35,6 +38,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

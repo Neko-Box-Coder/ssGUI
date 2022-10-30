@@ -1,8 +1,11 @@
 #ifndef SSGUI_BUTTON_STATE
 #define SSGUI_BUTTON_STATE
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: ButtonState
     
@@ -24,5 +27,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

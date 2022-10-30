@@ -544,8 +544,8 @@ namespace ssGUI
         glm::ivec4 titleResult;
         if(IsAdaptiveTitleContrast())
         {
-            float averageTitlebarColor = (GetTitlebarColor().r + GetTitlebarColor().g + GetTitlebarColor().b)/3;
-            float averageTitleDiffColor = (GetAdaptiveTitleColorDifference().r + GetAdaptiveTitleColorDifference().g + GetAdaptiveTitleColorDifference().b)/3;
+            float averageTitlebarColor = (GetTitlebarColor().r + GetTitlebarColor().g + GetTitlebarColor().b) / (float)3;
+            float averageTitleDiffColor = (GetAdaptiveTitleColorDifference().r + GetAdaptiveTitleColorDifference().g + GetAdaptiveTitleColorDifference().b) / (float)3;
             int contrastFactor = averageTitlebarColor + averageTitleDiffColor > 255 ? -1 : 1; 
             titleResult = (glm::ivec4)GetTitlebarColor() + GetAdaptiveTitleColorDifference() * contrastFactor;
         }

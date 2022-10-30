@@ -8,8 +8,11 @@
 #include <functional>
 #include <cmath>
 
+namespace ssGUI
+{ 
+    
 //namespace: ssGUI.Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendDrawingSFML
     For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
@@ -97,6 +100,8 @@ namespace ssGUI::Backend
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
 
     };
+}
+
 }
 
 

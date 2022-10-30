@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string FocusLostEventCallback::GetEventCallbackName() const
     {   
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string FocusLostEventCallback::EVENT_NAME = "FocusLostEvent";
+}
+
 }

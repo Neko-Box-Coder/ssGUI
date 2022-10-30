@@ -7,7 +7,10 @@
 #include <cmath>
 #include <algorithm>    // std::sort
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     bool Mask::IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices, int startOffset, int shapeCount) const
     {
@@ -1337,4 +1340,6 @@ namespace ssGUI::Extensions
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

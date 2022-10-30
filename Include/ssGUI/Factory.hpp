@@ -22,7 +22,7 @@ namespace ssGUI
             static Wrapper<T>* Create()
             {
                 return new Wrapper<T>();
-            };
+            }
 
             //function: Create<typename T> 
             //Creates the object on the heap
@@ -37,7 +37,7 @@ namespace ssGUI
                 }
                 
                 return new T();
-            };
+            }
 
             //function: Dispose
             //Delete the object allocated on the heap
@@ -46,7 +46,7 @@ namespace ssGUI
             {
                 //static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
                 delete obj;
-            };
+            }
     };
 }
 

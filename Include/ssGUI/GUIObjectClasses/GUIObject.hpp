@@ -63,7 +63,7 @@ namespace ssGUI
 
         public:
             //TODO : Maybe make this thread safe?
-            inline static std::vector<ssGUI::GUIObject*> ObjsToDelete = std::vector<ssGUI::GUIObject*>();
+            static std::vector<ssGUI::GUIObject*> ObjsToDelete;
 
             GUIObject();
             virtual ~GUIObject();

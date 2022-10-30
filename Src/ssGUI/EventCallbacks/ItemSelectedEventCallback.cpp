@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/ItemSelectedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string ItemSelectedEventCallback::GetEventCallbackName() const
     {
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string ItemSelectedEventCallback::EVENT_NAME = "ItemSelectedEvent";
+}
+
 }
