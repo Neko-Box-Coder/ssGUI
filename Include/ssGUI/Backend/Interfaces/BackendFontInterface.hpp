@@ -4,8 +4,11 @@
 #include <string>
 #include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
 
+namespace ssGUI
+{ 
+
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     //class: ssGUI::Backend::BackendFontInterface
     class BackendFontInterface
@@ -67,6 +70,8 @@ namespace ssGUI::Backend
     };
     
     inline BackendFontInterface::~BackendFontInterface(){}   //Pure virtual destructor needs to be defined
+}
+ 
 }
 
 

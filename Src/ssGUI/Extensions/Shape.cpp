@@ -5,7 +5,10 @@
 
 #include <cmath>
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     Shape::Shape() :    Container(nullptr),
                         Enabled(true),
@@ -591,4 +594,6 @@ namespace ssGUI::Extensions
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

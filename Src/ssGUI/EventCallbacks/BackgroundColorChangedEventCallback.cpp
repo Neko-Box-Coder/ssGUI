@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/BackgroundColorChangedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string BackgroundColorChangedEventCallback::GetEventCallbackName() const
     {
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string BackgroundColorChangedEventCallback::EVENT_NAME = "BackgroundColorChangedEvent";
+}
+
 }

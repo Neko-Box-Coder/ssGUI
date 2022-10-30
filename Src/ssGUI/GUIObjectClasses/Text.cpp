@@ -2,6 +2,7 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 #include "ssLogger/ssLog.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 #include "glm/gtx/norm.hpp"
 #include <cmath>
 #include <locale>

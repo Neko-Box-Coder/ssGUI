@@ -217,7 +217,7 @@ namespace ssGUI
             currentMainWindowP->MoveChildrenIteratorToFirst();
             while (!currentMainWindowP->IsChildrenIteratorEnd())
             {
-                objToRender.push_back(std::pair(currentMainWindowP->GetCurrentChild(), false));
+                objToRender.push_back(std::pair<ssGUI::GUIObject*, bool>(currentMainWindowP->GetCurrentChild(), false));
                 currentMainWindowP->MoveChildrenIteratorNext();
             }
             currentMainWindowP->PopChildrenIterator();
@@ -242,7 +242,7 @@ namespace ssGUI
                     currentObjP->MoveChildrenIteratorToLast();
                     while (!currentObjP->IsChildrenIteratorEnd())
                     {
-                        objToRender.push_front(std::pair(currentObjP->GetCurrentChild(), overlay));
+                        objToRender.push_front(std::pair<ssGUI::GUIObject*, bool>(currentObjP->GetCurrentChild(), overlay));
                         currentObjP->MoveChildrenIteratorPrevious();
                     }
                     currentObjP->PopChildrenIterator();

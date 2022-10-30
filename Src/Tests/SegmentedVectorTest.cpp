@@ -431,7 +431,7 @@ double GetMin(const std::vector<double>& times)
 {
     double min = times.at(0);
 
-    for(int i = 0; i < times.size(); i++)
+    for(int i = 0; i < (int)times.size(); i++)
         min = min < times[i] ? min : times[i];
     
     return min;
@@ -441,7 +441,7 @@ double GetMax(const std::vector<double>& times)
 {
     double max = times.at(0);
 
-    for(int i = 0; i < times.size(); i++)
+    for(int i = 0; i < (int)times.size(); i++)
         max = max > times[i] ? max : times[i];
     
     return max;
@@ -451,7 +451,7 @@ double GetAverage(const std::vector<double>& times)
 {
     double total = 0;
 
-    for(int i = 0; i < times.size(); i++)
+    for(int i = 0; i < (int)times.size(); i++)
         total += times[i];
     
     return total/times.size();
@@ -604,7 +604,7 @@ void CacheBenchmarkTest()
         {
             for(int j = 0; j < readTimes; j++)
             {
-                for(int k = 0; k < vectorTest.size(); k++)
+                for(int k = 0; k < (int)vectorTest.size(); k++)
                     doSomething = vectorTest[k];
             }
         },
@@ -625,7 +625,7 @@ void CacheBenchmarkTest()
         {
             for(int j = 0; j < readTimes; j++)
             {
-                for(int k = 0; k < test.Size(); k++)
+                for(int k = 0; k < (int)test.Size(); k++)
                     doSomething = test[k];
             }
         }, 
@@ -688,7 +688,7 @@ void CacheBenchmarkTest()
             for(int j = 0; j < insertTimes; j++)
             {
                 targetNum = rand() % vectorTest.size() + 1;
-                for(int k = 0; k < vectorTest.size(); k++)
+                for(int k = 0; k < (int)vectorTest.size(); k++)
                 {
                     if(vectorTest[k] == targetNum)
                     {
@@ -720,7 +720,7 @@ void CacheBenchmarkTest()
             for(int j = 0; j < insertTimes; j++)
             {
                 targetNum = rand() % test.Size() + 1;
-                for(int k = 0; k < test.Size(); k++)
+                for(int k = 0; k < (int)test.Size(); k++)
                 {
                     if(test[k] == targetNum)
                     {

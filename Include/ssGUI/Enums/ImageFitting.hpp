@@ -1,8 +1,11 @@
 #ifndef SSGUI_IMAGE_FITTING
 #define SSGUI_IMAGE_FITTING
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: ImageFitting
 
@@ -18,6 +21,8 @@ namespace ssGUI::Enums
         FIT_WHOLE_IMAGE,
         FIT_WHOLE_AREA
     };
+}
+
 }
 
 #endif

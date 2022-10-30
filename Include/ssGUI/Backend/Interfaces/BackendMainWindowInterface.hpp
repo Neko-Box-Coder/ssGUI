@@ -8,8 +8,11 @@
 #include <string>
 #include <functional>
 
+namespace ssGUI
+{ 
+    
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     //class: ssGUI::Backend::BackendMainWindowInterface
     class BackendMainWindowInterface
@@ -163,6 +166,8 @@ namespace ssGUI::Backend
     };
 
     inline BackendMainWindowInterface::~BackendMainWindowInterface(){}   //Pure virtual destructor needs to be defined
+}
+
 }
 
 #endif

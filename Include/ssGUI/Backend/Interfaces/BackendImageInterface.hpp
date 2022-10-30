@@ -4,8 +4,11 @@
 #include <string>
 #include "glm/vec2.hpp"
 
+namespace ssGUI
+{ 
+    
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     //class: ssGUI::Backend::BackendImageInterface
     //This allows transferring the image data from the host memory to the gpu memory
@@ -52,6 +55,8 @@ namespace ssGUI::Backend
     };
 
     inline BackendImageInterface::~BackendImageInterface(){}   //Pure virtual destructor needs to be defined
+}
+
 }
 
 #endif

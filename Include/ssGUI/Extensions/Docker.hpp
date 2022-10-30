@@ -8,8 +8,11 @@
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     class Layout;
     
@@ -196,7 +199,7 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
@@ -222,8 +225,7 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Docker* Clone(ssGUI::GUIObject* newContainer) override;
     };
-
-
+}
 
 }
 

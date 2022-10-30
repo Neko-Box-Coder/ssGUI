@@ -15,8 +15,11 @@
 #include <cmath>
 #include <queue>
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::Mask
     Mask extension serves 2 purposes:
@@ -210,7 +213,7 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
@@ -236,6 +239,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Mask* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

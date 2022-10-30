@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string ChildPositionChangedEventCallback::GetEventCallbackName() const
     {
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string ChildPositionChangedEventCallback::EVENT_NAME = "ChildPositionChangedEvent";
+}
+
 }

@@ -4,8 +4,11 @@
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "SFML/Graphics.hpp"
 
+namespace ssGUI
+{ 
+
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendImageSFML
     For functions explainations, please see <BackendImageInterface>. Normally you don't need to deal with this class
@@ -77,6 +80,8 @@ namespace ssGUI::Backend
             //function: Clone
             ssGUI::Backend::BackendImageInterface* Clone() override;
     };
+}
+
 }
 
 #endif

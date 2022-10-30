@@ -9,7 +9,10 @@
 
 #include "ssLogger/ssLog.hpp"
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     bool Dockable::GlobalDockMode = false;
     ssGUI::MainWindow* Dockable::MainWindowUnderDocking = nullptr;
@@ -1004,4 +1007,4 @@ namespace ssGUI::Extensions
     }
 }
 
-
+}

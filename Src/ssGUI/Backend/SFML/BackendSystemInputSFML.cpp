@@ -11,7 +11,10 @@
 
 // #include "SFML/Window/Clipboard.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {    
     template <class T>
     void BackendSystemInputSFML::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
@@ -845,4 +848,4 @@ namespace ssGUI::Backend
     }
 }
 
-
+}

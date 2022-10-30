@@ -2,7 +2,10 @@
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
 #include "SFML/OpenGL.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0)
     {
@@ -230,4 +233,6 @@ namespace ssGUI::Backend
 
         targetWindow->clear(sf::Color(clearColor.r, clearColor.g, clearColor.b, 255));        
     }
+}
+
 }
