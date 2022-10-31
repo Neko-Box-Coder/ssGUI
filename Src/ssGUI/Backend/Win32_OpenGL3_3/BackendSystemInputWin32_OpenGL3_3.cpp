@@ -11,7 +11,10 @@
 
 // #include "SFML/Window/Clipboard.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {    
     BackendSystemInputWin32_OpenGL3_3::BackendSystemInputWin32_OpenGL3_3()
     {
@@ -234,9 +237,9 @@ namespace ssGUI::Backend
 
     bool BackendSystemInputWin32_OpenGL3_3::GetLastMouseButton(ssGUI::Enums::MouseButton button) const
     {
-        for(int i = 0; i < LastMouseButtons.size(); i++)
-            if(LastMouseButtons[i] == button)
-                return true;
+        // for(int i = 0; i < LastMouseButtons.size(); i++)
+        //     if(LastMouseButtons[i] == button)
+        //         return true;
         
         return false;
     }
@@ -731,4 +734,4 @@ namespace ssGUI::Backend
     }
 }
 
-
+}

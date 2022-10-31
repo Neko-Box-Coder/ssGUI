@@ -1,7 +1,10 @@
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
 
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3()
     {
@@ -215,7 +218,7 @@ namespace ssGUI::Backend
     ssGUI::Enums::WindowMode BackendMainWindowWin32_OpenGL3_3::GetWindowMode() const
     {
         //return CurrentWindowMode;
-        ssGUI::Enums::WindowMode::NORMAL;
+        return ssGUI::Enums::WindowMode::NORMAL;
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::SetGLContext()
@@ -235,4 +238,6 @@ namespace ssGUI::Backend
         //return static_cast<void*>(&CurrentWindow);
         return nullptr;
     }
+}
+
 }
