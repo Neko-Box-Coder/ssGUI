@@ -1,6 +1,9 @@
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendDrawingWin32_OpenGL3_3.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3()
     {
@@ -75,5 +78,6 @@ namespace ssGUI::Backend
 
         return true;
     }
+}
 
 }

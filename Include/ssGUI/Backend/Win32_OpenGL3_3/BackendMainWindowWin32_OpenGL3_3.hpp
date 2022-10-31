@@ -1,18 +1,16 @@
 #ifndef SSGUI_BACKEND_MAIN_WINDOW_WIN32_OPEN_GL_3_3
 #define SSGUI_BACKEND_MAIN_WINDOW_WIN32_OPEN_GL_3_3
 
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
-#include "ssGUI/Enums/CursorType.hpp"
-#include "ssGUI/Enums/WindowMode.hpp"
-#include "glm/vec2.hpp"
-#include <string>
-#include <functional>
+#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     //class: ssGUI::Backend::BackendMainWindowInterface
-    class BackendMainWindowWin32_OpenGL3_3
+    class BackendMainWindowWin32_OpenGL3_3 : public BackendMainWindowInterface
     {
         private:
             // BackendMainWindowInterface(const BackendMainWindowInterface&);
@@ -161,6 +159,8 @@ namespace ssGUI::Backend
             //function: GetRawHandle
             void* GetRawHandle() override;
     };
+} 
+
 }
 
 #endif
