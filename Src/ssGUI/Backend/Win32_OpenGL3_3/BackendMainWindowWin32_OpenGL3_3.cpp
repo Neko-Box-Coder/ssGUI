@@ -1,13 +1,137 @@
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
 
+#ifndef UNICODE
+#define UNICODE
+#endif 
+
+#include <windows.h>            /* must include this before GL/gl.h */
+#include "glad/glad.h"
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
 {
 
 namespace Backend
 {
+    float BackendMainWindowWin32_OpenGL3_3::deviceUnitToPixels(float unit, HWND hwnd)
+    {
+        float dpi = GetDpiForWindow(hwnd);
+        return unit * (dpi / 96.0f);
+    }
+
+    float BackendMainWindowWin32_OpenGL3_3::PixelsToDeviceUnit(float unit, HWND hwnd)
+    {
+        float dpi = GetDpiForWindow(hwnd);
+        return unit / (dpi / 96.0f);
+    }
+    
     BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3()
     {
+        HINSTANCE hInstance = GetModuleHandle(NULL);
+        // Register the window class in order to create it
+        const wchar_t CLASS_NAME[]  = L"ssGUI MainWindow";
+        WNDCLASS wc = { };
+        wc.style         = CS_OWNDC;                                        //Using own drawing context
+        wc.lpfnWndProc   = BackendMainWindowWin32_OpenGL3_3::WindowProc;    //Window process callback function
+        wc.cbClsExtra    = 0;
+        wc.cbWndExtra    = 0;
+        wc.hInstance     = hInstance;                       //Instance handle
+        wc.hIcon         = LoadIcon(NULL, IDI_WINLOGO);
+        wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+        wc.hbrBackground = NULL;
+        wc.lpszMenuName  = NULL;
+        wc.lpszClassName = CLASS_NAME;                        //Class name
+
+        //Alternatively, you can use the Ex version
+        if(!RegisterClass(&wc))
+        {
+            ssLOG_LINE("Failed to RegisterClass");
+            ssLOG_EXIT_PROGRAM();
+            return;
+        }
+
+        // Create the window.
+        HWND hwnd = CreateWindowEx
+        (
+            WS_EX_LEFT,                     // Extended Window Styles, left aligned text
+            CLASS_NAME,                     // Window class
+            L"Learn to Program Windows",    // Window title text
+            WS_OVERLAPPEDWINDOW |           // Window style, has titlebar and border
+            WS_CLIPSIBLINGS     |           // Diasble clipping so render each window seperately
+            WS_CLIPCHILDREN,
+
+            // Size and position
+            CW_USEDEFAULT,                  //X (relative to parent)
+            CW_USEDEFAULT,                  //Y (relative to parent)
+            800,                            //Width, in DeviceUnits
+            600,                            //Height, in DeviceUnits
+
+            NULL,                           // Parent window    
+            NULL,                           // Menu
+            hInstance,                      // Instance handle
+            NULL                            // Additional application data
+        );
+
+        // Check if window is created sucessfully. If not, you can check with GetLastError
+        if (hwnd == NULL)
+            return -1;
+
+        //Get the device context for the window
+        hDC = GetDC(hWnd);
+
+        //there is no guarantee that the contents of the stack that become
+        //the pfd are zeroed, therefore _make sure_ to clear these bits.
+        PIXELFORMATDESCRIPTOR pfd;
+        memset(&pfd, 0, sizeof(pfd));
+        pfd.nSize        = sizeof(pfd);
+        pfd.nVersion     = 1;
+        pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | flags;
+        pfd.iPixelType   = PFD_TYPE_RGBA;
+        pfd.cColorBits   = 32;
+
+        //Check if the pixel format we requested can be used
+        int pf = ChoosePixelFormat(hDC, &pfd);
+        if(pf == 0)
+            return -1;
+
+        //Set the pixel format for the window
+        if(SetPixelFormat(hDC, pf, &pfd) == FALSE)
+            return -1;
+
+        //This function can be called to see if there is any changes to our chosen pixel format
+        //DescribePixelFormat(hDC, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+
+        //If there's another OpenGL window, the current Device Context can be released for now
+        //ReleaseDC(hWnd, hDC);
+
+        hRC = wglCreateContext(hDC);        //Creates OpenGL Render Context
+        wglMakeCurrent(hDC, hRC);           //Select the OpenGL Render Context
+
+        if (!gladLoadGL())                  //Load Glad
+            return -1;
+
+        //Check OpenGL version
+        if (GLVersion.major < 3 && GLVersion.minor < 3)
+            return -1;
+
+        //Display the window
+        ShowWindow(hwnd, nCmdShow);
+
+        // Run the message loop.
+        //Get message for all the windows for this thread, with no priority on what types input comes first
+        //GetMessage will return zero if recieves WM_QUIT message, or -1 if there's an error
+        MSG msg = { };
+        while (GetMessage(&msg, NULL, 0, 0) > 0)
+        {
+            TranslateMessage(&msg);             //Translates any keyboard/text related inputs (if any)
+            DispatchMessage(&msg);              //Dispatches the message to the right window(s) (i.e. WM_PAINT)
+        }
+
+        wglMakeCurrent(NULL, NULL);     //Release the OpenGL Render Context
+        ReleaseDC(hWnd, hDC);           //Release the Device Context
+        wglDeleteContext(hRC);          //Deallocate the Render Context
+        DestroyWindow(hWnd);            //Cleanup the window
+
         //ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
 

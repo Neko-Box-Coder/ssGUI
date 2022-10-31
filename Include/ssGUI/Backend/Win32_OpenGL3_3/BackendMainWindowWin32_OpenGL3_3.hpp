@@ -2,6 +2,7 @@
 #define SSGUI_BACKEND_MAIN_WINDOW_WIN32_OPEN_GL_3_3
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+#include <windows.h>            /* must include this before GL/gl.h */
 
 namespace ssGUI 
 { 
@@ -16,6 +17,12 @@ namespace Backend
             // BackendMainWindowInterface(const BackendMainWindowInterface&);
             // BackendMainWindowInterface& operator=(const BackendMainWindowInterface&);
         
+            static float DeviceUnitToPixels(float unit, HWND hwnd);
+
+            static float PixelsToDeviceUnit(float unit, HWND hwnd);
+
+            static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
         public:
             BackendMainWindowWin32_OpenGL3_3();
             ~BackendMainWindowWin32_OpenGL3_3() override;
