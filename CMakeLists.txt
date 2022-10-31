@@ -21,11 +21,12 @@ set(ssGUI_BACKEND "SFML" CACHE STRING "The backend that will be used by ssGUI")
 
 # Backend options variable
 if(WIN32)
-    set_property(CACHE ssGUI_BACKEND PROPERTY STRINGS "SFML" "Win32_OpenGL3_3" "Empty")     # Allow dropdown option
+    set_property(CACHE ssGUI_BACKEND PROPERTY STRINGS "SFML" "Win32_OpenGL3_3" "Template")     # Allow dropdown option
 else()
-    set_property(CACHE ssGUI_BACKEND PROPERTY STRINGS "SFML" "Empty")     # Allow dropdown option
+    set_property(CACHE ssGUI_BACKEND PROPERTY STRINGS "SFML" "Template")     # Allow dropdown option
 endif()
 
+# Show / unshow SFML options depending if SFML backend is selected or not
 if(ssGUI_BACKEND STREQUAL "SFML")
     set(ssGUI_USE_LOCAL_SFML ON CACHE BOOL "Use the SFML that comes with ssGUI")
     set(ssGUI_USE_SFML_TIME OFF CACHE BOOL "Use SFML time instead of chrono time")
@@ -129,10 +130,13 @@ endif()
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend")
 
+# Adding Backends
 if(ssGUI_BACKEND STREQUAL "SFML")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/SFML")
 elseif(ssGUI_BACKEND STREQUAL "Win32_OpenGL3_3")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/Win32_OpenGL3_3")
+elseif(ssGUI_BACKEND STREQUAL "Template")
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/Template")
 else()
     # message(FATAL_ERROR "Invalid Backend")
 endif()
