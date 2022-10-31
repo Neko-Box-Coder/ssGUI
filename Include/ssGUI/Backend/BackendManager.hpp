@@ -6,8 +6,11 @@
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendManager
     Backend manager allows backend objects to communicate to each other, without reference each other. 

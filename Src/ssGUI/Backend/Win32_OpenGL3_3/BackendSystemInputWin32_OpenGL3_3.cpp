@@ -253,6 +253,7 @@ namespace Backend
         
         return false;
         */
+        return true;
     }
 
     glm::vec2 BackendSystemInputWin32_OpenGL3_3::GetCurrentMouseScrollDelta() const
