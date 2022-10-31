@@ -10,7 +10,7 @@ namespace ssGUI
 
 namespace Helper
 {
-    double pi() const { return std::atan(1) * 4; };
+    double pi() { return std::atan(1) * 4; };
     inline void DrawCicle(std::vector<glm::vec2>& targetVec, glm::vec2 pos, glm::vec2 size, int numOfVertices, float fromAngle, float toAngle)
     {
         size *= 0.5;
@@ -27,5 +27,6 @@ namespace Helper
     };
 }
 
+}
 
 #endif
