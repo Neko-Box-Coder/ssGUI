@@ -209,21 +209,13 @@ file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
 # Building tests and examples 
 # ==========================================================
 
-if(ssGUI_BUILD_TESTS)
+function(AddFilesToExecutables folderToExe binSubFolder)
+    file(GLOB ssGUI_EXE_CPP_FILES "${folderToExe}*.cpp")
 
-    # set(ssGUI_TEST_CPP_FILES "" STRING)
-    file(GLOB ssGUI_TEST_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/*.cpp")
-
-    # message("${ssGUI_TEST_CPP_FILES}")
-
-    foreach(CUR_SOURCE_PATH ${ssGUI_TEST_CPP_FILES})
+    foreach(CUR_SOURCE_PATH ${ssGUI_EXE_CPP_FILES})
 
         # Get the file name without path and extension
         get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
-        
-        # message("${CUR_SOURCE_PATH}\n")
-        # message("${CUR_NAME}\n")
-        # message("${ssGUI_TEST_CPP_FILES}")
 
         # add the executable
         add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
@@ -232,8 +224,42 @@ if(ssGUI_BUILD_TESTS)
         target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
 
         # Sub-directory for build
-        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests")
-    endforeach(CUR_SOURCE_PATH "$[ssGUI_TEST_CPP_FILES}")
+        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY binSubFolder)
+    endforeach(CUR_SOURCE_PATH "${ssGUI_EXE_CPP_FILES}")
+
+endfunction()
+
+AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
+
+
+if(ssGUI_BUILD_TESTS)
+
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
+    
+
+    # # set(ssGUI_TEST_CPP_FILES "" STRING)
+    # file(GLOB ssGUI_TEST_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/*.cpp")
+
+    # # message("${ssGUI_TEST_CPP_FILES}")
+
+    # foreach(CUR_SOURCE_PATH ${ssGUI_TEST_CPP_FILES})
+
+    #     # Get the file name without path and extension
+    #     get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
+        
+    #     # message("${CUR_SOURCE_PATH}\n")
+    #     # message("${CUR_NAME}\n")
+    #     # message("${ssGUI_TEST_CPP_FILES}")
+
+    #     # add the executable
+    #     add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
+
+    #     # Link ssGUI to executable
+    #     target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
+
+    #     # Sub-directory for build
+    #     set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests")
+    # endforeach(CUR_SOURCE_PATH "${ssGUI_TEST_CPP_FILES}")
 
     # Copy resources for the Tests 
     file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"

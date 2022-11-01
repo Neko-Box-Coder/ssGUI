@@ -1,10 +1,5 @@
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
 
-#ifndef UNICODE
-#define UNICODE
-#endif 
-
-#include <windows.h>            /* must include this before GL/gl.h */
 #include "glad/glad.h"
 #include "ssLogger/ssLog.hpp"
 
@@ -13,7 +8,7 @@ namespace ssGUI
 
 namespace Backend
 {
-    float BackendMainWindowWin32_OpenGL3_3::deviceUnitToPixels(float unit, HWND hwnd)
+    float BackendMainWindowWin32_OpenGL3_3::DeviceUnitToPixels(float unit, HWND hwnd)
     {
         float dpi = GetDpiForWindow(hwnd);
         return unit * (dpi / 96.0f);
@@ -25,6 +20,39 @@ namespace Backend
         return unit / (dpi / 96.0f);
     }
     
+    LRESULT CALLBACK BackendMainWindowWin32_OpenGL3_3::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {        
+        switch (uMsg)
+        {
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            //display();                //Calling our OpenGL function
+            BeginPaint(hwnd, &ps);
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glFlush();
+            EndPaint(hwnd, &ps);
+            std::cout << "called\n";
+            return 0;
+        }
+
+        case WM_SIZE:
+            glViewport(0, 0, LOWORD(lParam), HIWORD(lParam));       //Notify OpenGL to change the viewport
+            PostMessage(hwnd, WM_PAINT, 0, 0);                      //Create WM_PAINT message
+            return 0;
+        }
+
+        //To manually invoke a message, use PostMessage method
+
+        //Pass back unprocessed message
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+
     BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3()
     {
         HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -74,10 +102,13 @@ namespace Backend
 
         // Check if window is created sucessfully. If not, you can check with GetLastError
         if (hwnd == NULL)
-            return -1;
+        {
+            ssLOG_LINE("Failed to create window");
+            ssLOG_EXIT_PROGRAM();
+        }
 
         //Get the device context for the window
-        hDC = GetDC(hWnd);
+        HDC hDC = GetDC(hwnd);
 
         //there is no guarantee that the contents of the stack that become
         //the pfd are zeroed, therefore _make sure_ to clear these bits.
@@ -85,18 +116,24 @@ namespace Backend
         memset(&pfd, 0, sizeof(pfd));
         pfd.nSize        = sizeof(pfd);
         pfd.nVersion     = 1;
-        pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | flags;
+        pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;
         pfd.iPixelType   = PFD_TYPE_RGBA;
         pfd.cColorBits   = 32;
 
         //Check if the pixel format we requested can be used
         int pf = ChoosePixelFormat(hDC, &pfd);
         if(pf == 0)
-            return -1;
+        {
+            ssLOG_LINE("Failed to ChoosePixelFormat");
+            ssLOG_EXIT_PROGRAM();
+        }
 
         //Set the pixel format for the window
         if(SetPixelFormat(hDC, pf, &pfd) == FALSE)
-            return -1;
+        {
+            ssLOG_LINE("Failed to SetPixelFormat");
+            ssLOG_EXIT_PROGRAM();
+        }
 
         //This function can be called to see if there is any changes to our chosen pixel format
         //DescribePixelFormat(hDC, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
@@ -104,18 +141,24 @@ namespace Backend
         //If there's another OpenGL window, the current Device Context can be released for now
         //ReleaseDC(hWnd, hDC);
 
-        hRC = wglCreateContext(hDC);        //Creates OpenGL Render Context
+        HGLRC hRC = wglCreateContext(hDC);        //Creates OpenGL Render Context
         wglMakeCurrent(hDC, hRC);           //Select the OpenGL Render Context
 
         if (!gladLoadGL())                  //Load Glad
-            return -1;
+        {
+            ssLOG_LINE("Failed to gladLoadGL");
+            ssLOG_EXIT_PROGRAM();
+        }
 
         //Check OpenGL version
         if (GLVersion.major < 3 && GLVersion.minor < 3)
-            return -1;
+        {
+            ssLOG_LINE("OpenGL version failed");
+            ssLOG_EXIT_PROGRAM();
+        }
 
         //Display the window
-        ShowWindow(hwnd, nCmdShow);
+        ShowWindow(hwnd, SW_SHOWNORMAL);
 
         // Run the message loop.
         //Get message for all the windows for this thread, with no priority on what types input comes first
@@ -125,12 +168,17 @@ namespace Backend
         {
             TranslateMessage(&msg);             //Translates any keyboard/text related inputs (if any)
             DispatchMessage(&msg);              //Dispatches the message to the right window(s) (i.e. WM_PAINT)
+            
+            bool hasMessage = PeekMessage(&msg, hwnd, 0, 0, PM_NOREMOVE);
+        
+            if(hasMessage)
+                std::cout << "hasMessage\n";
         }
 
         wglMakeCurrent(NULL, NULL);     //Release the OpenGL Render Context
-        ReleaseDC(hWnd, hDC);           //Release the Device Context
+        ReleaseDC(hwnd, hDC);           //Release the Device Context
         wglDeleteContext(hRC);          //Deallocate the Render Context
-        DestroyWindow(hWnd);            //Cleanup the window
+        DestroyWindow(hwnd);            //Cleanup the window
 
         //ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
@@ -151,6 +199,16 @@ namespace Backend
         //return glm::ivec2(curPos.x, curPos.y);
         return glm::ivec2();
     }
+
+    void BackendMainWindowWin32_OpenGL3_3::SyncPositionOffset()
+    {
+    }
+
+    glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetPositionOffset() const
+    {
+        return glm::ivec2();
+    }
+
 
     void BackendMainWindowWin32_OpenGL3_3::SetSize(glm::ivec2 size)
     {

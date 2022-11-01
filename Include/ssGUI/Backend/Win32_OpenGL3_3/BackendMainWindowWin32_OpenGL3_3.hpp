@@ -2,6 +2,12 @@
 #define SSGUI_BACKEND_MAIN_WINDOW_WIN32_OPEN_GL_3_3
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+
+#ifndef UNICODE
+#define UNICODE
+#define _UNICODE
+#endif
+
 #include <windows.h>            /* must include this before GL/gl.h */
 
 namespace ssGUI 
