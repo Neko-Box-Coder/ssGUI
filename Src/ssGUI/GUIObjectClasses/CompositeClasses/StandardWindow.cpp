@@ -14,6 +14,8 @@
 
 namespace ssGUI
 {
+    ssGUI::ImageData* StandardWindow::DefaultIcon = nullptr;
+
     StandardWindow::StandardWindow(StandardWindow const& other) : Window(other)
     {
         HorizontalPadding = other.GetHorizontalPadding();
@@ -200,7 +202,7 @@ namespace ssGUI
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
         SetAdaptiveTitleColorDifference(glm::ivec4(150, 150, 150, 0));
-
+        
         auto windowIcon = new ssGUI::Image();
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
         windowIcon->SetUserCreated(false);
@@ -209,9 +211,15 @@ namespace ssGUI
         windowIcon->SetMinSize(glm::vec2(5, 5));
         WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
-        auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-        data->LoadFromPath("Resources/WindowIcon.png");
-        windowIcon->SetImageData(data);
+        if(DefaultIcon == nullptr)
+        {
+            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+            if(data->LoadFromPath("Resources/WindowIcon.png"))
+            {
+                DefaultIcon = data;
+                windowIcon->SetImageData(DefaultIcon);
+            }
+        }
 
         //Setup button
         auto closeButton = new ssGUI::Button();
@@ -510,6 +518,12 @@ namespace ssGUI
     glm::ivec4 StandardWindow::GetAdaptiveTitleColorDifference() const
     {
         return TitleColorDifference;
+    }
+
+    void StandardWindow::CleanUpDefaultIconData()
+    {
+        if(DefaultIcon != nullptr)
+            ssGUI::Factory::Dispose(DefaultIcon);
     }
 
     void StandardWindow::SetTitlebarColor(glm::u8vec4 color)
