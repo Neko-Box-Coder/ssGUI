@@ -35,12 +35,11 @@ Please see the <offical SFML tutorial: https://www.sfml-dev.org/tutorials/2.5/#g
 
 You cannot be using the stable version of SFML, since ssGUI uses some features from SFML Master.
 
-You will need to be using the <(Specific) Snapshot: https://artifacts.sfml-dev.org/by-revision/939ec267dfa98e97438a5b76f79317c7e0738a92/> from SFML.
+You will need to be using the <Master Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> from SFML.
 
 > ⚠️ Some of those library files are stale and should not be used.
-> ⚠️ Since those files are copied automatically from master folder, that's why the dates are not correctly reflected.
-
 > ⚠️ The updated library files are all unix library files, vc16 and vc17.
+> ⚠️ If in doubt, look at the upload dates.
 
 Finally, you need to make sure the following include statements can access SFML modules as this is how ssGUI access SFML.
 
@@ -56,7 +55,11 @@ If you are using ssGUI as it is, or just want to try it out, you first need to d
 
 By default, Linux SFML libraries are included in the repo. 
 
-If you are not using Linux, please download the <(Specific) Snapshot: https://artifacts.sfml-dev.org/by-revision/939ec267dfa98e97438a5b76f79317c7e0738a92/> from SFML.
+If you are not using Linux, please download the <Master Snapshot: https://artifacts.sfml-dev.org/by-branch/master/> from SFML.
+
+> ⚠️ Some of those library files are stale and should not be used.
+> ⚠️ The updated library files are all unix library files, vc16 and vc17.
+> ⚠️ If in doubt, look at the upload dates.
 
 After that, you will need to place those files in _External/sfml_ folder if you are not using the ones in the repo.
 
