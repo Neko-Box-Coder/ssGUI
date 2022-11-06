@@ -3,6 +3,17 @@
 
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 
+#ifndef UNICODE
+#define UNICODE
+#define _UNICODE
+#endif
+
+#include <windows.h>            /* must include this before GL/gl.h */
+
+#include <queue>
+#include <utility>
+#include <unordered_map>
+
 namespace ssGUI
 {
     class GUIObject;
@@ -27,10 +38,15 @@ namespace Backend
             // BackendSystemInputInterface(const BackendSystemInputInterface&);
             // BackendSystemInputInterface& operator=(const BackendSystemInputInterface&);
 
+            std::unordered_map<HWND, ssGUI::Backend::BackendMainWindowInterface*> MainWindowRawHandles;
+
+
         public:
             BackendSystemInputWin32_OpenGL3_3();
             ~BackendSystemInputWin32_OpenGL3_3() override;
             
+            bool HandleMessage(MSG msg);
+
             //function: UpdateInput
             //Poll and updates the input
             void UpdateInput() override;

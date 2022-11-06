@@ -1,7 +1,10 @@
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
+#include "ssGUI/Backend/Win32_OpenGL3_3/BackendSystemInputWin32_OpenGL3_3.hpp"
 
-#include "glad/glad.h"
+#include "ssGUI/Backend/BackendManager.hpp"
+
 #include "ssLogger/ssLog.hpp"
+#include <functional>
 
 namespace ssGUI
 {
@@ -21,31 +24,20 @@ namespace Backend
     }
     
     LRESULT CALLBACK BackendMainWindowWin32_OpenGL3_3::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {        
-        switch (uMsg)
-        {
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
+    {     
+        MSG msg = {hwnd, uMsg, wParam, lParam, 0, 0};
 
-        case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            //display();                //Calling our OpenGL function
-            BeginPaint(hwnd, &ps);
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glFlush();
-            EndPaint(hwnd, &ps);
-            std::cout << "called\n";
-            return 0;
-        }
+        bool consumed = false;
+        
+        auto inputInterface = static_cast<ssGUI::Backend::BackendSystemInputWin32_OpenGL3_3*>
+                                (ssGUI::Backend::BackendManager::GetInputInterface());
+        
+        //It is possible to receive messages even before the backend input got initialized, so need nullptr check
+        if(inputInterface != nullptr)
+            consumed = inputInterface->HandleMessage(msg);
 
-        case WM_SIZE:
-            glViewport(0, 0, LOWORD(lParam), HIWORD(lParam));       //Notify OpenGL to change the viewport
-            PostMessage(hwnd, WM_PAINT, 0, 0);                      //Create WM_PAINT message
-            return 0;
-        }
+        if(consumed)
+            return true;
 
         //To manually invoke a message, use PostMessage method
 
@@ -53,51 +45,172 @@ namespace Backend
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 
-    BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3()
+    void BackendMainWindowWin32_OpenGL3_3::SetWindowStyle()
+    {
+        LONG result = 0;
+
+        if(!HasTitlebar() || GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS)
+            result = SetWindowLong(CurrentWindowHandle, GWL_STYLE, WS_POPUP | WS_VISIBLE | WS_SYSMENU);
+        else
+        {
+            LONG windowStyle =  WS_OVERLAPPEDWINDOW | 
+                                WS_CLIPSIBLINGS |
+                                WS_CLIPCHILDREN;
+
+            windowStyle &= IsResizable() ? windowStyle : ~WS_THICKFRAME;
+
+            if(HasCloseButton())
+                EnableMenuItem(GetSystemMenu(CurrentWindowHandle, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_ENABLED);
+            else
+                EnableMenuItem(GetSystemMenu(CurrentWindowHandle, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);            
+
+            result = SetWindowLong( CurrentWindowHandle, 
+                                    GWL_STYLE, 
+                                    windowStyle);
+
+            POINT winPos = GetRawPosition();
+            POINT winSize = GetRawSize();
+            if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, winPos.x, winPos.y, winSize.x, winSize.y, SWP_SHOWWINDOW))
+                ssLOG_LINE("Failed to set window position");
+        }
+
+        if(!result)
+            ssLOG_LINE("Failed to change window style");
+    }
+
+    int BackendMainWindowWin32_OpenGL3_3::GetTitlebarHeight() const
+    {
+        // From firefox
+        // mCaptionHeight is the default size of the NC area at
+        // the top of the window. If the window has a caption,
+        // the size is calculated as the sum of:
+        //      SM_CYFRAME        - The thickness of the sizing border
+        //                          around a resizable window
+        //      SM_CXPADDEDBORDER - The amount of border padding
+        //                          for captioned windows
+        //      SM_CYCAPTION      - The height of the caption area
+        //
+        // If the window does not have a caption, mCaptionHeight will be equal to
+        // `GetSystemMetrics(SM_CYFRAME)`
+        int height = (GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYCAPTION) +
+            GetSystemMetrics(SM_CXPADDEDBORDER));
+
+        return height;
+    }
+
+    POINT BackendMainWindowWin32_OpenGL3_3::GetRawPosition() const
+    {
+        RECT windowRect;
+
+        if(!GetWindowRect(CurrentWindowHandle, &windowRect))
+        {
+            ssLOG_LINE("Failed to get window position");
+            return POINT();
+        }
+
+        POINT pt;
+        pt.x = windowRect.left;
+        pt.y = windowRect.top;
+        
+        return pt;
+    }
+
+    POINT BackendMainWindowWin32_OpenGL3_3::GetRawSize() const
+    {
+        RECT windowRect;
+
+        if(!GetWindowRect(CurrentWindowHandle, &windowRect))
+        {
+            ssLOG_LINE("Failed to get window size");
+            return POINT();
+        }
+
+        POINT pt;
+        pt.x = windowRect.right - windowRect.left;
+        pt.y = windowRect.bottom - windowRect.top;
+        
+        return pt;
+    }
+
+    void BackendMainWindowWin32_OpenGL3_3::ssGUI_DestroyWindow()
+    {
+        wglMakeCurrent(NULL, NULL);                     //Release the OpenGL Render Context
+        HDC hDC = GetDC(CurrentWindowHandle);
+        ReleaseDC(CurrentWindowHandle, hDC);            //Release the Device Context
+        wglDeleteContext(CurrentOpenGLContext);         //Deallocate the Render Context
+        DestroyWindow(CurrentWindowHandle);             //Cleanup the window   
+    }
+
+    void BackendMainWindowWin32_OpenGL3_3::ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfid, bool generatePfDesc, const wchar_t* className)
     {
         HINSTANCE hInstance = GetModuleHandle(NULL);
-        // Register the window class in order to create it
-        const wchar_t CLASS_NAME[]  = L"ssGUI MainWindow";
-        WNDCLASS wc = { };
-        wc.style         = CS_OWNDC;                                        //Using own drawing context
-        wc.lpfnWndProc   = BackendMainWindowWin32_OpenGL3_3::WindowProc;    //Window process callback function
-        wc.cbClsExtra    = 0;
-        wc.cbWndExtra    = 0;
-        wc.hInstance     = hInstance;                       //Instance handle
-        wc.hIcon         = LoadIcon(NULL, IDI_WINLOGO);
-        wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
-        wc.hbrBackground = NULL;
-        wc.lpszMenuName  = NULL;
-        wc.lpszClassName = CLASS_NAME;                        //Class name
 
-        //Alternatively, you can use the Ex version
-        if(!RegisterClass(&wc))
+        if(!SetProcessDPIAware())
+            ssLOG_LINE("Failed to set DPI aware");
+
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
         {
-            ssLOG_LINE("Failed to RegisterClass");
-            ssLOG_EXIT_PROGRAM();
-            return;
+            DEVMODE dmScreenSettings;                                       // Device Mode
+            memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));         // Makes Sure Memory's Cleared
+            dmScreenSettings.dmSize = sizeof(dmScreenSettings);             // Size Of The Devmode Structure
+            dmScreenSettings.dmFields = DM_BITSPERPEL |
+                                        DM_PELSWIDTH |
+                                        DM_PELSHEIGHT;
+            dmScreenSettings.dmPelsWidth    = fullscreenWidth;              // Selected Screen Width
+            dmScreenSettings.dmPelsHeight   = fullscreenHeight;             // Selected Screen Height
+            dmScreenSettings.dmBitsPerPel   = 32;                           // Selected Bits Per Pixel
+
+            // Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
+            LONG result = ChangeDisplaySettings(&dmScreenSettings,CDS_FULLSCREEN);
+            if (result != DISP_CHANGE_SUCCESSFUL)
+            {
+                ssLOG_LINE("Failed to change to fullscreen: "<<result);
+                ssLOG_LINE("falling back to window mode");
+                CurrentWindowMode = ssGUI::Enums::WindowMode::NORMAL;
+            }
         }
+
+        DWORD exStyle = 0;
+        DWORD style = 0;
+        bool fullscreen = GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN;
+        if(fullscreen)  // Are We Still In Fullscreen Mode?
+        {
+            exStyle = WS_EX_APPWINDOW;  // Window Extended Style
+            style = WS_POPUP |          // Windows Style
+                    WS_VISIBLE | 
+                    WS_CLIPSIBLINGS | 
+                    WS_CLIPCHILDREN | 
+                    WS_SYSMENU;   
+            //ShowCursor(FALSE);        // Hide Mouse Pointer
+        }
+        else    //Windowed
+        {
+            exStyle = WS_EX_LEFT;                       // Window Extended Style, left aligned text
+            style = WS_OVERLAPPEDWINDOW |               // Window style, has titlebar and border
+                    WS_CLIPSIBLINGS |                   // Diasble clipping so render each window seperately
+                    WS_CLIPCHILDREN;    
+        }
+
+        std::wstring title = GetTitle();
 
         // Create the window.
         HWND hwnd = CreateWindowEx
         (
-            WS_EX_LEFT,                     // Extended Window Styles, left aligned text
-            CLASS_NAME,                     // Window class
-            L"Learn to Program Windows",    // Window title text
-            WS_OVERLAPPEDWINDOW |           // Window style, has titlebar and border
-            WS_CLIPSIBLINGS     |           // Diasble clipping so render each window seperately
-            WS_CLIPCHILDREN,
+            exStyle,                // Extended Window Styles
+            className,              // Window class
+            title.c_str(),          // Window title text
+            style,
 
             // Size and position
-            CW_USEDEFAULT,                  //X (relative to parent)
-            CW_USEDEFAULT,                  //Y (relative to parent)
-            800,                            //Width, in DeviceUnits
-            600,                            //Height, in DeviceUnits
+            CW_USEDEFAULT,                          //X (relative to parent)
+            CW_USEDEFAULT,                          //Y (relative to parent)
+            fullscreen ? fullscreenWidth : 800,     //Width, in DeviceUnits
+            fullscreen ? fullscreenHeight : 800,    //Height, in DeviceUnits
 
-            NULL,                           // Parent window    
-            NULL,                           // Menu
-            hInstance,                      // Instance handle
-            NULL                            // Additional application data
+            NULL,                                   // Parent window    
+            NULL,                                   // Menu
+            hInstance,                              // Instance handle
+            NULL                                    // Additional application data
         );
 
         // Check if window is created sucessfully. If not, you can check with GetLastError
@@ -109,29 +222,104 @@ namespace Backend
 
         //Get the device context for the window
         HDC hDC = GetDC(hwnd);
-
-        //there is no guarantee that the contents of the stack that become
-        //the pfd are zeroed, therefore _make sure_ to clear these bits.
-        PIXELFORMATDESCRIPTOR pfd;
-        memset(&pfd, 0, sizeof(pfd));
-        pfd.nSize        = sizeof(pfd);
-        pfd.nVersion     = 1;
-        pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;
-        pfd.iPixelType   = PFD_TYPE_RGBA;
-        pfd.cColorBits   = 32;
-
-        //Check if the pixel format we requested can be used
-        int pf = ChoosePixelFormat(hDC, &pfd);
-        if(pf == 0)
+        if(hDC == NULL)
         {
-            ssLOG_LINE("Failed to ChoosePixelFormat");
+            ssLOG_LINE("Failed to GetDC");
             ssLOG_EXIT_PROGRAM();
         }
 
+        int fallback = 0;
+
+        fallback:
+        if(generatePfDesc)
+            GeneratePixelFormatDescriptor(CurrentPictureFormatDescriptor);
+
+        if(generatePfid)
+        {
+            int pf = 0;
+            //Check if the pixel format we requested can be used
+            pf = ChoosePixelFormat(hDC, &CurrentPictureFormatDescriptor);
+            if(pf == 0)
+            {
+                ssLOG_LINE("Failed to ChoosePixelFormat");
+                ssLOG_EXIT_PROGRAM();
+            }
+            CurrentPixelFormatId = pf;
+        }
+
         //Set the pixel format for the window
-        if(SetPixelFormat(hDC, pf, &pfd) == FALSE)
+        if(SetPixelFormat(hDC, CurrentPixelFormatId, &CurrentPictureFormatDescriptor) == FALSE)
         {
             ssLOG_LINE("Failed to SetPixelFormat");
+            ssLOG_LINE("Falling back...");
+
+            if(MsaaLevel > 0)
+            {
+                ssLOG_LINE("Trying to disable MSAA and retry...");
+                generatePfid = true;
+                MsaaLevel = 0;
+                goto fallback;
+            }
+
+            //Decreasing each bitdepth and see what works
+
+            //Seems like no one uses Auxiliary buffer, this could be a problem
+            if(CurrentPictureFormatDescriptor.cAuxBuffers == 32)
+            {
+                CurrentPictureFormatDescriptor.cAuxBuffers = 16;
+                ssLOG_LINE("cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
+                goto fallback;
+            }
+            else if(CurrentPictureFormatDescriptor.cAuxBuffers == 16)
+            {
+                CurrentPictureFormatDescriptor.cAuxBuffers = 8;
+                ssLOG_LINE("cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
+                goto fallback;
+            }
+            else if(CurrentPictureFormatDescriptor.cAuxBuffers == 16)
+            {
+                CurrentPictureFormatDescriptor.cAuxBuffers = 0;
+                ssLOG_LINE("cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
+                goto fallback;
+            }
+
+            //Normally stencil bit can be a problem when above 8 bits
+            else if(CurrentPictureFormatDescriptor.cStencilBits == 32)
+            {
+                CurrentPictureFormatDescriptor.cStencilBits = 16;
+                ssLOG_LINE("cStencilBits: "<<CurrentPictureFormatDescriptor.cStencilBits);
+                goto fallback;
+            }
+            else if(CurrentPictureFormatDescriptor.cStencilBits == 16)
+            {
+                CurrentPictureFormatDescriptor.cStencilBits = 8;
+                ssLOG_LINE("cStencilBits: "<<CurrentPictureFormatDescriptor.cStencilBits);
+                goto fallback;
+            }
+            
+            //Maybe try turning off accumulative buffer?
+            else if(CurrentPictureFormatDescriptor.cAccumBits == 32)
+            {
+                CurrentPictureFormatDescriptor.cAccumBits = 0;
+                ssLOG_LINE("cAccumBits: "<<CurrentPictureFormatDescriptor.cAccumBits);
+                goto fallback;
+            }
+
+            //Very unlikely for depth buffer to have problem but worth a try
+            else if(CurrentPictureFormatDescriptor.cDepthBits == 32)
+            {
+                CurrentPictureFormatDescriptor.cDepthBits = 16;
+                ssLOG_LINE("cDepthBits: "<<CurrentPictureFormatDescriptor.cDepthBits);
+                goto fallback;
+            }
+            else if(CurrentPictureFormatDescriptor.cDepthBits == 16)
+            {
+                CurrentPictureFormatDescriptor.cDepthBits = 8;
+                ssLOG_LINE("cDepthBits: "<<CurrentPictureFormatDescriptor.cDepthBits);
+                goto fallback;
+            }
+
+            ssLOG_LINE("Failed to resolve a pixel format, exited");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -142,7 +330,23 @@ namespace Backend
         //ReleaseDC(hWnd, hDC);
 
         HGLRC hRC = wglCreateContext(hDC);        //Creates OpenGL Render Context
-        wglMakeCurrent(hDC, hRC);           //Select the OpenGL Render Context
+        if(hRC == NULL)
+        {
+            ssLOG_LINE("Failed to wglCreateContext");
+            ssLOG_EXIT_PROGRAM();
+        }
+
+        if(!wglMakeCurrent(hDC, hRC))           //Select the OpenGL Render Context
+        {
+            ssLOG_LINE("Failed to wglMakeCurrent");
+            ssLOG_EXIT_PROGRAM();
+        }
+
+        if(!gladLoadWGL(hDC))
+        {
+            ssLOG_LINE("Failed to gladLoadWGL");
+            ssLOG_EXIT_PROGRAM();
+        }
 
         if (!gladLoadGL())                  //Load Glad
         {
@@ -157,47 +361,302 @@ namespace Backend
             ssLOG_EXIT_PROGRAM();
         }
 
-        //Display the window
-        ShowWindow(hwnd, SW_SHOWNORMAL);
+        if(MsaaLevel > 0)
+            glEnable(GL_MULTISAMPLE);
+        else
+            glDisable(GL_MULTISAMPLE);
 
-        // Run the message loop.
-        //Get message for all the windows for this thread, with no priority on what types input comes first
-        //GetMessage will return zero if recieves WM_QUIT message, or -1 if there's an error
-        MSG msg = { };
-        while (GetMessage(&msg, NULL, 0, 0) > 0)
+        //Display the window
+        ShowWindow(hwnd, SW_SHOW);
+
+        /* //For debugging
+        const int sampleAttributes[] = {WGL_SAMPLE_BUFFERS_ARB, WGL_SAMPLES_ARB};
+        int       sampleValues[2];
+
+        int pfID = GetPixelFormat(hDC);
+        if (wglGetPixelFormatAttribivARB(hDC, pfID, PFD_MAIN_PLANE, 2, sampleAttributes, sampleValues) ==
+            TRUE)
         {
-            TranslateMessage(&msg);             //Translates any keyboard/text related inputs (if any)
-            DispatchMessage(&msg);              //Dispatches the message to the right window(s) (i.e. WM_PAINT)
-            
-            bool hasMessage = PeekMessage(&msg, hwnd, 0, 0, PM_NOREMOVE);
-        
-            if(hasMessage)
-                std::cout << "hasMessage\n";
+            //m_settings.antialiasingLevel = static_cast<unsigned int>(sampleValues[0] ? sampleValues[1] : 0);
+            ssLOG_LINE("WGL_SAMPLE_BUFFERS_ARB: "<<sampleValues[0]);
+            ssLOG_LINE("WGL_SAMPLES_ARB: "<<sampleValues[1]);
+        }
+        else
+            ssLOG_LINE("Failed");
+        */
+
+        CurrentWindowHandle = hwnd;
+        CurrentOpenGLContext = hRC;
+
+        if(!fullscreen)
+            ApplyAllSettingsToWindow();
+    }
+
+    void BackendMainWindowWin32_OpenGL3_3::ApplyAllSettingsToWindow()
+    {
+        std::wstring title = GetTitle();
+        SetTitle(title);
+        bool visible = IsVisible();
+        SetVisible(visible);
+        SetWindowStyle();
+    }
+
+    /*
+    bool BackendMainWindowWin32_OpenGL3_3::WGLExtensionSupported(const char *extension_name, bool isARB)
+    {
+        //Lambda for checking target extension string from all the extensions
+        auto checkExtensionExists = [](const char* allExts, const char* targetExt) -> bool
+        {
+            const size_t extLen = strlen(targetExt);
+
+            // Begin Examination At Start Of String, Increment By 1 On False Match
+            for (const char* p = allExts; ; p++)
+            {
+                // Advance p Up To The Next Possible Match
+                p = strstr(p, targetExt);
+ 
+                if (p == NULL)
+                    return false;                       // No Match
+ 
+                // Make Sure That Match Is At The Start Of The String Or That
+                // The Previous Char Is A Space, Or Else We Could Accidentally
+                // Match "wglFunkywglExtension" With "wglExtension"
+ 
+                // Also, Make Sure That The Following Character Is Space Or NULL
+                // Or Else "wglExtensionTwo" Might Match "wglExtension"
+                if ((p==allExts || p[-1]==' ') && (p[extLen]=='\0' || p[extLen]==' '))
+                    return true;                        // Match
+            }
+        };
+
+        if(!isARB)
+        {
+            // this is pointer to function which returns pointer to string with list of all wgl extensions
+            PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = NULL;
+
+            // determine pointer to wglGetExtensionsStringEXT function
+            _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) wglGetProcAddress("wglGetExtensionsStringEXT");
+
+            if(_wglGetExtensionsStringEXT == NULL)
+            {
+                ssLOG_LINE("Failed to get extension");
+                return false;
+            }
+
+            return checkExtensionExists(_wglGetExtensionsStringEXT(), extension_name);
+        }
+        else
+        {
+            // Try To Use wglGetExtensionStringARB On Current DC, If Possible
+            PROC wglGetExtString = wglGetProcAddress("wglGetExtensionsStringARB");
+            const char *supported = NULL;
+
+            if (wglGetExtString)
+                supported = ((char*(__stdcall*)(HDC))wglGetExtString)(wglGetCurrentDC());
+ 
+            // If That Failed, Try Standard Opengl Extensions String
+            if (supported == NULL)
+                supported = (char*)glGetString(GL_EXTENSIONS);
+ 
+            // If That Failed Too, Must Be No Extensions Supported
+            if (supported == NULL)
+            {
+                ssLOG_LINE("Failed to get extension");
+                return false;
+            }
+
+            return checkExtensionExists(supported, extension_name);
+        }
+    }*/
+
+    bool BackendMainWindowWin32_OpenGL3_3::GetMsaaPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level)
+    {
+        if(!gladLoadWGL(hDC))
+        {
+            ssLOG_LINE("Failed to gladLoadWGL");
+            return false;
         }
 
-        wglMakeCurrent(NULL, NULL);     //Release the OpenGL Render Context
-        ReleaseDC(hwnd, hDC);           //Release the Device Context
-        wglDeleteContext(hRC);          //Deallocate the Render Context
-        DestroyWindow(hwnd);            //Cleanup the window
+        if(!GLAD_WGL_ARB_multisample)
+        {
+            ssLOG_LINE("GLAD_WGL_ARB_multisample not supported");
+            return false;
+        }
 
-        //ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        // fill attributes of pixel format that we want to use within our window
+        int attributes[] = 
+        {
+            WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+            WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+            WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
+            WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB,
+            WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
+            WGL_COLOR_BITS_ARB,     32,
+            WGL_ALPHA_BITS_ARB,     8,
+            WGL_DEPTH_BITS_ARB,     32,
+            WGL_STENCIL_BITS_ARB,   8,
+            WGL_ACCUM_BITS_ARB,     32,
+            WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,                    // Enable multisampling
+            WGL_SAMPLES_ARB,        level,                      // Number of samples
+            0
+        };
+
+        // check if such pixel format is present in our system
+        UINT numFormats;
+        float fAttributes[] = {0,0};
+        bool valid = wglChoosePixelFormatARB(hDC, attributes, fAttributes, 1, &pfid, &numFormats);
+
+        if (valid && numFormats >= 1)
+            return true;
+
+        return false;
+    }
+
+    void BackendMainWindowWin32_OpenGL3_3::GeneratePixelFormatDescriptor(PIXELFORMATDESCRIPTOR& pfd)
+    {
+        //there is no guarantee that the contents of the stack that become
+        //the pfd are zeroed, therefore _make sure_ to clear these bits.
+        memset(&pfd, 0, sizeof(pfd));
+        pfd.nSize        = sizeof(pfd);
+        pfd.nVersion     = 1;
+        pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+        pfd.iPixelType   = PFD_TYPE_RGBA;
+        pfd.cColorBits   = 32;
+        pfd.cAlphaBits   = 8;
+        pfd.cAccumBits   = 32;
+        pfd.cDepthBits   = 32;
+        pfd.cStencilBits = 8;
+        pfd.cAuxBuffers  = 32;
+    }
+
+    void BackendMainWindowWin32_OpenGL3_3::ssGUI_RegisterClass(const wchar_t* className)
+    {
+        HINSTANCE hInstance = GetModuleHandle(NULL);
+        WNDCLASS wc = { };
+        wc.style            = CS_OWNDC;                      //Using own drawing context
+        wc.lpfnWndProc      = WindowProc; //Window process callback function
+        wc.cbClsExtra       = 0;
+        wc.cbWndExtra       = 0;
+        wc.hInstance        = hInstance;                       //Instance handle
+        wc.hIcon            = LoadIcon(NULL, IDI_WINLOGO);
+        wc.hCursor          = LoadCursor(NULL, IDC_ARROW);
+        wc.hbrBackground    = NULL;
+        wc.lpszMenuName     = NULL;
+        wc.lpszClassName    = className;                        //Class name
+
+        //Alternatively, you can use the Ex version
+        if(!RegisterClass(&wc))
+        {
+            ssLOG_LINE("Failed to RegisterClass");
+            ssLOG_EXIT_PROGRAM();
+            return;
+        }
+    }
+
+    bool BackendMainWindowWin32_OpenGL3_3::GetActiveMonitorPosSize(glm::ivec2& pos, glm::ivec2& size)
+    {
+        HMONITOR activeMonitor = MonitorFromWindow(CurrentWindowHandle, MONITOR_DEFAULTTONEAREST);
+        MONITORINFO info;
+        memset(&info, 0, sizeof(info));
+        info.cbSize = sizeof(info);
+        if(!GetMonitorInfo(activeMonitor, &info))
+        {
+            ssLOG_LINE("Failed to get active monitor");
+            return false;
+        }
+
+        pos.x = info.rcMonitor.left;
+        pos.y = info.rcMonitor.top;
+        size.x = info.rcMonitor.right - info.rcMonitor.left;
+        size.y = info.rcMonitor.bottom - info.rcMonitor.top;
+        return true;
+    }
+
+
+    BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3() :  CurrentWindowHandle(nullptr),
+                                                                            CurrentOpenGLContext(NULL),
+                                                                            CurrentPictureFormatDescriptor(),
+                                                                            CurrentPixelFormatId(0),
+                                                                            MsaaLevel(0),
+                                                                            OriginalScreenResolution(),
+                                                                            Closed(false),
+                                                                            Visible(true),
+                                                                            OnCloseCallback(),
+                                                                            ExternalFocusChangedCallback(),
+                                                                            Title(),
+                                                                            Titlebar(true),
+                                                                            Resizable(true),
+                                                                            CloseButton(true),
+                                                                            IsClosingAborted(false),
+                                                                            PublicHandles(),
+                                                                            CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL)
+    {
+        // Register the window class in order to create it
+        
+        //TODO: Bad way of doing it
+        static bool oneTimeInit = false;
+
+        if(!oneTimeInit)
+        {
+            oneTimeInit = true;
+            ssGUI_RegisterClass(CLASS_NAME);
+        }
+
+        ssGUI_CreateWindow(0, 0, true, true, CLASS_NAME);
+
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
 
     BackendMainWindowWin32_OpenGL3_3::~BackendMainWindowWin32_OpenGL3_3()
-    {
-        //ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+    {        
+        if(!IsClosed())
+        {
+            ssGUI_DestroyWindow();
+        }
+
+        ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
     
     void BackendMainWindowWin32_OpenGL3_3::SetPosition(glm::ivec2 pos)
     {
-        //CurrentWindow.setPosition(sf::Vector2i(pos.x, pos.y));
+        //Ignore borderless and fullscreen request
+        if( GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN ||
+            GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS )
+        {
+            return;
+        }
+        
+        POINT windowSize = GetRawSize();
+        POINT pt;
+        pt.x = pos.x;
+        pt.y = pos.y;
+        
+        //Need to apply visual offset because GetWindowRect includes the invisble resize hibox
+        if(HasTitlebar())
+            pt.x = pt.x - 7;
+
+        if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, pt.x, pt.y, windowSize.x, windowSize.y, SWP_SHOWWINDOW))
+            ssLOG_LINE("Failed to set window position");
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetPosition() const
     {
-        //sf::Vector2i curPos = CurrentWindow.getPosition();
-        //return glm::ivec2(curPos.x, curPos.y);
-        return glm::ivec2();
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+            return glm::ivec2(0, 0);
+
+        RECT windowRect;
+
+        if(!GetWindowRect(CurrentWindowHandle, &windowRect))
+        {
+            ssLOG_LINE("Failed to get window position");
+            return glm::ivec2();
+        }
+
+        //Need to apply visual offset because GetWindowRect includes the invisble resize hibox
+        if(HasTitlebar())
+            windowRect.left = windowRect.left + 7;
+
+        return glm::ivec2(windowRect.left, windowRect.top);
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SyncPositionOffset()
@@ -206,34 +665,108 @@ namespace Backend
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetPositionOffset() const
     {
-        return glm::ivec2();
+        if(GetWindowMode() != ssGUI::Enums::WindowMode::NORMAL)
+            return glm::ivec2(0, 0);
+        
+        POINT clientPt;
+
+        clientPt.x = 0;
+        clientPt.y = 0;
+
+        if(!ClientToScreen(CurrentWindowHandle, &clientPt))
+        {
+            ssLOG_LINE("Failed to get position offset");
+            return glm::ivec2();
+        }
+        
+        RECT winRect;
+        if(!GetWindowRect(CurrentWindowHandle, &winRect))
+            ssLOG_LINE("Failed");
+
+        //Hitbox offset
+        //return glm::ivec2(clientPt.x - winRect.left, clientPt.y - winRect.top);
+        
+        //Visual offset
+        return glm::ivec2(GetSystemMetrics(SM_CYBORDER), GetTitlebarHeight());
     }
 
 
     void BackendMainWindowWin32_OpenGL3_3::SetSize(glm::ivec2 size)
     {
-        //CurrentWindow.setSize(sf::Vector2u(size.x, size.y));
+        //Ignore request for borderless winodw
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS)
+            return;
 
-        //View is now set in BackendSystemInputSFML
-        // CurrentWindow.setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f((float)size.x, (float)size.y))));
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+        {
+            //Iterate the monitor sizes
+            DEVMODE fullscreenSettings;
+            memset(&fullscreenSettings, 0, sizeof(fullscreenSettings));
+            fullscreenSettings.dmSize = sizeof(fullscreenSettings);
+
+            int settingsIndex = 0;
+
+            glm::ivec2 finalizedSize = glm::ivec2();
+
+            while(EnumDisplaySettings(NULL, settingsIndex++, &fullscreenSettings) != FALSE)
+            {
+                if( fullscreenSettings.dmBitsPerPel >= 32 && 
+                    size.x <= fullscreenSettings.dmPelsWidth &&
+                    size.y <= fullscreenSettings.dmPelsHeight)
+                {
+                    finalizedSize = glm::ivec2(fullscreenSettings.dmPelsWidth, fullscreenSettings.dmPelsHeight);
+                    break;
+                }
+            }
+
+            if(finalizedSize.x == 0 && finalizedSize.y == 0)
+            {
+                ssLOG_LINE("Failed to set size: "<<size.x<<", "<<size.y);
+                return;
+            }
+
+            ssLOG_LINE("Finalized size: "<<finalizedSize.x<<", "<<finalizedSize.y)
+
+            ssGUI_DestroyWindow();
+            ssGUI_CreateWindow(finalizedSize.x, finalizedSize.y, false, false, CLASS_NAME);
+            return;
+        }
+
+        POINT windowPos = GetRawPosition();
+
+        if(HasTitlebar())
+        {
+            size.x += 7 * 2;
+            size.y += 7;
+        }
+
+        if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, windowPos.x, windowPos.y, size.x, size.y, SWP_SHOWWINDOW))
+            ssLOG_LINE("Failed to set window size");
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetSize() const
     {
-        //sf::Vector2u curSize = CurrentWindow.getSize();
-        //return glm::ivec2(curSize.x, curSize.y);
-        return glm::ivec2();
+        //This seems to work also for fullscreen
+
+        RECT windowRect;
+
+        if(!GetWindowRect(CurrentWindowHandle, &windowRect))
+        {
+            ssLOG_LINE("Failed to get window size");
+            return glm::ivec2();
+        }
+
+        return glm::ivec2(windowRect.right - windowRect.left - (HasTitlebar() ? 7*2 : 0), windowRect.bottom - windowRect.top - (HasTitlebar() ? 7 : 0));
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsClosed() const
     {
-        //return Closed;
-        return true;
+        return Closed;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::Close()
     {
-        /*for(int i = 0; i < OnCloseCallback.size(); i++)
+        for(int i = 0; i < OnCloseCallback.size(); i++)
         {
             if(OnCloseCallback[i] != nullptr)
                 OnCloseCallback[i]();
@@ -247,37 +780,39 @@ namespace Backend
 
         Closed = true;
 
-        CurrentWindow.close();*/
+        ssGUI_DestroyWindow();
     }
 
     void BackendMainWindowWin32_OpenGL3_3::AbortClosing()
     {
-        //IsClosingAborted = true;
+        IsClosingAborted = true;
     }
 
     int BackendMainWindowWin32_OpenGL3_3::AddOnCloseEvent(std::function<void()> func)
     {
-        //OnCloseCallback.push_back(func);
-        //return OnCloseCallback.size() - 1;
-        return 0;
+        OnCloseCallback.push_back(func);
+        return OnCloseCallback.size() - 1;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::RemoveOnCloseEvent(int index)
     {
-        //OnCloseCallback[index] = nullptr;
+        OnCloseCallback[index] = nullptr;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetTitle(std::wstring title)
-    {
-        //Title = title;
-        //CurrentWindow.setTitle(Title);
+    {   
+        if(!SetWindowText(CurrentWindowHandle, Title.c_str()))
+        {
+            ssLOG_LINE("Failed to set title");
+            return;
+        }
+
+        Title = title;
     }
 
     std::wstring BackendMainWindowWin32_OpenGL3_3::GetTitle() const
     {
-        //return Title;
-
-        return L"";
+        return Title;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
@@ -286,41 +821,45 @@ namespace Backend
         //sf::Image sfImg = (*static_cast<sf::Texture*>(castedIcon.GetRawHandle())).copyToImage();
 
         //CurrentWindow.setIcon(sf::Vector2u(sfImg.getSize().x, sfImg.getSize().y), sfImg.getPixelsPtr());
+        //TODO
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetVisible(bool visible)
     {
-        //CurrentWindow.setVisible(visible);
-        //Visible = visible;
+        Visible = visible;
+
+        if(!visible && !ShowWindow(CurrentWindowHandle, SW_HIDE))
+            ssLOG_LINE("Hide window failed");
+        
+        if(visible && !ShowWindow(CurrentWindowHandle, SW_SHOW))
+            ssLOG_LINE("Show window failed");
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsVisible() const
     {
-        //return Visible;
-        return true;
+        return Visible;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetVSync(bool vSync)
     {
-        //CurrentWindow.setVerticalSyncEnabled(vSync);
-        //VSync = vSync;
+        //For details of this function, check https://registry.khronos.org/OpenGL/extensions/EXT/WGL_EXT_swap_control.txt
+        wglSwapIntervalEXT(vSync);
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsVSync() const
     {
-        //return VSync;
-        return true;
+        return wglGetSwapIntervalEXT() != FALSE;
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsFocused() const
     {
         //return CurrentWindow.hasFocus();
-        return true;
+        return GetActiveWindow() == CurrentWindowHandle;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetFocus(bool focus, bool externalByUser)
     {
-        /*if(externalByUser)
+        if(externalByUser)
         {
             for(int i = 0; i < ExternalFocusChangedCallback.size(); i++)
             {
@@ -329,96 +868,195 @@ namespace Backend
             }
         }
         else if(focus)
-            CurrentWindow.requestFocus();*/
+        {
+            if(SetActiveWindow(CurrentWindowHandle) == NULL)
+                ssLOG_LINE("Failed to set focus for backend mainwindow");
+        }
     }
 
     int BackendMainWindowWin32_OpenGL3_3::AddFocusChangedByUserEvent(std::function<void(bool focused)> func)
     {
-        //ExternalFocusChangedCallback.push_back(func);
-        //return ExternalFocusChangedCallback.size() - 1;
-        return 0;
+        ExternalFocusChangedCallback.push_back(func);
+        return ExternalFocusChangedCallback.size() - 1;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::RemoveFocusChangedByUserEvent(int index)
     {
-        //ExternalFocusChangedCallback[index] = nullptr;
+        ExternalFocusChangedCallback[index] = nullptr;
     }
 
     int BackendMainWindowWin32_OpenGL3_3::GetMSAA() const
     {
-        //return CurrentWindow.getSettings().antialiasingLevel;
-        return 0;
+        return MsaaLevel;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetMSAA(int level)
-    {
-        //ResetWindow(GetWindowMode(), IsResizable(), HasTitlebar(), HasCloseButton(), level);
+    {        
+        if(level != GetMSAA())
+        {
+            //PIXELFORMATDESCRIPTOR pfd;
+            //GeneratePixelFormatDescriptor(pfd);
+            int originalPfid = CurrentPixelFormatId;
+
+            //Setup MSAA
+            if(!GetMsaaPixelFormatId(GetDC(CurrentWindowHandle), CurrentPictureFormatDescriptor, CurrentPixelFormatId, level))
+            {
+                ssLOG_LINE("Failed to get MSAA Pixel Format Id");
+                CurrentPixelFormatId = originalPfid;
+            }
+            else
+            {
+                MsaaLevel = level;
+
+                glm::ivec2 oriSize = GetSize();
+                glm::ivec2 oriPos = GetPosition();
+
+                ssGUI_DestroyWindow();
+            
+                ssGUI_CreateWindow(oriSize.x, oriSize.y, false, false, CLASS_NAME);
+                
+                if(GetWindowMode() != ssGUI::Enums::WindowMode::FULLSCREEN)
+                {
+                    SetPosition(oriPos);
+                    SetSize(oriSize);
+                }
+            }
+        }
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetTitlebar(bool titlebar)
     {
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+            return;
+        
         //ResetWindow(GetWindowMode(), IsResizable(), titlebar, HasCloseButton(), GetMSAA());
-        //Titlebar = titlebar;
+        Titlebar = titlebar;
+        SetWindowStyle();
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::HasTitlebar() const
     {
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+            return false;
+        
         //return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? Titlebar : false;
-        return true;
+        return Titlebar;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetResizable(bool resizable)
     {
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+            return;
+        
         //ResetWindow(GetWindowMode(), resizable, HasTitlebar(), HasCloseButton(), GetMSAA());
-        //Resizable = resizable;
+        Resizable = resizable;
+        SetWindowStyle();
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsResizable() const
     {
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+            return false;
+        
         //return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? Resizable : false;
-        return true;
+        return Resizable;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetCloseButton(bool closeButton)
     {
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+            return;
+        
         //ResetWindow(GetWindowMode(), IsResizable(), HasTitlebar(), closeButton, GetMSAA());
-        //CloseButton = closeButton;
+        CloseButton = closeButton;
+        SetWindowStyle();
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::HasCloseButton() const
     {
+        if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
+            return false;
+        
         //return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? CloseButton : false;
-        return true;
+        return CloseButton;
     }
 
-    void BackendMainWindowWin32_OpenGL3_3::SetWindowMode(ssGUI::Enums::WindowMode WindowMode)
+    void BackendMainWindowWin32_OpenGL3_3::SetWindowMode(ssGUI::Enums::WindowMode windowMode)
     {
-        //ResetWindow(WindowMode, IsResizable(), HasTitlebar(), HasCloseButton(), GetMSAA());
-        //CurrentWindowMode = WindowMode;
+        if(CurrentWindowMode == windowMode)
+            return;
+
+        ssGUI::Enums::WindowMode oriWindowMode = CurrentWindowMode;
+        glm::ivec2 oriSize = GetSize();
+        glm::ivec2 oriPos = GetPosition();
+
+        //If we are coming from fullscreen, change the resolutioin back
+        //to the original screen resolution
+        if(CurrentWindowMode == ssGUI::Enums::WindowMode::FULLSCREEN)
+            SetSize(OriginalScreenResolution);
+
+        CurrentWindowMode = windowMode;
+
+        switch(CurrentWindowMode)
+        {
+            case ssGUI::Enums::WindowMode::NORMAL:
+                ssGUI_DestroyWindow();  //Technically don't need to do this... but just in case      
+                ssGUI_CreateWindow(0, 0, false, false, CLASS_NAME);
+                break;
+            case ssGUI::Enums::WindowMode::BORDERLESS:
+            {
+                glm::ivec2 pos;
+                glm::ivec2 size;
+                if(!GetActiveMonitorPosSize(pos, size))
+                {
+                    ssLOG_LINE("Failed to get monitro info");
+                    ssLOG_LINE("Falling back");
+                    CurrentWindowMode = oriWindowMode;
+                    break;
+                }
+
+                ssGUI_DestroyWindow();  //Technically don't need to do this... but just in case      
+                ssGUI_CreateWindow(0, 0, false, false, CLASS_NAME);
+
+                SetWindowStyle();
+
+                if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, pos.x, pos.y, size.x, size.y, SWP_SHOWWINDOW))
+                    ssLOG_LINE("Failed to set window size");
+
+                break;
+            }
+            case ssGUI::Enums::WindowMode::FULLSCREEN:
+                glm::ivec2 dummy;
+                GetActiveMonitorPosSize(dummy, OriginalScreenResolution);
+                
+                //TODO: Use render area size instead
+                SetSize(oriSize);   //Set Size will handle all the window stuff
+                break;
+        }
     }
 
     ssGUI::Enums::WindowMode BackendMainWindowWin32_OpenGL3_3::GetWindowMode() const
     {
-        //return CurrentWindowMode;
-        return ssGUI::Enums::WindowMode::NORMAL;
+        return CurrentWindowMode;
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::SetGLContext()
     {
-        //return CurrentWindow.setActive();
-        return true;
+        bool success = wglMakeCurrent(GetDC(CurrentWindowHandle), CurrentOpenGLContext) != FALSE;
+        return success;
     }
 
     ssGUI::Backend::BackendMainWindowInterface* BackendMainWindowWin32_OpenGL3_3::Clone()
     {
-        //return new BackendMainWindowWin32_OpenGL3_3(*this);
-        return nullptr;
+        return new BackendMainWindowWin32_OpenGL3_3(*this);
     }
 
     void* BackendMainWindowWin32_OpenGL3_3::GetRawHandle()
     {
-        //return static_cast<void*>(&CurrentWindow);
-        return nullptr;
+        //A bit of a cheat and retarded but it works
+        PublicHandles.WindowHandle = CurrentWindowHandle;
+        PublicHandles.OpenGLRenderContext = CurrentOpenGLContext;
+        return (void*)&PublicHandles;
     }
 }
 

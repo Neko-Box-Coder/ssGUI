@@ -3,6 +3,8 @@
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
+#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+
 namespace ssGUI 
 { 
     
@@ -13,6 +15,11 @@ namespace Backend
     class BackendDrawingWin32_OpenGL3_3 : public BackendDrawingInterface
     {
         private:
+            int BackendIndex;   //(Internal variable) This is used to check if we are drawing on the correct MainWindow
+
+            ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
+            
+            void display();
 
         public:
             BackendDrawingWin32_OpenGL3_3();

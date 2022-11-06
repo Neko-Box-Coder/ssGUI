@@ -9,6 +9,12 @@
 #endif
 
 #include <windows.h>            /* must include this before GL/gl.h */
+#include "glad/glad.h"
+#include "glad/glad_wgl.h"
+#include "wglext.h"
+
+#include <vector>
+#include <string>
 
 namespace ssGUI 
 { 
@@ -16,10 +22,45 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    struct Win32_OpenGL_Handles
+    {
+        HWND WindowHandle;
+        HGLRC OpenGLRenderContext;
+        PIXELFORMATDESCRIPTOR PictureFormatDescriptor;
+        int PixelFormatId;
+    };
+
     //class: ssGUI::Backend::BackendMainWindowInterface
     class BackendMainWindowWin32_OpenGL3_3 : public BackendMainWindowInterface
     {
         private:
+            HWND CurrentWindowHandle;
+            HGLRC CurrentOpenGLContext;
+            PIXELFORMATDESCRIPTOR CurrentPictureFormatDescriptor;
+            int CurrentPixelFormatId;
+            int MsaaLevel;
+            glm::ivec2 OriginalScreenResolution;
+
+            bool Closed;
+            bool Visible;                                                                   //See <IsVisible>
+
+            std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
+            std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
+            
+            std::wstring Title;                                                             //See <GetTitle>
+            bool Titlebar;                                                                  //See <HasTitlebar>
+            bool Resizable;                                                                 //See <IsResizable>
+            bool CloseButton;                                                               //See <HasCloseButton>
+            bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
+            Win32_OpenGL_Handles PublicHandles;
+            ssGUI::Enums::WindowMode CurrentWindowMode;
+
+            //PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
+            //PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
+
+            const wchar_t* CLASS_NAME = L"ssGUI MainWindow";
+
+            
             // BackendMainWindowInterface(const BackendMainWindowInterface&);
             // BackendMainWindowInterface& operator=(const BackendMainWindowInterface&);
         
@@ -28,6 +69,34 @@ namespace Backend
             static float PixelsToDeviceUnit(float unit, HWND hwnd);
 
             static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+            void SetWindowStyle();
+
+            int GetTitlebarHeight() const;
+
+            POINT GetRawPosition() const;
+
+            POINT GetRawSize() const;
+
+            void ssGUI_DestroyWindow();
+
+            void ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfid, bool generatePfDesc, const wchar_t* className);
+
+            void ApplyAllSettingsToWindow();
+
+            //From https://stackoverflow.com/questions/589064/how-to-enable-vertical-sync-in-opengl
+            //And also https://nehe.gamedev.net/tutorial/fullscreen_antialiasing/16008/
+            //bool WGLExtensionSupported(const char *extension_name, bool isARB);
+
+            //From http://www.sccg.sk/~samuelcik/opengl/opengl_10.pdf
+            //And also https://nehe.gamedev.net/tutorial/fullscreen_antialiasing/16008/
+            bool GetMsaaPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level);
+
+            void GeneratePixelFormatDescriptor(PIXELFORMATDESCRIPTOR& pfd);
+
+            void ssGUI_RegisterClass(const wchar_t* className);
+
+            bool GetActiveMonitorPosSize(glm::ivec2& pos, glm::ivec2& size);
 
         public:
             BackendMainWindowWin32_OpenGL3_3();
@@ -156,7 +225,7 @@ namespace Backend
 
             //function: SetWindowMode
             //Sets the main window mode
-            void SetWindowMode(ssGUI::Enums::WindowMode WindowMode) override;
+            void SetWindowMode(ssGUI::Enums::WindowMode windowMode) override;
 
             //function: GetWindowMode
             //Gets the main window mode

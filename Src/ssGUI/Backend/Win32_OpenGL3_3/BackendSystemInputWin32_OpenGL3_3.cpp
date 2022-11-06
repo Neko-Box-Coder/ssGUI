@@ -1,5 +1,8 @@
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendSystemInputWin32_OpenGL3_3.hpp"
 
+#include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
+
+#include "ssGUI/Backend/BackendManager.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
@@ -15,8 +18,145 @@ namespace ssGUI
 {
 
 namespace Backend
-{    
-    BackendSystemInputWin32_OpenGL3_3::BackendSystemInputWin32_OpenGL3_3()
+{
+    bool BackendSystemInputWin32_OpenGL3_3::HandleMessage(MSG msg)
+    {
+        auto mainWindowIt = MainWindowRawHandles.find(msg.hwnd);
+        
+        //If we don't have the raw window handle associated with a mainWindow, associate it.
+        if(mainWindowIt == MainWindowRawHandles.end())
+        {
+            bool found = false;
+            for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
+            {
+                auto currentMainWindow = ssGUI::Backend::BackendManager::GetMainWindowInterface(i);
+
+                if(static_cast<Win32_OpenGL_Handles*>(currentMainWindow->GetRawHandle())->WindowHandle == msg.hwnd)
+                {
+                    MainWindowRawHandles[msg.hwnd] = currentMainWindow;
+                    found = true;
+                    break;
+                }
+            }
+
+            if(!found)
+            {
+                ssLOG_LINE("Failed to find main window from handle: "<<msg.hwnd);
+                return false;
+            }
+        }
+        
+        //Handle the message
+        switch(msg.message)
+        {
+            case WM_KEYDOWN:
+                //a
+                if(msg.wParam == 0x41)
+                {
+                    //glm::ivec2 pos = mainWindowIt->second->GetPosition();
+                    glm::ivec2 pos = mainWindowIt->second->GetPositionOffset();
+                    ssLOG_LINE("pos: "<< pos.x <<", "<< pos.y);
+                    return true;
+                }
+                //b
+                else if(msg.wParam == 0x42)
+                {
+                    mainWindowIt->second->SetPosition(glm::ivec2(0, 0));
+                    return true;
+                }
+                //c
+                else if(msg.wParam == 0x43)
+                {
+                    mainWindowIt->second->SetSize(glm::ivec2(1000, 1000));
+                    return true;
+                }
+                //d
+                else if(msg.wParam == 0x44)
+                {
+                    glm::ivec2 size = mainWindowIt->second->GetSize();
+                    ssLOG_LINE("size: "<<size.x<<", "<<size.y);
+                    
+                    return true;
+                }
+                //e
+                else if(msg.wParam == 0x45)
+                {
+                    mainWindowIt->second->SetTitle(L"Test title");
+                    return true;
+                }
+                //f
+                else if(msg.wParam == 0x46)
+                {
+                    std::wcout << "Title: "<<mainWindowIt->second->GetTitle()<<"\n";
+                    return true;
+                }
+                //g
+                else if(msg.wParam == 0x47)
+                {
+                    mainWindowIt->second->SetVisible(false);
+                    return true;
+                }
+                //h
+                else if(msg.wParam == 0x48)
+                {
+                    mainWindowIt->second->SetTitlebar(!mainWindowIt->second->HasTitlebar());
+                    return true;
+                }
+                //i
+                else if(msg.wParam == 0x49)
+                {
+                    mainWindowIt->second->SetResizable(!mainWindowIt->second->IsResizable());
+                    return true;
+                }
+                //j
+                else if(msg.wParam == 0x4A)
+                {
+                    mainWindowIt->second->SetCloseButton(!mainWindowIt->second->HasCloseButton());
+                    return true;
+                }
+                //k
+                else if(msg.wParam == 0x4B)
+                {
+                    mainWindowIt->second->SetWindowMode
+                    (
+                        mainWindowIt->second->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN ?
+                        ssGUI::Enums::WindowMode::BORDERLESS :
+                        ssGUI::Enums::WindowMode::FULLSCREEN
+                    );
+                    return true;
+                }
+                //l
+                else if(msg.wParam == 0x4C)
+                {
+                    mainWindowIt->second->SetSize(glm::ivec2(1920, 1080));
+                    return true;
+                }
+                //m
+                else if(msg.wParam == 0x4D)
+                {
+                    mainWindowIt->second->SetVSync(!mainWindowIt->second->IsVSync());
+                    return true;
+                }
+                //n
+                else if(msg.wParam == 0x4E)
+                {
+                    bool v = mainWindowIt->second->IsVSync();
+                    ssLOG_LINE("Vsync: "<<v);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case WM_CLOSE:
+                mainWindowIt->second->Close();
+                return true;
+        }
+
+        return false;
+    }
+
+    BackendSystemInputWin32_OpenGL3_3::BackendSystemInputWin32_OpenGL3_3() : MainWindowRawHandles()
     {
         /*if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
@@ -30,16 +170,25 @@ namespace Backend
 
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
         */
+        ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
     }
 
     BackendSystemInputWin32_OpenGL3_3::~BackendSystemInputWin32_OpenGL3_3()
     {
-        //ssGUI::Backend::BackendManager::RemoveInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
+        ssGUI::Backend::BackendManager::RemoveInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
     }
 
 
     void BackendSystemInputWin32_OpenGL3_3::UpdateInput(/*std::vector<ssGUI::Backend::BackendMainWindowInterface*>& mainWindows*/)
-    {
+    {    
+        MSG msg = { };
+
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);             //Translates any keyboard/text related inputs (if any)
+            DispatchMessage(&msg);              //Dispatches the message to the right window(s) (i.e. WM_PAINT)
+        }
+        
         /*ssLOG_FUNC_ENTRY();
         InputText.clear();
         MouseScrollDelta = glm::vec2();
