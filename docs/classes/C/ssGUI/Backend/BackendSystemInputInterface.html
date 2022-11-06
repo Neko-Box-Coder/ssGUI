@@ -12,7 +12,7 @@
 
 <a name="Topic789"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendSystemInputInterface</div>
- <div class="NDClassPrototype HasChildren" id="NDClassPrototype789"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendSystemInputInterface</div></div><a class="CPEntry Child TClass" href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputSFML" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,831);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendSystemInputSFML</div></a></div>
+ <div class="NDClassPrototype HasChildren" id="NDClassPrototype789"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendSystemInputInterface</div></div><a class="CPEntry Child TClass" href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputSFML" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,476);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName"><span class="Qualifier">ssGUI::&#8203;Backend::</span>&#8203;BackendSystemInputSFML</div></a></div>
  <div class="CBody"><p>This class is the interface for getting all the inputs needed.&nbsp; **There will be changes regarding on how to get key presses and realtime input info soon.**</p></div>
 </div>
 
@@ -26,15 +26,15 @@
  <div class="CBody"><p>Poll and updates the input</p></div>
 </div>
 
-<a name="GetLastKeyPresses"></a><a name="Topic792"></a><div class="CTopic TFunction LC">
+<a name="GetLastKeyPresses"></a><a name="Topic663"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetLastKeyPresses</div>
- <div id="NDPrototype792" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../../index.html#CClass:ssGUI.KeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,626);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::KeyPresses</a> <span class="SHKeyword">const</span> &amp; GetLastKeyPresses() = <span class="SHNumber">0</span></div></div>
+ <div id="NDPrototype663" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../../index.html#CClass:ssGUI.KeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,718);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::KeyPresses</a> <span class="SHKeyword">const</span> &amp; GetLastKeyPresses() = <span class="SHNumber">0</span></div></div>
  <div class="CBody"><p>Get the key presses from last frame</p></div>
 </div>
 
-<a name="GetCurrentKeyPresses"></a><a name="Topic793"></a><div class="CTopic TFunction LC">
+<a name="GetCurrentKeyPresses"></a><a name="Topic678"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetCurrentKeyPresses</div>
- <div id="NDPrototype793" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../../index.html#CClass:ssGUI.KeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,626);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::KeyPresses</a> <span class="SHKeyword">const</span> &amp; GetCurrentKeyPresses() = <span class="SHNumber">0</span></div></div>
+ <div id="NDPrototype678" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../../index.html#CClass:ssGUI.KeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,718);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::KeyPresses</a> <span class="SHKeyword">const</span> &amp; GetCurrentKeyPresses() = <span class="SHNumber">0</span></div></div>
  <div class="CBody"><p>Get the key presses from current frame</p></div>
 </div>
 
@@ -77,13 +77,13 @@
 <a name="GetLastRealtimeInputs"></a><a name="Topic800"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetLastRealtimeInputs</div>
  <div id="NDPrototype800" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;ssGUI::RealtimeInputInfo&gt; <span class="SHKeyword">const</span> &amp; GetLastRealtimeInputs() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
- <div class="CBody"><p>Return a list of inputs in order happened in last frame. The last input info should be the same as <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetLastKeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,792);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetLastKeyPresses</a>, <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetLastMousePosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,794);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetLastMousePosition</a>, etc...</p></div>
+ <div class="CBody"><p>Return a list of inputs in order happened in last frame. The last input info should be the same as <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetLastKeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,663);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetLastKeyPresses</a>, <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetLastMousePosition" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,794);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetLastMousePosition</a>, etc...</p></div>
 </div>
 
 <a name="GetCurrentRealtimeInputs"></a><a name="Topic801"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetCurrentRealtimeInputs</div>
  <div id="NDPrototype801" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;ssGUI::RealtimeInputInfo&gt; <span class="SHKeyword">const</span> &amp; GetCurrentRealtimeInputs() <span class="SHKeyword">const</span> = <span class="SHNumber">0</span></div></div>
- <div class="CBody"><p>Return a list of inputs in order happened in current frame. The last input info should be the same as <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetCurrentKeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,793);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetCurrentKeyPresses</a>, <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetCurrentMouseButton" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,798);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetCurrentMouseButton</a>, etc...</p></div>
+ <div class="CBody"><p>Return a list of inputs in order happened in current frame. The last input info should be the same as <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetCurrentKeyPresses" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,678);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetCurrentKeyPresses</a>, <a href="../../../../index.html#CClass:ssGUI.Backend.BackendSystemInputInterface:GetCurrentMouseButton" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,798);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GetCurrentMouseButton</a>, etc...</p></div>
 </div>
 
 <a name="GetTextInput"></a><a name="Topic802"></a><div class="CTopic TFunction LC">
