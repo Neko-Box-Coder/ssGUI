@@ -82,7 +82,7 @@ Topic: a. Using ssGUI in your CMake project
 - *1.* First, you need to git clone recursive ssGUI to the directory you like.
     - *a.* Go to the directory you like ssGUI to be in.
     - *b.* To use latest stable release, Run
-    > git clone -b v0.93.00.a --recursive --single-branch https://github.com/Neko-Box-Coder/ssGUI.git 
+    > git clone -b v0.93.00.b --recursive https://github.com/Neko-Box-Coder/ssGUI.git 
     
     - Alternatively, if you want main branch, do
     > git clone --recursive https://github.com/Neko-Box-Coder/ssGUI.git 
