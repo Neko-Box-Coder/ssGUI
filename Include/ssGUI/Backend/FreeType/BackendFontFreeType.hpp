@@ -1,54 +1,69 @@
-#ifndef SSGUI_BACKEND_FONT_SFML
-#define SSGUI_BACKEND_FONT_SFML
+#ifndef SSGUI_BACKEND_FONT_FREE_TYPE
+#define SSGUI_BACKEND_FONT_FREE_TYPE
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
-#include "SFML/Graphics.hpp"
+
+#include "ft2build.h" 
+#include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"
+#include FT_FREETYPE_H
 
 namespace ssGUI
-{ 
-    
+{
+
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    /*class: ssGUI::Backend::BackendFontSFML
-    For functions explainations, please see <BackendFontInterface>. Normally you don't need to deal with this class
+    //struct: FreeTypeHandles
+    struct FreeTypeHandles
+    {
+        //All of the FT types are actually just pointers internally
 
-    Variables & Constructor:
-    =============================== C++ ===============================
-    private:
-        sf::Font Font;      //See <GetRawHandle>
-        bool SFFontValid;   //See <IsValid>
-    ===================================================================
-    =============================== C++ ===============================
-    BackendFontSFML::BackendFontSFML() :    Font(),
-                                            SFFontValid(false)
-    {
-    }
-    ===================================================================
-    */
-    class BackendFontSFML : public BackendFontInterface
-    {
+        //var: FreeTypeLib
+        FT_Library FreeTypeLib = nullptr;
+        
+        //var: FontFace
+        FT_Face FontFace = nullptr;
+        
+        //var: FontFlags
+        FT_Int32 FontFlags = 0;
+    };
+
+    //class: ssGUI::Backend::BackendFontFreeType
+    class BackendFontFreeType : public BackendFontInterface
+    {   
         private:
-            sf::Font Font;      //See <GetRawHandle>
-            bool SFFontValid;   //See <IsValid>
+            static StaticDefaultWrapper<FT_Library> FreeTypeLib;
 
-            BackendFontSFML& operator=(BackendFontSFML const& other);
+            FT_Face FontFace;
+            bool Valid;
+            float CurrentSize;
+            FT_Int32 FontFlags;
+
+            FreeTypeHandles RawHandle;
+
+            uint8_t* FontMemory;
+            size_t FontMemoryLength;
+            std::string FontPath;
+            
+
+            bool SetSizeIfDifferent(float size);
+            BackendFontFreeType& operator=(BackendFontFreeType const& other);
 
         protected:
-            BackendFontSFML(BackendFontSFML const& other);
+            BackendFontFreeType(BackendFontFreeType const& other);
 
         public:
-            BackendFontSFML();
-            ~BackendFontSFML() override;
+            BackendFontFreeType();
+            ~BackendFontFreeType() override;
             
-            //function: GetSFMLFont
-            //Gets the pointer of sf::font object
-            sf::Font* GetSFMLFont();
-            
+            //function: GetCurrentGlyph
+            //This returns the loaded freetype glyph
+            FT_GlyphSlot GetCurrentGlyph();
+
             //function: IsValid
             //See <BackendFontInterface::IsValid>
             bool IsValid() const override;
-            
+
             //function: GetCharacterRenderInfo
             //See <BackendFontInterface::GetCharacterRenderInfo>
             ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) override;
@@ -75,16 +90,15 @@ namespace Backend
 
             //function: LoadFromPath
             //See <BackendFontInterface::LoadFromPath>
-            //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromPath(std::string path) override;
-            
+
             //function: LoadFromMemory
+            //This mainly supports and tested on TTF, other font formats are not tested.
             //See <BackendFontInterface::LoadFromMemory>
-            //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
 
             //function: GetFixedAvailableFontSizes
-            //SFML doesn't support this, calling this function will have no effect.
+            //See <BackendFontInterface::GetFixedAvailableFontSizes>
             bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) override;
 
             //function: GetCharacterImage
@@ -92,15 +106,19 @@ namespace Backend
             bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage) override;
 
             //function: GetRawHandle
-            //See <BackendFontInterface::GetRawHandle>
             void* GetRawHandle() override;
 
             //function: Clone
+            //Clones the backend font object
+            //Seems like freetype currently doesn't support font face cloning
+            //https://gitlab.freedesktop.org/freetype/freetype/-/issues/1040
+            //Therefore, this will just load the same font instead of copying
             //See <BackendFontInterface::Clone>
-            ssGUI::Backend::BackendFontInterface* Clone() override;
-    };
+            BackendFontInterface* Clone() override;
+    };   
 }
 
 }
+
 
 #endif

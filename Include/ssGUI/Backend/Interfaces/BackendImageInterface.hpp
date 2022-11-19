@@ -3,6 +3,7 @@
 
 #include <string>
 #include "glm/vec2.hpp"
+#include "ssGUI/DataClasses/ImageFormat.hpp"
 
 namespace ssGUI
 { 
@@ -14,16 +15,12 @@ namespace Backend
     //This allows transferring the image data from the host memory to the gpu memory
     class BackendImageInterface
     {
-        private:
-            // BackendImageInterface(const BackendImageInterface&);
-            // BackendImageInterface& operator=(const BackendImageInterface&);
-        
         public:
             BackendImageInterface(){}
             virtual ~BackendImageInterface() = 0;
 
             //function: GetRawHandle
-            //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr 
+            //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr.
             virtual void* GetRawHandle() = 0;
 
             //function: IsValid
@@ -31,26 +28,27 @@ namespace Backend
             virtual bool IsValid() const = 0;
 
             //function: LoadFromPath
-            //Please see <BackendImageSFML::LoadFromPath> for supported image format.
+            //Loads the image from relative or absolute path
             virtual bool LoadFromPath(std::string path) = 0;
 
             //function: LoadImgFileFromMemory
-            //Please see <BackendImageSFML::LoadImgFileFromMemory> for supported image format.
+            //Loads an image file from memory with specified size in bytes
             virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size) = 0;
 
             //function: LoadRawFromMemory
-            //This loads an image in memory in the format of 32-bits rgba.
-            virtual bool LoadRawFromMemory(void const * dataPtr, int width, int height) = 0;
-            
+            //This loads an image with specified image format in memory 
+            virtual bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize, int rowPaddingInBytes = 0) = 0;
+
             //function: GetSize
             //Returns the size of the image
             virtual glm::ivec2 GetSize() const = 0;
 
             //function: GetPixelPtr
             //Returns the pixel data pointer of the image
-            virtual const void* GetPixelPtr() const = 0;
+            virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const = 0;
 
             //function: Clone
+            //Clones the backend image
             virtual BackendImageInterface* Clone() = 0;
     };
 

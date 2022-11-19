@@ -28,10 +28,6 @@ namespace Backend
     //**There will be changes regarding on how to get key presses and realtime input info soon.**
     class BackendSystemInputInterface
     {   
-        private:
-            // BackendSystemInputInterface(const BackendSystemInputInterface&);
-            // BackendSystemInputInterface& operator=(const BackendSystemInputInterface&);
-
         public:
             BackendSystemInputInterface(){}
             virtual ~BackendSystemInputInterface() = 0;

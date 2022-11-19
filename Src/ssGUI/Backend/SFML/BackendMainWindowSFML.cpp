@@ -1,4 +1,5 @@
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
 {
@@ -46,7 +47,7 @@ namespace Backend
         cursorInSceenSpace = glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
         cursorInWindowSpace = glm::ivec2(sf::Mouse::getPosition(CurrentWindow).x, sf::Mouse::getPosition(CurrentWindow).y);
 
-        PositionOffset = cursorInSceenSpace - GetPosition() - cursorInWindowSpace;
+        PositionOffset = cursorInSceenSpace - GetWindowPosition() - cursorInWindowSpace;
 
         /*
         std::cout<<"cursorInSceenSpace: "<<cursorInSceenSpace.x<<", "<<cursorInSceenSpace.y<<"\n";
@@ -83,26 +84,38 @@ namespace Backend
         return PositionOffset;
     }
 
-    void BackendMainWindowSFML::SetPosition(glm::ivec2 pos)
+    void BackendMainWindowSFML::SetWindowPosition(glm::ivec2 pos)
     {
         CurrentWindow.setPosition(sf::Vector2i(pos.x, pos.y));
     }
 
-    glm::ivec2 BackendMainWindowSFML::GetPosition() const
+    glm::ivec2 BackendMainWindowSFML::GetWindowPosition() const
     {
         sf::Vector2i curPos = CurrentWindow.getPosition();
         return glm::ivec2(curPos.x, curPos.y);
     }
 
-    void BackendMainWindowSFML::SetSize(glm::ivec2 size)
+    void BackendMainWindowSFML::SetWindowSize(glm::ivec2 size)
+    {
+        //ssLOG_LINE("SFML doesn't support setting window size, setting render size instead");
+        SetRenderSize(size);
+    }
+
+    glm::ivec2 BackendMainWindowSFML::GetWindowSize() const
+    {
+        //ssLOG_LINE("SFML doesn't support setting window size, getting render size instead");
+        return GetRenderSize();
+    }
+    
+    void BackendMainWindowSFML::SetRenderSize(glm::ivec2 size)
     {
         CurrentWindow.setSize(sf::Vector2u(size.x, size.y));
-
+        
         //View is now set in BackendSystemInputSFML
         // CurrentWindow.setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f((float)size.x, (float)size.y))));
     }
-
-    glm::ivec2 BackendMainWindowSFML::GetSize() const
+    
+    glm::ivec2 BackendMainWindowSFML::GetRenderSize() const
     {
         sf::Vector2u curSize = CurrentWindow.getSize();
         return glm::ivec2(curSize.x, curSize.y);

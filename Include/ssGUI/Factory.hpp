@@ -32,7 +32,9 @@ namespace ssGUI
                 if(std::is_base_of<ssGUI::GUIObject, T>::value)
                 {
                     T* guiObj = new T();
-                    SetHeapAllocatedFlagForGUIObject(dynamic_cast<ssGUI::GUIObject*>(guiObj));
+                    // For some reason GCC is checing in compile time with dynamic cast, so this won't compile
+                    // SetHeapAllocatedFlagForGUIObject(dynamic_cast<ssGUI::GUIObject*>(guiObj));
+                    SetHeapAllocatedFlagForGUIObject((ssGUI::GUIObject*)(guiObj));
                     return guiObj;
                 }
                 

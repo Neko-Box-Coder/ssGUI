@@ -232,10 +232,10 @@ namespace Backend
                 //Check mouse position as mouseMove event is not reliable
                 if(event.type == sf::Event::MouseMoved) 
                 { 
-                    event.mouseMove.x += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().x +  
+                    event.mouseMove.x += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetWindowPosition().x +  
                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().x;
  
-                    event.mouseMove.y += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().y +  
+                    event.mouseMove.y += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetWindowPosition().y +  
                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().y;
 
                     curInfo.MouseMoved = true;
@@ -600,8 +600,10 @@ namespace Backend
         if(CustomCursors[CurrentCustomCursor].first.getPixelsPtr() == nullptr)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize().x, 
-            CustomCursors[CurrentCustomCursor].first.getSize().y))
+        if(!customCursor.LoadRawFromMemory( CustomCursors[CurrentCustomCursor].first.getPixelsPtr(),
+                                            ssGUI::ImageFormat(),
+                                            glm::ivec2( CustomCursors[CurrentCustomCursor].first.getSize().x, 
+                                                        CustomCursors[CurrentCustomCursor].first.getSize().y)))
         {
             ssLOG_LINE("Failed to load custom cursor image");   
         }
@@ -622,8 +624,10 @@ namespace Backend
         if(CustomCursors[cursorName].first.getPixelsPtr() == nullptr)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursors[cursorName].first.getPixelsPtr(), CustomCursors[cursorName].first.getSize().x, 
-            CustomCursors[cursorName].first.getSize().y))
+        if(!customCursor.LoadRawFromMemory( CustomCursors[cursorName].first.getPixelsPtr(), 
+                                            ssGUI::ImageFormat(),
+                                            glm::ivec2( CustomCursors[cursorName].first.getSize().x, 
+                                                        CustomCursors[cursorName].first.getSize().y)))
         {
             ssLOG_LINE("Failed to load custom cursor image");
         }
@@ -808,10 +812,21 @@ namespace Backend
     {
         clip::image img;
 
-        if(!clip::get_image(img) || img.spec().bits_per_pixel != 32)
+        if(!clip::get_image(img))
             return false;
+        
+        clip::image_spec spec = img.spec();
+            
+        ssGUI::ImageFormat format;
+        format.HasAlpha = spec.alpha_mask > 0;
+        format.IndexR = spec.red_shift / 8;
+        format.IndexG = spec.green_shift / 8;
+        format.IndexB = spec.blue_shift / 8;
+        format.IndexA = spec.alpha_shift / 8;
 
-        return imgData.LoadRawFromMemory(static_cast<void*>(img.data()), img.spec().width, img.spec().height);
+        return imgData.LoadRawFromMemory(   static_cast<void*>(img.data()), 
+                                            format,
+                                            glm::ivec2(img.spec().width, img.spec().height));
     }
 
     bool BackendSystemInputSFML::GetClipboardText(std::wstring& str)

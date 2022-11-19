@@ -1,14 +1,21 @@
 #include "ssGUI/Backend/Template/BackendSystemInputTemplate.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
 
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    BackendSystemInputTemplate::BackendSystemInputTemplate(BackendSystemInputTemplate const& other)
+    {
+    
+    }
+
     BackendSystemInputTemplate::BackendSystemInputTemplate()
     {
-
+        ssLOG_LINE("BackendSystemInputTemplate is being created, is this intended?");
     }
 
     BackendSystemInputTemplate::~BackendSystemInputTemplate()
