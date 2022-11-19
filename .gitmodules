@@ -4,3 +4,6 @@
 [submodule "External/ssLogger"]
 	path = External/ssLogger
 	url = https://github.com/Neko-Box-Coder/ssLogger.git
+[submodule "External/freetype"]
+	path = External/freetype
+	url = https://gitlab.freedesktop.org/freetype/freetype.git
