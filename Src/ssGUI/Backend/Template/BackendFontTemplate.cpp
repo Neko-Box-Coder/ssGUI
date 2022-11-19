@@ -1,14 +1,21 @@
 #include "ssGUI/Backend/Template/BackendFontTemplate.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
 
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    BackendFontTemplate::BackendFontTemplate(BackendFontTemplate const& other)
+    {
+    
+    }
+
     BackendFontTemplate::BackendFontTemplate()
     {
-
+        ssLOG_LINE("BackendFontTemplate is being created, is this intended?");
     }
     
     BackendFontTemplate::~BackendFontTemplate()
@@ -16,7 +23,7 @@ namespace Backend
 
     }
     
-    bool BackendFontTemplate::IsValid()
+    bool BackendFontTemplate::IsValid() const
     {
         return true;
     }
@@ -57,6 +64,16 @@ namespace Backend
     }
 
     bool BackendFontTemplate::LoadFromMemory(void* dataPtr, int lengthInBytes)
+    {
+        return true;
+    }
+    
+    bool BackendFontTemplate::GetFixedAvailableFontSizes(std::vector<float>& fontSizes)
+    {
+        return true;
+    }
+    
+    bool BackendFontTemplate::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
     {
         return true;
     }

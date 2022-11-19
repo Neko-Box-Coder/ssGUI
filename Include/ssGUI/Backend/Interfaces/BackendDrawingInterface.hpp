@@ -20,11 +20,7 @@ namespace Backend
 {
     //class: ssGUI::Backend::BackendDrawingInterface
     class BackendDrawingInterface
-    {
-        private:
-            // BackendDrawingInterface(const BackendDrawingInterface&);
-            // BackendDrawingInterface& operator=(const BackendDrawingInterface&);
-        
+    {        
         public:
             BackendDrawingInterface(){}
             virtual ~BackendDrawingInterface() = 0;
@@ -38,7 +34,8 @@ namespace Backend
             virtual void RestoreState() = 0;
 
             //function: DrawEntities
-            //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. *Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
+            //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. 
+            //*Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
             virtual bool DrawEntities(  const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
@@ -58,6 +55,7 @@ namespace Backend
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colors,
+                                    const uint32_t character,
                                     const ssGUI::Backend::BackendFontInterface& font,
                                     int CharacterSize) = 0;
 
@@ -74,9 +72,10 @@ namespace Backend
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colors,
+                                    const uint32_t character,
                                     int startIndex, int endIndex,
                                     const ssGUI::Backend::BackendFontInterface& font,
-                                    int CharacterSize) = 0;
+                                    int characterSize) = 0;
 
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,

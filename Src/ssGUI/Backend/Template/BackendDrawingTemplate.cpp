@@ -1,12 +1,20 @@
 #include "ssGUI/Backend/Template/BackendDrawingTemplate.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
 
 namespace Backend
 {
+    BackendDrawingTemplate::BackendDrawingTemplate(BackendDrawingTemplate const& other)
+    {
+    
+    }
+
     BackendDrawingTemplate::BackendDrawingTemplate()
     {
+        ssLOG_LINE("BackendDrawingTemplate is being created, is this intended?");
     }
 
     BackendDrawingTemplate::~BackendDrawingTemplate()
@@ -44,8 +52,9 @@ namespace Backend
     bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,
+                            const uint32_t character,
                             const ssGUI::Backend::BackendFontInterface& font,
-                            int CharacterSize)
+                            int characterSize)
     {
         return true;        
     }
@@ -69,9 +78,10 @@ namespace Backend
     bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,
+                            const uint32_t character,
                             int startIndex, int endIndex,
                             const ssGUI::Backend::BackendFontInterface& font,
-                            int CharacterSize)
+                            int characterSize)
     {
         return true;        
     }

@@ -13,56 +13,65 @@ namespace Backend
     class BackendFontTemplate : public BackendFontInterface
     {   
         private:
+            BackendFontTemplate& operator=(BackendFontTemplate const& other);
         
+        protected:
+            BackendFontTemplate(BackendFontTemplate const& other);
+
         public:
             BackendFontTemplate();
             ~BackendFontTemplate() override;
             
             //function: IsValid
-            //Returns true if the font is loaded.
-            bool IsValid() override;
+            //See <BackendFontInterface::IsValid>
+            bool IsValid() const override;
 
             //function: GetCharacterRenderInfo
-            //Gets the rendering infomation of a character
+            //See <BackendFontInterface::GetCharacterRenderInfo>
             ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) override;
             
             //function: IsCharacterSupported
-            //Returns true if the character is supported
+            //See <BackendFontInterface::IsCharacterSupported>
             bool IsCharacterSupported(wchar_t charUnicode) override;
             
             //function: GetKerning
-            //Kerning represents the drawing position offset when drawn after certain characters. (i.e. AV has a negative kerning for the characte V)
+            //See <BackendFontInterface::GetKerning>
             float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) override;
             
             //function: GetLineSpacing
-            //Returns how much a line space is based on the font size
+            //See <BackendFontInterface::GetLineSpacing>
             float GetLineSpacing(float charSize) override;
             
             //function: GetUnderlineOffset
-            //Gets the vertical offset for underline based on the font size 
+            //See <BackendFontInterface::GetUnderlineOffset>
             float GetUnderlineOffset(float charSize) override;
             
             //function: GetUnderlineThickness
-            //Gets the thickness for underline based on the font size 
+            //See <BackendFontInterface::GetUnderlineThickness>
             float GetUnderlineThickness(float charSize) override;
 
-            /*function: LoadFromPath
-            Loads a font file. Supported font format is dependent on the backend.
-            
-            _path_ can be either absolute or relative. Please see <BackendFontSFML::LoadFromPath> for supported font format.
-            */
+            //function: LoadFromPath
+            //See <BackendFontInterface::LoadFromPath>
             bool LoadFromPath(std::string path) override;
 
             //function: LoadFromMemory
-            //Please see <BackendFontSFML::LoadFromMemory> for supported font format.
+            //See <BackendFontInterface::LoadFromMemory>
             bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
 
+            //function: GetFixedAvailableFontSizes
+            //See <BackendFontInterface::GetFixedAvailableFontSizes>
+            bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) override;
+
+            //function: GetCharacterImage
+            //See <BackendFontInterface::GetCharacterImage>
+            bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage) override;
+
             //function: GetRawHandle
-            //Returns the raw pointer to the underlying backend implmentation object
+            //See <BackendFontInterface::GetRawHandle>
             void* GetRawHandle() override;
 
             //function: Clone
-            //Clones the backend font object
+            //See <BackendFontInterface::Clone>
             BackendFontInterface* Clone() override;
     };   
 }

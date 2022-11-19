@@ -12,7 +12,8 @@ namespace ssGUI
     struct DrawingProperty
     {
         public:
-            //DrawingProperty& operator=(DrawingProperty const& other) = default;
+            //var: character
+            uint32_t character = 0;
 
             //var: fontP
             ssGUI::Backend::BackendFontInterface* fontP = nullptr;

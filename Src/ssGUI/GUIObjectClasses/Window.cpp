@@ -591,6 +591,16 @@ namespace ssGUI
         return OnTopWhenFocused;
     }
 
+    void Window::SetRenderSize(glm::ivec2 size)
+    {
+        SetSize(size + glm::ivec2(0, GetTitlebarHeight()));
+    }
+    
+    glm::ivec2 Window::GetRenderSize() const
+    {
+        return GetSize() - glm::vec2(0, GetTitlebarHeight());
+    }
+
     void Window::SetFocus(bool focus)
     {       
         if(focus && IsOnTopWhenFocused())
