@@ -3,12 +3,17 @@
 
 #include "ssGUI/EventCallbacks/SliderValueFinishedChangingEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::ScrollbarValueFinishedChangingEventCallback
     //This is just an alias of <ssGUI::EventCallbacks::SliderValueFinishedChangingEventCallback> 
     typedef SliderValueFinishedChangingEventCallback ScrollbarValueFinishedChangingEventCallback;
+}
+
 }
 
 #endif

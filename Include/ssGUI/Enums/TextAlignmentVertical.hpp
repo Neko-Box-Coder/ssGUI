@@ -1,8 +1,11 @@
 #ifndef SSGUI_TEXT_ALIGNMENT_VERTICAL
-#define SSGUI_TEXT_ALIGNMENT_vERTICAL
+#define SSGUI_TEXT_ALIGNMENT_VERTICAL
+
+namespace ssGUI
+{
 
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: TextAlignmentVertical
     TOP     - Top allignment
@@ -17,5 +20,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

@@ -3,8 +3,11 @@
 
 #include <cstdint>
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: SymbolKey
 
@@ -37,5 +40,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

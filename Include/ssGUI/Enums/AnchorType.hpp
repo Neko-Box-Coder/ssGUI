@@ -1,8 +1,11 @@
 #ifndef SSGUI_ANCHOR_TYPE
 #define SSGUI_ANCHOR_TYPE
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: AnchorType
 
@@ -20,5 +23,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

@@ -3,8 +3,11 @@
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback
     //This event callback is triggered *after* a child is removed recursively on this GUI object
@@ -39,6 +42,6 @@ namespace ssGUI::EventCallbacks
     };
 }
 
-
+}
 
 #endif

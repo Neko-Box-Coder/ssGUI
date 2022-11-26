@@ -5,7 +5,10 @@
 
 #include <cmath>
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     BoxShadow::BoxShadow() :    Container(nullptr),
                                 Enabled(true),
@@ -359,4 +362,6 @@ namespace ssGUI::Extensions
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

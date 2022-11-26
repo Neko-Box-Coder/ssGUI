@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string ChildRemovedEventCallback::GetEventCallbackName() const
     {   
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string ChildRemovedEventCallback::EVENT_NAME = "ChildRemovedEvent";
+}
+
 }

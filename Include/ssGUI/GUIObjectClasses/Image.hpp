@@ -5,7 +5,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Enums/ImageFitting.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include "SFML/Graphics.hpp"
+// #include "SFML/Graphics.hpp"
 #include "glm/vec4.hpp"
 
 //namespace: ssGUI

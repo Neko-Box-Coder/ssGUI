@@ -6,8 +6,11 @@
 #include "glm/vec4.hpp"
 #include "glm/geometric.hpp"
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::Outline
     Outline allows to create a colored outline surrounding the target GUI Object shape/vertices.
@@ -94,7 +97,7 @@ namespace ssGUI::Extensions
             virtual void UpdateVerticesForOutline();
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
-            constexpr double pi() { return std::atan(1)*4; };
+            double pi() const { return std::atan(1)*4; };
 
             //Return angle in radians. Positive if angle between a and b is clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
@@ -251,6 +254,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Outline* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

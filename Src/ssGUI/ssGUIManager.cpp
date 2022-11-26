@@ -2,6 +2,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 #include "ssGUI/ssGUITags.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 #include "ssLogger/ssLog.hpp"
 
 //Debug
@@ -34,6 +35,7 @@ namespace ssGUI
             currentMainWindowP->ClearBackBuffer();
         }
 
+        float threadSleepMultiplier = 1;
         while (!MainWindowPList.empty())
         {
             uint64_t startFrameTime = BackendInput->GetElapsedTime();
@@ -139,7 +141,14 @@ namespace ssGUI
                 averageFrameTime /= FrameTimes.size();
                 // ssLOG_LINE("averageFrameTime: "<<averageFrameTime);
                 // ssLOG_LINE("TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
-                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(TargetFrameInterval - averageFrameTime)));
+
+                //There's no guarantee that the thread will sleep for how long we ask for (especially on Windows *cough* *cough*)
+                //so we need to adjust the sleep time depending on how long will have actually slept
+                uint32_t preSleepTime = BackendInput->GetElapsedTime();
+                int64_t sleepDuration = static_cast<int64_t>(TargetFrameInterval - averageFrameTime) *threadSleepMultiplier;
+                std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
+                uint32_t actualSleptDuration = BackendInput->GetElapsedTime() - preSleepTime;
+                threadSleepMultiplier = (double)sleepDuration / (double)actualSleptDuration;
             }
 
             #if SSGUI_REFRESH_CONSOLE
@@ -208,7 +217,7 @@ namespace ssGUI
             currentMainWindowP->MoveChildrenIteratorToFirst();
             while (!currentMainWindowP->IsChildrenIteratorEnd())
             {
-                objToRender.push_back(std::pair(currentMainWindowP->GetCurrentChild(), false));
+                objToRender.push_back(std::pair<ssGUI::GUIObject*, bool>(currentMainWindowP->GetCurrentChild(), false));
                 currentMainWindowP->MoveChildrenIteratorNext();
             }
             currentMainWindowP->PopChildrenIterator();
@@ -233,7 +242,7 @@ namespace ssGUI
                     currentObjP->MoveChildrenIteratorToLast();
                     while (!currentObjP->IsChildrenIteratorEnd())
                     {
-                        objToRender.push_front(std::pair(currentObjP->GetCurrentChild(), overlay));
+                        objToRender.push_front(std::pair<ssGUI::GUIObject*, bool>(currentObjP->GetCurrentChild(), overlay));
                         currentObjP->MoveChildrenIteratorPrevious();
                     }
                     currentObjP->PopChildrenIterator();
@@ -623,5 +632,6 @@ namespace ssGUI
     {
         Text::CleanUpAllDefaultFonts();
         Dropdown::CleanUpAllDefaultDropdownImage();
+        StandardWindow::CleanUpDefaultIconData();
     }
 }

@@ -2,7 +2,10 @@
 
 #include "ssLogger/ssLog.hpp"
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     AdvancedPosition::AdvancedPosition() :  Container(nullptr),
                                             Enabled(true),
@@ -245,6 +248,7 @@ namespace ssGUI::Extensions
         if(newContainer != nullptr)
             newContainer->AddExtension(temp);
         return temp;
-    }
-    
+    }   
+}
+
 }

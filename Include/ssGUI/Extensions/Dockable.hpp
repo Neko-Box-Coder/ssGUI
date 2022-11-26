@@ -6,8 +6,11 @@
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "glm/vec4.hpp"
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {       
     class Layout;
     
@@ -294,6 +297,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Dockable* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

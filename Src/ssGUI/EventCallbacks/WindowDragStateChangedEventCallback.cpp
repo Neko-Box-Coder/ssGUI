@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string WindowDragStateChangedEventCallback::GetEventCallbackName() const
     {
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string WindowDragStateChangedEventCallback::EVENT_NAME = "WindowDragStateChangedEvent";
+}
+
 }

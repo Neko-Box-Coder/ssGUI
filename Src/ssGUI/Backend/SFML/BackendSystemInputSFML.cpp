@@ -1,5 +1,6 @@
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
+#include "ssGUI/HelperClasses/SFMLImageConversion.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
@@ -11,7 +12,10 @@
 
 // #include "SFML/Window/Clipboard.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {    
     template <class T>
     void BackendSystemInputSFML::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
@@ -229,10 +233,10 @@ namespace ssGUI::Backend
                 //Check mouse position as mouseMove event is not reliable
                 if(event.type == sf::Event::MouseMoved) 
                 { 
-                    event.mouseMove.x += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().x +  
+                    event.mouseMove.x += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetWindowPosition().x +  
                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().x;
  
-                    event.mouseMove.y += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().y +  
+                    event.mouseMove.y += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetWindowPosition().y +  
                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().y;
 
                     curInfo.MouseMoved = true;
@@ -430,7 +434,6 @@ namespace ssGUI::Backend
         return CurrentCursor;
     }
 
-    //TODO: Store the hotspot and also shouldn't be setting the cursor 
     void BackendSystemInputSFML::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssLOG_FUNC_ENTRY();
@@ -450,14 +453,53 @@ namespace ssGUI::Backend
             ssLOG_FUNC_EXIT();
             return;
         }
+        //Otherwise we can add the cursor to our cache
         else
         {
+            #ifdef SSGUI_IMAGE_BACKEND_SFML
+                sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+            #else
+                //Convert everything to sf::Image
+                sf::Image cursorImg;
+                ssGUI::ImageFormat cursorFormat;
+                void* imgPtr = customCursor->GetPixelPtr(cursorFormat);
+                
+                if(imgPtr == nullptr)
+                {
+                    ssLOG_LINE("Failed to create custom cursor");
+                    return;
+                }
+                
+                bool result = false;
+                if(cursorFormat.BitDepthPerChannel == 8)
+                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(cursorImg, imgPtr, cursorFormat, customCursor->GetSize());
+                else if(cursorFormat.BitDepthPerChannel == 16)
+                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(cursorImg, imgPtr, cursorFormat, customCursor->GetSize());
+                else
+                {
+                    ssLOG_LINE("Unsupported bit depth: "<<cursorFormat.BitDepthPerChannel);
+                    return;
+                }
+                
+                if(!result)
+                {
+                    ssLOG_LINE("Failed to convert image");
+                    return;
+                }
+            #endif
+        
             if(customCursor->GetSize() == cursorSize)
-                CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+            {
+                #ifdef SSGUI_IMAGE_BACKEND_SFML
+                    CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+                #else
+                    CustomCursors[cursorName].first = cursorImg;
+                #endif
+            }
             else
-            {            
+            {
                 //Original cursor image
-                auto oriCursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+                auto& oriCursorImg = cursorImg;
 
                 //temporary image pointers for resizing
                 uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
@@ -597,8 +639,10 @@ namespace ssGUI::Backend
         if(CustomCursors[CurrentCustomCursor].first.getPixelsPtr() == nullptr)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize().x, 
-            CustomCursors[CurrentCustomCursor].first.getSize().y))
+        if(!customCursor.LoadRawFromMemory( CustomCursors[CurrentCustomCursor].first.getPixelsPtr(),
+                                            ssGUI::ImageFormat(),
+                                            glm::ivec2( CustomCursors[CurrentCustomCursor].first.getSize().x, 
+                                                        CustomCursors[CurrentCustomCursor].first.getSize().y)))
         {
             ssLOG_LINE("Failed to load custom cursor image");   
         }
@@ -619,8 +663,10 @@ namespace ssGUI::Backend
         if(CustomCursors[cursorName].first.getPixelsPtr() == nullptr)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursors[cursorName].first.getPixelsPtr(), CustomCursors[cursorName].first.getSize().x, 
-            CustomCursors[cursorName].first.getSize().y))
+        if(!customCursor.LoadRawFromMemory( CustomCursors[cursorName].first.getPixelsPtr(), 
+                                            ssGUI::ImageFormat(),
+                                            glm::ivec2( CustomCursors[cursorName].first.getSize().x, 
+                                                        CustomCursors[cursorName].first.getSize().y)))
         {
             ssLOG_LINE("Failed to load custom cursor image");
         }
@@ -805,10 +851,21 @@ namespace ssGUI::Backend
     {
         clip::image img;
 
-        if(!clip::get_image(img) || img.spec().bits_per_pixel != 32)
+        if(!clip::get_image(img))
             return false;
+        
+        clip::image_spec spec = img.spec();
+            
+        ssGUI::ImageFormat format;
+        format.HasAlpha = spec.alpha_mask > 0;
+        format.IndexR = spec.red_shift / 8;
+        format.IndexG = spec.green_shift / 8;
+        format.IndexB = spec.blue_shift / 8;
+        format.IndexA = spec.alpha_shift / 8;
 
-        return imgData.LoadRawFromMemory(static_cast<void*>(img.data()), img.spec().width, img.spec().height);
+        return imgData.LoadRawFromMemory(   static_cast<void*>(img.data()), 
+                                            format,
+                                            glm::ivec2(img.spec().width, img.spec().height));
     }
 
     bool BackendSystemInputSFML::GetClipboardText(std::wstring& str)
@@ -845,4 +902,4 @@ namespace ssGUI::Backend
     }
 }
 
-
+}

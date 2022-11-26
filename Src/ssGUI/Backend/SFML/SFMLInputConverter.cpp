@@ -1,6 +1,9 @@
 #include "ssGUI/Backend/SFML/SFMLInputConverter.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     ssGUI::Enums::GenericButtonAndKeyInput SFMLInputConverter::ConvertButtonAndKeys(const sf::Event& event)
     {
@@ -245,4 +248,4 @@ namespace ssGUI::Backend
     }
 }
 
-
+}

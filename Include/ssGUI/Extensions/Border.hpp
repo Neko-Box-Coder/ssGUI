@@ -6,8 +6,11 @@
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject
 #include "glm/vec4.hpp"
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {   
     /*class: ssGUI::Extensions::Border
     Draws a border according to the *size* of the GUI Object
@@ -139,6 +142,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Border* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

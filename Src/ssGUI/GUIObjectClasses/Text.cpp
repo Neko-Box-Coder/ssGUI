@@ -2,6 +2,7 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 #include "ssLogger/ssLog.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 #include "glm/gtx/norm.hpp"
 #include <cmath>
 #include <locale>
@@ -161,7 +162,7 @@ namespace ssGUI
         if(!info.Rendered)
             return;
 
-        glm::vec2 position = positionOffset + info.RenderPosition;
+        glm::vec2 position = positionOffset + info.BaselinePosition;
         ssGUI::Font* targetFont = nullptr;
         
         if(details.FontIndex != -1)
@@ -182,15 +183,16 @@ namespace ssGUI
         DrawingColours.push_back(details.CharacterColor);
         DrawingColours.push_back(details.CharacterColor);
 
-        DrawingUVs.push_back(info.UVOrigin);
-        DrawingUVs.push_back(info.UVOrigin + glm::vec2(info.Size.x, 0));
-        DrawingUVs.push_back(info.UVOrigin + info.Size);
-        DrawingUVs.push_back(info.UVOrigin + glm::vec2(0, info.Size.y));
+        DrawingUVs.push_back(glm::vec2());
+        DrawingUVs.push_back(glm::vec2(info.Size.x, 0));
+        DrawingUVs.push_back(info.Size);
+        DrawingUVs.push_back(glm::vec2(0, info.Size.y));
 
         DrawingCounts.push_back(4);
         ssGUI::DrawingProperty currentProperty;
         currentProperty.fontP = targetFont->GetBackendFontInterface();
         currentProperty.characterSize = details.FontSize;
+        currentProperty.character = details.Character;
 
         DrawingProperties.push_back(currentProperty);
     }
@@ -278,7 +280,7 @@ namespace ssGUI
         {
             if(!CharactersRenderInfos[i].Valid)
             {
-                CharactersRenderInfos[i].RenderPosition.x += drawXOffset;
+                CharactersRenderInfos[i].BaselinePosition.x += drawXOffset;
                 continue;
             }
 
@@ -309,12 +311,12 @@ namespace ssGUI
                     //Otherwise, reposition the word to the newlne
                     else
                     {
-                        float curWordXOffset = GetHorizontalPadding() - CharactersRenderInfos[currentWordIndex].RenderPosition.x;
+                        float curWordXOffset = GetHorizontalPadding() - CharactersRenderInfos[currentWordIndex].BaselinePosition.x;
                         CharactersRenderInfos[currentWordIndex].CharacterAtNewline = true;
                         currentLineLength = GetHorizontalPadding();
 
                         for(int j = currentWordIndex; j < i; j++)
-                            CharactersRenderInfos[j].RenderPosition.x += curWordXOffset;
+                            CharactersRenderInfos[j].BaselinePosition.x += curWordXOffset;
                         
                         //Needs to total up the offset instead of assigning it.
                         drawXOffset += curWordXOffset;
@@ -328,7 +330,7 @@ namespace ssGUI
             }
 
             //Apply offset
-            curRenderInfo.RenderPosition.x += drawXOffset;
+            curRenderInfo.BaselinePosition.x += drawXOffset;
         }
 
         ssLOG_FUNC_EXIT();
@@ -350,7 +352,7 @@ namespace ssGUI
         {
             if(!CharactersRenderInfos[i].Valid)
             {
-                CharactersRenderInfos[i].RenderPosition.x += drawXOffset;
+                CharactersRenderInfos[i].BaselinePosition.x += drawXOffset;
                 continue;
             }
 
@@ -374,7 +376,7 @@ namespace ssGUI
                 //Otherwise, move character to newline
                 else
                 {
-                    drawXOffset = GetHorizontalPadding() - curRenderInfo.RenderPosition.x;
+                    drawXOffset = GetHorizontalPadding() - curRenderInfo.BaselinePosition.x;
                     curRenderInfo.CharacterAtNewline = true;
                     currentLineLength = GetHorizontalPadding();
                 }
@@ -382,7 +384,7 @@ namespace ssGUI
             currentLineLength += characterLength;
 
             //Apply offset
-            curRenderInfo.RenderPosition.x += drawXOffset;
+            curRenderInfo.BaselinePosition.x += drawXOffset;
         }
 
         ssLOG_FUNC_EXIT();
@@ -410,7 +412,7 @@ namespace ssGUI
                 if(curChar == L'\0' || (curDetail.FontIndex == -1 && curDetail.DefaultFontIndex == -1))
                 {
                     prevChar = 0;
-                    curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
+                    curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
                     continue;
                 }
                 else
@@ -420,7 +422,7 @@ namespace ssGUI
             else if(!curRenderInfo.Valid)
             {
                 prevChar = 0;
-                curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
+                curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
                 continue;
             }
             
@@ -447,7 +449,7 @@ namespace ssGUI
                     nextCharIsAtNewline = false;
                 }
                 
-                curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
+                curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
                 float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
 
                 switch (curChar)
@@ -488,7 +490,7 @@ namespace ssGUI
                     nextCharIsAtNewline = false;
                 }
 
-                curRenderInfo.RenderPosition = glm::vec2(drawXPos, 0);
+                curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
 
                 drawXPos += characterLength + GetCharacterSpace();
 
@@ -542,7 +544,7 @@ namespace ssGUI
                     
                     for(int i = currentLineIndex; i < currentIndex; i++)
                     {
-                        CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                        CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                         CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
                         CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                     }
@@ -558,7 +560,7 @@ namespace ssGUI
                     
                     for(int i = currentLineIndex; i < currentIndex; i++)
                     {
-                        CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                        CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                         CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;//-backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
                         CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                     }
@@ -585,13 +587,13 @@ namespace ssGUI
                 
                 for(int i = currentLineIndex; i <= currentIndex; i++)
                 {
-                    CharactersRenderInfos[i].RenderPosition.y += currentOffset;
+                    CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                     CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
                     CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
                 }
 
                 //Update vertical overflow
-                if(!IsOverflow() && CharactersRenderInfos[currentIndex].RenderPosition.y + GetVerticalPadding() * 2 > GetSize().y)
+                if(!IsOverflow() && CharactersRenderInfos[currentIndex].BaselinePosition.y + GetVerticalPadding() * 2 > GetSize().y)
                     Overflow = true;
 
                 break;
@@ -625,12 +627,12 @@ namespace ssGUI
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
         {
             //If this character is on a newline
-            if(CharactersRenderInfos[i].RenderPosition.y != currentLineHeight)
+            if(CharactersRenderInfos[i].BaselinePosition.y != currentLineHeight)
             {
                 //Align the previous line first
                 if(i > 0)
                 {
-                    lineEndPos = CharactersRenderInfos[i-1].RenderPosition.x + CharactersRenderInfos[i-1].DrawOffset.x +
+                    lineEndPos = CharactersRenderInfos[i-1].BaselinePosition.x + CharactersRenderInfos[i-1].DrawOffset.x +
                         CharactersRenderInfos[i-1].Size.x + GetHorizontalPadding();
                     float alignOffset = 0; 
 
@@ -649,19 +651,19 @@ namespace ssGUI
                     }
 
                     for(int j = lineStartIndex; j < i; j++)
-                        CharactersRenderInfos[j].RenderPosition.x += alignOffset;
+                        CharactersRenderInfos[j].BaselinePosition.x += alignOffset;
                 }
 
                 //Then record where the newline starts
                 lineStartPos = 0;
-                currentLineHeight = CharactersRenderInfos[i].RenderPosition.y;
+                currentLineHeight = CharactersRenderInfos[i].BaselinePosition.y;
                 lineStartIndex = i;
             }
             
             //End of character
             if(i == CharactersRenderInfos.size() - 1)
             {
-                lineEndPos = CharactersRenderInfos[i].RenderPosition.x + CharactersRenderInfos[i].DrawOffset.x +
+                lineEndPos = CharactersRenderInfos[i].BaselinePosition.x + CharactersRenderInfos[i].DrawOffset.x +
                         CharactersRenderInfos[i].Size.x + GetHorizontalPadding();
                 float alignOffset = 0; 
 
@@ -680,7 +682,7 @@ namespace ssGUI
                 }
 
                 for(int j = lineStartIndex; j <= i; j++)
-                    CharactersRenderInfos[j].RenderPosition.x += alignOffset;
+                    CharactersRenderInfos[j].BaselinePosition.x += alignOffset;
             }
         }
         
@@ -690,11 +692,11 @@ namespace ssGUI
         
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
         {
-            if(CharactersRenderInfos[i].RenderPosition.y + CharactersRenderInfos[i].DrawOffset.y < lineStartPos)
-                lineStartPos = CharactersRenderInfos[i].RenderPosition.y + CharactersRenderInfos[i].DrawOffset.y;
+            if(CharactersRenderInfos[i].BaselinePosition.y + CharactersRenderInfos[i].DrawOffset.y < lineStartPos)
+                lineStartPos = CharactersRenderInfos[i].BaselinePosition.y + CharactersRenderInfos[i].DrawOffset.y;
         }
 
-        lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].RenderPosition.y + GetVerticalPadding();
+        lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetVerticalPadding();
         switch (VerticalAlignment)
         {
             case ssGUI::Enums::TextAlignmentVertical::TOP:
@@ -711,7 +713,7 @@ namespace ssGUI
         }
 
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
-            CharactersRenderInfos[i].RenderPosition.y += alignOffset;
+            CharactersRenderInfos[i].BaselinePosition.y += alignOffset;
 
         ssLOG_FUNC_EXIT();
     }
@@ -735,16 +737,16 @@ namespace ssGUI
 
         auto drawHighlight = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 highlightColor)
         {
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() +
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
                 glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() +
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() +
                 glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMinY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() +
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() +
                 glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() +
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
                 glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
 
             for(int i = 0; i < 4; i++)
@@ -795,16 +797,16 @@ namespace ssGUI
 
         auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
         {
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() +
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
                 glm::vec2(0, underlineOffset));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() + 
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() + 
                 glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].RenderPosition + GetGlobalPosition() + 
+            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() + 
                 glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset + thickness));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].RenderPosition + GetGlobalPosition() + 
+            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() + 
                 glm::vec2(0, underlineOffset + thickness));
 
             for(int i = 0; i < 4; i++)
@@ -1533,8 +1535,8 @@ namespace ssGUI
         
         return GetGlobalPosition() + 
                 (topLeftCorner ? 
-                CharactersRenderInfos[index].RenderPosition + CharactersRenderInfos[index].DrawOffset :
-                CharactersRenderInfos[index].RenderPosition);
+                CharactersRenderInfos[index].BaselinePosition + CharactersRenderInfos[index].DrawOffset :
+                CharactersRenderInfos[index].BaselinePosition);
     }
 
     bool Text::IsOverflow() const
@@ -1862,7 +1864,7 @@ namespace ssGUI
             
             //Check within
             ssGUI::CharacterRenderInfo& midInfo = CharactersRenderInfos[midIndex];
-            if(checkWithin(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset, midInfo.Size))
+            if(checkWithin(pos, globalPos + midInfo.BaselinePosition + midInfo.DrawOffset, midInfo.Size))
             {
                 return midIndex;
             }
@@ -1872,29 +1874,29 @@ namespace ssGUI
 
             //Check if check position is contained
             if(pos.y < globalPos.y + startInfo.LineMinY ||
-                pos.y > globalPos.y + endInfo.RenderPosition.y)
+                pos.y > globalPos.y + endInfo.BaselinePosition.y)
             {
                 return -1;
             }
 
             //Check if pos is before midChar or after
             //If above this line
-            if(pos.y < globalPos.y + midInfo.RenderPosition.y + midInfo.LineMinY)
+            if(pos.y < globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMinY)
                 endIndex = midIndex - 1;
 
             //If below this line
-            else if(pos.y > globalPos.y + midInfo.RenderPosition.y + midInfo.LineMaxY)
+            else if(pos.y > globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMaxY)
                 startIndex = midIndex + 1;
 
             //If within this line
             else
             {
                 //Before this character
-                if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                if(pos.x < globalPos.x + midInfo.BaselinePosition.x + midInfo.DrawOffset.x)
                     endIndex = midIndex - 1;
 
                 //After this character
-                else if(pos.x > globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                else if(pos.x > globalPos.x + midInfo.BaselinePosition.x + midInfo.DrawOffset.x)
                     startIndex = midIndex + 1;
 
                 //Not contained
@@ -1949,19 +1951,19 @@ namespace ssGUI
             if(startIndex == midIndex)
             {                
                 //If below the line, just go for the endIndex character
-                if(pos.y > globalPos.y + midInfo.RenderPosition.y + midInfo.LineMaxY)
+                if(pos.y > globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMaxY)
                     return endIndex;
                 
                 if(!useLeftEdge)
                 {
-                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
-                            glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + endInfo.Size * 0.5f) ?
+                    return glm::distance2(pos, globalPos + midInfo.BaselinePosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
+                            glm::distance2(pos, globalPos + endInfo.BaselinePosition + endInfo.DrawOffset + endInfo.Size * 0.5f) ?
                             midIndex : endIndex;
                 }
                 else
                 {
-                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + glm::vec2(0, midInfo.Size.y * 0.5f)) < 
-                            glm::distance2(pos, globalPos + endInfo.RenderPosition + endInfo.DrawOffset + glm::vec2(0, endInfo.Size.y * 0.5f)) ?
+                    return glm::distance2(pos, globalPos + midInfo.BaselinePosition + midInfo.DrawOffset + glm::vec2(0, midInfo.Size.y * 0.5f)) < 
+                            glm::distance2(pos, globalPos + endInfo.BaselinePosition + endInfo.DrawOffset + glm::vec2(0, endInfo.Size.y * 0.5f)) ?
                             midIndex : endIndex;
                 }
             }
@@ -1969,31 +1971,31 @@ namespace ssGUI
             if(endIndex == midIndex)
             {
                 //If above the line, just go for the startIndex character
-                if(pos.y < globalPos.y + midInfo.RenderPosition.y + midInfo.LineMinY)
+                if(pos.y < globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMinY)
                     return startIndex;
                 
                 if(!useLeftEdge)
                 {
-                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
-                            glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + startInfo.Size * 0.5f) ?
+                    return glm::distance2(pos, globalPos + midInfo.BaselinePosition + midInfo.DrawOffset + midInfo.Size * 0.5f) < 
+                            glm::distance2(pos, globalPos + startInfo.BaselinePosition + startInfo.DrawOffset + startInfo.Size * 0.5f) ?
                             midIndex : startIndex;
                 }
                 else
                 {
-                    return glm::distance2(pos, globalPos + midInfo.RenderPosition + midInfo.DrawOffset + glm::vec2(0, midInfo.Size.y * 0.5f)) < 
-                            glm::distance2(pos, globalPos + startInfo.RenderPosition + startInfo.DrawOffset + glm::vec2(0, startInfo.Size.y * 0.5f)) ?
+                    return glm::distance2(pos, globalPos + midInfo.BaselinePosition + midInfo.DrawOffset + glm::vec2(0, midInfo.Size.y * 0.5f)) < 
+                            glm::distance2(pos, globalPos + startInfo.BaselinePosition + startInfo.DrawOffset + glm::vec2(0, startInfo.Size.y * 0.5f)) ?
                             midIndex : startIndex;
                 }
             }
 
             //Check if pos is before midChar or after
             //If above this line
-            if(pos.y < globalPos.y + midInfo.RenderPosition.y + midInfo.LineMinY)
+            if(pos.y < globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMinY)
             {
                 endIndex = midIndex;
             }
             //If below this line
-            else if(pos.y > globalPos.y + midInfo.RenderPosition.y + midInfo.LineMaxY)
+            else if(pos.y > globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMaxY)
             {
                 startIndex = midIndex;
             }
@@ -2001,7 +2003,7 @@ namespace ssGUI
             else
             {
                 //Before this character
-                if(pos.x < globalPos.x + midInfo.RenderPosition.x + midInfo.DrawOffset.x)
+                if(pos.x < globalPos.x + midInfo.BaselinePosition.x + midInfo.DrawOffset.x)
                     endIndex = midIndex;
                 //After this character
                 else
@@ -2048,20 +2050,20 @@ namespace ssGUI
             return false;
 
         //If cursor is on the same line as last character
-        if(pos.y >= GetGlobalPosition().y + CharactersRenderInfos[lastIndex].RenderPosition.y + CharactersRenderInfos[lastIndex].LineMinY &&
-            pos.y <= GetGlobalPosition().y + CharactersRenderInfos[lastIndex].RenderPosition.y + CharactersRenderInfos[lastIndex].LineMaxY)
+        if(pos.y >= GetGlobalPosition().y + CharactersRenderInfos[lastIndex].BaselinePosition.y + CharactersRenderInfos[lastIndex].LineMinY &&
+            pos.y <= GetGlobalPosition().y + CharactersRenderInfos[lastIndex].BaselinePosition.y + CharactersRenderInfos[lastIndex].LineMaxY)
         {
             //If newline, it will be pointing to character before it
             if(GetInternalCharacterDetail(lastIndex).Character == '\n')
                 return false;
             //Otherwise check if the cursor is to the right of the character
-            else if(pos.x > GetGlobalPosition().x + CharactersRenderInfos[lastIndex].RenderPosition.x + CharactersRenderInfos[lastIndex].Advance)
+            else if(pos.x > GetGlobalPosition().x + CharactersRenderInfos[lastIndex].BaselinePosition.x + CharactersRenderInfos[lastIndex].Advance)
                 return true;
             else
                 return false;
         }
         //If cursor is after this line
-        else if(pos.y > GetGlobalPosition().y + CharactersRenderInfos[lastIndex].RenderPosition.y + CharactersRenderInfos[lastIndex].LineMaxY)
+        else if(pos.y > GetGlobalPosition().y + CharactersRenderInfos[lastIndex].BaselinePosition.y + CharactersRenderInfos[lastIndex].LineMaxY)
             return true;
         else
             return false;

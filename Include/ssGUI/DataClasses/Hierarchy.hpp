@@ -84,7 +84,7 @@ namespace ssGUI
                 public:
                     friend class Hierarchy;
 
-                    bool operator==(ChildInfo const& other)
+                    bool operator==(ChildInfo const& other) const
                     {
                         return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
                     };

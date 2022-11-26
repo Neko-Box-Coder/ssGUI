@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/SliderValueChangedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string SliderValueChangedEventCallback::GetEventCallbackName() const
     {
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string SliderValueChangedEventCallback::EVENT_NAME = "SliderValueChangedEvent";
+}
+
 }

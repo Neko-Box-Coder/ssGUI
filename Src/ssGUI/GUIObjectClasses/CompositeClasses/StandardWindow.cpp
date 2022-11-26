@@ -16,6 +16,8 @@
 
 namespace ssGUI
 {
+    ssGUI::ImageData* StandardWindow::DefaultIcon = nullptr;
+
     StandardWindow::StandardWindow(StandardWindow const& other) : Window(other)
     {
         HorizontalPadding = other.GetHorizontalPadding();
@@ -202,7 +204,7 @@ namespace ssGUI
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
         SetAdaptiveTitleColorDifference(glm::ivec4(150, 150, 150, 0));
-
+        
         auto windowIcon = new ssGUI::Image();
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
         windowIcon->SetUserCreated(false);
@@ -211,9 +213,15 @@ namespace ssGUI
         windowIcon->SetMinSize(glm::vec2(5, 5));
         WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
-        auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-        data->LoadFromPath("Resources/WindowIcon.png");
-        windowIcon->SetImageData(data);
+        if(DefaultIcon == nullptr)
+        {
+            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+            if(data->LoadFromPath("Resources/WindowIcon.png"))
+            {
+                DefaultIcon = data;
+                windowIcon->SetImageData(DefaultIcon);
+            }
+        }
 
         //Setup button
         auto closeButton = new ssGUI::Button();
@@ -514,6 +522,12 @@ namespace ssGUI
         return TitleColorDifference;
     }
 
+    void StandardWindow::CleanUpDefaultIconData()
+    {
+        if(DefaultIcon != nullptr)
+            ssGUI::Factory::Dispose(DefaultIcon);
+    }
+
     void StandardWindow::SetTitlebarColor(glm::u8vec4 color)
     {
         Window::SetTitlebarColor(color);
@@ -530,8 +544,8 @@ namespace ssGUI
         glm::ivec4 titleResult;
         if(IsAdaptiveTitleContrast())
         {
-            float averageTitlebarColor = (GetTitlebarColor().r + GetTitlebarColor().g + GetTitlebarColor().b)/3;
-            float averageTitleDiffColor = (GetAdaptiveTitleColorDifference().r + GetAdaptiveTitleColorDifference().g + GetAdaptiveTitleColorDifference().b)/3;
+            float averageTitlebarColor = (GetTitlebarColor().r + GetTitlebarColor().g + GetTitlebarColor().b) / (float)3;
+            float averageTitleDiffColor = (GetAdaptiveTitleColorDifference().r + GetAdaptiveTitleColorDifference().g + GetAdaptiveTitleColorDifference().b) / (float)3;
             int contrastFactor = averageTitlebarColor + averageTitleDiffColor > 255 ? -1 : 1; 
             titleResult = (glm::ivec4)GetTitlebarColor() + GetAdaptiveTitleColorDifference() * contrastFactor;
         }

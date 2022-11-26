@@ -6,14 +6,19 @@
 #include <vector>
 #include <codecvt>
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     //var: GenericButtonAndKeyInput
     using GenericButtonAndKeyInput = uint16_t;
 
     //const: NO_INPUT
     const uint16_t NO_INPUT = 0; 
+}
+
 }
 
 //namespace: ssGUI

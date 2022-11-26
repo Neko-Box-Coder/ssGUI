@@ -2,7 +2,10 @@
 
 #include "ssLogger/ssLog.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {    
     BaseEventCallback::BaseEventCallback() :    EventListeners(),
                                                 Container(nullptr),
@@ -83,7 +86,13 @@ namespace ssGUI::EventCallbacks
     {
         ssLOG_FUNC_ENTRY();
         for(auto it = EventListeners.begin(); it != EventListeners.end(); it++)
-            it->second({source, Container, &CurrentObjectsReferences});
+        {
+            ssGUI::EventInfo info;
+            info.EventSource = source;
+            info.EventCallbackContainer = Container;
+            info.EventCallbackReferences = &CurrentObjectsReferences;
+            it->second(info);
+        }
         ssLOG_FUNC_EXIT();
     }
 
@@ -133,4 +142,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string BaseEventCallback::EVENT_NAME = "BaseEvent";
+}
+
 }

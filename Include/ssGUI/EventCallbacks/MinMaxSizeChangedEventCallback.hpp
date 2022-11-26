@@ -3,8 +3,11 @@
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback
     //This event callback is triggered *after* min or max size of a GUI object has changed. Container will be the source for triggering this event callback.
@@ -36,6 +39,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

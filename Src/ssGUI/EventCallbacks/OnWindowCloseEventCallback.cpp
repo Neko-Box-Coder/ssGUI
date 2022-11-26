@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/OnWindowCloseEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string OnWindowCloseEventCallback::GetEventCallbackName() const
     {
@@ -22,6 +25,7 @@ namespace ssGUI::EventCallbacks
         return temp;
     }
 
-    const std::string OnWindowCloseEventCallback::EVENT_NAME = "OnWindowCloseEvent";
-    
+    const std::string OnWindowCloseEventCallback::EVENT_NAME = "OnWindowCloseEvent";   
+}
+
 }

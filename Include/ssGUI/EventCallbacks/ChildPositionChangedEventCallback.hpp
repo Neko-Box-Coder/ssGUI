@@ -3,8 +3,11 @@
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::ChildPositionChangedEventCallback
     //This event callback is triggered *after* <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> is called.
@@ -40,4 +43,5 @@ namespace ssGUI::EventCallbacks
     };
 }
 
+}
 #endif

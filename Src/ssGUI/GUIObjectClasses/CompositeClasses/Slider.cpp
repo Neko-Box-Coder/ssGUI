@@ -6,6 +6,7 @@
 #include "ssGUI/EventCallbacks/SliderValueChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SliderValueFinishedChangingEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SliderValueChangedViaGuiEventCallback.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
@@ -15,14 +16,14 @@ namespace ssGUI
 {
     Slider::Slider(Slider const& other) : Widget(other)
     {
-        SetReverse(other.IsReverse());
-        SetFillColor(other.GetFillColor());
+        Reverse = other.Reverse;
+        FillColor = other.FillColor;
         KnobObject = other.KnobObject;
-        SetSliderValue(other.GetSliderValue());
-        SetVertical(other.IsVertical(), false);
-        SetSnapInterval(other.GetSnapInterval());
-        SetScrollInterval(other.GetScrollInterval());
-        SetKeyInputMoveInterval(other.GetKeyInputMoveInterval());
+        SliderValue = other.SliderValue;
+        Vertical = other.Vertical;
+        SnapInterval = other.SnapInterval;
+        ScrollInternal = other.ScrollInternal;
+        KeyInputInterval = other.KeyInputInterval;
 
         KnobGlobalPosition = other.KnobGlobalPosition;
         CursorKnobOffset = other.CursorKnobOffset;
@@ -43,7 +44,7 @@ namespace ssGUI
             return;
         
         float snapValue = GetSliderValue() / GetSnapInterval();
-        SetSliderValue(round(snapValue) * GetSnapInterval()); 
+        SliderValue = round(snapValue) * GetSnapInterval();
     }
 
     void Slider::UpdateKnobPosition(bool completeUpdate)

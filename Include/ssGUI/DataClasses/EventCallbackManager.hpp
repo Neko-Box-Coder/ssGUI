@@ -62,10 +62,10 @@ namespace ssGUI
             template <typename T>
             T* GetAnyEventCallback()
             {
-                static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value);
-                static_assert(!std::is_same<ssGUI::EventCallbacks::EventCallback, T>::value);
+                static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value, "Invalid Type to get event callback");
+                static_assert(!std::is_same<ssGUI::EventCallbacks::EventCallback, T>::value, "Invalid Type to get event callback");
                 return static_cast<T*>(GetEventCallback(T::EVENT_NAME));
-            };
+            }
             
             //function: IsEventCallbackExist
             //Returns true if the eventCallback exists on this GUI Object
@@ -77,10 +77,10 @@ namespace ssGUI
             template <typename T>
             bool IsAnyEventCallbackExist()
             {
-                static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value);
-                static_assert(!std::is_same<ssGUI::EventCallbacks::EventCallback, T>::value);
+                static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value, "Invalid Type to get event callback");
+                static_assert(!std::is_same<ssGUI::EventCallbacks::EventCallback, T>::value, "Invalid Type to get event callback");
                 return IsEventCallbackExist(T::EVENT_NAME);
-            };
+            }
             
             //function: RemoveEventCallback
             //Removes the eventCallback by the name of it
@@ -92,10 +92,10 @@ namespace ssGUI
             template <typename T>
             void RemoveAnyEventCallback()
             {
-                static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value);
-                static_assert(!std::is_same<ssGUI::EventCallbacks::EventCallback, T>::value);
+                static_assert(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value, "Invalid Type to get event callback");
+                static_assert(!std::is_same<ssGUI::EventCallbacks::EventCallback, T>::value, "Invalid Type to get event callback");
                 RemoveEventCallback(T::EVENT_NAME);
-            };
+            }
 
             //function: GetListOfEventCallbacks
             //Returns all the event callbacks on the GUI Object
