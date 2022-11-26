@@ -2,10 +2,11 @@
 
 ### 🔌 Status of ssGUI
 - #### 🔀 Branches
-    - ![](https://img.shields.io/badge/Latest_Development-v0.93.02-yellow?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Latest_Development-v0.93.02-E5FF3C?style=for-the-badge&logo=GitHub)
         - ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434)
-    - ![](https://img.shields.io/badge/Latest_Stable-v0.93.00.b-brightgreen?style=for-the-badge&logo=GitHub)
-    - ![](https://img.shields.io/badge/Master-v0.93.02-yellow?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Development_Release-v0.93.01-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Stable_Release-v0.93.00.b-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Master-v0.93.02-E5FF3C?style=for-the-badge&logo=GitHub)
 
 - #### 🖥️ OS support
     - ![](https://img.shields.io/badge/Linux-Working-brightgreen?style=for-the-badge&logo=linux&logoColor=white)
@@ -13,7 +14,7 @@
     - ![](https://img.shields.io/badge/OSX-Unknown-red?style=for-the-badge&logo=apple)
 
 - #### 📈 Current Progress
-    - ![](https://img.shields.io/badge/v0.93-▏█████ 100％ █████▕-29D236?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.93-▏█████ 100％ █████▕-29D236?style=for-the-badge&logo=)
     - ![](https://img.shields.io/badge/v0.94-▏███       30％                  ▕-E5FF3C?style=for-the-badge)
 ---
 
