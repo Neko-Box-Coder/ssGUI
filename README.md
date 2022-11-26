@@ -1,12 +1,5 @@
 > ⚠️ This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
-<style>
-li
-{
-    list-style-type: none;
-}
-</style>
-
 ### 🔌 Status of ssGUI
 - #### 🔀 Branches
     - ![](https://img.shields.io/badge/Latest_Development-v0.93.02-yellow?style=for-the-badge&logo=GitHub)
@@ -20,8 +13,8 @@ li
     - ![](https://img.shields.io/badge/OSX-Unknown-red?style=for-the-badge&logo=apple)
 
 - #### 📈 Current Progress
-    - ![](https://img.shields.io/badge/v0.93-[=====_100％_=====]-29D236?style=for-the-badge)
-    - ![](https://img.shields.io/badge/v0.94-[===ㅤㅤ_30％ㅤㅤㅤㅤㅤ]-E5FF3C?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.93-▏█████ 100％ █████▕-29D236?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.94-▏███       30％                  ▕-E5FF3C?style=for-the-badge)
 ---
 
 ### ❓ What is ssGUI?
