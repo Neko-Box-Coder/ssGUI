@@ -292,7 +292,11 @@ namespace Backend
             FT_Done_Face(FontFace);
         
         if(FontMemory != nullptr)
+        {
             free(FontMemory);
+            FontMemory = nullptr;
+            FontMemoryLength = 0;
+        }
         
         if(!FontPath.empty())
             FontPath.clear();
@@ -327,8 +331,7 @@ namespace Backend
         CurrentSize = -1;
         Valid = true;
         FontPath = path;
-        
-        if(FontMemory)
+
         return true;
     }
 
@@ -443,8 +446,7 @@ namespace Backend
             result = characterImage.LoadRawFromMemory(  GetCurrentGlyph()->bitmap.buffer, 
                                                         format, 
                                                         glm::ivec2( GetCurrentGlyph()->bitmap.width, 
-                                                                    GetCurrentGlyph()->bitmap.rows),
-                                                        GetCurrentGlyph()->bitmap.pitch - GetCurrentGlyph()->bitmap.width * 4);
+                                                                    GetCurrentGlyph()->bitmap.rows));
         }
         //Otherwise it is just grayscale
         //We will treat black pixels as transparent
@@ -456,6 +458,9 @@ namespace Backend
             format.IndexMono = 0;
             format.IndexA = -1;
             format.BitPerPixel = 8;
+            format.IndexR = -1;
+            format.IndexG = -1;
+            format.IndexB = -1;
 
             //Convert to bitmap if there isn't one
             if(FontFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
@@ -478,8 +483,7 @@ namespace Backend
             result = characterImage.LoadRawFromMemory(  GetCurrentGlyph()->bitmap.buffer, 
                                                         format, 
                                                         glm::ivec2( GetCurrentGlyph()->bitmap.width, 
-                                                                    GetCurrentGlyph()->bitmap.rows),
-                                                        GetCurrentGlyph()->bitmap.pitch - GetCurrentGlyph()->bitmap.width);
+                                                                    GetCurrentGlyph()->bitmap.rows));
         }
         
         return result;

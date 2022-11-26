@@ -3,6 +3,9 @@
 #include "SFML/OpenGL.hpp"
 
 #include "ssGUI/DataClasses/ImageData.hpp"
+#include "ssGUI/HelperClasses/SFMLImageConversion.hpp"
+
+#include "ssLogger/ssLog.hpp"
 
 #ifdef SSGUI_FONT_BACKEND_FREE_TYPE
     #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
@@ -17,12 +20,32 @@ namespace Backend
     {
         BackendIndex = other.BackendIndex;   
         CharTexturesQueue = other.CharTexturesQueue;
-        CharTextures = other.CharTextures;
+        
+        #ifndef SSGUI_FONT_BACKEND_SFML
+            CharTextures = other.CharTextures;
+        #endif
+        
+        //We don't want to copy the GPU texture, so just clear it
+        #ifndef SSGUI_IMAGE_BACKEND_SFML
+            //Notify each image to delink
+            for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
+            {
+                ssLOG_LINE("Removing link: "<<it->first);
+                it->first->RemoveBackendDrawingLinking(this);
+            }
+            ImageTextures.clear();
+        #endif
     }
 
     BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0),
                                                 CharTexturesQueue(),
-                                                CharTextures()
+                                                #ifndef SSGUI_FONT_BACKEND_SFML
+                                                    CharTextures(),
+                                                #endif
+                                                #ifndef SSGUI_IMAGE_BACKEND_SFML
+                                                    ImageTextures(),
+                                                #endif
+                                                endVar(nullptr)
     {
         ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
@@ -30,6 +53,12 @@ namespace Backend
     BackendDrawingSFML::~BackendDrawingSFML()
     {
         ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+        
+        #ifndef SSGUI_IMAGE_BACKEND_SFML
+            //Notify each image
+            for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
+                it->first->RemoveBackendDrawingLinking(this);
+        #endif
     }
 
     void BackendDrawingSFML::SaveState()
@@ -140,6 +169,14 @@ namespace Backend
         targetWindow->clear(sf::Color(clearColor.r, clearColor.g, clearColor.b, 255));        
     }
 
+    void BackendDrawingSFML::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+        #ifndef SSGUI_IMAGE_BACKEND_SFML
+            if(ImageTextures.find(backendImage) != ImageTextures.end())
+                ImageTextures.erase(backendImage);
+        #endif
+    }
+
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
@@ -190,17 +227,18 @@ namespace Backend
             //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
             outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));
             outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            
+            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
+
             #ifdef SSGUI_FONT_BACKEND_SFML
             outputShape[i - startIndex].texCoords += sf::Vector2f(charUV.left, charUV.top);
-            #endif
-            
-            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
+            #endif            
         }
 
-        #ifdef SSGUI_FONT_BACKEND_SFML            
+        //Using SFML font interface
+        #ifdef SSGUI_FONT_BACKEND_SFML
             targetWindow->draw(outputShape, &((ssGUI::Backend::BackendFontSFML&)font).GetSFMLFont()->getTexture(characterSize));
-        #elif defined SSGUI_BACKEND_FONT_FREE_TYPE
+        //Using generic font interface
+        #else
             //TODO: Fix this and don't use const cast
             ssGUI::Backend::BackendFontInterface* rawFont = const_cast<ssGUI::Backend::BackendFontInterface*>(&font);
 
@@ -216,11 +254,11 @@ namespace Backend
             //If we don't have this character stored, add it
             if(CharTextures.find(id) == CharTextures.end())
             {                
-                ssGUI::Backend::BackendFontFreeType* freeTypeFont = static_cast<ssGUI::Backend::BackendFontFreeType*>(rawFont); 
+                //ssGUI::Backend::BackendFontInterface* freeTypeFont = static_cast<ssGUI::Backend::BackendFontFreeType*>(rawFont); 
                 ssGUI::ImageData imgData;
 
                 //If failed to import, clean up and exit
-                if(!freeTypeFont->GetCharacterImage(character, characterSize, imgData))
+                if(!rawFont->GetCharacterImage(character, characterSize, imgData))
                 {
                     return false;
                 }
@@ -228,16 +266,45 @@ namespace Backend
                 #ifdef SSGUI_IMAGE_BACKEND_SFML
                 CharTextures[id] = *static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
                 #else
-                ssLOG_LINE("Calling non implmented backend");
-                return false;
+
+                ssGUI::ImageFormat imgFmt;
+                void* imgRawPtr = imgData.GetPixelPtr(imgFmt);
+                sf::Image img;
+                bool result = false;
+                
+                switch(imgFmt.BitDepthPerChannel)
+                {
+                    case 8:
+                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(img, imgRawPtr, imgFmt, imgData.GetSize());
+                        break;
+                    case 16:
+                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(img, imgRawPtr, imgFmt, imgData.GetSize());
+                        break;
+                    default:
+                        ssLOG_LINE("Unsupported bitdepth: " << imgFmt.BitDepthPerChannel);
+                        return false;
+                        break;
+                }
+             
+                //Failed to convert to rgba32   
+                if(!result)
+                    return false;
+                    
+                //Create texture
+                result = CharTextures[id].loadFromImage(img);
+                
+                //Failed to upload to gpu for whatever reason   
+                if(!result)
+                {
+                    //Cleanup the failed texture
+                    CharTextures.erase(id);
+                    return false;
+                }                
                 #endif
             }
 
             //Draw the character texture
             targetWindow->draw(outputShape, &CharTextures[id]);
-        #else
-            ssLOG_LINE("Invalid backend, exiting");
-            ssLOG_EXIT_PROGRAM();
         #endif
 
         return true;
@@ -265,8 +332,63 @@ namespace Backend
             outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
             outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
         }
+        
+        //Using SFML image interface
+        #ifdef SSGUI_IMAGE_BACKEND_SFML
+            targetWindow->draw(outputShape, (sf::Texture*)(((ssGUI::Backend::BackendImageSFML&)image).GetRawHandle()));
+        //Using generic Image interface
+        #else            
+            //TODO: Again same thing, change const to avoid const cast
+            auto imgPtr = const_cast<ssGUI::Backend::BackendImageInterface*>(&image);
+            
+            //If we don't have the image stored on the GPU, do it
+            if(ImageTextures.find(imgPtr) == ImageTextures.end())
+            {
+                if(!imgPtr->IsValid())
+                    return false;
+                
+                ssGUI::ImageFormat imgFmt;
+                void* imgRawPtr = imgPtr->GetPixelPtr(imgFmt);
+                sf::Image img;
+                bool result = false;
+                
+                switch(imgFmt.BitDepthPerChannel)
+                {
+                    case 8:
+                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(img, imgRawPtr, imgFmt, imgPtr->GetSize());
+                        break;
+                    case 16:
+                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(img, imgRawPtr, imgFmt, imgPtr->GetSize());
+                        break;
+                    default:
+                        ssLOG_LINE("Unsupported bitdepth: " << imgFmt.BitDepthPerChannel);
+                        return false;
+                        break;
+                }
+             
+                //Failed to convert to rgba32   
+                if(!result)
+                    return false;
+                    
+                //Create texture
+                result = ImageTextures[imgPtr].loadFromImage(img);
+                
+                //Failed to upload to gpu for whatever reason   
+                if(!result)
+                {
+                    //Cleanup the failed texture
+                    ImageTextures.erase(imgPtr);
+                    return false;
+                }
+                
+                //Add link for removing image
+                imgPtr->AddBackendDrawingLinking(this);
+            }
 
-        targetWindow->draw(outputShape, (sf::Texture*)(((ssGUI::Backend::BackendImageSFML&)image).GetRawHandle()));
+            //Draw the texture
+            targetWindow->draw(outputShape, &ImageTextures[imgPtr]);
+        #endif
+
 
         return true;
     }

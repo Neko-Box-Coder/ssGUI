@@ -37,9 +37,9 @@ namespace ssGUI
         return BackendImage->LoadImgFileFromMemory(dataPtr, size);
     }
 
-    bool ImageData::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize, int rowPaddingInBytes)
+    bool ImageData::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
-        return BackendImage->LoadRawFromMemory(dataPtr, format, imageSize, rowPaddingInBytes);
+        return BackendImage->LoadRawFromMemory(dataPtr, format, imageSize);
     }
             
     glm::ivec2 ImageData::GetSize() const

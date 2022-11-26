@@ -36,15 +36,7 @@ namespace Backend
 
             BackendImageSFML& operator=(BackendImageSFML const& other);
             
-            template<typename T>
-            uint8_t GetLevelInByte(T val);
             
-            template<typename T>
-            uint8_t GetReversedPreMultipliedLevelInByte(T val, float alpha);
-            
-            template<typename T>
-            bool ConvertToRGBA32(   sf::Image& outImg, void const * dataPtr, ssGUI::ImageFormat format, 
-                                    glm::ivec2 imageSize, int rowPaddingInBytes);
 
         protected:
             BackendImageSFML(BackendImageSFML const& other);
@@ -77,7 +69,7 @@ namespace Backend
             
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize, int rowPaddingInBytes = 0) override;
+            bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) override;
             
             //function: GetSize
             //See <BackendImageInterface::GetSize>
@@ -87,6 +79,14 @@ namespace Backend
             //SFML does not support editting pixels from pointer directly.
             //This will return nullptr
             void* GetPixelPtr(ssGUI::ImageFormat& format) const override;
+
+            //function: AddBackendDrawingLinking
+            //This is not used, SFML handles image memory internally
+            void AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            
+            //function: RemoveBackendDrawingLinking
+            //This is not used, SFML handles image memory internally
+            void RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
 
             //function: Clone
             ssGUI::Backend::BackendImageInterface* Clone() override;

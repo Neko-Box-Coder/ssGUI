@@ -11,6 +11,8 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    class BackendDrawingInterface;
+
     //class: ssGUI::Backend::BackendImageInterface
     //This allows transferring the image data from the host memory to the gpu memory
     class BackendImageInterface
@@ -37,15 +39,28 @@ namespace Backend
 
             //function: LoadRawFromMemory
             //This loads an image with specified image format in memory 
-            virtual bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize, int rowPaddingInBytes = 0) = 0;
+            virtual bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) = 0;
 
             //function: GetSize
             //Returns the size of the image
             virtual glm::ivec2 GetSize() const = 0;
 
             //function: GetPixelPtr
-            //Returns the pixel data pointer of the image
+            //Returns the pixel data pointer of the image and also the format of the image
             virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const = 0;
+            
+            //function: AddBackendDrawingLinking
+            //Adds a linking record of indicating this image is stored in backend drawing in GPU and memory.
+            //This should be called by backend drawing when rendering the image.
+            //Normally, this is *handled by backend* and should not be called manually
+            virtual void AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
+            
+            //function: RemoveBackendDrawingLinking
+            //Removes the linking record between this image and the backend drawing
+            //for indicating the image is no longer stored in backend drawing in GPU and memory.
+            //This should be called by backend drawing when it decides to remove the image from GPU and memory.
+            //Normally, this is *handled by backend* and should not be called manually
+            virtual void RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
 
             //function: Clone
             //Clones the backend image

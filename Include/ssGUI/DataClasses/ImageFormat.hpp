@@ -28,6 +28,7 @@ namespace ssGUI
         //then it will treat black as transparent
         bool HasAlpha = true;
         
+        //var: PreMultipliedAlpha
         bool PreMultipliedAlpha = false;
         
         //var: IndexR 
@@ -43,7 +44,10 @@ namespace ssGUI
         int IndexMono = -1;
         
         //var: IndexA
-        int IndexA = 3;        
+        int IndexA = 3;
+        
+        //var: RowPaddingInBytes
+        int RowPaddingInBytes = 0;
     };
 }
 
