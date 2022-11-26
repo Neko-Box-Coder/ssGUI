@@ -20,8 +20,8 @@ li
     - ![](https://img.shields.io/badge/OSX-Unknown-red?style=for-the-badge&logo=apple)
 
 - #### 📈 Current Progress
-    - ![](https://img.shields.io/badge/v0.93-[=====_100%_=====]-29D236?style=for-the-badge)
-    - ![](https://img.shields.io/badge/v0.94-[===_ㅤㅤ30%ㅤㅤㅤㅤㅤ]-E5FF3C?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.93-[=====_100％_=====]-29D236?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.94-[===ㅤㅤ_30％ㅤㅤㅤㅤㅤ]-E5FF3C?style=for-the-badge)
 ---
 
 ### ❓ What is ssGUI?
