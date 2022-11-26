@@ -42,7 +42,7 @@ namespace Backend
         return true;
     }
 
-    bool BackendImageTemplate::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize, int rowPaddingInBytes)
+    bool BackendImageTemplate::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
         return true;
     }
@@ -55,6 +55,14 @@ namespace Backend
     void* BackendImageTemplate::GetPixelPtr(ssGUI::ImageFormat& format) const
     {
         return nullptr;
+    }
+
+    void BackendImageTemplate::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    {
+    }
+
+    void BackendImageTemplate::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    {
     }
 
     BackendImageInterface* BackendImageTemplate::Clone()

@@ -82,21 +82,35 @@ namespace Backend
     Variables & Constructor:
     ======================== C++ =======================
     private:
-        int BackendIndex;                                                           //(Internal variable) This is used to check if we are drawing on the correct MainWindow
+        int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
 
         using CharSize = uint16_t;
         using CharCode = uint32_t;
-        std::queue<std::pair<CharSize, CharCode>> CharTexturesQueue;                //(Internal variable) This is used to keep track of all the character textures    
+        std::queue<std::pair<CharSize, CharCode>> CharTexturesQueue;                            //(Internal variable) This is used to keep track of all the character textures    
 
-        using CharTextureIdentifier =                                               //(Internal variable) This is the key for getting the character texture
+        #ifndef SSGUI_FONT_BACKEND_SFML
+        using CharTextureIdentifier =                                                           //(Internal variable) This is the key for getting the character texture
             std::tuple<ssGUI::Backend::BackendFontInterface*, CharSize, CharCode>; 
         
-        std::unordered_map<CharTextureIdentifier, sf::Texture> CharTextures;        //(Internal variable) Hashmap for getting character textures
+        std::unordered_map<CharTextureIdentifier, sf::Texture> CharTextures;                    //(Internal variable) Hashmap for getting character textures
+        #endif
+        
+        #ifndef SSGUI_IMAGE_BACKEND_SFML
+        std::unordered_map<ssGUI::Backend::BackendImageInterface*, sf::Texture> ImageTextures;  //See <RemoveImageLinking>
+        #endif
+        
+        void* endVar = nullptr;
     ====================================================
     ======================== C++ =======================
     BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0),
                                                 CharTexturesQueue(),
-                                                CharTextures()
+                                                #ifndef SSGUI_FONT_BACKEND_SFML
+                                                    CharTextures(),
+                                                #endif
+                                                #ifndef SSGUI_IMAGE_BACKEND_SFML
+                                                    ImageTextures(),
+                                                #endif
+                                                endVar(nullptr)
     {
         ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
@@ -105,16 +119,24 @@ namespace Backend
     class BackendDrawingSFML : public BackendDrawingInterface
     {        
         private:
-            int BackendIndex;                                                           //(Internal variable) This is used to check if we are drawing on the correct MainWindow
+            int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
 
             using CharSize = uint16_t;
             using CharCode = uint32_t;
-            std::queue<std::pair<CharSize, CharCode>> CharTexturesQueue;                //(Internal variable) This is used to keep track of all the character textures    
+            std::queue<std::pair<CharSize, CharCode>> CharTexturesQueue;                            //(Internal variable) This is used to keep track of all the character textures    
 
-            using CharTextureIdentifier =                                               //(Internal variable) This is the key for getting the character texture
+            #ifndef SSGUI_FONT_BACKEND_SFML
+            using CharTextureIdentifier =                                                           //(Internal variable) This is the key for getting the character texture
                 std::tuple<ssGUI::Backend::BackendFontInterface*, CharSize, CharCode>; 
             
-            std::unordered_map<CharTextureIdentifier, sf::Texture> CharTextures;        //(Internal variable) Hashmap for getting character textures
+            std::unordered_map<CharTextureIdentifier, sf::Texture> CharTextures;                    //(Internal variable) Hashmap for getting character textures
+            #endif
+            
+            #ifndef SSGUI_IMAGE_BACKEND_SFML
+            std::unordered_map<ssGUI::Backend::BackendImageInterface*, sf::Texture> ImageTextures;  //See <RemoveImageLinking>
+            #endif
+            
+            void* endVar = nullptr;
 
             BackendDrawingSFML& operator=(BackendDrawingSFML const& other);
 
@@ -148,6 +170,10 @@ namespace Backend
             //function: ClearBackBuffer
             //See <BackendDrawingInterface::ClearBackBuffer>
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
+
+            //function: RemoveImageLinking
+            //See <BackendDrawingInterface::RemoveImageLinking>
+            void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) override;
         
         protected:
             //Non index variants exist only for legacy purposes

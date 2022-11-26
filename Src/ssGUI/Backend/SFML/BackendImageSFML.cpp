@@ -1,4 +1,6 @@
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
+#include "ssGUI/HelperClasses/SFMLImageConversion.hpp"
+
 #include "ssLogger/ssLog.hpp"
 
 #include <functional>
@@ -9,134 +11,6 @@ namespace ssGUI
 
 namespace Backend
 {
-    template<typename T>
-    uint8_t BackendImageSFML::GetReversedPreMultipliedLevelInByte(T val, float alpha)
-    {
-        return  static_cast<float>(val) / static_cast<float>(alpha) /               //Reverse the premultiplied alpha first
-                static_cast<float>(std::numeric_limits<T>::max()) *                 //Then we scale it from 0 to 1
-                static_cast<float>(std::numeric_limits<uint8_t>::max()) + 0.5f;     //Finally scale it back to 255
-    }
-
-    template<typename T>
-    uint8_t BackendImageSFML::GetLevelInByte(T val)
-    { 
-        return  static_cast<float>(val) / static_cast<float>(std::numeric_limits<T>::max()) *   //Gets the value, divide by its own max,
-                static_cast<float>(std::numeric_limits<uint8_t>::max()) + 0.5f;                 //Multiply by 255 in order to scale to 255
-                                                                                                //and add 0.5 for rounding when casting back to uint8_t
-    }
-
-    template<typename T>
-    bool BackendImageSFML::ConvertToRGBA32( sf::Image& outImg, void const * dataPtr, ssGUI::ImageFormat format, 
-                                            glm::ivec2 imageSize, int rowPaddingInBytes)
-    {
-        //Set size first
-        outImg.create(sf::Vector2u(imageSize.x, imageSize.y));
-    
-        uint8_t const* imgPtr = static_cast<uint8_t const*>(dataPtr);
-        int bytePerPixel = format.BitPerPixel / 8;                              //Calculate how many bytes each pixel takes
-        int rowNumOfBytes = bytePerPixel * imageSize.x + rowPaddingInBytes;     //Calculate how many bytes each row takes, normally called pitch
-    
-        std::function<void(uint8_t const*, int, int)> conversionFunc;           //function pointer for doing conversion
-        
-        //First assign the conversion function depending on the image type and alpha
-        //Grayscale
-        if(format.ImgType == ssGUI::Enums::ImageType::MONO)
-        {
-            if(format.HasAlpha)
-            {
-                //If the alpha index is not specified, we assume black is transparent
-                if(format.IndexA < 0)
-                {
-                    conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                        {
-                                            T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                            uint8_t level = GetLevelInByte(curPixelPtr[0]);
-                                            outImg.setPixel(sf::Vector2u(x, y), sf::Color(level, level, level, level));
-                                        };
-                }
-                //Otherwise if alpha index is specified, use it
-                else
-                {
-                    conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                        {
-                                            T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                            uint8_t level = GetLevelInByte(curPixelPtr[format.IndexMono]);
-                                            outImg.setPixel(sf::Vector2u(x, y), sf::Color(level, level, level, GetLevelInByte(curPixelPtr[format.IndexA])));
-                                        };
-                }
-            }
-            else
-            {
-                conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                    {
-                                        T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                        uint8_t level = GetLevelInByte(curPixelPtr[0]);
-                                        outImg.setPixel(sf::Vector2u(x, y), sf::Color(level, level, level));
-                                    };
-            }
-        }
-        //RGB
-        else
-        {
-            if(format.HasAlpha)
-            {
-                if(!format.PreMultipliedAlpha)
-                {
-                    conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                        {
-                                            T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                            outImg.setPixel(sf::Vector2u(x, y), 
-                                                            sf::Color(  GetLevelInByte(curPixelPtr[format.IndexR]), 
-                                                                        GetLevelInByte(curPixelPtr[format.IndexG]), 
-                                                                        GetLevelInByte(curPixelPtr[format.IndexB]),
-                                                                        GetLevelInByte(curPixelPtr[format.IndexA])));
-                                        };
-                }
-                else
-                {
-                    conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                        {
-                                            T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);
-                                            
-                                            uint8_t alpha = GetLevelInByte(curPixelPtr[format.IndexA]);
-                                            float alphaInFloat =    static_cast<float>(curPixelPtr[format.IndexA]) / 
-                                                                    static_cast<float>(std::numeric_limits<T>::max());
-                                            
-                                            outImg.setPixel(sf::Vector2u(x, y), 
-                                                            sf::Color(  GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexR], alphaInFloat), 
-                                                                        GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexG], alphaInFloat), 
-                                                                        GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexB], alphaInFloat),
-                                                                        alpha));
-                                        };
-                }
-            
-            }
-            else
-            {
-                conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                    {
-                                        T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                        outImg.setPixel(sf::Vector2u(x, y), 
-                                                        sf::Color(  GetLevelInByte(curPixelPtr[format.IndexR]), 
-                                                                    GetLevelInByte(curPixelPtr[format.IndexG]), 
-                                                                    GetLevelInByte(curPixelPtr[format.IndexB])));
-                                    };
-            }
-        }
-     
-        //Then we call the conversion function for each pixel
-        for(int y = 0; y < imageSize.y; y++)
-        {
-            for(int x = 0; x < imageSize.x; x++)
-            {
-                uint8_t const* curBytePtr = imgPtr + (y * rowNumOfBytes) + x * bytePerPixel;
-                conversionFunc(curBytePtr, x, y);
-            }
-        }
-        
-        return true;
-    }
-
     BackendImageSFML::BackendImageSFML(BackendImageSFML const& other)
     {
         GPUTexture = sf::Texture(other.GPUTexture);
@@ -186,7 +60,7 @@ namespace Backend
             return false;
     }
 
-    bool BackendImageSFML::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize, int rowPaddingInBytes)
+    bool BackendImageSFML::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
         bool conversionNeeded = !(format.HasAlpha && 
                                 format.BitDepthPerChannel == 8 && 
@@ -195,7 +69,7 @@ namespace Backend
                                 format.IndexG == 1 &&
                                 format.IndexB == 2 &&
                                 format.IndexA == 3 &&
-                                rowPaddingInBytes == 0);
+                                format.RowPaddingInBytes == 0);
     
         if(conversionNeeded)
         {
@@ -213,13 +87,13 @@ namespace Backend
             switch(format.BitDepthPerChannel)
             {
                 case 8:
-                    result = ConvertToRGBA32<uint8_t>(MemoryImage, dataPtr, format, imageSize, rowPaddingInBytes);
+                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(MemoryImage, dataPtr, format, imageSize);
                     break;
                 case 16:
-                    result = ConvertToRGBA32<uint16_t>(MemoryImage, dataPtr, format, imageSize, rowPaddingInBytes);
+                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(MemoryImage, dataPtr, format, imageSize);
                     break;
                 case 32:
-                    result = ConvertToRGBA32<uint32_t>(MemoryImage, dataPtr, format, imageSize, rowPaddingInBytes);
+                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint32_t>(MemoryImage, dataPtr, format, imageSize);
                     break;
                 default:
                     ssLOG_LINE("Not supported BitDepthPerChannel: " << format.BitDepthPerChannel);
@@ -263,6 +137,16 @@ namespace Backend
         //TODO: See if there's any other way of doing this
         return GPUTextureValid ? const_cast<uint8_t*>(MemoryImage.getPixelsPtr()) : nullptr;
         //return nullptr;
+    }
+
+    void BackendImageSFML::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    {
+        //This is only used natively with SFML, no need to link to backend drawing
+    }
+
+    void BackendImageSFML::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    {
+        //This is only used natively with SFML, no need to link to backend drawing
     }
 
     ssGUI::Backend::BackendImageInterface* BackendImageSFML::Clone()

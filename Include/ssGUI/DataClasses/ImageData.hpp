@@ -55,7 +55,7 @@ namespace ssGUI
 
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize, int rowPaddingInBytes = 0);
+            bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize);
             
             //function: GetSize
             //See <ssGUI::Backend::BackendImageInterface::GetSize>

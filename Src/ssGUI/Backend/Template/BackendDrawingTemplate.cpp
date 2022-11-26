@@ -49,6 +49,11 @@ namespace Backend
         
     }
     
+    void BackendDrawingTemplate::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+    
+    }
+    
     bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,

@@ -27,7 +27,7 @@ if(WIN32)
     set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "Win32_OpenGL3_3" "Template")     # Allow dropdown option
 # Linux
 else()
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "Template")     # Allow dropdown option
+    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "Template")                       # Allow dropdown option
 endif()
 
 # Show / unshow SFML options depending if SFML backend is selected or not
@@ -36,7 +36,7 @@ if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
     set(ssGUI_USE_SFML_TIME OFF CACHE BOOL "Use SFML time instead of chrono time")
     
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "SFML" "FreeType" "Template")            # Allow dropdown option
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" "Template")                      # Allow dropdown option
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" "stb_image" "Template")          # Allow dropdown option
 
     # This might not be needed 
     set(ssGUI_SFML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml/include" CACHE PATH "Provide the directory of ")
@@ -56,8 +56,6 @@ if(ssGUI_MAIN_BACKEND STREQUAL "Template")
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")           # Allow dropdown option
 endif()
 
-
-
 # Debug Variables
 set(ssGUI_USE_DEBUG OFF CACHE BOOL "Prints extra debug information")
 set(ssGUI_DEBUG_STATE OFF CACHE BOOL "Prints each stage in ssGUIManager")
@@ -70,8 +68,8 @@ set(ssLOG_CALL_STACK "FALSE" CACHE BOOL "If true, this will build tests")
 set(ssLOG_THREAD_SAFE "FALSE" CACHE BOOL "Use std::thread and ensure thread safety for all logged functions")
 
 # Dividers
-set(ssGUI@_CMAKE_VARIABLES_START============================= "==========================================================" CACHE STRING "Divider") 
-set(ssGUI__CMAKE_VARIABLES_END=============================== "==========================================================" CACHE STRING "Divider") 
+set(ssGUI@_CMAKE_VARIABLES_START============================= "=================== I am just a divider :D ==================" CACHE STRING "Divider") 
+set(ssGUI__CMAKE_VARIABLES_END=============================== "=================== I am just a divider :D ==================" CACHE STRING "Divider") 
 
 #Find shared libraries in the same location as the executable
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,$ORIGIN")
@@ -127,8 +125,23 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssLogger" "${CMAKE_CURREN
 # FreeType
 # ==========================================================
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
+if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
+endif()
 
+# ==========================================================
+# stb_image
+# ==========================================================
+
+if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
+    add_library(ssGUI_stb_image INTERFACE)
+    
+    #target_sources( stb_image INTERFACE 
+    #                FILE_SET HEADERS
+    #                BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image"
+    #                FILES "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image/stb_image.h")
+    target_include_directories(ssGUI_stb_image INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image")
+endif()
 
 # ==========================================================
 # ssGUI 
@@ -173,6 +186,11 @@ if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/FreeType")
 endif()
 
+# Adding Image Backend
+if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/stb_image")
+endif()
+
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/DataClasses")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/EventCallbacks")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Extensions")
@@ -195,13 +213,14 @@ target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Include"
 # message("${INCLUDE_COMPILER_STRING}")
 
 # Linking clip to ssGUI
-target_link_libraries(ssGUI PUBLIC clip freetype)
+target_link_libraries(ssGUI PUBLIC clip)
 
 # Linking ssLogger to ssGUI
 target_link_libraries(ssGUI PUBLIC ssLogger)
 
-
-# Linking Backend to ssGUI
+# ==========================================================
+# Linking Backend to ssGUI and adding compiler definitions
+# ==========================================================
 if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
     target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
     target_compile_definitions(ssGUI PRIVATE SSGUI_MAIN_BACKEND_SFML)
@@ -211,19 +230,30 @@ elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     find_package(OpenGL REQUIRED)
     target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
 else()
-    # message(FATAL_ERROR "Invalid Backend")
+    message(FATAL_ERROR "Invalid Main Backend")
 endif()
 
 if(ssGUI_FONT_BACKEND STREQUAL "SFML")
     target_compile_definitions(ssGUI PRIVATE SSGUI_FONT_BACKEND_SFML)
 elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
+    target_link_libraries(ssGUI PRIVATE freetype)
     target_compile_definitions(ssGUI PRIVATE SSGUI_FONT_BACKEND_FREE_TYPE)
+else()
+    message(FATAL_ERROR "Invalid Font Backend")
 endif()
 
 if(ssGUI_IMAGE_BACKEND STREQUAL "SFML")
     target_compile_definitions(ssGUI PRIVATE SSGUI_IMAGE_BACKEND_SFML)
+elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
+    target_compile_definitions(ssGUI PRIVATE SSGUI_IMAGE_BACKEND_STB_IMAGE)
+    target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+else()
+    message(FATAL_ERROR "Invalid Image Backend")
 endif()
 
+# ==========================================================
+# ssGUI compilter definitions
+# ==========================================================
 if(ssGUI_USE_DEBUG)
     target_compile_definitions(ssGUI PRIVATE SSGUI_USE_DEBUG=1)
 endif()
@@ -244,17 +274,13 @@ if(ssGUI_USE_SFML_TIME)
     target_compile_definitions(ssGUI PRIVATE SSGUI_USE_SFML_TIME=1)
 endif()
 
-
-# Copy resources for the library 
-file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-        DESTINATION "${CMAKE_BINARY_DIR}") 
-
 # ==========================================================
 # Building tests and examples 
 # ==========================================================
 
-
-
+# Copy resources for the library 
+file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+        DESTINATION "${CMAKE_BINARY_DIR}")
 
 if(ssGUI_BUILD_TESTS)
 
@@ -274,6 +300,10 @@ if(ssGUI_BUILD_TESTS)
 
         # Freetype test
         if(CUR_NAME STREQUAL "FreetypeTest" AND NOT ssGUI_FONT_BACKEND STREQUAL "FreeType")
+            continue()
+        elseif(CUR_NAME STREQUAL "FreetypeTest" AND ssGUI_FONT_BACKEND STREQUAL "FreeType")
+            add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
+            target_link_libraries("${CUR_NAME}" PRIVATE freetype)
             continue()
         endif()
 
