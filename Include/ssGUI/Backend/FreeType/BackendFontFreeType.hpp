@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_FONT_FREE_TYPE
-#define SSGUI_BACKEND_FONT_FREE_TYPE
+#ifndef SSGUI_BACKEND_FONT_FREE_TYPE_H
+#define SSGUI_BACKEND_FONT_FREE_TYPE_H
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 

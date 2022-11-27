@@ -1,5 +1,5 @@
-#ifndef SSGUI_FONT
-#define SSGUI_FONT
+#ifndef SSGUI_FONT_H
+#define SSGUI_FONT_H
 
 #include "ssGUI/Backend/BackendFactory.hpp"
 

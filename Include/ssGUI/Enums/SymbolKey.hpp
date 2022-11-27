@@ -1,5 +1,5 @@
-#ifndef SSGUI_SYMBOL_KEY
-#define SSGUI_SYMBOL_KEY
+#ifndef SSGUI_SYMBOL_KEY_H
+#define SSGUI_SYMBOL_KEY_H
 
 #include <cstdint>
 

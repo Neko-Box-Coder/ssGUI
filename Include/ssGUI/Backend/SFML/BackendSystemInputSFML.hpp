@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_SYSTEM_INPUT_SFML
-#define SSGUI_BACKEND_SYSTEM_INPUT_SFML
+#ifndef SSGUI_BACKEND_SYSTEM_INPUT_SFML_H
+#define SSGUI_BACKEND_SYSTEM_INPUT_SFML_H
 
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"

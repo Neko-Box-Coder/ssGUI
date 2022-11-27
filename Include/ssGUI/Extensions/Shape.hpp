@@ -1,5 +1,5 @@
-#ifndef SSGUI_CUSTOM_EXTENSION
-#define SSGUI_CUSTOM_EXTENSION
+#ifndef SSGUI_CUSTOM_EXTENSION_H
+#define SSGUI_CUSTOM_EXTENSION_H
 
 #include <unordered_set>
 #include "ssGUI/Extensions/Extension.hpp"

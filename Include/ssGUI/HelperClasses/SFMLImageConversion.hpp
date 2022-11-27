@@ -1,5 +1,5 @@
-#ifndef SSGUI_SFML_IMAGE_CONVERSION
-#define SSGUI_SFML_IMAGE_CONVERSION
+#ifndef SSGUI_SFML_IMAGE_CONVERSION_H
+#define SSGUI_SFML_IMAGE_CONVERSION_H
 
 #include "ssGUI/DataClasses/ImageFormat.hpp"
 

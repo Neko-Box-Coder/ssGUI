@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_FONT_SFML
-#define SSGUI_BACKEND_FONT_SFML
+#ifndef SSGUI_BACKEND_FONT_SFML_H
+#define SSGUI_BACKEND_FONT_SFML_H
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 #include "SFML/Graphics.hpp"

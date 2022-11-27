@@ -1,5 +1,5 @@
-#ifndef SSGUI_DRAW_CIRCLE
-#define SSGUI_DRAW_CIRCLE
+#ifndef SSGUI_DRAW_CIRCLE_H
+#define SSGUI_DRAW_CIRCLE_H
 
 #include "glm/vec2.hpp"
 #include <vector>

@@ -1,5 +1,5 @@
-#ifndef SSGUI_BOX_SHADOW
-#define SSGUI_BOX_SHADOW
+#ifndef SSGUI_BOX_SHADOW_H
+#define SSGUI_BOX_SHADOW_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "glm/vec2.hpp"

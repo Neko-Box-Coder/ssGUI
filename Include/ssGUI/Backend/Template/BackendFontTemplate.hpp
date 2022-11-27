@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_FONT_TEMPLATE
-#define SSGUI_BACKEND_FONT_TEMPLATE
+#ifndef SSGUI_BACKEND_FONT_TEMPLATE_H
+#define SSGUI_BACKEND_FONT_TEMPLATE_H
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 

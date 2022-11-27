@@ -1,5 +1,5 @@
-#ifndef SSGUI_IMAGE_DATA
-#define SSGUI_IMAGE_DATA
+#ifndef SSGUI_IMAGE_DATA_H
+#define SSGUI_IMAGE_DATA_H
 
 #include "ssGUI/Backend/BackendFactory.hpp"
 

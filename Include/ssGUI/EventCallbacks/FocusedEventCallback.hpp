@@ -1,5 +1,5 @@
-#ifndef ON_FOCUS_EVENT_CALLBACK
-#define ON_FOCUS_EVENT_CALLBACK
+#ifndef SSGUI_FOCUSED_EVENT_CALLBACK_H
+#define SSGUI_FOCUSED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 

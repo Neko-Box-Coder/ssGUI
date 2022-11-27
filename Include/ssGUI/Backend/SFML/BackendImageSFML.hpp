@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_IMAGE_SFML
-#define SSGUI_BACKEND_IMAGE_SFML
+#ifndef SSGUI_BACKEND_IMAGE_SFML_H
+#define SSGUI_BACKEND_IMAGE_SFML_H
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "SFML/Graphics.hpp"

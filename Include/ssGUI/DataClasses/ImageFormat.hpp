@@ -1,5 +1,5 @@
-#ifndef SSGUI_IMAGE_FORMAT
-#define SSGUI_IMAGE_FORMAT
+#ifndef SSGUI_IMAGE_FORMAT_H
+#define SSGUI_IMAGE_FORMAT_H
 
 #include "ssGUI/Enums/ImageType.hpp"
 #include <cstdint>

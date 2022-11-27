@@ -1,5 +1,5 @@
-#ifndef SSGUI_WINDOW
-#define SSGUI_WINDOW
+#ifndef SSGUI_WINDOW_H
+#define SSGUI_WINDOW_H
 
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include "ssGUI/Enums/ResizeType.hpp"

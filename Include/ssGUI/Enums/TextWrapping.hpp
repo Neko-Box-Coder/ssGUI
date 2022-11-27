@@ -1,5 +1,5 @@
-#ifndef SSGUI_TEXT_WRAPPING
-#define SSGUI_TEXT_WRAPPING
+#ifndef SSGUI_TEXT_WRAPPING_H
+#define SSGUI_TEXT_WRAPPING_H
 
 namespace ssGUI
 {

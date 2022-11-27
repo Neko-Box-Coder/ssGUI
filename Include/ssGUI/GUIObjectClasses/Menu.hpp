@@ -1,5 +1,5 @@
-#ifndef SSGUI_MENU
-#define SSGUI_MENU
+#ifndef SSGUI_MENU_H
+#define SSGUI_MENU_H
 
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/Enums/AnchorType.hpp"

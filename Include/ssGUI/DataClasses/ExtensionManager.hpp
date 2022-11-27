@@ -1,5 +1,5 @@
-#ifndef SSGUI_EXTENSION_MANAGER
-#define SSGUI_EXTENSION_MANAGER
+#ifndef SSGUI_EXTENSION_MANAGER_H
+#define SSGUI_EXTENSION_MANAGER_H
 
 #include <unordered_map>
 #include <vector>

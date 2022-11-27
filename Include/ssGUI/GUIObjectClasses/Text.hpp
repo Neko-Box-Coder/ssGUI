@@ -1,5 +1,5 @@
-#ifndef SSGUI_TEXT
-#define SSGUI_TEXT
+#ifndef SSGUI_TEXT_H
+#define SSGUI_TEXT_H
 
 #include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"
 #include "ssGUI/DataClasses/Font.hpp"

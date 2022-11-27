@@ -1,5 +1,5 @@
-#ifndef SSGUI_REALTIME_INPUT_INFO
-#define SSGUI_REALTIME_INPUT_INFO
+#ifndef SSGUI_REALTIME_INPUT_INFO_H
+#define SSGUI_REALTIME_INPUT_INFO_H
 
 #include "ssGUI/Enums/MouseButton.hpp"
 #include "glm/vec2.hpp"
