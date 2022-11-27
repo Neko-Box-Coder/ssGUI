@@ -1,5 +1,5 @@
-#ifndef SSGUI_SFML_INPUT_CONVERTER
-#define SSGUI_SFML_INPUT_CONVERTER
+#ifndef SSGUI_SFML_INPUT_CONVERTER_H
+#define SSGUI_SFML_INPUT_CONVERTER_H
 
 #include "SFML/Window.hpp"
 #include "SFML/Window/Keyboard.hpp"

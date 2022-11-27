@@ -1,5 +1,5 @@
-#ifndef CHILD_ADDED_EVENT_CALLBACK
-#define CHILD_ADDED_EVENT_CALLBACK
+#ifndef SSGUI_CHILD_ADDED_EVENT_CALLBACK_H
+#define SSGUI_CHILD_ADDED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 

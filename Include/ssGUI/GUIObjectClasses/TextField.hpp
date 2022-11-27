@@ -1,5 +1,5 @@
-#ifndef SSGUI_TEXT_FIELD
-#define SSGUI_TEXT_FIELD
+#ifndef SSGUI_TEXT_FIELD_H
+#define SSGUI_TEXT_FIELD_H
 
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/Widget.hpp"

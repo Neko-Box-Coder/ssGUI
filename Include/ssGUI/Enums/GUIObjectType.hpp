@@ -1,5 +1,5 @@
-#ifndef SSGUI_OBJECT_TYPE
-#define SSGUI_OBJECT_TYPE
+#ifndef SSGUI_OBJECT_TYPE_H
+#define SSGUI_OBJECT_TYPE_H
 
 namespace ssGUI 
 { 

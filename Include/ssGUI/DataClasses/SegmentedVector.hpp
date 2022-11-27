@@ -1,5 +1,5 @@
-#ifndef SSGUI_SEGMENTED_VECTOR
-#define SSGUI_SEGMENTED_VECTOR
+#ifndef SSGUI_SEGMENTED_VECTOR_H
+#define SSGUI_SEGMENTED_VECTOR_H
 
 #include <vector>
 #include <utility>      //Swap

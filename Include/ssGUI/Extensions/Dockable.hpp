@@ -1,5 +1,5 @@
-#ifndef SSGUI_DOCKABLE
-#define SSGUI_DOCKABLE
+#ifndef SSGUI_DOCKABLE_H
+#define SSGUI_DOCKABLE_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject

@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_MANAGER
-#define SSGUI_BACKEND_MANAGER
+#ifndef SSGUI_BACKEND_MANAGER_H
+#define SSGUI_BACKEND_MANAGER_H
 
 #include <vector>
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"

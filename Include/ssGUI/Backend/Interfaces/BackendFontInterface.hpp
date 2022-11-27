@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_FONT_INTERFACE
-#define SSGUI_BACKEND_FONT_INTERFACE
+#ifndef SSGUI_BACKEND_FONT_INTERFACE_H
+#define SSGUI_BACKEND_FONT_INTERFACE_H
 
 #include <string>
 #include <vector>

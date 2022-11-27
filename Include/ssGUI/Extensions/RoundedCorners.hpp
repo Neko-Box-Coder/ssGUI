@@ -1,5 +1,5 @@
-#ifndef SSGUI_ROUNDED_CORNERS
-#define SSGUI_ROUNDED_CORNERS
+#ifndef SSGUI_ROUNDED_CORNERS_H
+#define SSGUI_ROUNDED_CORNERS_H
 #include <cmath>
 #include <map>
 #include "glm/trigonometric.hpp"

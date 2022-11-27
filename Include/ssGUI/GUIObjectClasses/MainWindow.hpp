@@ -1,5 +1,5 @@
-#ifndef SSGUI_MAIN_WINDOW
-#define SSGUI_MAIN_WINDOW
+#ifndef SSGUI_MAIN_WINDOW_H
+#define SSGUI_MAIN_WINDOW_H
 
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"

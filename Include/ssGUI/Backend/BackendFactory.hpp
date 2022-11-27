@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_FACTORY
-#define SSGUI_BACKEND_FACTORY
+#ifndef SSGUI_BACKEND_FACTORY_H
+#define SSGUI_BACKEND_FACTORY_H
 
 #include "ssLogger/ssLog.hpp"
 

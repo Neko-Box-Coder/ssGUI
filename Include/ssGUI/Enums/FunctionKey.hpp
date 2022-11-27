@@ -1,5 +1,5 @@
-#ifndef SSGUI_FUNCTION_KEY
-#define SSGUI_FUNCTION_KEY
+#ifndef SSGUI_FUNCTION_KEY_H
+#define SSGUI_FUNCTION_KEY_H
 
 #include <cstdint>
 

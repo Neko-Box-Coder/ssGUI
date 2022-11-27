@@ -1,5 +1,5 @@
-#ifndef SSGUI_IMAGE_FITTING
-#define SSGUI_IMAGE_FITTING
+#ifndef SSGUI_IMAGE_FITTING_H
+#define SSGUI_IMAGE_FITTING_H
 
 namespace ssGUI
 {

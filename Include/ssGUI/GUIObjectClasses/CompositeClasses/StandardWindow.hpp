@@ -1,5 +1,5 @@
-#ifndef SSGUI_STANDARD_WINDOW
-#define SSGUI_STANDARD_WINDOW
+#ifndef SSGUI_STANDARD_WINDOW_H
+#define SSGUI_STANDARD_WINDOW_H
 
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"

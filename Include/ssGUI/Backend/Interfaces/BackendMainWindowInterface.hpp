@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE
-#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_H
+#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_H
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/Enums/CursorType.hpp"

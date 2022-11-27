@@ -1,5 +1,5 @@
-#ifndef SSGUI_STATIC_DEFAULT_WRAPPER
-#define SSGUI_STATIC_DEFAULT_WRAPPER
+#ifndef SSGUI_STATIC_DEFAULT_WRAPPER_H
+#define SSGUI_STATIC_DEFAULT_WRAPPER_H
 
 #include <functional>
 #include <vector>

@@ -1,5 +1,5 @@
-#ifndef SSGUI_MASK
-#define SSGUI_MASK
+#ifndef SSGUI_MASK_H
+#define SSGUI_MASK_H
 
 
 #include "ssGUI/Extensions/Extension.hpp"

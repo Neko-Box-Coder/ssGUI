@@ -1,5 +1,5 @@
-#ifndef SSGUI_HIERARCHY
-#define SSGUI_HIERARCHY
+#ifndef SSGUI_HIERARCHY_H
+#define SSGUI_HIERARCHY_H
 
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include <vector>

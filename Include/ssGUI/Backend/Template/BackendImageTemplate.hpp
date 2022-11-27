@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_IMAGE_TEMPLATE
-#define SSGUI_BACKEND_IMAGE_TEMPLATE
+#ifndef SSGUI_BACKEND_IMAGE_TEMPLATE_H
+#define SSGUI_BACKEND_IMAGE_TEMPLATE_H
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 

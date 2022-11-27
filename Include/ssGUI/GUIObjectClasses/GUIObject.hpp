@@ -1,5 +1,5 @@
-#ifndef SSGUI_GUI_OBJECT
-#define SSGUI_GUI_OBJECT
+#ifndef SSGUI_GUI_OBJECT_H
+#define SSGUI_GUI_OBJECT_H
 
 #include "ssGUI/Enums/GUIObjectType.hpp"
 #include "ssGUI/DataClasses/Transform.hpp"

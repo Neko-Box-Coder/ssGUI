@@ -1,5 +1,5 @@
-#ifndef ON_FOCUS_LOST_EVENT_CALLBACK
-#define ON_FOCUS_LOST_EVENT_CALLBACK
+#ifndef SSGUI_ON_FOCUS_LOST_EVENT_CALLBACK_H
+#define SSGUI_ON_FOCUS_LOST_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 

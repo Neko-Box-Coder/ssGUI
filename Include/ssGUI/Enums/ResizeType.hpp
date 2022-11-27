@@ -1,5 +1,5 @@
-#ifndef SSGUI_RESIZE_TYPE
-#define SSGUI_RESIZE_TYPE
+#ifndef SSGUI_RESIZE_TYPE_H
+#define SSGUI_RESIZE_TYPE_H
 
 namespace ssGUI
 {

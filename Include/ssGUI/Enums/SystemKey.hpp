@@ -1,5 +1,5 @@
-#ifndef SSGUI_SYSTEM_KEY
-#define SSGUI_SYSTEM_KEY
+#ifndef SSGUI_SYSTEM_KEY_H
+#define SSGUI_SYSTEM_KEY_H
 
 #include <cstdint>
 

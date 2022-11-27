@@ -1,5 +1,5 @@
-#ifndef SSGUI_LETTER_KEY
-#define SSGUI_LETTER_KEY
+#ifndef SSGUI_LETTER_KEY_H
+#define SSGUI_LETTER_KEY_H
 
 #include <cstdint>
 

@@ -1,5 +1,5 @@
-#ifndef SSGUI_WIN32_OPEN_GL3_3_INPUT_CONVERTER
-#define SSGUI_WIN32_OPEN_GL3_3_INPUT_CONVERTER
+#ifndef SSGUI_WIN32_OPEN_GL3_3_INPUT_CONVERTER_H
+#define SSGUI_WIN32_OPEN_GL3_3_INPUT_CONVERTER_H
 
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/HeaderGroups/KeyGroup.hpp"
