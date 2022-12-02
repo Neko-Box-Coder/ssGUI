@@ -249,7 +249,8 @@ elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
     target_compile_definitions(ssGUI PRIVATE SSGUI_IMAGE_BACKEND_STB_IMAGE)
     target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
 else()
-    message(FATAL_ERROR "Invalid Image Backend")
+    # TODO
+    # message(FATAL_ERROR "Invalid Image Backend")
 endif()
 
 # ==========================================================

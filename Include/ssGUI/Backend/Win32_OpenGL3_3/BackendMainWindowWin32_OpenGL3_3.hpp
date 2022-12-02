@@ -84,10 +84,6 @@ namespace Backend
 
             void ApplyAllSettingsToWindow();
 
-            //From https://stackoverflow.com/questions/589064/how-to-enable-vertical-sync-in-opengl
-            //And also https://nehe.gamedev.net/tutorial/fullscreen_antialiasing/16008/
-            //bool WGLExtensionSupported(const char *extension_name, bool isARB);
-
             //From http://www.sccg.sk/~samuelcik/opengl/opengl_10.pdf
             //And also https://nehe.gamedev.net/tutorial/fullscreen_antialiasing/16008/
             bool GetMsaaPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level);
@@ -103,11 +99,11 @@ namespace Backend
             ~BackendMainWindowWin32_OpenGL3_3() override;
             //function: SetPosition
             //Sets the MainWindow position (distance from top-left) on the screen
-            void SetPosition(glm::ivec2 pos) override;
+            void SetWindowPosition(glm::ivec2 pos) override;
 
             //function: GetPosition
             //Gets the MainWindow position (distance from top-left) on the screen
-            glm::ivec2 GetPosition() const override;
+            glm::ivec2 GetWindowPosition() const override;
 
             //function: SyncPositionOffset
             //Updates the distance between the top-left corner of the titlebar and top-left corner of the content
@@ -119,11 +115,19 @@ namespace Backend
 
             //function: SetSize
             //Sets the size of the main window
-            void SetSize(glm::ivec2 size) override;
+            void SetWindowSize(glm::ivec2 size) override;
 
             //function: GetSize
             //Gets the size of the window
-            glm::ivec2 GetSize() const override;
+            glm::ivec2 GetWindowSize() const override;
+
+            //function: SetRenderSize
+            //See <BackendMainWindowInterface::SetRenderSize>
+            void SetRenderSize(glm::ivec2 size) override;
+
+            //function: GetRenderSize
+            //See <BackendMainWindowInterface::GetRenderSize>
+            glm::ivec2 GetRenderSize() const override;
 
             //function: IsClosed
             //Returns if the main window is closed or not

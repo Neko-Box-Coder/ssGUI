@@ -61,19 +61,19 @@ namespace Backend
                 //b
                 else if(msg.wParam == 0x42)
                 {
-                    mainWindowIt->second->SetPosition(glm::ivec2(0, 0));
+                    mainWindowIt->second->SetWindowPosition(glm::ivec2(0, 0));
                     return true;
                 }
                 //c
                 else if(msg.wParam == 0x43)
                 {
-                    mainWindowIt->second->SetSize(glm::ivec2(1000, 1000));
+                    mainWindowIt->second->SetWindowSize(glm::ivec2(1000, 1000));
                     return true;
                 }
                 //d
                 else if(msg.wParam == 0x44)
                 {
-                    glm::ivec2 size = mainWindowIt->second->GetSize();
+                    glm::ivec2 size = mainWindowIt->second->GetWindowSize();
                     ssLOG_LINE("size: "<<size.x<<", "<<size.y);
                     
                     return true;
@@ -128,7 +128,7 @@ namespace Backend
                 //l
                 else if(msg.wParam == 0x4C)
                 {
-                    mainWindowIt->second->SetSize(glm::ivec2(1920, 1080));
+                    mainWindowIt->second->SetWindowSize(glm::ivec2(1920, 1080));
                     return true;
                 }
                 //m

@@ -208,10 +208,17 @@ namespace Backend
     {
         
     }
+
+    void BackendDrawingWin32_OpenGL3_3::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+
+    }
+
     
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,
+                            const uint32_t character,
                             const ssGUI::Backend::BackendFontInterface& font,
                             int CharacterSize)
     {
@@ -237,6 +244,7 @@ namespace Backend
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,
+                            const uint32_t character,
                             int startIndex, int endIndex,
                             const ssGUI::Backend::BackendFontInterface& font,
                             int CharacterSize)

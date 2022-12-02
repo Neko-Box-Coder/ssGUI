@@ -50,6 +50,10 @@ namespace Backend
             Clears the back buffer manually. If you are using <ssGUIManager>, this will be automatically called for caching.*/
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
             
+            //function: RemoveImageLinking
+            //See <BackendDrawingInterface::RemoveImageLinking>
+            void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) override;
+
         protected:
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,

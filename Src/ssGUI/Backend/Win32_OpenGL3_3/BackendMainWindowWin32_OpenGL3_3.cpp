@@ -6,6 +6,9 @@
 #include "ssLogger/ssLog.hpp"
 #include <functional>
 
+#define VISUAL_OFFSET 7
+
+
 namespace ssGUI
 {
 
@@ -401,74 +404,6 @@ namespace Backend
         SetWindowStyle();
     }
 
-    /*
-    bool BackendMainWindowWin32_OpenGL3_3::WGLExtensionSupported(const char *extension_name, bool isARB)
-    {
-        //Lambda for checking target extension string from all the extensions
-        auto checkExtensionExists = [](const char* allExts, const char* targetExt) -> bool
-        {
-            const size_t extLen = strlen(targetExt);
-
-            // Begin Examination At Start Of String, Increment By 1 On False Match
-            for (const char* p = allExts; ; p++)
-            {
-                // Advance p Up To The Next Possible Match
-                p = strstr(p, targetExt);
- 
-                if (p == NULL)
-                    return false;                       // No Match
- 
-                // Make Sure That Match Is At The Start Of The String Or That
-                // The Previous Char Is A Space, Or Else We Could Accidentally
-                // Match "wglFunkywglExtension" With "wglExtension"
- 
-                // Also, Make Sure That The Following Character Is Space Or NULL
-                // Or Else "wglExtensionTwo" Might Match "wglExtension"
-                if ((p==allExts || p[-1]==' ') && (p[extLen]=='\0' || p[extLen]==' '))
-                    return true;                        // Match
-            }
-        };
-
-        if(!isARB)
-        {
-            // this is pointer to function which returns pointer to string with list of all wgl extensions
-            PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = NULL;
-
-            // determine pointer to wglGetExtensionsStringEXT function
-            _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) wglGetProcAddress("wglGetExtensionsStringEXT");
-
-            if(_wglGetExtensionsStringEXT == NULL)
-            {
-                ssLOG_LINE("Failed to get extension");
-                return false;
-            }
-
-            return checkExtensionExists(_wglGetExtensionsStringEXT(), extension_name);
-        }
-        else
-        {
-            // Try To Use wglGetExtensionStringARB On Current DC, If Possible
-            PROC wglGetExtString = wglGetProcAddress("wglGetExtensionsStringARB");
-            const char *supported = NULL;
-
-            if (wglGetExtString)
-                supported = ((char*(__stdcall*)(HDC))wglGetExtString)(wglGetCurrentDC());
- 
-            // If That Failed, Try Standard Opengl Extensions String
-            if (supported == NULL)
-                supported = (char*)glGetString(GL_EXTENSIONS);
- 
-            // If That Failed Too, Must Be No Extensions Supported
-            if (supported == NULL)
-            {
-                ssLOG_LINE("Failed to get extension");
-                return false;
-            }
-
-            return checkExtensionExists(supported, extension_name);
-        }
-    }*/
-
     bool BackendMainWindowWin32_OpenGL3_3::GetMsaaPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level)
     {
         if(!gladLoadWGL(hDC))
@@ -617,7 +552,7 @@ namespace Backend
         ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
     
-    void BackendMainWindowWin32_OpenGL3_3::SetPosition(glm::ivec2 pos)
+    void BackendMainWindowWin32_OpenGL3_3::SetWindowPosition(glm::ivec2 pos)
     {
         //Ignore borderless and fullscreen request
         if( GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN ||
@@ -633,13 +568,13 @@ namespace Backend
         
         //Need to apply visual offset because GetWindowRect includes the invisble resize hibox
         if(HasTitlebar())
-            pt.x = pt.x - 7;
+            pt.x = pt.x - VISUAL_OFFSET;
 
         if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, pt.x, pt.y, windowSize.x, windowSize.y, SWP_SHOWWINDOW))
             ssLOG_LINE("Failed to set window position");
     }
 
-    glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetPosition() const
+    glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetWindowPosition() const
     {
         if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
             return glm::ivec2(0, 0);
@@ -654,7 +589,7 @@ namespace Backend
 
         //Need to apply visual offset because GetWindowRect includes the invisble resize hibox
         if(HasTitlebar())
-            windowRect.left = windowRect.left + 7;
+            windowRect.left = windowRect.left + VISUAL_OFFSET;
 
         return glm::ivec2(windowRect.left, windowRect.top);
     }
@@ -691,7 +626,7 @@ namespace Backend
     }
 
 
-    void BackendMainWindowWin32_OpenGL3_3::SetSize(glm::ivec2 size)
+    void BackendMainWindowWin32_OpenGL3_3::SetWindowSize(glm::ivec2 size)
     {
         //Ignore request for borderless winodw
         if(GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS)
@@ -736,15 +671,15 @@ namespace Backend
 
         if(HasTitlebar())
         {
-            size.x += 7 * 2;
-            size.y += 7;
+            size.x += VISUAL_OFFSET * 2;
+            size.y += VISUAL_OFFSET;
         }
 
         if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, windowPos.x, windowPos.y, size.x, size.y, SWP_SHOWWINDOW))
             ssLOG_LINE("Failed to set window size");
     }
 
-    glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetSize() const
+    glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetWindowSize() const
     {
         //This seems to work also for fullscreen
 
@@ -756,7 +691,18 @@ namespace Backend
             return glm::ivec2();
         }
 
-        return glm::ivec2(windowRect.right - windowRect.left - (HasTitlebar() ? 7*2 : 0), windowRect.bottom - windowRect.top - (HasTitlebar() ? 7 : 0));
+        return glm::ivec2(  windowRect.right - windowRect.left - (HasTitlebar() ? VISUAL_OFFSET * 2 : 0), 
+                            windowRect.bottom - windowRect.top - (HasTitlebar() ? VISUAL_OFFSET : 0));
+    }
+
+    void BackendMainWindowWin32_OpenGL3_3::SetRenderSize(glm::ivec2 size)
+    {
+
+    }
+
+    glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetRenderSize() const
+    {
+        return glm::ivec2();
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsClosed() const
@@ -908,8 +854,8 @@ namespace Backend
             {
                 MsaaLevel = level;
 
-                glm::ivec2 oriSize = GetSize();
-                glm::ivec2 oriPos = GetPosition();
+                glm::ivec2 oriSize = GetWindowSize();
+                glm::ivec2 oriPos = GetWindowPosition();
 
                 ssGUI_DestroyWindow();
             
@@ -917,8 +863,8 @@ namespace Backend
                 
                 if(GetWindowMode() != ssGUI::Enums::WindowMode::FULLSCREEN)
                 {
-                    SetPosition(oriPos);
-                    SetSize(oriSize);
+                    SetWindowPosition(oriPos);
+                    SetWindowSize(oriSize);
                 }
             }
         }
@@ -987,13 +933,13 @@ namespace Backend
             return;
 
         ssGUI::Enums::WindowMode oriWindowMode = CurrentWindowMode;
-        glm::ivec2 oriSize = GetSize();
-        glm::ivec2 oriPos = GetPosition();
+        glm::ivec2 oriSize = GetWindowSize();
+        glm::ivec2 oriPos = GetWindowPosition();
 
         //If we are coming from fullscreen, change the resolutioin back
         //to the original screen resolution
         if(CurrentWindowMode == ssGUI::Enums::WindowMode::FULLSCREEN)
-            SetSize(OriginalScreenResolution);
+            SetWindowSize(OriginalScreenResolution);
 
         CurrentWindowMode = windowMode;
 
@@ -1030,7 +976,7 @@ namespace Backend
                 GetActiveMonitorPosSize(dummy, OriginalScreenResolution);
                 
                 //TODO: Use render area size instead
-                SetSize(oriSize);   //Set Size will handle all the window stuff
+                SetWindowSize(oriSize);   //Set Size will handle all the window stuff
                 break;
         }
     }
