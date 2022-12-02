@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_DRAWING_WIN32_OPEN_GL_3_3
-#define SSGUI_BACKEND_DRAWING_WIN32_OPEN_GL_3_3
+#ifndef SSGUI_BACKEND_DRAWING_WIN32_OPEN_GL_3_3_H
+#define SSGUI_BACKEND_DRAWING_WIN32_OPEN_GL_3_3_H
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
@@ -54,8 +54,9 @@ namespace Backend
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colors,
+                                    const uint32_t character,
                                     const ssGUI::Backend::BackendFontInterface& font,
-                                    int CharacterSize) override;
+                                    int characterSize) override;
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
@@ -70,9 +71,10 @@ namespace Backend
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colors,
+                                    const uint32_t character,
                                     int startIndex, int endIndex,
                                     const ssGUI::Backend::BackendFontInterface& font,
-                                    int CharacterSize) override;
+                                    int characterSize) override;
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,

@@ -1,5 +1,5 @@
-#ifndef SSGUI_STANDARD_GROUP
-#define SSGUI_STANDARD_GROUP
+#ifndef SSGUI_STANDARD_GROUP_H
+#define SSGUI_STANDARD_GROUP_H
 
 // #include "ssGUI/DebugAndBuild/ssGUIDebugMacro.hpp"
 

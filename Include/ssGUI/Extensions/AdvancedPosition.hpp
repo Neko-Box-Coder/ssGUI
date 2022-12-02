@@ -1,5 +1,5 @@
-#ifndef SSGUI_ADVANCED_POSITION
-#define SSGUI_ADVANCED_POSITION
+#ifndef SSGUI_SSGUI_ADVANCED_POSITION_H
+#define SSGUI_SSGUI_ADVANCED_POSITION_H
 
 #include <unordered_map>
 #include "ssGUI/Extensions/Extension.hpp"

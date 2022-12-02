@@ -1,5 +1,5 @@
-#ifndef SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER
-#define SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER
+#ifndef SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER_H
+#define SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "glm/vec2.hpp"

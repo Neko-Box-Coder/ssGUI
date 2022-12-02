@@ -1,14 +1,21 @@
 #include "ssGUI/Backend/Template/BackendMainWindowTemplate.hpp"
 
+#include "ssLogger/ssLog.hpp"
+
 namespace ssGUI
 {
 
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    BackendMainWindowTemplate::BackendMainWindowTemplate(BackendMainWindowTemplate const& other)
+    {
+    
+    }
+
     BackendMainWindowTemplate::BackendMainWindowTemplate()
     {
-
+        ssLOG_LINE("BackendMainWindowTemplate is being created, is this intended?");
     }
 
     BackendMainWindowTemplate::~BackendMainWindowTemplate()
@@ -16,12 +23,12 @@ namespace Backend
 
     }
     
-    void BackendMainWindowTemplate::SetPosition(glm::ivec2 pos)
+    void BackendMainWindowTemplate::SetWindowPosition(glm::ivec2 pos)
     {
 
     }
 
-    glm::ivec2 BackendMainWindowTemplate::GetPosition() const
+    glm::ivec2 BackendMainWindowTemplate::GetWindowPosition() const
     {
         return glm::ivec2();
     }
@@ -36,12 +43,22 @@ namespace Backend
         return glm::ivec2();
     }
 
-    void BackendMainWindowTemplate::SetSize(glm::ivec2 size)
+    void BackendMainWindowTemplate::SetWindowSize(glm::ivec2 size)
     {
 
     }
 
-    glm::ivec2 BackendMainWindowTemplate::GetSize() const
+    glm::ivec2 BackendMainWindowTemplate::GetWindowSize() const
+    {
+        return glm::ivec2();
+    }
+
+    void BackendMainWindowTemplate::SetRenderSize(glm::ivec2 size)
+    {
+    
+    }
+    
+    glm::ivec2 BackendMainWindowTemplate::GetRenderSize() const
     {
         return glm::ivec2();
     }

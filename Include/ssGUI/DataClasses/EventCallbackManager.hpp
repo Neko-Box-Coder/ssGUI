@@ -1,5 +1,5 @@
-#ifndef SSGUI_EVENT_CALLBACK_MANAGER
-#define SSGUI_EVENT_CALLBACK_MANAGER
+#ifndef SSGUI_EVENT_CALLBACK_MANAGER_H
+#define SSGUI_EVENT_CALLBACK_MANAGER_H
 
 #include "ssGUI/EventCallbacks/EventCallback.hpp"
 #include <unordered_map>

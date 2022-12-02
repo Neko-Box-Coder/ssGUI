@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE
-#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_H
+#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_H
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/Enums/CursorType.hpp"
@@ -16,21 +16,18 @@ namespace Backend
 {
     //class: ssGUI::Backend::BackendMainWindowInterface
     class BackendMainWindowInterface
-    {
-        private:
-            // BackendMainWindowInterface(const BackendMainWindowInterface&);
-            // BackendMainWindowInterface& operator=(const BackendMainWindowInterface&);
-        
+    {   
         public:
             BackendMainWindowInterface(){}
             virtual ~BackendMainWindowInterface() = 0;
-            //function: SetPosition
-            //Sets the MainWindow position (distance from top-left) on the screen
-            virtual void SetPosition(glm::ivec2 pos) = 0;
 
-            //function: GetPosition
+            //function: SetWindowPosition
+            //Sets the MainWindow position (distance from top-left) on the screen
+            virtual void SetWindowPosition(glm::ivec2 pos) = 0;
+
+            //function: GetWindowPosition
             //Gets the MainWindow position (distance from top-left) on the screen
-            virtual glm::ivec2 GetPosition() const = 0;
+            virtual glm::ivec2 GetWindowPosition() const = 0;
 
             //function: SyncPositionOffset
             //Updates the distance between the top-left corner of the titlebar and top-left corner of the content
@@ -40,13 +37,21 @@ namespace Backend
             //Gets the distance between the top-left corner of the titlebar and top-left corner of the content
             virtual glm::ivec2 GetPositionOffset() const = 0;
 
-            //function: SetSize
+            //function: SetWindowSize
             //Sets the size of the main window
-            virtual void SetSize(glm::ivec2 size) = 0;
+            virtual void SetWindowSize(glm::ivec2 size) = 0;
 
-            //function: GetSize
+            //function: GetWindowSize
             //Gets the size of the window
-            virtual glm::ivec2 GetSize() const = 0;
+            virtual glm::ivec2 GetWindowSize() const = 0;
+
+            //function: SetRenderSize
+            //Sets the rendering (client) size of the window
+            virtual void SetRenderSize(glm::ivec2 size) = 0;
+            
+            //function: GetRenderSize
+            //Gets the rendering (client) size of the window
+            virtual glm::ivec2 GetRenderSize() const = 0;
 
             //function: IsClosed
             //Returns if the main window is closed or not

@@ -1,5 +1,5 @@
-#ifndef SSGUI_CHARACTER_DETAILS
-#define SSGUI_CHARACTER_DETAILS
+#ifndef SSGUI_CHARACTER_DETAILS_H
+#define SSGUI_CHARACTER_DETAILS_H
 
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"

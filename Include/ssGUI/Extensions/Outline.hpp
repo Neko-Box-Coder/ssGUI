@@ -1,5 +1,5 @@
-#ifndef SSGUI_OUTLINE
-#define SSGUI_OUTLINE
+#ifndef SSGUI_OUTLINE_H
+#define SSGUI_OUTLINE_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "glm/vec2.hpp"

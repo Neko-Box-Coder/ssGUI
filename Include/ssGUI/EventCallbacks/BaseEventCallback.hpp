@@ -1,5 +1,5 @@
-#ifndef BASE_EVENT_CALLBACK
-#define BASE_EVENT_CALLBACK
+#ifndef SSGUI_BASE_EVENT_CALLBACK_H
+#define SSGUI_BASE_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/EventCallback.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"

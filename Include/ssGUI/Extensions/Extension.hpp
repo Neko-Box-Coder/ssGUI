@@ -1,5 +1,5 @@
-#ifndef SSGUI_EXTENSION
-#define SSGUI_EXTENSION
+#ifndef SSGUI_EXTENSION_H
+#define SSGUI_EXTENSION_H
 
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"

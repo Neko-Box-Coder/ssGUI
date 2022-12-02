@@ -1,5 +1,5 @@
-#ifndef SSGUI_SCROLLBAR
-#define SSGUI_SCROLLBAR
+#ifndef SSGUI_SCROLLBAR_H
+#define SSGUI_SCROLLBAR_H
 
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Slider.hpp"

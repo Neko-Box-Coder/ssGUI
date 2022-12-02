@@ -1,5 +1,5 @@
-#ifndef SSGUI_DRAWING_PROPERTIES
-#define SSGUI_DRAWING_PROPERTIES
+#ifndef SSGUI_DRAWING_PROPERTIES_H
+#define SSGUI_DRAWING_PROPERTIES_H
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
@@ -12,7 +12,8 @@ namespace ssGUI
     struct DrawingProperty
     {
         public:
-            //DrawingProperty& operator=(DrawingProperty const& other) = default;
+            //var: character
+            uint32_t character = 0;
 
             //var: fontP
             ssGUI::Backend::BackendFontInterface* fontP = nullptr;

@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE
-#define SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE_H
+#define SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE_H
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
@@ -13,148 +13,161 @@ namespace Backend
     class BackendMainWindowTemplate : BackendMainWindowInterface
     {
         private:
-        
+            BackendMainWindowTemplate& operator=(BackendMainWindowTemplate const& other);
+
+        protected:
+            BackendMainWindowTemplate(BackendMainWindowTemplate const& other);
+
         public:
             BackendMainWindowTemplate();
             ~BackendMainWindowTemplate() override;
-            //function: SetPosition
-            //Sets the MainWindow position (distance from top-left) on the screen
-            void SetPosition(glm::ivec2 pos) override;
 
-            //function: GetPosition
-            //Gets the MainWindow position (distance from top-left) on the screen
-            glm::ivec2 GetPosition() const override;
+            //function: SetWindowPosition
+            //See <BackendMainWindowInterface::SetWindowPosition>
+            void SetWindowPosition(glm::ivec2 pos) override;
+
+            //function: GetWindowPosition
+            //See <BackendMainWindowInterface::GetWindowPosition>
+            glm::ivec2 GetWindowPosition() const override;
 
             //function: SyncPositionOffset
-            //Updates the distance between the top-left corner of the titlebar and top-left corner of the content
+            //See <BackendMainWindowInterface::SyncPositionOffset>
             void SyncPositionOffset() override;
 
             //function: GetPositionOffset
-            //Gets the distance between the top-left corner of the titlebar and top-left corner of the content
+            //See <BackendMainWindowInterface::GetPositionOffset>
             glm::ivec2 GetPositionOffset() const override;
 
-            //function: SetSize
-            //Sets the size of the main window
-            void SetSize(glm::ivec2 size) override;
+            //function: SetWindowSize
+            //See <BackendMainWindowInterface::SetWindowSize>
+            void SetWindowSize(glm::ivec2 size) override;
 
-            //function: GetSize
-            //Gets the size of the window
-            glm::ivec2 GetSize() const override;
+            //function: GetWindowSize
+            //See <BackendMainWindowInterface::GetWindowSize>
+            glm::ivec2 GetWindowSize() const override;
+
+            //function: SetRenderSize
+            //See <BackendMainWindowInterface::SetRenderSize>
+            void SetRenderSize(glm::ivec2 size) override;
+
+            //function: GetRenderSize
+            //See <BackendMainWindowInterface::GetRenderSize>
+            glm::ivec2 GetRenderSize() const override;
 
             //function: IsClosed
-            //Returns if the main window is closed or not
+            //See <BackendMainWindowInterface::IsClosed>
             bool IsClosed() const override;
 
             //function: Close
-            //Closes the main window
+            //See <BackendMainWindowInterface::Close>
             void Close() override;
             
             //function: AbortClosing
-            //Stops the main window from closing. Needs to be called when it is being closed in order for it to work.
+            //See <BackendMainWindowInterface::AbortClosing>
             void AbortClosing() override;
 
             //function: AddOnCloseEvent
-            //Adds the function to be called when the main window closes. Returns an index that can be used to remove the function for being called.
+            //See <BackendMainWindowInterface::AddOnCloseEvent>
             int AddOnCloseEvent(std::function<void()> func) override;
 
             //function: RemoveOnCloseEvent
-            //Removes the function to be called when the main window closes.
+            //See <BackendMainWindowInterface::RemoveOnCloseEvent>
             void RemoveOnCloseEvent(int index) override;
 
             //function: SetTitle
-            //Sets the title of the main window
+            //See <BackendMainWindowInterface::SetTitle>
             void SetTitle(std::wstring title) override;
 
             //function: GetTitle
-            //Gets the title of the main window
+            //See <BackendMainWindowInterface::GetTitle>
             std::wstring GetTitle() const override;
 
             //function: SetIcon
-            //Sets the icon of the main window
+            //See <BackendMainWindowInterface::SetIcon>
             void SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage) override;
 
             //function: SetVisible
-            //Sets if the main window is visible or not
+            //See <BackendMainWindowInterface::SetVisible>
             void SetVisible(bool visible) override;
 
             //function: IsVisible
-            //Returns if the main window is visible or not
+            //See <BackendMainWindowInterface::IsVisible>
             bool IsVisible() const override;
 
             //function: SetVSync
-            //Sets if vSync is on or not
+            //See <BackendMainWindowInterface::SetVSync>
             void SetVSync(bool vSync) override;
 
             //function: IsVSync
-            //Returns if vSync is on or not
+            //See <BackendMainWindowInterface::IsVSync>
             bool IsVSync() const override;
 
             //function: SetFocus
-            //Sets if the main window to be focused.
-            //If true, it essentially bring it to the front
-            //If false, it will deselect the main window if supported (SFML not supported)
+            //See <BackendMainWindowInterface::SetFocus>
             void SetFocus(bool focus, bool externalByUser) override;
             
             //function: IsFocused
-            //Returns if the main window is focused. If not focused, some inputs will not be captured.
+            //See <BackendMainWindowInterface::IsFocused>
             bool IsFocused() const override;
 
             //function: AddFocusChangedByUserEvent
-            //Adds the function to be called when the main window gained or lost focus. Returns an index that can be used to remove the function for being called.
+            //See <BackendMainWindowInterface::AddFocusChangedByUserEvent>
             int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) override;
 
             //function: RemoveFocusChangedByUserEvent
-            //Removes the function to be called when the main window gained or lost focus
+            //See <BackendMainWindowInterface::RemoveFocusChangedByUserEvent>
             void RemoveFocusChangedByUserEvent(int index) override;
 
             //function: SetMSAA
-            //Sets the main window's anti aliasing level
+            //See <BackendMainWindowInterface::SetMSAA>
             void SetMSAA(int level) override;
 
             //function: GetMSAA
-            //Gets the main window's anti aliasing level
+            //See <BackendMainWindowInterface::GetMSAA>
             int GetMSAA() const override;
 
             //function: SetTitlebar
-            //Sets if the main window has titlebar or not
+            //See <BackendMainWindowInterface::SetTitlebar>
             void SetTitlebar(bool titlebar) override;
 
             //function: HasTitlebar
-            //Returns if the main window has titlebar or not. Note that if the main window is not in normal mode, this will return false.
+            //See <BackendMainWindowInterface::HasTitlebar>
             bool HasTitlebar() const override;
 
             //function: SetResizable
-            //Sets if the main window is resizable or not
+            //See <BackendMainWindowInterface::SetResizable>
             void SetResizable(bool resizable) override;
 
             //function: IsResizable
-            //Returns if the main window is resizable or not. Note that if the main window is not in normal mode, this will return false.
+            //See <BackendMainWindowInterface::IsResizable>
             bool IsResizable() const override;
 
             //function: SetCloseButton
-            //Sets if the main window has close button or not
+            //See <BackendMainWindowInterface::SetCloseButton>
             void SetCloseButton(bool closeButton) override;
 
             //function: HasCloseButton
-            //Returns if the main window has close button or not. Note that if the main window is not in normal mode, this will return false.
+            //See <BackendMainWindowInterface::HasCloseButton>
             bool HasCloseButton() const override;
 
             //function: SetWindowMode
-            //Sets the main window mode
+            //See <BackendMainWindowInterface::SetWindowMode>
             void SetWindowMode(ssGUI::Enums::WindowMode WindowMode) override;
 
             //function: GetWindowMode
-            //Gets the main window mode
+            //See <BackendMainWindowInterface::GetWindowMode>
             ssGUI::Enums::WindowMode GetWindowMode() const override;
 
             //function: SetGLContext
-            //Sets this window as the current MainWindow context
+            //See <BackendMainWindowInterface::SetGLContext>
             bool SetGLContext() override;
             
             //function: Clone
+            //See <BackendMainWindowInterface::Clone>
             BackendMainWindowInterface* Clone() override;
 
             //function: GetRawHandle
+            //See <BackendMainWindowInterface::GetRawHandle>
             void* GetRawHandle() override;
     };
 }

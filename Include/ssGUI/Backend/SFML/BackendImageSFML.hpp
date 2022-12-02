@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_IMAGE_SFML
-#define SSGUI_BACKEND_IMAGE_SFML
+#ifndef SSGUI_BACKEND_IMAGE_SFML_H
+#define SSGUI_BACKEND_IMAGE_SFML_H
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "SFML/Graphics.hpp"
@@ -35,6 +35,8 @@ namespace Backend
             bool GPUTextureValid;   //See <IsValid>
 
             BackendImageSFML& operator=(BackendImageSFML const& other);
+            
+            
 
         protected:
             BackendImageSFML(BackendImageSFML const& other);
@@ -67,15 +69,24 @@ namespace Backend
             
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            bool LoadRawFromMemory(void const * dataPtr, int width, int height) override;
+            bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) override;
             
             //function: GetSize
             //See <BackendImageInterface::GetSize>
             glm::ivec2 GetSize() const override;
 
             //function: GetPixelPtr
-            //See <BackendImageInterface::GetPixelPtr>
-            const void* GetPixelPtr() const override;
+            //SFML does not support editting pixels from pointer directly.
+            //This will return nullptr
+            void* GetPixelPtr(ssGUI::ImageFormat& format) const override;
+
+            //function: AddBackendDrawingLinking
+            //This is not used, SFML handles image memory internally
+            void AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            
+            //function: RemoveBackendDrawingLinking
+            //This is not used, SFML handles image memory internally
+            void RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
 
             //function: Clone
             ssGUI::Backend::BackendImageInterface* Clone() override;

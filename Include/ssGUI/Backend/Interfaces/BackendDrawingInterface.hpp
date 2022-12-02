@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_DRAWING_INTERFACE
-#define SSGUI_BACKEND_DRAWING_INTERFACE
+#ifndef SSGUI_BACKEND_DRAWING_INTERFACE_H
+#define SSGUI_BACKEND_DRAWING_INTERFACE_H
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
@@ -20,11 +20,7 @@ namespace Backend
 {
     //class: ssGUI::Backend::BackendDrawingInterface
     class BackendDrawingInterface
-    {
-        private:
-            // BackendDrawingInterface(const BackendDrawingInterface&);
-            // BackendDrawingInterface& operator=(const BackendDrawingInterface&);
-        
+    {        
         public:
             BackendDrawingInterface(){}
             virtual ~BackendDrawingInterface() = 0;
@@ -38,7 +34,8 @@ namespace Backend
             virtual void RestoreState() = 0;
 
             //function: DrawEntities
-            //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. *Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
+            //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. 
+            //*Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
             virtual bool DrawEntities(  const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
@@ -54,10 +51,17 @@ namespace Backend
             Clears the back buffer manually. If you are using <ssGUIManager>, this will be automatically called for caching.*/
             virtual void ClearBackBuffer(glm::u8vec3 clearColor) = 0;
             
+            //function: RemoveImageLinking
+            //This notifies the backend drawing that the image is not being used and
+            //should be removed from the GPU and memory.
+            //Normally, this is *handled by backend* and should not be called manually
+            virtual void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
+            
         protected:
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colors,
+                                    const uint32_t character,
                                     const ssGUI::Backend::BackendFontInterface& font,
                                     int CharacterSize) = 0;
 
@@ -74,9 +78,10 @@ namespace Backend
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colors,
+                                    const uint32_t character,
                                     int startIndex, int endIndex,
                                     const ssGUI::Backend::BackendFontInterface& font,
-                                    int CharacterSize) = 0;
+                                    int characterSize) = 0;
 
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,

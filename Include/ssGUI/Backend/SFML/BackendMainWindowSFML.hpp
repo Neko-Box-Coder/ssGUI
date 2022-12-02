@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_SFML
-#define SSGUI_BACKEND_MAIN_WINDOW_SFML
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_SFML_H
+#define SSGUI_BACKEND_MAIN_WINDOW_SFML_H
 
 #include <iostream>
 #include <vector>
@@ -93,21 +93,29 @@ namespace Backend
             //See <BackendMainWindowInterface::GetPositionOffset>
             glm::ivec2 GetPositionOffset() const override;
 
-            //function: SetPosition
-            //See <BackendMainWindowInterface::SetPosition>
-            void SetPosition(glm::ivec2 pos) override;
+            //function: SetWindowPosition
+            //See <BackendMainWindowInterface::SetWindowPosition>
+            void SetWindowPosition(glm::ivec2 pos) override;
             
-            //function: GetPosition
-            //See <BackendMainWindowInterface::GetPosition>
-            glm::ivec2 GetPosition() const override;
+            //function: GetWindowPosition
+            //See <BackendMainWindowInterface::GetWindowPosition>
+            glm::ivec2 GetWindowPosition() const override;
+            
+            //function: SetWindowSize
+            //See <BackendMainWindowInterface::SetWindowSize>
+            void SetWindowSize(glm::ivec2 size) override;
+            
+            //function: GetWindowSize
+            //See <BackendMainWindowInterface::GetWindowSize>
+            glm::ivec2 GetWindowSize() const override;
+            
+            //function: SetRenderSize
+            //See <BackendMainWindowInterface::SetRenderSize>
+            void SetRenderSize(glm::ivec2 size) override;
 
-            //function: SetSize
-            //See <BackendMainWindowInterface::SetSize>
-            void SetSize(glm::ivec2 size) override;
-            
-            //function: GetSize
-            //See <BackendMainWindowInterface::GetSize>
-            glm::ivec2 GetSize() const override;
+            //function: GetRenderSize
+            //See <BackendMainWindowInterface::GetRenderSize>
+            glm::ivec2 GetRenderSize() const override;
             
             //function: IsClosed
             //See <BackendMainWindowInterface::IsClosed>

@@ -1,5 +1,5 @@
-#ifndef SSGUI_IMAGE_CANVAS
-#define SSGUI_IMAGE_CANVAS
+#ifndef SSGUI_IMAGE_CANVAS_H
+#define SSGUI_IMAGE_CANVAS_H
 
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"

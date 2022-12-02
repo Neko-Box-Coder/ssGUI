@@ -1,5 +1,8 @@
-#ifndef SSGUI_STATIC_DEFAULT_WRAPPER
-#define SSGUI_STATIC_DEFAULT_WRAPPER
+#ifndef SSGUI_STATIC_DEFAULT_WRAPPER_H
+#define SSGUI_STATIC_DEFAULT_WRAPPER_H
+
+#include <functional>
+#include <vector>
 
 #include "ssGUI/Factory.hpp"
 
@@ -11,11 +14,22 @@ namespace ssGUI
         public:
             T* Obj = nullptr;
             bool ssGUIDefault = false;
+
+            std::vector<std::function<void()>> CleanUpFunc;
+
             inline StaticDefaultWrapper() = default;
             inline ~StaticDefaultWrapper()
             {
-                if(Obj != nullptr && ssGUIDefault)
-                    ssGUI::Factory::Dispose(Obj);
+                if(CleanUpFunc.empty())
+                {
+                    if(Obj != nullptr && ssGUIDefault)
+                        ssGUI::Factory::Dispose(Obj);
+                }
+                else
+                {
+                    for(int i = 0; i < CleanUpFunc.size(); i++)
+                        CleanUpFunc[i]();
+                }
             };
     };
 }

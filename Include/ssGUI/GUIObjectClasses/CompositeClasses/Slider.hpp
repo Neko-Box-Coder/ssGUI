@@ -1,5 +1,5 @@
-#ifndef SSGUI_SLIDER
-#define SSGUI_SLIDER
+#ifndef SSGUI_SLIDER_H
+#define SSGUI_SLIDER_H
 
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 

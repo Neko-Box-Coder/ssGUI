@@ -1,5 +1,5 @@
-#ifndef SSGUI_BUTTON_STATE
-#define SSGUI_BUTTON_STATE
+#ifndef SSGUI_BUTTON_STATE_H
+#define SSGUI_BUTTON_STATE_H
 
 namespace ssGUI
 {

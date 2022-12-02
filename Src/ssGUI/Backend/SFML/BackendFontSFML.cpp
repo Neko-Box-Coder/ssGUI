@@ -1,5 +1,8 @@
 #include "ssGUI/Backend/SFML/BackendFontSFML.hpp"
 
+#include "ssLogger/ssLog.hpp"
+#include "ssGUI/DataClasses/ImageData.hpp"
+
 namespace ssGUI
 {
 
@@ -24,7 +27,7 @@ namespace Backend
         return SFFontValid ? &Font : nullptr;
     }
 
-    bool BackendFontSFML::IsValid()
+    bool BackendFontSFML::IsValid() const
     {
         return SFFontValid;
     }
@@ -41,8 +44,7 @@ namespace Backend
         info.Advance = glyph.advance;
         info.DrawOffset = glm::vec2(glyph.bounds.left, glyph.bounds.top);
         info.Size = glm::vec2(glyph.textureRect.width, glyph.textureRect.height);
-        info.UVOrigin = glm::vec2(glyph.textureRect.left, glyph.textureRect.top);
-        info.Rendered = true;
+        info.Rendered = true;   //This is handled in Text.cpp
         info.Valid = true;
 
         return info;
@@ -108,6 +110,31 @@ namespace Backend
         }
         else
             return false;
+    }
+
+    bool BackendFontSFML::GetFixedAvailableFontSizes(std::vector<float>& fontSizes)
+    {
+        if(!SFFontValid)
+            return false;
+            
+        return true;
+    }
+    
+    bool BackendFontSFML::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
+    {
+        if(!SFFontValid)
+            return false;
+        
+        sf::Glyph glyph = Font.getGlyph(charUnicode, charSize, false);
+        sf::Texture characterTextAtlas = Font.getTexture(charSize);
+        sf::Image characterAtlasImg = characterTextAtlas.copyToImage();
+        const uint8_t* charTexture =    characterAtlasImg.getPixelsPtr() + 
+                                        (glyph.textureRect.getPosition().y * characterAtlasImg.getSize().x + 
+                                        glyph.textureRect.getPosition().x) * 4;
+        
+        ssGUI::ImageFormat format;
+        
+        return characterImage.LoadRawFromMemory(charTexture, ssGUI::ImageFormat(), glm::ivec2(glyph.textureRect.width, glyph.textureRect.height));   
     }
 
     void* BackendFontSFML::GetRawHandle()

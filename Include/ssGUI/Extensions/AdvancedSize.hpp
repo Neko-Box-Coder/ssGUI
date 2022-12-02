@@ -1,5 +1,5 @@
-#ifndef SSGUI_ADVANCED_SIZE
-#define SSGUI_ADVANCED_SIZE
+#ifndef SSGUI_ADVANCED_SIZE_H
+#define SSGUI_ADVANCED_SIZE_H
 
 #include <unordered_map>
 #include "ssGUI/Extensions/Extension.hpp"

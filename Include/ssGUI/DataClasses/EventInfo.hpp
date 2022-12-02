@@ -1,5 +1,5 @@
-#ifndef SSGUI_EVENT_INFO
-#define SSGUI_EVENT_INFO
+#ifndef SSGUI_EVENT_INFO_H
+#define SSGUI_EVENT_INFO_H
 
 //namespace: ssGUI
 namespace ssGUI

@@ -1,5 +1,5 @@
-#ifndef SSGUI_WINDOW_MODE
-#define SSGUI_WINDOW_MODE
+#ifndef SSGUI_WINDOW_MODE_H
+#define SSGUI_WINDOW_MODE_H
 
 namespace ssGUI 
 { 

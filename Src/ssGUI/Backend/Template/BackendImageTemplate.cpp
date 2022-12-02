@@ -1,14 +1,20 @@
 #include "ssGUI/Backend/Template/BackendImageTemplate.hpp"
 
+#include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
 {
 
 namespace Backend
 {
+    BackendImageTemplate::BackendImageTemplate(BackendImageTemplate const& other)
+    {
+    
+    }
+
     BackendImageTemplate::BackendImageTemplate()
     {
-
+        ssLOG_LINE("BackendImageTemplate is being created, is this intended?");
     }
 
     BackendImageTemplate::~BackendImageTemplate()
@@ -16,56 +22,49 @@ namespace Backend
 
     }
 
-    //function: GetRawHandle
-    //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr 
     void* BackendImageTemplate::GetRawHandle()
     {
         return nullptr;
     }
 
-    //function: IsValid
-    //Returns true if image is loaded
     bool BackendImageTemplate::IsValid() const
     {
         return true;
     }
 
-    //function: LoadFromPath
-    //Please see <BackendImageSFML::LoadFromPath> for supported image format.
     bool BackendImageTemplate::LoadFromPath(std::string path)
     {
         return true;
     }
 
-    //function: LoadImgFileFromMemory
-    //Please see <BackendImageSFML::LoadImgFileFromMemory> for supported image format.
     bool BackendImageTemplate::LoadImgFileFromMemory(void const * dataPtr, std::size_t size)
     {
         return true;
     }
 
-    //function: LoadRawFromMemory
-    //This loads an image in memory in the format of 32-bits rgba.
-    bool BackendImageTemplate::LoadRawFromMemory(void const * dataPtr, int width, int height)
+    bool BackendImageTemplate::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
         return true;
     }
     
-    //function: GetSize
-    //Returns the size of the image
     glm::ivec2 BackendImageTemplate::GetSize() const
     {
         return glm::ivec2();
     }
 
-    //function: GetPixelPtr
-    //Returns the pixel data pointer of the image
-    const void* BackendImageTemplate::GetPixelPtr() const
+    void* BackendImageTemplate::GetPixelPtr(ssGUI::ImageFormat& format) const
     {
         return nullptr;
     }
 
-    //function: Clone
+    void BackendImageTemplate::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    {
+    }
+
+    void BackendImageTemplate::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    {
+    }
+
     BackendImageInterface* BackendImageTemplate::Clone()
     {
         return nullptr;

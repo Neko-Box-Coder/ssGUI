@@ -1,5 +1,5 @@
-#ifndef SSGUI_CHECKBOX
-#define SSGUI_CHECKBOX
+#ifndef SSGUI_CHECKBOX_H
+#define SSGUI_CHECKBOX_H
 
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 
