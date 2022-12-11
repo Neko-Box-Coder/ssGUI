@@ -26,14 +26,17 @@ int main()
     text.SetNewCharacterUnderlined(true);
     text.SetNewCharacterColor(glm::u8vec4(255, 0, 0, 255));
     // text.SetText(L"これは非常に長い日本語の文章です~~~~~");
-    text.SetText(L"Click on the button to change this text.");
+    //text.SetText(L"Click on the button to change this text.");
+    text.SetText(L"C");
 
     //Add the text and button widget to the main window
     text.SetParent(&mainWindow);
+    
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
+
     return 0;
 }

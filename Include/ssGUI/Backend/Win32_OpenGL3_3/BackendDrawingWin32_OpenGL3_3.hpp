@@ -5,6 +5,13 @@
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
+#include <windows.h>            /* must include this before GL/gl.h */
+
+#include "glad/glad.h"
+#include "glad/glad_wgl.h"
+
+#include <unordered_map>
+
 namespace ssGUI 
 { 
     
@@ -17,9 +24,19 @@ namespace Backend
         private:
             int BackendIndex;   //(Internal variable) This is used to check if we are drawing on the correct MainWindow
 
+            //std::unordered_map<ssGUI::Backend::BackendMainWindowInterface*, GLuint> WindowTexturePrograms;
+
+            bool FirstDrawCall = true;
+
+            std::unordered_map<uint32_t, GLuint> CharTextures;
+            std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;
+
+            GLuint ProgramId = 0;
+            GLuint VAO = 0;
+
             ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
-            
-            void display();
+
+            void InitiateDrawIfNeeded();
 
         public:
             BackendDrawingWin32_OpenGL3_3();

@@ -6,6 +6,7 @@
 #include "ssLogger/ssLog.hpp"
 #include <functional>
 
+//Need to apply visual offset because GetWindowRect includes the invisble resize hitbox
 #define VISUAL_OFFSET 7
 
 
@@ -566,7 +567,7 @@ namespace Backend
         pt.x = pos.x;
         pt.y = pos.y;
         
-        //Need to apply visual offset because GetWindowRect includes the invisble resize hibox
+        //Need to apply visual offset because GetWindowRect includes the invisble resize hitbox
         if(HasTitlebar())
             pt.x = pt.x - VISUAL_OFFSET;
 
@@ -587,7 +588,7 @@ namespace Backend
             return glm::ivec2();
         }
 
-        //Need to apply visual offset because GetWindowRect includes the invisble resize hibox
+        //Need to apply visual offset because GetWindowRect includes the invisble resize hitbox
         if(HasTitlebar())
             windowRect.left = windowRect.left + VISUAL_OFFSET;
 
@@ -702,7 +703,14 @@ namespace Backend
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetRenderSize() const
     {
-        return glm::ivec2();
+        RECT renderSize;
+        if(!GetClientRect(CurrentWindowHandle, &renderSize))
+        {
+            ssLOG_LINE("Failed to get render size");
+            return glm::ivec2();
+        }
+        
+        return glm::ivec2(renderSize.right - renderSize.left, renderSize.bottom - renderSize.top);
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsClosed() const

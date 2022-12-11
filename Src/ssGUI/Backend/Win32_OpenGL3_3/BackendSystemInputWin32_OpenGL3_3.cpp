@@ -74,8 +74,10 @@ namespace Backend
                 else if(msg.wParam == 0x44)
                 {
                     glm::ivec2 size = mainWindowIt->second->GetWindowSize();
-                    ssLOG_LINE("size: "<<size.x<<", "<<size.y);
-                    
+                    ssLOG_LINE("Window size: "<<size.x<<", "<<size.y);
+                    size = mainWindowIt->second->GetRenderSize();
+                    ssLOG_LINE("Render size: "<<size.x<<", "<<size.y);
+
                     return true;
                 }
                 //e

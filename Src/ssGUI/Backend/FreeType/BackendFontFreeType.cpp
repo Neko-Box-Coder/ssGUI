@@ -413,17 +413,6 @@ namespace Backend
             return false;
         }
         
-        if(FontFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
-        {
-            //This uses RGB instead of grayscale
-            error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
-            if(error)
-            {
-                ssLOG_LINE("Failed to FT_Render_Glyph");
-                return false;
-            }
-        }
-    
         //If this has color, the format is BGRA with 8 bit per channel
         if(FT_HAS_COLOR(FontFace))
         {
@@ -436,6 +425,16 @@ namespace Backend
             
             //sf::Vector2u size = sf::Vector2u(freeTypeFont->GetCurrentGlyph()->bitmap.width, freeTypeFont->GetCurrentGlyph()->bitmap.rows);
             //Convert to bitmap if there isn't one
+            
+            if(FontFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
+            {
+                error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
+                if(error)
+                {
+                    ssLOG_LINE("Failed to FT_Render_Glyph");
+                    return false;
+                }
+            }
             
             if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_BGRA)
             {

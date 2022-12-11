@@ -17,6 +17,13 @@
     #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #endif
 
+
+#ifdef SSGUI_MAIN_BACKEND_WIN32_OPENGL
+    #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
+    #include "ssGUI/Backend/Win32_OpenGL3_3/BackendDrawingWin32_OpenGL3_3.hpp"
+    #include "ssGUI/Backend/Win32_OpenGL3_3/BackendSystemInputWin32_OpenGL3_3.hpp"
+#endif
+
 #ifdef SSGUI_FONT_BACKEND_FREE_TYPE
     #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
 #endif
@@ -42,6 +49,8 @@ namespace Backend
             {
                 #ifdef SSGUI_MAIN_BACKEND_SFML
                     return static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingSFML());
+                #elif defined SSGUI_MAIN_BACKEND_WIN32_OPENGL
+                    return static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingWin32_OpenGL3_3());
                 #else
                     ssLOG_LINE("Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();
@@ -84,6 +93,8 @@ namespace Backend
             {
                 #ifdef SSGUI_MAIN_BACKEND_SFML
                     return static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputSFML());
+                #elif defined SSGUI_MAIN_BACKEND_WIN32_OPENGL
+                    return static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputWin32_OpenGL3_3());
                 #else
                     ssLOG_LINE("Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();
@@ -96,6 +107,8 @@ namespace Backend
             {
                 #ifdef SSGUI_MAIN_BACKEND_SFML
                     return static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowSFML());
+                #elif defined SSGUI_MAIN_BACKEND_WIN32_OPENGL
+                    return static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowWin32_OpenGL3_3());
                 #else
                     ssLOG_LINE("Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();

@@ -48,7 +48,7 @@ endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")                      # Allow dropdown option
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Template")
