@@ -1,5 +1,5 @@
-#ifndef SSGUI_RENDERER
-#define SSGUI_RENDERER
+#ifndef SSGUI_RENDERER_H
+#define SSGUI_RENDERER_H
 
 #include "ssGUI/DataClasses/DrawingProperties.hpp"
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"

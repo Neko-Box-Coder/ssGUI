@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_DRAWING_SFML
-#define SSGUI_BACKEND_DRAWING_SFML
+#ifndef SSGUI_BACKEND_DRAWING_SFML_H
+#define SSGUI_BACKEND_DRAWING_SFML_H
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"

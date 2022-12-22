@@ -1,5 +1,5 @@
-#ifndef SSGUI_TAGS
-#define SSGUI_TAGS
+#ifndef SSGUI_TAGS_H
+#define SSGUI_TAGS_H
 
 #include <string>
 

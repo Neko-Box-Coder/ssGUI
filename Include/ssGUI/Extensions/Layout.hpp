@@ -1,5 +1,5 @@
-#ifndef SSGUI_LAYOUT
-#define SSGUI_LAYOUT
+#ifndef SSGUI_LAYOUT_H
+#define SSGUI_LAYOUT_H
 
 #include <unordered_map>
 #include <unordered_set>

@@ -1,5 +1,5 @@
-#ifndef SSGUI_DROPDOWN
-#define SSGUI_DROPDOWN
+#ifndef SSGUI_DROPDOWN_H
+#define SSGUI_DROPDOWN_H
 
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 #include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"

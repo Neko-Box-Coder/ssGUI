@@ -1,5 +1,5 @@
-#ifndef SSGUI_TRANSFORM
-#define SSGUI_TRANSFORM
+#ifndef SSGUI_TRANSFORM_H
+#define SSGUI_TRANSFORM_H
 
 #include "glm/vec2.hpp"
 #include "ssGUI/Enums/AnchorType.hpp"

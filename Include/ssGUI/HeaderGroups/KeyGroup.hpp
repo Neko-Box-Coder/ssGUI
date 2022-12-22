@@ -1,5 +1,5 @@
-#ifndef SSGUI_KEY_GROUP
-#define SSGUI_KEY_GROUP
+#ifndef SSGUI_KEY_GROUP_H
+#define SSGUI_KEY_GROUP_H
 
 #include "ssGUI/Enums/FunctionKey.hpp"
 #include "ssGUI/Enums/LetterKey.hpp"

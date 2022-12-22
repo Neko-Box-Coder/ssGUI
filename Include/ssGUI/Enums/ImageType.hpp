@@ -1,5 +1,5 @@
-#ifndef SSGUI_IMAGE_TYPE
-#define SSGUI_IMAGE_TYPE
+#ifndef SSGUI_IMAGE_TYPE_H
+#define SSGUI_IMAGE_TYPE_H
 
 namespace ssGUI
 {

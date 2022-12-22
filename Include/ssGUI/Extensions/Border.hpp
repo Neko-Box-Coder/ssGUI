@@ -1,5 +1,5 @@
-#ifndef SSGUI_BORDER
-#define SSGUI_BORDER
+#ifndef SSGUI_BORDER_H
+#define SSGUI_BORDER_H
 
 
 #include "ssGUI/Extensions/Extension.hpp"

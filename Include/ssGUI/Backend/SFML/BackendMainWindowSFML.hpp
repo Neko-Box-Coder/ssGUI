@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_SFML
-#define SSGUI_BACKEND_MAIN_WINDOW_SFML
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_SFML_H
+#define SSGUI_BACKEND_MAIN_WINDOW_SFML_H
 
 #include <iostream>
 #include <vector>

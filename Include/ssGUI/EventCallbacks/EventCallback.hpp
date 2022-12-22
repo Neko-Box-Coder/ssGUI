@@ -1,5 +1,5 @@
-#ifndef SSGUI_EVENT_CALLBACK
-#define SSGUI_EVENT_CALLBACK
+#ifndef SSGUI_EVENT_CALLBACK_H
+#define SSGUI_EVENT_CALLBACK_H
 
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"

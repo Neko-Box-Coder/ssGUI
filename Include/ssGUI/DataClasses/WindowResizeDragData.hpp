@@ -1,5 +1,5 @@
-#ifndef SSGUI_WINDOW_RESIZE_DRAG_DATA
-#define SSGUI_WINDOW_RESIZE_DRAG_DATA
+#ifndef SSGUI_WINDOW_RESIZE_DRAG_DATA_H
+#define SSGUI_WINDOW_RESIZE_DRAG_DATA_H
 
 #include "glm/vec2.hpp"
 #include "ssGUI/Enums/WindowDragState.hpp"

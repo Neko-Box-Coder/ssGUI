@@ -1,5 +1,5 @@
-#ifndef SSGUI_IMAGE_INTERFACE
-#define SSGUI_IMAGE_INTERFACE
+#ifndef SSGUI_IMAGE_INTERFACE_H
+#define SSGUI_IMAGE_INTERFACE_H
 
 #include <string>
 #include "glm/vec2.hpp"

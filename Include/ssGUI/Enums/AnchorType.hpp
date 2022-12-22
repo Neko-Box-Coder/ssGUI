@@ -1,5 +1,5 @@
-#ifndef SSGUI_ANCHOR_TYPE
-#define SSGUI_ANCHOR_TYPE
+#ifndef SSGUI_ANCHOR_TYPE_H
+#define SSGUI_ANCHOR_TYPE_H
 
 namespace ssGUI 
 { 

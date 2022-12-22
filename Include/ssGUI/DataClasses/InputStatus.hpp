@@ -1,5 +1,5 @@
-#ifndef SSGUI_INPUT_STATUS
-#define SSGUI_INPUT_STATUS
+#ifndef SSGUI_INPUT_STATUS_H
+#define SSGUI_INPUT_STATUS_H
 
 //namespace: ssGUI
 namespace ssGUI

@@ -1,5 +1,5 @@
-#ifndef SSGUI_STANDARD_BUTTPM
-#define SSGUI_STANDARD_BUTTPM
+#ifndef SSGUI_STANDARD_BUTTON_H
+#define SSGUI_STANDARD_BUTTON_H
 
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"

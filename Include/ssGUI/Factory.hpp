@@ -1,5 +1,5 @@
-#ifndef SSGUI_Factory
-#define SSGUI_Factory
+#ifndef SSGUI_Factory_H
+#define SSGUI_Factory_H
 
 #include <type_traits>
 
