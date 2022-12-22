@@ -17,6 +17,9 @@
     #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #endif
 
+#ifdef SSGUI_FONT_BACKEND_FREE_TYPE
+    #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
+#endif
 
 #ifdef SSGUI_MAIN_BACKEND_WIN32_OPENGL
     #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
