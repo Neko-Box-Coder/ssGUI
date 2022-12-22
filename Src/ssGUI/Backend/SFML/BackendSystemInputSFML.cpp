@@ -227,6 +227,8 @@ namespace Backend
             {
                 //Add a new item to realtime input info, that continues from the last input state
                 ssGUI::RealtimeInputInfo curInfo;
+
+                //TODO: Remove this? This looks wrong
                 if(CurrentInputInfos.empty())
                     curInfo.CurrentMousePosition = LastMousePosition;
 
@@ -244,6 +246,7 @@ namespace Backend
                     CurrentInputInfos.push_back(curInfo);
                     continue;
                 }
+                //TODO: Change this? This looks wrong
                 else if(glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y) != curInfo.CurrentMousePosition)
                 {
                     curInfo.MouseMoved = true;
@@ -310,7 +313,7 @@ namespace Backend
                 {
                     ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
                     curInfo.CurrentButtonAndKeyChanged = input;
-                    FetchKeysReleased(input, CurrentKeyPresses);
+                    FetchKeysPressed(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
                     AddNonExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);
                     continue;
@@ -377,6 +380,7 @@ namespace Backend
 
     void BackendSystemInputSFML::SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow)
     {
+        //TODO: This might not work for multi-monitor, change this to use window version of setPosition instead
         if(mainWindow != nullptr)
             position += mainWindow->GetDisplayPosition() + mainWindow->GetPositionOffset();
         
@@ -471,6 +475,8 @@ namespace Backend
                 }
                 
                 bool result = false;
+
+                //TODO: Move this to somewhere else
                 if(cursorFormat.BitDepthPerChannel == 8)
                     result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(cursorImg, imgPtr, cursorFormat, customCursor->GetSize());
                 else if(cursorFormat.BitDepthPerChannel == 16)

@@ -272,6 +272,7 @@ namespace Backend
                 sf::Image img;
                 bool result = false;
                 
+                //TODO: Move this to somewhere else
                 switch(imgFmt.BitDepthPerChannel)
                 {
                     case 8:
