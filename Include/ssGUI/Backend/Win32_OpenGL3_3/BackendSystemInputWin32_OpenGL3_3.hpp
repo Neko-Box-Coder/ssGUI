@@ -13,6 +13,8 @@
 #include <queue>
 #include <utility>
 #include <unordered_map>
+#include <memory>
+#include <chrono>
 
 namespace ssGUI
 {
@@ -37,8 +39,32 @@ namespace Backend
         private:
             // BackendSystemInputInterface(const BackendSystemInputInterface&);
             // BackendSystemInputInterface& operator=(const BackendSystemInputInterface&);
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> CurrentKeyPresses;                  //See <GetCurrentButtonAndKeyPresses>
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> LastKeyPresses;                     //See <GetLastButtonAndKeyPresses>
+            std::wstring InputText;                                                                 //See <GetTextInput>
+            glm::ivec2 CurrentMousePosition;                                                        //See <GetCurrentMousePosition>
+            glm::ivec2 LastMousePosition;                                                           //See <GetLastMousePosition>
+            std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;                             //See <GetCurrentMouseButton>
+            std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;                                //See <GetLastMouseButton>
+            glm::vec2 MouseScrollDelta;                                                             //See <GetCurrentMouseScrollDelta>
+            std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;                                //See <GetCurrentRealtimeInputs>
+            std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;                                   //See <GetLastRealtimeInputs>
+            ssGUI::Enums::CursorType CurrentCursor;                                                 //See <GetCursorType>
 
             std::unordered_map<HWND, ssGUI::Backend::BackendMainWindowInterface*> MainWindowRawHandles;
+            std::unordered_map<std::string, std::pair<std::shared_ptr<ssGUI::ImageData>, glm::ivec2>> CustomCursors;        //See <GetCustomCursor>
+            std::string CurrentCustomCursor;                                                        //See <GetCurrentCustomCursorName>
+
+            std::chrono::high_resolution_clock::time_point StartTime;                         //See <GetElapsedTime>
+
+            template <class T>
+            void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
+
+            template <class T>
+            void RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom);
+
+            void FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
+            void FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
 
 
         public:

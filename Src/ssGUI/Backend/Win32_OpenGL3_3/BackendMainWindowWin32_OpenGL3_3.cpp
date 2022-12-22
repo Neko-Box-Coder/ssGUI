@@ -3,6 +3,8 @@
 
 #include "ssGUI/Backend/BackendManager.hpp"
 
+#include "ssGUI/HelperClasses/ImageConversion.hpp"
+
 #include "ssLogger/ssLog.hpp"
 #include <functional>
 
@@ -597,6 +599,7 @@ namespace Backend
 
     void BackendMainWindowWin32_OpenGL3_3::SyncPositionOffset()
     {
+        //Don't need to do so for Win32
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetPositionOffset() const
@@ -698,7 +701,22 @@ namespace Backend
 
     void BackendMainWindowWin32_OpenGL3_3::SetRenderSize(glm::ivec2 size)
     {
+        RECT renderSize;
+        if(!GetClientRect(CurrentWindowHandle, &renderSize))
+        {
+            ssLOG_LINE("Failed to get render size");
+            return;
+        }
 
+        DWORD dwStyle = (DWORD)GetWindowLong(CurrentWindowHandle, GWL_STYLE);
+        renderSize.right = renderSize.left + size.x;
+        renderSize.bottom = renderSize.top + size.y;
+
+        if(!AdjustWindowRect(&renderSize, dwStyle, FALSE))
+        {
+            ssLOG_LINE("Failed to set render size");
+            return;
+        }
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetRenderSize() const
@@ -771,11 +789,88 @@ namespace Backend
 
     void BackendMainWindowWin32_OpenGL3_3::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
     {
-        //ssGUI::Backend::BackendImageSFML& castedIcon = (ssGUI::Backend::BackendImageSFML&)iconImage;
-        //sf::Image sfImg = (*static_cast<sf::Texture*>(castedIcon.GetRawHandle())).copyToImage();
+        //From https://stackoverflow.com/questions/41533158/create-32-bit-color-icon-programmatically
+        ICONINFO iconInfo = 
+        {
+            TRUE, // fIcon, set to true if this is an icon, set to false if this is a cursor
+            NULL, // xHotspot, set to null for icons
+            NULL, // yHotspot, set to null for icons
+            NULL, // Monochrome bitmap mask, set to null initially
+            NULL  // Color bitmap mask, set to null initially
+        };
 
-        //CurrentWindow.setIcon(sf::Vector2u(sfImg.getSize().x, sfImg.getSize().y), sfImg.getPixelsPtr());
-        //TODO
+        uint8_t* rgbaImg = new uint8_t[iconImage.GetSize().x * iconImage.GetSize().y * 4];
+        ssGUI::ImageFormat format;
+        void* imgPtr = iconImage.GetPixelPtr(format);
+
+        //TODO: Move this to somewhere else
+        switch(format.BitDepthPerChannel)
+        {
+            case 8:
+                ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
+                break;
+            case 16:
+                ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
+                break;
+            default:
+                ssLOG_LINE("Unsupported bit depth");
+                return;
+        }
+
+        uint8_t* rawBitmap = new uint8_t[iconImage.GetSize().x * iconImage.GetSize().y * 4];
+
+        //TODO: Move this conversion to ImageConversion
+        for(int y = 0; y < iconImage.GetSize().y; y++)
+        {
+            for(int x = 0; x < iconImage.GetSize().x; x++)
+            {
+                //BGRA on Win32
+                uint32_t curPixel = (y * iconImage.GetSize().x + x) * 4;
+                rawBitmap[curPixel] = rgbaImg[curPixel + 2];
+                rawBitmap[curPixel + 1] = rgbaImg[curPixel + 1];
+                rawBitmap[curPixel + 2] = rgbaImg[curPixel];
+                rawBitmap[curPixel + 3] = rgbaImg[curPixel + 3];
+            }
+        }
+
+        HICON hIcon = NULL;
+        bool success = true;
+        iconInfo.hbmColor = CreateBitmap(iconImage.GetSize().x, iconImage.GetSize().y, 1, 32, rawBitmap);
+        if (iconInfo.hbmColor) 
+        {
+            iconInfo.hbmMask = CreateCompatibleBitmap(GetDC(CurrentWindowHandle), iconImage.GetSize().x, iconImage.GetSize().y);
+            if (iconInfo.hbmMask) 
+            {
+                hIcon = CreateIconIndirect(&iconInfo);
+                if (hIcon == NULL) 
+                {
+                    ssLOG_LINE("Failed to create icon.");
+                    success = false;
+                }
+                DeleteObject(iconInfo.hbmMask);
+            } 
+            else 
+            {
+                success = false;
+                ssLOG_LINE("Failed to create color mask.");
+            }
+            DeleteObject(iconInfo.hbmColor);
+        } 
+        else 
+        {
+            success = false;
+            ssLOG_LINE("Failed to create bitmap mask.");
+        }
+
+        delete[] rawBitmap;
+        delete[] rgbaImg;
+
+        if(success)
+        {
+            SendMessage(CurrentWindowHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+            SendMessage(CurrentWindowHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+            SendMessage(CurrentWindowHandle, WM_SETICON, ICON_SMALL2, (LPARAM)hIcon);
+        }
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetVisible(bool visible)
@@ -807,7 +902,6 @@ namespace Backend
 
     bool BackendMainWindowWin32_OpenGL3_3::IsFocused() const
     {
-        //return CurrentWindow.hasFocus();
         return GetActiveWindow() == CurrentWindowHandle;
     }
 
@@ -883,7 +977,6 @@ namespace Backend
         if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
             return;
         
-        //ResetWindow(GetWindowMode(), IsResizable(), titlebar, HasCloseButton(), GetMSAA());
         Titlebar = titlebar;
         SetWindowStyle();
     }
@@ -902,7 +995,6 @@ namespace Backend
         if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
             return;
         
-        //ResetWindow(GetWindowMode(), resizable, HasTitlebar(), HasCloseButton(), GetMSAA());
         Resizable = resizable;
         SetWindowStyle();
     }
@@ -912,7 +1004,6 @@ namespace Backend
         if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
             return false;
         
-        //return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? Resizable : false;
         return Resizable;
     }
 
@@ -921,7 +1012,6 @@ namespace Backend
         if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
             return;
         
-        //ResetWindow(GetWindowMode(), IsResizable(), HasTitlebar(), closeButton, GetMSAA());
         CloseButton = closeButton;
         SetWindowStyle();
     }
@@ -931,7 +1021,6 @@ namespace Backend
         if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
             return false;
         
-        //return GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL ? CloseButton : false;
         return CloseButton;
     }
 
@@ -944,7 +1033,7 @@ namespace Backend
         glm::ivec2 oriSize = GetWindowSize();
         glm::ivec2 oriPos = GetWindowPosition();
 
-        //If we are coming from fullscreen, change the resolutioin back
+        //If we are coming from fullscreen, change the resolution back
         //to the original screen resolution
         if(CurrentWindowMode == ssGUI::Enums::WindowMode::FULLSCREEN)
             SetWindowSize(OriginalScreenResolution);
@@ -983,7 +1072,6 @@ namespace Backend
                 glm::ivec2 dummy;
                 GetActiveMonitorPosSize(dummy, OriginalScreenResolution);
                 
-                //TODO: Use render area size instead
                 SetWindowSize(oriSize);   //Set Size will handle all the window stuff
                 break;
         }

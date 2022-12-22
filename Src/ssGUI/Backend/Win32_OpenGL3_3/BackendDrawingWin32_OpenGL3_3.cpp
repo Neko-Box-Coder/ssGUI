@@ -2,16 +2,12 @@
 
 #include "ssGUI/HelperClasses/ImageConversion.hpp"
 
+#include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"
 #include "ssLogger/ssLog.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-
-
-//TODO: Remvoe this, this is only for testing purposes
-#include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
-
 
 #ifndef UNICODE
 #define UNICODE
@@ -48,41 +44,30 @@ namespace Backend
         return ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex);
     }
 
-    //TODO: Move this to somewhere else
-    void BackendDrawingWin32_OpenGL3_3::InitiateDrawIfNeeded()
+    void BackendDrawingWin32_OpenGL3_3::UpdateViewPortAndModelViewIfNeeded()
     {
-        if(!FirstDrawCall)
-            return;
-
-        FirstDrawCall = false;
-
         ssGUI::Backend::BackendMainWindowInterface* mainWindow = GetMainWindow();
-        
+
         if(mainWindow == nullptr)
         {
             ssLOG_LINE("Failed to get MainWinodw");
             return;
         }
 
-        //SaveState();
+        if(mainWindow->GetRenderSize() == LastMainWindowSize)
+            return;
+
+        LastMainWindowSize = mainWindow->GetRenderSize();
         
         mainWindow->SetGLContext();
-
-        //TODO: Check render size
         glm::ivec2 renderSize = mainWindow->GetRenderSize();
-        //ssLOG_LINE("renderSize: "<<renderSize.x<<", "<<renderSize.y);
         GL_CHECK_ERROR( glViewport(0, 0, renderSize.x, renderSize.y); );
-        //glViewport(0, 0, render, 1000);
-        
         GL_CHECK_ERROR( glMatrixMode(GL_MODELVIEW););
         GL_CHECK_ERROR( glLoadIdentity(); );
-        
-        //Set coord
-        glm::mat4x4 orthoMat = glm::ortho<float>(0.f, renderSize.x, renderSize.y, 0.f, 0, 100000);
+        glm::mat4x4 orthoMat = glm::ortho<float>(0.f, renderSize.x, renderSize.y, 0.f, 0, 10);
         GL_CHECK_ERROR( glMultMatrixf(glm::value_ptr(orthoMat)); );
-
-        //CreateShaders();
     }
+
     
     BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3() : BackendIndex(0)
     {
@@ -158,13 +143,7 @@ namespace Backend
         if(GetMainWindow()->IsClosed())
             return false;
 
-        //Check if the window already has the texture program
-        // if(WindowTexturePrograms.find(GetMainWindow()) == WindowTexturePrograms.end())
-        //     CreateTextureShaders();
-
-        //TODO: Set program if needed
-
-        InitiateDrawIfNeeded();
+        UpdateViewPortAndModelViewIfNeeded();
 
         //Start drawing
         int currentIndex = 0;
@@ -198,13 +177,7 @@ namespace Backend
     }
 
     void BackendDrawingWin32_OpenGL3_3::Render(glm::u8vec3 clearColor)
-    {
-        /*static bool firstDraw = true;
-        if(!firstDraw)
-            return;
-
-        firstDraw = false;*/
-        
+    {   
         ssGUI::Backend::BackendMainWindowInterface* mainWindow = GetMainWindow();
         
         if(mainWindow == nullptr)
@@ -212,11 +185,8 @@ namespace Backend
             ssLOG_LINE("Failed to get MainWinodw");
             return;
         }
-
-        //display();
         
-        //Get the device context for the window
-        
+        //Get the device context for the window        
         HDC hDC = GetDC(static_cast<ssGUI::Backend::Win32_OpenGL_Handles*>(mainWindow->GetRawHandle())->WindowHandle);
         if(hDC == NULL)
         {
@@ -224,28 +194,29 @@ namespace Backend
             ssLOG_EXIT_PROGRAM();
         }
         SwapBuffers(hDC);
-        ssLOG_LINE("Swapped");
 
-        GL_CHECK_ERROR( glClearColor(1, 1, 1, 1); );
-        //glClearColor(0, 0, 0, 1);
         GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );
 
-        //RestoreState();
-
-        FirstDrawCall = true;
+        GL_CHECK_ERROR( glClearColor(   static_cast<float>(clearColor.r) / 255.f, 
+                                        static_cast<float>(clearColor.g) / 255.f, 
+                                        static_cast<float>(clearColor.b) / 255.f, 
+                                        255.f); );
     }
 
     void BackendDrawingWin32_OpenGL3_3::ClearBackBuffer(glm::u8vec3 clearColor) 
     {
-        GL_CHECK_ERROR( glClearColor(1, 1, 1, 1); );
-        GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );
+        //Seems like this is causing memory leak
+        //GL_CHECK_ERROR( glClearColor(1, 1, 1, 1); );
+        //GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );
     }
 
     void BackendDrawingWin32_OpenGL3_3::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)
     {
-        //TODO
-    }
+        if(ImageTextures.find(backendImage) == ImageTextures.end())
+            return;
 
+        ImageTextures.erase(backendImage);
+    }
     
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
@@ -254,8 +225,7 @@ namespace Backend
                             const ssGUI::Backend::BackendFontInterface& font,
                             int characterSize)
     {
-        //TODO: Implement this
-        return true;
+        return DrawShape(vertices, texCoords, colors, character, 0, vertices.size(), font, characterSize);
     }
 
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
@@ -263,16 +233,14 @@ namespace Backend
                             const std::vector<glm::u8vec4>& colors,
                             const ssGUI::Backend::BackendImageInterface& image)
     {
-        //TODO: Implement this
-        return true;
+        return DrawShape(vertices, texCoords, colors, 0, vertices.size(), image);
     }
 
 
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::u8vec4>& colors)
     {
-        //TODO: Implement this
-        return true;        
+        return DrawShape(vertices, colors, 0, vertices.size());        
     }
 
     //NOTE: End index is exclusive
@@ -285,30 +253,14 @@ namespace Backend
                             int characterSize)
     {
         auto& rawFont = const_cast<ssGUI::Backend::BackendFontInterface&>(font);
-        auto freetypeHandle = static_cast<FreeTypeHandles*>(rawFont.GetRawHandle());
-        
-        rawFont.GetCharacterRenderInfo(character, characterSize);
-        FT_UInt glyphIndex = FT_Get_Char_Index(freetypeHandle->FontFace, static_cast<FT_ULong>(character));
-        FT_Error error = FT_Load_Glyph(freetypeHandle->FontFace, glyphIndex, freetypeHandle->FontFlags);
 
-        if(error)
-        {
-            ssLOG_LINE("Failed to load glyph");
+        ssGUI::ImageData charImgData;
+        if(!rawFont.GetCharacterImage(character, characterSize, charImgData))
             return false;
-        }
-
-        //error = FT_Render_Glyph(freetypeHandle->FontFace->glyph, FT_RENDER_MODE_NORMAL);
-        //if(error)
-        //{
-        //    ssLOG_LINE("Failed to FT_Render_Glyph");
-        //    return false;
-        //}
 
         GetMainWindow()->SetGLContext();
-
-        //GL_CHECK_ERROR( glUseProgram(ProgramId); );
     
-        glm::ivec2 imgSize = glm::ivec2(freetypeHandle->FontFace->glyph->bitmap.width, freetypeHandle->FontFace->glyph->bitmap.rows);
+        glm::ivec2 imgSize = charImgData.GetSize();
         if(CharTextures.find(character) == CharTextures.end())
         {
             GLuint textureId = 0;
@@ -320,131 +272,60 @@ namespace Backend
             GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); );
             GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); );
 
-            uint8_t* CharImg = new uint8_t[imgSize.x * imgSize.y * 4];
-            for(int y = 0; y < imgSize.y; y++)
+            //Convert it to rgba32
+            uint8_t* rgba32Img = new uint8_t[charImgData.GetSize().x * charImgData.GetSize().y * 4];
+            ssGUI::ImageFormat format;
+            void* rawPixelFormat = charImgData.GetPixelPtr(format);
+            
+            //TODO: Move this to somewhere else
+            switch(format.BitDepthPerChannel)
             {
-                for(int x = 0; x < imgSize.x; x++)
-                {
-                    int curIndex = y * imgSize.x + x;
-                    uint8_t pixValue = freetypeHandle->FontFace->glyph->bitmap.buffer[curIndex];
-                    CharImg[curIndex * 4] = 255;
-                    CharImg[curIndex * 4 + 1] = 255;
-                    CharImg[curIndex * 4 + 2] = 255;
-                    CharImg[curIndex * 4 + 3] = pixValue;
-                }
+                case 8:
+                    ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
+                    break;
+                case 16:
+                    ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
+                    break;
+                default:
+                    ssLOG_LINE("Unsupported bit depth");
+                    return false;
             }
 
-
-
-
             GL_CHECK_ERROR( glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgSize.x, imgSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
-                            CharImg); );
+                            rgba32Img); );
 
             GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, textureId); );
 
-            //delete[] testImg;
-            //testImg2 = testImg;
-
             CharTextures[character] = textureId;
 
-            delete[] CharImg;
-            ssLOG_LINE("Called");
+            delete[] rgba32Img;
         }
-        
-        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, CharTextures[character]); );
-
-        //GLubyte* images = new GLubyte[imgSize.x * imgSize.y * 4];
-        //glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_UNSIGNED_BYTE, images);
-
-
-
-        //glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_UNSIGNED_BYTE, texDat);
-        //if((err = glGetError()) != GL_NO_ERROR)
-        //{
-        //    ssLOG_LINE("Failed: "<<err);
-        //}
-
-        //GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
-
+        else
+        {
+            GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, CharTextures[character]); );
+        }
          
         GL_CHECK_ERROR( glEnable(GL_TEXTURE_2D); );
-        //GL_CHECK_ERROR( glEnable(GL_DEPTH_TEST) );
         GL_CHECK_ERROR( glEnable(GL_BLEND); );
         GL_CHECK_ERROR( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); );
 
-        ssLOG_LINE("Image Size: "<<imgSize.x<<", "<<imgSize.y);
-
-        //glBegin(GL_TRIANGLES);
         glBegin(GL_TRIANGLE_FAN);
-
-        //glm::vec2 imgSize = texCoords[startIndex + 2];
-        //glColor4f(1, 1, 1, 1.0f);
 
         for(int i = startIndex; i < endIndex; i++)
         {
-            //glVertexAttrib2f(0, vertices[i].x, vertices[i].y);
-
-            
             glm::vec2 texCoord = texCoords[i];
 
             texCoord.x /= imgSize.x;
             texCoord.y /= imgSize.y;
             
-            glm::ivec2 texCoordI = texCoord;
-
-            //glTexCoord1f()
-            //glColor4b(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
-            
-            
-            switch(i)
-            {
-            case 4:
-            texCoord = glm::vec2(0, 0);
-            break;
-            case 5:
-            texCoord = glm::vec2(1, 0);
-            break;
-            case 6:
-            texCoord = glm::vec2(1, 1);
-            break;
-            case 7:
-            texCoord = glm::vec2(0, 1);
-            break;
-            }
-            //glTexCoord2i(texCoordI.x, texCoordI.y);
+            glColor4ub(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
             glTexCoord2f(texCoord.x, texCoord.y);
-
-            glColor4f(0, 0, 0, 1);
-
             glVertex3f(vertices[i].x, vertices[i].y, 0);
-
-
-            //glVertexAttrib4f(1, colors[i].r, colors[i].g, colors[i].b, colors[i].a);
-
-            //glColor4i(0, 0, 0, 1);
-            
-            //glVertexAttrib2f(2, texCoord.x, texCoord.y);
-            
-            //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
-            //outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));
-            //outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            //outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);          
-        
-            ssLOG_LINE("vertices["<<i<<"]: "<<vertices[i].x<<", "<<vertices[i].y);
-            ssLOG_LINE("uv["<<i<<"]: "<<texCoordI.x<<", "<<texCoordI.y);
         }
 
-        //GL_CHECK_ERROR( glDrawArrays(GL_TRIANGLE_FAN, 0, endIndex - startIndex); );
-
         GL_CHECK_ERROR( glEnd(); );
-
-        //GL_CHECK_ERROR( glDisable(GL_TEXTURE_2D); );
-
         GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
-
         GL_CHECK_ERROR( glFlush(); );
-        //delete[] images;
-
 
         return true;
     }
@@ -468,8 +349,20 @@ namespace Backend
 
             //Convert it to rgba32
             uint8_t* rgba32Img = new uint8_t[image.GetSize().x * image.GetSize().y * 4];
-            ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
             
+            switch(format.BitDepthPerChannel)
+            {
+                case 8:
+                    ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
+                    break;
+                case 16:
+                    ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
+                    break;
+                default:
+                    ssLOG_LINE("Unspported bit depth");
+                    return false;
+            }
+
             GLuint textureId = 0;
 
             GL_CHECK_ERROR( glGenTextures(1, &textureId); );
@@ -497,81 +390,27 @@ namespace Backend
 
         //render it
         GL_CHECK_ERROR( glEnable(GL_TEXTURE_2D); );
-        //GL_CHECK_ERROR( glEnable(GL_DEPTH_TEST) );
         GL_CHECK_ERROR( glEnable(GL_BLEND); );
         GL_CHECK_ERROR( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); );
 
-        ssLOG_LINE("Image Size: "<<imgSize.x<<", "<<imgSize.y);
-
-        //glBegin(GL_TRIANGLES);
         glBegin(GL_TRIANGLE_FAN);
-
-        //glm::vec2 imgSize = texCoords[startIndex + 2];
-        //glColor4f(1, 1, 1, 1.0f);
 
         for(int i = startIndex; i < endIndex; i++)
         {
-            //glVertexAttrib2f(0, vertices[i].x, vertices[i].y);
-
-            
             glm::vec2 texCoord = texCoords[i];
 
             texCoord.x /= imgSize.x;
             texCoord.y /= imgSize.y;
-            
-            glm::ivec2 texCoordI = texCoord;
-
-            //glTexCoord1f()
-            //glColor4b(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
-            
-            
-            /*
-            switch(i)
-            {
-            case 4:
-            texCoord = glm::vec2(0, 0);
-            break;
-            case 5:
-            texCoord = glm::vec2(1, 0);
-            break;
-            case 6:
-            texCoord = glm::vec2(1, 1);
-            break;
-            case 7:
-            texCoord = glm::vec2(0, 1);
-            break;
-            }*/
-            //glTexCoord2i(texCoordI.x, texCoordI.y);
             glTexCoord2f(texCoord.x, texCoord.y);
 
             glColor4ub(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
 
             glVertex3f(vertices[i].x, vertices[i].y, 0);
-
-
-            //glVertexAttrib4f(1, colors[i].r, colors[i].g, colors[i].b, colors[i].a);
-
-            //glColor4i(0, 0, 0, 1);
-            
-            //glVertexAttrib2f(2, texCoord.x, texCoord.y);
-            
-            //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
-            //outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));
-            //outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            //outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);          
-        
-            ssLOG_LINE("vertices["<<i<<"]: "<<vertices[i].x<<", "<<vertices[i].y);
-            ssLOG_LINE("uv["<<i<<"]: "<<texCoordI.x<<", "<<texCoordI.y);
         }
 
-        //GL_CHECK_ERROR( glDrawArrays(GL_TRIANGLE_FAN, 0, endIndex - startIndex); );
 
         GL_CHECK_ERROR( glEnd(); );
-
-        //GL_CHECK_ERROR( glDisable(GL_TEXTURE_2D); );
-
         GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
-
         GL_CHECK_ERROR( glFlush(); );
 
         return true;        
@@ -589,54 +428,19 @@ namespace Backend
         GL_CHECK_ERROR( glEnable(GL_BLEND); );
         GL_CHECK_ERROR( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); );
 
-
-        //glBegin(GL_QUADS);
         glBegin(GL_TRIANGLE_FAN);
 
         for(int i = startIndex; i < endIndex; i++)
         {
-            //glVertexAttrib2f(0, vertices[i].x, vertices[i].y);
-
-            ssLOG_LINE("vertices["<<i<<"]: "<<vertices[i].x<<", "<<vertices[i].y);
-            //glm::vec2 texCoord = texCoords[i];
-
-            //texCoord.x /= imgSize.x;
-            //texCoord.y /= imgSize.y;
-            
-            //glm::ivec2 texCoordI = texCoord;
-
-            //glTexCoord1f()
-            //glColor4b(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
-            glColor4f(1, 0, 0, 1.0f);
-            //glVertexAttrib4f(1, colors[i].r, colors[i].g, colors[i].b, colors[i].a);
-
-            //glColor4i(1, 1, 1, 1);
-            
-            //glVertexAttrib2f(2, texCoord.x, texCoord.y);
-            
-            //glTexCoord2i(texCoordI.x, texCoordI.y);
-            //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
-            //outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));
-            //outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            //outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);          
+            glColor4ub(colors[i].r, colors[i].g, colors[i].b, colors[i].a);   
             glVertex3f(vertices[i].x, vertices[i].y, 0);
         }
 
-        //GL_CHECK_ERROR( glDrawArrays(GL_TRIANGLE_FAN, 0, endIndex - startIndex); );
-
         GL_CHECK_ERROR( glEnd(); );
-
-        //GL_CHECK_ERROR( glDisable(GL_TEXTURE_2D); );
-
-        //GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
-
         GL_CHECK_ERROR( glFlush(); );
 
         return true;        
     }
-
-
-
 }
 
 }

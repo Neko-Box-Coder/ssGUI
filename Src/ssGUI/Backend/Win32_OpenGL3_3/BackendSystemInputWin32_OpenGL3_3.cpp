@@ -6,19 +6,71 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
+#include "ssGUI/Backend/Win32_OpenGL3_3/Win32InputConverter.hpp"
 #include "ssLogger/ssLog.hpp"
 
-#include "clip.h"   //TODO: Add macro for switching between this and SFML one.
+#include "clip.h"
 #include <codecvt>
 #include <algorithm>
 
-// #include "SFML/Window/Clipboard.hpp"
+#include <windowsx.h>
+
+#include <ssGUI/HelperClasses/ImageConversion.hpp>
 
 namespace ssGUI
 {
 
 namespace Backend
 {
+    template <class T>
+    void BackendSystemInputWin32_OpenGL3_3::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
+    {
+        ssLOG_FUNC_ENTRY();
+
+        if(std::find_if(vectorAddTo.begin(), vectorAddTo.end(), [&elementToAdd](T key){return elementToAdd == key;}) 
+            == vectorAddTo.end())
+        {
+            vectorAddTo.push_back(elementToAdd);
+        }
+
+        ssLOG_FUNC_EXIT();
+    }
+
+    template <class T>
+    void BackendSystemInputWin32_OpenGL3_3::RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom)
+    {
+        ssLOG_FUNC_ENTRY();
+        
+        typename std::vector<T>::iterator foundElement =
+            std::find_if(vectorRemoveFrom.begin(), vectorRemoveFrom.end(), [&elementToRemove](T key){return elementToRemove == key;});
+
+        if(foundElement != vectorRemoveFrom.end())
+            vectorRemoveFrom.erase(foundElement);
+
+        ssLOG_FUNC_EXIT();
+    }
+
+    void BackendSystemInputWin32_OpenGL3_3::FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
+    {
+        ssLOG_FUNC_ENTRY();
+        auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysPressedDown);
+        if(it == destinationKeyPresses.end())
+            destinationKeyPresses.push_back(keysPressedDown);
+
+        ssLOG_FUNC_EXIT();
+    }
+
+    void BackendSystemInputWin32_OpenGL3_3::FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
+    {
+        ssLOG_FUNC_ENTRY();        
+        auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysReleased);
+        if(it != destinationKeyPresses.end())
+            destinationKeyPresses.erase(it);
+
+        ssLOG_FUNC_EXIT();
+    }
+
+
     bool BackendSystemInputWin32_OpenGL3_3::HandleMessage(MSG msg)
     {
         auto mainWindowIt = MainWindowRawHandles.find(msg.hwnd);
@@ -45,133 +97,123 @@ namespace Backend
                 return false;
             }
         }
-        
-        //Handle the message
+
+        ssGUI::RealtimeInputInfo curInfo;
+
         switch(msg.message)
         {
-            case WM_KEYDOWN:
-                //a
-                if(msg.wParam == 0x41)
-                {
-                    //glm::ivec2 pos = mainWindowIt->second->GetPosition();
-                    glm::ivec2 pos = mainWindowIt->second->GetPositionOffset();
-                    ssLOG_LINE("pos: "<< pos.x <<", "<< pos.y);
-                    return true;
-                }
-                //b
-                else if(msg.wParam == 0x42)
-                {
-                    mainWindowIt->second->SetWindowPosition(glm::ivec2(0, 0));
-                    return true;
-                }
-                //c
-                else if(msg.wParam == 0x43)
-                {
-                    mainWindowIt->second->SetWindowSize(glm::ivec2(1000, 1000));
-                    return true;
-                }
-                //d
-                else if(msg.wParam == 0x44)
-                {
-                    glm::ivec2 size = mainWindowIt->second->GetWindowSize();
-                    ssLOG_LINE("Window size: "<<size.x<<", "<<size.y);
-                    size = mainWindowIt->second->GetRenderSize();
-                    ssLOG_LINE("Render size: "<<size.x<<", "<<size.y);
+            //Mouse moved event
+            case WM_MOUSEMOVE:
+                curInfo.MouseMoved = true;
+                curInfo.CurrentMousePosition = glm::ivec2(GET_X_LPARAM(msg.lParam), GET_Y_LPARAM(msg.lParam));
+                curInfo.CurrentMousePosition.x += mainWindowIt->second->GetWindowPosition().x +  
+                    mainWindowIt->second->GetPositionOffset().x;
+                curInfo.CurrentMousePosition.y += mainWindowIt->second->GetWindowPosition().y +  
+                    mainWindowIt->second->GetPositionOffset().y;
+                CurrentInputInfos.push_back(curInfo);
+                return true;
 
-                    return true;
-                }
-                //e
-                else if(msg.wParam == 0x45)
+            //Close event
+            case WM_CLOSE:
+                mainWindowIt->second->Close();
+                CurrentInputInfos.push_back(curInfo);
+                return true;
+
+            //Focus lost event
+            //Focus Gained event
+            case WM_ACTIVATE:
+                if(msg.wParam == WA_INACTIVE)
                 {
-                    mainWindowIt->second->SetTitle(L"Test title");
-                    return true;
-                }
-                //f
-                else if(msg.wParam == 0x46)
-                {
-                    std::wcout << "Title: "<<mainWindowIt->second->GetTitle()<<"\n";
-                    return true;
-                }
-                //g
-                else if(msg.wParam == 0x47)
-                {
-                    mainWindowIt->second->SetVisible(false);
-                    return true;
-                }
-                //h
-                else if(msg.wParam == 0x48)
-                {
-                    mainWindowIt->second->SetTitlebar(!mainWindowIt->second->HasTitlebar());
-                    return true;
-                }
-                //i
-                else if(msg.wParam == 0x49)
-                {
-                    mainWindowIt->second->SetResizable(!mainWindowIt->second->IsResizable());
-                    return true;
-                }
-                //j
-                else if(msg.wParam == 0x4A)
-                {
-                    mainWindowIt->second->SetCloseButton(!mainWindowIt->second->HasCloseButton());
-                    return true;
-                }
-                //k
-                else if(msg.wParam == 0x4B)
-                {
-                    mainWindowIt->second->SetWindowMode
-                    (
-                        mainWindowIt->second->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN ?
-                        ssGUI::Enums::WindowMode::BORDERLESS :
-                        ssGUI::Enums::WindowMode::FULLSCREEN
-                    );
-                    return true;
-                }
-                //l
-                else if(msg.wParam == 0x4C)
-                {
-                    mainWindowIt->second->SetWindowSize(glm::ivec2(1920, 1080));
-                    return true;
-                }
-                //m
-                else if(msg.wParam == 0x4D)
-                {
-                    mainWindowIt->second->SetVSync(!mainWindowIt->second->IsVSync());
-                    return true;
-                }
-                //n
-                else if(msg.wParam == 0x4E)
-                {
-                    bool v = mainWindowIt->second->IsVSync();
-                    ssLOG_LINE("Vsync: "<<v);
+                    mainWindowIt->second->SetFocus(false, true);
+                    CurrentInputInfos.push_back(curInfo);
                     return true;
                 }
                 else
                 {
-                    return false;
+                    mainWindowIt->second->SetFocus(true, true);
+                    CurrentInputInfos.push_back(curInfo);
+                    return true;
                 }
-            case WM_CLOSE:
-                mainWindowIt->second->Close();
+            
+            //Resize event
+            case WM_SIZE:
+                //TODO: Resize function
+                break;
+            
+            //Text enter event
+            case WM_CHAR:
+            {
+                wchar_t curChar = msg.lParam;
+                InputText += curChar;
+                curInfo.CharacterEntered = true;
+                curInfo.CurrentCharacterEntered += curChar;
+                CurrentInputInfos.push_back(curInfo);
+                return true;
+            }
+        
+            //Key down event
+            case WM_KEYDOWN:
+            {
+                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertButtonAndKeys(msg);
+                curInfo.CurrentButtonAndKeyChanged = input;
+                FetchKeysPressed(input, CurrentKeyPresses);
+                CurrentInputInfos.push_back(curInfo);
+                return true;
+            }
+
+            //Key up event
+            case WM_KEYUP:
+            {
+                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertButtonAndKeys(msg);
+                curInfo.CurrentButtonAndKeyChanged = input;
+                FetchKeysReleased(input, CurrentKeyPresses);
+                CurrentInputInfos.push_back(curInfo);
+                return true;
+            }
+        
+            //Mouse button down event
+            case WM_LBUTTONDOWN:
+            case WM_MBUTTONDOWN:
+            case WM_RBUTTONDOWN:
+            case WM_XBUTTONDOWN:
+            {
+                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertMouseButtons(msg);
+                curInfo.CurrentButtonAndKeyChanged = input;
+                FetchKeysPressed(input, CurrentKeyPresses);
+                CurrentInputInfos.push_back(curInfo);
+                AddNonExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);            
+                return true;
+            }
+
+            //Mouse button up event
+            case WM_LBUTTONUP:
+            case WM_MBUTTONUP:
+            case WM_RBUTTONUP:
+            case WM_XBUTTONUP:
+            {
+                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertMouseButtons(msg);
+                curInfo.CurrentButtonAndKeyChanged = input;
+                FetchKeysReleased(input, CurrentKeyPresses);
+                CurrentInputInfos.push_back(curInfo);
+                RemoveExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);          
+                return true;
+            }
+
+            //Mousescroll event
+            case WM_MOUSEWHEEL:
+                MouseScrollDelta.y = GET_WHEEL_DELTA_WPARAM(msg.wParam);
+                return true;
+            case WM_MOUSEHWHEEL:
+                MouseScrollDelta.x = GET_WHEEL_DELTA_WPARAM(msg.wParam);
                 return true;
         }
 
         return false;
     }
 
+    //TODO: Initialize variables
     BackendSystemInputWin32_OpenGL3_3::BackendSystemInputWin32_OpenGL3_3() : MainWindowRawHandles()
     {
-        /*if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
-        {
-            ssLOG_LINE("Failed to load cursor!");
-            ssLOG_EXIT_PROGRAM();
-        }
-
-        #if !SSGUI_USE_SFML_TIME
-            ElapsedTime = std::chrono::high_resolution_clock::now();
-        #endif
-
-        ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
-        */
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
     }
 
@@ -180,18 +222,10 @@ namespace Backend
         ssGUI::Backend::BackendManager::RemoveInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
     }
 
-
     void BackendSystemInputWin32_OpenGL3_3::UpdateInput(/*std::vector<ssGUI::Backend::BackendMainWindowInterface*>& mainWindows*/)
     {    
         MSG msg = { };
 
-        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-        {
-            TranslateMessage(&msg);             //Translates any keyboard/text related inputs (if any)
-            DispatchMessage(&msg);              //Dispatches the message to the right window(s) (i.e. WM_PAINT)
-        }
-        
-        /*ssLOG_FUNC_ENTRY();
         InputText.clear();
         MouseScrollDelta = glm::vec2();
         
@@ -202,253 +236,141 @@ namespace Backend
 
         //Get mouse position
         LastMousePosition = CurrentMousePosition;
-        CurrentMousePosition = glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
-
-        //Get text input
-        for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
+        
+        POINT p;
+        if(!GetCursorPos(&p))
         {
-            sf::RenderWindow* sfWindow = static_cast<sf::RenderWindow*>(
-                                        ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle());
-
-            sf::Event event;
-            
-            while (sfWindow->pollEvent(event))
-            {
-                //Add a new item to realtime input info, that continues from the last input state
-                ssGUI::RealtimeInputInfo curInfo;
-                if(CurrentInputInfos.empty())
-                    curInfo.CurrentMousePosition = LastMousePosition;
-
-                //Check mouse position as mouseMove event is not reliable
-                if(event.type == sf::Event::MouseMoved) 
-                { 
-                    event.mouseMove.x += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().x +  
-                        ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().x;
- 
-                    event.mouseMove.y += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().y +  
-                        ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().y;
-
-                    curInfo.MouseMoved = true;
-                    curInfo.CurrentMousePosition = glm::ivec2(event.mouseMove.x, event.mouseMove.y);
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-                else if(glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y) != curInfo.CurrentMousePosition)
-                {
-                    curInfo.MouseMoved = true;
-                    curInfo.CurrentMousePosition = glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
-                    CurrentInputInfos.push_back(curInfo);
-                    curInfo = ssGUI::RealtimeInputInfo();
-                }
-
-                if (event.type == sf::Event::Closed)
-                {
-                    ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->Close();
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-
-                if(event.type == sf::Event::GainedFocus)
-                {
-                    ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->SetFocus(true, true);
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-
-                if(event.type == sf::Event::LostFocus)
-                {
-                    ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->SetFocus(false, true);
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-
-                if (event.type == sf::Event::Resized)
-                {
-                    sfWindow->setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f((float)sfWindow->getSize().x, (float)sfWindow->getSize().y))));
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-                
-                if (event.type == sf::Event::TextEntered)
-                {                   
-                    InputText += event.text.unicode;
-                    curInfo.CharacterEntered = true;
-                    curInfo.CurrentCharacterEntered += event.text.unicode;
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-
-                if(event.type == sf::Event::KeyPressed)
-                {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
-                    curInfo.CurrentButtonAndKeyChanged = input;
-                    FetchKeysPressed(input, CurrentKeyPresses);
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-                else if(event.type == sf::Event::KeyReleased)
-                {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
-                    curInfo.CurrentButtonAndKeyChanged = input;
-                    FetchKeysReleased(input, CurrentKeyPresses);
-                    CurrentInputInfos.push_back(curInfo);
-                    continue;
-                }
-
-                if(event.type == sf::Event::MouseButtonPressed)
-                {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
-                    curInfo.CurrentButtonAndKeyChanged = input;
-                    FetchKeysReleased(input, CurrentKeyPresses);
-                    CurrentInputInfos.push_back(curInfo);
-                    AddNonExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);
-                    continue;
-                }
-                else if(event.type == sf::Event::MouseButtonReleased)
-                {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
-                    curInfo.CurrentButtonAndKeyChanged = input;
-                    FetchKeysReleased(input, CurrentKeyPresses);
-                    CurrentInputInfos.push_back(curInfo);
-                    RemoveExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);
-                    continue;
-                }
-
-                if(event.type == sf::Event::MouseWheelScrolled)
-                {
-                    if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
-                        MouseScrollDelta.y = event.mouseWheelScroll.delta;
-                    else if (event.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel)
-                        MouseScrollDelta.x = event.mouseWheelScroll.delta * -1;
-                    continue;
-                }
-            }
+            ssLOG_LINE("Failed to get cursor position");
         }
+        CurrentMousePosition = glm::ivec2(p.x, p.y);
 
-        ssLOG_FUNC_EXIT();*/
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);             //Translates any keyboard/text related inputs (if any)
+            DispatchMessage(&msg);              //Dispatches the message to the right window(s) (i.e. WM_PAINT)
+        }
     }
 
     const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputWin32_OpenGL3_3::GetLastButtonAndKeyPresses()
-    {
-        std::vector<ssGUI::Enums::GenericButtonAndKeyInput> t;
-        
-        return t;
+    {        
+        return LastKeyPresses;
     }
 
     const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputWin32_OpenGL3_3::GetCurrentButtonAndKeyPresses()
     {
-        std::vector<ssGUI::Enums::GenericButtonAndKeyInput> t;
-        //return CurrentKeyPresses;
-        return t;
+        return CurrentKeyPresses;
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
     {
-        //return std::find(LastKeyPresses.begin(), LastKeyPresses.end(), input) != LastKeyPresses.end();
-        return true;
+        return std::find(LastKeyPresses.begin(), LastKeyPresses.end(), input) != LastKeyPresses.end();
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
     {
-        //return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
-        return true;
+        return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }
 
     glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetLastMousePosition(ssGUI::MainWindow* mainWindow) const
     {
-        /*if(mainWindow != nullptr)
+        if(mainWindow != nullptr)
             return LastMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
         else
             return LastMousePosition;
-        */
-
-        return glm::ivec2();
     }
 
     glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const
     {
-        /*if(mainWindow != nullptr)
+        if(mainWindow != nullptr)
             return CurrentMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
         else
             return CurrentMousePosition;
-        */
-        return glm::ivec2();
     }
 
     void BackendSystemInputWin32_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow)
     {
-        /*
-        if(mainWindow != nullptr)
-            position += mainWindow->GetDisplayPosition() + mainWindow->GetPositionOffset();
-        
-        CurrentMousePosition = position;
-        sf::Mouse::setPosition(sf::Vector2i(position.x, position.y));
-        */
+        //Screen pos
+        if(mainWindow == nullptr)
+        {
+            if(!SetCursorPos(position.x, position.y))
+            {
+                ssLOG_LINE("Failed to set mouse position");
+                return;
+            }
+
+            CurrentMousePosition = position;
+        }
+        else
+        {
+            POINT pt = {position.x, position.y};
+            HWND hwnd = static_cast<Win32_OpenGL_Handles*>(mainWindow->GetBackendWindowInterface()->GetRawHandle())->WindowHandle;
+            ClientToScreen(hwnd, &pt);
+            if(!SetCursorPos(pt.x, pt.y))
+            {
+                ssLOG_LINE("Failed to set mouse position");
+                return;
+            }
+
+            CurrentMousePosition = glm::ivec2(pt.x, pt.y);
+        }
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::GetLastMouseButton(ssGUI::Enums::MouseButton button) const
     {
-        // for(int i = 0; i < LastMouseButtons.size(); i++)
-        //     if(LastMouseButtons[i] == button)
-        //         return true;
+        for(int i = 0; i < LastMouseButtons.size(); i++)
+            if(LastMouseButtons[i] == button)
+                return true;
         
         return false;
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const
     {
-        /*
         for(int i = 0; i < CurrentMouseButtons.size(); i++)
             if(CurrentMouseButtons[i] == button)
                 return true;
         
         return false;
-        */
-        return true;
     }
 
     glm::vec2 BackendSystemInputWin32_OpenGL3_3::GetCurrentMouseScrollDelta() const
     {
-        //return MouseScrollDelta;
-        return glm::vec2();
+        return MouseScrollDelta;
     }
     
     std::vector<ssGUI::RealtimeInputInfo> const & BackendSystemInputWin32_OpenGL3_3::GetLastRealtimeInputs() const
     {
-        std::vector<ssGUI::RealtimeInputInfo> t;
-        //return LastInputInfos;
-        return t;
+        return LastInputInfos;
     }
             
     std::vector<ssGUI::RealtimeInputInfo> const & BackendSystemInputWin32_OpenGL3_3::GetCurrentRealtimeInputs() const
     {
-        std::vector<ssGUI::RealtimeInputInfo> t;
-        //return CurrentInputInfos;
-        return t;
+        return CurrentInputInfos;
     }
 
     std::wstring BackendSystemInputWin32_OpenGL3_3::GetTextInput() const
     {
-        //return InputText;
-        return L"";
+        return InputText;
     }
 
-    //Supported cursor type natively: https://www.sfml-dev.org/documentation/2.5.1/classsf_1_1Cursor.php#ad41999c8633c2fbaa2364e379c1ab25b
     void BackendSystemInputWin32_OpenGL3_3::SetCursorType(ssGUI::Enums::CursorType cursorType)
     {
+        //TODO: Finish this
+
         //CurrentCursor = cursorType;
         //std::cout<<"cursor type: "<<(int)CurrentCursor<<"\n";
     }
 
     ssGUI::Enums::CursorType BackendSystemInputWin32_OpenGL3_3::GetCursorType() const
     {
-        //return CurrentCursor;
-        return ssGUI::Enums::CursorType::NORMAL;
+        return CurrentCursor;
     }
 
     //TODO: Store the hotspot and also shouldn't be setting the cursor 
     void BackendSystemInputWin32_OpenGL3_3::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
+        //TODO: Finish this
+
         /*
         ssLOG_FUNC_ENTRY();
         
@@ -598,6 +520,8 @@ namespace Backend
 
     void BackendSystemInputWin32_OpenGL3_3::SetCurrentCustomCursor(std::string cursorName)
     {
+        //TODO: Finish this
+
         /*   
         if(!HasCustomCursor(cursorName))
             return;
@@ -611,6 +535,8 @@ namespace Backend
 
     void BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
     {        
+        //TODO: Finish this
+
         /*
         if(CurrentCustomCursor.empty())
             return;
@@ -630,12 +556,12 @@ namespace Backend
 
     std::string BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursorName()
     {
-        //return CurrentCustomCursor;
-        return "";
+        return CurrentCustomCursor;
     }
 
     void BackendSystemInputWin32_OpenGL3_3::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
     {
+        //TODO: Finish this
         /*
 
         if(CustomCursors.find(cursorName) == CustomCursors.end())
@@ -656,12 +582,12 @@ namespace Backend
 
     bool BackendSystemInputWin32_OpenGL3_3::HasCustomCursor(std::string cursorName)
     {
-        //return CustomCursors.find(cursorName) != CustomCursors.end();
-        return true;
+        return CustomCursors.find(cursorName) != CustomCursors.end();
     }
 
     void BackendSystemInputWin32_OpenGL3_3::UpdateCursor()
     {
+        //TODO: Finish this
         /*
         ssLOG_FUNC_ENTRY();
         switch (CurrentCursor)
@@ -761,34 +687,26 @@ namespace Backend
 
     bool BackendSystemInputWin32_OpenGL3_3::ClearClipboard()
     {
-        //return clip::clear();
-        return true;
+        return clip::clear();
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::ClipbaordHasText()
     {
-        //return clip::has(clip::text_format());
-        return true;
+        return clip::has(clip::text_format());
     }
             
     bool BackendSystemInputWin32_OpenGL3_3::ClipbaordHasImage()
     {
-        //return clip::has(clip::image_format());
-        return true;
+        return clip::has(clip::image_format());
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::SetClipboardImage(const ssGUI::ImageData& imgData)
     {
-        /*
         if(!imgData.IsValid())
             return false;
 
-        auto sfTexture = static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
-
-        sf::Image img = sfTexture->copyToImage();
-
-        if(img.getPixelsPtr() == nullptr)
-            return false;
+        ssGUI::ImageFormat format;
+        void* oriImgPtr = imgData.GetBackendImageInterface()->GetPixelPtr(format);
 
         clip::image_spec spec;
         spec.width = imgData.GetSize().x;
@@ -823,66 +741,67 @@ namespace Backend
             spec.alpha_shift = 0;
         }
 
-        clip::image clipImg = clip::image(static_cast<const void*>(img.getPixelsPtr()), spec);
-        return clip::set_image(clipImg);
-        */
-        return true;
+        uint8_t* imgPtr = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
+        bool result = false;
+
+        //TODO: Move this to somewhere else
+        switch(format.BitDepthPerChannel)
+        {
+            case 8:
+                result = ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
+                break;
+            case 16:
+                result = ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
+                break;
+            default:
+                ssLOG_LINE("Unsupported bitdepth: " << format.BitDepthPerChannel);
+                delete[] imgPtr;
+                return false;
+        }
+
+        if(!result)
+            return false;
+
+        clip::image clipImg = clip::image(static_cast<const void*>(imgPtr), spec);
+        result = clip::set_image(clipImg);
+        delete[] imgPtr;
+        return result;
     }
             
     bool BackendSystemInputWin32_OpenGL3_3::SetClipboardText(const std::wstring& str)
     {
-        //std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
-        //return clip::set_text(converter.to_bytes(str));
-        return true;
+        return clip::set_text(converter.to_bytes(str));
     }
             
     bool BackendSystemInputWin32_OpenGL3_3::GetClipboardImage(ssGUI::ImageData& imgData)
     {
-        /*clip::image img;
+        clip::image img;
 
         if(!clip::get_image(img) || img.spec().bits_per_pixel != 32)
             return false;
 
-        return imgData.LoadRawFromMemory(static_cast<void*>(img.data()), img.spec().width, img.spec().height);
-        */
-        return true;
+        ssGUI::ImageFormat format;
+
+        return imgData.LoadRawFromMemory(static_cast<void*>(img.data()), format, glm::ivec2(img.spec().width, img.spec().height));
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::GetClipboardText(std::wstring& str)
     {
-        // auto sfstr = sf::Clipboard::getString();
-
-        // if(sfstr.isEmpty())
-        //     return false;
-        // else
-        // {
-        //     str = sfstr.toAnsiString();
-        //     return true;
-        // }
-
-        /*
         std::string temp;
         if(!clip::get_text(temp))
             return false;
 
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         str = converter.from_bytes(temp);
-        */
         return true;
     }
 
     uint64_t BackendSystemInputWin32_OpenGL3_3::GetElapsedTime() const
     {
-        /*#if SSGUI_USE_SFML_TIME
-            return ElapsedTime.getElapsedTime().asMilliseconds();
-        #else
-            //ElapsedTime is actually the start time but just keeping the name for compatibility
-            using sysClock = std::chrono::high_resolution_clock;
-            return std::chrono::duration_cast<std::chrono::milliseconds>(sysClock::duration(sysClock::now() - ElapsedTime)).count();
-        #endif
-        */
-        return 0;
+        using sysClock = std::chrono::high_resolution_clock;
+        return std::chrono::duration_cast<std::chrono::milliseconds>(sysClock::duration(sysClock::now() - StartTime)).count();
     }
 }
 

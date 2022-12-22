@@ -26,7 +26,7 @@ namespace Backend
 
             //std::unordered_map<ssGUI::Backend::BackendMainWindowInterface*, GLuint> WindowTexturePrograms;
 
-            bool FirstDrawCall = true;
+            glm::ivec2 LastMainWindowSize = glm::ivec2(-1, -1);
 
             std::unordered_map<uint32_t, GLuint> CharTextures;
             std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;
@@ -36,7 +36,7 @@ namespace Backend
 
             ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
 
-            void InitiateDrawIfNeeded();
+            void UpdateViewPortAndModelViewIfNeeded();
 
         public:
             BackendDrawingWin32_OpenGL3_3();
