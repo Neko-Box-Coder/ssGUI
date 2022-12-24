@@ -70,6 +70,84 @@ namespace Backend
         ssLOG_FUNC_EXIT();
     }
 
+    HCURSOR BackendSystemInputWin32_OpenGL3_3::CreateWin32Cursor(glm::ivec2 hotspot, ssGUI::ImageData* imgData)
+    {
+        //Check if it is BGRA32
+        ssGUI::ImageFormat format;
+        void* pixelPtr = imgData->GetPixelPtr(format);
+        if(pixelPtr == nullptr)
+            return nullptr;
+
+        if( format.BitPerPixel != 32 ||
+            format.ImgType != ssGUI::Enums::ImageType::RGB ||
+            format.IndexB != 0 ||
+            format.IndexG != 1 ||
+            format.IndexR != 2 ||
+            format.IndexA != 3 ||
+            format.RowPaddingInBytes != 0)
+        {
+            return nullptr;
+        }
+
+        //Create Win32 Cursor
+        // Create the AND mask and XOR mask bitmaps from the BGRA image data
+        HBITMAP hANDmask = CreateBitmap(imgData->GetSize().x, imgData->GetSize().y, 1, 1, NULL);
+        HBITMAP hXORmask = CreateBitmap(imgData->GetSize().x, imgData->GetSize().y, 1, 32, pixelPtr);
+
+        // Create the ICONINFO structure for the cursor
+        ICONINFO iconInfo;
+        iconInfo.fIcon = FALSE;
+        iconInfo.xHotspot = hotspot.x;
+        iconInfo.yHotspot = hotspot.y;
+        iconInfo.hbmMask = hANDmask;
+        iconInfo.hbmColor = hXORmask;
+        HCURSOR hCursor = CreateIconIndirect(&iconInfo);
+
+        return hCursor;
+    }
+
+    void BackendSystemInputWin32_OpenGL3_3::CreateEmptyCursorIfNeeded()
+    {
+        if(HasCustomCursor(SSGUI_EMPTY_CURSOR))
+            return;
+
+        //Create empty cursor
+        CursorData emptyCursorData;
+
+        BYTE andMask[1] = {1};
+        BYTE xorMask[1] = {0};
+
+        HCURSOR hCursor = CreateCursor(NULL, 0, 0, 1, 1, andMask, xorMask);
+
+        emptyCursorData.Win32CursorHandle = hCursor;
+
+        CustomCursors[SSGUI_EMPTY_CURSOR] = emptyCursorData;
+    }
+
+    BackendSystemInputWin32_OpenGL3_3::BackendSystemInputWin32_OpenGL3_3() :    CurrentKeyPresses(),
+                                                                                LastKeyPresses(),
+                                                                                InputText(L""),
+                                                                                CurrentMousePosition(),
+                                                                                LastMousePosition(),
+                                                                                CurrentMouseButtons(),
+                                                                                LastMouseButtons(),
+                                                                                MouseScrollDelta(),
+                                                                                CurrentInputInfos(),
+                                                                                LastInputInfos(),
+                                                                                CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
+                                                                                MainWindowRawHandles(),
+                                                                                CustomCursors(),
+                                                                                CurrentCustomCursor(""),
+                                                                                StartTime()
+    {
+        StartTime = std::chrono::high_resolution_clock::now();
+        ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
+    }
+
+    BackendSystemInputWin32_OpenGL3_3::~BackendSystemInputWin32_OpenGL3_3()
+    {
+        ssGUI::Backend::BackendManager::RemoveInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
+    }
 
     bool BackendSystemInputWin32_OpenGL3_3::HandleMessage(MSG msg)
     {
@@ -137,8 +215,11 @@ namespace Backend
             
             //Resize event
             case WM_SIZE:
-                //TODO: Resize function
-                break;
+                //Render reshape (glViewPort) is handled in BackendDrawing
+                //MainWindow Resized event is handled in BackendMainWindow
+                
+                //Therefore don't need to do anything
+                return true;
             
             //Text enter event
             case WM_CHAR:
@@ -209,17 +290,6 @@ namespace Backend
         }
 
         return false;
-    }
-
-    //TODO: Initialize variables
-    BackendSystemInputWin32_OpenGL3_3::BackendSystemInputWin32_OpenGL3_3() : MainWindowRawHandles()
-    {
-        ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
-    }
-
-    BackendSystemInputWin32_OpenGL3_3::~BackendSystemInputWin32_OpenGL3_3()
-    {
-        ssGUI::Backend::BackendManager::RemoveInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
     }
 
     void BackendSystemInputWin32_OpenGL3_3::UpdateInput(/*std::vector<ssGUI::Backend::BackendMainWindowInterface*>& mainWindows*/)
@@ -355,9 +425,7 @@ namespace Backend
 
     void BackendSystemInputWin32_OpenGL3_3::SetCursorType(ssGUI::Enums::CursorType cursorType)
     {
-        //TODO: Finish this
-
-        //CurrentCursor = cursorType;
+        CurrentCursor = cursorType;
         //std::cout<<"cursor type: "<<(int)CurrentCursor<<"\n";
     }
 
@@ -369,160 +437,96 @@ namespace Backend
     //TODO: Store the hotspot and also shouldn't be setting the cursor 
     void BackendSystemInputWin32_OpenGL3_3::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
-        //TODO: Finish this
-
-        /*
         ssLOG_FUNC_ENTRY();
-        
+
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
             ssLOG_LINE("Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
-            return;
-        }
-
-        //Check if we already have the cursor
-        if(CustomCursors.find(cursorName) != CustomCursors.end() && CustomCursors[cursorName].first.getSize().x == cursorSize.x && 
-            CustomCursors[cursorName].first.getSize().y == cursorSize.y)
-        {
-            CustomCursors[cursorName].second = hotspot;
             ssLOG_FUNC_EXIT();
             return;
         }
+
+        ssGUI::ImageFormat customCursorFormat;
+        void* customCursorPtr = customCursor->GetPixelPtr(customCursorFormat);
+        if(customCursorPtr == nullptr)
+        {
+            ssLOG_LINE("Invalid custom cursor image");
+            ssLOG_FUNC_EXIT();    
+            return;
+        }
+
+        //If the cursor already exists, we need to clean up the cursor first
+        if(CustomCursors.find(cursorName) != CustomCursors.end())
+        {
+            DestroyCursor(CustomCursors[cursorName].Win32CursorHandle);
+            CustomCursors.erase(cursorName);
+        }
+
+        //First we need to convert the image data to BGRA32
+        uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
+        bool result = ssGUI::ImageUtil::ConvertToBGRA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+
+        if(!result)
+        {
+            delete[] convertedPtr;
+            ssLOG_FUNC_EXIT();    
+            return;
+        }
+
+        CursorData cursorData = 
+        {
+            std::make_shared<ssGUI::ImageData>(),
+            hotspot,
+            nullptr
+        };
+
+        ssGUI::ImageFormat convertedFormat;
+        convertedFormat.IndexR = 2;
+        convertedFormat.IndexB = 0;
+
+        //Now we create the custom cursor
+        //If the image size fits the cursor size, we just need to set it
+        if(customCursor->GetSize() == cursorSize)
+        {
+            cursorData.CursorImage->LoadRawFromMemory(convertedPtr, convertedFormat, cursorSize);
+        }
+        //Otherwise, we need to resize it first
         else
         {
-            if(customCursor->GetSize() == cursorSize)
-                CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
-            else
-            {            
-                //Original cursor image
-                auto oriCursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+            uint8_t* resizedPtr = new uint8_t[cursorSize.x * cursorSize.y * 4];
+            ssGUI::ImageUtil::Resize(   convertedPtr, 
+                                        cursorData.CursorImage->GetSize().x, 
+                                        cursorData.CursorImage->GetSize().y,
+                                        resizedPtr,
+                                        cursorSize.x,
+                                        cursorSize.y);
+                                        
+            cursorData.CursorImage->LoadRawFromMemory(resizedPtr, convertedFormat, cursorSize);
 
-                //temporary image pointers for resizing
-                uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
-                uint8_t* cursorPtr1 = new uint8_t[1];
-                uint8_t* cursorPtrArr[] = {cursorPtr, cursorPtr1};
-
-                //Flag for indicating which pointer has just been populated
-                int populatedImg = 0;
-
-                //Populate the first temporary image pointer
-                for(int i = 0; i < oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4; i++)
-                    cursorPtr[i] = (*(oriCursorImg.getPixelsPtr() + i));
-
-                //Record the current image size
-                glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
-
-                //Resize width until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.x > cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
-                        (currentCursorSize.x < cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
-                {
-                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
-                    
-                    //Enlarging
-                    if(currentCursorSize.x > cursorSize.x)
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
-
-                        ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x * 2,
-                            currentCursorSize.y
-                        );
-
-                        currentCursorSize.x *= 2;
-                    }
-                    //Reducing
-                    else
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
-
-                        ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x * 0.5,
-                            currentCursorSize.y
-                        );
-
-                        currentCursorSize.x *= 0.5;
-                    }
-
-                    populatedImg = (populatedImg + 1) % 2;
-                }
-                
-                //Resize height until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.y > cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
-                        (currentCursorSize.y < cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
-                {
-                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
-                    
-                    //Enlarging
-                    if(currentCursorSize.y > cursorSize.y)
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
-
-                        ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x,
-                            currentCursorSize.y * 2
-                        );
-
-                        currentCursorSize.y *= 2;
-                    }
-                    //Reducing
-                    else
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
-
-                        ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg],
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x,
-                            currentCursorSize.y * 0.5
-                        );
-
-                        currentCursorSize.y *= 0.5;
-                    }
-
-                    populatedImg = (populatedImg + 1) % 2;
-                }
-
-                //Do the final round of resizing
-                cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
-                ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
-                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), cursorPtrArr[(populatedImg + 1) % 2]);
-
-                delete[] cursorPtr;
-                delete[] cursorPtr1;
-            }
+            delete[] resizedPtr;
         }
-        
-        //Setting hotspot
-        CustomCursors[cursorName].second = hotspot;
 
-        ssLOG_FUNC_EXIT();
-        */
+        //Deallocate convertedPtr
+        delete[] convertedPtr;
+
+        //Create cursor
+        cursorData.Win32CursorHandle = CreateWin32Cursor(hotspot, cursorData.CursorImage.get());
+        if(cursorData.Win32CursorHandle == nullptr)
+        {
+            ssLOG_LINE("Failed to recreate the cursor");
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        //Store cursor
+        CustomCursors[cursorName] = cursorData;
+
+        ssLOG_FUNC_EXIT();    
     }
 
     void BackendSystemInputWin32_OpenGL3_3::SetCurrentCustomCursor(std::string cursorName)
     {
-        //TODO: Finish this
-
-        /*   
         if(!HasCustomCursor(cursorName))
             return;
         
@@ -530,28 +534,14 @@ namespace Backend
             return;
 
         CurrentCustomCursor = cursorName;
-        */
     }
 
     void BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
     {        
-        //TODO: Finish this
-
-        /*
         if(CurrentCustomCursor.empty())
             return;
 
-        if(CustomCursors[CurrentCustomCursor].first.getPixelsPtr() == nullptr)
-            return;
-
-        if(!customCursor.LoadRawFromMemory(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize().x, 
-            CustomCursors[CurrentCustomCursor].first.getSize().y))
-        {
-            ssLOG_LINE("Failed to load custom cursor image");   
-        }
-
-        hotspot = CustomCursors[CurrentCustomCursor].second;
-        */
+        GetCustomCursor(customCursor, CurrentCustomCursor, hotspot);
     }
 
     std::string BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursorName()
@@ -561,23 +551,22 @@ namespace Backend
 
     void BackendSystemInputWin32_OpenGL3_3::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
     {
-        //TODO: Finish this
-        /*
-
         if(CustomCursors.find(cursorName) == CustomCursors.end())
             return;
-        
-        if(CustomCursors[cursorName].first.getPixelsPtr() == nullptr)
+
+        ssGUI::ImageFormat imgFormat;
+
+        if(CustomCursors[cursorName].CursorImage->GetPixelPtr(imgFormat) == nullptr)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursors[cursorName].first.getPixelsPtr(), CustomCursors[cursorName].first.getSize().x, 
-            CustomCursors[cursorName].first.getSize().y))
+        if(!customCursor.LoadRawFromMemory( CustomCursors[cursorName].CursorImage->GetPixelPtr(imgFormat),
+                                            imgFormat,
+                                            CustomCursors[cursorName].CursorImage->GetSize()))
         {
-            ssLOG_LINE("Failed to load custom cursor image");
+            ssLOG_LINE("Failed to load custom cursor image");   
         }
 
-        hotspot = CustomCursors[cursorName].second;
-        */
+        hotspot = CustomCursors[cursorName].Hotspot;
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::HasCustomCursor(std::string cursorName)
@@ -587,102 +576,91 @@ namespace Backend
 
     void BackendSystemInputWin32_OpenGL3_3::UpdateCursor()
     {
-        //TODO: Finish this
-        /*
         ssLOG_FUNC_ENTRY();
-        switch (CurrentCursor)
-        {
-            case ssGUI::Enums::CursorType::NONE:
-                break;
-            case ssGUI::Enums::CursorType::NORMAL:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::TEXT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Text))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::HAND:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Hand))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_LEFT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_RIGHT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeRight))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_UP:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTop))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_DOWN:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::MOVE:
-                if (!SFMLCursor.loadFromSystem(sf::Cursor::SizeAll)) //Not supported natively for mac os
-                    if(!SFMLCursor.loadFromSystem(sf::Cursor::Cross))
-                        ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::HELP:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::Help))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::NOT_ALLOWED:
-                if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
-                    ssLOG_LINE("Failed to load cursor");
-                break;
-            case ssGUI::Enums::CursorType::CUSTOM:
-                if(!CurrentCustomCursor.empty() && CustomCursors[CurrentCustomCursor].first.getPixelsPtr() != nullptr)
-                {
-                    if(!SFMLCursor.loadFromPixels(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize(), 
-                        sf::Vector2u(CustomCursors[CurrentCustomCursor].second.x, CustomCursors[CurrentCustomCursor].second.y)))
-                    {
-                        ssLOG_LINE("Failed to load cursor");
-                    }
-                }
-                else
-                    ssLOG_LINE("Failed to load cursor");
-        }
 
+        //For each main window, we need to update the cursor
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
         {
             if(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->IsClosed())
                 continue;            
             
-            if(CurrentCursor == ssGUI::Enums::CursorType::NONE)
-            {
-                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(false);
+            HWND mainWindowHandle = static_cast<Win32_OpenGL_Handles*>
+                                    (BackendManager::GetMainWindowInterface(i)->GetRawHandle())->WindowHandle;
+            
+            #define SSGUI_SHOW_WIN32_CURSORS(win32Cursor)\
+            {\
+                HCURSOR cursor = LoadCursor(NULL, win32Cursor);\
+                if(cursor == NULL)\
+                {\
+                    ssLOG_LINE("Failed to load cursor");\
+                    break;\
+                }\
+                SetClassLongPtr(mainWindowHandle, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(cursor));\
+                break;\
             }
-            else
+
+            switch (CurrentCursor)
             {
-                //For whatever reason, when the cursor is changed and set visible without setting mouse cursor, it will crash. 
-                //This line is needed for whatever reason lol 
-                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursor(SFMLCursor);
-                static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(true);
+                case ssGUI::Enums::CursorType::NONE:
+                {
+                    CreateEmptyCursorIfNeeded();
+                    SetClassLongPtr(mainWindowHandle, 
+                                    GCLP_HCURSOR, 
+                                    reinterpret_cast<LONG_PTR>(CustomCursors[SSGUI_EMPTY_CURSOR].Win32CursorHandle));
+                    break;
+                }
+                case ssGUI::Enums::CursorType::NORMAL:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_ARROW)
+                case ssGUI::Enums::CursorType::TEXT:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_IBEAM)
+                case ssGUI::Enums::CursorType::HAND:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_HAND)
+                case ssGUI::Enums::CursorType::RESIZE_LEFT:
+                case ssGUI::Enums::CursorType::RESIZE_RIGHT:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_SIZEWE)
+                case ssGUI::Enums::CursorType::RESIZE_UP:
+                case ssGUI::Enums::CursorType::RESIZE_DOWN:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_SIZENS)
+                case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
+                case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_SIZENWSE)
+                case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
+                case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_SIZENESW)
+                case ssGUI::Enums::CursorType::MOVE:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_SIZEALL)
+                case ssGUI::Enums::CursorType::HELP:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_HELP)
+                case ssGUI::Enums::CursorType::NOT_ALLOWED:
+                    SSGUI_SHOW_WIN32_CURSORS(IDC_NO)
+                case ssGUI::Enums::CursorType::CUSTOM:
+                {
+                    ssGUI::ImageFormat customCursorFormat;
+                    if( !CurrentCustomCursor.empty() && 
+                        CustomCursors[CurrentCustomCursor].CursorImage->GetPixelPtr(customCursorFormat) != nullptr &&
+                        CustomCursors[CurrentCustomCursor].Win32CursorHandle != nullptr &&
+                        CustomCursors[CurrentCustomCursor].Win32CursorHandle != NULL)
+                    {
+                        SetClassLongPtr(mainWindowHandle, 
+                                        GCLP_HCURSOR, 
+                                        reinterpret_cast<LONG_PTR>(CustomCursors[CurrentCustomCursor].Win32CursorHandle));
+                        break;
+                    }
+                    else
+                    {
+                        ssLOG_LINE("Failed to load cursor");
+                        break;
+                    }
+                }
+                default:
+                    ssLOG_LINE("Unimplemented Cursor");
+                    ssLOG_EXIT_PROGRAM();
             }
+
+            #undef SSGUI_SHOW_WIN32_CURSORS
         }
+
         ssLOG_FUNC_EXIT();
-        */
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::ClearClipboard()

@@ -69,7 +69,10 @@ namespace Backend
     }
 
     
-    BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3() : BackendIndex(0)
+    BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3() :    BackendIndex(0),
+                                                                        LastMainWindowSize(-1, -1),
+                                                                        CharTextures(),
+                                                                        ImageTextures()
     {
         ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }

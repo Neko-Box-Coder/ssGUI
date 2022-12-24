@@ -26,13 +26,10 @@ namespace Backend
 
             //std::unordered_map<ssGUI::Backend::BackendMainWindowInterface*, GLuint> WindowTexturePrograms;
 
-            glm::ivec2 LastMainWindowSize = glm::ivec2(-1, -1);
+            glm::ivec2 LastMainWindowSize;
 
             std::unordered_map<uint32_t, GLuint> CharTextures;
             std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;
-
-            GLuint ProgramId = 0;
-            GLuint VAO = 0;
 
             ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
 

@@ -52,10 +52,19 @@ namespace Backend
             ssGUI::Enums::CursorType CurrentCursor;                                                 //See <GetCursorType>
 
             std::unordered_map<HWND, ssGUI::Backend::BackendMainWindowInterface*> MainWindowRawHandles;
-            std::unordered_map<std::string, std::pair<std::shared_ptr<ssGUI::ImageData>, glm::ivec2>> CustomCursors;        //See <GetCustomCursor>
+
+            struct CursorData
+            {
+                std::shared_ptr<ssGUI::ImageData> CursorImage;
+                glm::ivec2 Hotspot;
+                HCURSOR Win32CursorHandle;
+            };
+            std::unordered_map<std::string, CursorData> CustomCursors;        //See <GetCustomCursor>
             std::string CurrentCustomCursor;                                                        //See <GetCurrentCustomCursorName>
 
             std::chrono::high_resolution_clock::time_point StartTime;                         //See <GetElapsedTime>
+
+            const std::string SSGUI_EMPTY_CURSOR = "SSGUI_EMPTY_CURSOR";
 
             template <class T>
             void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
@@ -66,6 +75,11 @@ namespace Backend
             void FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
             void FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
 
+            //Creates Win32 Cursor Handle from image data and hotspot.
+            //imgData has to be BGRA32 (8 bit each channel), otherwise this will return nullptr
+            HCURSOR CreateWin32Cursor(glm::ivec2 hotspot, ssGUI::ImageData* imgData);
+
+            void CreateEmptyCursorIfNeeded();
 
         public:
             BackendSystemInputWin32_OpenGL3_3();
