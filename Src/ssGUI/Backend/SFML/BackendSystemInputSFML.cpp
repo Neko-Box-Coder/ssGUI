@@ -339,6 +339,7 @@ namespace Backend
         return CurrentCursor;
     }
 
+    //TODO: refactor this function, see Win32 version
     void BackendSystemInputSFML::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssLOG_FUNC_ENTRY();
@@ -424,13 +425,13 @@ namespace Backend
                 glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
 
                 //Resize width until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.x > cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
-                        (currentCursorSize.x < cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
+                while ((currentCursorSize.x < cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
+                        (currentCursorSize.x > cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
                 {
                     delete[] cursorPtrArr[(populatedImg + 1) % 2];
                     
                     //Enlarging
-                    if(currentCursorSize.x > cursorSize.x)
+                    if(currentCursorSize.x < cursorSize.x)
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
 
@@ -468,13 +469,13 @@ namespace Backend
                 }
                 
                 //Resize height until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.y > cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
-                        (currentCursorSize.y < cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
+                while ((currentCursorSize.y < cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
+                        (currentCursorSize.y > cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
                 {
                     delete[] cursorPtrArr[(populatedImg + 1) % 2];
                     
                     //Enlarging
-                    if(currentCursorSize.y > cursorSize.y)
+                    if(currentCursorSize.y < cursorSize.y)
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
 
