@@ -65,105 +65,6 @@ namespace Backend
         ssLOG_FUNC_EXIT();
     }
 
-    void BackendSystemInputSFML::ResizeBilinear(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
-    {
-        ssLOG_FUNC_ENTRY();
-        const uint8_t* a;
-        const uint8_t* b;
-        const uint8_t* c;
-        const uint8_t* d; 
-        int x, y, index;
-        float x_ratio = ((float)(w - 1)) / w2 ;
-        float y_ratio = ((float)(h - 1)) / h2 ;
-        float x_diff, y_diff, blue, red, green, alpha;
-        int offset = 0;
-        bool aValid, bValid, cValid, dValid;
-        for (int i = 0; i < h2; i++) 
-        {
-            for (int j = 0; j < w2; j++) 
-            {
-                x =         (int)(x_ratio * j) ;
-                y =         (int)(y_ratio * i) ;
-                x_diff =    (x_ratio * j) - x ;
-                y_diff =    (y_ratio * i) - y ;
-                index =     (y * w + x) ;                
-                a =         &inputPixels[index * 4] ;
-                b =         &inputPixels[(index + 1) * 4] ;
-                c =         &inputPixels[(index + w) * 4] ;
-                d =         &inputPixels[(index + w + 1) * 4] ;
-
-                //Make sure pixels with 0 alpha are not affecting any of the sampling
-                aValid = *(a + 3) > 0;
-                bValid = *(b + 3) > 0;
-                cValid = *(c + 3) > 0;
-                dValid = *(d + 3) > 0;
-
-                float inverseWidthAndHight =    (1 - x_diff) * (1 - y_diff);
-                float widthAndInverseHeight =   (x_diff) * (1 - y_diff);
-                float heightAndInverseWidth =   (y_diff) * (1 - x_diff);
-                float widthHeight =             (x_diff * y_diff);
-                float total =   inverseWidthAndHight * aValid+ 
-                                widthAndInverseHeight * bValid+ 
-                                heightAndInverseWidth * cValid+ 
-                                widthHeight * dValid;
-
-                // red element
-                // Yr = Ar(1-w)(1-h) + Br(w)(1-h) + Cr(h)(1-w) + Dr(wh)
-                red =   *(a + 0) * inverseWidthAndHight * aValid +
-                        *(b + 0) * widthAndInverseHeight * bValid +
-                        *(c + 0) * heightAndInverseWidth * cValid + 
-                        *(d + 0) * widthHeight * dValid;
-                if(red > 0)
-                    red /= total;
-
-                // green element
-                // Yg = Ag(1-w)(1-h) + Bg(w)(1-h) + Cg(h)(1-w) + Dg(wh)
-                green = *(a + 1) * inverseWidthAndHight * aValid +
-                        *(b + 1) * widthAndInverseHeight * bValid +
-                        *(c + 1) * heightAndInverseWidth * cValid +
-                        *(d + 1) * widthHeight * dValid;
-                if(green > 0)
-                    green /= total;
-
-                // blue element
-                // Yb = Ab(1-w)(1-h) + Bb(w)(1-h) + Cb(h)(1-w) + Db(wh)
-                blue =  *(a + 2) * inverseWidthAndHight * aValid +
-                        *(b + 2) * widthAndInverseHeight * bValid +
-                        *(c + 2) * heightAndInverseWidth * cValid +
-                        *(d + 2) * widthHeight * dValid;
-                if(blue > 0)
-                    blue /= total;
-
-                // alpha element
-                //Using nearest neighbour for alpha otherwise it will show the color for pixels we are sampling that have 0 alpha
-                // if(inverseWidthAndHight > 0.25)
-                //     alpha = *(a + 3);
-                // else if(widthAndInverseHeight > 0.25)
-                //     alpha = *(b + 3);
-                // else if(heightAndInverseWidth > 0.25)
-                //     alpha = *(c + 3);
-                // else
-                //     alpha = *(d + 3);
-
-                //Ya = Aa(1-w)(1-h) + Ba(w)(1-h) + Ca(h)(1-w) + Da(wh)
-                alpha = *(a + 3) * inverseWidthAndHight + 
-                        *(b + 3) * widthAndInverseHeight +
-                        *(c + 3) * heightAndInverseWidth + 
-                        *(d + 3) * widthHeight;
-                                
-                //ssLOG_LINE("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
-
-                // range is 0 to 255 thus bitwise AND with 0xff
-                outputPixels[offset * 4] =      (uint8_t)(((int)red) & 0xff);
-                outputPixels[offset * 4 + 1] =  (uint8_t)(((int)green) & 0xff);
-                outputPixels[offset * 4 + 2] =  (uint8_t)(((int)blue) & 0xff);
-                outputPixels[offset * 4 + 3] =  (uint8_t)(((int)alpha) & 0xff);
-                offset++;
-            }
-        }
-        ssLOG_FUNC_EXIT();
-    }
-
     BackendSystemInputSFML::BackendSystemInputSFML() :  CurrentKeyPresses(),
                                                         LastKeyPresses(),
                                                         InputText(L""),
@@ -533,7 +434,7 @@ namespace Backend
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg], 
                             currentCursorSize.x, 
@@ -550,7 +451,7 @@ namespace Backend
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg], 
                             currentCursorSize.x, 
@@ -577,7 +478,7 @@ namespace Backend
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg], 
                             currentCursorSize.x, 
@@ -594,7 +495,7 @@ namespace Backend
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg],
                             currentCursorSize.x, 
@@ -612,7 +513,7 @@ namespace Backend
 
                 //Do the final round of resizing
                 cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
-                ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
+                ssGUI::ImageUtil::ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
                 CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), cursorPtrArr[(populatedImg + 1) % 2]);
 
                 delete[] cursorPtr;

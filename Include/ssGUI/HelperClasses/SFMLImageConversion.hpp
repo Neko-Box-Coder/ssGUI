@@ -1,7 +1,7 @@
 #ifndef SSGUI_SFML_IMAGE_CONVERSION_H
 #define SSGUI_SFML_IMAGE_CONVERSION_H
 
-#include "ssGUI/HelperClasses/ImageConversion.hpp"
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 
 
 #include "ssGUI/DataClasses/ImageFormat.hpp"
@@ -43,7 +43,7 @@ class SFMLImageConversion
                         conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
                                             {
                                                 T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                                uint8_t level = ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[0]);
+                                                uint8_t level = ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[0]);
                                                 outImg.setPixel(sf::Vector2u(x, y), sf::Color(255, 255, 255, level));
                                             };
                     }
@@ -53,12 +53,12 @@ class SFMLImageConversion
                         conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
                                             {
                                                 T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                                uint8_t level = ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexMono]);
+                                                uint8_t level = ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexMono]);
                                                 outImg.setPixel(sf::Vector2u(x, y), 
                                                                 sf::Color(  level, 
                                                                             level, 
                                                                             level, 
-                                                                            ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexA])));
+                                                                            ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexA])));
                                             };
                     }
                 }
@@ -67,7 +67,7 @@ class SFMLImageConversion
                     conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
                                         {
                                             T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                            uint8_t level = ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[0]);
+                                            uint8_t level = ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[0]);
                                             outImg.setPixel(sf::Vector2u(x, y), sf::Color(level, level, level));
                                         };
                 }
@@ -83,10 +83,10 @@ class SFMLImageConversion
                                             {
                                                 T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
                                                 outImg.setPixel(sf::Vector2u(x, y), 
-                                                                sf::Color(  ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexR]), 
-                                                                            ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexG]), 
-                                                                            ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexB]),
-                                                                            ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexA])));
+                                                                sf::Color(  ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexR]), 
+                                                                            ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexG]), 
+                                                                            ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexB]),
+                                                                            ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexA])));
                                             };
                     }
                     else
@@ -95,14 +95,14 @@ class SFMLImageConversion
                                             {
                                                 T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);
                                                 
-                                                uint8_t alpha = ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexA]);
+                                                uint8_t alpha = ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexA]);
                                                 float alphaInFloat =    static_cast<float>(curPixelPtr[format.IndexA]) / 
                                                                         static_cast<float>(std::numeric_limits<T>::max());
                                                 
                                                 outImg.setPixel(sf::Vector2u(x, y), 
-                                                                sf::Color(  ssGUI::ImageConversion::GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexR], alphaInFloat), 
-                                                                            ssGUI::ImageConversion::GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexG], alphaInFloat), 
-                                                                            ssGUI::ImageConversion::GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexB], alphaInFloat),
+                                                                sf::Color(  ssGUI::ImageUtil::GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexR], alphaInFloat), 
+                                                                            ssGUI::ImageUtil::GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexG], alphaInFloat), 
+                                                                            ssGUI::ImageUtil::GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexB], alphaInFloat),
                                                                             alpha));
                                             };
                     }
@@ -114,9 +114,9 @@ class SFMLImageConversion
                                         {
                                             T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
                                             outImg.setPixel(sf::Vector2u(x, y), 
-                                                            sf::Color(  ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexR]), 
-                                                                        ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexG]), 
-                                                                        ssGUI::ImageConversion::GetLevelInByte(curPixelPtr[format.IndexB])));
+                                                            sf::Color(  ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexR]), 
+                                                                        ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexG]), 
+                                                                        ssGUI::ImageUtil::GetLevelInByte(curPixelPtr[format.IndexB])));
                                         };
                 }
             }

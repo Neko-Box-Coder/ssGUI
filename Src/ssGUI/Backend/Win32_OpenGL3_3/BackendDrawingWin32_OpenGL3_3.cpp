@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendDrawingWin32_OpenGL3_3.hpp"
 
-#include "ssGUI/HelperClasses/ImageConversion.hpp"
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
@@ -281,10 +281,10 @@ namespace Backend
             switch(format.BitDepthPerChannel)
             {
                 case 8:
-                    ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
+                    ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
                     break;
                 case 16:
-                    ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
+                    ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
                     break;
                 default:
                     ssLOG_LINE("Unsupported bit depth");
@@ -353,10 +353,10 @@ namespace Backend
             switch(format.BitDepthPerChannel)
             {
                 case 8:
-                    ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
+                    ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
                     break;
                 case 16:
-                    ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
+                    ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
                     break;
                 default:
                     ssLOG_LINE("Unspported bit depth");

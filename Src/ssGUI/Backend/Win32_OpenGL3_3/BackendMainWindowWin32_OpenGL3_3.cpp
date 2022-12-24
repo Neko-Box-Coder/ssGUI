@@ -3,7 +3,7 @@
 
 #include "ssGUI/Backend/BackendManager.hpp"
 
-#include "ssGUI/HelperClasses/ImageConversion.hpp"
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 
 #include "ssLogger/ssLog.hpp"
 #include <functional>
@@ -807,10 +807,10 @@ namespace Backend
         switch(format.BitDepthPerChannel)
         {
             case 8:
-                ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
+                ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
                 break;
             case 16:
-                ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
+                ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
                 break;
             default:
                 ssLOG_LINE("Unsupported bit depth");

@@ -15,7 +15,7 @@
 
 #include <windowsx.h>
 
-#include <ssGUI/HelperClasses/ImageConversion.hpp>
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 
 namespace ssGUI
 {
@@ -748,10 +748,10 @@ namespace Backend
         switch(format.BitDepthPerChannel)
         {
             case 8:
-                result = ssGUI::ImageConversion::ConvertToRGBA32<uint8_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
+                result = ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
                 break;
             case 16:
-                result = ssGUI::ImageConversion::ConvertToRGBA32<uint16_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
+                result = ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
                 break;
             default:
                 ssLOG_LINE("Unsupported bitdepth: " << format.BitDepthPerChannel);
