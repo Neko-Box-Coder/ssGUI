@@ -1,5 +1,5 @@
-#ifndef SSGUI_Factory
-#define SSGUI_Factory
+#ifndef SSGUI_Factory_H
+#define SSGUI_Factory_H
 
 #include <type_traits>
 
@@ -22,7 +22,7 @@ namespace ssGUI
             static Wrapper<T>* Create()
             {
                 return new Wrapper<T>();
-            };
+            }
 
             //function: Create<typename T> 
             //Creates the object on the heap
@@ -32,12 +32,14 @@ namespace ssGUI
                 if(std::is_base_of<ssGUI::GUIObject, T>::value)
                 {
                     T* guiObj = new T();
-                    SetHeapAllocatedFlagForGUIObject(dynamic_cast<ssGUI::GUIObject*>(guiObj));
+                    // For some reason GCC is checing in compile time with dynamic cast, so this won't compile
+                    // SetHeapAllocatedFlagForGUIObject(dynamic_cast<ssGUI::GUIObject*>(guiObj));
+                    SetHeapAllocatedFlagForGUIObject((ssGUI::GUIObject*)(guiObj));
                     return guiObj;
                 }
                 
                 return new T();
-            };
+            }
 
             //function: Dispose
             //Delete the object allocated on the heap
@@ -46,7 +48,7 @@ namespace ssGUI
             {
                 //static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
                 delete obj;
-            };
+            }
     };
 }
 

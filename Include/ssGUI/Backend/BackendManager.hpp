@@ -1,13 +1,16 @@
-#ifndef SSGUI_BACKEND_MANAGER
-#define SSGUI_BACKEND_MANAGER
+#ifndef SSGUI_BACKEND_MANAGER_H
+#define SSGUI_BACKEND_MANAGER_H
 
 #include <vector>
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendManager
     Backend manager allows backend objects to communicate to each other, without reference each other. 
@@ -75,6 +78,6 @@ namespace ssGUI::Backend
     };
 }
 
-
+}
 
 #endif

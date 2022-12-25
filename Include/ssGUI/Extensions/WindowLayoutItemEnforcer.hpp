@@ -1,12 +1,15 @@
-#ifndef SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER
-#define SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER
+#ifndef SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER_H
+#define SSGUI_WINDOW_LAYOUT_ITEM_ENFORCER_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 
+namespace ssGUI 
+{
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::WindowLayoutItemEnforcer
     This extension is only for window GUI Objects which allows the user 
@@ -99,6 +102,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual WindowLayoutItemEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string OnFontChangeEventCallback::GetEventCallbackName() const
     {   
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string OnFontChangeEventCallback::EVENT_NAME = "OnFontChangeEvent";
+}
+
 }

@@ -4,6 +4,8 @@
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
+#include "ssGUI/Backend/BackendFactory.hpp"
+
 #include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
@@ -67,12 +69,12 @@ namespace ssGUI
     
     glm::ivec2 MainWindow::GetDisplayPosition() const
     {
-        return BackendMainWindow->GetPosition();
+        return BackendMainWindow->GetWindowPosition();
     }
 
     void MainWindow::SetDisplayPosition(glm::ivec2 pos)
     {
-        BackendMainWindow->SetPosition(pos);
+        BackendMainWindow->SetWindowPosition(pos);
     }
 
     glm::ivec2 MainWindow::GetPositionOffset() const
@@ -198,8 +200,9 @@ namespace ssGUI
 
     glm::vec2 MainWindow::GetSize() const
     {
-        return BackendMainWindow->GetSize();
+        return BackendMainWindow->GetWindowSize();
     }
+    
     void MainWindow::SetSize(glm::vec2 size)
     {
         size.x = size.x > GetMaxSize().x ? GetMaxSize().x : size.x;
@@ -207,10 +210,26 @@ namespace ssGUI
         size.x = size.x < GetMinSize().x ? GetMinSize().x : size.x;
         size.y = size.y < GetMinSize().y ? GetMinSize().y : size.y;
         
-        BackendMainWindow->SetSize(size);
+        BackendMainWindow->SetWindowSize(size);
         RedrawObject();
 
         //Size changed event callback is done in update to allow user resizing to be captured as well
+    }
+    
+    void MainWindow::SetRenderSize(glm::ivec2 size)
+    {
+        size.x = size.x > GetMaxSize().x ? GetMaxSize().x : size.x;
+        size.y = size.y > GetMaxSize().y ? GetMaxSize().y : size.y;
+        size.x = size.x < GetMinSize().x ? GetMinSize().x : size.x;
+        size.y = size.y < GetMinSize().y ? GetMinSize().y : size.y;
+        
+        BackendMainWindow->SetRenderSize(size);
+        RedrawObject();
+    }
+    
+    glm::ivec2 MainWindow::GetRenderSize() const
+    {
+        return BackendMainWindow->GetRenderSize();
     }
 
     ssGUI::Enums::GUIObjectType MainWindow::GetType() const
@@ -325,7 +344,7 @@ namespace ssGUI
             BackendMainWindow->SyncPositionOffset();
             LastSyncTime = inputInterface->GetElapsedTime();
 
-            glm::ivec2 currentSize = BackendMainWindow->GetSize();
+            glm::ivec2 currentSize = BackendMainWindow->GetWindowSize();
             
             if(currentSize.x < GetMinSize().x)
                 currentSize.x = GetMinSize().x;        
@@ -339,8 +358,8 @@ namespace ssGUI
             if(currentSize.y > GetMaxSize().x)
                 currentSize.y = GetMaxSize().x;
 
-            if(currentSize != BackendMainWindow->GetSize())
-                BackendMainWindow->SetSize(currentSize);
+            if(currentSize != BackendMainWindow->GetWindowSize())
+                BackendMainWindow->SetWindowSize(currentSize);
         }
 
         //Check size different for redraw

@@ -1,8 +1,11 @@
-#ifndef SSGUI_WINDOW_MODE
-#define SSGUI_WINDOW_MODE
+#ifndef SSGUI_WINDOW_MODE_H
+#define SSGUI_WINDOW_MODE_H
+
+namespace ssGUI 
+{ 
 
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: WindowMode
 
@@ -18,5 +21,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

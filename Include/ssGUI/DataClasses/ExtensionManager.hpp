@@ -1,5 +1,5 @@
-#ifndef SSGUI_EXTENSION_MANAGER
-#define SSGUI_EXTENSION_MANAGER
+#ifndef SSGUI_EXTENSION_MANAGER_H
+#define SSGUI_EXTENSION_MANAGER_H
 
 #include <unordered_map>
 #include <vector>
@@ -68,10 +68,10 @@ namespace ssGUI
             template <typename T>
             T* GetAnyExtension()
             {
-                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
-                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value);
+                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
+                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 return static_cast<T*>(GetExtension(T::EXTENSION_NAME));
-            };
+            }
             
             //function: GetListOfExtensions
             //Returns all the extensions on the GUI Object
@@ -87,10 +87,10 @@ namespace ssGUI
             template <typename T>
             bool IsAnyExtensionExist()
             {
-                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
-                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value);
+                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
+                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 return IsExtensionExist(T::EXTENSION_NAME);
-            };
+            }
             
             //function: RemoveExtension
             //Removes the extension by the name of it
@@ -102,10 +102,10 @@ namespace ssGUI
             template <typename T>
             void RemoveAnyExtension()
             {
-                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
-                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value);
+                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
+                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 RemoveExtension(T::EXTENSION_NAME);
-            };
+            }
             
             //function: GetExtensionsCount
             //Returns the number of extensions on this GUI Object
@@ -121,10 +121,10 @@ namespace ssGUI
             template <typename T>
             int GetAnyExtensionDrawOrder()
             {
-                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
-                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value);
+                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
+                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 return GetExtensionDrawOrder(T::EXTENSION_NAME);
-            };
+            }
             
             //function: ChangeExtensionDrawOrder
             //Changes the draw order of the extension by the name of it
@@ -136,10 +136,10 @@ namespace ssGUI
             template <typename T>
             void ChangeAnyExtensionDrawOrder(int order)
             {
-                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
-                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value);
+                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
+                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 ChangeExtensionDrawOrder(T::EXTENSION_NAME, order);
-            };
+            }
             
             //function: GetExtensionUpdateOrder
             //Returns the update order of the extension by the name of it
@@ -151,10 +151,10 @@ namespace ssGUI
             template <typename T>
             int GetAnyExtensionUpdateOrder()
             {
-                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
-                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value);
+                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
+                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 return GetAnyExtensionUpdateOrder(T::EXTENSION_NAME);
-            };
+            }
             
             //function: ChangeExtensionUpdateOrder
             //Changes the update order of the extension by the name of it
@@ -166,10 +166,10 @@ namespace ssGUI
             template <typename T>
             void ChangeAnyExtensionUpdateOrder(int order)
             {
-                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value);
-                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value);
+                static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
+                static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 ChangeExtensionUpdateOrder(T::EXTENSION_NAME, order);
-            };
+            }
     };
 }
 

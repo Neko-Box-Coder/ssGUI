@@ -1,5 +1,5 @@
-#ifndef SSGUI_HIERARCHY
-#define SSGUI_HIERARCHY
+#ifndef SSGUI_HIERARCHY_H
+#define SSGUI_HIERARCHY_H
 
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include <vector>
@@ -84,7 +84,7 @@ namespace ssGUI
                 public:
                     friend class Hierarchy;
 
-                    bool operator==(ChildInfo const& other)
+                    bool operator==(ChildInfo const& other) const
                     {
                         return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
                     };

@@ -1,6 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 
-
+#include "ssLogger/ssLog.hpp"
 
 //Text font test
 int main()
@@ -11,12 +11,13 @@ int main()
     ssGUI::Font font;
     ssGUI::Font font2;
     if(font.GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
-       std::cout<<"font loaded\n";
+       ssLOG_LINE("font loaded");
+    
     // if(font2.GetBackendFontInterface()->LoadFromPath("Resources/SourceHanSansJP-Normal.otf"))
     //    std::cout<<"font loaded\n";
 
     if(font2.GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Bold.ttf"))
-       std::cout<<"font loaded\n";
+       ssLOG_LINE("font loaded");
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
@@ -34,7 +35,7 @@ int main()
 
     std::wstring s = L"This is a very long test \nsentence!!!!!";
 
-    for(int i = 0; i < s.size(); i++)
+    for(int i = 0; i < (int)s.size(); i++)
     {
         ssGUI::CharacterDetails details;
 
@@ -72,7 +73,7 @@ int main()
 
     ssLOG_LINE("Character supp: "<<font.IsCharacterSupported(L'は'));
 
-    ssLOG_LINE(text.GetCharacterRenderInfo(0).RenderPosition.y);
+    ssLOG_LINE(text.GetCharacterRenderInfo(0).BaselinePosition.y);
 
     text.SetParent(&mainWindow);
 

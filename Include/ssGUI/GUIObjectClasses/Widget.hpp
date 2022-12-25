@@ -1,5 +1,5 @@
-#ifndef SSGUI_WIDGET
-#define SSGUI_WIDGET
+#ifndef SSGUI_WIDGET_H
+#define SSGUI_WIDGET_H
 
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 

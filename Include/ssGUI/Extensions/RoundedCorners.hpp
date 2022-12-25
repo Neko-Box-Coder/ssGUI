@@ -1,5 +1,5 @@
-#ifndef SSGUI_ROUNDED_CORNERS
-#define SSGUI_ROUNDED_CORNERS
+#ifndef SSGUI_ROUNDED_CORNERS_H
+#define SSGUI_ROUNDED_CORNERS_H
 #include <cmath>
 #include <map>
 #include "glm/trigonometric.hpp"
@@ -7,8 +7,11 @@
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
 
+namespace ssGUI 
+{
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::RoundedCorners
     This extension rounds the corner of the selected shapes or vertices on the GUI object. This works best with anti-aliasing.
@@ -81,7 +84,7 @@ namespace ssGUI::Extensions
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
             
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
-            constexpr double pi() { return std::atan(1)*4; };
+            double pi() const { return std::atan(1)*4; };
             
             //https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
             virtual glm::vec3 Barycentric(glm::vec2 samplePoint, glm::vec2 a, glm::vec2 b, glm::vec2 c);
@@ -173,7 +176,7 @@ namespace ssGUI::Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
@@ -201,7 +204,7 @@ namespace ssGUI::Extensions
     };
 }
 
-
+}
 
 
 

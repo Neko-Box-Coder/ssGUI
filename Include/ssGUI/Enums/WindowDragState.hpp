@@ -1,8 +1,11 @@
-#ifndef SSGUI_WINDOW_DRAG_STATE
-#define SSGUI_WINDOW_DRAG_STATE
+#ifndef SSGUI_WINDOW_DRAG_STATE_H
+#define SSGUI_WINDOW_DRAG_STATE_H
+
+namespace ssGUI
+{
 
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: WindowDragState
     
@@ -22,5 +25,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

@@ -1,12 +1,15 @@
-#ifndef BASE_EVENT_CALLBACK
-#define BASE_EVENT_CALLBACK
+#ifndef SSGUI_BASE_EVENT_CALLBACK_H
+#define SSGUI_BASE_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/EventCallback.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include <queue>
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     /*class: ssGUI::EventCallbacks::BaseEventCallback
     Implementation class for <EventCallback>
@@ -118,6 +121,6 @@ namespace ssGUI::EventCallbacks
     };
 }
 
-
+}
 
 #endif

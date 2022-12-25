@@ -1,19 +1,24 @@
-#ifndef SSGUI_REALTIME_INPUT_INFO
-#define SSGUI_REALTIME_INPUT_INFO
+#ifndef SSGUI_REALTIME_INPUT_INFO_H
+#define SSGUI_REALTIME_INPUT_INFO_H
 
 #include "ssGUI/Enums/MouseButton.hpp"
 #include "glm/vec2.hpp"
 #include <vector>
 #include <codecvt>
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     //var: GenericButtonAndKeyInput
     using GenericButtonAndKeyInput = uint16_t;
 
     //const: NO_INPUT
     const uint16_t NO_INPUT = 0; 
+}
+
 }
 
 //namespace: ssGUI

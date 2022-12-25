@@ -1,10 +1,13 @@
-#ifndef ON_RECURSIVE_CHILD_ADD_EVENT_CALLBACK
-#define ON_RECURSIVE_CHILD_ADD_EVENT_CALLBACK
+#ifndef SSGUI_ON_RECURSIVE_CHILD_ADD_EVENT_CALLBACK_H
+#define SSGUI_ON_RECURSIVE_CHILD_ADD_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback
     //This event callback is triggered *before* a child is paranted recursively on this GUI object. 
@@ -39,6 +42,6 @@ namespace ssGUI::EventCallbacks
     };
 }
 
-
+}
 
 #endif

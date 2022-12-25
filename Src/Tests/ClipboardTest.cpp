@@ -27,7 +27,7 @@ int main()
         3,  4,  5,  6,      4,  5,  6,  7
     };
 
-    imgData.LoadRawFromMemory(&colors, 2, 2);
+    imgData.LoadRawFromMemory(&colors, ssGUI::ImageFormat(), glm::ivec2(2, 2));
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
@@ -67,7 +67,8 @@ int main()
                     if(inputInterface->GetClipboardImage(imgData))
                     {
                         ssLOG_LINE("Image Size: "<<imgData.GetSize().x<<", "<<imgData.GetSize().y);
-                        const uint8_t* rawData = static_cast<const uint8_t*>(imgData.GetBackendImageInterface()->GetPixelPtr());
+                        ssGUI::ImageFormat format;
+                        const uint8_t* rawData = static_cast<const uint8_t*>(imgData.GetBackendImageInterface()->GetPixelPtr(format));
                         ssLOG_LINE("("<<(int)rawData[0]<<", "<<(int)rawData[1]<<", "<<(int)rawData[2]<<", "<<(int)rawData[3]<<")");
                         ssLOG_LINE("("<<(int)rawData[4]<<", "<<(int)rawData[5]<<", "<<(int)rawData[6]<<", "<<(int)rawData[7]<<")");
                         ssLOG_LINE("("<<(int)rawData[8]<<", "<<(int)rawData[9]<<", "<<(int)rawData[10]<<", "<<(int)rawData[11]<<")");

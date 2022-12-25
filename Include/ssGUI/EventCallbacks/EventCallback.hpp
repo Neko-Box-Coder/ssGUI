@@ -1,5 +1,5 @@
-#ifndef SSGUI_EVENT_CALLBACK
-#define SSGUI_EVENT_CALLBACK
+#ifndef SSGUI_EVENT_CALLBACK_H
+#define SSGUI_EVENT_CALLBACK_H
 
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
@@ -14,8 +14,11 @@ namespace ssGUI
     class GUIObject;
 }
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     /*class: ssGUI::EventCallbacks::EventCallback
     EventCallback enables the ablity to act against a certain event. 
@@ -122,4 +125,5 @@ namespace ssGUI::EventCallbacks
     };
 }
 
+}
 #endif

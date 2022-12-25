@@ -1,7 +1,7 @@
 #include "ssGUI/DataClasses/ExtensionManager.hpp"
 
-#include"ssGUI/DataClasses/Renderer.hpp"
-
+#include "ssGUI/DataClasses/Renderer.hpp"
+#include <algorithm>
 
 namespace ssGUI
 {
@@ -92,7 +92,7 @@ namespace ssGUI
         if(!IsExtensionExist(extensionName))
             return -1;
         
-        auto it = find(ExtensionsDrawOrder.begin(), ExtensionsDrawOrder.end(), extensionName);
+        auto it = std::find(ExtensionsDrawOrder.begin(), ExtensionsDrawOrder.end(), extensionName);
 
         if(it == ExtensionsDrawOrder.end())
             return -1;

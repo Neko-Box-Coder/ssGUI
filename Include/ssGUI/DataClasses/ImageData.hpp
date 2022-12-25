@@ -1,7 +1,7 @@
-#ifndef SSGUI_IMAGE_DATA
-#define SSGUI_IMAGE_DATA
+#ifndef SSGUI_IMAGE_DATA_H
+#define SSGUI_IMAGE_DATA_H
 
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -55,15 +55,15 @@ namespace ssGUI
 
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            virtual bool LoadRawFromMemory(void const * dataPtr, int width, int height);
-
+            bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize);
+            
             //function: GetSize
             //See <ssGUI::Backend::BackendImageInterface::GetSize>
             virtual glm::ivec2 GetSize() const;
 
             //function: GetPixelPtr
             //See <ssGUI::Backend::BackendImageInterface::GetPixelPtr>
-            virtual const void* GetPixelPtr() const;
+            virtual void* GetPixelPtr(ssGUI::ImageFormat& format);
 
             //function: Clone
             //Clones this ImageData object. Use this function instead of assignment operator or copy constructor.

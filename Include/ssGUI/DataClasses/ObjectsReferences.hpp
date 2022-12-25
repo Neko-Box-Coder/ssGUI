@@ -1,5 +1,5 @@
-#ifndef OBJECTS_REFERENCES
-#define OBJECTS_REFERENCES
+#ifndef SSGUI_OBJECTS_REFERENCES_H
+#define SSGUI_OBJECTS_REFERENCES_H
 
 #include <unordered_map>
 #include <vector>

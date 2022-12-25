@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE
-#define SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE
+#ifndef SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE_H
+#define SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE_H
 
 #include <string>
 #include <vector>
@@ -13,22 +13,21 @@ namespace ssGUI
     class GUIObject;
     class MainWindow;
     class ImageData;
-    class RealtimeInputInfo;
+    struct RealtimeInputInfo;
 }
 
 
+namespace ssGUI
+{ 
+    
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     //class: ssGUI::Backend::BackendSystemInputInterface
     //This class is the interface for getting all the inputs needed. 
     //**There will be changes regarding on how to get key presses and realtime input info soon.**
     class BackendSystemInputInterface
     {   
-        private:
-            // BackendSystemInputInterface(const BackendSystemInputInterface&);
-            // BackendSystemInputInterface& operator=(const BackendSystemInputInterface&);
-
         public:
             BackendSystemInputInterface(){}
             virtual ~BackendSystemInputInterface() = 0;
@@ -55,7 +54,7 @@ namespace ssGUI::Backend
             bool IsButtonOrKeyPressExistLastFrame(T input) const
             {
                 return IsButtonOrKeyPressExistLastFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
-            };
+            }
 
             //function: IsButtonOrKeyPressExistCurrentFrame
             //Check if the button or key is pressed current frame
@@ -67,7 +66,7 @@ namespace ssGUI::Backend
             bool IsButtonOrKeyPressExistCurrentFrame(T input) const
             {
                 return IsButtonOrKeyPressExistCurrentFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
-            };
+            }
 
             //function: GetLastMousePosition
             //Get mouse position relative to the mainWindow from last frame. If nullptr is passed, it will return global mouse position instead.
@@ -194,6 +193,8 @@ namespace ssGUI::Backend
             virtual uint64_t GetElapsedTime() const = 0;
     };
     inline BackendSystemInputInterface::~BackendSystemInputInterface(){}   //Pure virtual destructor needs to be defined
+}
+
 }
 
 

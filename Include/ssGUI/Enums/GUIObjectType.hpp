@@ -1,8 +1,11 @@
-#ifndef SSGUI_OBJECT_TYPE
-#define SSGUI_OBJECT_TYPE
+#ifndef SSGUI_OBJECT_TYPE_H
+#define SSGUI_OBJECT_TYPE_H
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     //About: GUIObjectType enum info
     //This class is a bit enum class. Therefore it can contain multiple enum value at once by using the | operator. For example, for a button is default to:
@@ -84,5 +87,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

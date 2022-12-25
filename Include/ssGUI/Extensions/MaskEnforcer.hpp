@@ -1,5 +1,5 @@
-#ifndef SSGUI_MASK_ENFORCER
-#define SSGUI_MASK_ENFORCER
+#ifndef SSGUI_MASK_ENFORCER_H
+#define SSGUI_MASK_ENFORCER_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
@@ -7,8 +7,11 @@
 #include "glm/vec4.hpp"
 #include <unordered_map>
 
+namespace ssGUI 
+{
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::MaskEnforcer
     This extension masks the container by calling <Mask::MaskObject> that is linked to this extension.
@@ -129,6 +132,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual MaskEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

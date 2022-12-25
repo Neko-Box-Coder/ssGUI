@@ -1,5 +1,5 @@
-#ifndef SSGUI_WINDOW
-#define SSGUI_WINDOW
+#ifndef SSGUI_WINDOW_H
+#define SSGUI_WINDOW_H
 
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include "ssGUI/Enums/ResizeType.hpp"
@@ -234,6 +234,14 @@ namespace ssGUI
             //function: IsOnTopWhenFocused
             //Returns if the window will be on top when focused, meaning it will be the last child if true
             virtual bool IsOnTopWhenFocused() const;
+
+            //function: SetRenderSize
+            //Sets the render size (area under the titlebar)           
+            virtual void SetRenderSize(glm::ivec2 size);
+            
+            //function: GetRenderSize
+            //Gets the render size (area under the titlebar)
+            virtual glm::ivec2 GetRenderSize() const;
 
             //function: SetFocus
             //See <ssGUI::Hierarchy::SetFocus>

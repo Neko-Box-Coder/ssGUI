@@ -1,7 +1,6 @@
-#ifndef SSGUI_MAIN_WINDOW
-#define SSGUI_MAIN_WINDOW
+#ifndef SSGUI_MAIN_WINDOW_H
+#define SSGUI_MAIN_WINDOW_H
 
-#include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include <functional>
@@ -78,11 +77,11 @@ namespace ssGUI
             virtual ssGUI::Backend::BackendDrawingInterface* GetBackendDrawingInterface();
             
             //function: GetDisplayPosition
-            //See <BackendMainWindowInterface::GetDisplayPosition>
+            //See <BackendMainWindowInterface::GetWindowPosition>
             virtual glm::ivec2 GetDisplayPosition() const;
 
             //function: SetDisplayPosition
-            //See <BackendMainWindowInterface::SetDisplayPosition>
+            //See <BackendMainWindowInterface::SetWindowPosition>
             virtual void SetDisplayPosition(glm::ivec2 pos);
 
             //function: GetPositionOffset
@@ -181,12 +180,20 @@ namespace ssGUI
             virtual void SetGlobalPosition(glm::vec2 position) override;
             
             //function: GetSize
-            //See <BackendMainWindowInterface::GetSize>
+            //See <BackendMainWindowInterface::GetWindowSize>
             virtual glm::vec2 GetSize() const override;
             
             //function: SetSize
-            //See <BackendMainWindowInterface::SetSize>
+            //See <BackendMainWindowInterface::SetWindowSize>
             virtual void SetSize(glm::vec2 size) override;
+            
+            //function: SetRenderSize
+            //See <BackendMainWindowInterface::SetRenderSize>
+            virtual void SetRenderSize(glm::ivec2 size) override;
+
+            //function: GetRenderSize
+            //See <BackendMainWindowInterface::GetRenderSize>
+            virtual glm::ivec2 GetRenderSize() const override;
 
             //function: GetType
             //See <Window::GetType>

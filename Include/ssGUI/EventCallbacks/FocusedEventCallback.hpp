@@ -1,10 +1,13 @@
-#ifndef ON_FOCUS_EVENT_CALLBACK
-#define ON_FOCUS_EVENT_CALLBACK
+#ifndef SSGUI_FOCUSED_EVENT_CALLBACK_H
+#define SSGUI_FOCUSED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::FocusedEventCallback
     //This event callback is triggered after the GUI Object gained focus
@@ -36,6 +39,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

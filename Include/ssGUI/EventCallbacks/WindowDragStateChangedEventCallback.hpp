@@ -1,10 +1,13 @@
-#ifndef WINDOW_DRAG_STATE_CHANGED_EVENT_CALLBACK
-#define WINDOW_DRAG_STATE_CHANGED_EVENT_CALLBACK
+#ifndef SSGUI_WINDOW_DRAG_STATE_CHANGED_EVENT_CALLBACK_H
+#define SSGUI_WINDOW_DRAG_STATE_CHANGED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::WindowDragStateChangedEventCallback
     //This event callback is triggered *after* this GUI object (window) drag state is changed. Window(Container) will be the source for triggering this event callback.
@@ -36,6 +39,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

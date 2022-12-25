@@ -1,7 +1,10 @@
 #include "ssGUI/Backend/BackendManager.hpp"
 
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {
     int BackendManager::MainWindowCount = 0;
     std::vector<ssGUI::Backend::BackendDrawingInterface*> BackendManager::BackendDrawingInterfaces;
@@ -91,5 +94,6 @@ namespace ssGUI::Backend
     {
         return BackendMainWindowInterfaces.size();
     }
+}
 
 }

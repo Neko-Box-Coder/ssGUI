@@ -1,5 +1,5 @@
-#ifndef SSGUI_GUI_OBJECT
-#define SSGUI_GUI_OBJECT
+#ifndef SSGUI_GUI_OBJECT_H
+#define SSGUI_GUI_OBJECT_H
 
 #include "ssGUI/Enums/GUIObjectType.hpp"
 #include "ssGUI/DataClasses/Transform.hpp"
@@ -63,7 +63,7 @@ namespace ssGUI
 
         public:
             //TODO : Maybe make this thread safe?
-            inline static std::vector<ssGUI::GUIObject*> ObjsToDelete = std::vector<ssGUI::GUIObject*>();
+            static std::vector<ssGUI::GUIObject*> ObjsToDelete;
 
             GUIObject();
             virtual ~GUIObject();

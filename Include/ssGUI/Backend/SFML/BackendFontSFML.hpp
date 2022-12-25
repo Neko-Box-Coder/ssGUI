@@ -1,11 +1,14 @@
-#ifndef SSGUI_BACKEND_FONT_SFML
-#define SSGUI_BACKEND_FONT_SFML
+#ifndef SSGUI_BACKEND_FONT_SFML_H
+#define SSGUI_BACKEND_FONT_SFML_H
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 #include "SFML/Graphics.hpp"
 
+namespace ssGUI
+{ 
+    
 //namespace: ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendFontSFML
     For functions explainations, please see <BackendFontInterface>. Normally you don't need to deal with this class
@@ -44,7 +47,7 @@ namespace ssGUI::Backend
             
             //function: IsValid
             //See <BackendFontInterface::IsValid>
-            bool IsValid() override;
+            bool IsValid() const override;
             
             //function: GetCharacterRenderInfo
             //See <BackendFontInterface::GetCharacterRenderInfo>
@@ -80,6 +83,14 @@ namespace ssGUI::Backend
             //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
 
+            //function: GetFixedAvailableFontSizes
+            //SFML doesn't support this, calling this function will have no effect.
+            bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) override;
+
+            //function: GetCharacterImage
+            //See <BackendFontInterface::GetCharacterImage>
+            bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage) override;
+
             //function: GetRawHandle
             //See <BackendFontInterface::GetRawHandle>
             void* GetRawHandle() override;
@@ -88,6 +99,8 @@ namespace ssGUI::Backend
             //See <BackendFontInterface::Clone>
             ssGUI::Backend::BackendFontInterface* Clone() override;
     };
+}
+
 }
 
 #endif

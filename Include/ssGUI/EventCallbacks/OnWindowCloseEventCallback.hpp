@@ -1,10 +1,13 @@
-#ifndef ON_WINDOW_CLOSE_EVENT_CALLBACK
-#define ON_WINDOW_CLOSE_EVENT_CALLBACK
+#ifndef SSGUI_ON_WINDOW_CLOSE_EVENT_CALLBACK_H
+#define SSGUI_ON_WINDOW_CLOSE_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::OnWindowCloseEventCallback
     //This event callback is triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
@@ -38,6 +41,6 @@ namespace ssGUI::EventCallbacks
     };
 }
 
-
+}
 
 #endif

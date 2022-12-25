@@ -1,5 +1,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 
+#include "ssGUI/Backend/BackendFactory.hpp"
+
 namespace ssGUI
 {
     ImageData::ImageData(ImageData const& other)
@@ -37,9 +39,9 @@ namespace ssGUI
         return BackendImage->LoadImgFileFromMemory(dataPtr, size);
     }
 
-    bool ImageData::LoadRawFromMemory(void const * dataPtr, int width, int height)
+    bool ImageData::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
-        return BackendImage->LoadRawFromMemory(dataPtr, width, height);
+        return BackendImage->LoadRawFromMemory(dataPtr, format, imageSize);
     }
             
     glm::ivec2 ImageData::GetSize() const
@@ -47,9 +49,9 @@ namespace ssGUI
         return BackendImage->GetSize();
     }
 
-    const void* ImageData::GetPixelPtr() const
+    void* ImageData::GetPixelPtr(ssGUI::ImageFormat& format)
     {
-        return BackendImage->GetPixelPtr();
+        return BackendImage->GetPixelPtr(format);
     }
 
     ImageData* ImageData::Clone()

@@ -114,6 +114,9 @@ namespace ssGUI
                 DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().y * showLandscapeRatio, GetSize().y));
                 DrawingVerticies.push_back(imgDrawPosition + glm::vec2(0, GetSize().y));
                 break;
+            default:
+                ssLOG_LINE("Invalid ssGUI::Enums::ImageFitting: " << (int)imgFitting);
+                ssLOG_EXIT_PROGRAM();
         }
 
         DrawingUVs.push_back(showUVOrigin);

@@ -414,8 +414,8 @@ namespace ssGUI
 
         if(IsAdaptiveButtonTextContrast())
         {
-            float averageButtonColor = (GetButtonColor().r + GetButtonColor().g + GetButtonColor().b)/3;
-            float averageTextDiffColor = (GetAdaptiveButtonTextColorDifference().r + GetAdaptiveButtonTextColorDifference().g + GetAdaptiveButtonTextColorDifference().b)/3;
+            float averageButtonColor = (GetButtonColor().r + GetButtonColor().g + GetButtonColor().b) / (float)3;
+            float averageTextDiffColor = (GetAdaptiveButtonTextColorDifference().r + GetAdaptiveButtonTextColorDifference().g + GetAdaptiveButtonTextColorDifference().b) / (float)3;
             int contrastFactor = averageButtonColor + averageTextDiffColor > 255 ? -1 : 1; 
             textResult = (glm::ivec4)GetButtonColor() + GetAdaptiveButtonTextColorDifference() * contrastFactor;
         }

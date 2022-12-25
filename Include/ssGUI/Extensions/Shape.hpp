@@ -1,5 +1,5 @@
-#ifndef SSGUI_CUSTOM_EXTENSION
-#define SSGUI_CUSTOM_EXTENSION
+#ifndef SSGUI_CUSTOM_EXTENSION_H
+#define SSGUI_CUSTOM_EXTENSION_H
 
 #include <unordered_set>
 #include "ssGUI/Extensions/Extension.hpp"
@@ -7,8 +7,11 @@
 #include "glm/vec4.hpp"
 #include "glm/geometric.hpp"
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::Shape
     Shape extension allows adding/removing shapes in runtime on the GUI Object without too much effort. This would not work with <ssGUI::MainWindow>
@@ -76,7 +79,7 @@ namespace ssGUI::Extensions
             static void operator delete[](void* p)      {free(p);};
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
-            constexpr double pi() { return std::atan(1)*4; };
+            double pi() const { return std::atan(1)*4; };
 
             virtual void ConstructAdditionalPolygon(AdditionalShape& targetShape, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject);
             virtual void ConstructAdditionalRectangle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject);
@@ -270,6 +273,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Shape* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

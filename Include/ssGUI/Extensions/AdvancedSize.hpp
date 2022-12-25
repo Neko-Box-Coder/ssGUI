@@ -1,5 +1,5 @@
-#ifndef SSGUI_ADVANCED_SIZE
-#define SSGUI_ADVANCED_SIZE
+#ifndef SSGUI_ADVANCED_SIZE_H
+#define SSGUI_ADVANCED_SIZE_H
 
 #include <unordered_map>
 #include "ssGUI/Extensions/Extension.hpp"
@@ -13,8 +13,11 @@
 #include "ssGUI/EventCallbacks/RecursiveChildrenRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"*/
 
+namespace ssGUI 
+{
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::AdvancedSize
     This extension allows extra options for sizing a GUI Object
@@ -120,7 +123,7 @@ namespace ssGUI::Extensions
             
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;;
+            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
@@ -148,6 +151,7 @@ namespace ssGUI::Extensions
     };
 }
 
+}
 
 
 

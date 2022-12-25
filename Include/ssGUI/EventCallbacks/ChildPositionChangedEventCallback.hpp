@@ -1,10 +1,13 @@
-#ifndef CHILD_POSITION_CHANGED_EVENT_CALLBACK
-#define CHILD_POSITION_CHANGED_EVENT_CALLBACK
+#ifndef SSGUI_CHILD_POSITION_CHANGED_EVENT_CALLBACK_H
+#define SSGUI_CHILD_POSITION_CHANGED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::ChildPositionChangedEventCallback
     //This event callback is triggered *after* <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> is called.
@@ -40,4 +43,5 @@ namespace ssGUI::EventCallbacks
     };
 }
 
+}
 #endif

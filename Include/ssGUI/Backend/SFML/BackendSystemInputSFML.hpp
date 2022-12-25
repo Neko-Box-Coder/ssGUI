@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_SYSTEM_INPUT_SFML
-#define SSGUI_BACKEND_SYSTEM_INPUT_SFML
+#ifndef SSGUI_BACKEND_SYSTEM_INPUT_SFML_H
+#define SSGUI_BACKEND_SYSTEM_INPUT_SFML_H
 
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"
@@ -21,8 +21,11 @@
     #include <chrono>
 #endif
 
+namespace ssGUI 
+{ 
+    
 //namespace ssGUI::Backend
-namespace ssGUI::Backend
+namespace Backend
 {
     /*class: ssGUI::Backend::BackendSystemInputSFML
     For functions explainations, please see <BackendSystemInputInterface>. Normally you don't need to deal with this class
@@ -254,5 +257,6 @@ namespace ssGUI::Backend
     };
 }
 
+}
 
 #endif

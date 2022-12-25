@@ -1,11 +1,11 @@
-#ifndef SSGUI_IMAGE
-#define SSGUI_IMAGE
+#ifndef SSGUI_IMAGE_H
+#define SSGUI_IMAGE_H
 
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Enums/ImageFitting.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include "SFML/Graphics.hpp"
+// #include "SFML/Graphics.hpp"
 #include "glm/vec4.hpp"
 
 //namespace: ssGUI

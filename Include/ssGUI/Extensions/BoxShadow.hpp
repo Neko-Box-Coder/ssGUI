@@ -1,13 +1,16 @@
-#ifndef SSGUI_BOX_SHADOW
-#define SSGUI_BOX_SHADOW
+#ifndef SSGUI_BOX_SHADOW_H
+#define SSGUI_BOX_SHADOW_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 #include "glm/geometric.hpp"
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {
     /*class: ssGUI::Extensions::BoxShadow
     Creates a box shadow beneath the GUI Object. The box shadow follows the position and size of the GUI Object.
@@ -62,7 +65,7 @@ namespace ssGUI::Extensions
             static void operator delete[](void* p)      {free(p);};
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
-            constexpr double pi() { return std::atan(1)*4; };
+            double pi() const { return std::atan(1)*4; };
 
             //Return angle in radians. Positive if angle between a and b is clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
@@ -145,6 +148,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual BoxShadow* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

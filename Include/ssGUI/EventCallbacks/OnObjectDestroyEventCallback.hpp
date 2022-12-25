@@ -1,10 +1,13 @@
-#ifndef ON_OBJECT_DESTROY_EVENT_CALLBACK
-#define ON_OBJECT_DESTROY_EVENT_CALLBACK
+#ifndef SSGUI_ON_OBJECT_DESTROY_EVENT_CALLBACK_H
+#define SSGUI_ON_OBJECT_DESTROY_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::OnObjectDestroyEventCallback
     //This event callback is triggered *before* the GUI object is destroyed. Container will be the source for triggering this event callback.
@@ -36,6 +39,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

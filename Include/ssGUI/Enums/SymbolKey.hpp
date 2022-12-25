@@ -1,18 +1,21 @@
-#ifndef SSGUI_SYMBOL_KEY
-#define SSGUI_SYMBOL_KEY
+#ifndef SSGUI_SYMBOL_KEY_H
+#define SSGUI_SYMBOL_KEY_H
 
 #include <cstdint>
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: SymbolKey
 
     BACK_QUOTE              - Back quote key. (Also know as Tilde key)
     MINUS                   - Minus key (-) 
     EQUAL                   - Equal key (=)
-    LEFT_BRACKET            - Left bracket key ({)
-    RIGHT_BRACKET           - Right bracket key (})
+    LEFT_BRACKET            - Left bracket key ([)
+    RIGHT_BRACKET           - Right bracket key (])
     BACKSLASH               - Backslash key (\)
     SEMICOLON               - Semicolon key (;)
     QUOTE                   - Quote key (')
@@ -37,5 +40,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

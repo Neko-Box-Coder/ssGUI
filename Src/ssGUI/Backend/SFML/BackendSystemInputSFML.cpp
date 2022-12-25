@@ -1,5 +1,6 @@
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
+#include "ssGUI/HelperClasses/SFMLImageConversion.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
@@ -11,7 +12,10 @@
 
 // #include "SFML/Window/Clipboard.hpp"
 
-namespace ssGUI::Backend
+namespace ssGUI
+{
+
+namespace Backend
 {    
     template <class T>
     void BackendSystemInputSFML::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
@@ -58,105 +62,6 @@ namespace ssGUI::Backend
         if(it != destinationKeyPresses.end())
             destinationKeyPresses.erase(it);
 
-        ssLOG_FUNC_EXIT();
-    }
-
-    void BackendSystemInputSFML::ResizeBilinear(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
-    {
-        ssLOG_FUNC_ENTRY();
-        const uint8_t* a;
-        const uint8_t* b;
-        const uint8_t* c;
-        const uint8_t* d; 
-        int x, y, index;
-        float x_ratio = ((float)(w - 1)) / w2 ;
-        float y_ratio = ((float)(h - 1)) / h2 ;
-        float x_diff, y_diff, blue, red, green, alpha;
-        int offset = 0;
-        bool aValid, bValid, cValid, dValid;
-        for (int i = 0; i < h2; i++) 
-        {
-            for (int j = 0; j < w2; j++) 
-            {
-                x =         (int)(x_ratio * j) ;
-                y =         (int)(y_ratio * i) ;
-                x_diff =    (x_ratio * j) - x ;
-                y_diff =    (y_ratio * i) - y ;
-                index =     (y * w + x) ;                
-                a =         &inputPixels[index * 4] ;
-                b =         &inputPixels[(index + 1) * 4] ;
-                c =         &inputPixels[(index + w) * 4] ;
-                d =         &inputPixels[(index + w + 1) * 4] ;
-
-                //Make sure pixels with 0 alpha are not affecting any of the sampling
-                aValid = *(a + 3) > 0;
-                bValid = *(b + 3) > 0;
-                cValid = *(c + 3) > 0;
-                dValid = *(d + 3) > 0;
-
-                float inverseWidthAndHight =    (1 - x_diff) * (1 - y_diff);
-                float widthAndInverseHeight =   (x_diff) * (1 - y_diff);
-                float heightAndInverseWidth =   (y_diff) * (1 - x_diff);
-                float widthHeight =             (x_diff * y_diff);
-                float total =   inverseWidthAndHight * aValid+ 
-                                widthAndInverseHeight * bValid+ 
-                                heightAndInverseWidth * cValid+ 
-                                widthHeight * dValid;
-
-                // red element
-                // Yr = Ar(1-w)(1-h) + Br(w)(1-h) + Cr(h)(1-w) + Dr(wh)
-                red =   *(a + 0) * inverseWidthAndHight * aValid +
-                        *(b + 0) * widthAndInverseHeight * bValid +
-                        *(c + 0) * heightAndInverseWidth * cValid + 
-                        *(d + 0) * widthHeight * dValid;
-                if(red > 0)
-                    red /= total;
-
-                // green element
-                // Yg = Ag(1-w)(1-h) + Bg(w)(1-h) + Cg(h)(1-w) + Dg(wh)
-                green = *(a + 1) * inverseWidthAndHight * aValid +
-                        *(b + 1) * widthAndInverseHeight * bValid +
-                        *(c + 1) * heightAndInverseWidth * cValid +
-                        *(d + 1) * widthHeight * dValid;
-                if(green > 0)
-                    green /= total;
-
-                // blue element
-                // Yb = Ab(1-w)(1-h) + Bb(w)(1-h) + Cb(h)(1-w) + Db(wh)
-                blue =  *(a + 2) * inverseWidthAndHight * aValid +
-                        *(b + 2) * widthAndInverseHeight * bValid +
-                        *(c + 2) * heightAndInverseWidth * cValid +
-                        *(d + 2) * widthHeight * dValid;
-                if(blue > 0)
-                    blue /= total;
-
-                // alpha element
-                //Using nearest neighbour for alpha otherwise it will show the color for pixels we are sampling that have 0 alpha
-                // if(inverseWidthAndHight > 0.25)
-                //     alpha = *(a + 3);
-                // else if(widthAndInverseHeight > 0.25)
-                //     alpha = *(b + 3);
-                // else if(heightAndInverseWidth > 0.25)
-                //     alpha = *(c + 3);
-                // else
-                //     alpha = *(d + 3);
-
-                //Ya = Aa(1-w)(1-h) + Ba(w)(1-h) + Ca(h)(1-w) + Da(wh)
-                alpha = *(a + 3) * inverseWidthAndHight + 
-                        *(b + 3) * widthAndInverseHeight +
-                        *(c + 3) * heightAndInverseWidth + 
-                        *(d + 3) * widthHeight;
-                                
-                //ssLOG_LINE("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
-
-                // range is 0 to 255 thus bitwise AND with 0xff
-                outputPixels[offset * 4] =      (uint8_t)(((int)red) & 0xff);
-                outputPixels[offset * 4 + 1] =  (uint8_t)(((int)green) & 0xff);
-                outputPixels[offset * 4 + 2] =  (uint8_t)(((int)blue) & 0xff);
-                outputPixels[offset * 4 + 3] =  (uint8_t)(((int)alpha) & 0xff);
-                offset++;
-            }
-        }
         ssLOG_FUNC_EXIT();
     }
 
@@ -223,16 +128,18 @@ namespace ssGUI::Backend
             {
                 //Add a new item to realtime input info, that continues from the last input state
                 ssGUI::RealtimeInputInfo curInfo;
+
+                //TODO: Remove this? This looks wrong
                 if(CurrentInputInfos.empty())
                     curInfo.CurrentMousePosition = LastMousePosition;
 
                 //Check mouse position as mouseMove event is not reliable
                 if(event.type == sf::Event::MouseMoved) 
                 { 
-                    event.mouseMove.x += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().x +  
+                    event.mouseMove.x += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetWindowPosition().x +  
                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().x;
  
-                    event.mouseMove.y += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPosition().y +  
+                    event.mouseMove.y += ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetWindowPosition().y +  
                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetPositionOffset().y;
 
                     curInfo.MouseMoved = true;
@@ -240,6 +147,7 @@ namespace ssGUI::Backend
                     CurrentInputInfos.push_back(curInfo);
                     continue;
                 }
+                //TODO: Change this? This looks wrong
                 else if(glm::ivec2(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y) != curInfo.CurrentMousePosition)
                 {
                     curInfo.MouseMoved = true;
@@ -306,7 +214,7 @@ namespace ssGUI::Backend
                 {
                     ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
                     curInfo.CurrentButtonAndKeyChanged = input;
-                    FetchKeysReleased(input, CurrentKeyPresses);
+                    FetchKeysPressed(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
                     AddNonExistElement(static_cast<ssGUI::Enums::MouseButton>(input), CurrentMouseButtons);
                     continue;
@@ -373,6 +281,7 @@ namespace ssGUI::Backend
 
     void BackendSystemInputSFML::SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow)
     {
+        //TODO: This might not work for multi-monitor, change this to use window version of setPosition instead
         if(mainWindow != nullptr)
             position += mainWindow->GetDisplayPosition() + mainWindow->GetPositionOffset();
         
@@ -430,7 +339,7 @@ namespace ssGUI::Backend
         return CurrentCursor;
     }
 
-    //TODO: Store the hotspot and also shouldn't be setting the cursor 
+    //TODO: refactor this function, see Win32 version
     void BackendSystemInputSFML::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssLOG_FUNC_ENTRY();
@@ -450,14 +359,55 @@ namespace ssGUI::Backend
             ssLOG_FUNC_EXIT();
             return;
         }
+        //Otherwise we can add the cursor to our cache
         else
         {
+            #ifdef SSGUI_IMAGE_BACKEND_SFML
+                sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+            #else
+                //Convert everything to sf::Image
+                sf::Image cursorImg;
+                ssGUI::ImageFormat cursorFormat;
+                void* imgPtr = customCursor->GetPixelPtr(cursorFormat);
+                
+                if(imgPtr == nullptr)
+                {
+                    ssLOG_LINE("Failed to create custom cursor");
+                    return;
+                }
+                
+                bool result = false;
+
+                //TODO: Move this to somewhere else
+                if(cursorFormat.BitDepthPerChannel == 8)
+                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(cursorImg, imgPtr, cursorFormat, customCursor->GetSize());
+                else if(cursorFormat.BitDepthPerChannel == 16)
+                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(cursorImg, imgPtr, cursorFormat, customCursor->GetSize());
+                else
+                {
+                    ssLOG_LINE("Unsupported bit depth: "<<cursorFormat.BitDepthPerChannel);
+                    return;
+                }
+                
+                if(!result)
+                {
+                    ssLOG_LINE("Failed to convert image");
+                    return;
+                }
+            #endif
+        
             if(customCursor->GetSize() == cursorSize)
-                CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+            {
+                #ifdef SSGUI_IMAGE_BACKEND_SFML
+                    CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+                #else
+                    CustomCursors[cursorName].first = cursorImg;
+                #endif
+            }
             else
-            {            
+            {
                 //Original cursor image
-                auto oriCursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+                auto& oriCursorImg = cursorImg;
 
                 //temporary image pointers for resizing
                 uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
@@ -475,17 +425,17 @@ namespace ssGUI::Backend
                 glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
 
                 //Resize width until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.x > cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
-                        (currentCursorSize.x < cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
+                while ((currentCursorSize.x < cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
+                        (currentCursorSize.x > cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
                 {
                     delete[] cursorPtrArr[(populatedImg + 1) % 2];
                     
                     //Enlarging
-                    if(currentCursorSize.x > cursorSize.x)
+                    if(currentCursorSize.x < cursorSize.x)
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg], 
                             currentCursorSize.x, 
@@ -502,7 +452,7 @@ namespace ssGUI::Backend
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg], 
                             currentCursorSize.x, 
@@ -519,17 +469,17 @@ namespace ssGUI::Backend
                 }
                 
                 //Resize height until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.y > cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
-                        (currentCursorSize.y < cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
+                while ((currentCursorSize.y < cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
+                        (currentCursorSize.y > cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
                 {
                     delete[] cursorPtrArr[(populatedImg + 1) % 2];
                     
                     //Enlarging
-                    if(currentCursorSize.y > cursorSize.y)
+                    if(currentCursorSize.y < cursorSize.y)
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg], 
                             currentCursorSize.x, 
@@ -546,7 +496,7 @@ namespace ssGUI::Backend
                     {
                         cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
 
-                        ResizeBilinear
+                        ssGUI::ImageUtil::ResizeBilinear
                         (
                             cursorPtrArr[populatedImg],
                             currentCursorSize.x, 
@@ -564,7 +514,7 @@ namespace ssGUI::Backend
 
                 //Do the final round of resizing
                 cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
-                ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
+                ssGUI::ImageUtil::ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
                 CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), cursorPtrArr[(populatedImg + 1) % 2]);
 
                 delete[] cursorPtr;
@@ -597,8 +547,10 @@ namespace ssGUI::Backend
         if(CustomCursors[CurrentCustomCursor].first.getPixelsPtr() == nullptr)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize().x, 
-            CustomCursors[CurrentCustomCursor].first.getSize().y))
+        if(!customCursor.LoadRawFromMemory( CustomCursors[CurrentCustomCursor].first.getPixelsPtr(),
+                                            ssGUI::ImageFormat(),
+                                            glm::ivec2( CustomCursors[CurrentCustomCursor].first.getSize().x, 
+                                                        CustomCursors[CurrentCustomCursor].first.getSize().y)))
         {
             ssLOG_LINE("Failed to load custom cursor image");   
         }
@@ -619,8 +571,10 @@ namespace ssGUI::Backend
         if(CustomCursors[cursorName].first.getPixelsPtr() == nullptr)
             return;
 
-        if(!customCursor.LoadRawFromMemory(CustomCursors[cursorName].first.getPixelsPtr(), CustomCursors[cursorName].first.getSize().x, 
-            CustomCursors[cursorName].first.getSize().y))
+        if(!customCursor.LoadRawFromMemory( CustomCursors[cursorName].first.getPixelsPtr(), 
+                                            ssGUI::ImageFormat(),
+                                            glm::ivec2( CustomCursors[cursorName].first.getSize().x, 
+                                                        CustomCursors[cursorName].first.getSize().y)))
         {
             ssLOG_LINE("Failed to load custom cursor image");
         }
@@ -805,10 +759,21 @@ namespace ssGUI::Backend
     {
         clip::image img;
 
-        if(!clip::get_image(img) || img.spec().bits_per_pixel != 32)
+        if(!clip::get_image(img))
             return false;
+        
+        clip::image_spec spec = img.spec();
+            
+        ssGUI::ImageFormat format;
+        format.HasAlpha = spec.alpha_mask > 0;
+        format.IndexR = spec.red_shift / 8;
+        format.IndexG = spec.green_shift / 8;
+        format.IndexB = spec.blue_shift / 8;
+        format.IndexA = spec.alpha_shift / 8;
 
-        return imgData.LoadRawFromMemory(static_cast<void*>(img.data()), img.spec().width, img.spec().height);
+        return imgData.LoadRawFromMemory(   static_cast<void*>(img.data()), 
+                                            format,
+                                            glm::ivec2(img.spec().width, img.spec().height));
     }
 
     bool BackendSystemInputSFML::GetClipboardText(std::wstring& str)
@@ -845,4 +810,4 @@ namespace ssGUI::Backend
     }
 }
 
-
+}

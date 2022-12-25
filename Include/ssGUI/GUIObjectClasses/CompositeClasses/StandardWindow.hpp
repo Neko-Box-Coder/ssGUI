@@ -1,5 +1,5 @@
-#ifndef SSGUI_STANDARD_WINDOW
-#define SSGUI_STANDARD_WINDOW
+#ifndef SSGUI_STANDARD_WINDOW_H
+#define SSGUI_STANDARD_WINDOW_H
 
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
@@ -196,6 +196,8 @@ namespace ssGUI
             ssGUIObjectIndex WindowIcon;        //See <GetWindowIconObject>
             ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
+            static ssGUI::ImageData* DefaultIcon;
+
             StandardWindow(StandardWindow const& other);
 
             virtual void UpdateTitleText();
@@ -296,6 +298,10 @@ namespace ssGUI
             //function: GetAdaptiveTitleColorDifference
             //Gets the title text color difference to titlebar color (TitleTextColor-TitlebarColor)
             virtual glm::ivec4 GetAdaptiveTitleColorDifference() const;
+
+            //function: CleanUpDefaultIconData
+            //Dispose default icon data
+            static void CleanUpDefaultIconData();
 
             //function: SetTitlebarColor
             //See <Window::SetTitlebarColor>

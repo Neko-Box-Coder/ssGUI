@@ -1,10 +1,13 @@
-#ifndef SSGUI_NUMBER_KEY
-#define SSGUI_NUMBER_KEY
+#ifndef SSGUI_NUMBER_KEY_H
+#define SSGUI_NUMBER_KEY_H
 
 #include <cstdint>
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: NumberKey
 
@@ -39,5 +42,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

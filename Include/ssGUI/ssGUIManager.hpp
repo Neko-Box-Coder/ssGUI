@@ -1,10 +1,9 @@
-#ifndef SSGUI_MANAGER
-#define SSGUI_MANAGER
+#ifndef SSGUI_MANAGER_H
+#define SSGUI_MANAGER_H
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 #include "ssGUI/Enums/GUIObjectType.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
-#include "ssGUI/Backend/BackendFactory.hpp"
 
 #include <stack>
 #include <queue>

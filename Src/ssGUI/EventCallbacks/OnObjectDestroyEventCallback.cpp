@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string OnObjectDestroyEventCallback::GetEventCallbackName() const
     {   
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string OnObjectDestroyEventCallback::EVENT_NAME = "OnObjectDestroyEvent";
+}
+
 }

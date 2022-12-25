@@ -2,7 +2,10 @@
 #include "ssLogger/ssLog.hpp"
 
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     Border::Border() :  Container(nullptr),
                         Enabled(true),
@@ -270,4 +273,6 @@ namespace ssGUI::Extensions
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

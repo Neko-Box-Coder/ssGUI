@@ -1,8 +1,11 @@
-#ifndef SSGUI_CURSOR_TYPE
-#define SSGUI_CURSOR_TYPE
+#ifndef SSGUI_CURSOR_TYPE_H
+#define SSGUI_CURSOR_TYPE_H
 
+namespace ssGUI 
+{ 
+    
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: CursorType
 
@@ -42,6 +45,8 @@ namespace ssGUI::Enums
         NOT_ALLOWED,
         CUSTOM
     };
+}
+
 }
 
 

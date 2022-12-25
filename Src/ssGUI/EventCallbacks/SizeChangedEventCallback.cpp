@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string SizeChangedEventCallback::GetEventCallbackName() const
     {   
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string SizeChangedEventCallback::EVENT_NAME = "SizeChangedEvent";
+}
+
 }

@@ -1,10 +1,13 @@
-#ifndef SSGUI_MOUSE_BUTTON
-#define SSGUI_MOUSE_BUTTON
+#ifndef SSGUI_MOUSE_BUTTON_H
+#define SSGUI_MOUSE_BUTTON_H
 
 #include <cstdint>
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: MouseButton
     
@@ -21,5 +24,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

@@ -1,10 +1,13 @@
-#ifndef SSGUI_FUNCTION_KEY
-#define SSGUI_FUNCTION_KEY
+#ifndef SSGUI_FUNCTION_KEY_H
+#define SSGUI_FUNCTION_KEY_H
 
 #include <cstdint>
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: FunctionKey
     
@@ -30,5 +33,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

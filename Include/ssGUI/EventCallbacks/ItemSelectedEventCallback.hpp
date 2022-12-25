@@ -1,10 +1,13 @@
-#ifndef ITEM_SELECTED_EVENT_CALLBACK
-#define ITEM_SELECTED_EVENT_CALLBACK
+#ifndef SSGUI_ITEM_SELECTED_EVENT_CALLBACK_H
+#define SSGUI_ITEM_SELECTED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::ItemSelectedEventCallback
     //This event callback is triggered *after* an item is selected. Dropdown(Container) will be the source for triggering this event callback.
@@ -37,6 +40,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

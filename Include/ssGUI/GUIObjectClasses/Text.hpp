@@ -1,5 +1,5 @@
-#ifndef SSGUI_TEXT
-#define SSGUI_TEXT
+#ifndef SSGUI_TEXT_H
+#define SSGUI_TEXT_H
 
 #include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"
 #include "ssGUI/DataClasses/Font.hpp"
@@ -10,7 +10,6 @@
 #include "ssGUI/Enums/TextAlignmentHorizontal.hpp"
 #include "ssGUI/Enums/TextAlignmentVertical.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/DataClasses/SegmentedVector.hpp"

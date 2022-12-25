@@ -1,13 +1,16 @@
-#ifndef SSGUI_DOCKABLE
-#define SSGUI_DOCKABLE
+#ifndef SSGUI_DOCKABLE_H
+#define SSGUI_DOCKABLE_H
 
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //This is needed as Extension is only forward declaring ssGUI::GUIObject
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "glm/vec4.hpp"
 
+namespace ssGUI 
+{ 
+
 //namespace: ssGUI::Extensions
-namespace ssGUI::Extensions
+namespace Extensions
 {       
     class Layout;
     
@@ -294,6 +297,8 @@ namespace ssGUI::Extensions
             //See <Extension::Clone>
             virtual Dockable* Clone(ssGUI::GUIObject* newContainer) override;
     };
+}
+
 }
 
 #endif

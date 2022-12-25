@@ -1,10 +1,13 @@
-#ifndef SSGUI_LETTER_KEY
-#define SSGUI_LETTER_KEY
+#ifndef SSGUI_LETTER_KEY_H
+#define SSGUI_LETTER_KEY_H
 
 #include <cstdint>
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: LetterKey
     
@@ -43,5 +46,6 @@ namespace ssGUI::Enums
     };
 }
 
+}
 
 #endif

@@ -1,6 +1,9 @@
 #include "ssGUI/EventCallbacks/ButtonStateChangedEventCallback.hpp"
 
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+namespace EventCallbacks
 {
     std::string ButtonStateChangedEventCallback::GetEventCallbackName() const
     {
@@ -23,4 +26,6 @@ namespace ssGUI::EventCallbacks
     }
 
     const std::string ButtonStateChangedEventCallback::EVENT_NAME = "ButtonStateChangedEvent";
+}
+
 }

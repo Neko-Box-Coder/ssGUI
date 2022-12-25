@@ -8,7 +8,10 @@
 
 #include "ssLogger/ssLog.hpp"
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     ssGUI::Window* Docker::DefaultGeneratedDockerWindow = nullptr;
 
@@ -684,4 +687,6 @@ namespace ssGUI::Extensions
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

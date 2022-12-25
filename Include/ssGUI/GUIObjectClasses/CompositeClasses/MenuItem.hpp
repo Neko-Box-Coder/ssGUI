@@ -1,5 +1,5 @@
-#ifndef SSGUI_MENU_ITEM
-#define SSGUI_MENU_ITEM
+#ifndef SSGUI_MENU_ITEM_H
+#define SSGUI_MENU_ITEM_H
 
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 #include "glm/vec4.hpp"

@@ -1,10 +1,13 @@
-#ifndef SLIDER_VALUE_CHANGED_EVENT_CALLBACK
-#define SLIDER_VALUE_CHANGED_EVENT_CALLBACK
+#ifndef SSGUI_SLIDER_VALUE_CHANGED_EVENT_CALLBACK_H
+#define SSGUI_SLIDER_VALUE_CHANGED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::SliderValueChangedEventCallback
     //This event callback is triggered *shortly after* the value of the slider is changed.
@@ -36,6 +39,8 @@ namespace ssGUI::EventCallbacks
             //See <BaseEventCallback::EVENT_NAME>
             static const std::string EVENT_NAME;
     };
+}
+
 }
 
 #endif

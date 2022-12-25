@@ -1,9 +1,7 @@
-#ifndef SSGUI_FONT
-#define SSGUI_FONT
+#ifndef SSGUI_FONT_H
+#define SSGUI_FONT_H
 
-#include "ssGUI/Backend/BackendFactory.hpp"
-
-//#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 
 //namespace: ssGUI
 namespace ssGUI

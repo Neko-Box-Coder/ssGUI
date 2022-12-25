@@ -1,10 +1,13 @@
-#ifndef SIZE_CHANGED_EVENT_CALLBACK
-#define SIZE_CHANGED_EVENT_CALLBACK
+#ifndef SSGUI_SIZE_CHANGED_EVENT_CALLBACK_H
+#define SSGUI_SIZE_CHANGED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::SizeChangedEventCallback
     //This event callback is triggered *after* this GUI object's size has changed. Container will be the source for triggering this event callback.
@@ -38,6 +41,6 @@ namespace ssGUI::EventCallbacks
     };
 }
 
-
+}
 
 #endif

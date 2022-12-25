@@ -5,7 +5,9 @@
 #include "ssGUI/Extensions/BoxShadow.hpp"
 
 #include "ssGUI/Factory.hpp"
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
+#include "ssGUI/HeaderGroups/KeyGroup.hpp"
 
 #include "ssLogger/ssLog.hpp"
 
@@ -673,7 +675,7 @@ namespace ssGUI
                 //Last character
                 if(CurrentCharactersDetails[lastValidIndex].Character != '\n')
                 {
-                    drawPos += CharactersRenderInfos[lastValidIndex].RenderPosition + 
+                    drawPos += CharactersRenderInfos[lastValidIndex].BaselinePosition + 
                         glm::vec2(CharactersRenderInfos[lastValidIndex].Advance, 
                         CharactersRenderInfos[lastValidIndex].LineMinY);
                     
@@ -705,7 +707,7 @@ namespace ssGUI
                         drawPos.x += GetSize().x - GetHorizontalPadding();
                     }
 
-                    drawPos.y += CharactersRenderInfos[lastValidIndex].RenderPosition.y + 
+                    drawPos.y += CharactersRenderInfos[lastValidIndex].BaselinePosition.y + 
                         CharactersRenderInfos[lastValidIndex].LineMinY +
                         fontInterface->GetLineSpacing(curDetail.FontSize) + GetLineSpace();
                     
@@ -715,7 +717,7 @@ namespace ssGUI
             }
             else
             {
-                drawPos += CharactersRenderInfos[GetEndSelectionIndex()].RenderPosition + 
+                drawPos += CharactersRenderInfos[GetEndSelectionIndex()].BaselinePosition + 
                     glm::vec2(0, CharactersRenderInfos[GetEndSelectionIndex()].LineMinY);
                 
                 height = CharactersRenderInfos[GetEndSelectionIndex()].LineMaxY - 

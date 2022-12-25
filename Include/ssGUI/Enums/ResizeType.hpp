@@ -1,8 +1,11 @@
-#ifndef SSGUI_RESIZE_TYPE
-#define SSGUI_RESIZE_TYPE
+#ifndef SSGUI_RESIZE_TYPE_H
+#define SSGUI_RESIZE_TYPE_H
+
+namespace ssGUI
+{
 
 //namespace: ssGUI::Enums
-namespace ssGUI::Enums
+namespace Enums
 {
     /*enum: ResizeType
     
@@ -22,6 +25,8 @@ namespace ssGUI::Enums
         BOTTOM,
         RIGHT
     };
+}
+
 }
 
 #endif

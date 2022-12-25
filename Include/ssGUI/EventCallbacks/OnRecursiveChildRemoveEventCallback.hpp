@@ -1,10 +1,13 @@
-#ifndef ON_RECURSIVE_CHILD_REMOVE_EVENT_CALLBACK
-#define ON_RECURSIVE_CHILD_REMOVE_EVENT_CALLBACK
+#ifndef SSGUI_ON_RECURSIVE_CHILD_REMOVE_EVENT_CALLBACK_H
+#define SSGUI_ON_RECURSIVE_CHILD_REMOVE_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
-//namespace: ssGUI::EventCallbacks::ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace ssGUI
+{
+
+//namespace: ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: OnRecursiveChildRemoveEventCallback
     //This event callback is triggered *before* a child is removed recursively on this GUI object. 
@@ -39,6 +42,6 @@ namespace ssGUI::EventCallbacks
     };
 }
 
-
+}
 
 #endif

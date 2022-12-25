@@ -4,7 +4,10 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-namespace ssGUI::Extensions
+namespace ssGUI
+{
+
+namespace Extensions
 {
     MaskEnforcer::MaskEnforcer() :  Container(nullptr),
                                     Enabled(true),
@@ -306,4 +309,6 @@ namespace ssGUI::Extensions
             newContainer->AddExtension(temp);
         return temp;
     }
+}
+
 }

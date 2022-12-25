@@ -1,10 +1,13 @@
-#ifndef BUTTON_STATE_CHANGED_EVENT_CALLBACK
-#define BUTTON_STATE_CHANGED_EVENT_CALLBACK
+#ifndef SSGUI_BUTTON_STATE_CHANGED_EVENT_CALLBACK_H
+#define SSGUI_BUTTON_STATE_CHANGED_EVENT_CALLBACK_H
 
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
+namespace ssGUI
+{
+
 //namespace: ssGUI::EventCallbacks
-namespace ssGUI::EventCallbacks
+namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::ButtonStateChangedEventCallback
     //This event callback is triggered *after* the button state has changed. Button(Container) will be the source for triggering this event callback.
@@ -39,4 +42,5 @@ namespace ssGUI::EventCallbacks
     };
 }
 
+}
 #endif
