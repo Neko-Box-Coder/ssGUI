@@ -193,8 +193,10 @@ namespace Backend
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::TAB);
             case VK_CAPITAL:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::CAPS_LOCK);
+            case VK_SHIFT:      //TODO: Maybe add enum entry
             case VK_LSHIFT:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::LEFT_SHIFT);
+            case VK_CONTROL:    //TODO: Maybe enum entry
             case VK_LCONTROL:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::LEFT_CTRL);
             case VK_LWIN:
@@ -244,13 +246,16 @@ namespace Backend
 
     ssGUI::Enums::GenericButtonAndKeyInput Win32InputConverter::ConvertMouseButtons(const MSG& msg)
     {
-        switch(msg.wParam)
+        switch(msg.message)
         {
-            case MK_LBUTTON:
+            case WM_LBUTTONDOWN:
+            case WM_LBUTTONUP:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::MouseButton::LEFT);
-            case MK_MBUTTON:
+            case WM_MBUTTONDOWN:
+            case WM_MBUTTONUP:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::MouseButton::MIDDLE);
-            case MK_RBUTTON:
+            case WM_RBUTTONDOWN:
+            case WM_RBUTTONUP:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::MouseButton::RIGHT);
             default:
                 return ssGUI::Enums::NO_INPUT;

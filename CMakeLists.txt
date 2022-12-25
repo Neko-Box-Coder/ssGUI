@@ -317,8 +317,10 @@ function(AddFilesToExecutables folderToExe binSubFolder)
 
 endfunction()
 
-AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
-
+# TODO: Create proper backend test, right now it only contains test for Win32
+if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
+endif()
 
 if(ssGUI_BUILD_TESTS)
 

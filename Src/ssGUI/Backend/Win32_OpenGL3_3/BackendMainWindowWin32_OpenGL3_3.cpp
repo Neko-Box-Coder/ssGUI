@@ -510,6 +510,12 @@ namespace Backend
         return true;
     }
 
+    BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3(BackendMainWindowWin32_OpenGL3_3 const& other)
+    {
+        //TODO
+        ssLOG_LINE("Not implemented");
+        ssLOG_EXIT_PROGRAM();
+    }
 
     BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3() :  CurrentWindowHandle(nullptr),
                                                                             CurrentOpenGLContext(NULL),

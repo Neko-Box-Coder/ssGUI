@@ -224,7 +224,7 @@ namespace Backend
             //Text enter event
             case WM_CHAR:
             {
-                wchar_t curChar = msg.lParam;
+                wchar_t curChar = msg.wParam;
                 InputText += curChar;
                 curInfo.CharacterEntered = true;
                 curInfo.CurrentCharacterEntered += curChar;
@@ -496,8 +496,8 @@ namespace Backend
         {
             uint8_t* resizedPtr = new uint8_t[cursorSize.x * cursorSize.y * 4];
             ssGUI::ImageUtil::Resize(   convertedPtr, 
-                                        cursorData.CursorImage->GetSize().x, 
-                                        cursorData.CursorImage->GetSize().y,
+                                        customCursor->GetSize().x, 
+                                        customCursor->GetSize().y,
                                         resizedPtr,
                                         cursorSize.x,
                                         cursorSize.y);

@@ -35,6 +35,9 @@ namespace Backend
             }
             ImageTextures.clear();
         #endif
+        //TODO: AddDrawingInterface
+        ssLOG_LINE("Not implemented");
+        ssLOG_EXIT_PROGRAM();
     }
 
     BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0),

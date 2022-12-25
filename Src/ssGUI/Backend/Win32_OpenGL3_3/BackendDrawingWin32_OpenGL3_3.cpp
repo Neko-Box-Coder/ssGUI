@@ -68,6 +68,12 @@ namespace Backend
         GL_CHECK_ERROR( glMultMatrixf(glm::value_ptr(orthoMat)); );
     }
 
+    BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3(BackendDrawingWin32_OpenGL3_3 const& other)
+    {
+        //TODO
+        ssLOG_LINE("Not implemented");
+        ssLOG_EXIT_PROGRAM();
+    }
     
     BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3() :    BackendIndex(0),
                                                                         LastMainWindowSize(-1, -1),
@@ -423,9 +429,7 @@ namespace Backend
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::u8vec4>& colors,
                             int startIndex, int endIndex)
-    {
-        return true;
-        
+    {   
         GetMainWindow()->SetGLContext();
 
         GL_CHECK_ERROR( glEnable(GL_BLEND); );
