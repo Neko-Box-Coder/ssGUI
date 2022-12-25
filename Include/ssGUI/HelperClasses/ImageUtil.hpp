@@ -183,8 +183,8 @@ namespace ssGUI
             const uint8_t* c;
             const uint8_t* d; 
             int x, y, index;
-            float x_ratio = ((float)(w - 1)) / w2 ;
-            float y_ratio = ((float)(h - 1)) / h2 ;
+            float x_ratio = ((float)(w/* - 1*/)) / (float)w2 ;
+            float y_ratio = ((float)(h/* - 1*/)) / (float)h2 ;
             float x_diff, y_diff, blue, red, green, alpha;
             int offset = 0;
             bool aValid, bValid, cValid, dValid;
@@ -280,7 +280,8 @@ namespace ssGUI
             //temporary image pointers for resizing
             uint8_t* imgPtr = new uint8_t[w * h * 4];
             uint8_t* imgPtr1 = new uint8_t[1];
-            uint8_t* imgPtrArr[] = {imgPtr, imgPtr1};
+            uint8_t** imgPtrArr[] = {&imgPtr, &imgPtr1};
+            int allocationCounter[] = {1, 1};
 
             //Flag for indicating which pointer has just been populated
             int populatedImg = 0;
@@ -296,19 +297,21 @@ namespace ssGUI
             while ((currentSize.x < w2 && currentSize.x * 2 < w2) ||
                     (currentSize.x > w2 && (int)(currentSize.x * 0.5) > w2))
             {
-                delete[] imgPtrArr[(populatedImg + 1) % 2];
+                delete[] *imgPtrArr[(populatedImg + 1) % 2];
+                allocationCounter[(populatedImg + 1) % 2]--;
                     
                 //Enlarging
                 if(currentSize.x < w2)
                 {
-                    imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentSize.x * 2 * currentSize.y * 4];
+                    *imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentSize.x * 2 * currentSize.y * 4];
+                    allocationCounter[(populatedImg + 1) % 2]++;
 
                     ResizeBilinear
                     (
-                        imgPtrArr[populatedImg], 
+                        *imgPtrArr[populatedImg], 
                         currentSize.x, 
                         currentSize.y,
-                        imgPtrArr[(populatedImg + 1) % 2],
+                        *imgPtrArr[(populatedImg + 1) % 2],
                         currentSize.x * 2,
                         currentSize.y
                     );
@@ -318,14 +321,15 @@ namespace ssGUI
                 //Reducing
                 else
                 {
-                    imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentSize.x * 0.5) * currentSize.y * 4];
+                    *imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentSize.x * 0.5) * currentSize.y * 4];
+                    allocationCounter[(populatedImg + 1) % 2]++;
 
                     ResizeBilinear
                     (
-                        imgPtrArr[populatedImg], 
+                        *imgPtrArr[populatedImg], 
                         currentSize.x, 
                         currentSize.y,
-                        imgPtrArr[(populatedImg + 1) % 2],
+                        *imgPtrArr[(populatedImg + 1) % 2],
                         currentSize.x * 0.5,
                         currentSize.y
                     );
@@ -340,19 +344,21 @@ namespace ssGUI
             while ((currentSize.y < h2 && currentSize.y * 2 < h2) ||
                     (currentSize.y > h2 && (int)(currentSize.y * 0.5) > h2))
             {
-                delete[] imgPtrArr[(populatedImg + 1) % 2];
+                delete[] *imgPtrArr[(populatedImg + 1) % 2];
+                allocationCounter[(populatedImg + 1) % 2]--;
                     
                 //Enlarging
                 if(currentSize.y < h2)
                 {
-                    imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentSize.x * currentSize.y * 2 * 4];
+                    *imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentSize.x * currentSize.y * 2 * 4];
+                    allocationCounter[(populatedImg + 1) % 2]++;
 
                     ResizeBilinear
                     (
-                        imgPtrArr[populatedImg], 
+                        *imgPtrArr[populatedImg], 
                         currentSize.x, 
                         currentSize.y,
-                        imgPtrArr[(populatedImg + 1) % 2],
+                        *imgPtrArr[(populatedImg + 1) % 2],
                         currentSize.x,
                         currentSize.y * 2
                     );
@@ -362,14 +368,15 @@ namespace ssGUI
                 //Reducing
                 else
                 {
-                    imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentSize.x * (int)(currentSize.y * 0.5) * 4];
+                    *imgPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentSize.x * (int)(currentSize.y * 0.5) * 4];
+                    allocationCounter[(populatedImg + 1) % 2]++;
 
                     ResizeBilinear
                     (
-                        imgPtrArr[populatedImg],
+                        *imgPtrArr[populatedImg],
                         currentSize.x, 
                         currentSize.y,
-                        imgPtrArr[(populatedImg + 1) % 2],
+                        *imgPtrArr[(populatedImg + 1) % 2],
                         currentSize.x,
                         currentSize.y * 0.5
                     );
@@ -381,7 +388,7 @@ namespace ssGUI
             }
 
             //Do the final round of resizing
-            ResizeBilinear( imgPtrArr[populatedImg], 
+            ResizeBilinear( *imgPtrArr[populatedImg], 
                             currentSize.x, 
                             currentSize.y, 
                             outputPixels, 
