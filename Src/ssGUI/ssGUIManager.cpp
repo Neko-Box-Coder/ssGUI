@@ -5,6 +5,8 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 #include "ssLogger/ssLog.hpp"
 
+#include "ssGUI/Backend/BackendFactory.hpp"
+
 //Debug
 #include "ssGUI/Extensions/Layout.hpp"
 #include <thread>

@@ -83,7 +83,7 @@ namespace Backend
             
             bool result = false;
             
-
+            //TODO: Move this to somewhere else
             switch(format.BitDepthPerChannel)
             {
                 case 8:

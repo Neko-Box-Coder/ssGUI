@@ -1,5 +1,8 @@
 #include "ssGUI/DataClasses/Font.hpp"
 
+#include "ssGUI/Backend/BackendFactory.hpp"
+
+
 namespace ssGUI
 {
     Font::Font(Font const& other)

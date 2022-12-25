@@ -48,7 +48,7 @@ endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")                      # Allow dropdown option
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Template")
@@ -227,8 +227,11 @@ if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
     target_compile_definitions(ssGUI PRIVATE SSGUI_MAIN_BACKEND_WIN32_OPENGL)
+    target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
     find_package(OpenGL REQUIRED)
     target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
+elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
+    message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
 else()
     message(FATAL_ERROR "Invalid Main Backend")
 endif()
@@ -238,6 +241,8 @@ if(ssGUI_FONT_BACKEND STREQUAL "SFML")
 elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
     target_link_libraries(ssGUI PRIVATE freetype)
     target_compile_definitions(ssGUI PRIVATE SSGUI_FONT_BACKEND_FREE_TYPE)
+elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
+    message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
 else()
     message(FATAL_ERROR "Invalid Font Backend")
 endif()
@@ -247,6 +252,8 @@ if(ssGUI_IMAGE_BACKEND STREQUAL "SFML")
 elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
     target_compile_definitions(ssGUI PRIVATE SSGUI_IMAGE_BACKEND_STB_IMAGE)
     target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
+    message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
 else()
     message(FATAL_ERROR "Invalid Image Backend")
 endif()
@@ -282,21 +289,17 @@ endif()
 file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
         DESTINATION "${CMAKE_BINARY_DIR}")
 
-if(ssGUI_BUILD_TESTS)
+# ==========================================================
+# Building tests and examples 
+# ==========================================================
 
-    # set(ssGUI_TEST_CPP_FILES "" STRING)
-    file(GLOB ssGUI_TEST_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/*.cpp")
+function(AddFilesToExecutables folderToExe binSubFolder)
+    file(GLOB ssGUI_EXE_CPP_FILES "${folderToExe}*.cpp")
 
-    # message("${ssGUI_TEST_CPP_FILES}")
-
-    foreach(CUR_SOURCE_PATH ${ssGUI_TEST_CPP_FILES})
+    foreach(CUR_SOURCE_PATH ${ssGUI_EXE_CPP_FILES})
 
         # Get the file name without path and extension
         get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
-        
-        # message("${CUR_SOURCE_PATH}\n")
-        # message("${CUR_NAME}\n")
-        # message("${ssGUI_TEST_CPP_FILES}")
 
         # Freetype test
         if(CUR_NAME STREQUAL "FreetypeTest" AND NOT ssGUI_FONT_BACKEND STREQUAL "FreeType")
@@ -314,8 +317,44 @@ if(ssGUI_BUILD_TESTS)
         target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
 
         # Sub-directory for build
-        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests")
-    endforeach(CUR_SOURCE_PATH "$[ssGUI_TEST_CPP_FILES}")
+        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY binSubFolder)
+    endforeach(CUR_SOURCE_PATH "${ssGUI_EXE_CPP_FILES}")
+
+endfunction()
+
+# TODO: Create proper backend test, right now it only contains test for Win32
+if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
+endif()
+
+if(ssGUI_BUILD_TESTS)
+
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
+    
+
+    # # set(ssGUI_TEST_CPP_FILES "" STRING)
+    # file(GLOB ssGUI_TEST_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/*.cpp")
+
+    # # message("${ssGUI_TEST_CPP_FILES}")
+
+    # foreach(CUR_SOURCE_PATH ${ssGUI_TEST_CPP_FILES})
+
+    #     # Get the file name without path and extension
+    #     get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
+        
+    #     # message("${CUR_SOURCE_PATH}\n")
+    #     # message("${CUR_NAME}\n")
+    #     # message("${ssGUI_TEST_CPP_FILES}")
+
+    #     # add the executable
+    #     add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
+
+    #     # Link ssGUI to executable
+    #     target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
+
+    #     # Sub-directory for build
+    #     set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests")
+    # endforeach(CUR_SOURCE_PATH "${ssGUI_TEST_CPP_FILES}")
 
     # Copy resources for the Tests 
     file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
@@ -325,7 +364,7 @@ endif()
 
 
 if(ssGUI_BUILD_EXAMPLES)
-
+    # TODO: Move this to be using AddFilesToExecutables
     file(GLOB ssGUI_EXAMPLE_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/*.cpp")
     foreach(CUR_SOURCE_PATH ${ssGUI_EXAMPLE_CPP_FILES})
 

@@ -13,6 +13,8 @@ namespace Backend
         PositionOffset(other.GetPositionOffset())
     {
         //TODO : finish backend copy constructor and assignment and clone function
+        ssLOG_LINE("Not implemented");
+        ssLOG_EXIT_PROGRAM();
     }
     
     void BackendMainWindowSFML::ResetWindow(ssGUI::Enums::WindowMode mode, bool resize, bool titlebar, bool canClose, int msaa)

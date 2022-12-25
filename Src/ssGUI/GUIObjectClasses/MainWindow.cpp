@@ -4,6 +4,8 @@
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 
+#include "ssGUI/Backend/BackendFactory.hpp"
+
 #include "ssLogger/ssLog.hpp"
 
 namespace ssGUI

@@ -3,6 +3,11 @@
 
 #include <cstdint>
 
+//We need to undefine the DELETE macro from Win32 because this collides with our enum name
+#ifdef SSGUI_MAIN_BACKEND_WIN32_OPENGL
+#undef DELETE
+#endif
+
 namespace ssGUI
 {
 
@@ -35,6 +40,7 @@ namespace Enums
     DOWN            - Down arrow key
     RIGHT           - Right arrow key
     NUMPAD_ENTER    - Numpad enter key (SFML backend doesn't support it)
+                      TODO: Maybe remove NUMPAD_ENTER because it seems to always share the same key as ENTER
     */
     enum class SystemKey : uint16_t
     {

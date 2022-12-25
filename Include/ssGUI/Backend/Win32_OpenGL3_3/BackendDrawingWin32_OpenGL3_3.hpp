@@ -3,46 +3,93 @@
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
+#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+
+#include <windows.h>            /* must include this before GL/gl.h */
+
+#include "glad/glad.h"
+#include "glad/glad_wgl.h"
+
+#include <unordered_map>
+
 namespace ssGUI 
 { 
     
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //class: ssGUI::Backend::BackendDrawingInterface
+    /*class: ssGUI::Backend::BackendDrawingInterface
+    For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
+
+    Variables & Constructor:
+    ======================== C++ =======================
+    private:
+        int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
+        glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
+        std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+        std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
+    ====================================================
+    ======================== C++ =======================
+    BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3() :    BackendIndex(0),
+                                                                        LastMainWindowSize(-1, -1),
+                                                                        CharTextures(),
+                                                                        ImageTextures()
+    {
+        ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+    }
+    ====================================================
+    */
     class BackendDrawingWin32_OpenGL3_3 : public BackendDrawingInterface
     {
         private:
+            int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
+            glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
+            std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+            std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
+
+            ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
+
+            void UpdateViewPortAndModelViewIfNeeded();
+
+            BackendDrawingWin32_OpenGL3_3& operator=(BackendDrawingWin32_OpenGL3_3 const& other);
+
+        protected:
+            BackendDrawingWin32_OpenGL3_3(BackendDrawingWin32_OpenGL3_3 const& other);
 
         public:
             BackendDrawingWin32_OpenGL3_3();
             ~BackendDrawingWin32_OpenGL3_3() override;
 
             //function: SaveState
-            //Saves the OpenGL state
+            //See <BackendDrawingInterface::SaveState>
             void SaveState() override;
 
             //function: RestoreState
-            //Restores the OpenGL state
+            //See <BackendDrawingInterface::RestoreState>
             void RestoreState() override;
 
             //function: DrawEntities
-            //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. *Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
+            //See <BackendDrawingInterface::DrawEntities>
             bool DrawEntities(  const std::vector<glm::vec2>& vertices, 
                                 const std::vector<glm::vec2>& texCoords,
                                 const std::vector<glm::u8vec4>& colors,
                                 const std::vector<int>& counts,
                                 const std::vector<ssGUI::DrawingProperty>& properties) override;
 
-            /*function: Render
-            Renders every entity that are drawn to the <MainWindow>. This will automatically clear the back buffer. 
-            If you are using <ssGUIManager>, this will be automatically called.*/
+            //function: Render
+            //See <BackendDrawingInterface::Render>
             void Render(glm::u8vec3 clearColor) override;
 
-            /*function: ClearBackBuffer
-            Clears the back buffer manually. If you are using <ssGUIManager>, this will be automatically called for caching.*/
+            //function: ClearBackBuffer
+            //For some reason windows implementation of OpenGL (AMD and Nvidia) creates memory leak when calling GLClear without swapping buffer.
+            //Therefore, this doesn't do anything for now. For it's intended purpose:
+            //See <BackendDrawingInterface::ClearBackBuffer>
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
             
+            //function: RemoveImageLinking
+            //See <BackendDrawingInterface::RemoveImageLinking>
+            void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) override;
+
         protected:
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,

@@ -4,7 +4,6 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 #include "ssGUI/Enums/GUIObjectType.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
-#include "ssGUI/Backend/BackendFactory.hpp"
 
 #include <stack>
 #include <queue>

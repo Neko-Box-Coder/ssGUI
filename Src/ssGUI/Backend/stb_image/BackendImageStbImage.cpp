@@ -5,8 +5,9 @@
 
 //SFML is using STB Image so we should not use the implementation define here
 #ifndef SSGUI_MAIN_BACKEND_SFML
-#define STB_IMAGE_IMPLEMENTATION
+    #define STB_IMAGE_IMPLEMENTATION
 #endif
+
 #include "stb_image.h"
 
 #include "ssLogger/ssLog.hpp"

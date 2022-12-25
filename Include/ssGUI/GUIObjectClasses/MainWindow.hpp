@@ -1,7 +1,6 @@
 #ifndef SSGUI_MAIN_WINDOW_H
 #define SSGUI_MAIN_WINDOW_H
 
-#include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include <functional>

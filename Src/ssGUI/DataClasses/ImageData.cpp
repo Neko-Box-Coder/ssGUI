@@ -1,5 +1,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 
+#include "ssGUI/Backend/BackendFactory.hpp"
+
 namespace ssGUI
 {
     ImageData::ImageData(ImageData const& other)

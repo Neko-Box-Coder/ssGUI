@@ -35,6 +35,9 @@ namespace Backend
             }
             ImageTextures.clear();
         #endif
+        //TODO: AddDrawingInterface
+        ssLOG_LINE("Not implemented");
+        ssLOG_EXIT_PROGRAM();
     }
 
     BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0),
@@ -272,6 +275,7 @@ namespace Backend
                 sf::Image img;
                 bool result = false;
                 
+                //TODO: Move this to somewhere else
                 switch(imgFmt.BitDepthPerChannel)
                 {
                     case 8:
