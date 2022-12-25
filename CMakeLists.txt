@@ -230,6 +230,8 @@ elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
     find_package(OpenGL REQUIRED)
     target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
+elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
+    message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
 else()
     message(FATAL_ERROR "Invalid Main Backend")
 endif()
@@ -239,6 +241,8 @@ if(ssGUI_FONT_BACKEND STREQUAL "SFML")
 elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
     target_link_libraries(ssGUI PRIVATE freetype)
     target_compile_definitions(ssGUI PRIVATE SSGUI_FONT_BACKEND_FREE_TYPE)
+elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
+    message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
 else()
     message(FATAL_ERROR "Invalid Font Backend")
 endif()
@@ -248,9 +252,10 @@ if(ssGUI_IMAGE_BACKEND STREQUAL "SFML")
 elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
     target_compile_definitions(ssGUI PRIVATE SSGUI_IMAGE_BACKEND_STB_IMAGE)
     target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
+    message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
 else()
-    # TODO
-    # message(FATAL_ERROR "Invalid Image Backend")
+    message(FATAL_ERROR "Invalid Image Backend")
 endif()
 
 # ==========================================================
@@ -359,7 +364,7 @@ endif()
 
 
 if(ssGUI_BUILD_EXAMPLES)
-
+    # TODO: Move this to be using AddFilesToExecutables
     file(GLOB ssGUI_EXAMPLE_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/*.cpp")
     foreach(CUR_SOURCE_PATH ${ssGUI_EXAMPLE_CPP_FILES})
 

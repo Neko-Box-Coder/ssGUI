@@ -5,8 +5,6 @@
 #include <iostream>
 #include <vector>
 
-//** DONT RUN THIS TEST UNLESS THE COPY CONSTRUCTOR IN BACKEND IS IMPLEMENTED **
-
 int main()
 {
     ssGUI::Backend::BackendDrawingWin32_OpenGL3_3 drawing;
