@@ -611,10 +611,18 @@ namespace ssGUI
 
     void Window::Internal_SetSelfFocus(bool focus)
     {
+        ssLOG_FUNC_ENTRY();
+        if(GUIObject::Hierarchy::Focused == focus)
+        {
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
         if(focus && IsOnTopWhenFocused())
             SetParent(GetParent());
         
         GUIObject::Internal_SetSelfFocus(focus);
+        ssLOG_FUNC_EXIT();
     }
 
     void Window::SetBackgroundColor(glm::u8vec4 color)

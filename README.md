@@ -2,9 +2,9 @@
 
 ### 🔌 Status of ssGUI
 - #### 🔀 Branches
-    - ![](https://img.shields.io/badge/Latest_Development-v0.93.02-E5FF3C?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)
         <!-- - ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434) -->
-    - ![](https://img.shields.io/badge/Development_Release-v0.93.01-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Development_Release-v0.93.02-brightgreen?style=for-the-badge&logo=GitHub)
     - ![](https://img.shields.io/badge/Stable_Release-v0.93.00.b-brightgreen?style=for-the-badge&logo=GitHub)
     - ![](https://img.shields.io/badge/Master-v0.93.02-E5FF3C?style=for-the-badge&logo=GitHub)
 

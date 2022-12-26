@@ -241,12 +241,6 @@ namespace ssGUI
     {        
         //By default don't show rotation UI
         auto shape = GetAnyExtension<ssGUI::Extensions::Shape>();
-        if(shape != nullptr)
-        {
-            shape->SetAdditionalCircle(BackgroundCircleId, glm::vec2(), glm::vec2(), glm::u8vec4(), false);
-            shape->SetAdditionalCircle(InnerCircleId, glm::vec2(), glm::vec2(), glm::u8vec4(), false);
-            shape->SetAdditionalCircle(OuterCircleId, glm::vec2(), glm::vec2(), glm::u8vec4(), false);
-        }
         
         if(!IsInteractable() || !IsBlockInput())
             return;
@@ -331,8 +325,8 @@ namespace ssGUI
                 //Get image position
                 glm::vec2 imgPos = GetSize() * GetImagePosition();
                 
-                //Show image center gui
-                if(shape != nullptr)
+                //Show image center gui when this is the first frame when the R button is pressed
+                if(shape != nullptr && !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::R))
                 {
                     glm::vec2 outerCircleSize = glm::vec2(9, 9);
                     glm::vec2 bgCircleSize = glm::vec2(6, 6);
@@ -361,6 +355,19 @@ namespace ssGUI
                         SetImageRotation(OnRotateStartRotation - GetAngle(glm::vec2(currentMousePos) - curImgGlobalPos, MouseButtonDownPosition - curImgGlobalPos), true);
                     }
                     inputStatus.MouseInputBlockedObject = this;
+                }
+            }
+
+            //Hide rotation circle when R button is not pressed
+            else if(IsUsingDefaultRotating() && 
+                    inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::R) &&
+                    !inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::R))
+            {
+                if(shape != nullptr)
+                {
+                    shape->SetAdditionalCircle(BackgroundCircleId, glm::vec2(), glm::vec2(), glm::u8vec4(), false);
+                    shape->SetAdditionalCircle(InnerCircleId, glm::vec2(), glm::vec2(), glm::u8vec4(), false);
+                    shape->SetAdditionalCircle(OuterCircleId, glm::vec2(), glm::vec2(), glm::u8vec4(), false);
                 }
             }
         }
