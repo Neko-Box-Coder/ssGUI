@@ -161,7 +161,8 @@ endif()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/utf-8)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(-Wall -Wno-unused-variable -Wno-unused-parameter -Wextra -pedantic -Werror)
+    target_compile_options(ssGUI PRIVATE -Wall -Wno-return-local-addr -Wno-sign-compare -Wno-unused-variable -Wno-unused-parameter -Wextra -pedantic -Werror)
+    #add_compile_options(-Wall -Wno-unused-variable -Wno-unused-parameter -Wextra -pedantic -Werror)
 endif()
 
 # If you are on 32 bit linux, uncomment this
@@ -223,10 +224,10 @@ target_link_libraries(ssGUI PUBLIC ssLogger)
 # ==========================================================
 if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
     target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
-    target_compile_definitions(ssGUI PRIVATE SSGUI_MAIN_BACKEND_SFML)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_SFML)
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
-    target_compile_definitions(ssGUI PRIVATE SSGUI_MAIN_BACKEND_WIN32_OPENGL)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_WIN32_OPENGL)
     target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
     find_package(OpenGL REQUIRED)
     target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
@@ -237,10 +238,10 @@ else()
 endif()
 
 if(ssGUI_FONT_BACKEND STREQUAL "SFML")
-    target_compile_definitions(ssGUI PRIVATE SSGUI_FONT_BACKEND_SFML)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_SFML)
 elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-    target_link_libraries(ssGUI PRIVATE freetype)
-    target_compile_definitions(ssGUI PRIVATE SSGUI_FONT_BACKEND_FREE_TYPE)
+    target_link_libraries(ssGUI PUBLIC freetype)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_FREE_TYPE)
 elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
     message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
 else()
@@ -248,10 +249,10 @@ else()
 endif()
 
 if(ssGUI_IMAGE_BACKEND STREQUAL "SFML")
-    target_compile_definitions(ssGUI PRIVATE SSGUI_IMAGE_BACKEND_SFML)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_SFML)
 elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
-    target_compile_definitions(ssGUI PRIVATE SSGUI_IMAGE_BACKEND_STB_IMAGE)
-    target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+    target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_STB_IMAGE)
+    target_link_libraries(ssGUI PUBLIC ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
 elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
     message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
 else()
@@ -262,23 +263,23 @@ endif()
 # ssGUI compilter definitions
 # ==========================================================
 if(ssGUI_USE_DEBUG)
-    target_compile_definitions(ssGUI PRIVATE SSGUI_USE_DEBUG=1)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_USE_DEBUG=1)
 endif()
 
 if(ssGUI_DEBUG_STATE)
-    target_compile_definitions(ssGUI PRIVATE SSGUI_DEBUG_STATE=1)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_DEBUG_STATE=1)
 endif()
 
 if(ssGUI_REFRESH_CONSOLE)
-    target_compile_definitions(ssGUI PRIVATE SSGUI_REFRESH_CONSOLE=1)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_REFRESH_CONSOLE=1)
 endif()
 
 if(ssGUI_SLOW_UPDATE)
-    target_compile_definitions(ssGUI PRIVATE SSGUI_SLOW_UPDATE=1)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_SLOW_UPDATE=1)
 endif()
 
 if(ssGUI_USE_SFML_TIME)
-    target_compile_definitions(ssGUI PRIVATE SSGUI_USE_SFML_TIME=1)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_USE_SFML_TIME=1)
 endif()
 
 # ==========================================================
@@ -317,7 +318,7 @@ function(AddFilesToExecutables folderToExe binSubFolder)
         target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
 
         # Sub-directory for build
-        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY binSubFolder)
+        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${binSubFolder})
     endforeach(CUR_SOURCE_PATH "${ssGUI_EXE_CPP_FILES}")
 
 endfunction()
