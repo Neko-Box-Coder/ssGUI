@@ -79,9 +79,9 @@ namespace ssGUI
                         bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
                         auto textColor = btn->GetButtonTextObject()->GetNewCharacterColor();
-                        textColor.r = (uint8_t)(textColor.r + buttonReactAmount * 4 & 255);
-                        textColor.g = (uint8_t)(textColor.g + buttonReactAmount * 4 & 255);
-                        textColor.b = (uint8_t)(textColor.b + buttonReactAmount * 4 & 255);
+                        textColor.r = (uint8_t)((textColor.r + buttonReactAmount * 4) & 255);
+                        textColor.g = (uint8_t)((textColor.g + buttonReactAmount * 4) & 255);
+                        textColor.b = (uint8_t)((textColor.b + buttonReactAmount * 4) & 255);
                         btn->GetButtonTextObject()->SetNewCharacterColor(textColor);
                         btn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
                         break;

@@ -811,7 +811,7 @@ namespace Extensions
             
             glm::vec2 triggerSize = IsUseTriggerPercentage() ? glm::vec2(glm::vec2(windowContentSize) * GetTriggerPercentage()) : glm::vec2(GetTriggerPixel(), GetTriggerPixel());
 
-            bool previewDrawn = false;
+            //bool previewDrawn = false;
 
             //Check if the cursor is inside the window
             bool mouseInsideWindow = (inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
@@ -843,7 +843,7 @@ namespace Extensions
                 DiscardBottomPreview();
                 DrawLeftPreview();
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::LEFT;
                 ValidDocking = true;
             }
@@ -858,7 +858,7 @@ namespace Extensions
                 DiscardBottomPreview();
                 DrawTopPreview();
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::TOP;
                 ValidDocking = true;
 
@@ -874,7 +874,7 @@ namespace Extensions
                 DiscardBottomPreview();
                 DrawRightPreview();
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::RIGHT;
                 ValidDocking = true;
             }
@@ -889,7 +889,7 @@ namespace Extensions
                 DiscardRightPreview();
                 DrawBottomPreview();  
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::BOTTOM;
                 ValidDocking = true;
             }

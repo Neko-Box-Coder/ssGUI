@@ -156,7 +156,7 @@ namespace Extensions
         
         //Lambda function of adding new vertex infomation
         auto addNewVertexInfo = [&currentShapeVertices, &currentShapeUVs, &currentShapeColours, &currentVertexChanged]
-        (glm::vec2 newVertex, glm::u8vec4 newColour, bool changed, glm::vec2 uv = glm::vec2())
+        (glm::vec2 newVertex, glm::u8vec4 newColour, bool changed, glm::vec2 uv)
         {
             // ssLOG_LINE("newVertex: "<<newVertex.x<<", "<<newVertex.y);
             currentShapeVertices.push_back(newVertex);
@@ -198,7 +198,7 @@ namespace Extensions
                 //If there's any intersection, add it
                 if(!curIntersectionIndices.empty())
                 {
-                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true);
+                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true, glm::ivec2());
                     
                     //Find if there's any mask vertices contained in the shape, if so add them
                     if(!containedMaskVertices.empty())
@@ -214,7 +214,7 @@ namespace Extensions
                             {
                                 if(containedMaskVertices[i] == curMaskIndex)
                                 {
-                                    addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true);
+                                    addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true, glm::ivec2());
                                     maskVertexCounter++;
                                     found = true;
                                     break;
@@ -246,12 +246,12 @@ namespace Extensions
                     }
 
                     //Add closing intersection first
-                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true);
+                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true, glm::ivec2());
 
                     //Add opening intersection (if there's any)
                     if(curIntersectionIndices.size() > 1)
                     {
-                        addNewVertexInfo(intersections[curIntersectionIndices[1]], originalColours[shapeOffset], true);
+                        addNewVertexInfo(intersections[curIntersectionIndices[1]], originalColours[shapeOffset], true, glm::ivec2());
                         
                         //Find if there's any mask vertices contained in the shape, if so add them
                         if(!containedMaskVertices.empty())
@@ -267,7 +267,7 @@ namespace Extensions
                                 {
                                     if(containedMaskVertices[i] == curMaskIndex)
                                     {
-                                        addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true);
+                                        addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true, glm::ivec2());
                                         maskVertexCounter++;
                                         found = true;
                                         break;

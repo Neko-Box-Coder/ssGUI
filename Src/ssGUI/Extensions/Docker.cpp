@@ -532,7 +532,7 @@ namespace Extensions
             glm::vec2 triggerSize = IsUseTriggerPercentage() ? glm::vec2(containerSize.x * GetTriggerHorizontalPercentage(), containerSize.y * GetTriggerVerticalPercentage()) : 
                                         glm::vec2(GetTriggerHorizontalPixel(), GetTriggerVerticalPixel());
 
-            bool previewDrawn = false;
+            //bool previewDrawn = false;
 
             //Check if the cursor is inside the window
             bool mouseInsideWindow = (inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
@@ -557,7 +557,7 @@ namespace Extensions
             {
                 DrawPreview();
                 DiscardTriggerArea();
-                previewDrawn = true;
+                //previewDrawn = true;
                 ValidDocking = true;
                 Dockable::TargetDockSide = Dockable::DockSide::CENTER;
             }

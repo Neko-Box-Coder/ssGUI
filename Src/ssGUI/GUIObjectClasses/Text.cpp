@@ -910,7 +910,7 @@ namespace ssGUI
 
         int underlineStartIndex = -1;
 
-        ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+        //ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
         for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
             ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
@@ -922,10 +922,10 @@ namespace ssGUI
                 continue;
             }
             
-            if(curDetail.FontIndex != -1)
-                fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
-            else
-                fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
+            //if(curDetail.FontIndex != -1)
+            //    fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
+            //else
+            //    fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
             
             //If underline started
             if(underlineStartIndex != -1)

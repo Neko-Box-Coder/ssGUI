@@ -204,7 +204,7 @@ namespace ssGUI
                 inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).x - KnobGlobalPosition.x;
         }
         //If the user is dragging the knob, update the position
-        else if(knob != nullptr && (knob->GetButtonState() == ssGUI::Enums::ButtonState::CLICKING && IsInteractable() && IsBlockInput() || SliderDragging))
+        else if(knob != nullptr && ((knob->GetButtonState() == ssGUI::Enums::ButtonState::CLICKING && IsInteractable() && IsBlockInput()) || SliderDragging))
         {
             if(IsVertical())
             {

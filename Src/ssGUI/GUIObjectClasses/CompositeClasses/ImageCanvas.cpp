@@ -106,7 +106,7 @@ namespace ssGUI
         }
 
         //TODO: The code below can be moved to its own function
-        glm::vec2 imgDrawPosition = GetGlobalPosition();
+        //glm::vec2 imgDrawPosition = GetGlobalPosition();
         glm::vec2 imgSize = GetImageData()->GetSize();
 
         DrawingColours.push_back(ImageTint);

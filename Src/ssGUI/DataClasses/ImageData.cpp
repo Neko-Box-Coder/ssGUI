@@ -6,7 +6,7 @@ namespace ssGUI
 {
     ImageData::ImageData(ImageData const& other)
     {
-        BackendImage = BackendImage->Clone();
+        BackendImage = other.BackendImage->Clone();
     }
 
     ImageData::ImageData() :    BackendImage(nullptr)
