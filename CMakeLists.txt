@@ -27,7 +27,7 @@ if(WIN32)
     set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "Win32_OpenGL3_3" "Template")     # Allow dropdown option
 # Linux
 else()
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "Template")                       # Allow dropdown option
+    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "X11_OpenGL3_3" "Template")                       # Allow dropdown option
 endif()
 
 # Show / unshow SFML options depending if SFML backend is selected or not
@@ -47,6 +47,11 @@ else()
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
+endif()
+
+if(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
 endif()
@@ -178,6 +183,8 @@ elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/Win32_OpenGL3_3")
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/Template")
+elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/X11_OpenGL3_3")
 else()
     message(FATAL_ERROR "Invalid Backend")
 endif()
@@ -231,6 +238,12 @@ elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
     find_package(OpenGL REQUIRED)
     target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
+elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
+    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_X11_OPENGL)
+    find_package(OpenGL REQUIRED)
+    find_package(X11 REQUIRED)
+    target_link_libraries(ssGUI PUBLIC OpenGL::GL X11::X11 X11::Xrandr glad)
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
     message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
 else()
@@ -324,9 +337,9 @@ function(AddFilesToExecutables folderToExe binSubFolder)
 endfunction()
 
 # TODO: Create proper backend test, right now it only contains test for Win32
-if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+#if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
-endif()
+#endif()
 
 if(ssGUI_BUILD_TESTS)
 
