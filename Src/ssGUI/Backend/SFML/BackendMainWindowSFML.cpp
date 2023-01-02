@@ -81,8 +81,15 @@ namespace Backend
         ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
 
+    void wrapper(BackendMainWindowSFML* target)
+    {
+        target->SyncPositionOffset();
+    }
+
     glm::ivec2 BackendMainWindowSFML::GetPositionOffset() const
     {
+        //TODO: See if this would work
+        //wrapper(const_cast<BackendMainWindowSFML*>(this));
         return PositionOffset;
     }
 

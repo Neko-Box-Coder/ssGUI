@@ -341,7 +341,7 @@ namespace ssGUI
         //Update cursor position offset every .5 seconds
         if(inputInterface->GetElapsedTime() - LastSyncTime > 500)
         {
-            BackendMainWindow->SyncPositionOffset();
+            //BackendMainWindow->SyncPositionOffset();
             LastSyncTime = inputInterface->GetElapsedTime();
 
             glm::ivec2 currentSize = BackendMainWindow->GetWindowSize();

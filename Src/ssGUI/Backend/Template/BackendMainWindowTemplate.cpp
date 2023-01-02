@@ -32,11 +32,6 @@ namespace Backend
         return glm::ivec2();
     }
 
-    void BackendMainWindowTemplate::SyncPositionOffset()
-    {
-
-    }
-
     glm::ivec2 BackendMainWindowTemplate::GetPositionOffset() const
     {
         return glm::ivec2();

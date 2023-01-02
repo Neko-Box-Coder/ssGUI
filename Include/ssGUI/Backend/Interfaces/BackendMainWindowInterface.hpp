@@ -29,11 +29,6 @@ namespace Backend
             //Gets the MainWindow position (distance from top-left) on the screen
             virtual glm::ivec2 GetWindowPosition() const = 0;
 
-            //function: SyncPositionOffset
-            //Updates the offset from top-left corner of the rendering area and the top-left corner of the titlebar.
-            //The offset should always be positive, meaning adding the offset to <GetWindowPosition> will get the position of the rendering area.
-            virtual void SyncPositionOffset() = 0;
-
             //function: GetPositionOffset
             //Gets the offset from top-left corner of the rendering area and the top-left corner of the titlebar.
             //The offset should always be positive, meaning adding the offset to <GetWindowPosition> will get the position of the rendering area.

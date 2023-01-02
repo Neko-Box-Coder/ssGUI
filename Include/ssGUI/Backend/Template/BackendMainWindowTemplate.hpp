@@ -30,10 +30,6 @@ namespace Backend
             //See <BackendMainWindowInterface::GetWindowPosition>
             glm::ivec2 GetWindowPosition() const override;
 
-            //function: SyncPositionOffset
-            //See <BackendMainWindowInterface::SyncPositionOffset>
-            void SyncPositionOffset() override;
-
             //function: GetPositionOffset
             //See <BackendMainWindowInterface::GetPositionOffset>
             glm::ivec2 GetPositionOffset() const override;

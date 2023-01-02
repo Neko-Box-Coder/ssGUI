@@ -87,7 +87,7 @@ namespace Backend
 
             //function: SyncPositionOffset
             //See <BackendMainWindowInterface::SyncPositionOffset>
-            void SyncPositionOffset() override;
+            void SyncPositionOffset();
             
             //function: GetPositionOffset
             //See <BackendMainWindowInterface::GetPositionOffset>

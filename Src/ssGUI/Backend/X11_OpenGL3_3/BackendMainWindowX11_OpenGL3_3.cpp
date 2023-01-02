@@ -699,11 +699,6 @@ namespace Backend
         return glm::ivec2(x - attr.x - left, y - attr.y - top);
     }
 
-    void BackendMainWindowX11_OpenGL3_3::SyncPositionOffset()
-    {
-        //TODO: Remove this function
-    }
-
     glm::ivec2 BackendMainWindowX11_OpenGL3_3::GetPositionOffset() const
     {
         int top, right, left, bot;

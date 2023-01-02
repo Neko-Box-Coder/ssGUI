@@ -638,11 +638,6 @@ namespace Backend
         return glm::ivec2(windowRect.left, windowRect.top);
     }
 
-    void BackendMainWindowWin32_OpenGL3_3::SyncPositionOffset()
-    {
-        //Don't need to do so for Win32
-    }
-
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetPositionOffset() const
     {
         if(GetWindowMode() != ssGUI::Enums::WindowMode::NORMAL)
