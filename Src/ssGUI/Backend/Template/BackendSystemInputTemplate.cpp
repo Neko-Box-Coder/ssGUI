@@ -5,7 +5,6 @@
 namespace ssGUI
 {
 
-//namespace: ssGUI::Backend
 namespace Backend
 {
     BackendSystemInputTemplate::BackendSystemInputTemplate(BackendSystemInputTemplate const& other)

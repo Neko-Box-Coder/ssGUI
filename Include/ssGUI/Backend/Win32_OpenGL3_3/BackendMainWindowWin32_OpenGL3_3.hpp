@@ -151,6 +151,8 @@ namespace Backend
             void ssGUI_RegisterClass(const wchar_t* className);
 
             bool GetActiveMonitorPosSize(glm::ivec2& pos, glm::ivec2& size);
+            
+            void SetFullscreenSize(glm::ivec2 size);
         
             BackendMainWindowWin32_OpenGL3_3& operator=(BackendMainWindowWin32_OpenGL3_3 const& other);
         
