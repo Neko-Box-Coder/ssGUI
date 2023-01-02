@@ -30,11 +30,13 @@ namespace Backend
             virtual glm::ivec2 GetWindowPosition() const = 0;
 
             //function: SyncPositionOffset
-            //Updates the distance between the top-left corner of the titlebar and top-left corner of the content
+            //Updates the offset from top-left corner of the rendering area and the top-left corner of the titlebar.
+            //The offset should always be positive, meaning adding the offset to <GetWindowPosition> will get the position of the rendering area.
             virtual void SyncPositionOffset() = 0;
 
             //function: GetPositionOffset
-            //Gets the distance between the top-left corner of the titlebar and top-left corner of the content
+            //Gets the offset from top-left corner of the rendering area and the top-left corner of the titlebar.
+            //The offset should always be positive, meaning adding the offset to <GetWindowPosition> will get the position of the rendering area.
             virtual glm::ivec2 GetPositionOffset() const = 0;
 
             //function: SetWindowSize
@@ -128,11 +130,11 @@ namespace Backend
             virtual int GetMSAA() const = 0;
 
             //function: SetTitlebar
-            //Sets if the main window has titlebar or not
+            //Sets if the main window has titlebar (and border) or not
             virtual void SetTitlebar(bool titlebar) = 0;
 
             //function: HasTitlebar
-            //Returns if the main window has titlebar or not. Note that if the main window is not in normal mode, this will return false.
+            //Returns if the main window has titlebar (and border) or not. Note that if the main window is not in normal mode, this will return false.
             virtual bool HasTitlebar() const = 0;
 
             //function: SetResizable
