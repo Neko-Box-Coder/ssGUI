@@ -3,6 +3,7 @@
 //#include "ssGUI/Backend/Win32_OpenGL3_3/BackendDrawingWin32_OpenGL3_3.hpp"
 
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssLogger/ssLog.hpp"
 
@@ -34,10 +35,18 @@ int main()
 
     window->SetRenderSize(glm::ivec2(1280, 720));
     inputs->UpdateInput();
-    sleep(1);
-    window->SetWindowMode(ssGUI::Enums::WindowMode::FULLSCREEN);
+
+    //ssGUI::ImageData testImgData;
+    //testImgData.LoadFromPath("../Resources/sd.png");
+    //sleep(1);
+    //window->SetIcon(*testImgData.GetBackendImageInterface());
+    
+    //sleep(1);
+    //window->SetWindowMode(ssGUI::Enums::WindowMode::FULLSCREEN);
     //sleep(1);
     //window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
+
+
 
     while(!window->IsClosed())
     {
@@ -66,7 +75,7 @@ int main()
             //window->SetVisible(!window->IsVisible());
             //glm::ivec2 offset = window->GetPositionOffset();
             //ssLOG_LINE("offset: "<<offset.x<<", "<<offset.y);
-            window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
+            //window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
             
             //ssLOG_LINE("VSync: "<< window->IsVSync());
             //{

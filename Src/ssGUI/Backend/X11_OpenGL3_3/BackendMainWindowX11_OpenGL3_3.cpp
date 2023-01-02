@@ -4,6 +4,7 @@
 #include <X11/extensions/Xrandr.h>
 
 #include "ssGUI/Backend/BackendManager.hpp"
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 #include "ssLogger/ssLog.hpp"
 
 namespace ssGUI
@@ -330,6 +331,8 @@ namespace Backend
                             PropModeReplace, 
                             (unsigned char*)&hintData, 
                             5);
+            
+            SetTitle(GetTitle());
         }
     }
 
@@ -818,8 +821,70 @@ namespace Backend
 
     void BackendMainWindowX11_OpenGL3_3::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
     {
-        //TODO
+        if(!iconImage.IsValid())
+        {
+            ssLOG_LINE("Invalid icon image");
+            return;
+        }
+        
+        Atom netWMIcon = XInternAtom(WindowDisplay, "_NET_WM_ICON", False);
+        Atom cardinal = XInternAtom(WindowDisplay, "CARDINAL", False);
+        
+        ssGUI::ImageFormat format;
+        void* rawIcon = iconImage.GetPixelPtr(format);
+        
+        uint32_t* iconDataToApply = nullptr;
+        int x11ImageLength = iconImage.GetSize().x * iconImage.GetSize().y + 2;
+        iconDataToApply = new uint32_t[x11ImageLength] {0};
+        
+        //Convert to bgra if needed
+        if( format.ImgType != ssGUI::Enums::ImageType::RGB ||
+            !format.HasAlpha ||
+            format.PreMultipliedAlpha ||
+            format.BitDepthPerChannel != 8 ||
+            format.IndexB != 0 ||
+            format.IndexR != 1 ||
+            format.IndexG != 2 ||
+            format.IndexA != 3)
+        {
+            if(!ImageUtil::ConvertToBGRA32(&iconDataToApply[2], rawIcon, format, iconImage.GetSize()))
+            {
+                ssLOG_LINE("Failed to convert image to bgra32");
+                delete[] iconDataToApply;
+                return;
+            }    
+        }
+        else
+            memcpy(&iconDataToApply[2], rawIcon, sizeof(uint32_t) * iconImage.GetSize().x * iconImage.GetSize().y);        
+        
+        iconDataToApply[0] = iconImage.GetSize().x;
+        iconDataToApply[1] = iconImage.GetSize().y;
+        
+        //https://stackoverflow.com/a/15595582/7519584
+        //It seems like the size of each pixel depends on if you are on 32/64 bit system
+        //Even though it is clearly stating 32bit packed CARDINAL ARGB (BGRA), I guess it is assuming 32 bit system
+        //Someone emailed people at freedesktop to change the spec but got ignored, ffs. 
+        //https://lists.freedesktop.org/archives/xdg/2009-January/010171.html
+        
+        //Even worse, it is just a 32 bit (BGRA) value in 64 bit container, so it is just taking more space for nothing. 
 
+        //64-bit system, need conversion
+        if(sizeof(unsigned long) != sizeof(uint32_t))
+        {
+            uint64_t* convertedIconDataToApply = new uint64_t[x11ImageLength] {0};
+            int rowStride = iconImage.GetSize().x;
+            
+            for(int i = 0; i < x11ImageLength; i++)
+                convertedIconDataToApply[i] = iconDataToApply[i];
+
+            XChangeProperty(WindowDisplay, WindowId, netWMIcon, cardinal, 32, PropModeReplace, (const unsigned char*) convertedIconDataToApply, 2 + iconImage.GetSize().x * iconImage.GetSize().y);
+            
+            delete[] convertedIconDataToApply;
+        }
+        else
+            XChangeProperty(WindowDisplay, WindowId, netWMIcon, cardinal, 32, PropModeReplace, (const unsigned char*) iconDataToApply, 2 + iconImage.GetSize().x * iconImage.GetSize().y);
+
+        delete[] iconDataToApply;
     }
 
     void BackendMainWindowX11_OpenGL3_3::SetVisible(bool visible)
