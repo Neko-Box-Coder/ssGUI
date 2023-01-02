@@ -259,14 +259,6 @@ namespace Backend
             ssLOG_LINE("Failed to SetPixelFormat");
             ssLOG_LINE("Falling back...");
 
-            if(MsaaLevel > 0)
-            {
-                ssLOG_LINE("Trying to disable MSAA and retry...");
-                generatePfid = true;
-                MsaaLevel = 0;
-                goto fallback;
-            }
-
             //Decreasing each bitdepth and see what works
 
             //Seems like no one uses Auxiliary buffer, this could be a problem
@@ -289,6 +281,23 @@ namespace Backend
                 goto fallback;
             }
 
+            //Maybe try turning off accumulative buffer?
+            else if(CurrentPictureFormatDescriptor.cAccumBits == 32)
+            {
+                CurrentPictureFormatDescriptor.cAccumBits = 0;
+                ssLOG_LINE("cAccumBits: "<<CurrentPictureFormatDescriptor.cAccumBits);
+                goto fallback;
+            }
+            
+            //Maybe the MSAA level is not correct?
+            else if(MsaaLevel > 0)
+            {
+                ssLOG_LINE("Trying to disable MSAA and retry...");
+                generatePfid = true;
+                MsaaLevel = 0;
+                goto fallback;
+            }
+
             //Normally stencil bit can be a problem when above 8 bits
             else if(CurrentPictureFormatDescriptor.cStencilBits == 32)
             {
@@ -300,14 +309,6 @@ namespace Backend
             {
                 CurrentPictureFormatDescriptor.cStencilBits = 8;
                 ssLOG_LINE("cStencilBits: "<<CurrentPictureFormatDescriptor.cStencilBits);
-                goto fallback;
-            }
-            
-            //Maybe try turning off accumulative buffer?
-            else if(CurrentPictureFormatDescriptor.cAccumBits == 32)
-            {
-                CurrentPictureFormatDescriptor.cAccumBits = 0;
-                ssLOG_LINE("cAccumBits: "<<CurrentPictureFormatDescriptor.cAccumBits);
                 goto fallback;
             }
 
