@@ -495,7 +495,7 @@ namespace Backend
         else
         {
             uint8_t* resizedPtr = new uint8_t[cursorSize.x * cursorSize.y * 4];
-            ssGUI::ImageUtil::Resize(   convertedPtr, 
+            ssGUI::ImageUtil::ResizeRGBA(   convertedPtr, 
                                         customCursor->GetSize().x, 
                                         customCursor->GetSize().y,
                                         resizedPtr,

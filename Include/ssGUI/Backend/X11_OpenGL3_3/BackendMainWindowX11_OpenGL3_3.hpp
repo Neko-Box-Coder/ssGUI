@@ -23,6 +23,7 @@ namespace Backend
         Window WindowId;
         GLXContext WindowContext;
         Atom WindowCloseEventId;
+        XIC XInputContext;
     };
 
     //class: ssGUI::Backend::BackendMainWindowInterface
@@ -104,6 +105,10 @@ namespace Backend
             std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
             std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
             bool IsClosingAborted = false;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
+
+            XIM XInputManager;
+            
+            XIC XInputContext;
             
             bool ssGUI_CreateWindow();
             void ssGUI_DestroyWindow();

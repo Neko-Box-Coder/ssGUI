@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/X11_OpenGL3_3/BackendMainWindowX11_OpenGL3_3.hpp"
-#include <X11/Xatom.h>
 #include <cstring>
+#include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 
 #include "ssGUI/Backend/BackendManager.hpp"
@@ -10,6 +10,7 @@
 namespace ssGUI
 {
 
+//TODO: Call FetchEvents()
 namespace Backend
 {
     BackendMainWindowX11_OpenGL3_3::BackendMainWindowX11_OpenGL3_3(BackendMainWindowX11_OpenGL3_3 const& other)
@@ -29,44 +30,18 @@ namespace Backend
     //https://stackoverflow.com/a/16235920
     bool SendXClientEvent(Display* display, Window root, Window mywin, const char* eventName, XClientEventData& data, int format)
     {
-        //Atom wmStateAbove = XInternAtom( display, "_NET_WM_STATE_FULLSCREEN", 1 );
-        ////Atom wmStateAbove = XInternAtom( display, "_NET_WM_STATE_ABOVE", 1 );
-        //if( wmStateAbove != None ) {
-        //    printf( "_NET_WM_STATE_ABOVE has atom of %ld\n", (long)wmStateAbove );
-        //} else {
-        //    printf( "ERROR: cannot find atom for _NET_WM_STATE_ABOVE !\n" );
-        //    return False;
-        //}
-        
         Atom targetAtom = XInternAtom( display, eventName, 1 );
         if(!targetAtom) 
             return false;
 
         XClientMessageEvent xclient;
         memset( &xclient, 0, sizeof (xclient) );
-        //
-        //window  = the respective client window
-        //message_type = _NET_WM_STATE
-        //format = 32
-        //data.l[0] = the action, as listed below
-        //data.l[1] = first property to alter
-        //data.l[2] = second property to alter
-        //data.l[3] = source indication (0-unk,1-normal app,2-pager)
-        //other data.l[] elements = 0
-        //
+
         xclient.type = ClientMessage;
-        xclient.window = mywin;              // GDK_WINDOW_XID(window);
-        xclient.message_type = targetAtom; //gdk_x11_get_xatom_by_name_for_display( display, "_NET_WM_STATE" );
+        xclient.window = mywin;
+        xclient.message_type = targetAtom;
         xclient.format = format;
         memcpy(&xclient.data, &data, sizeof(XClientMessageEvent::data));
-        //xclient.data.l[0] = _NET_WM_STATE_ADD; // add ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
-        //xclient.data.l[1] = wmStateAbove;      //gdk_x11_atom_to_xatom_for_display (display, state1);
-        //xclient.data.l[2] = 0;                 //gdk_x11_atom_to_xatom_for_display (display, state2);
-        //xclient.data.l[3] = 0;
-        //xclient.data.l[4] = 0;
-        //gdk_wmspec_change_state( FALSE, window,
-        //  gdk_atom_intern_static_string ("_NET_WM_STATE_BELOW"),
-        //  GDK_NONE );
 
         int result = XSendEvent(display,
                                 root,
@@ -91,8 +66,12 @@ namespace Backend
     }
 
     bool BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow()
-    {        
+    {
+        // Set the locale to support UTF-8 encoding
+        setlocale(LC_ALL, "");
+    
         WindowDisplay = XOpenDisplay(NULL);
+
         if (WindowDisplay == NULL) 
         {
             ssLOG_LINE("cannot connect to X server");
@@ -236,14 +215,55 @@ namespace Backend
                                 ButtonReleaseMask |
                                 EnterWindowMask |
                                 LeaveWindowMask |
+                                FocusChangeMask |
                                 PointerMotionMask;
         attributes.colormap = WindowColormap;
 
         WindowId = XCreateWindow(WindowDisplay, root, 0, 0, 500, 500, 0,
                         visual_info->depth, InputOutput, visual_info->visual,
                         CWColormap | CWEventMask, &attributes);
-
+                        
         XMapWindow(WindowDisplay, WindowId);
+
+        XSetLocaleModifiers("");
+        // Create an input context and set it as the focus of the window
+        XInputManager = XOpenIM(WindowDisplay, NULL, NULL, NULL);
+        if(!XInputManager)
+        {
+            // Error creating input method
+            ssLOG_LINE("Failed");
+            return false;
+        }
+
+        XInputContext = XCreateIC(  XInputManager, 
+                                    XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
+                                    XNClientWindow, WindowId,
+                                    XNFocusWindow, WindowId,
+                                    NULL);
+
+        if (!XInputContext) 
+        {
+            // Error creating input context
+            ssLOG_LINE("Failed");
+            return false;
+        }
+        
+        //GLFW
+        //unsigned long filter = 0;
+        //if (XGetICValues(XInputContext, XNFilterEvents, &filter, NULL) == NULL)
+        //{
+        //    XWindowAttributes attribs;
+        //    XGetWindowAttributes(WindowDisplay, WindowId, &attribs);
+            
+        //    XSelectInput(WindowDisplay,
+        //                 WindowId,
+        //                 attribs.your_event_mask | filter);
+        //}
+
+        XSetICFocus(XInputContext);
+        
+        //XSelectInput(WindowDisplay, WindowId, KeyPressMask | KeyReleaseMask);
+        
         
         //Create user event for closing window
         WindowCloseEventId = XInternAtom(WindowDisplay, "WM_DELETE_WINDOW", False);
@@ -287,6 +307,8 @@ namespace Backend
         glXMakeCurrent(WindowDisplay, 0, 0);
         glXDestroyContext(WindowDisplay, WindowContext);
 
+        XDestroyIC(XInputContext);
+        XCloseIM(XInputManager);
         XDestroyWindow(WindowDisplay, WindowId);
         XFreeColormap(WindowDisplay, WindowColormap);
         XCloseDisplay(WindowDisplay);
@@ -929,6 +951,8 @@ namespace Backend
 
     void BackendMainWindowX11_OpenGL3_3::SetFocus(bool focus, bool externalByUser)
     {
+        //TODO: Unset or set IM focus
+        
         if(externalByUser)
         {
             for(int i = 0; i < ExternalFocusChangedCallback.size(); i++)
@@ -1155,7 +1179,8 @@ namespace Backend
             WindowColormap,
             WindowId,
             WindowContext,
-            WindowCloseEventId
+            WindowCloseEventId,
+            XInputContext
         };
         
         return &CurrentHandle;

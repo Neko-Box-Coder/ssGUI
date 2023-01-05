@@ -5,6 +5,11 @@
 
 #include "ssGUI/Backend/BackendManager.hpp"
 
+#include <chrono>
+#include <memory>
+#include <unordered_map>
+#include <X11/Xlib.h>
+
 namespace ssGUI
 {
 
@@ -15,6 +20,42 @@ namespace Backend
     class BackendSystemInputX11_OpenGL3_3 : public BackendSystemInputInterface
     {   
         private:
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> CurrentKeyPresses;                          //See <GetCurrentButtonAndKeyPresses>
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> LastKeyPresses;                             //See <GetLastButtonAndKeyPresses>
+            std::wstring InputText = L"";                                                                         //See <GetTextInput>
+            glm::ivec2 CurrentMousePosition = glm::ivec2();                                                                //See <GetCurrentMousePosition>
+            glm::ivec2 LastMousePosition = glm::ivec2();                                                                   //See <GetLastMousePosition>
+            std::vector<ssGUI::Enums::MouseButton> CurrentMouseButtons;                                     //See <GetCurrentMouseButton>
+            std::vector<ssGUI::Enums::MouseButton> LastMouseButtons;                                        //See <GetLastMouseButton>
+            glm::vec2 MouseScrollDelta = glm::vec2();                                                                     //See <GetCurrentMouseScrollDelta>
+            std::vector<ssGUI::RealtimeInputInfo> CurrentInputInfos;                                        //See <GetCurrentRealtimeInputs>
+            std::vector<ssGUI::RealtimeInputInfo> LastInputInfos;                                           //See <GetLastRealtimeInputs>
+            ssGUI::Enums::CursorType CurrentCursor = ssGUI::Enums::CursorType::NORMAL;                                                         //See <GetCursorType>
+            
+            std::vector<XEvent> CurrentEvents;
+            
+            struct CursorData
+            {
+                std::shared_ptr<ssGUI::ImageData> CursorImage;
+                glm::ivec2 Hotspot;
+                std::unordered_map<Display*, Cursor> X11CursorHandles;
+            };
+            std::unordered_map<std::string, CursorData> CustomCursors;                                      //See <GetCustomCursor>
+            std::string CurrentCustomCursor = "";                                                                //See <GetCurrentCustomCursorName>
+
+            std::chrono::high_resolution_clock::time_point StartTime;                                       //See <GetElapsedTime>
+        
+            template <class T>
+            void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
+
+            template <class T>
+            void RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom);
+
+            void FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
+            void FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
+        
+            bool PopulateCursorDataHandles(CursorData& cursorData);
+        
             BackendSystemInputX11_OpenGL3_3& operator=(BackendSystemInputX11_OpenGL3_3 const& other);
 
         protected:
@@ -23,6 +64,8 @@ namespace Backend
         public:
             BackendSystemInputX11_OpenGL3_3();
             ~BackendSystemInputX11_OpenGL3_3() override;
+            
+            void FetchEvents();
             
             //function: UpdateInput
             //See <BackendMainWindowInterface::UpdateInput>
