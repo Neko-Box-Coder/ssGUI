@@ -302,7 +302,7 @@ namespace Backend
         //Set last key presses and mouse buttons
         LastKeyPresses = CurrentKeyPresses;
         LastMouseButtons = CurrentMouseButtons;
-        LastInputInfos = std::move(CurrentInputInfos);
+        LastInputInfos = CurrentInputInfos;
 
         //Get mouse position
         LastMousePosition = CurrentMousePosition;
@@ -563,7 +563,8 @@ namespace Backend
                                             imgFormat,
                                             CustomCursors[cursorName].CursorImage->GetSize()))
         {
-            ssLOG_LINE("Failed to load custom cursor image");   
+            ssLOG_LINE("Failed to load custom cursor image");
+            return;
         }
 
         hotspot = CustomCursors[cursorName].Hotspot;

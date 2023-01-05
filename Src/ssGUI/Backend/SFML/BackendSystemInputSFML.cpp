@@ -110,7 +110,7 @@ namespace Backend
         //Set last key presses and mouse buttons
         LastKeyPresses = CurrentKeyPresses;
         LastMouseButtons = CurrentMouseButtons;
-        LastInputInfos = std::move(CurrentInputInfos);
+        LastInputInfos = CurrentInputInfos;
 
         //Get mouse position
         LastMousePosition = CurrentMousePosition;
