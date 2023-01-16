@@ -167,6 +167,7 @@ namespace Backend
                 ssLOG_LINE("Trying to disable MSAA and retry...");
                 glxAttrib[msaaIndex + 1] = 0;
                 glxAttrib[msaaIndex + 3] = 0;
+                MsaaLevel = 0;
                 goto fallback;
             }
 
@@ -440,6 +441,18 @@ namespace Backend
             }
         }
         
+        Window root = RootWindow(WindowDisplay, screen);
+
+        XRRScreenConfiguration* conf = XRRGetScreenInfo(WindowDisplay, root);
+        Rotation originalRotation;
+        SizeID lastResId = XRRConfigCurrentConfiguration(conf, &originalRotation);
+        
+        if(!OriginalResolutionSet)
+        {
+            OriginalResolutionSet = true;
+            OriginalResolutionId = lastResId;
+        }
+
         if (sizeindex >= nsize || sizeindex < 0)
         {
             ssLOG_LINE("Failed to set fullscreen resolution to "<<targetResolution.x<<" x "<<targetResolution.y);
@@ -449,18 +462,6 @@ namespace Backend
         }
         else
         {
-            Window root = RootWindow(WindowDisplay, screen);
-
-            XRRScreenConfiguration* conf = XRRGetScreenInfo(WindowDisplay, root);
-            Rotation originalRotation;
-            SizeID lastResId = XRRConfigCurrentConfiguration(conf, &originalRotation);
-            
-            if(!OriginalResolutionSet)
-            {
-                OriginalResolutionSet = true;
-                OriginalResolutionId = lastResId;
-            }
-
             if(!conf)
             {
                 ssLOG_LINE("Failed to get screen info");
@@ -829,6 +830,7 @@ namespace Backend
         
         //From https://github.com/godotengine/godot/issues/2952 discussion
         //Xutf8SetWMProperties(x11_display, x11_window, p_title.utf8().get_data(), NULL, NULL, 0, NULL, NULL, NULL);
+        Title = title;
     }
 
     std::wstring BackendMainWindowX11_OpenGL3_3::GetTitle() const
@@ -1137,7 +1139,7 @@ namespace Backend
             if(windowMode == ssGUI::Enums::WindowMode::FULLSCREEN)
             {
                 glm::ivec2 renderSize = GetRenderSize();
-                SetScreenResolution(renderSize);   
+                SetScreenResolution(renderSize);
             }
             
             XClientEventData data;

@@ -3,12 +3,19 @@
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
+#include "glad/glad_glx.h"
+#include "glad/glad.h"
+
+#include <unordered_map>
+
 namespace ssGUI
 {
 
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    class BackendMainWindowInterface;
+
     //class: ssGUI::Backend::BackendDrawingX11_OpenGL3_3
     class BackendDrawingX11_OpenGL3_3 : public BackendDrawingInterface
     {
@@ -16,7 +23,16 @@ namespace Backend
             BackendDrawingX11_OpenGL3_3& operator=(BackendDrawingX11_OpenGL3_3 const& other);
 
         protected:
+            int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
+            glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
+            std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+            std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
+
+        
             BackendDrawingX11_OpenGL3_3(BackendDrawingX11_OpenGL3_3 const& other);
+        
+            ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
+            void UpdateViewPortAndModelViewIfNeeded();
         
         public:
             BackendDrawingX11_OpenGL3_3();

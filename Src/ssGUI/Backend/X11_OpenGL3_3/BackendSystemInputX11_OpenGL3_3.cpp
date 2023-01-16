@@ -383,6 +383,7 @@ namespace Backend
                         FetchKeysReleased(input, CurrentKeyPresses);
                         CurrentInputInfos.push_back(curInfo);
                     }
+                    break;
                 }
                 
                 //Mouse button down event
@@ -744,32 +745,46 @@ namespace Backend
                     break;
                 case ssGUI::Enums::CursorType::NORMAL:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_left_ptr);
+                    break;
                 case ssGUI::Enums::CursorType::TEXT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_xterm);
+                    break;
                 case ssGUI::Enums::CursorType::HAND:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_fleur);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_LEFT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_left_side);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_RIGHT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_right_side);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_UP:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_top_side);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_DOWN:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_bottom_side);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_top_left_corner);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_bottom_right_corner);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_top_right_corner);
+                    break;
                 case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_bottom_left_corner);
+                    break;
                 case ssGUI::Enums::CursorType::MOVE:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_fleur);
+                    break;
                 case ssGUI::Enums::CursorType::HELP:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_question_arrow);
+                    break;
                 case ssGUI::Enums::CursorType::NOT_ALLOWED:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_X_cursor);
+                    break;
                 case ssGUI::Enums::CursorType::CUSTOM:
                 {
                     CursorData& currentCursorData = CustomCursors[CurrentCustomCursor];
@@ -783,6 +798,7 @@ namespace Backend
                     }
                     
                     cursor = currentCursorData.X11CursorHandles[rawHandle->WindowDisplay];
+                    break;
                 }
                 default:
                     ssLOG_LINE("Unimplemented Cursor");

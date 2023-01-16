@@ -245,7 +245,6 @@ namespace Backend
         return DrawShape(vertices, texCoords, colors, 0, vertices.size(), image);
     }
 
-
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::u8vec4>& colors)
     {
