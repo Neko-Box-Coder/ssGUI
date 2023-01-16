@@ -121,7 +121,21 @@ namespace Backend
         ssLOG_EXIT_PROGRAM();
     }
 
-    BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3()
+    BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3() :    CurrentEvents(),
+                                                                            CurrentKeyPresses(),
+                                                                            LastKeyPresses(),
+                                                                            InputText(L""),
+                                                                            CurrentMousePosition(),
+                                                                            LastMousePosition(),
+                                                                            CurrentMouseButtons(),
+                                                                            LastMouseButtons(),
+                                                                            MouseScrollDelta(),
+                                                                            CurrentInputInfos(),
+                                                                            LastInputInfos(),
+                                                                            CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
+                                                                            CustomCursors(),
+                                                                            CurrentCustomCursor(),
+                                                                            StartTime()
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));

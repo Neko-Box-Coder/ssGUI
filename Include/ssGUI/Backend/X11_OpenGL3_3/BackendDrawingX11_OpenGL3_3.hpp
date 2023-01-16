@@ -16,7 +16,27 @@ namespace Backend
 {
     class BackendMainWindowInterface;
 
-    //class: ssGUI::Backend::BackendDrawingX11_OpenGL3_3
+    /*class: ssGUI::Backend::BackendDrawingX11_OpenGL3_3
+    For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
+    
+    Variables & Constructor:
+    ======================== C++ =======================
+    protected:
+        int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
+        glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
+        std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+        std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
+    ====================================================
+    ======================== C++ =======================
+    BackendDrawingX11_OpenGL3_3::BackendDrawingX11_OpenGL3_3() :    BackendIndex(0),
+                                                                    LastMainWindowSize(-1, -1),
+                                                                    CharTextures(),
+                                                                    ImageTextures()
+    {
+        ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));   
+    }
+    ====================================================
+    */
     class BackendDrawingX11_OpenGL3_3 : public BackendDrawingInterface
     {
         private:

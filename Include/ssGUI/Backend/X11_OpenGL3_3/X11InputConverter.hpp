@@ -21,11 +21,11 @@ namespace Backend
     {
         public:
             //function: ConvertButtonAndKeys
-            //This converts win32 key events into <KeyPresses> 
+            //This converts X11 key events into <KeyPresses> 
             static ssGUI::Enums::GenericButtonAndKeyInput ConvertButtonAndKeys(KeySym keysym);
 
             //function: ConvertMouseButtons
-            //This converts win32 mouse button events into <Enums::MouseButton>
+            //This converts X11 mouse button events into <Enums::MouseButton>
             static ssGUI::Enums::GenericButtonAndKeyInput ConvertMouseButtons(const XEvent& event);
     };
 }

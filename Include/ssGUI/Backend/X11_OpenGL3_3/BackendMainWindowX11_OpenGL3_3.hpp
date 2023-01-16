@@ -16,17 +16,87 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    //struct ssGUI::Backend::X11RawHandle
     struct X11RawHandle
     {
+        //var: WindowDisplay
         Display* WindowDisplay;
+        
+        //var: WindowColormap
         Colormap WindowColormap;
+        
+        //var: WindowId
         Window WindowId;
+        
+        //var: WindowContext
         GLXContext WindowContext;
+        
+        //var: WindowCloseEventId
         Atom WindowCloseEventId;
+        
+        //var: XInputContext
         XIC XInputContext;
     };
 
-    //class: ssGUI::Backend::BackendMainWindowInterface
+    /*class: ssGUI::Backend::BackendMainWindowInterface
+    For functions explainations, please see <BackendMainWindowInterface>. Normally you don't need to deal with this class
+    
+    Variables & Constructor:
+    ======================== C++ =======================
+    private:
+        Display* WindowDisplay;                                                         //(Internal variable) The display server we have connected to, not to be confused by monitors
+        Colormap WindowColormap;                                                        //(Internal variable) The colormap associated with the window
+        Window WindowId;                                                                //(Internal variable) The window identifier
+        GLXContext WindowContext;                                                       //(Internal variable) The window context
+        XIM XInputManager;                                                              //(Internal variable) Input Manager object for X
+        XIC XInputContext;                                                              //(Internal variable) Input context associated with XInputManager and the window for X
+        unsigned short OriginalResolutionId;                                            //(Internal variable) Resolution ID before going into fullscreen
+        bool OriginalResolutionSet;                                                     //(Internal variable) Is the above ID valid?
+        bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
+        bool Closed;                                                                    //See <IsClosed>
+        X11RawHandle CurrentHandle;                                                     //See <GetRawHandle>
+        int MsaaLevel;                                                                  //See <GetMSAA>
+        Atom WindowCloseEventId;                                                        //(Internal variable) Atom used for close event notification
+        bool Titlebar;                                                                  //See <HasTitlebar>
+        bool Resizable;                                                                 //See <IsResizable>
+        bool CloseButton;                                                               //See <HasCloseButton>
+        std::wstring Title;                                                             //See <GetTitle>
+        ssGUI::Enums::WindowMode CurrentWindowMode;                                     //See <GetWindowMode>
+        bool Visible;                                                                   //See <IsVisible>
+        glm::ivec2 LastPositionBeforeHidden;                                            //(Internal variable) Used to set the position back to original when coming out from hidden state
+        std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
+        std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
+    ====================================================
+    ======================== C++ =======================
+    BackendMainWindowX11_OpenGL3_3::BackendMainWindowX11_OpenGL3_3() :  WindowDisplay(nullptr),
+                                                                        WindowColormap(0),
+                                                                        WindowId(0),
+                                                                        WindowContext(),
+                                                                        XInputManager(),
+                                                                        XInputContext(),
+                                                                        OriginalResolutionId(0),
+                                                                        OriginalResolutionSet(false),
+                                                                        IsClosingAborted(false),
+                                                                        Closed(false),
+                                                                        CurrentHandle(),
+                                                                        MsaaLevel(0),
+                                                                        WindowCloseEventId(),
+                                                                        Titlebar(true),
+                                                                        Resizable(true),
+                                                                        CloseButton(true),
+                                                                        Title(L""),
+                                                                        CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL),
+                                                                        Visible(true),
+                                                                        LastPositionBeforeHidden(),
+                                                                        OnCloseCallback(),
+                                                                        ExternalFocusChangedCallback()
+    {        
+        BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
+        
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+    }
+    ====================================================       
+    */
     class BackendMainWindowX11_OpenGL3_3 : public BackendMainWindowInterface
     {
         private:
@@ -82,34 +152,31 @@ namespace Backend
             //#define PROP_MWM_HINTS_ELEMENTS_MIN         4
     
         private:
-            BackendMainWindowX11_OpenGL3_3& operator=(BackendMainWindowX11_OpenGL3_3 const& other);
-
-            Display* WindowDisplay;
-            Colormap WindowColormap;
-            Window WindowId;
-            GLXContext WindowContext;
-            bool Closed = false;
-            X11RawHandle CurrentHandle;
-            int MsaaLevel = 0;                                                                  //See <GetMSAA>
-            Atom WindowCloseEventId;
-            bool Titlebar = true;                                                                  //See <HasTitlebar>
-            bool Resizable = true;                                                                 //See <IsResizable>
-            bool CloseButton = true;                                                               //See <HasCloseButton>
-            std::wstring Title = L"";                                                             //See <GetTitle>
-            ssGUI::Enums::WindowMode CurrentWindowMode = Enums::WindowMode::NORMAL;                                     //See <GetWindowMode>
-            bool Visible = true;                                                                   //See <IsVisible>
-            glm::ivec2 LastPositionBeforeHidden;
-            unsigned short OriginalResolutionId = 0;
-            bool OriginalResolutionSet = false;
-
+            Display* WindowDisplay;                                                         //(Internal variable) The display server we have connected to, not to be confused by monitors
+            Colormap WindowColormap;                                                        //(Internal variable) The colormap associated with the window
+            Window WindowId;                                                                //(Internal variable) The window identifier
+            GLXContext WindowContext;                                                       //(Internal variable) The window context
+            XIM XInputManager;                                                              //(Internal variable) Input Manager object for X
+            XIC XInputContext;                                                              //(Internal variable) Input context associated with XInputManager and the window for X
+            unsigned short OriginalResolutionId;                                            //(Internal variable) Resolution ID before going into fullscreen
+            bool OriginalResolutionSet;                                                     //(Internal variable) Is the above ID valid?
+            bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
+            bool Closed;                                                                    //See <IsClosed>
+            X11RawHandle CurrentHandle;                                                     //See <GetRawHandle>
+            int MsaaLevel;                                                                  //See <GetMSAA>
+            Atom WindowCloseEventId;                                                        //(Internal variable) Atom used for close event notification
+            bool Titlebar;                                                                  //See <HasTitlebar>
+            bool Resizable;                                                                 //See <IsResizable>
+            bool CloseButton;                                                               //See <HasCloseButton>
+            std::wstring Title;                                                             //See <GetTitle>
+            ssGUI::Enums::WindowMode CurrentWindowMode;                                     //See <GetWindowMode>
+            bool Visible;                                                                   //See <IsVisible>
+            glm::ivec2 LastPositionBeforeHidden;                                            //(Internal variable) Used to set the position back to original when coming out from hidden state
             std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
             std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
-            bool IsClosingAborted = false;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
+            
+            BackendMainWindowX11_OpenGL3_3& operator=(BackendMainWindowX11_OpenGL3_3 const& other);
 
-            XIM XInputManager;
-            
-            XIC XInputContext;
-            
             bool ssGUI_CreateWindow();
             void ssGUI_DestroyWindow();
 

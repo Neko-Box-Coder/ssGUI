@@ -675,7 +675,28 @@ namespace Backend
     //    return true;
     //}
     
-    BackendMainWindowX11_OpenGL3_3::BackendMainWindowX11_OpenGL3_3()
+    BackendMainWindowX11_OpenGL3_3::BackendMainWindowX11_OpenGL3_3() :  WindowDisplay(nullptr),
+                                                                        WindowColormap(0),
+                                                                        WindowId(0),
+                                                                        WindowContext(),
+                                                                        XInputManager(),
+                                                                        XInputContext(),
+                                                                        OriginalResolutionId(0),
+                                                                        OriginalResolutionSet(false),
+                                                                        IsClosingAborted(false),
+                                                                        Closed(false),
+                                                                        CurrentHandle(),
+                                                                        MsaaLevel(0),
+                                                                        WindowCloseEventId(),
+                                                                        Titlebar(true),
+                                                                        Resizable(true),
+                                                                        CloseButton(true),
+                                                                        Title(L""),
+                                                                        CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL),
+                                                                        Visible(true),
+                                                                        LastPositionBeforeHidden(),
+                                                                        OnCloseCallback(),
+                                                                        ExternalFocusChangedCallback()
     {        
         BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
         
@@ -953,7 +974,7 @@ namespace Backend
 
     void BackendMainWindowX11_OpenGL3_3::SetFocus(bool focus, bool externalByUser)
     {
-        //TODO: Unset or set IM focus
+        //TODO: Unset or set IM focus, see XSetICValues
         
         if(externalByUser)
         {
