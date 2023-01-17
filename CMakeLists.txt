@@ -17,17 +17,19 @@ project(ssGUI)
 set(ssGUI_OUTPUT_STATIC ON CACHE BOOL "Use and create static library instead")
 set(ssGUI_BUILD_TESTS ON CACHE BOOL "Build tests")
 set(ssGUI_BUILD_EXAMPLES ON CACHE BOOL "Build examples")
-set(ssGUI_MAIN_BACKEND "SFML" CACHE STRING "The main backend that will be used by ssGUI")
-set(ssGUI_FONT_BACKEND "SFML" CACHE STRING "The font backend that will be used by ssGUI")
-set(ssGUI_IMAGE_BACKEND "SFML" CACHE STRING "The image backend that will be used by ssGUI")
+set(ssGUI_MAIN_BACKEND_DESCRIPTION "The main backend that will be used by ssGUI")
+set(ssGUI_FONT_BACKEND_DESCRIPTION "The font backend that will be used by ssGUI")
+set(ssGUI_IMAGE_BACKEND_DESCRIPTION "The image backend that will be used by ssGUI")
 
 
 # Backend options variable
 if(WIN32)
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "Win32_OpenGL3_3" "Template")     # Allow dropdown option
+    set(ssGUI_MAIN_BACKEND "Win32_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
+    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "Win32_OpenGL3_3" "SFML" "Template")     # Allow dropdown option
 # Linux
 else()
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "SFML" "X11_OpenGL3_3" "Template")                       # Allow dropdown option
+    set(ssGUI_MAIN_BACKEND "X11_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
+    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "X11_OpenGL3_3" "SFML" "Template")                       # Allow dropdown option
 endif()
 
 # Show / unshow SFML options depending if SFML backend is selected or not
@@ -35,6 +37,8 @@ if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
     set(ssGUI_USE_LOCAL_SFML ON CACHE BOOL "Use the SFML that comes with ssGUI")
     set(ssGUI_USE_SFML_TIME OFF CACHE BOOL "Use SFML time instead of chrono time")
     
+    set(ssGUI_FONT_BACKEND "SFML" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+    set(ssGUI_IMAGE_BACKEND "SFML" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "SFML" "FreeType" "Template")            # Allow dropdown option
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" "stb_image" "Template")          # Allow dropdown option
 
@@ -47,16 +51,25 @@ else()
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+    set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+    set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
+    set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+    set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Template")
+    set(ssGUI_FONT_BACKEND "Template" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+    set(ssGUI_IMAGE_BACKEND "Template" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "Template")            # Allow dropdown option
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")           # Allow dropdown option
 endif()
