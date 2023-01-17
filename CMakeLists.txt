@@ -145,6 +145,8 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssLogger" "${CMAKE_CURREN
 
 if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
+    unset(FT_DISABLE_HARFBUZZ CACHE)
+    set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
 endif()
 
 # ==========================================================
