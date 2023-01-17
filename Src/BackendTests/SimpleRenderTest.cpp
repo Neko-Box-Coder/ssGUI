@@ -46,7 +46,7 @@ int main()
     //sleep(1);
     //window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
 
-
+    window->SetWindowPosition(glm::ivec2(300, 300));
 
     while(!window->IsClosed())
     {
@@ -63,6 +63,7 @@ int main()
         if(count >= 300)
         {
             ssLOG_LINE("5 seconds past");
+            ssLOG_LINE(window->GetWindowPosition().x<<", "<<window->GetWindowPosition().y);
             //window->SetWindowPosition(glm::ivec2(0, 0));
             //glm::ivec2 windowPos = window->GetWindowPosition();
             //ssLOG_LINE("windowPos: "<<windowPos.x<<", "<<windowPos.y);
