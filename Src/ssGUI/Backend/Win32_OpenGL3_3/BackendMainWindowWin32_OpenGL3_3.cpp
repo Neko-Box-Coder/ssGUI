@@ -727,9 +727,12 @@ namespace Backend
 
         if(!AdjustWindowRect(&renderSize, dwStyle, FALSE))
         {
-            ssLOG_LINE("Failed to set render size");
+            ssLOG_LINE("Failed to calculate render size");
             return;
         }
+
+        if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, renderSize.left, renderSize.top, renderSize.right - renderSize.left, renderSize.bottom - renderSize.top, SWP_SHOWWINDOW))
+            ssLOG_LINE("Failed to set render size");
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetRenderSize() const
@@ -816,19 +819,7 @@ namespace Backend
         ssGUI::ImageFormat format;
         void* imgPtr = iconImage.GetPixelPtr(format);
 
-        //TODO: Move this to somewhere else
-        switch(format.BitDepthPerChannel)
-        {
-            case 8:
-                ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
-                break;
-            case 16:
-                ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(rgbaImg, imgPtr, format, iconImage.GetSize());
-                break;
-            default:
-                ssLOG_LINE("Unsupported bit depth");
-                return;
-        }
+        ssGUI::ImageUtil::ConvertToRGBA32(rgbaImg, imgPtr, format, iconImage.GetSize());
 
         uint8_t* rawBitmap = new uint8_t[iconImage.GetSize().x * iconImage.GetSize().y * 4];
 
@@ -894,7 +885,11 @@ namespace Backend
             ssLOG_LINE("Hide window failed");
         
         if(visible && !ShowWindow(CurrentWindowHandle, SW_SHOW))
-            ssLOG_LINE("Show window failed");
+        {
+            //TODO: For some reason, this keep getting triggered even though the window did show.
+            //      Add this back when tags are added to logging
+            // ssLOG_LINE("Show window failed");
+        }
     }
 
     bool BackendMainWindowWin32_OpenGL3_3::IsVisible() const

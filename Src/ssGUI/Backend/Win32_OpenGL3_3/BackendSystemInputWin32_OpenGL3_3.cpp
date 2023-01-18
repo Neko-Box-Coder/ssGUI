@@ -171,7 +171,8 @@ namespace Backend
 
             if(!found)
             {
-                ssLOG_LINE("Failed to find main window from handle: "<<msg.hwnd);
+                //TODO: Silence this, for now. Will enable this back when tags are added to logging 
+                // ssLOG_LINE("Failed to find main window from handle: "<<msg.hwnd);
                 return false;
             }
         }
@@ -723,20 +724,7 @@ namespace Backend
         uint8_t* imgPtr = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
         bool result = false;
 
-        //TODO: Move this to somewhere else
-        switch(format.BitDepthPerChannel)
-        {
-            case 8:
-                result = ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
-                break;
-            case 16:
-                result = ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(imgPtr, oriImgPtr, format, imgData.GetSize());
-                break;
-            default:
-                ssLOG_LINE("Unsupported bitdepth: " << format.BitDepthPerChannel);
-                delete[] imgPtr;
-                return false;
-        }
+        result = ssGUI::ImageUtil::ConvertToRGBA32(imgPtr, oriImgPtr, format, imgData.GetSize());
 
         if(!result)
             return false;

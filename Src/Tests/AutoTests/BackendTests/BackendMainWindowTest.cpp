@@ -112,10 +112,13 @@ void TitleTest()
 
 void VisibleTest()
 {
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     window->SetVisible(false);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Fasle)"), !window->IsVisible());
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(False)"), !window->IsVisible());
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     window->SetVisible(true);
     SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(True)"), window->IsVisible());
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
 void VsyncTest()
@@ -186,6 +189,7 @@ void CloneTest()
     catch(const std::exception& ex)
     {
         ssLOG_LINE("Exception caught: "<<ex.what());
+        ssLOG_LINE("Don't worry, this is expected 😉")
         SSGUI_TEST_OUTPUT_ASSERT(__func__, true);
     }
     catch(...)
@@ -219,7 +223,7 @@ int main()
         //Can't test RemoveFocusChangedByUserEvent
         MSAATest();
         TitlebarTest();
-        RenderSizeTest();
+        ResizableTest();
         CloseButtonTest();
         WindowModeTest();
         //Can't test SetGLContext

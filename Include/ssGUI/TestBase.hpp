@@ -14,11 +14,23 @@
     return ssGUITestfileName.substr(ssGUITestfound+1, ssGUITestExtfound - ssGUITestfound - 1);\
 }()
 
-#define SSGUI_TEST_TITLE(title)\
-TestName = title;\
-printf("==========================================================\n");\
-printf("🚀 %s\n", title.c_str());\
-printf("==========================================================\n");
+
+
+#ifdef _WIN32
+    #define SSGUI_TEST_TITLE(title)\
+    SetConsoleOutputCP(CP_UTF8);\
+    TestName = title;\
+    printf("==========================================================\n");\
+    printf("🚀 %s\n", title.c_str());\
+    printf("==========================================================\n");
+#else
+    #define SSGUI_TEST_TITLE(title)\
+    TestName = title;\
+    printf("==========================================================\n");\
+    printf("🚀 %s\n", title.c_str());\
+    printf("==========================================================\n");
+#endif
+
 
 #define SSGUI_TEST_OUTPUT_ASSERT(name, assert)\
 {\
