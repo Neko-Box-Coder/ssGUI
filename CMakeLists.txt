@@ -9,6 +9,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # set the project name
 project(ssGUI)
 
+# Set use folder name for IDEs such as Visual Studio
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # ==========================================================
 # Variables 
 # ==========================================================
@@ -111,6 +114,8 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/External/clip")
 
 target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/External/clip")
 
+set_target_properties(clip PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+
 # ==========================================================
 # SFML 
 # ==========================================================
@@ -130,6 +135,8 @@ if(ssGUI_USE_LOCAL_SFML AND ssGUI_MAIN_BACKEND STREQUAL "SFML")
     # Import SFML
     find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
 
+    # TODO: Check if this works
+    set_target_properties(SFML PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 endif()
 
 # ==========================================================
@@ -138,6 +145,7 @@ endif()
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/ssLogger")
 
+set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
 # ==========================================================
 # FreeType
@@ -147,6 +155,7 @@ if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
     unset(FT_DISABLE_HARFBUZZ CACHE)
     set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
+    set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 endif()
 
 # ==========================================================
@@ -161,6 +170,7 @@ if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
     #                BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image"
     #                FILES "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image/stb_image.h")
     target_include_directories(ssGUI_stb_image INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image")
+    set_target_properties(ssGUI_stb_image PROPERTIES FOLDER External)   # Set folder name for IDEs such as Visual Studio
 endif()
 
 # ==========================================================
@@ -253,12 +263,14 @@ elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
     find_package(OpenGL REQUIRED)
     target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
+    set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
     target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_X11_OPENGL)
     find_package(OpenGL REQUIRED)
     find_package(X11 REQUIRED)
     target_link_libraries(ssGUI PUBLIC OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
+    set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
     message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
 else()
@@ -288,7 +300,7 @@ else()
 endif()
 
 # ==========================================================
-# ssGUI compilter definitions
+# ssGUI compiler definitions
 # ==========================================================
 if(ssGUI_USE_DEBUG)
     target_compile_definitions(ssGUI PUBLIC SSGUI_USE_DEBUG=1)
@@ -322,7 +334,7 @@ file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
 # Building tests and examples 
 # ==========================================================
 
-function(AddFilesToExecutables folderToExe binSubFolder)
+function(AddFilesToExecutables folderToExe binSubFolder ideFolderName)
     file(GLOB ssGUI_EXE_CPP_FILES "${folderToExe}*.cpp")
 
     foreach(CUR_SOURCE_PATH ${ssGUI_EXE_CPP_FILES})
@@ -339,69 +351,6 @@ function(AddFilesToExecutables folderToExe binSubFolder)
             continue()
         endif()
 
-        # add the executable
-        add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
-
-        # Link ssGUI to executable
-        target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
-
-        # Sub-directory for build
-        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${binSubFolder})
-    endforeach(CUR_SOURCE_PATH "${ssGUI_EXE_CPP_FILES}")
-
-endfunction()
-
-# TODO: Leave it for now, but remove this later
-#if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
-#endif()
-
-
-if(ssGUI_BUILD_TESTS)
-    #AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
-    
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/")
-    
-
-    # # set(ssGUI_TEST_CPP_FILES "" STRING)
-    # file(GLOB ssGUI_TEST_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/*.cpp")
-
-    # # message("${ssGUI_TEST_CPP_FILES}")
-
-    # foreach(CUR_SOURCE_PATH ${ssGUI_TEST_CPP_FILES})
-
-    #     # Get the file name without path and extension
-    #     get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
-        
-    #     # message("${CUR_SOURCE_PATH}\n")
-    #     # message("${CUR_NAME}\n")
-    #     # message("${ssGUI_TEST_CPP_FILES}")
-
-    #     # add the executable
-    #     add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
-
-    #     # Link ssGUI to executable
-    #     target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
-
-    #     # Sub-directory for build
-    #     set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests")
-    # endforeach(CUR_SOURCE_PATH "${ssGUI_TEST_CPP_FILES}")
-
-    # Copy resources for the Tests 
-    file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-            DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests") 
-
-endif()
-
-
-if(ssGUI_BUILD_EXAMPLES)
-    # TODO: Move this to be using AddFilesToExecutables
-    file(GLOB ssGUI_EXAMPLE_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/*.cpp")
-    foreach(CUR_SOURCE_PATH ${ssGUI_EXAMPLE_CPP_FILES})
-
-        # Get the file name without path and extension
-        get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
-
         # For now, skip custom graphics example if we don't have SFML backend
         if(CUR_NAME STREQUAL "CustomGraphicsExample" AND NOT ssGUI_MAIN_BACKEND STREQUAL "SFML")
             continue()
@@ -411,12 +360,38 @@ if(ssGUI_BUILD_EXAMPLES)
         add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
 
         # Link ssGUI to executable
-        target_link_libraries("${CUR_NAME}" PUBLIC ssGUI) #OpenGL::GL)
+        target_link_libraries("${CUR_NAME}" PUBLIC ssGUI)
 
         # Sub-directory for build
-        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Examples")
+        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${binSubFolder})
 
-    endforeach()
+        # Set folder name for IDEs such as Visual Studio
+        set_target_properties("${CUR_NAME}" PROPERTIES FOLDER ${ideFolderName})
+
+    endforeach(CUR_SOURCE_PATH "${ssGUI_EXE_CPP_FILES}")
+
+endfunction()
+
+# TODO: Leave it for now, but remove this later
+#if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/" "BackendTests")
+#endif()
+
+
+if(ssGUI_BUILD_TESTS)
+    #AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
+    
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" "AutoTests/BackendTests")
+
+    # Copy resources for the Tests 
+    file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+            DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests") 
+
+endif()
+
+
+if(ssGUI_BUILD_EXAMPLES)
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/" "${CMAKE_CURRENT_BINARY_DIR}/Examples/" "Examples")
 
     # Copy resources for the Examples 
     file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
