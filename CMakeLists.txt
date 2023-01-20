@@ -136,7 +136,11 @@ if(ssGUI_USE_LOCAL_SFML AND ssGUI_MAIN_BACKEND STREQUAL "SFML")
     find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
 
     # TODO: Check if this works
-    set_target_properties(SFML PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+    set_target_properties(SFML::System PROPERTIES FOLDER External)      # Set folder name for IDEs such as Visual Studio
+    set_target_properties(SFML::Window PROPERTIES FOLDER External)      # Set folder name for IDEs such as Visual Studio
+    set_target_properties(SFML::Graphics PROPERTIES FOLDER External)    # Set folder name for IDEs such as Visual Studio
+    set_target_properties(SFML::Network PROPERTIES FOLDER External)     # Set folder name for IDEs such as Visual Studio
+    set_target_properties(SFML::Audio PROPERTIES FOLDER External)       # Set folder name for IDEs such as Visual Studio
 endif()
 
 # ==========================================================
