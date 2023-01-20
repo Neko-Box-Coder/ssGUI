@@ -17,6 +17,7 @@
 
 
 #ifdef _WIN32
+    #include <windows.h>
     #define SSGUI_TEST_TITLE(title)\
     SetConsoleOutputCP(CP_UTF8);\
     TestName = title;\

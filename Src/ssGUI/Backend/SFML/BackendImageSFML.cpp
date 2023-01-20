@@ -1,5 +1,5 @@
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
-#include "ssGUI/HelperClasses/SFMLImageConversion.hpp"
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 
 #include "ssLogger/ssLog.hpp"
 
@@ -83,26 +83,19 @@ namespace Backend
             
             bool result = false;
             
-            //TODO: Move this to somewhere else
-            switch(format.BitDepthPerChannel)
-            {
-                case 8:
-                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(MemoryImage, dataPtr, format, imageSize);
-                    break;
-                case 16:
-                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(MemoryImage, dataPtr, format, imageSize);
-                    break;
-                case 32:
-                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint32_t>(MemoryImage, dataPtr, format, imageSize);
-                    break;
-                default:
-                    ssLOG_LINE("Not supported BitDepthPerChannel: " << format.BitDepthPerChannel);
-                    ssLOG_LINE("Aborting...");
-                    return false;
-            }
-            
+            uint8_t* convertedRawImg = new uint8_t[imageSize.x * imageSize.y * 4];
+
+            result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, dataPtr, format, imageSize);
             if(!result)
+            {
+                delete[] convertedRawImg;
                 return false;
+            }
+            else
+            {
+                MemoryImage.create(sf::Vector2u(imageSize.x, imageSize.y), convertedRawImg);
+                delete[] convertedRawImg;
+            }
         }
         else
         {

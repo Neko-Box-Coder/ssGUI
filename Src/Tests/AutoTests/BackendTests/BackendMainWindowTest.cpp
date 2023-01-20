@@ -1,6 +1,7 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssLogger/ssLog.hpp"
 #include "ssGUI/TestBase.hpp"
+#include "ssGUI/Factory.hpp"
 #include <thread>
 
 ssGUI::Backend::BackendDrawingInterface* drawing = nullptr;

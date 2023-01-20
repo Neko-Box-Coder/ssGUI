@@ -1,4 +1,5 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Factory.hpp"
 #include "ssGUI/TestBase.hpp"
 #include <thread>
 
