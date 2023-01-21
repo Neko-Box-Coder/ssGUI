@@ -37,6 +37,7 @@ namespace Extensions
         targetShape.Vertices = vertices;
         targetShape.Colors = colors;
         targetShape.BehindGUI = behindGUIObject;
+        targetShape.Type = ShapeType::POLYGON;
     }
 
     void Shape::ConstructAdditionalRectangle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
@@ -54,6 +55,11 @@ namespace Extensions
         targetShape.Colors.push_back(color);
         targetShape.Colors.push_back(color);
 
+        targetShape.Type = ShapeType::RECTANGLE;
+        targetShape.Data.Rectangle.Pos = pos;
+        targetShape.Data.Rectangle.Size = size;
+        targetShape.Data.Rectangle.Color = color;     
+
         targetShape.BehindGUI = behindGUIObject;
     }
 
@@ -70,6 +76,11 @@ namespace Extensions
             targetShape.Vertices.push_back(pos + glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
             targetShape.Colors.push_back(color);
         }
+
+        targetShape.Type = ShapeType::CIRCLE;
+        targetShape.Data.Circle.Pos = pos;        
+        targetShape.Data.Circle.Size = size;
+        targetShape.Data.Circle.Color = color;
 
         targetShape.BehindGUI = behindGUIObject;
     }
@@ -142,6 +153,14 @@ namespace Extensions
         targetShape.Colors.push_back(startColor);
         targetShape.Colors.push_back(endColor);
         targetShape.Colors.push_back(endColor);
+
+        targetShape.Type = ShapeType::LINE;
+        targetShape.Data.Line.StartPos = start;        
+        targetShape.Data.Line.StartSize = startThickness;        
+        targetShape.Data.Line.StartColor = startColor;        
+        targetShape.Data.Line.EndPos = end;        
+        targetShape.Data.Line.EndSize = endThickness;        
+        targetShape.Data.Line.EndColor = endColor;
 
         targetShape.BehindGUI = behindGUIObject;
     }
@@ -222,6 +241,7 @@ namespace Extensions
     {
         AdditionalShapes.push_back(AdditionalShape());
         AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+        AdditionalShapes[AdditionalShapes.size() - 1].Type = ShapeType::POLYGON;
         return NextID++;
     }
 
@@ -375,6 +395,21 @@ namespace Extensions
             if(AdditionalShapes[i].ID != id)
                 continue;
 
+            if( AdditionalShapes[i].Type == ShapeType::RECTANGLE && 
+                pos == AdditionalShapes[i].Data.Rectangle.Pos &&
+                size == AdditionalShapes[i].Data.Rectangle.Size &&
+                color == AdditionalShapes[i].Data.Rectangle.Color)
+            {
+                if(AdditionalShapes[i].BehindGUI != behindGUIObject)
+                {
+                    AdditionalShapes[i].BehindGUI = behindGUIObject;
+                    if(Container != nullptr)
+                        Container->RedrawObject();        
+                }
+                
+                return;
+            }
+
             ConstructAdditionalRectangle(AdditionalShapes[i], pos, size, color, behindGUIObject);
 
             if(Container != nullptr)
@@ -393,6 +428,21 @@ namespace Extensions
 
             ConstructAdditionalCircle(AdditionalShapes[i], pos, size, color, behindGUIObject);
 
+            if( AdditionalShapes[i].Type == ShapeType::CIRCLE && 
+                pos == AdditionalShapes[i].Data.Circle.Pos &&
+                size == AdditionalShapes[i].Data.Circle.Size &&
+                color == AdditionalShapes[i].Data.Circle.Color)
+            {
+                if(AdditionalShapes[i].BehindGUI != behindGUIObject)
+                {
+                    AdditionalShapes[i].BehindGUI = behindGUIObject;
+                    if(Container != nullptr)
+                        Container->RedrawObject();        
+                }
+                
+                return;
+            }
+
             if(Container != nullptr)
                 Container->RedrawObject();
 
@@ -408,6 +458,24 @@ namespace Extensions
                 continue;
 
             ConstructAdditionalLine(AdditionalShapes[i], start, end, startThickness, endThickness, startColor, endColor, behindGUIObject);
+
+            if( AdditionalShapes[i].Type == ShapeType::LINE && 
+                start == AdditionalShapes[i].Data.Line.StartPos &&
+                end == AdditionalShapes[i].Data.Line.EndPos &&
+                startThickness == AdditionalShapes[i].Data.Line.StartSize &&
+                endThickness == AdditionalShapes[i].Data.Line.EndSize &&
+                startColor == AdditionalShapes[i].Data.Line.StartColor &&
+                endColor == AdditionalShapes[i].Data.Line.EndColor)
+            {
+                if(AdditionalShapes[i].BehindGUI != behindGUIObject)
+                {
+                    AdditionalShapes[i].BehindGUI = behindGUIObject;
+                    if(Container != nullptr)
+                        Container->RedrawObject();        
+                }
+                
+                return;
+            }
 
             if(Container != nullptr)
                 Container->RedrawObject();
