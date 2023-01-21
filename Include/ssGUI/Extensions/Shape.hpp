@@ -19,12 +19,59 @@ namespace Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
+        enum ShapeType
+        {
+            POLYGON,
+            RECTANGLE,
+            CIRCLE,
+            LINE
+        };
+
+        struct PolygonData
+        {
+        };
+
+        struct RectangleData
+        {
+            glm::vec2 Pos;
+            glm::vec2 Size;
+            glm::u8vec4 Color;
+        };
+
+        struct CircleData
+        {
+            glm::vec2 Pos;
+            glm::vec2 Size;
+            glm::u8vec4 Color;
+        };
+
+        struct LineData
+        {
+            glm::vec2 StartPos;
+            float StartSize;
+            glm::u8vec4 StartColor;
+            glm::vec2 EndPos;
+            float EndSize;
+            glm::u8vec4 EndColor;
+        };
+
+        union ShapeData
+        {
+            PolygonData Polygon;
+            RectangleData Rectangle;
+            CircleData Circle;
+            LineData Line;
+        };
+
         struct AdditionalShape                                  //(Internal structure) Used to store the additional shape apply on the GUI Object
         {
+            ShapeType Type;
             std::vector<glm::vec2> Vertices;
             std::vector<glm::u8vec4> Colors;
             int ID;
             bool BehindGUI;
+
+            ShapeData Data;
         };
 
         ssGUI::GUIObject* Container;                        //See <BindToObject>
@@ -76,7 +123,7 @@ namespace Extensions
             struct CircleData
             {
                 glm::vec2 Pos;
-                float Size;
+                glm::vec2 Size;
                 glm::u8vec4 Color;
             };
 
@@ -92,10 +139,10 @@ namespace Extensions
 
             union ShapeData
             {
-                PolygonData PolygonData;
-                RectangleData RectangleData;
-                CircleData CircleData;
-                LineData LineData;
+                PolygonData Polygon;
+                RectangleData Rectangle;
+                CircleData Circle;
+                LineData Line;
             };
 
             struct AdditionalShape                                  //(Internal structure) Used to store the additional shape apply on the GUI Object
@@ -258,6 +305,8 @@ namespace Extensions
             Also remember to redraw the GUI Object if changing any vertices colors.
             Nullptr can be returned if the id is invalid. */
             virtual std::vector<glm::u8vec4>* GetAdditionalShapeColorsWithID(int id);
+            
+            //TODO: Maybe allow getting properties of different shapes
 
             //function: GetAdditionalShapesCount
             //This returns the total number of additional shapes
