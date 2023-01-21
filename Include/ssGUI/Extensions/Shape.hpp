@@ -54,12 +54,59 @@ namespace Extensions
             Shape& operator=(Shape const& other);
 
         protected:
+            enum ShapeType
+            {
+                POLYGON,
+                RECTANGLE,
+                CIRCLE,
+                LINE
+            };
+
+            struct PolygonData
+            {
+            };
+
+            struct RectangleData
+            {
+                glm::vec2 Pos;
+                glm::vec2 Size;
+                glm::u8vec4 Color;
+            };
+
+            struct CircleData
+            {
+                glm::vec2 Pos;
+                float Size;
+                glm::u8vec4 Color;
+            };
+
+            struct LineData
+            {
+                glm::vec2 StartPos;
+                float StartSize;
+                glm::u8vec4 StartColor;
+                glm::vec2 EndPos;
+                float EndSize;
+                glm::u8vec4 EndColor;
+            };
+
+            union ShapeData
+            {
+                PolygonData PolygonData;
+                RectangleData RectangleData;
+                CircleData CircleData;
+                LineData LineData;
+            };
+
             struct AdditionalShape                                  //(Internal structure) Used to store the additional shape apply on the GUI Object
             {
+                ShapeType Type;
                 std::vector<glm::vec2> Vertices;
                 std::vector<glm::u8vec4> Colors;
                 int ID;
                 bool BehindGUI;
+
+                ShapeData Data;
             };
 
             ssGUI::GUIObject* Container;                        //See <BindToObject>

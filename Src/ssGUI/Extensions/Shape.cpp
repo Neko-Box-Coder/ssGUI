@@ -37,6 +37,7 @@ namespace Extensions
         targetShape.Vertices = vertices;
         targetShape.Colors = colors;
         targetShape.BehindGUI = behindGUIObject;
+        targetShape.Type = ShapeType::POLYGON;
     }
 
     void Shape::ConstructAdditionalRectangle(AdditionalShape& targetShape, glm::vec2 pos, glm::vec2 size, glm::u8vec4 color, bool behindGUIObject)
@@ -54,6 +55,9 @@ namespace Extensions
         targetShape.Colors.push_back(color);
         targetShape.Colors.push_back(color);
 
+        targetShape.Type = ShapeType::RECTANGLE;
+        targetShape.Data.RectangleData.Pos = pos;        
+
         targetShape.BehindGUI = behindGUIObject;
     }
 
@@ -70,6 +74,9 @@ namespace Extensions
             targetShape.Vertices.push_back(pos + glm::vec2(size.x * cos(angle), size.y * sin(angle)) + size);
             targetShape.Colors.push_back(color);
         }
+
+        targetShape.Type = ShapeType::RECTANGLE;
+        targetShape.Data.CircleData.Pos = pos;        
 
         targetShape.BehindGUI = behindGUIObject;
     }
@@ -222,6 +229,7 @@ namespace Extensions
     {
         AdditionalShapes.push_back(AdditionalShape());
         AdditionalShapes[AdditionalShapes.size() - 1].ID = NextID;
+        AdditionalShapes[AdditionalShapes.size() - 1].Type = ShapeType::POLYGON;
         return NextID++;
     }
 
