@@ -161,6 +161,10 @@ namespace Backend
             virtual bool SetGLContext() = 0;
             
             //function: Clone
+            //Clones the current main window with the same settings, dispose it with <ssGUI::Factory::Dispose> when not needed.
+            //Events such as <AddOnCloseEvent> and <AddFocusChangedByUserEvent> are not copied.
+            //Cloning a closed window is an *undefined* behaviour, same goes to window that is in "invisible" state.
+            //This function is tested limitedly, creating a new <MainWindow> is advised.
             virtual BackendMainWindowInterface* Clone() = 0;
 
             //function: GetRawHandle

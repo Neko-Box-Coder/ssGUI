@@ -147,7 +147,7 @@ namespace Backend
         DestroyWindow(CurrentWindowHandle);             //Cleanup the window   
     }
 
-    void BackendMainWindowWin32_OpenGL3_3::ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfid, bool generatePfDesc, const wchar_t* className)
+    void BackendMainWindowWin32_OpenGL3_3::ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfDesc, const wchar_t* className)
     {
         HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -236,11 +236,10 @@ namespace Backend
 
         int fallback = 0;
 
-        fallback:
         if(generatePfDesc)
             GeneratePixelFormatDescriptor(CurrentPictureFormatDescriptor);
 
-        if(generatePfid)
+        fallback:
         {
             int pf = 0;
             //Check if the pixel format we requested can be used
@@ -293,7 +292,6 @@ namespace Backend
             else if(MsaaLevel > 0)
             {
                 ssLOG_LINE("Trying to disable MSAA and retry...");
-                generatePfid = true;
                 MsaaLevel = 0;
                 goto fallback;
             }
@@ -542,14 +540,36 @@ namespace Backend
         //ssLOG_LINE("Finalized size: "<<finalizedSize.x<<", "<<finalizedSize.y)
 
         ssGUI_DestroyWindow();
-        ssGUI_CreateWindow(finalizedSize.x, finalizedSize.y, false, false, CLASS_NAME);
+        ssGUI_CreateWindow(finalizedSize.x, finalizedSize.y, false, CLASS_NAME);
     }
 
     BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3(BackendMainWindowWin32_OpenGL3_3 const& other)
     {
-        //TODO
-        ssLOG_LINE("Not implemented");
-        ssLOG_EXIT_PROGRAM();
+        CurrentWindowHandle = nullptr;
+        CurrentOpenGLContext = nullptr;
+        CurrentPictureFormatDescriptor = PIXELFORMATDESCRIPTOR();
+        CurrentPixelFormatId = 0;
+
+        MsaaLevel = other.MsaaLevel;
+        OriginalScreenResolution = other.OriginalScreenResolution;
+        Closed = false;
+        Visible = other.Visible;
+
+        OnCloseCallback = std::vector<std::function<void()>>();
+        ExternalFocusChangedCallback = std::vector<std::function<void(bool focused)>>();
+
+        Title = other.Title;
+        Titlebar = other.Titlebar;
+        Resizable = other.Resizable;
+        CloseButton = other.Resizable;
+        IsClosingAborted = false;
+        PublicHandles = Win32_OpenGL_Handles();
+        CurrentWindowMode = other.CurrentWindowMode;
+    
+        glm::ivec2 windowSize = GetWindowSize();
+        ssGUI_CreateWindow(windowSize.x, windowSize.y, true, CLASS_NAME);
+        
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
 
     BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3() :  CurrentWindowHandle(nullptr),
@@ -581,7 +601,7 @@ namespace Backend
             ssGUI_RegisterClass(CLASS_NAME);
         }
 
-        ssGUI_CreateWindow(0, 0, true, true, CLASS_NAME);
+        ssGUI_CreateWindow(0, 0, true, CLASS_NAME);
 
         ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
@@ -715,23 +735,21 @@ namespace Backend
         }
     
         RECT renderSize;
-        if(!GetClientRect(CurrentWindowHandle, &renderSize))
-        {
-            ssLOG_LINE("Failed to get render size");
-            return;
-        }
+        renderSize.left = 0;
+        renderSize.top = 0;
 
         DWORD dwStyle = (DWORD)GetWindowLong(CurrentWindowHandle, GWL_STYLE);
-        renderSize.right = renderSize.left + size.x;
-        renderSize.bottom = renderSize.top + size.y;
+        renderSize.right = size.x;
+        renderSize.bottom = size.y;
 
         if(!AdjustWindowRect(&renderSize, dwStyle, FALSE))
         {
             ssLOG_LINE("Failed to calculate render size");
             return;
         }
+        POINT windowPos = GetRawPosition();
 
-        if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, renderSize.left, renderSize.top, renderSize.right - renderSize.left, renderSize.bottom - renderSize.top, SWP_SHOWWINDOW))
+        if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, windowPos.x, windowPos.y, renderSize.right - renderSize.left, renderSize.bottom - renderSize.top, SWP_SHOWWINDOW))
             ssLOG_LINE("Failed to set render size");
     }
 
@@ -969,7 +987,7 @@ namespace Backend
 
                 ssGUI_DestroyWindow();
             
-                ssGUI_CreateWindow(oriSize.x, oriSize.y, false, false, CLASS_NAME);
+                ssGUI_CreateWindow(oriSize.x, oriSize.y, false, CLASS_NAME);
                 
                 if(GetWindowMode() != ssGUI::Enums::WindowMode::FULLSCREEN)
                 {
@@ -1052,7 +1070,7 @@ namespace Backend
         {
             case ssGUI::Enums::WindowMode::NORMAL:
                 ssGUI_DestroyWindow();  //Technically don't need to do this... but just in case      
-                ssGUI_CreateWindow(0, 0, false, false, CLASS_NAME);
+                ssGUI_CreateWindow(0, 0, false, CLASS_NAME);
                 break;
             case ssGUI::Enums::WindowMode::BORDERLESS:
             {
@@ -1067,7 +1085,7 @@ namespace Backend
                 }
 
                 ssGUI_DestroyWindow();  //Technically don't need to do this... but just in case      
-                ssGUI_CreateWindow(0, 0, false, false, CLASS_NAME);
+                ssGUI_CreateWindow(0, 0, false, CLASS_NAME);
 
                 SetWindowStyle();
 

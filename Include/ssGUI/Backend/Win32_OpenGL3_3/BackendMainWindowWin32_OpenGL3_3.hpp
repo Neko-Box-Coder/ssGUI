@@ -138,7 +138,7 @@ namespace Backend
 
             void ssGUI_DestroyWindow();
 
-            void ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfid, bool generatePfDesc, const wchar_t* className);
+            void ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfDesc, const wchar_t* className);
 
             void ApplyAllSettingsToWindow();
 
