@@ -17,6 +17,15 @@ void CleanUp()
     ssGUI::Factory::Dispose(TestImage);
 }
 
+void GetRawHandleTest()
+{
+    #ifdef SSGUI_IMAGE_BACKEND_STB_IMAGE
+        SSGUI_TEST_OUTPUT_SKIP(__func__);
+    #else
+        SSGUI_TEST_OUTPUT_ASSERT(__func__, TestImage->GetRawHandle() != nullptr);
+    #endif
+}
+
 void IsValidTest()
 {
     SSGUI_TEST_OUTPUT_ASSERT(__func__, !TestImage->IsValid());
@@ -24,14 +33,25 @@ void IsValidTest()
 
 void LoadFromPathTest()
 {
-    //TODO
-    SSGUI_TEST_OUTPUT_SKIP(__func__);
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Loading)"), TestImage->LoadFromPath("../../Resources/sd.png"))
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Validation)"), TestImage->GetSize().x == 293 && TestImage->GetSize().y == 293);
 }
 
+#include <fstream>
 void LoadImgFileFromMemoryTest()
 {
-    //TODO
-    SSGUI_TEST_OUTPUT_SKIP(__func__);
+    std::ifstream ifd("../../Resources/WindowIcon.png", std::ios::binary | std::ios::ate);
+    size_t size = ifd.tellg();
+    ifd.seekg(0, std::ios::beg);
+    
+    char* buffer = new char[size];
+    ifd.read(buffer, size);
+    ifd.close();
+    
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Loading)"), TestImage->LoadImgFileFromMemory(buffer, size));
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Validation)"), TestImage->GetSize().x == 48 && TestImage->GetSize().y == 48);
+    
+    delete[] buffer;
 }
 
 const int imgWidth = 64;
@@ -41,7 +61,6 @@ const int columnWidth = imgWidth / 4;
 void LoadRawFromMemoryTest()
 {
     uint8_t dummyImg[imgWidth * imgHeight * 4] = {0};
-    
     
     for(int y = 0; y < imgHeight; y++)
     {
@@ -126,7 +145,7 @@ int main()
     
     try
     {
-        //Can't test GetRawHandle
+        GetRawHandleTest();
         IsValidTest();
         LoadFromPathTest();
         LoadImgFileFromMemoryTest();
