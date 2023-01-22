@@ -152,6 +152,9 @@ namespace Backend
         //Get text input
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
         {
+            if(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->IsClosed())
+                continue;
+        
             X11RawHandle* rawHandle = static_cast<X11RawHandle*>(
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle());
         
@@ -258,11 +261,11 @@ namespace Backend
                         
                         if((Atom)CurrentEvents[i].xclient.data.l[0] == curHandle->WindowCloseEventId)
                         {    
-                            //if(curHandle->WindowId == CurrentEvents[i].xclient.window)
-                            //{
-                            ssGUI::Backend::BackendManager::GetMainWindowInterface(j)->Close();
-                            break;
-                            //}
+                            if(curHandle->WindowId == CurrentEvents[i].xclient.window)
+                            {
+                                ssGUI::Backend::BackendManager::GetMainWindowInterface(j)->Close();
+                                break;
+                            }
                         }
                     }
                     break;

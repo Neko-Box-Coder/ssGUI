@@ -3,6 +3,7 @@
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 
+#include "ssGUI/Backend/X11_OpenGL3_3/BackendSystemInputX11_OpenGL3_3.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
 #include "ssLogger/ssLog.hpp"
@@ -10,14 +11,51 @@
 namespace ssGUI
 {
 
-//TODO: Call FetchEvents()
 namespace Backend
 {
     BackendMainWindowX11_OpenGL3_3::BackendMainWindowX11_OpenGL3_3(BackendMainWindowX11_OpenGL3_3 const& other)
-    {
-        //TODO: Implement this
-        ssLOG_LINE("Not implemented");
-        ssLOG_EXIT_PROGRAM();
+    {        
+        WindowDisplay = nullptr;
+        WindowColormap = 0;
+        WindowId = 0;
+        WindowContext = 0;
+        XInputManager = XIM();
+        XInputContext = XIC();
+        OriginalResolutionId = 0;
+        OriginalResolutionSet = false;
+        IsClosingAborted = false;
+        Closed = false;
+        CurrentHandle = X11RawHandle();
+        MsaaLevel = other.MsaaLevel;
+        WindowCloseEventId = 0;
+        Titlebar = other.Titlebar;
+        Resizable = other.Resizable;
+        CloseButton = other.CloseButton;
+        Title = other.Title;
+        CurrentWindowMode = other.CurrentWindowMode;
+        Visible = other.Visible;
+        LastPositionBeforeHidden = other.LastPositionBeforeHidden;
+        OnCloseCallback = std::vector<std::function<void()>>();
+        ExternalFocusChangedCallback = std::vector<std::function<void(bool focused)>>();
+        
+        //Create the window with the parameter we have
+        BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
+        
+        //Add this record to backend manager
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        
+        //Then we set the position and size if possible
+        if(!other.Closed)
+        {
+            glm::ivec2 winPos = other.GetWindowPosition();
+            glm::ivec2 winSize = other.GetWindowSize();
+
+            SetWindowSize(winSize);
+            if(CurrentWindowMode == ssGUI::Enums::WindowMode::FULLSCREEN)
+                SetWindowMode(ssGUI::Enums::WindowMode::FULLSCREEN);
+            else if(CurrentWindowMode == ssGUI::Enums::WindowMode::NORMAL)
+                SetWindowPosition(winPos);
+        }
     }
 
     union XClientEventData 
@@ -209,6 +247,8 @@ namespace Backend
         WindowColormap = XCreateColormap(WindowDisplay, root, visual_info->visual, AllocNone);
 
         XSetWindowAttributes attributes;
+        //TODO: Maybe use _NET_ACTIVE_WINDOW and PropertyChangeMask like in https://gist.github.com/ssokolow/e7c9aae63fb7973e4d64cff969a78ae8
+        //      For better detecting focus change
         attributes.event_mask = ExposureMask | 
                                 KeyPressMask | 
                                 KeyReleaseMask |
@@ -276,6 +316,7 @@ namespace Backend
         WindowContext = glXCreateContext(WindowDisplay, visual_info, NULL, GL_TRUE);
         glXMakeCurrent(WindowDisplay, WindowId, WindowContext);
 
+        //TODO: Move this to initialization
         int loadGL = gladLoadGL();
         if (!loadGL) 
         {
@@ -333,6 +374,9 @@ namespace Backend
                         PropModeReplace, 
                         (unsigned char*)&hintData, 
                         5);
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
     void BackendMainWindowX11_OpenGL3_3::UpdateWindowDecor()
@@ -357,6 +401,9 @@ namespace Backend
             
             SetTitle(GetTitle());
         }
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
     //https://stackoverflow.com/a/36198958
@@ -720,6 +767,9 @@ namespace Backend
             return;
         
         XMoveWindow(WindowDisplay, WindowId, pos.x, pos.y);
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
 
@@ -765,7 +815,6 @@ namespace Backend
         int top, right, left, bot;
         GetWindowDecor(top, right, bot, left);
         
-        
         SetRenderSize(size - glm::ivec2(left + right, top + bot));
     }
 
@@ -789,6 +838,9 @@ namespace Backend
         }
 
         XResizeWindow(WindowDisplay, WindowId, size.x, size.y);
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
     
     glm::ivec2 BackendMainWindowX11_OpenGL3_3::GetRenderSize() const
@@ -852,6 +904,9 @@ namespace Backend
         //From https://github.com/godotengine/godot/issues/2952 discussion
         //Xutf8SetWMProperties(x11_display, x11_window, p_title.utf8().get_data(), NULL, NULL, 0, NULL, NULL, NULL);
         Title = title;
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
     std::wstring BackendMainWindowX11_OpenGL3_3::GetTitle() const
@@ -925,6 +980,9 @@ namespace Backend
             XChangeProperty(WindowDisplay, WindowId, netWMIcon, cardinal, 32, PropModeReplace, (const unsigned char*) iconDataToApply, 2 + iconImage.GetSize().x * iconImage.GetSize().y);
 
         delete[] iconDataToApply;
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
     void BackendMainWindowX11_OpenGL3_3::SetVisible(bool visible)
@@ -944,6 +1002,9 @@ namespace Backend
         }
 
         Visible = visible;
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
     bool BackendMainWindowX11_OpenGL3_3::IsVisible() const
@@ -962,6 +1023,9 @@ namespace Backend
         }
 
         glXSwapIntervalEXT(WindowDisplay, glXGetCurrentDrawable(), (int)vSync);
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
     bool BackendMainWindowX11_OpenGL3_3::IsVSync() const
@@ -986,11 +1050,21 @@ namespace Backend
         }
         else if(focus)
         {
-            if(!XSetInputFocus(WindowDisplay, WindowId, RevertToNone, CurrentTime))
+            //if(!XSetInputFocus(WindowDisplay, WindowId, RevertToNone, CurrentTime))
+            if(!XRaiseWindow(WindowDisplay, WindowId))
             {
                 ssLOG_LINE("Failed to set focus");
             }
         }
+        else
+        {
+            //No idea how to "unfocus" a window 
+            XSetInputFocus(WindowDisplay, None, RevertToPointerRoot, CurrentTime);
+            //XSetInputFocus(WindowDisplay, RootWindow(WindowDisplay, DefaultScreen(WindowDisplay)), RevertToPointerRoot, CurrentTime);
+        }
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
     
     //https://gist.github.com/kui/2622504
@@ -1177,6 +1251,9 @@ namespace Backend
         }
        
         CurrentWindowMode = windowMode;
+        
+        //Allowing event to come through to apply the effect
+        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
     }
 
     ssGUI::Enums::WindowMode BackendMainWindowX11_OpenGL3_3::GetWindowMode() const
