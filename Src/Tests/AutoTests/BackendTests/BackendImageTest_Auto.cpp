@@ -4,6 +4,11 @@
 #include <thread>
 
 ssGUI::Backend::BackendImageInterface* TestImage = nullptr;
+#ifdef _MSC_VER && !__INTEL_COMPILER
+    std::string ResourcesFolderPath = "..\\..\\..\\Resources\\";
+#else
+    std::string ResourcesFolderPath = "../../Resources/";
+#endif
 
 SSGUI_TEST_INIT();
 
@@ -33,14 +38,14 @@ void IsValidTest()
 
 void LoadFromPathTest()
 {
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Loading)"), TestImage->LoadFromPath("../../Resources/sd.png"))
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Loading)"), TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"))
     SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Validation)"), TestImage->GetSize().x == 293 && TestImage->GetSize().y == 293);
 }
 
 #include <fstream>
 void LoadImgFileFromMemoryTest()
 {
-    std::ifstream ifd("../../Resources/WindowIcon.png", std::ios::binary | std::ios::ate);
+    std::ifstream ifd(ResourcesFolderPath+"WindowIcon.png", std::ios::binary | std::ios::ate);
     size_t size = ifd.tellg();
     ifd.seekg(0, std::ios::beg);
     

@@ -65,6 +65,7 @@ void Instructions()
     ssLOG_LINE("Press 3 to test IsFocused");
     ssLOG_LINE("Press 4 to test AddFocusChangedByUserEvent");
     ssLOG_LINE("Press 5 to test RemoveFocusChangedByUserEvent");
+    ssLOG_LINE("Press 6 to test Clone");
 }
 
 void SetIconTest()
