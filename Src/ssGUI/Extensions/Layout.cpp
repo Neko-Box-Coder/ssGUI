@@ -5,6 +5,7 @@
 #include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
+#include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
@@ -1005,6 +1006,24 @@ namespace Extensions
         wrapper->SetUserCreated(false);
 
         child->SetParent(wrapper);
+        return wrapper;
+    }
+
+    ssGUI::GUIObject* Layout::AddChildWithAlignment(ssGUI::GUIObject* child, ssGUI::Enums::AlignmentHorizontal horizontal, ssGUI::Enums::AlignmentVertical vertical)
+    {
+        ssGUI::GUIObject* wrapper = AddChildWithWrapper(child);
+        
+        if(wrapper != nullptr)
+        {
+            if(!child->IsAnyExtensionExist<ssGUI::Extensions::AdvancedPosition>())
+                child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+        
+            ssGUI::Extensions::AdvancedPosition* ap = child->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
+        
+            ap->SetHorizontalAlignment(horizontal);
+            ap->SetVerticalAlignment(vertical);
+        }
+        
         return wrapper;
     }
 

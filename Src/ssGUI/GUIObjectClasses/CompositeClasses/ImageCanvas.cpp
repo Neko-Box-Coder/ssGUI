@@ -469,8 +469,8 @@ namespace ssGUI
         as->SetHorizontalPercentage(1);
         as->SetHorizontalPixel(-hScrollbar->GetSize().y);
         as->SetVerticalPixel(hScrollbar->GetSize().y);
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::BOTTOM);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
         hScrollbar->AddExtension(as);
         hScrollbar->AddExtension(ap);
 
@@ -508,8 +508,8 @@ namespace ssGUI
         as->SetHorizontalPixel(vScrollbar->GetSize().x);
         as->SetVerticalPercentage(1);
         as->SetVerticalPixel(-vScrollbar->GetSize().x);
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
         vScrollbar->AddExtension(as);
         vScrollbar->AddExtension(ap);
 

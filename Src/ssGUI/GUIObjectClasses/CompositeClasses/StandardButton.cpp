@@ -51,8 +51,8 @@ namespace ssGUI
         // if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
         //     buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
-        static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-        static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+        static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
         ssLOG_FUNC_EXIT();
     }
 
@@ -101,8 +101,8 @@ namespace ssGUI
             buttonImgObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
 
         ap = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
 
         ssLOG_FUNC_EXIT();
     }

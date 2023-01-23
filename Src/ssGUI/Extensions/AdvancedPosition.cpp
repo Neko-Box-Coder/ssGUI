@@ -9,8 +9,8 @@ namespace Extensions
 {
     AdvancedPosition::AdvancedPosition() :  Container(nullptr),
                                             Enabled(true),
-                                            CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER),
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER),
+                                            CurrentHorizontal(ssGUI::Enums::AlignmentHorizontal::CENTER),
+                                            CurrentVertical(ssGUI::Enums::AlignmentVertical::CENTER),
                                             HorizontalPixelValue(0),
                                             VerticalPixelValue(0),
                                             HorizontalPercentageValue(0),
@@ -24,8 +24,8 @@ namespace Extensions
     {
         Container = nullptr;
         Enabled = other.IsEnabled();
-        CurrentHorizontal = other.GetHorizontalAnchor();
-        CurrentVertical = other.GetVerticalAnchor();
+        CurrentHorizontal = other.GetHorizontalAlignment();
+        CurrentVertical = other.GetVerticalAlignment();
         HorizontalPixelValue = other.GetHorizontalPixel();
         VerticalPixelValue = other.GetVerticalPixel();
         HorizontalPercentageValue = other.GetHorizontalPercentage();
@@ -40,22 +40,22 @@ namespace Extensions
 
     const std::string AdvancedPosition::EXTENSION_NAME = "Advanced Position";    
 
-    void AdvancedPosition::SetHorizontalAnchor(HorizontalAnchor anchor)
+    void AdvancedPosition::SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
     {
-        CurrentHorizontal = anchor;
+        CurrentHorizontal = align;
     }
 
-    AdvancedPosition::HorizontalAnchor AdvancedPosition::GetHorizontalAnchor() const
+    ssGUI::Enums::AlignmentHorizontal AdvancedPosition::GetHorizontalAlignment() const
     {
         return CurrentHorizontal;
     }
 
-    void AdvancedPosition::SetVerticalAnchor(VerticalAnchor anchor)
+    void AdvancedPosition::SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
     {
-        CurrentVertical = anchor;
+        CurrentVertical = align;
     }
 
-    AdvancedPosition::VerticalAnchor AdvancedPosition::GetVerticalAnchor() const
+    ssGUI::Enums::AlignmentVertical AdvancedPosition::GetVerticalAlignment() const
     {
         return CurrentVertical;
     }
@@ -127,7 +127,8 @@ namespace Extensions
         glm::vec2 finalPos;
 
         //See if there are any center anchor point. If so, use top-left default anchor point
-        if(GetHorizontalAnchor() == HorizontalAnchor::CENTER || GetVerticalAnchor() == VerticalAnchor::CENTER)
+        if( GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::CENTER || 
+            GetVerticalAlignment() == ssGUI::Enums::AlignmentVertical::CENTER)
         {
             Container->SetAnchorType(ssGUI::Enums::AnchorType::TOP_LEFT);
             float anchorPointX; //Anchor point in parent local space 
@@ -136,17 +137,17 @@ namespace Extensions
             //Horizontal
             float distanceFromAnchor = parent->GetSize().x * GetHorizontalPercentage();
             
-            switch (GetHorizontalAnchor())
+            switch(GetHorizontalAlignment())
             {
-                case AdvancedPosition::HorizontalAnchor::LEFT:
+                case ssGUI::Enums::AlignmentHorizontal::LEFT:
                     anchorPointX = 0;
                     finalPos.x = distanceFromAnchor + GetHorizontalPixel();
                     break;
-                case AdvancedPosition::HorizontalAnchor::CENTER:
+                case ssGUI::Enums::AlignmentHorizontal::CENTER:
                     anchorPointX = parent->GetSize().x * 0.5f;
                     finalPos.x = anchorPointX - Container->GetSize().x * 0.5 + distanceFromAnchor + GetHorizontalPixel();
                     break;
-                case AdvancedPosition::HorizontalAnchor::RIGHT:
+                case ssGUI::Enums::AlignmentHorizontal::RIGHT:
                     anchorPointX = parent->GetSize().x;
                     finalPos.x = anchorPointX - Container->GetSize().x + (distanceFromAnchor + GetHorizontalPixel()) * -1.f;
                     break;   
@@ -159,17 +160,17 @@ namespace Extensions
             
             distanceFromAnchor = (parent->GetSize().y - windowOffset) * GetVerticalPercentage();
 
-            switch (GetVerticalAnchor())
+            switch(GetVerticalAlignment())
             {
-                case AdvancedPosition::VerticalAnchor::TOP:
+                case ssGUI::Enums::AlignmentVertical::TOP:
                     anchorPointY = 0;
                     finalPos.y = distanceFromAnchor + GetVerticalPixel();
                     break;
-                case AdvancedPosition::VerticalAnchor::CENTER:
+                case ssGUI::Enums::AlignmentVertical::CENTER:
                     anchorPointY = (parent->GetSize().y - windowOffset) * 0.5f;
                     finalPos.y = anchorPointY - Container->GetSize().y * 0.5 + distanceFromAnchor + GetVerticalPixel();
                     break;
-                case AdvancedPosition::VerticalAnchor::BOTTOM:
+                case ssGUI::Enums::AlignmentVertical::BOTTOM:
                     anchorPointY = (parent->GetSize().y - windowOffset);
                     finalPos.y = anchorPointY - Container->GetSize().y + (distanceFromAnchor + GetVerticalPixel()) * -1.f;
                     break;   
@@ -180,13 +181,13 @@ namespace Extensions
         {
             //Set anchor point
             //Top Left
-            if(GetHorizontalAnchor() == AdvancedPosition::HorizontalAnchor::LEFT && GetVerticalAnchor() == AdvancedPosition::VerticalAnchor::TOP)
+            if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::LEFT && GetVerticalAlignment() == ssGUI::Enums::AlignmentVertical::TOP)
                 Container->SetAnchorType(ssGUI::Enums::AnchorType::TOP_LEFT);
             //Top Right
-            else if(GetHorizontalAnchor() == AdvancedPosition::HorizontalAnchor::RIGHT && GetVerticalAnchor() == AdvancedPosition::VerticalAnchor::TOP)
+            else if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT && GetVerticalAlignment() == ssGUI::Enums::AlignmentVertical::TOP)
                 Container->SetAnchorType(ssGUI::Enums::AnchorType::TOP_RIGHT);
             //Bottom Right
-            else if(GetHorizontalAnchor() == AdvancedPosition::HorizontalAnchor::RIGHT && GetVerticalAnchor() == AdvancedPosition::VerticalAnchor::BOTTOM)
+            else if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT && GetVerticalAlignment() == ssGUI::Enums::AlignmentVertical::BOTTOM)
                 Container->SetAnchorType(ssGUI::Enums::AnchorType::BOTTOM_RIGHT);
             //Bottom Left
             else
@@ -229,8 +230,8 @@ namespace Extensions
         
         ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(extension);
         Enabled = ap->IsEnabled();
-        CurrentHorizontal = ap->GetHorizontalAnchor();
-        CurrentVertical = ap->GetVerticalAnchor();
+        CurrentHorizontal = ap->GetHorizontalAlignment();
+        CurrentVertical = ap->GetVerticalAlignment();
         HorizontalPixelValue = ap->GetHorizontalPixel();
         VerticalPixelValue = ap->GetVerticalPixel();
         HorizontalPercentageValue = ap->GetHorizontalPercentage();

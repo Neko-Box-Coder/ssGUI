@@ -7,8 +7,8 @@
 #include "ssGUI/DataClasses/CharacterDetails.hpp"
 #include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
 #include "ssGUI/Enums/TextWrapping.hpp"
-#include "ssGUI/Enums/TextAlignmentHorizontal.hpp"
-#include "ssGUI/Enums/TextAlignmentVertical.hpp"
+#include "ssGUI/Enums/AlignmentHorizontal.hpp"
+#include "ssGUI/Enums/AlignmentVertical.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
@@ -41,8 +41,8 @@ namespace ssGUI
         bool TextUnderline;                                                             //See <IsNewCharacterUnderlined>
         bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
         ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
-        ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;                      //See <GetHorizontalAlignment>
-        ssGUI::Enums::TextAlignmentVertical VerticalAlignment;                          //See <GetVerticalAlignment>
+        ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
+        ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetVerticalAlignment>
         std::vector<ssGUI::Font*> CurrentFonts;                                         //See <GetFont>
 
         float HorizontalPadding;                                                        //See <GetHorizontalPadding>
@@ -131,8 +131,8 @@ namespace ssGUI
             bool TextUnderline;                                                             //See <IsNewCharacterUnderlined>
             bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
             ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
-            ssGUI::Enums::TextAlignmentHorizontal HorizontalAlignment;                      //See <GetHorizontalAlignment>
-            ssGUI::Enums::TextAlignmentVertical VerticalAlignment;                          //See <GetVerticalAlignment>
+            ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
+            ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetVerticalAlignment>
             std::vector<ssGUI::Font*> CurrentFonts;                                         //See <GetFont>
 
             float HorizontalPadding;                                                        //See <GetHorizontalPadding>
@@ -337,16 +337,16 @@ namespace ssGUI
             virtual ssGUI::Enums::TextWrapping GetWrappingMode() const;
 
             //function: SetHorizontalAlignment
-            virtual void SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal align);
+            virtual void SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align);
 
             //function: GetHorizontalAlignment
-            virtual ssGUI::Enums::TextAlignmentHorizontal GetHorizontalAlignment() const;
+            virtual ssGUI::Enums::AlignmentHorizontal GetHorizontalAlignment() const;
 
             //function: SetVerticalAlignment
-            virtual void SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical align);
+            virtual void SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align);
 
             //function: GetVerticalAlignment
-            virtual ssGUI::Enums::TextAlignmentVertical GetVerticalAlignment() const;
+            virtual ssGUI::Enums::AlignmentVertical GetVerticalAlignment() const;
 
             //function: AddFont
             //Adds the font to the end for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.

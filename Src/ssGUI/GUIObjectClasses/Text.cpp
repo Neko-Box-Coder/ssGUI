@@ -26,8 +26,8 @@ namespace ssGUI
         TextUnderline = other.IsNewCharacterUnderlined();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
-        HorizontalAlignment = other.GetHorizontalAlignment();
-        VerticalAlignment = other.GetVerticalAlignment();
+        CurrentHorizontalAlignment = other.GetHorizontalAlignment();
+        CurrentVerticalAlignment = other.GetVerticalAlignment();
         CurrentFonts = other.CurrentFonts;
         HorizontalPadding = other.GetHorizontalPadding();
         VerticalPadding = other.GetVerticalPadding();
@@ -636,16 +636,16 @@ namespace ssGUI
                         CharactersRenderInfos[i-1].Size.x + GetHorizontalPadding();
                     float alignOffset = 0; 
 
-                    switch (HorizontalAlignment)
+                    switch(CurrentHorizontalAlignment)
                     {
-                        case ssGUI::Enums::TextAlignmentHorizontal::LEFT:
+                        case ssGUI::Enums::AlignmentHorizontal::LEFT:
                             break;
                     
-                        case ssGUI::Enums::TextAlignmentHorizontal::CENTER:
+                        case ssGUI::Enums::AlignmentHorizontal::CENTER:
                             alignOffset = (GetSize().x * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
                             break;
                         
-                        case ssGUI::Enums::TextAlignmentHorizontal::RIGHT:
+                        case ssGUI::Enums::AlignmentHorizontal::RIGHT:
                             alignOffset = GetSize().x - lineEndPos;
                             break;
                     }
@@ -667,16 +667,16 @@ namespace ssGUI
                         CharactersRenderInfos[i].Size.x + GetHorizontalPadding();
                 float alignOffset = 0; 
 
-                switch (HorizontalAlignment)
+                switch(CurrentHorizontalAlignment)
                 {
-                    case ssGUI::Enums::TextAlignmentHorizontal::LEFT:
+                    case ssGUI::Enums::AlignmentHorizontal::LEFT:
                         break;
                 
-                    case ssGUI::Enums::TextAlignmentHorizontal::CENTER:
+                    case ssGUI::Enums::AlignmentHorizontal::CENTER:
                         alignOffset = (GetSize().x * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
                         break;
                     
-                    case ssGUI::Enums::TextAlignmentHorizontal::RIGHT:
+                    case ssGUI::Enums::AlignmentHorizontal::RIGHT:
                         alignOffset = GetSize().x - lineEndPos;
                         break;
                 }
@@ -697,17 +697,17 @@ namespace ssGUI
         }
 
         lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetVerticalPadding();
-        switch (VerticalAlignment)
+        switch(CurrentVerticalAlignment)
         {
-            case ssGUI::Enums::TextAlignmentVertical::TOP:
+            case ssGUI::Enums::AlignmentVertical::TOP:
                 alignOffset = GetVerticalPadding();
                 break;
         
-            case ssGUI::Enums::TextAlignmentVertical::CENTER:
+            case ssGUI::Enums::AlignmentVertical::CENTER:
                 alignOffset = (GetSize().y * 0.5 - lineStartPos) - (lineEndPos - lineStartPos) * 0.5;
                 break;
             
-            case ssGUI::Enums::TextAlignmentVertical::BOTTOM:
+            case ssGUI::Enums::AlignmentVertical::BOTTOM:
                 alignOffset = GetSize().y - lineEndPos;
                 break;
         }
@@ -1265,8 +1265,8 @@ namespace ssGUI
                     TextUnderline(false),
                     MultilineAllowed(true),
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING),
-                    HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
-                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP),
+                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT),
+                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP),
                     CurrentFonts(),
                     HorizontalPadding(5),
                     VerticalPadding(5),
@@ -1612,28 +1612,28 @@ namespace ssGUI
         return WrappingMode;
     }
 
-    void Text::SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal align)
+    void Text::SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
     {
-        HorizontalAlignment = align;
+        CurrentHorizontalAlignment = align;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    ssGUI::Enums::TextAlignmentHorizontal Text::GetHorizontalAlignment() const
+    ssGUI::Enums::AlignmentHorizontal Text::GetHorizontalAlignment() const
     {
-        return HorizontalAlignment;
+        return CurrentHorizontalAlignment;
     }
 
-    void Text::SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical align)
+    void Text::SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
     {
-        VerticalAlignment = align;
+        CurrentVerticalAlignment = align;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    ssGUI::Enums::TextAlignmentVertical Text::GetVerticalAlignment() const
+    ssGUI::Enums::AlignmentVertical Text::GetVerticalAlignment() const
     {
-        return VerticalAlignment;
+        return CurrentVerticalAlignment;
     }
 
     void Text::AddFont(ssGUI::Font* font)

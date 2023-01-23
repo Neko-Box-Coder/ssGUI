@@ -39,7 +39,7 @@ namespace ssGUI
         RemoveAnyExtension<ssGUI::Extensions::Outline>();
 
         GetButtonTextObject()->SetNewCharacterFontSize(15);
-        GetButtonTextObject()->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT);
+        GetButtonTextObject()->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
         GetButtonTextObject()->SetHorizontalPadding(15);
 
         auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);

@@ -55,10 +55,10 @@ namespace ssGUI
         ap = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
         as = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
         ap->SetHorizontalPercentage(0);
         ap->SetHorizontalPixel(0);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
         ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
         ap->SetVerticalPercentage(0);
 
@@ -73,8 +73,8 @@ namespace ssGUI
             windowTitleObj->SetNewCharacterFontSize(textHeight * FontSizeMultiplier);
             windowTitleObj->ApplyNewCharacterSettingsToText();
         }
-        windowTitleObj->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-        windowTitleObj->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+        windowTitleObj->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        windowTitleObj->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
 
         if(!windowTitleObj->HasTag(ssGUI::Tags::FLOATING))
             windowTitleObj->AddTag(ssGUI::Tags::FLOATING);
@@ -108,10 +108,10 @@ namespace ssGUI
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
         ap->SetHorizontalPixel(GetHorizontalPadding());
         ap->SetHorizontalPercentage(0);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
         ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
         ap->SetVerticalPercentage(0);
         
@@ -157,10 +157,10 @@ namespace ssGUI
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
         ap->SetHorizontalPixel(GetHorizontalPadding());
         ap->SetHorizontalPercentage(0);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
         ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding() + 2);
         ap->SetVerticalPercentage(0);
 
