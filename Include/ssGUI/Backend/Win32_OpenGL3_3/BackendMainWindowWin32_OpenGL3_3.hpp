@@ -138,7 +138,7 @@ namespace Backend
 
             void ssGUI_DestroyWindow();
 
-            void ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfid, bool generatePfDesc, const wchar_t* className);
+            void ssGUI_CreateWindow(int fullscreenWidth, int fullscreenHeight, bool generatePfDesc, const wchar_t* className);
 
             void ApplyAllSettingsToWindow();
 
@@ -151,6 +151,8 @@ namespace Backend
             void ssGUI_RegisterClass(const wchar_t* className);
 
             bool GetActiveMonitorPosSize(glm::ivec2& pos, glm::ivec2& size);
+            
+            void SetFullscreenSize(glm::ivec2 size);
         
             BackendMainWindowWin32_OpenGL3_3& operator=(BackendMainWindowWin32_OpenGL3_3 const& other);
         
@@ -168,10 +170,6 @@ namespace Backend
             //function: GetWindowPosition
             //See <BackendMainWindowInterface::GetWindowPosition>
             glm::ivec2 GetWindowPosition() const override;
-
-            //function: SyncPositionOffset
-            //See <BackendMainWindowInterface::SyncPositionOffset>
-            void SyncPositionOffset() override;
 
             //function: GetPositionOffset
             //See <BackendMainWindowInterface::GetPositionOffset>

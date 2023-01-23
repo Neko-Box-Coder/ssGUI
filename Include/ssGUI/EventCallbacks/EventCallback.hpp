@@ -54,6 +54,7 @@ namespace EventCallbacks
             static void operator delete[](void* p)      {free(p);};
 
         public:
+            virtual ~EventCallback() = 0;
             /*function: AddEventListener
             Adds a listener to this EventCallback by passing a key string for the ability to remove it later.
 
@@ -123,6 +124,8 @@ namespace EventCallbacks
             //Clone this event callback with the option of copying the listeners
             virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) = 0;
     };
+    
+    inline EventCallback::~EventCallback(){}   //Pure virtual destructor needs to be defined
 }
 
 }

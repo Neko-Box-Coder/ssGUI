@@ -110,8 +110,8 @@ namespace Extensions
         ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivew->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivew->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
 
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(1);
@@ -143,8 +143,8 @@ namespace Extensions
 
         if(UseTriggerPercentage)
         {
-            ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-            ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+            ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
             as->SetHorizontalPercentage(GetTriggerHorizontalPercentage());
             as->SetHorizontalPixel(0);
             as->SetVerticalPercentage(GetTriggerVerticalPercentage());
@@ -152,8 +152,8 @@ namespace Extensions
         }
         else
         {
-            ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-            ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+            ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
             as->SetHorizontalPixel(GetTriggerHorizontalPixel());
             as->SetHorizontalPercentage(0);
             as->SetVerticalPixel(GetTriggerVerticalPixel());
@@ -532,7 +532,7 @@ namespace Extensions
             glm::vec2 triggerSize = IsUseTriggerPercentage() ? glm::vec2(containerSize.x * GetTriggerHorizontalPercentage(), containerSize.y * GetTriggerVerticalPercentage()) : 
                                         glm::vec2(GetTriggerHorizontalPixel(), GetTriggerVerticalPixel());
 
-            bool previewDrawn = false;
+            //bool previewDrawn = false;
 
             //Check if the cursor is inside the window
             bool mouseInsideWindow = (inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
@@ -557,7 +557,7 @@ namespace Extensions
             {
                 DrawPreview();
                 DiscardTriggerArea();
-                previewDrawn = true;
+                //previewDrawn = true;
                 ValidDocking = true;
                 Dockable::TargetDockSide = Dockable::DockSide::CENTER;
             }

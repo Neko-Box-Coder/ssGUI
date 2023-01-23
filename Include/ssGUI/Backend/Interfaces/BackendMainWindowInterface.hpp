@@ -29,12 +29,9 @@ namespace Backend
             //Gets the MainWindow position (distance from top-left) on the screen
             virtual glm::ivec2 GetWindowPosition() const = 0;
 
-            //function: SyncPositionOffset
-            //Updates the distance between the top-left corner of the titlebar and top-left corner of the content
-            virtual void SyncPositionOffset() = 0;
-
             //function: GetPositionOffset
-            //Gets the distance between the top-left corner of the titlebar and top-left corner of the content
+            //Gets the offset from top-left corner of the rendering area and the top-left corner of the titlebar.
+            //The offset should always be positive, meaning adding the offset to <GetWindowPosition> will get the position of the rendering area.
             virtual glm::ivec2 GetPositionOffset() const = 0;
 
             //function: SetWindowSize
@@ -128,11 +125,11 @@ namespace Backend
             virtual int GetMSAA() const = 0;
 
             //function: SetTitlebar
-            //Sets if the main window has titlebar or not
+            //Sets if the main window has titlebar (and border) or not
             virtual void SetTitlebar(bool titlebar) = 0;
 
             //function: HasTitlebar
-            //Returns if the main window has titlebar or not. Note that if the main window is not in normal mode, this will return false.
+            //Returns if the main window has titlebar (and border) or not. Note that if the main window is not in normal mode, this will return false.
             virtual bool HasTitlebar() const = 0;
 
             //function: SetResizable
@@ -164,6 +161,10 @@ namespace Backend
             virtual bool SetGLContext() = 0;
             
             //function: Clone
+            //Clones the current main window with the same settings, dispose it with <ssGUI::Factory::Dispose> when not needed.
+            //Events such as <AddOnCloseEvent> and <AddFocusChangedByUserEvent> are not copied.
+            //Cloning a closed window is an *undefined* behaviour, same goes to window that is in "invisible" state.
+            //This function is tested limitedly, creating a new <MainWindow> is advised.
             virtual BackendMainWindowInterface* Clone() = 0;
 
             //function: GetRawHandle

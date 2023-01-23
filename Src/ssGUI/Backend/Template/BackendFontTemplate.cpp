@@ -5,7 +5,6 @@
 namespace ssGUI
 {
 
-//namespace: ssGUI::Backend
 namespace Backend
 {
     BackendFontTemplate::BackendFontTemplate(BackendFontTemplate const& other)

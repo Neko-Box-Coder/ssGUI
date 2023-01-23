@@ -17,8 +17,8 @@ int main()
     ssGUI::Text text;
     text.SetNewCharacterFontSize(17);
     text.SetText("Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
+    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
     text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
 
     //Create a button

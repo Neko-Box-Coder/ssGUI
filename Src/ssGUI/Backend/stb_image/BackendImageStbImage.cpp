@@ -24,6 +24,7 @@ namespace Backend
         if(other.ImageBuffer != nullptr)
         {
             ImageBuffer = static_cast<uint8_t*>(malloc(other.ImageSizeInBytes));
+            ImageSizeInBytes = other.ImageSizeInBytes;
             memcpy(ImageBuffer, other.ImageBuffer, ImageSizeInBytes);
         }
         

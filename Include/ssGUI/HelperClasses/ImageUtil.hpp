@@ -19,37 +19,55 @@ namespace ssGUI
     //This class is for internal use for the time being, and will be "opened" soon.
     class ImageUtil
     {
-        public:
-        template<typename T>
-        static uint8_t GetLevelInByte(T val)
-        { 
-            return  static_cast<float>(val) / static_cast<float>(std::numeric_limits<T>::max()) *   //Gets the value, divide by its own max,
-                    static_cast<float>(std::numeric_limits<uint8_t>::max()) + 0.5f;                 //Multiply by 255 in order to scale to 255
-                                                                                                    //and add 0.5 for rounding when casting back to uint8_t
+        private:
+        template<typename InputType, typename OutputType>
+        static OutputType GetLevelInType(InputType val)
+        {                                                                                                   //Example OutputType: uint8_t
+            return  static_cast<float>(val) / static_cast<float>(std::numeric_limits<InputType>::max()) *   //Gets the value, divide by its own max,
+                    static_cast<float>(std::numeric_limits<OutputType>::max()) + 0.5f;                      //Multiply by 255 in order to scale to 255
+                                                                                                            //and add 0.5 for rounding when casting back to uint8_t
         }
         
-        template<typename T>
-        static uint8_t GetReversedPreMultipliedLevelInByte(T val, float alpha)
-        {
-            return  static_cast<float>(val) / static_cast<float>(alpha) /               //Reverse the premultiplied alpha first
-                    static_cast<float>(std::numeric_limits<T>::max()) *                 //Then we scale it from 0 to 1
-                    static_cast<float>(std::numeric_limits<uint8_t>::max()) + 0.5f;     //Finally scale it back to 255
+        template<typename InputType, typename OutputType>
+        static OutputType GetReversedPreMultipliedLevelInType(InputType val, float alpha)
+        {                                                                                   //Example OutputType: uint8_t
+            return  static_cast<float>(val) / static_cast<float>(alpha) /                   //Reverse the premultiplied alpha first
+                    static_cast<float>(std::numeric_limits<InputType>::max()) *             //Then we scale it from 0 to 1
+                    static_cast<float>(std::numeric_limits<OutputType>::max()) + 0.5f;      //Finally scale it back to 255
         }
 
-        //TODO: Remove template
-        template<typename T>
         //outImg must be allocated already before passing to this function
-        static bool ConvertToRGBA32(void* outImg, void const * dataPtr, ssGUI::ImageFormat format, 
-                                    glm::ivec2 imageSize)
+        template<typename InputChannelType, typename OutputChannelType>
+        static bool ConvertToRGB(   void* outImg, 
+                                    void const * inImg, 
+                                    ssGUI::ImageFormat format, 
+                                    glm::ivec2 imageSize, 
+                                    ssGUI::ImageFormat outputFormat)        //For specifying the indices of the RGB(A) channels
         {
-            uint8_t const* imgPtr = static_cast<uint8_t const*>(dataPtr);
-            uint8_t* outImgBytePtr = static_cast<uint8_t*>(outImg);
+            InputChannelType const* imgPtr = static_cast<InputChannelType const*>(inImg);
+            OutputChannelType* outImgPixelPtr = static_cast<OutputChannelType*>(outImg);
 
             int bytePerPixel = format.BitPerPixel / 8;                                      //Calculate how many bytes each pixel takes
             int rowNumOfBytes = bytePerPixel * imageSize.x + format.RowPaddingInBytes;      //Calculate how many bytes each row takes, normally called pitch
         
-            std::function<void(uint8_t const*, int, int)> conversionFunc;                   //function pointer for doing conversion
+            std::function<void(InputChannelType const*, int, int)> conversionFunc;                   //function pointer for doing conversion
             
+            //Validation
+            if( outputFormat.ImgType != ssGUI::Enums::ImageType::RGB ||
+                outputFormat.IndexR < 0 ||
+                outputFormat.IndexG < 0 ||
+                outputFormat.IndexB < 0)
+            {
+                ssLOG_LINE("Invalid output format");
+                return false;
+            }
+
+            //Need to use a bit of macro to make it a bit shorter :/
+            #undef GetLevelInType
+            #undef GetReversedPreMultipliedLevelInType
+            #define GetLevelInType GetLevelInType<InputChannelType, OutputChannelType>
+            #define GetReversedPreMultipliedLevelInType GetReversedPreMultipliedLevelInType<InputChannelType, OutputChannelType>
+
             //First assign the conversion function depending on the image type and alpha
             //Grayscale
             if(format.ImgType == ssGUI::Enums::ImageType::MONO)
@@ -59,41 +77,84 @@ namespace ssGUI
                     //If the alpha index is not specified, we assume black is transparent
                     if(format.IndexA < 0)
                     {
-                        conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                            {
-                                                T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                                uint8_t level = GetLevelInByte(curPixelPtr[0]);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4] = 255;
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 1] = 255;
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 2] = 255;
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 3] = level;  
-                                            };
+                        //If we are outputing RGBA
+                        if(outputFormat.IndexA >= 0)
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {
+                                                    OutputChannelType level = GetLevelInType(curPixelPtr[0]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexR] = std::numeric_limits<OutputChannelType>::max();
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexG] = std::numeric_limits<OutputChannelType>::max();
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexB] = std::numeric_limits<OutputChannelType>::max();                            
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexA] = level;  
+                                                };
+                        }
+                        //If we are outputing RGB
+                        else
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {
+                                                    OutputChannelType level = GetLevelInType(curPixelPtr[0]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexR] = std::numeric_limits<OutputChannelType>::max();
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexG] = std::numeric_limits<OutputChannelType>::max();
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexB] = std::numeric_limits<OutputChannelType>::max();                            
+                                                };
+                        }
                     }
                     //Otherwise if alpha index is specified, use it
                     else
                     {
-                        conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                            {
-                                                T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                                uint8_t level = GetLevelInByte(curPixelPtr[format.IndexMono]);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4] = level;
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 1] = level;
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 2] = level;
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 3] = GetLevelInByte(curPixelPtr[format.IndexA]);
-                                            };
+                        //If we are outputing RGBA
+                        if(outputFormat.IndexA >= 0)
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {
+                                                    OutputChannelType level = GetLevelInType(curPixelPtr[format.IndexMono]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexR] = level;
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexG] = level;
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexB] = level;
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexA] = GetLevelInType(curPixelPtr[format.IndexA]);
+                                                };
+                        }
+                        //If we are outputing RGB
+                        else
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {
+                                                    OutputChannelType level = GetLevelInType(curPixelPtr[format.IndexMono]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexR] = level;
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexG] = level;
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexB] = level;
+                                                };
+                        }
                     }
                 }
+                //If the input mono image doesn't have alpha
                 else
                 {
-                    conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                        {
-                                            T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);    
-                                            uint8_t level = GetLevelInByte(curPixelPtr[0]);
-                                            outImgBytePtr[(imageSize.x * y + x) * 4] = level;
-                                            outImgBytePtr[(imageSize.x * y + x) * 4 + 1] = level;
-                                            outImgBytePtr[(imageSize.x * y + x) * 4 + 2] = level;
-                                            outImgBytePtr[(imageSize.x * y + x) * 4 + 3] = 255;
-                                        };
+                    //If we are outputing RGBA
+                    if(outputFormat.IndexA >= 0)
+                    {
+                        conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                            {
+                                                OutputChannelType level = GetLevelInType(curPixelPtr[0]);
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexR] = level;
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexG] = level;
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexB] = level;
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexA] = std::numeric_limits<OutputChannelType>::max();
+                                            };
+                    }
+                    //If we are outputing RGB
+                    else
+                    {
+                        conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                            {
+                                                OutputChannelType level = GetLevelInType(curPixelPtr[0]);
+                                                outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexR] = level;
+                                                outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexG] = level;
+                                                outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexB] = level;
+                                            };
+                    }
                 }
             }
             //RGB
@@ -103,72 +164,159 @@ namespace ssGUI
                 {
                     if(!format.PreMultipliedAlpha)
                     {
-                        conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                            {
-                                                T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4] = GetLevelInByte(curPixelPtr[format.IndexR]);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 1] = GetLevelInByte(curPixelPtr[format.IndexG]);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 2] = GetLevelInByte(curPixelPtr[format.IndexB]);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 3] = GetLevelInByte(curPixelPtr[format.IndexA]);
-                                            };
+                        //If we are outputing RGBA
+                        if(outputFormat.IndexA >= 0)
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexR] = GetLevelInType(curPixelPtr[format.IndexR]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexG] = GetLevelInType(curPixelPtr[format.IndexG]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexB] = GetLevelInType(curPixelPtr[format.IndexB]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexA] = GetLevelInType(curPixelPtr[format.IndexA]);
+                                                };
+                        }
+                        //If we are outputing RGB
+                        else
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexR] = GetLevelInType(curPixelPtr[format.IndexR]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexG] = GetLevelInType(curPixelPtr[format.IndexG]);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexB] = GetLevelInType(curPixelPtr[format.IndexB]);
+                                                };
+                        }
                     }
                     else
                     {
-                        conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                            {
-                                                T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);
-                                                
-                                                uint8_t alpha = GetLevelInByte(curPixelPtr[format.IndexA]);
-                                                float alphaInFloat =    static_cast<float>(curPixelPtr[format.IndexA]) / 
-                                                                        static_cast<float>(std::numeric_limits<T>::max());
+                        //If we are outputing RGBA
+                        if(outputFormat.IndexA >= 0)
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {  
+                                                    OutputChannelType alpha = GetLevelInType(curPixelPtr[format.IndexA]);
+                                                    float alphaInFloat =    static_cast<float>(curPixelPtr[format.IndexA]) / 
+                                                                            static_cast<float>(std::numeric_limits<InputChannelType>::max());
 
-                                                outImgBytePtr[(imageSize.x * y + x) * 4] = GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexR], alphaInFloat);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 1] = GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexG], alphaInFloat);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 2] = GetReversedPreMultipliedLevelInByte(curPixelPtr[format.IndexB], alphaInFloat);
-                                                outImgBytePtr[(imageSize.x * y + x) * 4 + 3] = alpha;
-                                            };
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexR] = GetReversedPreMultipliedLevelInType(curPixelPtr[format.IndexR], alphaInFloat);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexG] = GetReversedPreMultipliedLevelInType(curPixelPtr[format.IndexG], alphaInFloat);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexB] = GetReversedPreMultipliedLevelInType(curPixelPtr[format.IndexB], alphaInFloat);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexA] = alpha;
+                                                };
+                        }
+                        //If we are outputing RGB
+                        else
+                        {
+                            conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                                {  
+                                                    float alphaInFloat =    static_cast<float>(curPixelPtr[format.IndexA]) / 
+                                                                            static_cast<float>(std::numeric_limits<InputChannelType>::max());
+
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexR] = GetReversedPreMultipliedLevelInType(curPixelPtr[format.IndexR], alphaInFloat);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexG] = GetReversedPreMultipliedLevelInType(curPixelPtr[format.IndexG], alphaInFloat);
+                                                    outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexB] = GetReversedPreMultipliedLevelInType(curPixelPtr[format.IndexB], alphaInFloat);
+                                                };
+                        }
                     }
-                
                 }
+                //If the input RGB image doesn't have alpha
                 else
                 {
-                    conversionFunc =    [&](uint8_t const* curBytePtr, int x, int y)
-                                        {
-                                            T const* curPixelPtr = reinterpret_cast<T const*>(curBytePtr);
-                                            outImgBytePtr[(imageSize.x * y + x) * 4] = GetLevelInByte(curPixelPtr[format.IndexR]);
-                                            outImgBytePtr[(imageSize.x * y + x) * 4 + 1] = GetLevelInByte(curPixelPtr[format.IndexG]);
-                                            outImgBytePtr[(imageSize.x * y + x) * 4 + 2] = GetLevelInByte(curPixelPtr[format.IndexB]);
-                                            outImgBytePtr[(imageSize.x * y + x) * 4 + 3] = 255;
-                                        };
+                    //If we are outputing RGBA
+                    if(outputFormat.IndexA >= 0)
+                    {
+                        conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                            {
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexR] = GetLevelInType(curPixelPtr[format.IndexR]);
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexG] = GetLevelInType(curPixelPtr[format.IndexG]);
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexB] = GetLevelInType(curPixelPtr[format.IndexB]);
+                                                outImgPixelPtr[(imageSize.x * y + x) * 4 + outputFormat.IndexA] = std::numeric_limits<OutputChannelType>::max();
+                                            };
+                    }
+                    //If we are outputing RGB
+                    else
+                    {
+                        conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
+                                            {
+                                                outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexR] = GetLevelInType(curPixelPtr[format.IndexR]);
+                                                outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexG] = GetLevelInType(curPixelPtr[format.IndexG]);
+                                                outImgPixelPtr[(imageSize.x * y + x) * 3 + outputFormat.IndexB] = GetLevelInType(curPixelPtr[format.IndexB]);
+                                            };
+                    }
                 }
             }
         
             //Then we call the conversion function for each pixel
             for(int y = 0; y < imageSize.y; y++)
             {
+                int currentRowBytes = y * rowNumOfBytes;
                 for(int x = 0; x < imageSize.x; x++)
                 {
-                    uint8_t const* curBytePtr = imgPtr + (y * rowNumOfBytes) + x * bytePerPixel;
-                    conversionFunc(curBytePtr, x, y);
+                    uint8_t const* curPixelPtr = reinterpret_cast<uint8_t const*>(imgPtr);
+                    curPixelPtr = curPixelPtr + currentRowBytes + x * bytePerPixel;
+                    InputChannelType const* curPixelPtrConverted = reinterpret_cast<InputChannelType const*>(curPixelPtr);
+                    conversionFunc(curPixelPtrConverted, x, y);
                 }
             }
             
+            #undef GetLevelInType
+            #undef GetReversedPreMultipliedLevelInType
+            
             return true;
         }
-
-        static bool ConvertToBGRA32(void* outImg, void const * dataPtr, ssGUI::ImageFormat format, 
+        
+        public:        
+        static bool ConvertToRGBA32(void* outImg, void const * inImg, ssGUI::ImageFormat format, 
                                     glm::ivec2 imageSize)
         {
-            int indexR = format.IndexR;
-            format.IndexR = format.IndexB;
-            format.IndexB = indexR;
+            ssGUI::ImageFormat outputFormat;
+            switch(format.BitDepthPerChannel)
+            {
+                case 8:
+                    return ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                case 16:
+                    return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                default:
+                    ssLOG_LINE("Unsupported bit depth");
+                    return false;
+            }   
+        }
+        
+        static bool ConvertToBGRA32(void* outImg, void const * inImg, ssGUI::ImageFormat format, 
+                                    glm::ivec2 imageSize)
+        {
+            ssGUI::ImageFormat outputFormat;
+            outputFormat.IndexB = 0;
+            outputFormat.IndexR = 1;
+            outputFormat.IndexG = 2;
+            outputFormat.IndexA = 3;
 
             switch(format.BitDepthPerChannel)
             {
                 case 8:
-                    return ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(outImg, dataPtr, format, imageSize);
+                    return ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
                 case 16:
-                    return ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(outImg, dataPtr, format, imageSize);
+                    return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                default:
+                    ssLOG_LINE("Unsupported bit depth");
+                    return false;
+            }
+        }
+        
+        static bool ConvertToARGB32(void* outImg, void const * inImg, ssGUI::ImageFormat format, 
+                                    glm::ivec2 imageSize)
+        {
+            ssGUI::ImageFormat outputFormat;
+            outputFormat.IndexA = 0;
+            outputFormat.IndexR = 1;
+            outputFormat.IndexG = 2;
+            outputFormat.IndexB = 3;
+
+            switch(format.BitDepthPerChannel)
+            {
+                case 8:
+                    return ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                case 16:
+                    return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
                 default:
                     ssLOG_LINE("Unsupported bit depth");
                     return false;
@@ -275,7 +423,7 @@ namespace ssGUI
         }
 
         //Assuming is RGBA32
-        static void Resize(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
+        static void ResizeRGBA(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
         {
             //temporary image pointers for resizing
             uint8_t* imgPtr = new uint8_t[w * h * 4];

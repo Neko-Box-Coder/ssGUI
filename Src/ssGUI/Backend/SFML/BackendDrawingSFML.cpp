@@ -3,7 +3,6 @@
 #include "SFML/OpenGL.hpp"
 
 #include "ssGUI/DataClasses/ImageData.hpp"
-#include "ssGUI/HelperClasses/SFMLImageConversion.hpp"
 
 #include "ssLogger/ssLog.hpp"
 

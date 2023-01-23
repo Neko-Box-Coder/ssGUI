@@ -14,8 +14,8 @@ int main()
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetText(L"Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
+    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
     positionExtension->SetVerticalPixel(-30);
     text.AddExtension(positionExtension);
     

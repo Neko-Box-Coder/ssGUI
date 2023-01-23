@@ -245,7 +245,6 @@ namespace Backend
         return DrawShape(vertices, texCoords, colors, 0, vertices.size(), image);
     }
 
-
     bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::u8vec4>& colors)
     {
@@ -286,19 +285,7 @@ namespace Backend
             ssGUI::ImageFormat format;
             void* rawPixelFormat = charImgData.GetPixelPtr(format);
             
-            //TODO: Move this to somewhere else
-            switch(format.BitDepthPerChannel)
-            {
-                case 8:
-                    ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
-                    break;
-                case 16:
-                    ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
-                    break;
-                default:
-                    ssLOG_LINE("Unsupported bit depth");
-                    return false;
-            }
+            ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
 
             GL_CHECK_ERROR( glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgSize.x, imgSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
                             rgba32Img); );
@@ -357,20 +344,8 @@ namespace Backend
             const void* rawPtr = image.GetPixelPtr(format);
 
             //Convert it to rgba32
-            uint8_t* rgba32Img = new uint8_t[image.GetSize().x * image.GetSize().y * 4];
-            
-            switch(format.BitDepthPerChannel)
-            {
-                case 8:
-                    ssGUI::ImageUtil::ConvertToRGBA32<uint8_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
-                    break;
-                case 16:
-                    ssGUI::ImageUtil::ConvertToRGBA32<uint16_t>(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
-                    break;
-                default:
-                    ssLOG_LINE("Unspported bit depth");
-                    return false;
-            }
+            uint8_t* rgba32Img = new uint8_t[image.GetSize().x * image.GetSize().y * 4];            
+            ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
 
             GLuint textureId = 0;
 

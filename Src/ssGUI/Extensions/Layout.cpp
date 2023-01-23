@@ -5,6 +5,7 @@
 #include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
+#include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
@@ -300,11 +301,13 @@ namespace Extensions
             if(Container->GetCurrentChild() != nullptr && Container->GetCurrentChild()->GetType() == ssGUI::Enums::GUIObjectType::WINDOW &&
                 !Container->GetCurrentChild()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
             {
-                ssGUI::Window* childWin = static_cast<ssGUI::Window*>(Container->GetCurrentChild());
-                glm::ivec4 tColor = childWin->GetTitlebarColor();
+                //NOTE: Not too sure what was this about
+                //ssGUI::Window* childWin = static_cast<ssGUI::Window*>(Container->GetCurrentChild());
+                //glm::ivec4 tColor = childWin->GetTitlebarColor();
+                
+                //NOTE: This was outside this if statement, didn't make too much sense to be outside
+                validChildrenSize++;
             }
-
-            validChildrenSize++;
             
             Container->MoveChildrenIteratorNext();
         }
@@ -706,7 +709,7 @@ namespace Extensions
             
             glm::vec2 currentPos = Container->GetCurrentChild()->GetGlobalPosition();
             glm::vec2 currentSize = Container->GetCurrentChild()->GetSize();
-            glm::vec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
+            //glm::vec2 currentMinSize = Container->GetCurrentChild()->GetMinSize();
             
             if(IsHorizontalLayout())
             {
@@ -1003,6 +1006,24 @@ namespace Extensions
         wrapper->SetUserCreated(false);
 
         child->SetParent(wrapper);
+        return wrapper;
+    }
+
+    ssGUI::GUIObject* Layout::AddChildWithAlignment(ssGUI::GUIObject* child, ssGUI::Enums::AlignmentHorizontal horizontal, ssGUI::Enums::AlignmentVertical vertical)
+    {
+        ssGUI::GUIObject* wrapper = AddChildWithWrapper(child);
+        
+        if(wrapper != nullptr)
+        {
+            if(!child->IsAnyExtensionExist<ssGUI::Extensions::AdvancedPosition>())
+                child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+        
+            ssGUI::Extensions::AdvancedPosition* ap = child->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
+        
+            ap->SetHorizontalAlignment(horizontal);
+            ap->SetVerticalAlignment(vertical);
+        }
+        
         return wrapper;
     }
 

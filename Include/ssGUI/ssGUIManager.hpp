@@ -48,7 +48,7 @@ namespace ssGUI
             std::vector<bool> PostGUIUpdateEventListenersValid;
             std::queue<int> PostGUIUpdateEventListenersNextFreeIndices;
 
-            std::vector<std::function<void()>> PostGUIRenderingUpdateEventListeners;
+            std::vector<std::function<void(ssGUI::MainWindow*)>> PostGUIRenderingUpdateEventListeners;
             std::vector<bool> PostGUIRenderingUpdateEventListenersValid;
             std::queue<int> PostGUIRenderingUpdateEventListenersNextFreeIndices;
 
@@ -129,7 +129,7 @@ namespace ssGUI
             //function: AddPostGUIRenderingUpdateEventListener
             //Adds event callback that gets triggered after the render function is called for GUI objects.
             //Returns index that can be used to remove the event callback later.
-            int AddPostGUIRenderingUpdateEventListener(std::function<void()> event);
+            int AddPostGUIRenderingUpdateEventListener(std::function<void(ssGUI::MainWindow*)> event);
 
             //function: RemovePostGUIRenderingUpdateEventListener
             //Removes event callback that gets triggered after the render function is called for GUI objects

@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
-#include "ssGUI/HelperClasses/SFMLImageConversion.hpp"
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
@@ -110,7 +110,7 @@ namespace Backend
         //Set last key presses and mouse buttons
         LastKeyPresses = CurrentKeyPresses;
         LastMouseButtons = CurrentMouseButtons;
-        LastInputInfos = std::move(CurrentInputInfos);
+        LastInputInfos = CurrentInputInfos;
 
         //Get mouse position
         LastMousePosition = CurrentMousePosition;

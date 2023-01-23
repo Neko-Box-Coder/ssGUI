@@ -6,15 +6,24 @@ namespace ssGUI
 
 namespace Backend
 {
-    BackendMainWindowSFML::BackendMainWindowSFML(BackendMainWindowSFML const& other) : 
-        CurrentWindow(sf::VideoMode(sf::Vector2u(other.CurrentWindow.getSize().x, other.CurrentWindow.getSize().y)), other.GetTitle()), 
-        Visible(other.IsVisible()), VSync(other.IsVSync()), Closed(other.IsClosed()), CurrentWindowMode(other.GetWindowMode()), Titlebar(other.HasTitlebar()), 
-        Resizable(other.IsResizable()), CloseButton(other.HasCloseButton()), Title(other.GetTitle()), IsClosingAborted(other.IsClosingAborted),
-        PositionOffset(other.GetPositionOffset())
+    BackendMainWindowSFML::BackendMainWindowSFML(BackendMainWindowSFML const& other) 
     {
-        //TODO : finish backend copy constructor and assignment and clone function
-        ssLOG_LINE("Not implemented");
-        ssLOG_EXIT_PROGRAM();
+        OnCloseCallback = std::vector<std::function<void()>>();
+        ExternalFocusChangedCallback = std::vector<std::function<void(bool focused)>>();
+        Visible = other.Visible;
+        VSync = other.VSync;
+        Closed = other.Closed;
+        CurrentWindowMode = other.CurrentWindowMode;
+        
+        Titlebar = other.Titlebar;
+        Resizable = other.Resizable;
+        CloseButton = other.Resizable;
+        IsClosingAborted = false;
+        PositionOffset = other.PositionOffset;
+        
+        ResetWindow(CurrentWindowMode, Resizable, Titlebar, CloseButton, other.GetMSAA());
+        
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
     
     void BackendMainWindowSFML::ResetWindow(ssGUI::Enums::WindowMode mode, bool resize, bool titlebar, bool canClose, int msaa)
@@ -38,6 +47,7 @@ namespace Backend
         settings.majorVersion = 3;
         settings.minorVersion = 0;
 
+        CurrentWindow.close();
         CurrentWindow.create(sf::VideoMode(sf::Vector2u(CurrentWindow.getSize().x, CurrentWindow.getSize().y)), GetTitle(), newStyle, settings);
     }
 
@@ -81,8 +91,14 @@ namespace Backend
         ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
 
+    void wrapper(BackendMainWindowSFML* target)
+    {
+        target->SyncPositionOffset();
+    }
+
     glm::ivec2 BackendMainWindowSFML::GetPositionOffset() const
     {
+        wrapper(const_cast<BackendMainWindowSFML*>(this));
         return PositionOffset;
     }
 

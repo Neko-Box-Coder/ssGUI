@@ -132,8 +132,8 @@ namespace Extensions
         ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewLeft->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewLeft->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
 
         as->SetVerticalPercentage(1);
         as->SetHorizontalPercentage(0.5);
@@ -151,8 +151,8 @@ namespace Extensions
         ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewTop->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewTop->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
 
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
@@ -170,8 +170,8 @@ namespace Extensions
         ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewRight->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewRight->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
 
         as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
@@ -189,8 +189,8 @@ namespace Extensions
         ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewBottom->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewBottom->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
 
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::BOTTOM);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
 
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
@@ -264,29 +264,29 @@ namespace Extensions
 
         if(UseTriggerPercentage)
         {
-            apTop->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-            apTop->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
+            apTop->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            apTop->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
             asTop->SetHorizontalPercentage(1 - GetTriggerPercentage() * 2);
             asTop->SetHorizontalPixel(0);
             asTop->SetVerticalPercentage(GetTriggerPercentage());
             asTop->SetVerticalPixel(0);
 
-            apRight->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
-            apRight->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+            apRight->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+            apRight->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
             asRight->SetHorizontalPercentage(GetTriggerPercentage());
             asRight->SetHorizontalPixel(0);
             asRight->SetVerticalPercentage(1 - GetTriggerPercentage() * 2);
             asRight->SetVerticalPixel(0);
 
-            apBottom->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-            apBottom->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::BOTTOM);
+            apBottom->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            apBottom->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
             asBottom->SetHorizontalPercentage(1 - GetTriggerPercentage() * 2);
             asBottom->SetHorizontalPixel(0);
             asBottom->SetVerticalPercentage(GetTriggerPercentage());
             asBottom->SetVerticalPixel(0);
 
-            apLeft->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
-            apLeft->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+            apLeft->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+            apLeft->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
             asLeft->SetHorizontalPercentage(GetTriggerPercentage());
             asLeft->SetHorizontalPixel(0);
             asLeft->SetVerticalPercentage(1 - GetTriggerPercentage() * 2);
@@ -294,23 +294,23 @@ namespace Extensions
         }
         else
         {
-            apTop->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-            apTop->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
+            apTop->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            apTop->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
             asTop->SetHorizontalPixel(Container->GetSize().x - GetTriggerPixel() * 2);
             asTop->SetVerticalPixel(GetTriggerPixel());
 
-            apRight->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
-            apRight->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+            apRight->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+            apRight->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
             asRight->SetHorizontalPixel(GetTriggerPixel());
             asRight->SetVerticalPixel(Container->GetSize().y - GetTriggerPixel() * 2);
 
-            apBottom->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-            apBottom->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::BOTTOM);
+            apBottom->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            apBottom->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
             asBottom->SetHorizontalPixel(Container->GetSize().x - GetTriggerPixel() * 2);
             asBottom->SetVerticalPixel(GetTriggerPercentage());
 
-            apLeft->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
-            apLeft->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+            apLeft->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+            apLeft->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
             asLeft->SetHorizontalPixel(GetTriggerPixel());
             asLeft->SetVerticalPixel(Container->GetSize().y - GetTriggerPixel() * 2);
         }
@@ -811,7 +811,7 @@ namespace Extensions
             
             glm::vec2 triggerSize = IsUseTriggerPercentage() ? glm::vec2(glm::vec2(windowContentSize) * GetTriggerPercentage()) : glm::vec2(GetTriggerPixel(), GetTriggerPixel());
 
-            bool previewDrawn = false;
+            //bool previewDrawn = false;
 
             //Check if the cursor is inside the window
             bool mouseInsideWindow = (inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
@@ -843,7 +843,7 @@ namespace Extensions
                 DiscardBottomPreview();
                 DrawLeftPreview();
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::LEFT;
                 ValidDocking = true;
             }
@@ -858,7 +858,7 @@ namespace Extensions
                 DiscardBottomPreview();
                 DrawTopPreview();
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::TOP;
                 ValidDocking = true;
 
@@ -874,7 +874,7 @@ namespace Extensions
                 DiscardBottomPreview();
                 DrawRightPreview();
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::RIGHT;
                 ValidDocking = true;
             }
@@ -889,7 +889,7 @@ namespace Extensions
                 DiscardRightPreview();
                 DrawBottomPreview();  
                 DiscardTriggerAreas();
-                previewDrawn = true;
+                //previewDrawn = true;
                 TargetDockSide = DockSide::BOTTOM;
                 ValidDocking = true;
             }

@@ -10,7 +10,7 @@ namespace ssGUI
 namespace Backend
 {
     //class: ssGUI::Backend::BackendMainWindowInterface
-    class BackendMainWindowTemplate : BackendMainWindowInterface
+    class BackendMainWindowTemplate : public BackendMainWindowInterface
     {
         private:
             BackendMainWindowTemplate& operator=(BackendMainWindowTemplate const& other);
@@ -29,10 +29,6 @@ namespace Backend
             //function: GetWindowPosition
             //See <BackendMainWindowInterface::GetWindowPosition>
             glm::ivec2 GetWindowPosition() const override;
-
-            //function: SyncPositionOffset
-            //See <BackendMainWindowInterface::SyncPositionOffset>
-            void SyncPositionOffset() override;
 
             //function: GetPositionOffset
             //See <BackendMainWindowInterface::GetPositionOffset>
@@ -152,7 +148,7 @@ namespace Backend
 
             //function: SetWindowMode
             //See <BackendMainWindowInterface::SetWindowMode>
-            void SetWindowMode(ssGUI::Enums::WindowMode WindowMode) override;
+            void SetWindowMode(ssGUI::Enums::WindowMode windowMode) override;
 
             //function: GetWindowMode
             //See <BackendMainWindowInterface::GetWindowMode>

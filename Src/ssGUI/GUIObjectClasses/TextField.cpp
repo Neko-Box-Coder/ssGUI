@@ -256,7 +256,7 @@ namespace ssGUI
 
         //Find out current position from this line (Depending on alignment)
         //Right
-        if(GetHorizontalAlignment() == ssGUI::Enums::TextAlignmentHorizontal::RIGHT)
+        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             curLineEnd = curLineEnd == GetLastValidCharacterIndex() ? curLineEnd + 1 : curLineEnd;
             curLinePosition = curLineEnd - curIndex;
@@ -270,7 +270,7 @@ namespace ssGUI
             return curLineStart;
 
         //Go to previous line if there's any
-        if(GetHorizontalAlignment() == ssGUI::Enums::TextAlignmentHorizontal::RIGHT)
+        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             if(curLinePosition > prevLineEnd - prevLineStart)
                 return prevLineStart;
@@ -284,6 +284,8 @@ namespace ssGUI
             else
                 return prevLineStart + curLinePosition;
         }
+        
+        return -1;  //Just to suppress return-type warning from GCC
     }
 
     int TextField::GetPositionForNextLine(int curIndex)
@@ -300,7 +302,7 @@ namespace ssGUI
 
         //Find out current position from this line (Depending on alignment)
         //Right
-        if(GetHorizontalAlignment() == ssGUI::Enums::TextAlignmentHorizontal::RIGHT)
+        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
             curLinePosition = curLineEnd - curIndex;
         //Left and center
         else
@@ -316,7 +318,7 @@ namespace ssGUI
         }
         
         //Go to next line if there's any
-        if(GetHorizontalAlignment() == ssGUI::Enums::TextAlignmentHorizontal::RIGHT)
+        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             if(curLinePosition > nextLineEnd - nextLineStart)
                 return nextLineStart;
@@ -338,6 +340,8 @@ namespace ssGUI
             else
                 return nextLineStart + curLinePosition;
         }
+        
+        return -1;  //Just to suppress return-type warning from GCC
     }
 
     void TextField::TextInputUpdate(std::wstring& textInput, bool& refreshBlinkTimer, bool& wordMode)
@@ -694,11 +698,11 @@ namespace ssGUI
                         fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
                     
                     auto horiAlignment = GetHorizontalAlignment(); 
-                    if(horiAlignment == ssGUI::Enums::TextAlignmentHorizontal::LEFT)
+                    if(horiAlignment == ssGUI::Enums::AlignmentHorizontal::LEFT)
                     {
                         drawPos.x += GetHorizontalPadding();
                     }
-                    else if(horiAlignment == ssGUI::Enums::TextAlignmentHorizontal::CENTER)
+                    else if(horiAlignment == ssGUI::Enums::AlignmentHorizontal::CENTER)
                     {
                         drawPos.x += GetSize().x / 2;
                     }
@@ -796,26 +800,26 @@ namespace ssGUI
             
             switch(GetHorizontalAlignment()) 
             {
-                case ssGUI::Enums::TextAlignmentHorizontal::LEFT:
+                case ssGUI::Enums::AlignmentHorizontal::LEFT:
                     drawPos.x += GetHorizontalPadding();
                     break;
-                case ssGUI::Enums::TextAlignmentHorizontal::CENTER:
+                case ssGUI::Enums::AlignmentHorizontal::CENTER:
                     drawPos.x += GetSize().x / 2;
                     break;
-                case ssGUI::Enums::TextAlignmentHorizontal::RIGHT:
+                case ssGUI::Enums::AlignmentHorizontal::RIGHT:
                     drawPos.x += GetSize().x - GetHorizontalPadding();
                     break;
             }
 
             switch(GetVerticalAlignment()) 
             {
-                case ssGUI::Enums::TextAlignmentVertical::TOP:
+                case ssGUI::Enums::AlignmentVertical::TOP:
                     drawPos.y += GetVerticalPadding();
                     break;
-                case ssGUI::Enums::TextAlignmentVertical::CENTER:
+                case ssGUI::Enums::AlignmentVertical::CENTER:
                     drawPos.y += GetSize().y / 2 - height / 2;
                     break;
-                case ssGUI::Enums::TextAlignmentVertical::BOTTOM:
+                case ssGUI::Enums::AlignmentVertical::BOTTOM:
                     drawPos.y += GetSize().y - GetNewCharacterFontSize() - GetVerticalPadding();
                     break;
             }

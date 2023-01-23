@@ -5,7 +5,6 @@
 namespace ssGUI
 {
 
-//namespace: ssGUI::Backend
 namespace Backend
 {
     BackendMainWindowTemplate::BackendMainWindowTemplate(BackendMainWindowTemplate const& other)
@@ -31,11 +30,6 @@ namespace Backend
     glm::ivec2 BackendMainWindowTemplate::GetWindowPosition() const
     {
         return glm::ivec2();
-    }
-
-    void BackendMainWindowTemplate::SyncPositionOffset()
-    {
-
     }
 
     glm::ivec2 BackendMainWindowTemplate::GetPositionOffset() const

@@ -18,14 +18,14 @@ int main()
 
     //AdvancedPosition extension allows a GUI Object to be centered.
     ssGUI::Extensions::AdvancedPosition* positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
-    positionExtension->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-    positionExtension->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);    
+    positionExtension->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    positionExtension->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);    
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetText("Click on the button to change this text.");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
+    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
 
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;

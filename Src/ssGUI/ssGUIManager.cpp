@@ -319,7 +319,7 @@ namespace ssGUI
                 for(int i = 0; i < PostGUIRenderingUpdateEventListeners.size(); i++)
                 {
                     if(PostGUIRenderingUpdateEventListenersValid[i])
-                        PostGUIRenderingUpdateEventListeners[i]();
+                        PostGUIRenderingUpdateEventListeners[i](currentMainWindowP);
                 }
                 ssLOG_FUNC_EXIT("ssGUIManagerPostRenderingUpdateEvent");
 
@@ -553,7 +553,7 @@ namespace ssGUI
         PostGUIUpdateEventListenersNextFreeIndices.push(index);
     }
 
-    int ssGUIManager::AddPostGUIRenderingUpdateEventListener(std::function<void()> event)
+    int ssGUIManager::AddPostGUIRenderingUpdateEventListener(std::function<void(ssGUI::MainWindow*)> event)
     {
         int addedIndex = -1;
 

@@ -2,6 +2,8 @@
 #define SSGUI_SSGUI_ADVANCED_POSITION_H
 
 #include <unordered_map>
+#include "ssGUI/Enums/AlignmentHorizontal.hpp"
+#include "ssGUI/Enums/AlignmentVertical.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
@@ -25,23 +27,23 @@ namespace Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;            //See <BindToObject>
-        bool Enabled;                           //See <IsEnabled>
+        ssGUI::GUIObject* Container;                            //See <BindToObject>
+        bool Enabled;                                           //See <IsEnabled>
 
-        HorizontalAnchor CurrentHorizontal;     //See <GetHorizontalAnchor>
-        VerticalAnchor CurrentVertical;         //See <GetVerticalAnchor>
+        ssGUI::Enums::AlignmentHorizontal CurrentHorizontal;    //See <GetHorizontalAnchor>
+        ssGUI::Enums::AlignmentVertical CurrentVertical;        //See <GetVerticalAnchor>
 
-        float HorizontalPixelValue;             //See <GetHorizontalPixel>
-        float VerticalPixelValue;               //See <GetVerticalPixel>
+        float HorizontalPixelValue;                             //See <GetHorizontalPixel>
+        float VerticalPixelValue;                               //See <GetVerticalPixel>
 
-        float HorizontalPercentageValue;        //See <GetHorizontalPercentage>
-        float VerticalPercentageValue;          //See <GetVerticalPercentage>
+        float HorizontalPercentageValue;                        //See <GetHorizontalPercentage>
+        float VerticalPercentageValue;                          //See <GetVerticalPercentage>
     =================================================================
     ============================== C++ ==============================
     AdvancedPosition::AdvancedPosition() :  Container(nullptr),
                                             Enabled(true),
-                                            CurrentHorizontal(AdvancedPosition::HorizontalAnchor::CENTER),
-                                            CurrentVertical(AdvancedPosition::VerticalAnchor::CENTER),
+                                            CurrentHorizontal(ssGUI::Enums::AlignmentHorizontal::CENTER),
+                                            CurrentVertical(ssGUI::Enums::AlignmentVertical::CENTER),
                                             HorizontalPixelValue(0),
                                             VerticalPixelValue(0),
                                             HorizontalPercentageValue(0),
@@ -54,24 +56,22 @@ namespace Extensions
         //Forward declaration
         public:
             friend class ssGUI::Factory;
-            enum class HorizontalAnchor;
-            enum class VerticalAnchor;
 
         private:
             AdvancedPosition& operator=(AdvancedPosition const& other);
         
         protected:
-            ssGUI::GUIObject* Container;            //See <BindToObject>
-            bool Enabled;                           //See <IsEnabled>
+            ssGUI::GUIObject* Container;                            //See <BindToObject>
+            bool Enabled;                                           //See <IsEnabled>
 
-            HorizontalAnchor CurrentHorizontal;     //See <GetHorizontalAnchor>
-            VerticalAnchor CurrentVertical;         //See <GetVerticalAnchor>
+            ssGUI::Enums::AlignmentHorizontal CurrentHorizontal;    //See <GetHorizontalAnchor>
+            ssGUI::Enums::AlignmentVertical CurrentVertical;        //See <GetVerticalAnchor>
 
-            float HorizontalPixelValue;             //See <GetHorizontalPixel>
-            float VerticalPixelValue;               //See <GetVerticalPixel>
+            float HorizontalPixelValue;                             //See <GetHorizontalPixel>
+            float VerticalPixelValue;                               //See <GetVerticalPixel>
 
-            float HorizontalPercentageValue;        //See <GetHorizontalPercentage>
-            float VerticalPercentageValue;          //See <GetVerticalPercentage>
+            float HorizontalPercentageValue;                        //See <GetHorizontalPercentage>
+            float VerticalPercentageValue;                          //See <GetVerticalPercentage>
 
             AdvancedPosition();
             virtual ~AdvancedPosition() override;
@@ -87,31 +87,17 @@ namespace Extensions
         public:
             static const std::string EXTENSION_NAME;
 
-            enum class HorizontalAnchor
-            {
-                LEFT,
-                CENTER,
-                RIGHT
-            };
+            //function: SetHorizontalAlignment
+            virtual void SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align);
 
-            enum class VerticalAnchor
-            {
-                TOP,
-                CENTER,
-                BOTTOM
-            };
+            //function: GetHorizontalAlignment
+            virtual ssGUI::Enums::AlignmentHorizontal GetHorizontalAlignment() const;
 
-            //function: SetHorizontalAnchor
-            virtual void SetHorizontalAnchor(HorizontalAnchor anchor);
+            //function: SetVerticalAlignment
+            virtual void SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align);
 
-            //function: GetHorizontalAnchor
-            virtual HorizontalAnchor GetHorizontalAnchor() const;
-
-            //function: SetVerticalAnchor
-            virtual void SetVerticalAnchor(VerticalAnchor anchor);
-
-            //function: GetVerticalAnchor
-            virtual VerticalAnchor GetVerticalAnchor() const;
+            //function: GetVerticalAlignment
+            virtual ssGUI::Enums::AlignmentVertical GetVerticalAlignment() const;
 
             //function: SetHorizontalPixel
             virtual void SetHorizontalPixel(float pixel);

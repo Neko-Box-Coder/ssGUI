@@ -1,5 +1,5 @@
-#ifndef SSGUI_TEXT_ALIGNMENT_HORIZONTAL_H
-#define SSGUI_TEXT_ALIGNMENT_HORIZONTAL_H
+#ifndef SSGUI_ALIGNMENT_HORIZONTAL_H
+#define SSGUI_ALIGNMENT_HORIZONTAL_H
 
 namespace ssGUI
 {
@@ -7,12 +7,12 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
-    /*enum: TextAlignmentHorizontal
+    /*enum: AlignmentHorizontal
     LEFT    - Left allignment
     CENTER  - Center allignment
     RIGHT   - Right allignment
     */
-    enum class TextAlignmentHorizontal
+    enum class AlignmentHorizontal
     {
         LEFT,
         CENTER,

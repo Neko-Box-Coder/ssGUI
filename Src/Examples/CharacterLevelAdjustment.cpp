@@ -26,8 +26,8 @@ int main()
     ssGUI::Text text;
     text.AddFont(&normalFont);
     text.AddFont(&boldFont);
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
+    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
     text.SetPosition(glm::vec2(0, -45));
     text.SetSize(glm::vec2(450, 110));
     text.SetParent(&mainWindow);

@@ -26,8 +26,8 @@ int main()
     text.SetNewCharacterFontSize(15);
     text.SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
     text.SetText("Click button");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
+    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
     text.SetParent(&window);
     
     //Add wrapper for button so the layout extension is not directly sizing it

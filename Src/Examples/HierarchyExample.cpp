@@ -31,8 +31,8 @@ int main()
     ssGUI::Text text;
     text.SetText("Some Text");
     text.SetSize(glm::vec2(150, 30));
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
     text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());             //Adding border to better visualize the text widget
     text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());   //AdvancedPosition for centering the text widget
     text.SetParent(&window2);

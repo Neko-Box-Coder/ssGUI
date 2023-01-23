@@ -51,8 +51,8 @@ namespace ssGUI
         // if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
         //     buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
 
-        static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-        static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::CENTER);
+        static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
         ssLOG_FUNC_EXIT();
     }
 
@@ -101,8 +101,8 @@ namespace ssGUI
             buttonImgObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
 
         ap = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::CENTER);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::CENTER);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
 
         ssLOG_FUNC_EXIT();
     }
@@ -238,9 +238,9 @@ namespace ssGUI
                             iconImage->SetImageTint(iconTintColor);
                         }
                         auto textColor = btn->GetButtonTextObject()->GetNewCharacterColor();
-                        textColor.r = (uint8_t)(textColor.r + buttonReactAmount * 4 & 255);
-                        textColor.g = (uint8_t)(textColor.g + buttonReactAmount * 4 & 255);
-                        textColor.b = (uint8_t)(textColor.b + buttonReactAmount * 4 & 255);
+                        textColor.r = (uint8_t)((textColor.r + buttonReactAmount * 4) & 255);
+                        textColor.g = (uint8_t)((textColor.g + buttonReactAmount * 4) & 255);
+                        textColor.b = (uint8_t)((textColor.b + buttonReactAmount * 4) & 255);
                         btn->GetButtonTextObject()->SetNewCharacterColor(textColor);
                         btn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
                         break;
