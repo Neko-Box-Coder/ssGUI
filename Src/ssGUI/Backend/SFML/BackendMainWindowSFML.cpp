@@ -21,6 +21,9 @@ namespace Backend
         IsClosingAborted = false;
         PositionOffset = other.PositionOffset;
         
+        glm::ivec2 oriRenderSize = other.GetRenderSize();
+        
+        CurrentWindow.create(sf::VideoMode(sf::Vector2u(oriRenderSize.x, oriRenderSize.y)), "", sf::Style::Default, sf::ContextSettings(24));
         ResetWindow(CurrentWindowMode, Resizable, Titlebar, CloseButton, other.GetMSAA());
         
         ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
@@ -46,9 +49,11 @@ namespace Backend
         settings.depthBits = 24;
         settings.majorVersion = 3;
         settings.minorVersion = 0;
+        
+        sf::Vector2u oriWindowSize = CurrentWindow.getSize();
 
         CurrentWindow.close();
-        CurrentWindow.create(sf::VideoMode(sf::Vector2u(CurrentWindow.getSize().x, CurrentWindow.getSize().y)), GetTitle(), newStyle, settings);
+        CurrentWindow.create(sf::VideoMode(sf::Vector2u(oriWindowSize.x, oriWindowSize.y)), GetTitle(), newStyle, settings);
     }
 
     void BackendMainWindowSFML::SyncPositionOffset()
