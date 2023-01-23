@@ -2,6 +2,7 @@
 #include <cstring>
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
+#include <thread>
 
 #include "ssGUI/Backend/X11_OpenGL3_3/BackendSystemInputX11_OpenGL3_3.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"
@@ -770,6 +771,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
 
@@ -841,6 +845,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
     
     glm::ivec2 BackendMainWindowX11_OpenGL3_3::GetRenderSize() const
@@ -907,6 +914,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     std::wstring BackendMainWindowX11_OpenGL3_3::GetTitle() const
@@ -983,6 +993,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     void BackendMainWindowX11_OpenGL3_3::SetVisible(bool visible)
@@ -1005,6 +1018,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     bool BackendMainWindowX11_OpenGL3_3::IsVisible() const
@@ -1026,6 +1042,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     bool BackendMainWindowX11_OpenGL3_3::IsVSync() const
@@ -1065,6 +1084,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
     
     //https://gist.github.com/kui/2622504
@@ -1254,6 +1276,9 @@ namespace Backend
         
         //Allowing event to come through to apply the effect
         static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        
+        //Allow status to be synced
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     ssGUI::Enums::WindowMode BackendMainWindowX11_OpenGL3_3::GetWindowMode() const

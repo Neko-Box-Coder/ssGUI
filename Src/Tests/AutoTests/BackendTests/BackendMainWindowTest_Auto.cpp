@@ -2,7 +2,6 @@
 #include "ssLogger/ssLog.hpp"
 #include "ssGUI/TestBase.hpp"
 #include "ssGUI/Factory.hpp"
-#include <thread>
 
 ssGUI::Backend::BackendDrawingInterface* drawing = nullptr;
 ssGUI::Backend::BackendMainWindowInterface* window = nullptr;
@@ -32,8 +31,6 @@ void WindowPositionTest()
     glm::ivec2 pos(300, 300);
     window->SetWindowPosition(pos);
     
-    //This is needed for X11 
-    std::this_thread::sleep_for(std::chrono::milliseconds(16));
     
     SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetWindowPosition() == pos);
     //ssLOG_LINE("window->GetWindowPosition(): "<<window->GetWindowPosition().x<<", "<<window->GetWindowPosition().y);
@@ -52,9 +49,6 @@ void WindowSizeTest()
     glm::ivec2 size(500, 500);
     window->SetWindowSize(size);
     
-    //This is needed for X11 
-    std::this_thread::sleep_for(std::chrono::milliseconds(16));
-    
     glm::ivec2 windowSize = window->GetWindowSize();
     //ssLOG_LINE("windowSize: "<<windowSize.x<<", "<<windowSize.y);
     SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetWindowSize() == size);
@@ -65,9 +59,6 @@ void RenderSizeTest()
     glm::ivec2 size(500, 500);
     window->SetRenderSize(size);
     
-    //This is needed for X11 
-    std::this_thread::sleep_for(std::chrono::milliseconds(16));
-    
     SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetRenderSize() == size);
     
     //SFML can't return window size
@@ -77,6 +68,20 @@ void RenderSizeTest()
         SSGUI_TEST_OUTPUT_SKIP(__func__+std::string("(Against Window Size)"));
     #endif
 }
+
+void ValidateBothSizesTest()
+{
+    window->SetRenderSize(glm::ivec2(1280, 720));
+    glm::ivec2 windowSize = window->GetWindowSize();
+    window->SetWindowSize(windowSize);
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(1)"), window->GetRenderSize() == glm::ivec2(1280, 720));
+    
+    window->SetWindowSize(glm::ivec2(600, 400));
+    glm::ivec2 renderSize = window->GetRenderSize();
+    window->SetRenderSize(renderSize);
+    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(2)"), window->GetWindowSize() == glm::ivec2(600, 400));
+}
+
 
 void CloseTest()
 {
@@ -121,13 +126,10 @@ void TitleTest()
 
 void VisibleTest()
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     window->SetVisible(false);
     SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(False)"), !window->IsVisible());
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     window->SetVisible(true);
     SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(True)"), window->IsVisible());
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
 void VsyncTest()
@@ -173,17 +175,11 @@ void WindowModeTest()
     window->SetWindowMode(ssGUI::Enums::WindowMode::BORDERLESS);
     SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(BORDERLESS)"), window->GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS);
     
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    
     window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
     SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(NORMAL)"), window->GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL);
     
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    
     window->SetWindowMode(ssGUI::Enums::WindowMode::FULLSCREEN);
     SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(FULLSCREEN)"), window->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN);
-    
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     
     window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
 }
@@ -212,6 +208,7 @@ int main()
         GetPositionOffsetTest();
         WindowSizeTest();
         RenderSizeTest();
+        ValidateBothSizesTest();
         CloseTest();
         CloseEventTest();
         TitleTest();
