@@ -31,7 +31,6 @@ void WindowPositionTest()
     
     glm::ivec2 pos(300, 300);
     window->SetWindowPosition(pos);
-    inputs->UpdateInput();
     
     //This is needed for X11 
     std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -52,11 +51,12 @@ void WindowSizeTest()
 {
     glm::ivec2 size(500, 500);
     window->SetWindowSize(size);
-    inputs->UpdateInput();
     
     //This is needed for X11 
     std::this_thread::sleep_for(std::chrono::milliseconds(16));
     
+    glm::ivec2 windowSize = window->GetWindowSize();
+    //ssLOG_LINE("windowSize: "<<windowSize.x<<", "<<windowSize.y);
     SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetWindowSize() == size);
 }
 
@@ -64,7 +64,6 @@ void RenderSizeTest()
 {
     glm::ivec2 size(500, 500);
     window->SetRenderSize(size);
-    inputs->UpdateInput();
     
     //This is needed for X11 
     std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -191,22 +190,9 @@ void WindowModeTest()
 
 void CloneTest()
 {
-    try
-    {
-        auto* windowClone = window->Clone();
-        SSGUI_TEST_OUTPUT_ASSERT(__func__, false);
-    }
-    catch(const std::exception& ex)
-    {
-        ssLOG_LINE("Exception caught: "<<ex.what());
-        ssLOG_LINE("Don't worry, this is expected 😉")
-        SSGUI_TEST_OUTPUT_ASSERT(__func__, true);
-    }
-    catch(...)
-    {
-        throw;
-        SSGUI_TEST_OUTPUT_ASSERT(__func__, false);   
-    }
+    auto* windowClone = window->Clone();
+    SSGUI_TEST_OUTPUT_ASSERT(__func__, windowClone != nullptr);
+    ssGUI::Factory::Dispose(windowClone);
 }
 
 void GetRawHandleTest()
@@ -226,13 +212,8 @@ int main()
         GetPositionOffsetTest();
         WindowSizeTest();
         RenderSizeTest();
-        
-        //TODO: It seems like SFML is failing to reset window (closing and reopening)
-        #ifndef SSGUI_MAIN_BACKEND_SFML
-            CloseTest();
-            CloseEventTest();
-        #endif
-        
+        CloseTest();
+        CloseEventTest();
         TitleTest();
         //Can't test SetIcon
         VisibleTest();
@@ -241,16 +222,12 @@ int main()
         //Can't test IsFocused
         //Can't test AddFocusChangedByUserEvent
         //Can't test RemoveFocusChangedByUserEvent
-        
-        //TODO: It seems like SFML is failing to reset window (closing and reopening)
-        #ifndef SSGUI_MAIN_BACKEND_SFML
-            MSAATest();
-            TitlebarTest();
-            ResizableTest();
-            CloseButtonTest();
-            WindowModeTest();
-            CloneTest();
-        #endif
+        MSAATest();
+        TitlebarTest();
+        ResizableTest();
+        CloseButtonTest();
+        WindowModeTest();
+        CloneTest();
         
         //Can't test SetGLContext
         GetRawHandleTest();
