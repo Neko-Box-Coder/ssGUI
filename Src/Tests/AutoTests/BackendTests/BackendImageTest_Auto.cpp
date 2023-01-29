@@ -36,11 +36,12 @@ ssTEST("GetRawHandleTest")
 ssTEST("IsValidTest")
 {
     ssTEST_OUTPUT_ASSERT(!TestImage->IsValid());
+    ssTEST_OUTPUT_ASSERT(TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"));
 }
 
 ssTEST("LoadFromPathTest")
 {
-    ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"))
+    ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"));
     ssTEST_OUTPUT_ASSERT("Validation", TestImage->GetSize().x == 293 && TestImage->GetSize().y == 293);
 }
 
@@ -60,8 +61,14 @@ ssTEST("LoadImgFileFromMemoryTest")
     delete[] buffer;
 };
 
-const int imgWidth = 64;
-const int imgHeight = 64;
+//This is retarded how MSVC not evaluating this as constant
+#ifndef _MSC_VER
+    const int imgWidth = 64;
+    const int imgHeight = 64;
+#else
+    #define imgWidth 64
+    #define imgHeight 64
+#endif
 const int columnWidth = imgWidth / 4;
 
 ssTEST("LoadRawFromMemoryTest")
@@ -134,10 +141,9 @@ ssTEST("CloneTest")
 {
     ssGUI::Backend::BackendImageInterface* clonedImg = TestImage->Clone();
     
-    ssTEST_OUTPUT_ASSERT(   __func__,
-                                clonedImg != nullptr &&
-                                clonedImg->GetSize().x == TestImage->GetSize().x &&
-                                clonedImg->GetSize().y == TestImage->GetSize().y);
+    ssTEST_OUTPUT_ASSERT(   clonedImg != nullptr &&
+                            clonedImg->GetSize().x == TestImage->GetSize().x &&
+                            clonedImg->GetSize().y == TestImage->GetSize().y);
 
     ssGUI::Factory::Dispose(clonedImg);
 }
