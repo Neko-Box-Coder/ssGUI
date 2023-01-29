@@ -18,11 +18,11 @@ namespace Backend
         Titlebar = other.Titlebar;
         Resizable = other.Resizable;
         CloseButton = other.Resizable;
+        Title = other.Title;
         IsClosingAborted = false;
         PositionOffset = other.PositionOffset;
         
         glm::ivec2 oriRenderSize = other.GetRenderSize();
-        
         CurrentWindow.create(sf::VideoMode(sf::Vector2u(oriRenderSize.x, oriRenderSize.y)), "", sf::Style::Default, sf::ContextSettings(24));
         ResetWindow(CurrentWindowMode, Resizable, Titlebar, CloseButton, other.GetMSAA());
         

@@ -65,7 +65,10 @@
         ssGUITestFailed++;\
         throw;\
     }\
-    printf("%-50s %20s\n", (titleString+":").c_str(), resultString.c_str());\
+    if(titleString.size() < 50)\
+        printf("%-50s %20s\n", (titleString+":").c_str(), resultString.c_str());\
+    else\
+        printf("%-60s %20s\n", (titleString+":").c_str(), resultString.c_str());\
 }
 
 #define SSGUI_TEST_OUTPUT_SKIP(name)\

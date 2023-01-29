@@ -23,6 +23,8 @@ namespace ssGUI
             //The character size corresponding to UVOrigin
             glm::vec2 Size = glm::vec2();
 
+            //TODO: Group this in documentation
+
             //var: BaselinePosition
             //This is the character global position *on the baseline*.
             //To get the top-left corner of the character, add <DrawOffset> to this 

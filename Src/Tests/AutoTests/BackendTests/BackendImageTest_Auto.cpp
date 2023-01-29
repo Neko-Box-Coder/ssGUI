@@ -1,6 +1,8 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/Factory.hpp"
-#include "ssGUI/TestBase.hpp"
+#include "ssTest.hpp"
+
+#include <fstream>
 #include <thread>
 
 ssGUI::Backend::BackendImageInterface* TestImage = nullptr;
@@ -10,40 +12,39 @@ ssGUI::Backend::BackendImageInterface* TestImage = nullptr;
     std::string ResourcesFolderPath = "../../Resources/";
 #endif
 
-SSGUI_TEST_INIT();
+ssTEST_INIT();
 
-void SetUp()
+ssTEST_SET_UP
 {
     TestImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
 }
 
-void CleanUp()
+ssTEST_CLEAN_UP
 {
     ssGUI::Factory::Dispose(TestImage);
 }
 
-void GetRawHandleTest()
+ssTEST("GetRawHandleTest")
 {
     #ifdef SSGUI_IMAGE_BACKEND_STB_IMAGE
-        SSGUI_TEST_OUTPUT_SKIP(__func__);
+        ssTEST_OUTPUT_SKIP();
     #else
-        SSGUI_TEST_OUTPUT_ASSERT(__func__, TestImage->GetRawHandle() != nullptr);
+        ssTEST_OUTPUT_ASSERT(TestImage->GetRawHandle() != nullptr);
     #endif
 }
 
-void IsValidTest()
+ssTEST("IsValidTest")
 {
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, !TestImage->IsValid());
+    ssTEST_OUTPUT_ASSERT(!TestImage->IsValid());
 }
 
-void LoadFromPathTest()
+ssTEST("LoadFromPathTest")
 {
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Loading)"), TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"))
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Validation)"), TestImage->GetSize().x == 293 && TestImage->GetSize().y == 293);
+    ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"))
+    ssTEST_OUTPUT_ASSERT("Validation", TestImage->GetSize().x == 293 && TestImage->GetSize().y == 293);
 }
 
-#include <fstream>
-void LoadImgFileFromMemoryTest()
+ssTEST("LoadImgFileFromMemoryTest")
 {
     std::ifstream ifd(ResourcesFolderPath+"WindowIcon.png", std::ios::binary | std::ios::ate);
     size_t size = ifd.tellg();
@@ -53,17 +54,17 @@ void LoadImgFileFromMemoryTest()
     ifd.read(buffer, size);
     ifd.close();
     
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Loading)"), TestImage->LoadImgFileFromMemory(buffer, size));
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Validation)"), TestImage->GetSize().x == 48 && TestImage->GetSize().y == 48);
+    ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadImgFileFromMemory(buffer, size));
+    ssTEST_OUTPUT_ASSERT("Validation", TestImage->GetSize().x == 48 && TestImage->GetSize().y == 48);
     
     delete[] buffer;
-}
+};
 
 const int imgWidth = 64;
 const int imgHeight = 64;
 const int columnWidth = imgWidth / 4;
 
-void LoadRawFromMemoryTest()
+ssTEST("LoadRawFromMemoryTest")
 {
     uint8_t dummyImg[imgWidth * imgHeight * 4] = {0};
     
@@ -80,61 +81,60 @@ void LoadRawFromMemoryTest()
     
     TestImage->LoadRawFromMemory(dummyImg, ssGUI::ImageFormat(), glm::ivec2(64, 64));
     
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, TestImage->IsValid());
+    ssTEST_OUTPUT_ASSERT(TestImage->IsValid());
 }
 
-void GetSizeTest()
+ssTEST("GetSizeTest")
 {
-    SSGUI_TEST_OUTPUT_ASSERT(   __func__, 
-                                TestImage->GetSize().x == imgWidth && TestImage->GetSize().y == imgHeight);
+    ssTEST_OUTPUT_ASSERT(TestImage->GetSize().x == imgWidth && TestImage->GetSize().y == imgHeight);
 }
 
-void GetPixelPtrTest()
+ssTEST("GetPixelPtrTest")
 {
     ssGUI::ImageFormat format;
     uint8_t* pixelPtr = static_cast<uint8_t*>(TestImage->GetPixelPtr(format));
     
-    SSGUI_TEST_OUTPUT_ASSERT(   __func__ + std::string("(Format Valid)"),
-                                format.BitDepthPerChannel == 8 &&
-                                format.ImgType == ssGUI::Enums::ImageType::RGB &&
-                                format.HasAlpha == true &&
-                                format.IndexR == 0 &&
-                                format.IndexG == 1 &&
-                                format.IndexB == 2 &&
-                                format.IndexA == 3);
+    ssTEST_OUTPUT_ASSERT("Format Valid",
+                            format.BitDepthPerChannel == 8 &&
+                            format.ImgType == ssGUI::Enums::ImageType::RGB &&
+                            format.HasAlpha == true &&
+                            format.IndexR == 0 &&
+                            format.IndexG == 1 &&
+                            format.IndexB == 2 &&
+                            format.IndexA == 3);
 
-    SSGUI_TEST_OUTPUT_ASSERT(   __func__ + std::string("(Pixel Valid)"),
-                                pixelPtr != nullptr &&
-                                //Red
-                                pixelPtr[0 * 4 + 0] == 255 &&
-                                pixelPtr[0 * 4 + 1] == 0 &&
-                                pixelPtr[0 * 4 + 2] == 0 &&
-                                pixelPtr[0 * 4 + 3] == 255 &&
-                                
-                                //Green
-                                pixelPtr[columnWidth * 4 + 0] == 0 &&
-                                pixelPtr[columnWidth * 4 + 1] == 255 &&
-                                pixelPtr[columnWidth * 4 + 2] == 0 &&
-                                pixelPtr[columnWidth * 4 + 3] == 255 &&
-                                
-                                //Blue
-                                pixelPtr[columnWidth*2 * 4 + 0] == 0 &&
-                                pixelPtr[columnWidth*2 * 4 + 1] == 0 &&
-                                pixelPtr[columnWidth*2 * 4 + 2] == 255 &&
-                                pixelPtr[columnWidth*2 * 4 + 3] == 255 &&
-                                
-                                //Green
-                                pixelPtr[columnWidth*3 * 4 + 0] == 0 &&
-                                pixelPtr[columnWidth*3 * 4 + 1] == 0 &&
-                                pixelPtr[columnWidth*3 * 4 + 2] == 0 &&
-                                pixelPtr[columnWidth*3 * 4 + 3] == 127);
+    ssTEST_OUTPUT_ASSERT("Pixel Valid",
+                            pixelPtr != nullptr &&
+                            //Red
+                            pixelPtr[0 * 4 + 0] == 255 &&
+                            pixelPtr[0 * 4 + 1] == 0 &&
+                            pixelPtr[0 * 4 + 2] == 0 &&
+                            pixelPtr[0 * 4 + 3] == 255 &&
+                            
+                            //Green
+                            pixelPtr[columnWidth * 4 + 0] == 0 &&
+                            pixelPtr[columnWidth * 4 + 1] == 255 &&
+                            pixelPtr[columnWidth * 4 + 2] == 0 &&
+                            pixelPtr[columnWidth * 4 + 3] == 255 &&
+                            
+                            //Blue
+                            pixelPtr[columnWidth*2 * 4 + 0] == 0 &&
+                            pixelPtr[columnWidth*2 * 4 + 1] == 0 &&
+                            pixelPtr[columnWidth*2 * 4 + 2] == 255 &&
+                            pixelPtr[columnWidth*2 * 4 + 3] == 255 &&
+                            
+                            //Green
+                            pixelPtr[columnWidth*3 * 4 + 0] == 0 &&
+                            pixelPtr[columnWidth*3 * 4 + 1] == 0 &&
+                            pixelPtr[columnWidth*3 * 4 + 2] == 0 &&
+                            pixelPtr[columnWidth*3 * 4 + 3] == 127);
 }
 
-void CloneTest()
+ssTEST("CloneTest")
 {
     ssGUI::Backend::BackendImageInterface* clonedImg = TestImage->Clone();
     
-    SSGUI_TEST_OUTPUT_ASSERT(   __func__,
+    ssTEST_OUTPUT_ASSERT(   __func__,
                                 clonedImg != nullptr &&
                                 clonedImg->GetSize().x == TestImage->GetSize().x &&
                                 clonedImg->GetSize().y == TestImage->GetSize().y);
@@ -142,33 +142,4 @@ void CloneTest()
     ssGUI::Factory::Dispose(clonedImg);
 }
 
-int main()
-{
-    SetUp();
-    
-    SSGUI_TEST_TITLE(SSGUI_TEST_FILE_NAME());
-    
-    try
-    {
-        GetRawHandleTest();
-        IsValidTest();
-        LoadFromPathTest();
-        LoadImgFileFromMemoryTest();
-        LoadRawFromMemoryTest();
-        GetSizeTest();
-        GetPixelPtrTest();
-        //Can't test AddBackendDrawingLinking
-        //Can't test RemoveBackendDrawingLinking
-        CloneTest();
-    }
-    catch(...)
-    {
-        CleanUp();
-        throw;
-    }
-    
-    CleanUp();
-    
-    SSGUI_TEST_END();
-}
-
+ssTEST_END();

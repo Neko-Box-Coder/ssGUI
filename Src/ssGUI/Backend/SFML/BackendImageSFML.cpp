@@ -11,7 +11,9 @@ namespace ssGUI
 
 namespace Backend
 {
-    BackendImageSFML::BackendImageSFML(BackendImageSFML const& other)
+    BackendImageSFML::BackendImageSFML(BackendImageSFML const& other) : GPUTexture(),
+                                                                        MemoryImage(),
+                                                                        GPUTextureValid(false)
     {
         GPUTexture = sf::Texture(other.GPUTexture);
         MemoryImage = sf::Image(other.MemoryImage);

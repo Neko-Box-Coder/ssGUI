@@ -152,6 +152,13 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssLogger" "${CMAKE_CURREN
 set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
 # ==========================================================
+# ssLogger 
+# ==========================================================
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
+set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+
+# ==========================================================
 # FreeType
 # ==========================================================
 
@@ -254,6 +261,8 @@ target_link_libraries(ssGUI PUBLIC clip)
 
 # Linking ssLogger to ssGUI
 target_link_libraries(ssGUI PUBLIC ssLogger)
+
+target_link_libraries(ssGUI PUBLIC ssTest)
 
 # ==========================================================
 # Linking Backend to ssGUI and adding compiler definitions
@@ -388,6 +397,9 @@ if(ssGUI_BUILD_TESTS)
     AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" "AutoTests/BackendTests")
 
     AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" "ManualTests/BackendTests")
+    
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" "AutoTests")
+    
     
     # Copy resources for the Tests 
     file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"

@@ -27,6 +27,11 @@ namespace Backend
             ImageSizeInBytes = other.ImageSizeInBytes;
             memcpy(ImageBuffer, other.ImageBuffer, ImageSizeInBytes);
         }
+        else
+        {
+            ImageBuffer = nullptr;
+            ImageSizeInBytes = 0;
+        }
         
         CurrentImageFormat = other.CurrentImageFormat;
         ImageWidth = other.ImageWidth;

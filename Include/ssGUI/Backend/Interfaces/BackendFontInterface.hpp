@@ -55,7 +55,7 @@ namespace Backend
             virtual bool LoadFromPath(std::string path) = 0;
 
             //function: LoadFromMemory
-            //Load the raw font file in memory
+            //Load the raw font file in memory, which is copied and stored internally.
             virtual bool LoadFromMemory(void* dataPtr, int lengthInBytes) = 0;
 
             //function: GetFixedAvailableFontSizes
@@ -79,6 +79,5 @@ namespace Backend
 }
  
 }
-
 
 #endif

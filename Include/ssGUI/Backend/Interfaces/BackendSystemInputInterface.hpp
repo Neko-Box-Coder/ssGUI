@@ -110,7 +110,7 @@ namespace Backend
 
             //function: GetTextInput
             //Returns all the text typed in current frame.
-            //Any characters in here https://en.wikipedia.org/wiki/List_of_Unicode_characters
+            //Any characters in here https://en.wikipedia.org/wiki/List_of_Unicode_characters#Control_codes
             //are not recorded in here.
             virtual std::wstring GetTextInput() const = 0;
             
