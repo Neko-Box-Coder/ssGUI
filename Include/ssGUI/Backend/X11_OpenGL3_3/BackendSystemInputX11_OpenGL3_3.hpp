@@ -45,6 +45,7 @@ namespace Backend
         std::unordered_map<std::string, CursorData> CustomCursors;                                      //See <GetCustomCursor>
         std::string CurrentCustomCursor;                                                                //See <GetCurrentCustomCursorName>
         std::chrono::high_resolution_clock::time_point StartTime;                                       //See <GetElapsedTime>
+        bool CursorHidden;                                                                              //(Internal variable) Flag to prevent showing/hiding cursor multiple times
     ====================================================
     ======================== C++ =======================
     BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3() :    CurrentEvents(),
@@ -61,7 +62,8 @@ namespace Backend
                                                                             CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
                                                                             CustomCursors(),
                                                                             CurrentCustomCursor(),
-                                                                            StartTime()
+                                                                            StartTime(),
+                                                                            CursorHidden(false)
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -93,6 +95,7 @@ namespace Backend
             std::unordered_map<std::string, CursorData> CustomCursors;                                      //See <GetCustomCursor>
             std::string CurrentCustomCursor;                                                                //See <GetCurrentCustomCursorName>
             std::chrono::high_resolution_clock::time_point StartTime;                                       //See <GetElapsedTime>
+            bool CursorHidden;                                                                              //(Internal variable) Flag to prevent showing/hiding cursor multiple times
         
             template <class T>
             void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);

@@ -135,7 +135,8 @@ namespace Backend
                                                                             CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
                                                                             CustomCursors(),
                                                                             CurrentCustomCursor(),
-                                                                            StartTime()
+                                                                            StartTime(),
+                                                                            CursorHidden(false)
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -824,13 +825,20 @@ namespace Backend
             
             if(CurrentCursor == ssGUI::Enums::CursorType::NONE)
             {
-                XFixesHideCursor(rawHandle->WindowDisplay, rawHandle->WindowId);
-                XFlush(rawHandle->WindowDisplay);
+                if(!CursorHidden)
+                {
+                    XFixesHideCursor(rawHandle->WindowDisplay, rawHandle->WindowId);
+                    CursorHidden = true;
+                }
             }
             else
             {
-                XFixesShowCursor(rawHandle->WindowDisplay, rawHandle->WindowId);
-                XFlush(rawHandle->WindowDisplay);
+                if(CursorHidden)
+                {
+                    XFixesShowCursor(rawHandle->WindowDisplay, rawHandle->WindowId);
+                    CursorHidden = false;
+                }
+
                 XDefineCursor(rawHandle->WindowDisplay, rawHandle->WindowId, cursor);        
             }
         }
