@@ -128,17 +128,7 @@ namespace EventCallbacks
 
     BaseEventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
-        BaseEventCallback* temp;
-        
-        if(copyListeners)
-            temp = new BaseEventCallback(*this);
-        else
-            temp = new BaseEventCallback();
-        
-        if(newContainer != nullptr)
-            newContainer->AddEventCallback(temp);
-        
-        return temp;
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(BaseEventCallback, newContainer, copyListeners);
     }
 
     const std::string BaseEventCallback::EVENT_NAME = "BaseEvent";

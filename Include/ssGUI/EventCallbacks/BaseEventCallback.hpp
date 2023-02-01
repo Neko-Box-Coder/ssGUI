@@ -49,6 +49,18 @@ namespace EventCallbacks
             static void* operator new[](size_t size)    {return ::operator new(size);};
             static void operator delete(void* p)        {free(p);};
             static void operator delete[](void* p)      {free(p);};
+            
+            #define INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(eventType, newContainer, copyListeners)\
+            [&](){\
+                eventType* temp;\
+                if(copyListeners)\
+                    temp = new eventType(*this);\
+                else\
+                    temp = new eventType();\
+                if(newContainer != nullptr)\
+                    newContainer->AddEventCallback(temp);\
+                return temp;\
+            }()
 
         public:
             //function: AddEventListener
@@ -104,7 +116,7 @@ namespace EventCallbacks
             virtual void RemoveObjectReference(ssGUI::ssGUIObjectIndex index) override;
 
             //function: Internal_GetObjectsReferences
-            //(Internal ssGUI function) Returns all the referenced GUI Objects. If nullptr is returned, this extension is not referencing any GUI Object (exception for container).
+            //(Internal ssGUI function) Returns structure that contains all the referenced GUI Objects. 
             virtual ssGUI::ObjectsReferences* Internal_GetObjectsReferences() override;
 
             //function: GetEventCallbackName

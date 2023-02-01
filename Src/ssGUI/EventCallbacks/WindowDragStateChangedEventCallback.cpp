@@ -12,17 +12,7 @@ namespace EventCallbacks
 
     WindowDragStateChangedEventCallback* WindowDragStateChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
-        WindowDragStateChangedEventCallback* temp;
-        
-        if(copyListeners)
-            temp = new WindowDragStateChangedEventCallback(*this);
-        else
-            temp = new WindowDragStateChangedEventCallback();
-        
-        if(newContainer != nullptr)
-            newContainer->AddEventCallback(temp);
-        
-        return temp;
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(WindowDragStateChangedEventCallback, newContainer, copyListeners);
     }
 
     const std::string WindowDragStateChangedEventCallback::EVENT_NAME = "WindowDragStateChangedEvent";
