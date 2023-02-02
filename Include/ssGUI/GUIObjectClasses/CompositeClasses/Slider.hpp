@@ -116,7 +116,7 @@ namespace ssGUI
                         btn->SetBackgroundColor(btnColor + glm::u8vec4(reactAmount * 2, reactAmount * 2, reactAmount * 2, 0));
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
-                    case ssGUI::Enums::ButtonState::DISABLED:
+                    case ssGUI::Enums::ButtonState::NOT_INTERACTABLE:
                         btn->SetBackgroundColor(btnColor + glm::u8vec4(reactAmount * 3, reactAmount * 3, reactAmount * 3, 0));
                         break;
                 }

@@ -121,7 +121,7 @@ namespace ssGUI
                     case ssGUI::Enums::ButtonState::CLICKED:
                         static_cast<ssGUI::Window*>(info.EventSource->GetParent())->Close();
                         break;
-                    case ssGUI::Enums::ButtonState::DISABLED:
+                    case ssGUI::Enums::ButtonState::NOT_INTERACTABLE:
                         shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), 
                             closeButtonObj->GetButtonColor() + glm::u8vec4(0, -amount, -amount, 0), false);
                         break;

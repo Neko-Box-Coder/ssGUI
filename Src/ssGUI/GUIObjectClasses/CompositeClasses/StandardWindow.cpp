@@ -255,6 +255,8 @@ namespace ssGUI
                 auto closeButtonObj = static_cast<ssGUI::Button*>(info.EventSource);
                 auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
                 int amount = 60;
+                
+                static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
                 switch(closeButtonObj->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
@@ -274,7 +276,7 @@ namespace ssGUI
                     case ssGUI::Enums::ButtonState::CLICKED:
                         static_cast<ssGUI::Window*>(info.EventSource->GetParent())->Close();
                         break;
-                    case ssGUI::Enums::ButtonState::DISABLED:
+                    case ssGUI::Enums::ButtonState::NOT_INTERACTABLE:
                         shape->SetAdditionalCircle(circleId, glm::vec2(), closeButtonObj->GetSize(), 
                             closeButtonObj->GetButtonColor() + glm::u8vec4(0, -amount, -amount, 0), false);
                         break;

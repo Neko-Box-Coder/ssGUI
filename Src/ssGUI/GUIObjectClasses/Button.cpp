@@ -123,8 +123,8 @@ namespace ssGUI
         }
         else
         {            
-            if (GetButtonState() != ssGUI::Enums::ButtonState::DISABLED)
-                SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
+            if (GetButtonState() != ssGUI::Enums::ButtonState::NOT_INTERACTABLE)
+                SetButtonState(ssGUI::Enums::ButtonState::NOT_INTERACTABLE);
         }
     }
 
@@ -141,6 +141,8 @@ namespace ssGUI
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(info.EventSource);
                 glm::u8vec4 btnColor = btn->GetButtonColor();
+                
+                static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
                 switch(btn->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
@@ -157,7 +159,7 @@ namespace ssGUI
                         btn->SetBackgroundColor(btnColor);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
-                    case ssGUI::Enums::ButtonState::DISABLED:
+                    case ssGUI::Enums::ButtonState::NOT_INTERACTABLE:
                         btnColor.a = 50;
                         btn->SetBackgroundColor(btnColor);
                         break;
@@ -209,7 +211,7 @@ namespace ssGUI
         if(interactable)
             SetButtonState(ssGUI::Enums::ButtonState::NORMAL);
         else
-            SetButtonState(ssGUI::Enums::ButtonState::DISABLED);
+            SetButtonState(ssGUI::Enums::ButtonState::NOT_INTERACTABLE);
 
         ssGUI::Widget::SetInteractable(interactable);
     }
