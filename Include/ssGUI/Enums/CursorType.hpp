@@ -8,7 +8,6 @@ namespace ssGUI
 namespace Enums
 {
     /*enum: CursorType
-
     NONE                - Invisible cursor
     NORMAL              - Normal cursor
     TEXT                - Text cursor
@@ -43,7 +42,8 @@ namespace Enums
         MOVE,
         HELP,
         NOT_ALLOWED,
-        CUSTOM
+        CUSTOM,
+        COUNT
     };
 }
 
