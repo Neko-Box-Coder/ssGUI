@@ -537,6 +537,8 @@ namespace Backend
         {
             ssLOG_LINE("XWarpPointer failed");
         }
+        
+        XFlush(rawHandle->WindowDisplay);
     }
 
     bool BackendSystemInputX11_OpenGL3_3::GetLastMouseButton(ssGUI::Enums::MouseButton button) const
@@ -841,6 +843,8 @@ namespace Backend
 
                 XDefineCursor(rawHandle->WindowDisplay, rawHandle->WindowId, cursor);        
             }
+            
+            XFlush(rawHandle->WindowDisplay);
         }
     }
 
