@@ -202,7 +202,7 @@ endif()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/utf-8)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(ssGUI PRIVATE -Wall -Wno-return-local-addr -Wno-sign-compare -Wno-unused-variable -Wno-unused-parameter -Wextra -pedantic -Werror)
+    target_compile_options(ssGUI PRIVATE -Wall -Wno-return-local-addr -Wno-sign-compare -Wno-unused-variable -Wno-unused-parameter -Wno-switch -Wextra -pedantic -Werror)
     #add_compile_options(-Wall -Wno-unused-variable -Wno-unused-parameter -Wextra -pedantic -Werror)
 endif()
 
@@ -395,8 +395,10 @@ if(ssGUI_BUILD_TESTS)
     #AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
     
     AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" "AutoTests/BackendTests")
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/EventCallbackTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" "AutoTests/EventCallbackTests")
 
     AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" "ManualTests/BackendTests")
+    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/EventCallbackTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" "ManualTests/EventCallbackTests")
     
     AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" "AutoTests")
     

@@ -11,6 +11,9 @@
 //TODO: BackendSystemInput is quite complicated to test, will deal with it later
 int main()
 {
+    ssLOG_SIMPLE("BackendSystemInput manual test is still WIP");
+
+    return 0;
     ssGUI::Backend::BackendDrawingInterface* drawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
     ssGUI::Backend::BackendMainWindowInterface* window = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
     ssGUI::Backend::BackendSystemInputInterface* inputs = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
