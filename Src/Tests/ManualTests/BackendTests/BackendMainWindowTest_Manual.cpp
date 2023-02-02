@@ -2,7 +2,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssLogger/ssLog.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include <thread>
 

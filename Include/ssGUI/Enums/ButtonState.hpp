@@ -1,6 +1,8 @@
 #ifndef SSGUI_BUTTON_STATE_H
 #define SSGUI_BUTTON_STATE_H
 
+#include "ssGUI/HelperClasses/EnumToStringMacro.hpp"
+
 #include <string>
 namespace ssGUI
 {
@@ -28,25 +30,19 @@ namespace Enums
         COUNT
     };
     
+    //function: ToString
     inline std::string ToString(ButtonState state)
     {
         static_assert((int)ButtonState::COUNT == 6, "Make sure ToString is updated");
         switch(state)
         {
-            case ButtonState::NORMAL:
-                return "NORMAL";
-            case ButtonState::HOVER:
-                return "HOVER";
-            case ButtonState::ON_CLICK:
-                return "ON_CLICK";
-            case ButtonState::CLICKING:
-                return "CLICKING";
-            case ButtonState::CLICKED:
-                return "CLICKED";
-            case ButtonState::NOT_INTERACTABLE:
-                return "NOT_INTERACTABLE";
-            case ButtonState::COUNT:
-                return "COUNT";
+            RETURN_ENUM_STRING(ButtonState::NORMAL);
+            RETURN_ENUM_STRING(ButtonState::HOVER);
+            RETURN_ENUM_STRING(ButtonState::ON_CLICK);
+            RETURN_ENUM_STRING(ButtonState::CLICKING);
+            RETURN_ENUM_STRING(ButtonState::CLICKED);
+            RETURN_ENUM_STRING(ButtonState::NOT_INTERACTABLE);
+            RETURN_ENUM_STRING(ButtonState::COUNT);
         }
         
         return "";

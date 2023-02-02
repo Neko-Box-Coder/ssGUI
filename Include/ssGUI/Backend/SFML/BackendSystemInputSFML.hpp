@@ -5,7 +5,7 @@
 #include "ssGUI/Backend/BackendManager.hpp"
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #include "ssGUI/Backend/SFML/SFMLInputConverter.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/vec2.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/Mouse.hpp"

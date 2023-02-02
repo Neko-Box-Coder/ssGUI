@@ -9,7 +9,7 @@
 #include <windows.h>            /* must include this before GL/gl.h */
 
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include <vector>
 

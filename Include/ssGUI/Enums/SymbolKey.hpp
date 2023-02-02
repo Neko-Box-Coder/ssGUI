@@ -1,6 +1,9 @@
 #ifndef SSGUI_SYMBOL_KEY_H
 #define SSGUI_SYMBOL_KEY_H
 
+#include "ssGUI/HelperClasses/EnumToStringMacro.hpp"
+
+#include <string>
 #include <cstdint>
 
 namespace ssGUI
@@ -9,6 +12,8 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
+    using GenericButtonAndKeyInput = uint16_t;
+    
     /*enum: SymbolKey
 
     BACK_QUOTE              - Back quote key. (Also know as Tilde key)
@@ -38,6 +43,42 @@ namespace Enums
         NUMPAD_MULTIPLY, NUMPAD_MINUS, NUMPAD_PLUS, NUMPAD_PERIOD, 
         COUNT = NUMPAD_PERIOD - BACK_QUOTE + 1
     };
+    
+    //function: InputToString
+    inline std::string InputToString(SymbolKey input)
+    {
+        static_assert((int)SymbolKey::COUNT == 18, "ToString");
+        switch(input)
+        {
+            RETURN_ENUM_STRING(SymbolKey::BACK_QUOTE);
+            RETURN_ENUM_STRING(SymbolKey::MINUS);
+            RETURN_ENUM_STRING(SymbolKey::EQUAL);
+            RETURN_ENUM_STRING(SymbolKey::LEFT_BRACKET);
+            RETURN_ENUM_STRING(SymbolKey::RIGHT_BRACKET);
+            RETURN_ENUM_STRING(SymbolKey::BACKSLASH);
+            RETURN_ENUM_STRING(SymbolKey::SEMICOLON);
+            RETURN_ENUM_STRING(SymbolKey::QUOTE);
+            RETURN_ENUM_STRING(SymbolKey::HASH_UK);
+            RETURN_ENUM_STRING(SymbolKey::BACKSLASH_UK);
+            RETURN_ENUM_STRING(SymbolKey::COMMA);
+            RETURN_ENUM_STRING(SymbolKey::PERIOD);
+            RETURN_ENUM_STRING(SymbolKey::FORWARD_SLASH);
+            RETURN_ENUM_STRING(SymbolKey::NUMPAD_FORWARD_SLASH);
+            RETURN_ENUM_STRING(SymbolKey::NUMPAD_MULTIPLY);
+            RETURN_ENUM_STRING(SymbolKey::NUMPAD_MINUS);
+            RETURN_ENUM_STRING(SymbolKey::NUMPAD_PLUS);
+            RETURN_ENUM_STRING(SymbolKey::NUMPAD_PERIOD);
+            RETURN_ENUM_STRING(SymbolKey::COUNT);
+        }
+        
+        return "";
+    }
+    
+    //function: InputIsSymbolKey
+    inline bool InputIsSymbolKey(ssGUI::Enums::GenericButtonAndKeyInput input)
+    {
+        return input >= (uint16_t)SymbolKey::BACK_QUOTE && input < (uint16_t)SymbolKey::BACK_QUOTE + (uint16_t)SymbolKey::COUNT;
+    }
 }
 
 }

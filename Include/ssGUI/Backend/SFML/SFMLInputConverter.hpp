@@ -4,7 +4,7 @@
 #include "SFML/Window.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include <vector>
 

@@ -8,7 +8,7 @@
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Scrollbar.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 #include "ssLogger/ssLog.hpp"

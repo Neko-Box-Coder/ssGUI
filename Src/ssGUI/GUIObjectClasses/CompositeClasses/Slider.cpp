@@ -6,7 +6,7 @@
 #include "ssGUI/EventCallbacks/SliderValueChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SliderValueFinishedChangingEventCallback.hpp"
 #include "ssGUI/EventCallbacks/SliderValueChangedViaGuiEventCallback.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 

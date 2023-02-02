@@ -1,6 +1,9 @@
 #ifndef SSGUI_LETTER_KEY_H
 #define SSGUI_LETTER_KEY_H
 
+#include "ssGUI/HelperClasses/EnumToStringMacro.hpp"
+
+#include <string>
 #include <cstdint>
 
 namespace ssGUI
@@ -9,6 +12,8 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
+    using GenericButtonAndKeyInput = uint16_t;
+    
     /*enum: LetterKey
     
     A   - Respective letter.
@@ -44,6 +49,50 @@ namespace Enums
         B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z, 
         COUNT = Z - A + 1
     };
+    
+    //function: InputToString
+    inline std::string InputToString(LetterKey input)
+    {
+        static_assert((int)LetterKey::COUNT == 26, "ToString");
+        switch(input)
+        {
+            RETURN_ENUM_STRING(LetterKey::A);
+            RETURN_ENUM_STRING(LetterKey::B);
+            RETURN_ENUM_STRING(LetterKey::C);
+            RETURN_ENUM_STRING(LetterKey::D);
+            RETURN_ENUM_STRING(LetterKey::E);
+            RETURN_ENUM_STRING(LetterKey::F);
+            RETURN_ENUM_STRING(LetterKey::G);
+            RETURN_ENUM_STRING(LetterKey::H);
+            RETURN_ENUM_STRING(LetterKey::I);
+            RETURN_ENUM_STRING(LetterKey::J);
+            RETURN_ENUM_STRING(LetterKey::K);
+            RETURN_ENUM_STRING(LetterKey::L);
+            RETURN_ENUM_STRING(LetterKey::M);
+            RETURN_ENUM_STRING(LetterKey::N);
+            RETURN_ENUM_STRING(LetterKey::O);
+            RETURN_ENUM_STRING(LetterKey::P);
+            RETURN_ENUM_STRING(LetterKey::Q);
+            RETURN_ENUM_STRING(LetterKey::R);
+            RETURN_ENUM_STRING(LetterKey::S);
+            RETURN_ENUM_STRING(LetterKey::T);
+            RETURN_ENUM_STRING(LetterKey::U);
+            RETURN_ENUM_STRING(LetterKey::V);
+            RETURN_ENUM_STRING(LetterKey::W);
+            RETURN_ENUM_STRING(LetterKey::X);
+            RETURN_ENUM_STRING(LetterKey::Y);
+            RETURN_ENUM_STRING(LetterKey::Z);
+            RETURN_ENUM_STRING(LetterKey::COUNT);
+        }
+        
+        return "";
+    }
+    
+    //function: InputIsLetterKey
+    inline bool InputIsLetterKey(ssGUI::Enums::GenericButtonAndKeyInput input)
+    {
+        return input >= (uint16_t)LetterKey::A && input < (uint16_t)LetterKey::A + (uint16_t)LetterKey::COUNT;
+    }
 }
 
 }
