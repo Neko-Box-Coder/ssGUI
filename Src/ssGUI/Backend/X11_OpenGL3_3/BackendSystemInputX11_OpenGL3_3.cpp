@@ -150,7 +150,6 @@ namespace Backend
     
     void BackendSystemInputX11_OpenGL3_3::FetchEvents()
     {
-        //Get text input
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
         {
             if(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->IsClosed())
@@ -171,6 +170,7 @@ namespace Backend
     
     void BackendSystemInputX11_OpenGL3_3::UpdateInput()
     {
+        ssLOG_FUNC_ENTRY();
         FetchEvents();
 
         ssGUI::Backend::X11RawHandle* rawHandle = nullptr;
@@ -223,12 +223,16 @@ namespace Backend
                                     &windowX, 
                                     &windowY,
                                     &maskReturn);
+        
+        LastMousePosition = CurrentMousePosition;
+        CurrentMousePosition = glm::ivec2(rootX, rootY);
 
         if(result != True)
         {
             ssLOG_LINE("Failed to get mouse cursor");
         }
 
+        //TODO: This is invalid
         //Deallocating customRawHandle if there's no main window
         if(customRawHandle)
         {
@@ -342,6 +346,9 @@ namespace Backend
 
                     if (len > 0 && (status == XLookupBoth || status == XLookupChars))
                     {
+                        if(len < 32)
+                            buffer[len] = '\0';
+                            
                         // Character input
                         //ssLOG_LINE("Character input: "<< buffer);
                         
@@ -446,9 +453,10 @@ namespace Backend
                     break;
             }
             
-            CurrentEvents.clear();
         }
+        CurrentEvents.clear();
         
+        ssLOG_FUNC_EXIT();
         
         //while (XPending(rawHandle->WindowDisplay)) 
         //{
@@ -758,7 +766,8 @@ namespace Backend
             ssGUI::Backend::X11RawHandle* rawHandle = static_cast<ssGUI::Backend::X11RawHandle*>(curMainWindow->GetRawHandle());
         
             Cursor cursor = None;
-        
+            
+            static_assert((int)ssGUI::Enums::CursorType::COUNT == 16, "UpdateCursor");
             switch (CurrentCursor)
             {
                 case ssGUI::Enums::CursorType::NONE:
@@ -820,9 +829,6 @@ namespace Backend
                     cursor = currentCursorData.X11CursorHandles[rawHandle->WindowDisplay];
                     break;
                 }
-                default:
-                    ssLOG_LINE("Unimplemented Cursor");
-                    ssLOG_EXIT_PROGRAM();
             }
             
             if(CurrentCursor == ssGUI::Enums::CursorType::NONE)
