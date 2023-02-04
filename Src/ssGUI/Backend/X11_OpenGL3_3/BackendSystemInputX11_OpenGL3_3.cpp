@@ -15,6 +15,8 @@
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
 #include "ssLogger/ssLog.hpp"
 
+//TEST
+//#include "ssGUI/HelperClasses/GenericInputToString.hpp"
 
 #include <algorithm>
 
@@ -136,7 +138,9 @@ namespace Backend
                                                                             CustomCursors(),
                                                                             CurrentCustomCursor(),
                                                                             StartTime(),
-                                                                            CursorHidden(false)
+                                                                            CursorHidden(false),
+                                                                            LastKeyDownTime(0),
+                                                                            LastKeyUpTime(0)
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -158,11 +162,10 @@ namespace Backend
             X11RawHandle* rawHandle = static_cast<X11RawHandle*>(
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle());
         
-            while (XPending(rawHandle->WindowDisplay))
+            while(XPending(rawHandle->WindowDisplay))
             {
                 XEvent xev;
                 XNextEvent(rawHandle->WindowDisplay, &xev);
-                
                 CurrentEvents.push_back(xev);
             }
         }
@@ -239,12 +242,31 @@ namespace Backend
             delete rawHandle;
         }
         
+        bool anyEventGotFiltered = false;
+        bool anyRedirectKeyEvent = false;
+        
         for(int i = 0; i < CurrentEvents.size(); i++)
         {
             ssGUI::RealtimeInputInfo curInfo;
             
-            if(XFilterEvent(&CurrentEvents[i], None) == True)
-                continue;
+            //NOTE: XFilterEvent redirects key presses back to the queue so that IME can process it
+            //      You cannot only call XFilterEvent when the type is KeyPress or KeyRelease because it also intercepts 
+            //      other messages (ClientMessage with type __XIM__ mostly) in order to redirect the key press event correctly.
+            //
+            //      The problem with this is that if we wait until all keys are proccessed and sent back from IME,
+            //      the order is not maintained, and also it is a lot slower.
+            //
+            //      The other thing is that it is NOT gauranteed that IME will intercept/blocks all the key inputs,
+            //      meaning only treating filtered events as key inputs WILL NOT WORK.
+            //      You can only assume non filtered events CAN BE text inputs.
+            bool eventFiltered = XFilterEvent(&CurrentEvents[i], None) == True;
+            
+            if( eventFiltered) //&& 
+                //CurrentEvents[i].type != KeyPress &&
+                //CurrentEvents[i].type != KeyRelease)
+            {
+                anyEventGotFiltered = true;
+            }
 
             switch(CurrentEvents[i].type)
             {
@@ -328,7 +350,7 @@ namespace Backend
                     }
                 
                     int bufferLength = 0;
-                    char* buffer = nullptr;
+                    wchar_t* buffer = nullptr;
                     KeySym keysym;
                     Status status;
                     int len = 0; 
@@ -339,19 +361,37 @@ namespace Backend
                             delete[] buffer;
                             
                         bufferLength += 32;
-                        buffer = new char[bufferLength];
-                        len = Xutf8LookupString(curHandle->XInputContext, &CurrentEvents[i].xkey, buffer, bufferLength - 1, &keysym, &status);
+                        buffer = new wchar_t[bufferLength];
+                        //len = Xutf8LookupString(curHandle->XInputContext, &CurrentEvents[i].xkey, buffer, bufferLength - 1, &keysym, &status);
+                        len = XwcLookupString(curHandle->XInputContext, &CurrentEvents[i].xkey, buffer, bufferLength - 1, &keysym, &status);
                     }
                     while(status == XBufferOverflow);
 
-                    if (len > 0 && (status == XLookupBoth || status == XLookupChars))
+                    //NOTE: Non IME generated/redirect key down events will have time 
+                    //      property in chronological order. We want to only record non IME generated key downs
+                    if( CurrentEvents[i].xkey.time > LastKeyDownTime &&
+                        (status == XLookupBoth || status == XLookupKeySym))
                     {
-                        if(len < 32)
+                        LastKeyDownTime = CurrentEvents[i].xkey.time;
+                        ssGUI::Enums::GenericButtonAndKeyInput input = X11InputConverter::ConvertButtonAndKeys(XLookupKeysym(&CurrentEvents[i].xkey, 0));
+                        //ssLOG_LINE("Key Down: "<<ssGUI::InputToString(input));
+                        //ssLOG_LINE("Time: "<< CurrentEvents[i].xkey.time);
+                        curInfo.CurrentButtonAndKeyChanged = input;
+                        FetchKeysPressed(input, CurrentKeyPresses);
+                        CurrentInputInfos.push_back(curInfo);
+                    }
+                    
+                    if(CurrentEvents[i].xkey.time <= LastKeyDownTime)
+                        anyRedirectKeyEvent = true;
+
+                    //NOTE: Record text inputs only if it is generated by IME and redirected back to here
+                    //      or any text inputs that don't need to be filtered/redirect to IME 
+                    if(!eventFiltered && (len > 0 && (status == XLookupBoth || status == XLookupChars)))
+                    {
+                        anyRedirectKeyEvent = true;
+                        if(len < bufferLength)
                             buffer[len] = '\0';
                             
-                        // Character input
-                        //ssLOG_LINE("Character input: "<< buffer);
-                        
                         //TODO: Move to set IME position function
                         //XVaNestedList preedit_attr;
                         //XPoint nspot;
@@ -361,49 +401,63 @@ namespace Backend
                         //XSetICValues(curHandle->XInputContext, XNPreeditAttributes, preedit_attr, NULL);
                         //XFree(preedit_attr);
                         
-                        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-                        std::wstring charactersEntered = converter.from_bytes(buffer);
-                        InputText += charactersEntered;
-                        
-                        //Push each character to Realtime infos
-                        for(int j = 0; j < charactersEntered.size(); j++)
-                        {
-                            curInfo.CharacterEntered = true;
-                            curInfo.CurrentCharacterEntered += charactersEntered[j];
-                            CurrentInputInfos.push_back(curInfo);
-                            curInfo = ssGUI::RealtimeInputInfo();
-                        }
+                        for(int curChar = 0; curChar < len; curChar++)
+                            InputCharsBuffer.push_back(std::pair<Time, wchar_t>(CurrentEvents[i].xkey.time, buffer[curChar]));
                     }
-                    
-                    if(status == XLookupBoth || status == XLookupKeySym)
-                    {
-                        //ssLOG_LINE("Key input: "<<keysym);
-                        ssGUI::Enums::GenericButtonAndKeyInput input = X11InputConverter::ConvertButtonAndKeys(XLookupKeysym(&CurrentEvents[i].xkey, 0));
-                        curInfo.CurrentButtonAndKeyChanged = input;
-                        FetchKeysPressed(input, CurrentKeyPresses);
-                        CurrentInputInfos.push_back(curInfo);
-                    }
-                    
+
+                    delete[] buffer;
                     break;
                 }
                 
                 //Key up event
                 case KeyRelease:
                 {
+                    //NOTE: Similar to KeyDown, we don't want to get any key up events
+                    //      that are redirected by IME. Although KeyUp is a lot simplier
+                    //      since text input we not generate any KeyUp events
+                    if(CurrentEvents[i].xkey.time <= LastKeyUpTime)
+                    {
+                        anyRedirectKeyEvent = true;
+                        break;
+                    }
+                    
+                    LastKeyUpTime = CurrentEvents[i].xkey.time;
+
+                    //NOTE: Systems with repeated key set to true (which is most of the systems)
+                    //      will generate a KeyUp event for all KeyDown event in the same frame.
+                    //  
+                    //      To solve this, we just check if there's any KeyDown event that has
+                    //      the same keycode and same timestamp. If so, then this KeyUp event
+                    //      is just generated by the repeat key "feature" from X.
+                    //
+                    //      Also, we need to make sure the KeyDown event is not a redirected event
+                    //      from IME.
                     bool repeatKey = false;
+                    Time simulatedLastKeyDownTime = LastKeyDownTime;
                     if(i < CurrentEvents.size() - 1)
                     {
-                        XEvent nev = CurrentEvents[i + 1];
-                        if (nev.type == KeyPress || nev.xkey.time == CurrentEvents[i].xkey.time ||
-                            nev.xkey.keycode == CurrentEvents[i].xkey.keycode)
+                        for(int j = i + 1; j < CurrentEvents.size(); j++)
                         {
-                            repeatKey = true;
+                            XEvent nev = CurrentEvents[j];
+                            if( nev.type == KeyPress && 
+                                nev.xkey.time == CurrentEvents[i].xkey.time && 
+                                nev.xkey.time > simulatedLastKeyDownTime &&
+                                nev.xkey.keycode == CurrentEvents[i].xkey.keycode)
+                            {
+                                repeatKey = true;
+                                break;
+                            }
+                            
+                            if(nev.type == KeyPress)
+                                simulatedLastKeyDownTime = nev.xkey.time;
                         }
                     }
                 
                     if(!repeatKey)
                     {
                         ssGUI::Enums::GenericButtonAndKeyInput input = X11InputConverter::ConvertButtonAndKeys(XLookupKeysym(&CurrentEvents[i].xkey, 0));
+                        //ssLOG_LINE("Key Up: "<<ssGUI::InputToString(input));
+                        //ssLOG_LINE("Time: "<< CurrentEvents[i].xkey.time);
                         curInfo.CurrentButtonAndKeyChanged = input;
                         FetchKeysReleased(input, CurrentKeyPresses);
                         CurrentInputInfos.push_back(curInfo);
@@ -456,28 +510,37 @@ namespace Backend
         }
         CurrentEvents.clear();
         
-        ssLOG_FUNC_EXIT();
-        
-        //while (XPending(rawHandle->WindowDisplay)) 
-        //{
-        //    XEvent xev;
-        //    XNextEvent(rawHandle->WindowDisplay, &xev);
-
-        //    if (xev.type == KeyPress) {
-        //        ssLOG_LINE("Key pressed");
-        //    }
+        //NOTE: The character input doesn't count as "complete" until
+        //      the IME finishes all the key inputs.
+        //
+        //      Therefore we need to make sure that there's no more events
+        //      that needs to be redirected to IME and no more redirected key events
+        //      are sent from IME.
+        if( (!anyEventGotFiltered && 
+            !anyRedirectKeyEvent && 
+            !InputCharsBuffer.empty()) ||
+            InputCharsBuffer.size() == 10)
+        {
+            //Sort the buffer
+            std::sort(InputCharsBuffer.begin(), InputCharsBuffer.end());
             
-        //    else if(xev.type == ClientMessage && (Atom)xev.xclient.data.l[0] == rawHandle->WindowCloseEventId)
-        //    {
-        //        closeWindow = true;
-        //        ssLOG_LINE("Window closing");
-        //        break;
-        //    }
-        //    //if(xev.type == )
-        //}
+            //Push each character to Realtime infos
+            //And also push to InputText
+            for(int j = 0; j < InputCharsBuffer.size(); j++)
+            {
+                ssGUI::RealtimeInputInfo curInfo;
+                curInfo.CharacterEntered = true;
+                curInfo.CurrentCharacterEntered = InputCharsBuffer[j].second;
+                CurrentInputInfos.push_back(curInfo);
+            
+                InputText += InputCharsBuffer[j].second;
+            }
+            
+            //Clear buffer
+            InputCharsBuffer.clear();
+        }
         
-        //if(closeWindow)
-        //    ssGUI::Backend::BackendManager::GetMainWindowInterface(0)->Close();
+        ssLOG_FUNC_EXIT();
     }
 
     const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputX11_OpenGL3_3::GetLastButtonAndKeyPresses()
@@ -532,10 +595,11 @@ namespace Backend
         }
 
         ssGUI::Backend::X11RawHandle* rawHandle = static_cast<ssGUI::Backend::X11RawHandle*>(mainWindowInterface->GetRawHandle());
+        int screen = DefaultScreen(rawHandle->WindowDisplay);
     
         if(!XWarpPointer(   rawHandle->WindowDisplay, 
                             None, 
-                            mainWindow == nullptr ? RootWindow(rawHandle->WindowDisplay, rawHandle->WindowId) : rawHandle->WindowId, 
+                            mainWindow == nullptr ? RootWindow(rawHandle->WindowDisplay, screen) : rawHandle->WindowId, 
                             0, 
                             0, 
                             0, 

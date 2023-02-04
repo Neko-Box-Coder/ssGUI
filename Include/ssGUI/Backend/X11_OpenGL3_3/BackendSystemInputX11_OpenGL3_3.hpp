@@ -46,6 +46,9 @@ namespace Backend
         std::string CurrentCustomCursor;                                                                //See <GetCurrentCustomCursorName>
         std::chrono::high_resolution_clock::time_point StartTime;                                       //See <GetElapsedTime>
         bool CursorHidden;                                                                              //(Internal variable) Flag to prevent showing/hiding cursor multiple times
+        std::vector<std::pair<Time, wchar_t>> InputCharsBuffer;                                         //(Internal variable) Characters buffer until IME finishes outputing
+        Time LastKeyDownTime;                                                                           //(Internal variable) Tracking time to filter out redirected key down events
+        Time LastKeyUpTime;                                                                             //(Internal variable) Tracking time to filter out redirected key up events
     ====================================================
     ======================== C++ =======================
     BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3() :    CurrentEvents(),
@@ -63,7 +66,9 @@ namespace Backend
                                                                             CustomCursors(),
                                                                             CurrentCustomCursor(),
                                                                             StartTime(),
-                                                                            CursorHidden(false)
+                                                                            CursorHidden(false),
+                                                                            LastKeyDownTime(0),
+                                                                            LastKeyUpTime(0)
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -96,7 +101,10 @@ namespace Backend
             std::string CurrentCustomCursor;                                                                //See <GetCurrentCustomCursorName>
             std::chrono::high_resolution_clock::time_point StartTime;                                       //See <GetElapsedTime>
             bool CursorHidden;                                                                              //(Internal variable) Flag to prevent showing/hiding cursor multiple times
-        
+            std::vector<std::pair<Time, wchar_t>> InputCharsBuffer;                                         //(Internal variable) Characters buffer until IME finishes outputing
+            Time LastKeyDownTime;                                                                           //(Internal variable) Tracking time to filter out redirected key down events
+            Time LastKeyUpTime;                                                                             //(Internal variable) Tracking time to filter out redirected key up events
+
             template <class T>
             void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
 
