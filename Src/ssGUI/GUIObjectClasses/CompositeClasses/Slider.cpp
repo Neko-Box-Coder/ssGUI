@@ -189,6 +189,7 @@ namespace ssGUI
 
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
+        glm::ivec2 mousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
 
         bool guiInteracted = false;
 
@@ -200,8 +201,8 @@ namespace ssGUI
         {
             CursorKnobOffset = 
                 IsVertical() ?
-                inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).y - KnobGlobalPosition.y : 
-                inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).x - KnobGlobalPosition.x;
+                mousePos.y - KnobGlobalPosition.y : 
+                mousePos.x - KnobGlobalPosition.x;
         }
         //If the user is dragging the knob, update the position
         else if(knob != nullptr && ((knob->GetButtonState() == ssGUI::Enums::ButtonState::CLICKING && IsInteractable() && IsBlockInput()) || SliderDragging))
@@ -211,7 +212,7 @@ namespace ssGUI
                 KnobGlobalPosition = glm::vec2
                 (
                     GetGlobalPosition().x + (GetSize().x - curKnobSize.x) * 0.5,
-                    inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).y - CursorKnobOffset
+                    mousePos.y - CursorKnobOffset
                 );
 
                 float topY = GetGlobalPosition().y + GetEndPadding();
@@ -227,7 +228,7 @@ namespace ssGUI
             {
                 KnobGlobalPosition = glm::vec2
                 (
-                    inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).x - CursorKnobOffset,
+                    mousePos.x - CursorKnobOffset,
                     GetGlobalPosition().y + (GetSize().y - curKnobSize.y) * 0.5
                 );
 
@@ -264,8 +265,6 @@ namespace ssGUI
         else
         {
             //Check if user clicked on the slider instead. If so, move the knob to the cursor
-            glm::vec2 mousePos = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow));
-            
             bool mouseWithinWidget = 
                 mousePos.x >= GetGlobalPosition().x && mousePos.x <= GetGlobalPosition().x + GetSize().x &&
                 mousePos.y >= GetGlobalPosition().y && mousePos.y <= GetGlobalPosition().y + GetSize().y;

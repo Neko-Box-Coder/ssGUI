@@ -342,23 +342,23 @@ namespace Backend
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }
 
-    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetLastMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return LastMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
+            return LastMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
         else
             return LastMousePosition;
     }
 
-    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return CurrentMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
+            return CurrentMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
         else
             return CurrentMousePosition;
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow)
+    void BackendSystemInputWin32_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow)
     {
         //Screen pos
         if(mainWindow == nullptr)
@@ -374,7 +374,7 @@ namespace Backend
         else
         {
             POINT pt = {position.x, position.y};
-            HWND hwnd = static_cast<Win32_OpenGL_Handles*>(mainWindow->GetBackendWindowInterface()->GetRawHandle())->WindowHandle;
+            HWND hwnd = static_cast<Win32_OpenGL_Handles*>(mainWindow->GetRawHandle())->WindowHandle;
             ClientToScreen(hwnd, &pt);
             if(!SetCursorPos(pt.x, pt.y))
             {
@@ -436,7 +436,7 @@ namespace Backend
     }
 
     //TODO: Store the hotspot and also shouldn't be setting the cursor 
-    void BackendSystemInputWin32_OpenGL3_3::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    void BackendSystemInputWin32_OpenGL3_3::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssLOG_FUNC_ENTRY();
 
@@ -537,7 +537,7 @@ namespace Backend
         CurrentCustomCursor = cursorName;
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
+    void BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot)
     {        
         if(CurrentCustomCursor.empty())
             return;
@@ -550,7 +550,7 @@ namespace Backend
         return CurrentCustomCursor;
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    void BackendSystemInputWin32_OpenGL3_3::GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot)
     {
         if(CustomCursors.find(cursorName) == CustomCursors.end())
             return;
@@ -680,13 +680,13 @@ namespace Backend
         return clip::has(clip::image_format());
     }
 
-    bool BackendSystemInputWin32_OpenGL3_3::SetClipboardImage(const ssGUI::ImageData& imgData)
+    bool BackendSystemInputWin32_OpenGL3_3::SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData)
     {
         if(!imgData.IsValid())
             return false;
 
         ssGUI::ImageFormat format;
-        void* oriImgPtr = imgData.GetBackendImageInterface()->GetPixelPtr(format);
+        void* oriImgPtr = imgData.GetPixelPtr(format);
 
         clip::image_spec spec;
         spec.width = imgData.GetSize().x;
@@ -742,7 +742,7 @@ namespace Backend
         return clip::set_text(converter.to_bytes(str));
     }
             
-    bool BackendSystemInputWin32_OpenGL3_3::GetClipboardImage(ssGUI::ImageData& imgData)
+    bool BackendSystemInputWin32_OpenGL3_3::GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData)
     {
         clip::image img;
 

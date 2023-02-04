@@ -249,7 +249,7 @@ namespace ssGUI
         if(inputStatus.MouseInputBlockedObject != nullptr && inputStatus.MouseInputBlockedObject != this && !MousePressed)
             return;
 
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow));
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
         bool mouseWithinWidget =    currentMousePos.x >= GetGlobalPosition().x &&
                                     currentMousePos.y >= GetGlobalPosition().y &&
                                     currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
@@ -288,7 +288,7 @@ namespace ssGUI
                 
                 if(MousePressed)
                 {
-                    glm::vec2 diff = currentMousePos - inputInterface->GetLastMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow));
+                    glm::vec2 diff = currentMousePos - inputInterface->GetLastMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
                     diff /= GetSize();
                     SetImagePosition(GetImagePosition() + diff);
                     inputStatus.MouseInputBlockedObject = this;
@@ -315,7 +315,7 @@ namespace ssGUI
                             return;
                         }
 
-                        inputInterface->CreateCustomCursor(&rotationCursor, "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
+                        inputInterface->CreateCustomCursor(rotationCursor.GetBackendImageInterface(), "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
                     }
                     
                     inputInterface->SetCurrentCustomCursor("RotationCursor");

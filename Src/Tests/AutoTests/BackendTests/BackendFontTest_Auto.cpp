@@ -1,4 +1,5 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Factory.hpp"
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssTest.hpp"

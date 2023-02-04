@@ -563,26 +563,24 @@ namespace Backend
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }
 
-    glm::ivec2 BackendSystemInputX11_OpenGL3_3::GetLastMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 BackendSystemInputX11_OpenGL3_3::GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return LastMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
+            return LastMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
         else
             return LastMousePosition;
     }
     
-    glm::ivec2 BackendSystemInputX11_OpenGL3_3::GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 BackendSystemInputX11_OpenGL3_3::GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return CurrentMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
+            return CurrentMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
         else
             return CurrentMousePosition;
     }
     
-    void BackendSystemInputX11_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow)
+    void BackendSystemInputX11_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow)
     {
-        ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface = nullptr;
-    
         if(mainWindow == nullptr)
         {
             if(ssGUI::Backend::BackendManager::GetMainWindowCount() == 0)
@@ -591,10 +589,10 @@ namespace Backend
                 return;
             }
             else
-                mainWindowInterface = ssGUI::Backend::BackendManager::GetMainWindowInterface(0);
+                mainWindow = ssGUI::Backend::BackendManager::GetMainWindowInterface(0);
         }
 
-        ssGUI::Backend::X11RawHandle* rawHandle = static_cast<ssGUI::Backend::X11RawHandle*>(mainWindowInterface->GetRawHandle());
+        ssGUI::Backend::X11RawHandle* rawHandle = static_cast<ssGUI::Backend::X11RawHandle*>(mainWindow->GetRawHandle());
         int screen = DefaultScreen(rawHandle->WindowDisplay);
     
         if(!XWarpPointer(   rawHandle->WindowDisplay, 
@@ -661,7 +659,7 @@ namespace Backend
         return CurrentCursor;
     }
 
-    void BackendSystemInputX11_OpenGL3_3::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    void BackendSystemInputX11_OpenGL3_3::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
@@ -779,7 +777,7 @@ namespace Backend
         CurrentCustomCursor = cursorName;
     }
 
-    void BackendSystemInputX11_OpenGL3_3::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
+    void BackendSystemInputX11_OpenGL3_3::GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot)
     {
         if(CurrentCustomCursor.empty())
             return;
@@ -792,7 +790,7 @@ namespace Backend
         return CurrentCustomCursor;
     }
     
-    void BackendSystemInputX11_OpenGL3_3::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    void BackendSystemInputX11_OpenGL3_3::GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot)
     {
         if(CustomCursors.find(cursorName) == CustomCursors.end())
             return;
@@ -933,13 +931,13 @@ namespace Backend
         return clip::has(clip::image_format());
     }
 
-    bool BackendSystemInputX11_OpenGL3_3::SetClipboardImage(const ssGUI::ImageData& imgData)
+    bool BackendSystemInputX11_OpenGL3_3::SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData)
     {
         if(!imgData.IsValid())
             return false;
 
         ssGUI::ImageFormat format;
-        void* oriImgPtr = imgData.GetBackendImageInterface()->GetPixelPtr(format);
+        void* oriImgPtr = imgData.GetPixelPtr(format);
 
         clip::image_spec spec;
         spec.width = imgData.GetSize().x;
@@ -995,7 +993,7 @@ namespace Backend
         return clip::set_text(converter.to_bytes(str));
     }
     
-    bool BackendSystemInputX11_OpenGL3_3::GetClipboardImage(ssGUI::ImageData& imgData)
+    bool BackendSystemInputX11_OpenGL3_3::GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData)
     {
         clip::image img;
 

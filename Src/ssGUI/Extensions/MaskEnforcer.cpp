@@ -224,8 +224,9 @@ namespace Extensions
                     continue;
                 
                 //If so, check if the cursor is inside the mask
-                if(!static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(it->first)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME))
-                    ->IsPointContainedInMask(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow))))
+                ssGUI::Extensions::Mask* maskExt = CurrentObjectsReferences.GetObjectReference(it->first)->GetAnyExtension<ssGUI::Extensions::Mask>();
+                glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
+                if(!maskExt->IsPointContainedInMask(currentMousePos))
                 {
                     //If not, cut off the input
                     BlockingContainerInput = true;

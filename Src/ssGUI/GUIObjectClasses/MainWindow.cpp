@@ -388,7 +388,7 @@ namespace ssGUI
         //Apply focus
         if(inputStatus.MouseInputBlockedObject == nullptr)
         {
-            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(this);
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(GetBackendWindowInterface());
 
             bool mouseInWindowBoundX = false;
             bool mouseInWindowBoundY = false;

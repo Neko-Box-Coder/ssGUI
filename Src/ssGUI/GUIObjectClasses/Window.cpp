@@ -344,7 +344,7 @@ namespace ssGUI
     void Window::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
-        glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+        glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
         glm::vec2 mouseDelta = currentMousePos - MouseDownPosition;
 
         // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";

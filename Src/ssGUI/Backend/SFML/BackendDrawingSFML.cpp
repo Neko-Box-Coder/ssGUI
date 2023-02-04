@@ -3,7 +3,7 @@
 #include "SFML/OpenGL.hpp"
 
 #include "ssGUI/DataClasses/ImageData.hpp"
-
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 #include "ssLogger/ssLog.hpp"
 
 #ifdef SSGUI_FONT_BACKEND_FREE_TYPE
@@ -68,7 +68,7 @@ namespace Backend
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
-        targetWindow->setActive(true);
+        bool result = targetWindow->setActive(true);
 
         glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
         glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -88,7 +88,7 @@ namespace Backend
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
-        targetWindow->setActive(true);
+        bool result = targetWindow->setActive(true);
 
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
@@ -274,24 +274,21 @@ namespace Backend
                 sf::Image img;
                 bool result = false;
                 
-                //TODO: Move this to somewhere else
-                switch(imgFmt.BitDepthPerChannel)
-                {
-                    case 8:
-                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(img, imgRawPtr, imgFmt, imgData.GetSize());
-                        break;
-                    case 16:
-                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(img, imgRawPtr, imgFmt, imgData.GetSize());
-                        break;
-                    default:
-                        ssLOG_LINE("Unsupported bitdepth: " << imgFmt.BitDepthPerChannel);
-                        return false;
-                        break;
-                }
-             
-                //Failed to convert to rgba32   
+                
+                uint8_t* convertedRawImg = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
+
+                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgData.GetSize());
                 if(!result)
+                {
+                    delete[] convertedRawImg;
+                    ssLOG_LINE("Failed to convert image");
                     return false;
+                }
+                else
+                {
+                    img.create(sf::Vector2u(imgData.GetSize().x, imgData.GetSize().y), convertedRawImg);
+                    delete[] convertedRawImg;
+                }
                     
                 //Create texture
                 result = CharTextures[id].loadFromImage(img);
@@ -355,23 +352,20 @@ namespace Backend
                 sf::Image img;
                 bool result = false;
                 
-                switch(imgFmt.BitDepthPerChannel)
-                {
-                    case 8:
-                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(img, imgRawPtr, imgFmt, imgPtr->GetSize());
-                        break;
-                    case 16:
-                        result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(img, imgRawPtr, imgFmt, imgPtr->GetSize());
-                        break;
-                    default:
-                        ssLOG_LINE("Unsupported bitdepth: " << imgFmt.BitDepthPerChannel);
-                        return false;
-                        break;
-                }
-             
-                //Failed to convert to rgba32   
+                uint8_t* convertedRawImg = new uint8_t[imgPtr->GetSize().x * imgPtr->GetSize().y * 4];
+
+                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgPtr->GetSize());
                 if(!result)
+                {
+                    delete[] convertedRawImg;
+                    ssLOG_LINE("Failed to convert image");
                     return false;
+                }
+                else
+                {
+                    img.create(sf::Vector2u(imgPtr->GetSize().x, imgPtr->GetSize().y), convertedRawImg);
+                    delete[] convertedRawImg;
+                }
                     
                 //Create texture
                 result = ImageTextures[imgPtr].loadFromImage(img);

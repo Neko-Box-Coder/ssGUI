@@ -111,7 +111,7 @@ namespace Extensions
                 ContainerStartPos = Container->GetGlobalPosition();
                 ContainerStartSize = Container->GetSize();
                 auto temp = resizeData;
-                temp.MouseDownPosition = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow));
+                temp.MouseDownPosition = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
                 temp.OnTransformBeginSize = Container->GetSize();
                 windowContainer->SetResizeDragData(temp);
                 LastContainerSize = Container->GetSize();
@@ -193,6 +193,7 @@ namespace Extensions
         //Check if container's min size has reached. 
         //If so, decrease the size to previous GUI object depending on the distance the cursor 
         //Increase the same amount of size to next GUI Object 
+        ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface = static_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface();
         if(layout->IsHorizontalLayout() && 
             (Container->GetSize().x <= Container->GetMinSize().x || Container->GetSize().x >= Container->GetMaxSize().x))
         {               
@@ -212,8 +213,7 @@ namespace Extensions
             if(windowContainer->GetResizeType() == ssGUI::Enums::ResizeType::LEFT)
             {
                 //Calculates how much do we want to reduce the size of the gui object
-                float targetResizeAmount = resizeData.MouseDownPosition.x - 
-                    inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).x;
+                float targetResizeAmount = resizeData.MouseDownPosition.x - inputInterface->GetCurrentMousePosition(mainWindowInterface).x;
                 
                 float containerResizedAmount = Container->GetSize().x - resizeData.OnTransformBeginSize.x; 
                 float othersResizedAmount = (ContainerStartPos.x + ContainerStartSize.x) - (Container->GetGlobalPosition().x + Container->GetSize().x);
@@ -223,9 +223,7 @@ namespace Extensions
             else
             {
                 //Calculates how much do we want to reduce the size of the gui object
-                float targetResizeAmount = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).x - 
-                    resizeData.MouseDownPosition.x;
-                
+                float targetResizeAmount = inputInterface->GetCurrentMousePosition(mainWindowInterface).x - resizeData.MouseDownPosition.x;
                 float containerResizedAmount = Container->GetSize().x - resizeData.OnTransformBeginSize.x; 
                 float othersResizedAmount = Container->GetGlobalPosition().x - ContainerStartPos.x;
                 resizeLambda(targetResizeAmount, containerResizedAmount, othersResizedAmount, resizeData, true);
@@ -248,9 +246,7 @@ namespace Extensions
             if(windowContainer->GetResizeType() == ssGUI::Enums::ResizeType::TOP)
             {
                 //Calculates how much do we want to reduce the size of the gui object
-                float targetResizeAmount = resizeData.MouseDownPosition.y - 
-                    inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).y;
-                
+                float targetResizeAmount = resizeData.MouseDownPosition.y - inputInterface->GetCurrentMousePosition(mainWindowInterface).y;
                 float containerResizedAmount = Container->GetSize().y - resizeData.OnTransformBeginSize.y; 
                 float othersResizedAmount = ContainerStartPos.y - Container->GetGlobalPosition().y;
 
@@ -260,9 +256,7 @@ namespace Extensions
             else
             {
                 //Calculates how much do we want to reduce the size of the gui object
-                float targetResizeAmount = inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)).y - 
-                    resizeData.MouseDownPosition.y;
-                
+                float targetResizeAmount = inputInterface->GetCurrentMousePosition(mainWindowInterface).y - resizeData.MouseDownPosition.y;
                 float containerResizedAmount = Container->GetSize().y - resizeData.OnTransformBeginSize.y; 
                 float othersResizedAmount = Container->GetGlobalPosition().y - ContainerStartPos.y;
 
