@@ -1,7 +1,7 @@
 #include "ssGUI/Backend/SFML/BackendSystemInputSFML.hpp"
 
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
-#include "ssGUI/DataClasses/ImageData.hpp"
+#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssLogger/ssLog.hpp"
@@ -263,27 +263,27 @@ namespace Backend
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }
 
-    glm::ivec2 BackendSystemInputSFML::GetLastMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 BackendSystemInputSFML::GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return LastMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
+            return LastMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
         else
             return LastMousePosition;
     }
 
-    glm::ivec2 BackendSystemInputSFML::GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 BackendSystemInputSFML::GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
-            return CurrentMousePosition - mainWindow->GetDisplayPosition() - mainWindow->GetPositionOffset();
+            return CurrentMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
         else
             return CurrentMousePosition;
     }
 
-    void BackendSystemInputSFML::SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow)
+    void BackendSystemInputSFML::SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow)
     {
         //TODO: This might not work for multi-monitor, change this to use window version of setPosition instead
         if(mainWindow != nullptr)
-            position += mainWindow->GetDisplayPosition() + mainWindow->GetPositionOffset();
+            position += mainWindow->GetWindowPosition() + mainWindow->GetPositionOffset();
         
         CurrentMousePosition = position;
         sf::Mouse::setPosition(sf::Vector2i(position.x, position.y));
@@ -340,7 +340,7 @@ namespace Backend
     }
 
     //TODO: refactor this function, see Win32 version
-    void BackendSystemInputSFML::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    void BackendSystemInputSFML::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssLOG_FUNC_ENTRY();
         
@@ -363,7 +363,7 @@ namespace Backend
         else
         {
             #ifdef SSGUI_IMAGE_BACKEND_SFML
-                sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+                sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
             #else
                 //Convert everything to sf::Image
                 sf::Image cursorImg;
@@ -377,29 +377,26 @@ namespace Backend
                 }
                 
                 bool result = false;
+                uint8_t* convertedRawImg = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
 
-                //TODO: Move this to somewhere else
-                if(cursorFormat.BitDepthPerChannel == 8)
-                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint8_t>(cursorImg, imgPtr, cursorFormat, customCursor->GetSize());
-                else if(cursorFormat.BitDepthPerChannel == 16)
-                    result = ssGUI::SFMLImageConversion::ConvertToRGBA32<uint16_t>(cursorImg, imgPtr, cursorFormat, customCursor->GetSize());
-                else
-                {
-                    ssLOG_LINE("Unsupported bit depth: "<<cursorFormat.BitDepthPerChannel);
-                    return;
-                }
-                
+                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgPtr, cursorFormat, customCursor->GetSize());
                 if(!result)
                 {
+                    delete[] convertedRawImg;
                     ssLOG_LINE("Failed to convert image");
                     return;
+                }
+                else
+                {
+                    cursorImg.create(sf::Vector2u(customCursor->GetSize().x, customCursor->GetSize().y), convertedRawImg);
+                    delete[] convertedRawImg;
                 }
             #endif
         
             if(customCursor->GetSize() == cursorSize)
             {
                 #ifdef SSGUI_IMAGE_BACKEND_SFML
-                    CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetBackendImageInterface()->GetRawHandle())->copyToImage();
+                    CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
                 #else
                     CustomCursors[cursorName].first = cursorImg;
                 #endif
@@ -539,7 +536,7 @@ namespace Backend
         CurrentCustomCursor = cursorName;
     }
 
-    void BackendSystemInputSFML::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
+    void BackendSystemInputSFML::GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot)
     {        
         if(CurrentCustomCursor.empty())
             return;
@@ -563,7 +560,7 @@ namespace Backend
         return CurrentCustomCursor;
     }
 
-    void BackendSystemInputSFML::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    void BackendSystemInputSFML::GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot)
     {
         if(CustomCursors.find(cursorName) == CustomCursors.end())
             return;
@@ -699,12 +696,14 @@ namespace Backend
         return clip::has(clip::image_format());
     }
 
-    bool BackendSystemInputSFML::SetClipboardImage(const ssGUI::ImageData& imgData)
+    bool BackendSystemInputSFML::SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData)
     {
         if(!imgData.IsValid())
             return false;
 
-        auto sfTexture = static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
+        //TODO: Ugly but works for now
+        ssGUI::Backend::BackendImageInterface& nonConstImgData = const_cast<ssGUI::Backend::BackendImageInterface&>(imgData);
+        auto sfTexture = static_cast<sf::Texture*>(nonConstImgData.GetRawHandle());
 
         sf::Image img = sfTexture->copyToImage();
 
@@ -755,7 +754,7 @@ namespace Backend
         return clip::set_text(converter.to_bytes(str));
     }
             
-    bool BackendSystemInputSFML::GetClipboardImage(ssGUI::ImageData& imgData)
+    bool BackendSystemInputSFML::GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData)
     {
         clip::image img;
 

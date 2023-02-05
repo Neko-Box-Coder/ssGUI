@@ -347,6 +347,9 @@ namespace ssGUI
 
             //function: GetVerticalAlignment
             virtual ssGUI::Enums::AlignmentVertical GetVerticalAlignment() const;
+            
+            //function: SetAlignment
+            virtual void SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert);
 
             //function: AddFont
             //Adds the font to the end for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.

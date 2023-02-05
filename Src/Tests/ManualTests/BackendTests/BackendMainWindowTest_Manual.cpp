@@ -2,7 +2,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssLogger/ssLog.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include <thread>
 
@@ -60,12 +60,12 @@ void GenerateImage()
 
 void Instructions()
 {
-    ssLOG_LINE("Press 1 to test SetIcon");
-    ssLOG_LINE("Press 2 to test SetFocus");
-    ssLOG_LINE("Press 3 to test IsFocused");
-    ssLOG_LINE("Press 4 to test AddFocusChangedByUserEvent");
-    ssLOG_LINE("Press 5 to test RemoveFocusChangedByUserEvent");
-    ssLOG_LINE("Press 6 to test Clone");
+    ssLOG_SIMPLE("Press 1 to test SetIcon");
+    ssLOG_SIMPLE("Press 2 to test SetFocus");
+    ssLOG_SIMPLE("Press 3 to test IsFocused");
+    ssLOG_SIMPLE("Press 4 to test AddFocusChangedByUserEvent");
+    ssLOG_SIMPLE("Press 5 to test RemoveFocusChangedByUserEvent");
+    ssLOG_SIMPLE("Press 6 to test Clone");
 }
 
 void SetIconTest()
@@ -75,7 +75,7 @@ void SetIconTest()
         inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
     {
         window->SetIcon(*TestImage.GetBackendImageInterface());
-        ssLOG_LINE("Icon set, you should be able to see a RGB column icon.");
+        ssLOG_SIMPLE("Icon set, you should be able to see a RGB column icon.");
     }
 }
 
@@ -86,7 +86,7 @@ void SetFocusTest()
     {
         UseFocus = false;
         window->SetFocus(Focus, false);
-        ssLOG_LINE("Focus is now set to "<<Focus);
+        ssLOG_SIMPLE("Focus is now set to "<<Focus);
     }
 
     //SetFocus
@@ -97,7 +97,7 @@ void SetFocusTest()
         Focus = !Focus;
         UseFocus = true;
         
-        ssLOG_LINE("Focus will be set to "<<Focus<<" in 5 seconds");
+        ssLOG_SIMPLE("Focus will be set to "<<Focus<<" in 5 seconds");
     }
 }
 
@@ -107,7 +107,7 @@ void IsFocusedTest()
     if(UseIsFocus && inputs->GetElapsedTime() > NextIsFocusTime)
     {
         UseIsFocus = false;
-        ssLOG_LINE("Focus status is: "<<window->IsFocused());
+        ssLOG_SIMPLE("Focus status is: "<<window->IsFocused());
     }
 
     //IsFocus
@@ -117,7 +117,7 @@ void IsFocusedTest()
         NextIsFocusTime = inputs->GetElapsedTime() + 5000;
         UseIsFocus = true;
         
-        ssLOG_LINE("Focus status will be shown in 5 seconds");
+        ssLOG_SIMPLE("Focus status will be shown in 5 seconds");
     }
 }
 
@@ -131,14 +131,14 @@ void AddFocusChangedByUserEventTest()
         {
             FocusEventIndex = window->AddFocusChangedByUserEvent([](bool focus)
             {
-                ssLOG_LINE("Focus event called: "<<focus);
+                ssLOG_SIMPLE("Focus event called: "<<focus);
             });
             
-            ssLOG_LINE("Focus event added");
+            ssLOG_SIMPLE("Focus event added");
         }
         else
         {
-            ssLOG_LINE("Focus event already exists");
+            ssLOG_SIMPLE("Focus event already exists");
         }
     }
 }
@@ -153,11 +153,11 @@ void RemoveFocusChangedByUserEventTest()
         {
             window->RemoveFocusChangedByUserEvent(FocusEventIndex);
             FocusEventIndex = -1;
-            ssLOG_LINE("Focus event removed");
+            ssLOG_SIMPLE("Focus event removed");
         }
         else
         {
-            ssLOG_LINE("Focus event already removed");
+            ssLOG_SIMPLE("Focus event already removed");
         }
     }
 }

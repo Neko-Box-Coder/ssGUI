@@ -1,6 +1,9 @@
 #ifndef SSGUI_MOUSE_BUTTON_H
 #define SSGUI_MOUSE_BUTTON_H
 
+#include "ssGUI/HelperClasses/EnumToStringMacro.hpp"
+
+#include <string>
 #include <cstdint>
 
 namespace ssGUI 
@@ -9,6 +12,8 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
+    using GenericButtonAndKeyInput = uint16_t;
+
     /*enum: MouseButton
     
     LEFT    - Left mouse button
@@ -22,6 +27,27 @@ namespace Enums
         RIGHT,
         COUNT = RIGHT - LEFT + 1
     };
+    
+    //function: InputToString
+    inline std::string InputToString(MouseButton input)
+    {
+        static_assert((int)MouseButton::COUNT == 3, "ToString");
+        switch(input)
+        {
+            RETURN_ENUM_STRING(MouseButton::LEFT);
+            RETURN_ENUM_STRING(MouseButton::MIDDLE);
+            RETURN_ENUM_STRING(MouseButton::RIGHT);
+            RETURN_ENUM_STRING(MouseButton::COUNT);
+        }
+        
+        return "";
+    }
+    
+    //function: InputIsMouseButton
+    inline bool InputIsMouseButton(ssGUI::Enums::GenericButtonAndKeyInput input)
+    {
+        return input >= (uint16_t)MouseButton::LEFT && input < (uint16_t)MouseButton::LEFT + (uint16_t)MouseButton::COUNT;
+    }
 }
 
 }

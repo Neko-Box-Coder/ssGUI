@@ -2,7 +2,7 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 #include "ssLogger/ssLog.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/gtx/norm.hpp"
 #include <cmath>
 #include <locale>
@@ -1168,7 +1168,7 @@ namespace ssGUI
         if(inputStatus.MouseInputBlockedObject == nullptr && IsBlockInput())
         {
             //Mouse Input blocking
-            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
 
             bool mouseInWindowBoundX = false;
             bool mouseInWindowBoundY = false;
@@ -1199,13 +1199,9 @@ namespace ssGUI
             if(IsTextSelectionAllowed() && inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
                 mouseInWindowBoundX && mouseInWindowBoundY && IsInteractable())
             {
-                int closestIndex = GetNearestCharacterIndexFromPos
-                (
-                    inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow)), true
-                );
+                int closestIndex = GetNearestCharacterIndexFromPos(currentMousePos, true);
 
-                if(closestIndex == GetLastValidCharacterIndex() && 
-                    IsPosAfterLastCharacter(inputInterface->GetCurrentMousePosition(static_cast<ssGUI::MainWindow*>(mainWindow))))
+                if(closestIndex == GetLastValidCharacterIndex() && IsPosAfterLastCharacter(currentMousePos))
                 {
                     closestIndex += 1;
                 }
@@ -1634,6 +1630,14 @@ namespace ssGUI
     ssGUI::Enums::AlignmentVertical Text::GetVerticalAlignment() const
     {
         return CurrentVerticalAlignment;
+    }
+    
+    void Text::SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
+    {
+        CurrentHorizontalAlignment = hori;
+        CurrentVerticalAlignment = vert;
+        RecalculateTextNeeded = true;
+        RedrawObject();    
     }
 
     void Text::AddFont(ssGUI::Font* font)

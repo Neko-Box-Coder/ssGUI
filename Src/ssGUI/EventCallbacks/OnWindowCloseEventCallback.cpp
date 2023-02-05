@@ -12,17 +12,7 @@ namespace EventCallbacks
     
     OnWindowCloseEventCallback* OnWindowCloseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
-        OnWindowCloseEventCallback* temp;
-        
-        if(copyListeners)
-            temp = new OnWindowCloseEventCallback(*this);
-        else
-            temp = new OnWindowCloseEventCallback();
-        
-        if(newContainer != nullptr)
-            newContainer->AddEventCallback(temp);
-        
-        return temp;
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(OnWindowCloseEventCallback, newContainer, copyListeners);
     }
 
     const std::string OnWindowCloseEventCallback::EVENT_NAME = "OnWindowCloseEvent";   

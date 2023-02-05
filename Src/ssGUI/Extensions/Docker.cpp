@@ -535,10 +535,11 @@ namespace Extensions
             //bool previewDrawn = false;
 
             //Check if the cursor is inside the window
-            bool mouseInsideWindow = (inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x && 
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + containerSize.x &&
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset && 
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + containerSize.y);
+            ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface = dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface();
+            bool mouseInsideWindow =    inputInterface->GetCurrentMousePosition(mainWindowInterface).x >= containerPos.x && 
+                                        inputInterface->GetCurrentMousePosition(mainWindowInterface).x <= containerPos.x + containerSize.x &&
+                                        inputInterface->GetCurrentMousePosition(mainWindowInterface).y >= containerPos.y + titleBarOffset && 
+                                        inputInterface->GetCurrentMousePosition(mainWindowInterface).y <= containerPos.y + containerSize.y;
 
             if(!mouseInsideWindow)
             {
@@ -550,10 +551,10 @@ namespace Extensions
             }
 
             //Center
-            if(inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x >= containerPos.x + (containerSize.x - triggerSize.x) * 0.5 && 
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).x <= containerPos.x + (containerSize.x + triggerSize.x) * 0.5 &&
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y >= containerPos.y + titleBarOffset + (containerSize.y - triggerSize.y) * 0.5 && 
-                inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)).y <= containerPos.y + titleBarOffset + (containerSize.y + triggerSize.y) * 0.5)
+            if( inputInterface->GetCurrentMousePosition(mainWindowInterface).x >= containerPos.x + (containerSize.x - triggerSize.x) * 0.5 && 
+                inputInterface->GetCurrentMousePosition(mainWindowInterface).x <= containerPos.x + (containerSize.x + triggerSize.x) * 0.5 &&
+                inputInterface->GetCurrentMousePosition(mainWindowInterface).y >= containerPos.y + titleBarOffset + (containerSize.y - triggerSize.y) * 0.5 && 
+                inputInterface->GetCurrentMousePosition(mainWindowInterface).y <= containerPos.y + titleBarOffset + (containerSize.y + triggerSize.y) * 0.5)
             {
                 DrawPreview();
                 DiscardTriggerArea();

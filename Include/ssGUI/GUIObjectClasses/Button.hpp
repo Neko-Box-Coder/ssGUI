@@ -47,7 +47,7 @@ namespace ssGUI
                         btn->SetBackgroundColor(btnColor);
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
-                    case ssGUI::Enums::ButtonState::DISABLED:
+                    case ssGUI::Enums::ButtonState::NOT_INTERACTABLE:
                         btnColor.a = 50;
                         btn->SetBackgroundColor(btnColor);
                         break;

@@ -164,6 +164,16 @@ namespace ssGUI
     {
         return mousePos - GetDisplayPosition() - GetPositionOffset();
     }
+    
+    void MainWindow::SetWindowSize(glm::ivec2 size)
+    {
+        BackendMainWindow->SetWindowSize(size);
+    }
+    
+    glm::ivec2 MainWindow::GetWindowSize() const
+    {
+        return BackendMainWindow->GetWindowSize();
+    }
 
     void MainWindow::SetEnabled(bool enabled)
     {
@@ -200,7 +210,7 @@ namespace ssGUI
 
     glm::vec2 MainWindow::GetSize() const
     {
-        return BackendMainWindow->GetWindowSize();
+        return BackendMainWindow->GetRenderSize();
     }
     
     void MainWindow::SetSize(glm::vec2 size)
@@ -210,7 +220,7 @@ namespace ssGUI
         size.x = size.x < GetMinSize().x ? GetMinSize().x : size.x;
         size.y = size.y < GetMinSize().y ? GetMinSize().y : size.y;
         
-        BackendMainWindow->SetWindowSize(size);
+        BackendMainWindow->SetRenderSize(size);
         RedrawObject();
 
         //Size changed event callback is done in update to allow user resizing to be captured as well
@@ -258,6 +268,36 @@ namespace ssGUI
         
         //Forwarding signal to window
         Window::Internal_OnClose();
+    }
+    
+    void MainWindow::SetTitlebarHeight(int height)
+    {
+        (void)height;
+    }
+    
+    int MainWindow::GetTitlebarHeight() const
+    {
+        return GetPositionOffset().y;
+    }
+    
+    void MainWindow::SetTitlebarColor(glm::u8vec4 color)
+    {
+        (void)color;
+    }
+    
+    glm::u8vec4 MainWindow::GetTitlebarColor() const
+    {
+        return glm::u8vec4(255, 255, 255, 255);
+    }
+    
+    void MainWindow::SetAdaptiveTitlebarColor(bool adaptive)
+    {
+        (void)adaptive;
+    }
+    
+    bool MainWindow::IsAdaptiveTitlebarColor() const
+    {
+        return false;
     }
 
     void MainWindow::Internal_Draw()
@@ -388,7 +428,7 @@ namespace ssGUI
         //Apply focus
         if(inputStatus.MouseInputBlockedObject == nullptr)
         {
-            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(this);
+            glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(GetBackendWindowInterface());
 
             bool mouseInWindowBoundX = false;
             bool mouseInWindowBoundY = false;

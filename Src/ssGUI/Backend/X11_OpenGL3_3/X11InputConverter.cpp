@@ -1,4 +1,5 @@
 #include "ssGUI/Backend/X11_OpenGL3_3/X11InputConverter.hpp"
+#include "ssLogger/ssLog.hpp"
 
 #include <X11/keysym.h>
 
@@ -147,9 +148,9 @@ namespace Backend
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::BACK_QUOTE);
             case XK_minus:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::MINUS);
-            case XK_plus:
+            case XK_equal:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::EQUAL);            
-            case XK_braceleft:
+            case XK_bracketleft:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::LEFT_BRACKET);
             case XK_bracketright:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::RIGHT_BRACKET);
@@ -224,6 +225,7 @@ namespace Backend
             case XK_KP_Enter:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::NUMPAD_ENTER);
             default:
+                //ssLOG_LINE("Unknown input: "<<keysym);
                 return ssGUI::Enums::NO_INPUT;
         }
     }

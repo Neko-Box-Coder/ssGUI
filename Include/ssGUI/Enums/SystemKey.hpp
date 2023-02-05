@@ -1,6 +1,9 @@
 #ifndef SSGUI_SYSTEM_KEY_H
 #define SSGUI_SYSTEM_KEY_H
 
+#include "ssGUI/HelperClasses/EnumToStringMacro.hpp"
+
+#include <string>
 #include <cstdint>
 
 //We need to undefine the DELETE macro from Win32 because this collides with our enum name
@@ -14,6 +17,8 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
+    using GenericButtonAndKeyInput = uint16_t;
+    
     /*enum: SystemKey
 
     TAB             - Tab key
@@ -50,6 +55,48 @@ namespace Enums
         DELETE, END, PAGE_DOWN, LEFT, UP, DOWN, RIGHT, NUMPAD_ENTER, 
         COUNT = NUMPAD_ENTER - TAB + 1
     };
+    
+    //function: InputToString
+    inline std::string InputToString(SystemKey input)
+    {
+        static_assert((int)SystemKey::COUNT == 24, "ToString");
+        switch(input)
+        {
+            RETURN_ENUM_STRING(SystemKey::TAB);
+            RETURN_ENUM_STRING(SystemKey::CAPS_LOCK);
+            RETURN_ENUM_STRING(SystemKey::LEFT_SHIFT);
+            RETURN_ENUM_STRING(SystemKey::LEFT_CTRL);
+            RETURN_ENUM_STRING(SystemKey::LEFT_SYSTEM);
+            RETURN_ENUM_STRING(SystemKey::LEFT_ALT);
+            RETURN_ENUM_STRING(SystemKey::SPACE);
+            RETURN_ENUM_STRING(SystemKey::RIGHT_ALT);
+            RETURN_ENUM_STRING(SystemKey::RIGHT_SYSTEM);
+            RETURN_ENUM_STRING(SystemKey::RIGHT_CTRL);
+            RETURN_ENUM_STRING(SystemKey::RIGHT_SHIFT);
+            RETURN_ENUM_STRING(SystemKey::ENTER);
+            RETURN_ENUM_STRING(SystemKey::BACKSPACE);
+            RETURN_ENUM_STRING(SystemKey::INSERT);
+            RETURN_ENUM_STRING(SystemKey::HOME);
+            RETURN_ENUM_STRING(SystemKey::PAGE_UP);
+            RETURN_ENUM_STRING(SystemKey::DELETE);
+            RETURN_ENUM_STRING(SystemKey::END);
+            RETURN_ENUM_STRING(SystemKey::PAGE_DOWN);
+            RETURN_ENUM_STRING(SystemKey::LEFT);
+            RETURN_ENUM_STRING(SystemKey::UP);
+            RETURN_ENUM_STRING(SystemKey::DOWN);
+            RETURN_ENUM_STRING(SystemKey::RIGHT);
+            RETURN_ENUM_STRING(SystemKey::NUMPAD_ENTER);
+            RETURN_ENUM_STRING(SystemKey::COUNT);
+        }
+        
+        return "";
+    }
+    
+    //function: InputIsSystemKey
+    inline bool InputIsSystemKey(ssGUI::Enums::GenericButtonAndKeyInput input)
+    {
+        return input >= (uint16_t)SystemKey::TAB && input < (uint16_t)SystemKey::TAB + (uint16_t)SystemKey::COUNT;
+    }
 }
 
 }

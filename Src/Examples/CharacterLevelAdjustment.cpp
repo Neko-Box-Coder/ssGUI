@@ -50,7 +50,7 @@ int main()
     (
         [&]()
         {
-            glm::ivec2 curMousePos = guiManager.GetBackendInputInterface()->GetCurrentMousePosition(&mainWindow);
+            glm::ivec2 curMousePos = guiManager.GetBackendInputInterface()->GetCurrentMousePosition(mainWindow.GetBackendWindowInterface());
             
             //Reset the previous highlighted character
             if(foundIndex != -1)

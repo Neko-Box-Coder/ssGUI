@@ -70,15 +70,15 @@ namespace Backend
 
             //function: GetLastMousePosition
             //Get mouse position relative to the mainWindow from last frame. If nullptr is passed, it will return global mouse position instead.
-            virtual glm::ivec2 GetLastMousePosition(ssGUI::MainWindow* mainWindow) const = 0;
+            virtual glm::ivec2 GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const = 0;
             
             //function: GetCurrentMousePosition
             //Get mouse position relative to the mainWindow from current frame. If nullptr is passed, it will return global mouse position instead.
-            virtual glm::ivec2 GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const = 0;
+            virtual glm::ivec2 GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const = 0;
             
             //function: SetMousePosition
             //Set the mouse posiition relative to the mainWindow. If nullptr is passed, it will set as global mouse position instead.
-            virtual void SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow) = 0;
+            virtual void SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow) = 0;
 
             //function: GetLastMouseButton
             //Return if a mouse button is being pressed last frame
@@ -110,7 +110,7 @@ namespace Backend
 
             //function: GetTextInput
             //Returns all the text typed in current frame.
-            //Any characters in here https://en.wikipedia.org/wiki/List_of_Unicode_characters
+            //Any characters in here https://en.wikipedia.org/wiki/List_of_Unicode_characters#Control_codes
             //are not recorded in here.
             virtual std::wstring GetTextInput() const = 0;
             
@@ -132,7 +132,7 @@ namespace Backend
             //Creates a custom cursor. The image data of customCursor is copied so it is fine to dispose it if needed.
             //The size of customCurrsor image will be resized to cursorSize if needed.
             //The passed in hotspot must be smaller than cursorSize, (0, 0) as top-left corner.
-            virtual void CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) = 0;
+            virtual void CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) = 0;
             
             //function: SetCurrentCustomCursor
             //Sets the current custom cursor from created custom cursor. Nothing is changed if the custom cursor name cannot be found.
@@ -141,7 +141,7 @@ namespace Backend
             //function: GetCurrentCustomCursor
             //Copies the (resized) current custom cursor image data to customCursor image data and returns the hotspot of the cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) = 0;
+            virtual void GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot) = 0;
 
             //function: GetCurrentCustomCursorName
             //Gets the name of the current custom cursor. Empty string if nothing is set.
@@ -150,7 +150,7 @@ namespace Backend
             //function: GetCustomCursor
             //Copies the (resized) custom cursor image data to customCursor image data and returns the hotspot of the cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot) = 0;
+            virtual void GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot) = 0;
 
             //function: HasCustomCursor
             //Returns if the target custom cursor with cursorName exists
@@ -174,7 +174,7 @@ namespace Backend
 
             //function: SetClipboardImage
             //Sets the clipboard image
-            virtual bool SetClipboardImage(const ssGUI::ImageData& imgData) = 0;
+            virtual bool SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData) = 0;
             
             //function: SetClipboardText
             //Sets the clipboard text
@@ -182,7 +182,7 @@ namespace Backend
             
             //function: GetClipboardImage
             //Gets the clipboard image. It currently only supports 32-bit RGBA image
-            virtual bool GetClipboardImage(ssGUI::ImageData& imgData) = 0;
+            virtual bool GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData) = 0;
 
             //function: GetClipboardText
             //Gets the clipboard text

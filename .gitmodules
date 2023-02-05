@@ -7,3 +7,6 @@
 [submodule "External/freetype"]
 	path = External/freetype
 	url = https://gitlab.freedesktop.org/freetype/freetype.git
+[submodule "External/ssTest"]
+	path = External/ssTest
+	url = https://github.com/Neko-Box-Coder/ssTest.git

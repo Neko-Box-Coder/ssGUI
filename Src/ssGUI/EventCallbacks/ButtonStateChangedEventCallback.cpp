@@ -12,17 +12,7 @@ namespace EventCallbacks
 
     ButtonStateChangedEventCallback* ButtonStateChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
-        ButtonStateChangedEventCallback* temp;
-        
-        if(copyListeners)
-            temp = new ButtonStateChangedEventCallback(*this);
-        else
-            temp = new ButtonStateChangedEventCallback();
-        
-        if(newContainer != nullptr)
-            newContainer->AddEventCallback(temp);
-        
-        return temp;
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(ButtonStateChangedEventCallback, newContainer, copyListeners);
     }
 
     const std::string ButtonStateChangedEventCallback::EVENT_NAME = "ButtonStateChangedEvent";
