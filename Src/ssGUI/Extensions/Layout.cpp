@@ -374,7 +374,9 @@ namespace Extensions
             maxSizeTotalX = maxSizeTotalX == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() : 
                             maxSizeTotalX + paddingTotalX + spacingTotalX;
 
-            if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && dynamic_cast<ssGUI::Window*>(Container)->HasTitlebar())
+            if( Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && 
+                Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+                dynamic_cast<ssGUI::Window*>(Container)->HasTitlebar())
             {
                 minMaxY = minMaxY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
                             minMaxY + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() + GetPadding();
@@ -440,7 +442,7 @@ namespace Extensions
 
             float paddingTotalY = 0;
             
-            if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
+            if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
                 paddingTotalY = GetPadding() + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight();
             else
                 paddingTotalY = GetPadding() * 2;
@@ -573,15 +575,17 @@ namespace Extensions
             
             if(IsHorizontalLayout())
             {
-                float verticalPos = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+                float verticalPos = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && 
+                                    Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
                                     static_cast<ssGUI::Window*>(Container)->HasTitlebar() ? 
                                     containerPos.y + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
                                     containerPos.y + GetPadding();     
 
-                float verticalSize = Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
-                                    static_cast<ssGUI::Window*>(Container)->HasTitlebar() ? 
-                                    containerSize.y - GetPadding() - dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
-                                    containerSize.y - GetPadding() * 2;
+                float verticalSize =    Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && 
+                                        Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
+                                        static_cast<ssGUI::Window*>(Container)->HasTitlebar() ? 
+                                        containerSize.y - GetPadding() - dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() :
+                                        containerSize.y - GetPadding() * 2;
 
                 if(currentPos.y != verticalPos)
                     Container->GetCurrentChild()->SetGlobalPosition(glm::vec2(currentPos.x, verticalPos));
