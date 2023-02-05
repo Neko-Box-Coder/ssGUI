@@ -581,6 +581,7 @@ namespace Backend
     
     void BackendSystemInputX11_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow)
     {
+        bool globalPos = mainWindow == nullptr;
         if(mainWindow == nullptr)
         {
             if(ssGUI::Backend::BackendManager::GetMainWindowCount() == 0)
@@ -597,7 +598,7 @@ namespace Backend
     
         if(!XWarpPointer(   rawHandle->WindowDisplay, 
                             None, 
-                            mainWindow == nullptr ? RootWindow(rawHandle->WindowDisplay, screen) : rawHandle->WindowId, 
+                            globalPos ? RootWindow(rawHandle->WindowDisplay, screen) : rawHandle->WindowId, 
                             0, 
                             0, 
                             0, 
@@ -878,17 +879,27 @@ namespace Backend
                     break;
                 case ssGUI::Enums::CursorType::CUSTOM:
                 {
-                    CursorData& currentCursorData = CustomCursors[CurrentCustomCursor];
-                    
-                    //If this is a new window that the custom cursor didn't add, add it
-                    if(currentCursorData.X11CursorHandles.find(rawHandle->WindowDisplay) == currentCursorData.X11CursorHandles.end())
+                    if( !CurrentCustomCursor.empty() && 
+                        CustomCursors[CurrentCustomCursor].CursorImage->IsValid())
                     {
-                        bool result = PopulateCursorDataHandles(currentCursorData);
-                        if(!result)
-                            continue;
+                        CursorData& currentCursorData = CustomCursors[CurrentCustomCursor];
+                        
+                        //If this is a new window that the custom cursor didn't add, add it
+                        if(currentCursorData.X11CursorHandles.find(rawHandle->WindowDisplay) == currentCursorData.X11CursorHandles.end())
+                        {
+                            bool result = PopulateCursorDataHandles(currentCursorData);
+                            if(!result)
+                            {
+                                ssLOG_LINE("Failed to load cursor");
+                                continue;
+                            }
+                        }
+                        
+                        cursor = currentCursorData.X11CursorHandles[rawHandle->WindowDisplay];
                     }
-                    
-                    cursor = currentCursorData.X11CursorHandles[rawHandle->WindowDisplay];
+                    else
+                        ssLOG_LINE("Failed to load cursor");
+
                     break;
                 }
             }
