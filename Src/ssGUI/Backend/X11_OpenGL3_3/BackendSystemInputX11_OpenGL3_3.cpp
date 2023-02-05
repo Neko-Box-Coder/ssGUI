@@ -842,7 +842,7 @@ namespace Backend
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_xterm);
                     break;
                 case ssGUI::Enums::CursorType::HAND:
-                    cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_fleur);
+                    cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_hand1);
                     break;
                 case ssGUI::Enums::CursorType::RESIZE_LEFT:
                     cursor = XCreateFontCursor(rawHandle->WindowDisplay, XC_left_side);

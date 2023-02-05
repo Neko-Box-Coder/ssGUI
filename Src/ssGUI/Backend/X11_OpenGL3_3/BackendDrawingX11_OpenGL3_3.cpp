@@ -307,7 +307,8 @@ namespace Backend
             
             glColor4ub(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
             glTexCoord2f(texCoord.x, texCoord.y);
-            glVertex3f(vertices[i].x, vertices[i].y, 0);
+            //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
+            glVertex3f(round(vertices[i].x), round(vertices[i].y), 0);
         }
 
         GL_CHECK_ERROR( glEnd(); );
@@ -381,7 +382,8 @@ namespace Backend
 
             glColor4ub(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
 
-            glVertex3f(vertices[i].x, vertices[i].y, 0);
+            //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
+            glVertex3f(round(vertices[i].x), round(vertices[i].y), 0);
         }
 
 
