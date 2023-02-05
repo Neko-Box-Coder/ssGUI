@@ -96,6 +96,14 @@ namespace Backend
 
     BackendFontFreeType::BackendFontFreeType(BackendFontFreeType const& other)
     {
+        FontFace = nullptr;
+        Valid = false;
+        CurrentSize = -1;
+        FontFlags = 0;
+        FontMemory = nullptr;
+        FontMemoryLength = 0;
+        FontPath = "";
+    
         //If the copy font is invalid, just reinitialize the current font
         if(!other.IsValid())
         {
@@ -103,15 +111,7 @@ namespace Backend
                 FT_Done_Face(FontFace);
         
             if(FontMemory != nullptr)
-                free(FontMemory);
-            
-            FontFace = nullptr;
-            Valid = false;
-            CurrentSize = -1;
-            FontFlags = 0;
-            FontMemory = nullptr;
-            FontMemoryLength = 0;
-            FontPath = "";
+                free(FontMemory);   
         }
         else if(other.FontMemory != nullptr)
         {
@@ -349,6 +349,7 @@ namespace Backend
             FontPath.clear();
         
         FontMemory = static_cast<uint8_t*>(malloc(static_cast<size_t>(lengthInBytes)));
+        memcpy(FontMemory, dataPtr, lengthInBytes);
         FontMemoryLength = lengthInBytes;
 
         //Load new font
@@ -364,7 +365,7 @@ namespace Backend
 
         if(error)
         {
-            ssLOG_LINE("Failed to laod font");
+            ssLOG_LINE("Failed to laod font: "<<error);
             Valid = false;
             return false;
         }

@@ -5,7 +5,7 @@
 #include "ssGUI/Backend/BackendManager.hpp"
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
 #include "ssGUI/Backend/SFML/SFMLInputConverter.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/vec2.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/Mouse.hpp"
@@ -153,15 +153,15 @@ namespace Backend
 
             //function: GetLastMousePosition
             //See <BackendSystemInputInterface::GetLastMousePosition>
-            glm::ivec2 GetLastMousePosition(ssGUI::MainWindow* mainWindow) const override;
+            glm::ivec2 GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const override;
             
             //function: GetCurrentMousePosition
             //See <BackendSystemInputInterface::GetCurrentMousePosition>
-            glm::ivec2 GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const override;
+            glm::ivec2 GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const override;
             
             //function: SetMousePosition
             //See <BackendSystemInputInterface::SetMousePosition>
-            void SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow) override;          
+            void SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow) override;          
 
             //function: GetLastMouseButton
             //See <BackendSystemInputInterface::GetLastMouseButton>
@@ -197,7 +197,7 @@ namespace Backend
 
             //function: CreateCustomCursor
             //See <BackendSystemInputInterface::CreateCustomCursor>
-            void CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
+            void CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
 
             //function: SetCurrentCustomCursor
             //See <BackendSystemInputInterface::SetCurrentCustomCursor>
@@ -205,7 +205,7 @@ namespace Backend
 
             //function: GetCurrentCustomCursor
             //See <BackendSystemInputInterface::GetCurrentCustomCursor>
-            void GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) override;
+            void GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot) override;
 
             //function: GetCurrentCustomCursorName
             //See <BackendSystemInputInterface::GetCurrentCustomCursorName>
@@ -213,7 +213,7 @@ namespace Backend
             
             //function: GetCustomCursor
             //See <BackendSystemInputInterface::GetCustomCursor>
-            void GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot) override;
+            void GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot) override;
             
             //function: HasCustomCursor
             //See <BackendSystemInputInterface::HasCustomCursor>
@@ -237,7 +237,7 @@ namespace Backend
 
             //function: SetClipboardImage
             //See <BackendSystemInputInterface::SetClipboardImage>
-            bool SetClipboardImage(const ssGUI::ImageData& imgData) override;
+            bool SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData) override;
             
             //function: SetClipboardText
             //See <BackendSystemInputInterface::SetClipboardText>            
@@ -245,7 +245,7 @@ namespace Backend
             
             //function: GetClipboardImage
             //See <BackendSystemInputInterface::GetClipboardImage>            
-            bool GetClipboardImage(ssGUI::ImageData& imgData) override;
+            bool GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData) override;
 
             //function: GetClipboardText
             //See <BackendSystemInputInterface::GetClipboardText>

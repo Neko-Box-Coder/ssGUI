@@ -4,7 +4,7 @@
 
 
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 #include <X11/Xlib.h>
 #include <vector>

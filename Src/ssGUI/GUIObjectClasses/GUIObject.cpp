@@ -179,7 +179,7 @@ namespace ssGUI
             return;
         
         //Mouse Input blocking
-        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow));
+        glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
 
         bool mouseInWindowBoundX = false;
         bool mouseInWindowBoundY = false;

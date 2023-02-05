@@ -376,8 +376,7 @@ namespace Backend
                         (unsigned char*)&hintData, 
                         5);
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
     }
 
     void BackendMainWindowX11_OpenGL3_3::UpdateWindowDecor()
@@ -403,8 +402,7 @@ namespace Backend
             SetTitle(GetTitle());
         }
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
     }
 
     //https://stackoverflow.com/a/36198958
@@ -769,8 +767,7 @@ namespace Backend
         
         XMoveWindow(WindowDisplay, WindowId, pos.x, pos.y);
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -843,8 +840,7 @@ namespace Backend
 
         XResizeWindow(WindowDisplay, WindowId, size.x, size.y);
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -912,8 +908,7 @@ namespace Backend
         //Xutf8SetWMProperties(x11_display, x11_window, p_title.utf8().get_data(), NULL, NULL, 0, NULL, NULL, NULL);
         Title = title;
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -991,8 +986,7 @@ namespace Backend
 
         delete[] iconDataToApply;
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -1016,8 +1010,7 @@ namespace Backend
 
         Visible = visible;
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -1040,8 +1033,7 @@ namespace Backend
 
         glXSwapIntervalEXT(WindowDisplay, glXGetCurrentDrawable(), (int)vSync);
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -1082,8 +1074,7 @@ namespace Backend
             //XSetInputFocus(WindowDisplay, RootWindow(WindowDisplay, DefaultScreen(WindowDisplay)), RevertToPointerRoot, CurrentTime);
         }
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -1274,8 +1265,7 @@ namespace Backend
        
         CurrentWindowMode = windowMode;
         
-        //Allowing event to come through to apply the effect
-        static_cast<ssGUI::Backend::BackendSystemInputX11_OpenGL3_3*>(ssGUI::Backend::BackendManager::GetInputInterface())->FetchEvents();
+        XFlush(WindowDisplay);
         
         //Allow status to be synced
         std::this_thread::sleep_for(std::chrono::milliseconds(16));

@@ -9,10 +9,16 @@ namespace ssGUI
 //namespace: ssGUI::EventCallbacks
 namespace EventCallbacks
 {
-    //class: ssGUI::EventCallbacks::ChildPositionChangedEventCallback
-    //This event callback is triggered *after* <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> is called.
-    //The child that is passed to <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> will be the source 
-    //for triggering this event callback.
+    /*class: ssGUI::EventCallbacks::ChildPositionChangedEventCallback
+    This event callback is triggered *after* <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> is called.
+    The child that is passed to <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> will be the source 
+    for triggering this event callback.
+    
+    The event will only be triggered once as a result of the ChangeChildOrderToXXXPosition function
+    and will not be triggered by the change of position for other children as a result of this function call.
+    
+    Meaning only the child GUI Object that is being **actively** changed position will have the event triggered
+    (i.e. the child that is passed to the function for changing the position).*/
     class ChildPositionChangedEventCallback : public BaseEventCallback
     {        
         public:

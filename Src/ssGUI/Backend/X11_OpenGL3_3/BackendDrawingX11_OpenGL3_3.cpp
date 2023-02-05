@@ -201,9 +201,12 @@ namespace Backend
 
     void BackendDrawingX11_OpenGL3_3::ClearBackBuffer(glm::u8vec3 clearColor) 
     {
-        GL_CHECK_ERROR( glClearColor(0.8, 0.6, 0.7, 1.0); );
-        
         GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );
+        
+        GL_CHECK_ERROR( glClearColor(   static_cast<float>(clearColor.r) / 255.f, 
+                                        static_cast<float>(clearColor.g) / 255.f, 
+                                        static_cast<float>(clearColor.b) / 255.f, 
+                                        255.f); );
     }
     
     void BackendDrawingX11_OpenGL3_3::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)

@@ -12,17 +12,7 @@ namespace EventCallbacks
 
     OnRecursiveChildAddEventCallback* OnRecursiveChildAddEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
-        OnRecursiveChildAddEventCallback* temp;
-        
-        if(copyListeners)
-            temp = new OnRecursiveChildAddEventCallback(*this);
-        else
-            temp = new OnRecursiveChildAddEventCallback();
-        
-        if(newContainer != nullptr)
-            newContainer->AddEventCallback(temp);
-        
-        return temp;
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(OnRecursiveChildAddEventCallback, newContainer, copyListeners);
     }
 
     const std::string OnRecursiveChildAddEventCallback::EVENT_NAME = "OnRecursiveChildAddEvent";

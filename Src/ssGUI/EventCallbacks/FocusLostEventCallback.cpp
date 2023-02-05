@@ -12,17 +12,7 @@ namespace EventCallbacks
 
     FocusLostEventCallback* FocusLostEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
-        FocusLostEventCallback* temp;
-        
-        if(copyListeners)
-            temp = new FocusLostEventCallback(*this);
-        else
-            temp = new FocusLostEventCallback();
-        
-        if(newContainer != nullptr)
-            newContainer->AddEventCallback(temp);
-        
-        return temp;
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(FocusLostEventCallback, newContainer, copyListeners);
     }
 
     const std::string FocusLostEventCallback::EVENT_NAME = "FocusLostEvent";

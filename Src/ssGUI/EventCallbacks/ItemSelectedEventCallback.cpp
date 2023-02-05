@@ -12,17 +12,7 @@ namespace EventCallbacks
 
     ItemSelectedEventCallback* ItemSelectedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
     {
-        ItemSelectedEventCallback* temp;
-        
-        if(copyListeners)
-            temp = new ItemSelectedEventCallback(*this);
-        else
-            temp = new ItemSelectedEventCallback();
-        
-        if(newContainer != nullptr)
-            newContainer->AddEventCallback(temp);
-        
-        return temp;
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(ItemSelectedEventCallback, newContainer, copyListeners);
     }
 
     const std::string ItemSelectedEventCallback::EVENT_NAME = "ItemSelectedEvent";

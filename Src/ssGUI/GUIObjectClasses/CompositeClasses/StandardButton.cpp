@@ -191,6 +191,8 @@ namespace ssGUI
                 int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();
                 glm::u8vec4 iconTintColor = iconImage == nullptr ? glm::u8vec4(0,0,0,0) : iconImage->GetImageTint();
+                
+                static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
                 switch(btn->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
@@ -227,7 +229,7 @@ namespace ssGUI
                         break;
                     case ssGUI::Enums::ButtonState::CLICKED:
                         break;
-                    case ssGUI::Enums::ButtonState::DISABLED:
+                    case ssGUI::Enums::ButtonState::NOT_INTERACTABLE:
                         bgcolor.r = bgcolor.r + buttonReactAmount > 255 ? 255 : bgcolor.r + buttonReactAmount;
                         bgcolor.g = bgcolor.g + buttonReactAmount > 255 ? 255 : bgcolor.g + buttonReactAmount;
                         bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;

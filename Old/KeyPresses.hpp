@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <algorithm>
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 //namespace: ssGUI
 namespace ssGUI

@@ -1,45 +1,24 @@
-#include "ssGUI/TestBase.hpp"
+#include "ssTest.hpp"
 
 //[Variables Declaration]
 
-SSGUI_TEST_INIT();
+ssTEST_INIT();
 
-void SetUp()
+ssTEST_SET_UP
 {
     //[Variables Initialization]
 }
 
-void CleanUp()
+ssTEST_CLEAN_UP
 {
     //[Variables Cleanup]
 }
 
-void DummyTest()
+ssTEST("DummyTest")
 {
-    //Perform some action...
+    //[Perform some action...]
 
-    SSGUI_TEST_OUTPUT_ASSERT(   __func__+std::string("(Optional Info)"),    //Test name and info if more than 1 test
-                                true);                                      //Evaluation
+    ssTEST_OUTPUT_ASSERT("Optional Info", true);
 }
 
-int main()
-{
-    SetUp();
-    
-    SSGUI_TEST_TITLE(SSGUI_TEST_FILE_NAME());
-    
-    try
-    {
-        DummyTest();
-    }
-    catch(...)
-    {
-        CleanUp();
-        throw;
-    }
-    
-    CleanUp();
-    
-    SSGUI_TEST_END();
-}
-
+ssTEST_END();

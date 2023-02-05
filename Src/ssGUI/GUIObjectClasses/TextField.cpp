@@ -5,9 +5,9 @@
 #include "ssGUI/Extensions/BoxShadow.hpp"
 
 #include "ssGUI/Factory.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include "ssLogger/ssLog.hpp"
 

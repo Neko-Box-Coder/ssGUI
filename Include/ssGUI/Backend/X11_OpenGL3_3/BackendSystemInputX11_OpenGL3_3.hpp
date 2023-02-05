@@ -45,6 +45,10 @@ namespace Backend
         std::unordered_map<std::string, CursorData> CustomCursors;                                      //See <GetCustomCursor>
         std::string CurrentCustomCursor;                                                                //See <GetCurrentCustomCursorName>
         std::chrono::high_resolution_clock::time_point StartTime;                                       //See <GetElapsedTime>
+        bool CursorHidden;                                                                              //(Internal variable) Flag to prevent showing/hiding cursor multiple times
+        std::vector<std::pair<Time, wchar_t>> InputCharsBuffer;                                         //(Internal variable) Characters buffer until IME finishes outputing
+        Time LastKeyDownTime;                                                                           //(Internal variable) Tracking time to filter out redirected key down events
+        Time LastKeyUpTime;                                                                             //(Internal variable) Tracking time to filter out redirected key up events
     ====================================================
     ======================== C++ =======================
     BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3() :    CurrentEvents(),
@@ -61,7 +65,10 @@ namespace Backend
                                                                             CurrentCursor(ssGUI::Enums::CursorType::NORMAL),
                                                                             CustomCursors(),
                                                                             CurrentCustomCursor(),
-                                                                            StartTime()
+                                                                            StartTime(),
+                                                                            CursorHidden(false),
+                                                                            LastKeyDownTime(0),
+                                                                            LastKeyUpTime(0)
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -93,7 +100,11 @@ namespace Backend
             std::unordered_map<std::string, CursorData> CustomCursors;                                      //See <GetCustomCursor>
             std::string CurrentCustomCursor;                                                                //See <GetCurrentCustomCursorName>
             std::chrono::high_resolution_clock::time_point StartTime;                                       //See <GetElapsedTime>
-        
+            bool CursorHidden;                                                                              //(Internal variable) Flag to prevent showing/hiding cursor multiple times
+            std::vector<std::pair<Time, wchar_t>> InputCharsBuffer;                                         //(Internal variable) Characters buffer until IME finishes outputing
+            Time LastKeyDownTime;                                                                           //(Internal variable) Tracking time to filter out redirected key down events
+            Time LastKeyUpTime;                                                                             //(Internal variable) Tracking time to filter out redirected key up events
+
             template <class T>
             void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
 
@@ -138,15 +149,15 @@ namespace Backend
 
             //function: GetLastMousePosition
             //See <BackendMainWindowInterface::GetLastMousePosition>
-            glm::ivec2 GetLastMousePosition(ssGUI::MainWindow* mainWindow) const override;
+            glm::ivec2 GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const override;
             
             //function: GetCurrentMousePosition
             //See <BackendMainWindowInterface::GetCurrentMousePosition>
-            glm::ivec2 GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const override;
+            glm::ivec2 GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const override;
             
             //function: SetMousePosition
             //See <BackendMainWindowInterface::SetMousePosition>
-            void SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow) override;
+            void SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow) override;
 
             //function: GetLastMouseButton
             //See <BackendMainWindowInterface::GetLastMouseButton>
@@ -182,7 +193,7 @@ namespace Backend
 
             //function: CreateCustomCursor
             //See <BackendMainWindowInterface::CreateCustomCursor>
-            void CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
+            void CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
             
             //function: SetCurrentCustomCursor
             //See <BackendMainWindowInterface::SetCurrentCustomCursor>
@@ -190,7 +201,7 @@ namespace Backend
 
             //function: GetCurrentCustomCursor
             //See <BackendMainWindowInterface::GetCurrentCustomCursor>
-            void GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot) override;
+            void GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot) override;
 
             //function: GetCurrentCustomCursorName
             //See <BackendMainWindowInterface::GetCurrentCustomCursorName>
@@ -198,7 +209,7 @@ namespace Backend
             
             //function: GetCustomCursor
             //See <BackendMainWindowInterface::GetCustomCursor>
-            void GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot) override;
+            void GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot) override;
 
             //function: HasCustomCursor
             //See <BackendMainWindowInterface::HasCustomCursor>
@@ -222,7 +233,7 @@ namespace Backend
 
             //function: SetClipboardImage
             //See <BackendMainWindowInterface::SetClipboardImage>
-            bool SetClipboardImage(const ssGUI::ImageData& imgData) override;
+            bool SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData) override;
             
             //function: SetClipboardText
             //See <BackendMainWindowInterface::SetClipboardText>
@@ -230,7 +241,7 @@ namespace Backend
             
             //function: GetClipboardImage
             //See <BackendMainWindowInterface::GetClipboardImage>
-            bool GetClipboardImage(ssGUI::ImageData& imgData) override;
+            bool GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData) override;
 
             //function: GetClipboardText
             //See <BackendMainWindowInterface::GetClipboardText>

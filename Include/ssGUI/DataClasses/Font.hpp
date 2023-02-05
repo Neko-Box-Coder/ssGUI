@@ -52,6 +52,8 @@ namespace ssGUI
             //function: GetUnderlineThickness
             virtual int GetUnderlineThickness(int charSize);
 
+            //TODO: Proxy functions to BackendFontInterface
+
             //function: Clone
             virtual Font* Clone();
     };

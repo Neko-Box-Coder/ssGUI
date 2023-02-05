@@ -1,15 +1,15 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssLogger/ssLog.hpp"
-#include "ssGUI/TestBase.hpp"
 #include "ssGUI/Factory.hpp"
+#include "ssTest.hpp"
 
 ssGUI::Backend::BackendDrawingInterface* drawing = nullptr;
 ssGUI::Backend::BackendMainWindowInterface* window = nullptr;
 ssGUI::Backend::BackendSystemInputInterface* inputs = nullptr;
 
-SSGUI_TEST_INIT();
+ssTEST_INIT();
 
-void SetUp()
+ssTEST_SET_UP
 {
     drawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
     window = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
@@ -17,82 +17,77 @@ void SetUp()
     inputs->UpdateInput();
 }
 
-void CleanUp()
+ssTEST_CLEAN_UP
 {
     ssGUI::Factory::Dispose(drawing);
     ssGUI::Factory::Dispose(window);
     ssGUI::Factory::Dispose(inputs);
 }
 
-void WindowPositionTest()
+ssTEST("WindowPositionTest")
 {
-    //SSGUI_TEST_TITLE("SetWindowPosition And GetWindowPosition");
-    
     glm::ivec2 pos(300, 300);
     window->SetWindowPosition(pos);
     
-    
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetWindowPosition() == pos);
+    ssTEST_OUTPUT_ASSERT(window->GetWindowPosition() == pos);
     //ssLOG_LINE("window->GetWindowPosition(): "<<window->GetWindowPosition().x<<", "<<window->GetWindowPosition().y);
 }
 
-void GetPositionOffsetTest()
+ssTEST("GetPositionOffsetTest")
 {
-    SSGUI_TEST_OUTPUT_ASSERT(   __func__, 
-                                window->GetPositionOffset().x >= 0 && window->GetPositionOffset().y >= 0);
+    ssTEST_OUTPUT_ASSERT(window->GetPositionOffset().x >= 0 && window->GetPositionOffset().y >= 0);
     
     //ssLOG_LINE("window->GetPositionOffset(): "<<window->GetPositionOffset().x<<", "<<window->GetPositionOffset().y);
 }
 
-void WindowSizeTest()
+ssTEST("WindowSizeTest")
 {
     glm::ivec2 size(500, 500);
     window->SetWindowSize(size);
     
     glm::ivec2 windowSize = window->GetWindowSize();
     //ssLOG_LINE("windowSize: "<<windowSize.x<<", "<<windowSize.y);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetWindowSize() == size);
+    ssTEST_OUTPUT_ASSERT(window->GetWindowSize() == size);
 }
 
-void RenderSizeTest()
+ssTEST("RenderSizeTest")
 {
     glm::ivec2 size(500, 500);
     window->SetRenderSize(size);
     
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetRenderSize() == size);
+    ssTEST_OUTPUT_ASSERT(window->GetRenderSize() == size);
     
     //SFML can't return window size
     #ifndef SSGUI_MAIN_BACKEND_SFML
-        SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Against Window Size)"), window->GetRenderSize() != window->GetWindowSize());
+        ssTEST_OUTPUT_ASSERT("Against Window Size", window->GetRenderSize() != window->GetWindowSize());
     #else
-        SSGUI_TEST_OUTPUT_SKIP(__func__+std::string("(Against Window Size)"));
+        ssTEST_OUTPUT_SKIP("Against Window Size");
     #endif
 }
 
-void ValidateBothSizesTest()
+ssTEST("ValidateBothSizesTest")
 {
     window->SetRenderSize(glm::ivec2(1280, 720));
     glm::ivec2 windowSize = window->GetWindowSize();
     window->SetWindowSize(windowSize);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(1)"), window->GetRenderSize() == glm::ivec2(1280, 720));
+    ssTEST_OUTPUT_ASSERT("1", window->GetRenderSize() == glm::ivec2(1280, 720));
     
     window->SetWindowSize(glm::ivec2(600, 400));
     glm::ivec2 renderSize = window->GetRenderSize();
     window->SetRenderSize(renderSize);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(2)"), window->GetWindowSize() == glm::ivec2(600, 400));
+    ssTEST_OUTPUT_ASSERT("2", window->GetWindowSize() == glm::ivec2(600, 400));
 }
 
-
-void CloseTest()
+ssTEST("CloseTest")
 {
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Not Closed)"), !window->IsClosed());
+    ssTEST_OUTPUT_ASSERT("Not Closed", !window->IsClosed());
     window->Close();
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, window->IsClosed());
-    CleanUp();
-    SetUp();
+    ssTEST_OUTPUT_ASSERT(window->IsClosed());   
+    ssTEST_CALL_CLEAN_UP();
+    ssTEST_CALL_SET_UP();
 }
 
-void CloseEventTest()
+ssTEST("CloseEventTest")
 {
     bool called = false;
     int id = window->AddOnCloseEvent(   [&]()
@@ -102,141 +97,98 @@ void CloseEventTest()
                                         });
     window->Close();
     
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Event Called)"), called);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Close Abort)"), !window->IsClosed());
+    ssTEST_OUTPUT_ASSERT("Event Called", called);
+    ssTEST_OUTPUT_ASSERT("Close Abort", !window->IsClosed());
     
     if(!window->IsClosed())
     {
         called = false;
         window->RemoveOnCloseEvent(id);
         window->Close();
-        SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(Event Remove)"), !called);
+        ssTEST_OUTPUT_ASSERT("Event Remove", !called);
     }
     
-    CleanUp();
-    SetUp();
+    ssTEST_CALL_CLEAN_UP();
+    ssTEST_CALL_SET_UP();
 }
 
-void TitleTest()
+ssTEST("TitleTest")
 {
     std::wstring someTitle = L"someTitle";
     window->SetTitle(someTitle);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetTitle() == someTitle);
+    ssTEST_OUTPUT_ASSERT(window->GetTitle() == someTitle);
 }
 
-void VisibleTest()
+ssTEST("VisibleTest")
 {
     window->SetVisible(false);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(False)"), !window->IsVisible());
+    ssTEST_OUTPUT_ASSERT("False", !window->IsVisible());
     window->SetVisible(true);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(True)"), window->IsVisible());
+    ssTEST_OUTPUT_ASSERT("True", window->IsVisible());
 }
 
-void VsyncTest()
+ssTEST("VsyncTest()")
 {
     window->SetVSync(false);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(False)"), !window->IsVSync());
+    ssTEST_OUTPUT_ASSERT("False", !window->IsVSync());
     window->SetVSync(true);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(True)"), window->IsVSync());
+    ssTEST_OUTPUT_ASSERT("True", window->IsVSync());
 }
 
-void MSAATest()
+ssTEST("MSAATest()")
 {
     window->SetMSAA(4);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetMSAA() == 4);
+    ssTEST_OUTPUT_ASSERT(window->GetMSAA() == 4);
 }
 
-void TitlebarTest()
+ssTEST("TitlebarTest()")
 {
     window->SetTitlebar(false);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(False)"), !window->HasTitlebar());
+    ssTEST_OUTPUT_ASSERT("False", !window->HasTitlebar());
     window->SetTitlebar(true);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(True)"), window->HasTitlebar());
+    ssTEST_OUTPUT_ASSERT("True", window->HasTitlebar());
 }
 
-void ResizableTest()
+ssTEST("ResizableTest()")
 {
     window->SetResizable(false);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(False)"), !window->IsResizable());
+    ssTEST_OUTPUT_ASSERT("False", !window->IsResizable());
     window->SetResizable(true);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(True)"), window->IsResizable());
+    ssTEST_OUTPUT_ASSERT("True", window->IsResizable());
 }
 
-void CloseButtonTest()
+ssTEST("CloseButtonTest()")
 {
     window->SetCloseButton(false);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(False)"), !window->HasCloseButton());
+    ssTEST_OUTPUT_ASSERT("False", !window->HasCloseButton());
     window->SetCloseButton(true);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(True)"), window->HasCloseButton());
+    ssTEST_OUTPUT_ASSERT("True", window->HasCloseButton());
 }
 
-void WindowModeTest()
+ssTEST("WindowModeTest()")
 {
     window->SetWindowMode(ssGUI::Enums::WindowMode::BORDERLESS);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(BORDERLESS)"), window->GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS);
+    ssTEST_OUTPUT_ASSERT("BORDERLESS", window->GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS);
     
     window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(NORMAL)"), window->GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL);
+    ssTEST_OUTPUT_ASSERT("NORMAL", window->GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL);
     
     window->SetWindowMode(ssGUI::Enums::WindowMode::FULLSCREEN);
-    SSGUI_TEST_OUTPUT_ASSERT(__func__+std::string("(FULLSCREEN)"), window->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN);
+    ssTEST_OUTPUT_ASSERT("FULLSCREEN", window->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN);
     
     window->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
 }
 
-void CloneTest()
+ssTEST("CloneTest()")
 {
     auto* windowClone = window->Clone();
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, windowClone != nullptr);
+    ssTEST_OUTPUT_ASSERT(windowClone != nullptr);
     ssGUI::Factory::Dispose(windowClone);
 }
 
-void GetRawHandleTest()
+ssTEST("GetRawHandleTest()")
 {
-    SSGUI_TEST_OUTPUT_ASSERT(__func__, window->GetRawHandle() != nullptr);
+    ssTEST_OUTPUT_ASSERT(window->GetRawHandle() != nullptr);
 }
 
-int main()
-{
-    SetUp();
-
-    SSGUI_TEST_TITLE(SSGUI_TEST_FILE_NAME());
-    
-    try
-    {
-        WindowPositionTest();
-        GetPositionOffsetTest();
-        WindowSizeTest();
-        RenderSizeTest();
-        ValidateBothSizesTest();
-        CloseTest();
-        CloseEventTest();
-        TitleTest();
-        //Can't test SetIcon
-        VisibleTest();
-        VsyncTest();
-        //Can't test SetFocus
-        //Can't test IsFocused
-        //Can't test AddFocusChangedByUserEvent
-        //Can't test RemoveFocusChangedByUserEvent
-        MSAATest();
-        TitlebarTest();
-        ResizableTest();
-        CloseButtonTest();
-        WindowModeTest();
-        CloneTest();
-        
-        //Can't test SetGLContext
-        GetRawHandleTest();
-    }
-    catch(...)
-    {
-        CleanUp();
-        throw;
-    }
-    
-    CleanUp();
-
-    SSGUI_TEST_END();
-}
-
+ssTEST_END();

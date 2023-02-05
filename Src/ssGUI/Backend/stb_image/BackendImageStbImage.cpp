@@ -27,6 +27,11 @@ namespace Backend
             ImageSizeInBytes = other.ImageSizeInBytes;
             memcpy(ImageBuffer, other.ImageBuffer, ImageSizeInBytes);
         }
+        else
+        {
+            ImageBuffer = nullptr;
+            ImageSizeInBytes = 0;
+        }
         
         CurrentImageFormat = other.CurrentImageFormat;
         ImageWidth = other.ImageWidth;
@@ -63,13 +68,7 @@ namespace Backend
     }
 
     bool BackendImageStbImage::LoadFromPath(std::string path)
-    {
-        if(ImageBuffer != nullptr)
-        {
-            free(ImageBuffer);
-            ImageSizeInBytes = 0;
-        }
-    
+    {    
         std::ifstream inputStream(path, std::ios::in | std::ios::binary | std::ios::ate);
         
         if(!inputStream)
@@ -77,7 +76,6 @@ namespace Backend
             ssLOG_LINE("Failed to open file");
             return false;
         }
-        
         size_t fileSize = inputStream.tellg();
         inputStream.seekg(0, std::ios::beg);
 
@@ -105,6 +103,7 @@ namespace Backend
         if(ImageBuffer != nullptr)
         {
             free(ImageBuffer);
+            ImageBuffer =  nullptr;
             ImageSizeInBytes = 0;
         }
     
@@ -196,6 +195,7 @@ namespace Backend
         if(ImageBuffer != nullptr)
         {
             free(ImageBuffer);
+            ImageBuffer = nullptr;
             ImageSizeInBytes = 0;
         }
         

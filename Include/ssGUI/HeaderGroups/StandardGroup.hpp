@@ -24,6 +24,7 @@
 #include "ssGUI/ssGUIManager.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "ssGUI/Factory.hpp"
-#include "ssGUI/HeaderGroups/KeyGroup.hpp"
+#include "ssGUI/HeaderGroups/InputGroup.hpp"
+#include "ssGUI/HelperClasses/GenericInputToString.hpp"
 
 #endif

@@ -98,6 +98,7 @@ namespace EventCallbacks
             
             //function: BindToObject
             //Binds this event callback to a GUI object
+            //DO NOT USE THIS FUNCTION, use <ssGUI::EventCallbackManager::AddEventCallback> instead
             virtual void BindToObject(ssGUI::GUIObject* bindObj) = 0;
 
             //function: AddObjectReference
