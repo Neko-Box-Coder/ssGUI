@@ -1,12 +1,14 @@
 > ⚠️ This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
-### 🔌 Status of ssGUI
+> ⚠️ Documentation is for the current stable version (v0.93.00.b), not for this version. Some info may not up-to-date.
+### 🔌 Status of ssGUI (v0.93.03)
 - #### 🔀 Branches
-    - ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)
-        <!-- - ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434) -->
-    - ![](https://img.shields.io/badge/Development_Release-v0.93.02-brightgreen?style=for-the-badge&logo=GitHub)
+    <!--- ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)-->
+    - ![](https://img.shields.io/badge/Latest_Development-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)
+        <!--- ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434)-->
+    - ![](https://img.shields.io/badge/Development_Release-v0.93.03-brightgreen?style=for-the-badge&logo=GitHub)
     - ![](https://img.shields.io/badge/Stable_Release-v0.93.00.b-brightgreen?style=for-the-badge&logo=GitHub)
-    - ![](https://img.shields.io/badge/Master-v0.93.02-E5FF3C?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Main-v0.93.03-brightgreen?style=for-the-badge&logo=GitHub)
 
 - #### 🖥️ OS support
     - ![](https://img.shields.io/badge/Linux-Working-brightgreen?style=for-the-badge&logo=linux&logoColor=white)
@@ -15,7 +17,7 @@
 
 - #### 📈 Current Progress
     - ![](https://img.shields.io/badge/v0.93-|█████ 100％ █████|-29D236?style=for-the-badge&logo=)
-    - ![](https://img.shields.io/badge/v0.94-|███──  30％  ─────|-E5FF3C?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.94-|█████  70％  ██───|-E5FF3C?style=for-the-badge)
 ---
 
 ### ❓ What is ssGUI?
@@ -44,7 +46,7 @@ Currently, ssGUI only supports SFML but it is architectured to also be compatibl
 **Simple To Use**
 
 ![](DocsGeneration/ND_Config/Images/CrossPlatform.png)
-**Cross Platform (Depends on Backend)**
+**Cross Platform**
 
 ![](DocsGeneration/ND_Config/Images/Documentation.png)
 **Awesome Documentations**
@@ -113,44 +115,39 @@ Currently, ssGUI only supports SFML but it is architectured to also be compatibl
 ![](DocsGeneration/ND_Config/Images/IntroductionExample.gif) 
 ```C++
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
+#include "ssGUI/Extensions/Layout.hpp"
 
 //Readme example
+using namespace ssGUI::Enums;
 int main()
 {
-    //Create the main window
-    ssGUI::MainWindow mainWindow;
-    mainWindow.SetSize(glm::vec2(450, 110));
-    mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
-
-    //Create a text widget and set the respective properties
-    ssGUI::Text text;
-    text.SetSize(glm::vec2(450, 45));
+    ssGUI::MainWindow mainWindow;                                               //Create the main window for showing content
+    mainWindow.SetRenderSize(glm::vec2(450, 80));
+    auto* layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+    mainWindow.AddExtension(layout);                                            //Add layout for auto sizing child GUI objects
+    
+    ssGUI::Text text;                                                           //Create a text widget and set the respective properties
     text.SetNewCharacterFontSize(17);
     text.SetText("Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
-
-    //Create a button
-    ssGUI::StandardButton button;
-    button.SetSize(glm::vec2(40, 30));
-    button.SetPosition(glm::vec2(205, 60));
-
-    //Set the parents
-    button.SetParent(&mainWindow);
-    text.SetParent(&mainWindow);
-
-    //Create the GUIManager, add the main window and start running
-    ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
-    guiManager.AddPostGUIUpdateEventListener
+    text.SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);  //We center the text right above the button we will be adding later
+    text.SetParent(&mainWindow);                                                //Attach text to main window, the layout will control its size.
+    
+    ssGUI::StandardButton button;                                               //Create a standard button, just a more fancier button.
+    button.SetSize(glm::vec2(50, 30));
+    layout->AddChildWithAlignment(&button,  AlignmentHorizontal::CENTER,        //Attach button to main window with alignment, so that the size
+                                            AlignmentVertical::CENTER);         //      stays the same and won't be changed by layout
+                                                                                
+    ssGUI::ssGUIManager guiManager;                                             //Create the GUIManager, which manages the flow of the program.
+    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);                    //Add the main window (which has both text and button parented to it)
+    guiManager.AddPostGUIUpdateEventListener                                    
     (
         [&]()
         {
-            if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText(L"(`oωo´)");
+            if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)   //Then we want to check if the button is pressed every frame
+                text.SetText(L"(`oωo´)");                                       //If it is, we change the text to a cute little face :)
         }
     );
-    guiManager.StartRunning();
+    guiManager.StartRunning();                                                  //Finally we start running the program
     return 0;
 }
 ```
