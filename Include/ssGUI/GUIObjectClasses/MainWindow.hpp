@@ -138,6 +138,14 @@ namespace ssGUI
             //function: GetRelativeMousePosition
             //A helper function that can return the relative position to mainWindow. Normally use with <RealtimeInputInfo>
             virtual glm::ivec2 GetRelativeMousePosition(glm::ivec2 mousePos) const;
+            
+            //function: SetWindowSize
+            //See <BackendMainWindowInterface::SetWindowSize>
+            virtual void SetWindowSize(glm::ivec2 size);
+            
+            //function: GetWindowSize
+            //See <BackendMainWindowInterface::GetWindowSize>
+            virtual glm::ivec2 GetWindowSize() const;
 
             //function: SetEnabled
             //Proxy function for <SetVisible>
@@ -180,11 +188,11 @@ namespace ssGUI
             virtual void SetGlobalPosition(glm::vec2 position) override;
             
             //function: GetSize
-            //See <BackendMainWindowInterface::GetWindowSize>
+            //See <BackendMainWindowInterface::GetRenderSize>
             virtual glm::vec2 GetSize() const override;
             
             //function: SetSize
-            //See <BackendMainWindowInterface::SetWindowSize>
+            //See <BackendMainWindowInterface::SetRenderSize>
             virtual void SetSize(glm::vec2 size) override;
             
             //function: SetRenderSize
@@ -210,6 +218,30 @@ namespace ssGUI
             //function: Internal_OnClose
             //See <Window::Internal_OnClose>
             virtual void Internal_OnClose() override; 
+            
+            //function: SetTitlebarHeight
+            //This has no effect, you cannot set titlebar height
+            virtual void SetTitlebarHeight(int height) override;
+            
+            //function: GetTitlebarHeight
+            //This will just return "GetPositionOffset().y"
+            virtual int GetTitlebarHeight() const override;
+
+            //function: SetTitlebarColor
+            //This has no effect, you cannot set titlebar color
+            virtual void SetTitlebarColor(glm::u8vec4 color) override;
+
+            //function: GetTitlebarColor
+            //This will always return white
+            virtual glm::u8vec4 GetTitlebarColor() const override;
+
+            //function: SetAdaptiveTitlebarColor
+            //This has no effect, you cannot set titlebar color
+            virtual void SetAdaptiveTitlebarColor(bool adaptive) override;
+
+            //function: IsAdaptiveTitlebarColor
+            //This will always return false
+            virtual bool IsAdaptiveTitlebarColor() const override;
             
             //function: Internal_Draw
             //This checks for window state before rendering
