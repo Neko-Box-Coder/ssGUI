@@ -1631,6 +1631,14 @@ namespace ssGUI
     {
         return CurrentVerticalAlignment;
     }
+    
+    void Text::SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
+    {
+        CurrentHorizontalAlignment = hori;
+        CurrentVerticalAlignment = vert;
+        RecalculateTextNeeded = true;
+        RedrawObject();    
+    }
 
     void Text::AddFont(ssGUI::Font* font)
     {
