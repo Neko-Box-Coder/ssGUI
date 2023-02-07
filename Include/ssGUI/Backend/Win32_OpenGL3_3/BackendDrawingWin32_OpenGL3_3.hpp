@@ -26,7 +26,7 @@ namespace Backend
     private:
         int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
         glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
-        std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+        std::unordered_map<CharTextureIdentifier, GLuint> CharTextures;                         //(Internal variable) This is used to keep track of all the character textures 
         std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
     ====================================================
     ======================== C++ =======================
@@ -44,7 +44,7 @@ namespace Backend
         private:
             int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
             glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
-            std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+            std::unordered_map<CharTextureIdentifier, GLuint> CharTextures;                         //(Internal variable) This is used to keep track of all the character textures 
             std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
 
             ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();

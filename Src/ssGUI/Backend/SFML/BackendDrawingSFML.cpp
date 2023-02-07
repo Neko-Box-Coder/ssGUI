@@ -18,7 +18,6 @@ namespace Backend
     BackendDrawingSFML::BackendDrawingSFML(BackendDrawingSFML const& other)
     {
         BackendIndex = other.BackendIndex;   
-        CharTexturesQueue = other.CharTexturesQueue;
         
         #ifndef SSGUI_FONT_BACKEND_SFML
             CharTextures = other.CharTextures;
@@ -40,7 +39,6 @@ namespace Backend
     }
 
     BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0),
-                                                CharTexturesQueue(),
                                                 #ifndef SSGUI_FONT_BACKEND_SFML
                                                     CharTextures(),
                                                 #endif

@@ -269,7 +269,9 @@ namespace Backend
         GetMainWindow()->SetGLContext();
     
         glm::ivec2 imgSize = charImgData.GetSize();
-        if(CharTextures.find(character) == CharTextures.end())
+        CharTextureIdentifier curIdentifier = CharTextureIdentifier(&rawFont, characterSize, character);
+        
+        if(CharTextures.find(curIdentifier) == CharTextures.end())
         {
             GLuint textureId = 0;
 
@@ -283,22 +285,22 @@ namespace Backend
             //Convert it to rgba32
             uint8_t* rgba32Img = new uint8_t[charImgData.GetSize().x * charImgData.GetSize().y * 4];
             ssGUI::ImageFormat format;
-            void* rawPixelFormat = charImgData.GetPixelPtr(format);
+            void* rawPixel = charImgData.GetPixelPtr(format);
             
-            ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPixelFormat, format, imgSize);
+            ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPixel, format, imgSize);
 
             GL_CHECK_ERROR( glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgSize.x, imgSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
                             rgba32Img); );
 
             GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, textureId); );
 
-            CharTextures[character] = textureId;
+            CharTextures[curIdentifier] = textureId;
 
             delete[] rgba32Img;
         }
         else
         {
-            GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, CharTextures[character]); );
+            GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, CharTextures[curIdentifier]); );
         }
          
         GL_CHECK_ERROR( glEnable(GL_TEXTURE_2D); );
