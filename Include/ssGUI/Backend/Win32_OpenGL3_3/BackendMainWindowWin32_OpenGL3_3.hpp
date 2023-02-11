@@ -57,6 +57,7 @@ namespace Backend
         bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
         Win32_OpenGL_Handles PublicHandles;                                             //See <GetRawHandle>
         ssGUI::Enums::WindowMode CurrentWindowMode;                                     //See <GetWindowMode>
+        bool VSync;                                                                     //See <IsVSync>
 
         const wchar_t* CLASS_NAME = L"ssGUI MainWindow";                                //(Internal variable) Const C wide string to register this process
     ====================================================
@@ -77,7 +78,8 @@ namespace Backend
                                                                             CloseButton(true),
                                                                             IsClosingAborted(false),
                                                                             PublicHandles(),
-                                                                            CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL)
+                                                                            CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL),
+                                                                            VSync(false)
     {
         // Register the window class in order to create it
         
@@ -119,6 +121,7 @@ namespace Backend
             bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
             Win32_OpenGL_Handles PublicHandles;                                             //See <GetRawHandle>
             ssGUI::Enums::WindowMode CurrentWindowMode;                                     //See <GetWindowMode>
+            bool VSync;                                                                     //See <IsVSync>
 
             const wchar_t* CLASS_NAME = L"ssGUI MainWindow";                                //(Internal variable) Const C wide string to register this process
         

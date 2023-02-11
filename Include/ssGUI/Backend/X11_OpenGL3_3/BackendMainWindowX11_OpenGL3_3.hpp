@@ -66,6 +66,7 @@ namespace Backend
         glm::ivec2 LastPositionBeforeHidden;                                            //(Internal variable) Used to set the position back to original when coming out from hidden state
         std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
         std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
+        bool VSync;                                                                     //See <IsVSync>
     ====================================================
     ======================== C++ =======================
     BackendMainWindowX11_OpenGL3_3::BackendMainWindowX11_OpenGL3_3() :  WindowDisplay(nullptr),
@@ -89,7 +90,8 @@ namespace Backend
                                                                         Visible(true),
                                                                         LastPositionBeforeHidden(),
                                                                         OnCloseCallback(),
-                                                                        ExternalFocusChangedCallback()
+                                                                        ExternalFocusChangedCallback(),
+                                                                        VSync(false)
     {        
         BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
         
@@ -174,6 +176,7 @@ namespace Backend
             glm::ivec2 LastPositionBeforeHidden;                                            //(Internal variable) Used to set the position back to original when coming out from hidden state
             std::vector<std::function<void()>> OnCloseCallback;                             //See <AddOnCloseEvent>
             std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;    //See <AddFocusChangedByUserEvent>
+            bool VSync;                                                                     //See <IsVSync>
             
             BackendMainWindowX11_OpenGL3_3& operator=(BackendMainWindowX11_OpenGL3_3 const& other);
 

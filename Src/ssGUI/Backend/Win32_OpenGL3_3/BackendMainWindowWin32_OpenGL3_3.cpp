@@ -393,6 +393,8 @@ namespace Backend
         CurrentWindowHandle = hwnd;
         CurrentOpenGLContext = hRC;
 
+        SetVSync(VSync);
+
         if(!fullscreen)
             ApplyAllSettingsToWindow();
     }
@@ -565,6 +567,7 @@ namespace Backend
         IsClosingAborted = false;
         PublicHandles = Win32_OpenGL_Handles();
         CurrentWindowMode = other.CurrentWindowMode;
+        VSync = other.VSync;
     
         glm::ivec2 windowSize = GetWindowSize();
         ssGUI_CreateWindow(windowSize.x, windowSize.y, true, CLASS_NAME);
@@ -588,7 +591,8 @@ namespace Backend
                                                                             CloseButton(true),
                                                                             IsClosingAborted(false),
                                                                             PublicHandles(),
-                                                                            CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL)
+                                                                            CurrentWindowMode(ssGUI::Enums::WindowMode::NORMAL),
+                                                                            VSync(false)
     {
         // Register the window class in order to create it
         

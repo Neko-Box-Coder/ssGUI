@@ -38,6 +38,7 @@ namespace Backend
         LastPositionBeforeHidden = other.LastPositionBeforeHidden;
         OnCloseCallback = std::vector<std::function<void()>>();
         ExternalFocusChangedCallback = std::vector<std::function<void(bool focused)>>();
+        VSync = other.VSync;
         
         //Create the window with the parameter we have
         BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
@@ -328,6 +329,8 @@ namespace Backend
         XWindowAttributes gwa;
         XGetWindowAttributes(WindowDisplay, WindowId, &gwa);
         glViewport(0, 0, gwa.width, gwa.height);
+
+        SetVSync(VSync);
 
         SetFocus(true, false);         
          
@@ -742,7 +745,8 @@ namespace Backend
                                                                         Visible(true),
                                                                         LastPositionBeforeHidden(),
                                                                         OnCloseCallback(),
-                                                                        ExternalFocusChangedCallback()
+                                                                        ExternalFocusChangedCallback(),
+                                                                        VSync(false)
     {        
         BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
         
@@ -1034,9 +1038,6 @@ namespace Backend
         glXSwapIntervalEXT(WindowDisplay, glXGetCurrentDrawable(), (int)vSync);
         
         XFlush(WindowDisplay);
-        
-        //Allow status to be synced
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     bool BackendMainWindowX11_OpenGL3_3::IsVSync() const
@@ -1075,9 +1076,6 @@ namespace Backend
         }
         
         XFlush(WindowDisplay);
-        
-        //Allow status to be synced
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
     
     //https://gist.github.com/kui/2622504
