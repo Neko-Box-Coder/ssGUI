@@ -132,7 +132,7 @@ int main()
     text.SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);  //We center the text right above the button we will be adding later
     text.SetParent(&mainWindow);                                                //Attach text to main window, the layout will control its size.
     
-    ssGUI::StandardButton button;                                               //Create a standard button, just a more fancier button.
+    ssGUI::StandardButton button;                                               //Create a standard button, just a fancier button.
     button.SetSize(glm::vec2(50, 30));
     layout->AddChildWithAlignment(&button,  AlignmentHorizontal::CENTER,        //Attach button to main window with alignment, so that the size
                                             AlignmentVertical::CENTER);         //      stays the same and won't be changed by layout

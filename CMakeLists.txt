@@ -364,8 +364,8 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName)
             continue()
         endif()
 
-        # For now, skip custom graphics example if we don't have SFML backend
-        if(CUR_NAME STREQUAL "CustomGraphicsExample" AND NOT ssGUI_MAIN_BACKEND STREQUAL "SFML")
+        # For now, skip custom graphics example if we are using SFML backend
+        if(CUR_NAME STREQUAL "CustomGraphicsExampleV2" AND ssGUI_MAIN_BACKEND STREQUAL "SFML")
             continue()
         endif()
 
