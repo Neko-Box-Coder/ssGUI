@@ -186,7 +186,7 @@ namespace ssGUI
             ListenerKey, this,
             [](ssGUI::EventInfo info)
             {
-                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.EventCallbackContainer);
+                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.Container);
                 auto iconImage = btn->GetButtonIconObject();
                 int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();

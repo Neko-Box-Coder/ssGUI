@@ -53,9 +53,9 @@ int main()
         [textIndex](ssGUI::EventInfo info)
         {
             //When the button is clicked, sets the text
-            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                ssGUI::Text* text = static_cast<ssGUI::Text*>(info.EventCallbackReferences->GetObjectReference(textIndex));
+                ssGUI::Text* text = static_cast<ssGUI::Text*>(info.References->GetObjectReference(textIndex));
                 text->SetText(L"(`oωo´)");
             }
         }

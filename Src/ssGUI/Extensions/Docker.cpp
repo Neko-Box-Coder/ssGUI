@@ -637,7 +637,7 @@ namespace Extensions
             EXTENSION_NAME,
             [](ssGUI::EventInfo info)
             {
-                if(!info.EventCallbackContainer->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+                if(!info.Container->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
                 {
                     ssLOG_LINE("Failed to find docker extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
@@ -648,7 +648,7 @@ namespace Extensions
                     // return;
 
                 ssGUI::Extensions::Docker* containerDocker = static_cast<ssGUI::Extensions::Docker*>
-                        (info.EventCallbackContainer->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
+                        (info.Container->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
 
                 containerDocker->ChildRemoved(info.EventSource);
             }

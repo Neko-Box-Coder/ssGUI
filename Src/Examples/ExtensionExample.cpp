@@ -43,7 +43,7 @@ int main()
         "AnyKey",
         [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::Border>())
                     window.RemoveAnyExtension<ssGUI::Extensions::Border>();
@@ -61,7 +61,7 @@ int main()
         "AnyKey",
         [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::BoxShadow>())
                     window.RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
@@ -78,7 +78,7 @@ int main()
         "AnyKey",
         [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::RoundedCorners>())
                     window.RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
@@ -105,7 +105,7 @@ int main()
         "AnyKey",
         [&](ssGUI::EventInfo info)
         {
-            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
                 if(window.IsAnyExtensionExist<ssGUI::Extensions::Outline>())
                     window.RemoveAnyExtension<ssGUI::Extensions::Outline>();

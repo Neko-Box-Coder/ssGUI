@@ -89,8 +89,8 @@ namespace EventCallbacks
         {
             ssGUI::EventInfo info;
             info.EventSource = source;
-            info.EventCallbackContainer = Container;
-            info.EventCallbackReferences = &CurrentObjectsReferences;
+            info.Container = Container;
+            info.References = &CurrentObjectsReferences;
             it->second(info);
         }
         ssLOG_FUNC_EXIT();

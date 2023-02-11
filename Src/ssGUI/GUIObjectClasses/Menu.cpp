@@ -157,9 +157,9 @@ namespace ssGUI
                 auto btn = static_cast<ssGUI::Button*>(info.EventSource);
                 if(btn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
                 {
-                    if(info.EventCallbackReferences->GetObjectReference(menuIndex) != nullptr)
+                    if(info.References->GetObjectReference(menuIndex) != nullptr)
                     {
-                        auto curParent = info.EventCallbackReferences->GetObjectReference(menuIndex);
+                        auto curParent = info.References->GetObjectReference(menuIndex);
                         
                         while (true)
                         {
@@ -213,13 +213,13 @@ namespace ssGUI
                     btn->SetFocus(true);
                     
                     //Show the submenu when submenu item being hovered
-                    if(info.EventCallbackReferences->GetObjectReference(subMenuIndex) != nullptr)
+                    if(info.References->GetObjectReference(subMenuIndex) != nullptr)
                     {
-                        auto curSubMenu = static_cast<ssGUI::Menu*>(info.EventCallbackReferences->GetObjectReference(subMenuIndex));
+                        auto curSubMenu = static_cast<ssGUI::Menu*>(info.References->GetObjectReference(subMenuIndex));
 
                         //Update the menu target
-                        if(info.EventCallbackReferences->GetObjectReference(menuIndex) != nullptr)
-                            curSubMenu->SetMenuTarget(static_cast<ssGUI::Menu*>(info.EventCallbackReferences->GetObjectReference(menuIndex))->GetMenuTarget());
+                        if(info.References->GetObjectReference(menuIndex) != nullptr)
+                            curSubMenu->SetMenuTarget(static_cast<ssGUI::Menu*>(info.References->GetObjectReference(menuIndex))->GetMenuTarget());
                         
                         //Check Top right corner
                         if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0)) == ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT)

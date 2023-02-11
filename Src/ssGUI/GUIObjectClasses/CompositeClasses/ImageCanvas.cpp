@@ -446,7 +446,7 @@ namespace ssGUI
             ListenerKey, this,
             [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -485,7 +485,7 @@ namespace ssGUI
             ListenerKey, this,
             [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 

@@ -32,8 +32,8 @@ namespace ssGUI
             this,
             [index, dropdownRefIndex](ssGUI::EventInfo info)
             {
-                auto itemContainer = static_cast<ssGUI::MenuItem*>(info.EventCallbackContainer);
-                auto dropdown = static_cast<ssGUI::Dropdown*>(info.EventCallbackReferences->GetObjectReference(dropdownRefIndex));
+                auto itemContainer = static_cast<ssGUI::MenuItem*>(info.Container);
+                auto dropdown = static_cast<ssGUI::Dropdown*>(info.References->GetObjectReference(dropdownRefIndex));
 
                 if(itemContainer == nullptr || dropdown == nullptr)
                     return;
@@ -129,7 +129,7 @@ namespace ssGUI
             this,
             [](ssGUI::EventInfo info)
             {
-                auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.EventCallbackContainer);
+                auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.Container);
                 
                 auto dropdownMenu = dropdownContainer->Internal_GetObjectsReferences()->GetObjectReference(dropdownContainer->DropdownMenu);
                 if(dropdownMenu == nullptr)
@@ -156,14 +156,14 @@ namespace ssGUI
                 dropdownContainer->Toggle = true;
                 
                 auto castedDropdownMenu = static_cast<ssGUI::Menu*>(dropdownMenu);
-                if(castedDropdownMenu->CanForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition() + glm::vec2(0, info.EventCallbackContainer->GetSize().y), 
+                if(castedDropdownMenu->CanForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y), 
                     ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT))
                 {
-                    castedDropdownMenu->ForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition() + glm::vec2(0, info.EventCallbackContainer->GetSize().y),
+                    castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y),
                         ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT);
                 }
                 else
-                    castedDropdownMenu->ForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
+                    castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
             }
         );
     }

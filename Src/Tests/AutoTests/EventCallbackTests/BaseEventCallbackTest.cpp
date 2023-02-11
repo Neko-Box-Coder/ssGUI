@@ -63,7 +63,7 @@ ssTEST("NotifyTest")
     callback->AddEventListener("key",   [&](ssGUI::EventInfo info)
                                         { 
                                             testNum = 1;
-                                            ssTEST_OUTPUT_ASSERT("Nullptr Container", info.EventCallbackContainer == nullptr);
+                                            ssTEST_OUTPUT_ASSERT("Nullptr Container", info.Container == nullptr);
                                             ssTEST_OUTPUT_ASSERT("Nullptr Source", info.EventSource == nullptr);
                                         });
     callback->Notify(nullptr);
@@ -76,7 +76,7 @@ ssTEST("NotifyTest")
                                     [&](ssGUI::EventInfo info)
                                     { 
                                         ssTEST_OUTPUT_ASSERT(   "Container", 
-                                                                info.EventCallbackContainer == testObj);
+                                                                info.Container == testObj);
                                         ssTEST_OUTPUT_ASSERT(   "Source", 
                                                                 info.EventSource == notifySrcObj);
                                     });

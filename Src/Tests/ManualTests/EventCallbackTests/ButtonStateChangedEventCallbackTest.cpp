@@ -29,7 +29,7 @@ int main()
                             [](ssGUI::EventInfo info)
                             {
                                 ssGUI::Enums::ButtonState state =
-                                    static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState();
+                                    static_cast<ssGUI::Button*>(info.Container)->GetButtonState();
                                 
                                 ssLOG_SIMPLE("State: "<<ssGUI::Enums::ToString(state));
                             });    
