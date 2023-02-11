@@ -48,9 +48,9 @@ namespace ssGUI
             std::vector<bool> PostGUIUpdateEventListenersValid;
             std::queue<int> PostGUIUpdateEventListenersNextFreeIndices;
 
-            std::vector<std::function<void(ssGUI::MainWindow*)>> PostGUIRenderingUpdateEventListeners;
-            std::vector<bool> PostGUIRenderingUpdateEventListenersValid;
-            std::queue<int> PostGUIRenderingUpdateEventListenersNextFreeIndices;
+            std::vector<std::function<void(ssGUI::MainWindow*)>> PostGUIRenderEventListeners;
+            std::vector<bool> PostGUIRenderEventListenersValid;
+            std::queue<int> PostGUIRenderEventListenersNextFreeIndices;
 
             std::vector<std::function<void( std::list<ssGUI::GUIObject*>& ) >> OnCustomRenderEventListeners;
             std::vector<bool> OnCustomRenderEventListenersValid;
@@ -126,14 +126,14 @@ namespace ssGUI
             //Removes event callback that gets triggered after the update function (before render function) is called for GUI objects
             void RemovePostGUIUpdateEventListener(int index);
 
-            //function: AddPostGUIRenderingUpdateEventListener
+            //function: AddPostGUIRenderEventListener
             //Adds event callback that gets triggered after the render function is called for GUI objects.
             //Returns index that can be used to remove the event callback later.
-            int AddPostGUIRenderingUpdateEventListener(std::function<void(ssGUI::MainWindow*)> event);
+            int AddPostGUIRenderEventListener(std::function<void(ssGUI::MainWindow*)> event);
 
-            //function: RemovePostGUIRenderingUpdateEventListener
+            //function: RemovePostGUIRenderEventListener
             //Removes event callback that gets triggered after the render function is called for GUI objects
-            void RemovePostGUIRenderingUpdateEventListener(int index);
+            void RemovePostGUIRenderEventListener(int index);
 
             //function: AddOnCustomRenderEventListener
             //Adds event callback that is responsible of rendering all the GUI Objects instead of using the default rendering by <ssGUIManager>

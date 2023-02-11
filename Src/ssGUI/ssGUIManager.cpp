@@ -70,6 +70,15 @@ namespace ssGUI
             //Clear up any main windows that are deleted
             CheckMainWindowExistence();
 
+            //Dispatch Update event
+            ssLOG_FUNC_ENTRY("ssGUIManagerPostUpdateEvent");
+            for(int i = 0; i < PostGUIUpdateEventListeners.size(); i++)
+            {                
+                if(PostGUIUpdateEventListenersValid[i])
+                    PostGUIUpdateEventListeners[i]();
+            }
+            ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
+            
             //Clean up deleted objects
             if(!ssGUI::GUIObject::ObjsToDelete.empty())
             {
@@ -83,15 +92,6 @@ namespace ssGUI
                 }
                 ssGUI::GUIObject::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
             }
-
-            //Dispatch Update event
-            ssLOG_FUNC_ENTRY("ssGUIManagerPostUpdateEvent");
-            for(int i = 0; i < PostGUIUpdateEventListeners.size(); i++)
-            {                
-                if(PostGUIUpdateEventListenersValid[i])
-                    PostGUIUpdateEventListeners[i]();
-            }
-            ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
 
             #if SSGUI_DEBUG_STATE 
                 ssLOG_LINE("Render");
@@ -148,6 +148,7 @@ namespace ssGUI
                 //so we need to adjust the sleep time depending on how long will have actually slept
                 uint32_t preSleepTime = BackendInput->GetElapsedTime();
                 int64_t sleepDuration = static_cast<int64_t>(TargetFrameInterval - averageFrameTime) *threadSleepMultiplier;
+                //ssLOG_LINE("sleepDuration: "<<sleepDuration<<", "<<"TargetFrameInterval: "<<TargetFrameInterval);
                 std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
                 uint32_t actualSleptDuration = BackendInput->GetElapsedTime() - preSleepTime;
                 threadSleepMultiplier = (double)sleepDuration / (double)actualSleptDuration;
@@ -316,10 +317,10 @@ namespace ssGUI
 
                 //Dispatch Post Rendering Update event
                 ssLOG_FUNC_ENTRY("ssGUIManagerPostRenderingUpdateEvent");
-                for(int i = 0; i < PostGUIRenderingUpdateEventListeners.size(); i++)
+                for(int i = 0; i < PostGUIRenderEventListeners.size(); i++)
                 {
-                    if(PostGUIRenderingUpdateEventListenersValid[i])
-                        PostGUIRenderingUpdateEventListeners[i](currentMainWindowP);
+                    if(PostGUIRenderEventListenersValid[i])
+                        PostGUIRenderEventListeners[i](currentMainWindowP);
                 }
                 ssLOG_FUNC_EXIT("ssGUIManagerPostRenderingUpdateEvent");
 
@@ -441,8 +442,8 @@ namespace ssGUI
                                     PreGUIUpdateEventListenersValid(), PreGUIUpdateEventListenersNextFreeIndices(),
                                     PostGUIUpdateEventListeners(), PostGUIUpdateEventListenersValid(), 
                                     PostGUIUpdateEventListenersNextFreeIndices(),
-                                    PostGUIRenderingUpdateEventListeners(), PostGUIRenderingUpdateEventListenersValid(), 
-                                    PostGUIRenderingUpdateEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
+                                    PostGUIRenderEventListeners(), PostGUIRenderEventListenersValid(), 
+                                    PostGUIRenderEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
                                     OnCustomRenderEventListenersValid(), OnCustomRenderEventListenersNextFreeIndices(), 
                                     IsCustomRendering(false), ForceRendering(false), TargetFrameInterval(20),
                                     FrameTimeIndex(0), FrameTimes()
@@ -553,31 +554,31 @@ namespace ssGUI
         PostGUIUpdateEventListenersNextFreeIndices.push(index);
     }
 
-    int ssGUIManager::AddPostGUIRenderingUpdateEventListener(std::function<void(ssGUI::MainWindow*)> event)
+    int ssGUIManager::AddPostGUIRenderEventListener(std::function<void(ssGUI::MainWindow*)> event)
     {
         int addedIndex = -1;
 
-        if(PostGUIRenderingUpdateEventListenersNextFreeIndices.empty())
+        if(PostGUIRenderEventListenersNextFreeIndices.empty())
         {
-            PostGUIRenderingUpdateEventListeners.push_back(event);
-            PostGUIRenderingUpdateEventListenersValid.push_back(true);
-            addedIndex = PostGUIRenderingUpdateEventListeners.size() - 1;
+            PostGUIRenderEventListeners.push_back(event);
+            PostGUIRenderEventListenersValid.push_back(true);
+            addedIndex = PostGUIRenderEventListeners.size() - 1;
         }
         else
         {
-            addedIndex = PostGUIRenderingUpdateEventListenersNextFreeIndices.front();
-            PostGUIRenderingUpdateEventListeners[PostGUIRenderingUpdateEventListenersNextFreeIndices.front()] = event;
-            PostGUIRenderingUpdateEventListenersValid[PostGUIRenderingUpdateEventListenersNextFreeIndices.front()] = true;
-            PostGUIRenderingUpdateEventListenersNextFreeIndices.pop();
+            addedIndex = PostGUIRenderEventListenersNextFreeIndices.front();
+            PostGUIRenderEventListeners[PostGUIRenderEventListenersNextFreeIndices.front()] = event;
+            PostGUIRenderEventListenersValid[PostGUIRenderEventListenersNextFreeIndices.front()] = true;
+            PostGUIRenderEventListenersNextFreeIndices.pop();
         }
 
         return addedIndex;
     }
 
-    void ssGUIManager::RemovePostGUIRenderingUpdateEventListener(int index)
+    void ssGUIManager::RemovePostGUIRenderEventListener(int index)
     {
-        PostGUIRenderingUpdateEventListenersValid[index] = false;
-        PostGUIRenderingUpdateEventListenersNextFreeIndices.push(index);
+        PostGUIRenderEventListenersValid[index] = false;
+        PostGUIRenderEventListenersNextFreeIndices.push(index);
     }
 
     int ssGUIManager::AddOnCustomRenderEventListener(std::function<void( std::list<ssGUI::GUIObject*>& ) > event)
