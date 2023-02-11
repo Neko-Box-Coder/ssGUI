@@ -1,8 +1,10 @@
 #ifndef SSGUI_OBJECTS_REFERENCES_H
 #define SSGUI_OBJECTS_REFERENCES_H
 
+#include "ssLogger/ssLog.hpp"
 #include <unordered_map>
 #include <vector>
+#include <type_traits>
 
 //namespace: ssGUI
 namespace ssGUI
@@ -85,6 +87,20 @@ namespace ssGUI
             //function: GetObjectReference
             //Gets the referencing GUI Object of the referencing index. Nullptr is returned if invalid index.
             virtual ssGUI::GUIObject* GetObjectReference(ssGUIObjectIndex index) const;
+
+            //function: GetObjectReference
+            template<typename T>
+            inline T* GetObjectReference(ssGUIObjectIndex index) const
+            {
+                if(std::is_base_of<ssGUI::GUIObject, T>::value)
+                    return static_cast<T*>(GetObjectReference(index));
+                else
+                {
+                    ssLOG_LINE("Invalid object type");
+                    ssLOG_EXIT_PROGRAM();
+                    return nullptr; 
+                }
+            }
 
             //function: SetObjectReference
             //Sets the referencing GUI Object with the index 
