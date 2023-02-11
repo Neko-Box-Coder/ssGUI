@@ -60,6 +60,12 @@ namespace Extensions
         return CurrentVertical;
     }
 
+    void AdvancedPosition::SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
+    {
+        SetHorizontalAlignment(hori);
+        SetVerticalAlignment(vert);
+    }
+
     void AdvancedPosition::SetHorizontalPixel(float pixel)
     {
         HorizontalPixelValue = pixel;
@@ -78,6 +84,12 @@ namespace Extensions
     float AdvancedPosition::GetVerticalPixel() const
     {
         return VerticalPixelValue;
+    }
+    
+    void AdvancedPosition::SetAlignmentPixel(float hori, float vert)
+    {
+        SetHorizontalPixel(hori);    
+        SetVerticalPixel(vert);    
     }
 
     void AdvancedPosition::SetHorizontalPercentage(float percentage)
@@ -98,6 +110,12 @@ namespace Extensions
     float AdvancedPosition::GetVerticalPercentage() const
     {
         return VerticalPercentageValue;
+    }
+    
+    void AdvancedPosition::SetAlignmentPercentage(float hori, float vert)
+    {
+        SetHorizontalPercentage(hori);
+        SetVerticalPercentage(vert);
     }
 
     void AdvancedPosition::SetEnabled(bool enabled)

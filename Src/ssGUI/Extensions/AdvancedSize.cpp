@@ -59,6 +59,12 @@ namespace Extensions
     {
         return VerticalPixelValue;
     }
+    
+    void AdvancedSize::SetSizingPixel(float hori, float vert)
+    {
+        SetHorizontalPixel(hori);        
+        SetVerticalPixel(vert);        
+    }
 
     void AdvancedSize::SetHorizontalPercentage(float percentage)
     {
@@ -80,6 +86,12 @@ namespace Extensions
     float AdvancedSize::GetVerticalPercentage() const
     {
         return VerticalPercentageValue;
+    }
+    
+    void AdvancedSize::SetSizingPercentage(float hori, float vert)
+    {
+        SetHorizontalPercentage(hori);
+        SetVerticalPercentage(vert);
     }
 
     void AdvancedSize::SetEnabled(bool enabled)

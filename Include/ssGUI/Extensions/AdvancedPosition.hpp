@@ -98,6 +98,9 @@ namespace Extensions
 
             //function: GetVerticalAlignment
             virtual ssGUI::Enums::AlignmentVertical GetVerticalAlignment() const;
+            
+            //function: SetAlignment
+            virtual void SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert);
 
             //function: SetHorizontalPixel
             virtual void SetHorizontalPixel(float pixel);
@@ -110,6 +113,9 @@ namespace Extensions
 
             //function: GetVerticalPixel            
             virtual float GetVerticalPixel() const;
+            
+            //function: SetAlignmentPixel
+            virtual void SetAlignmentPixel(float hori, float vert);
             
             //function:  SetHorizontalPercentage           
             //0 = 0%, 1 = 100%. This can go below 0 or over 1
@@ -126,6 +132,9 @@ namespace Extensions
             //function: GetVerticalPercentage          
             //0 = 0%, 1 = 100%. This can go below 0 or over 1
             virtual float GetVerticalPercentage() const;
+
+            //function: SetAlignmentPercentage
+            virtual void SetAlignmentPercentage(float hori, float vert);
 
             //Override from Extension
             //function: SetEnabled

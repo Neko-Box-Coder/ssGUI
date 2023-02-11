@@ -96,6 +96,9 @@ namespace Extensions
             //function: GetVerticalPixel            
             virtual float GetVerticalPixel() const;
             
+            //function: SetSizingPixel
+            virtual void SetSizingPixel(float hori, float vert);
+            
             //function: SetHorizontalPercentage           
             //0 = 0%, 1 = 100%. This can go below 0 or over 1
             virtual void SetHorizontalPercentage(float percentage);
@@ -111,6 +114,9 @@ namespace Extensions
             //function: GetVerticalPercentage          
             //0 = 0%, 1 = 100%. This can go below 0 or over 1
             virtual float GetVerticalPercentage() const;
+
+            //function: SetSizingPercentage
+            virtual void SetSizingPercentage(float hori, float vert);
 
             //Override from Extension
             //function: SetEnabled
