@@ -67,12 +67,12 @@ namespace ssGUI
         return BackendDrawing;
     }
     
-    glm::ivec2 MainWindow::GetDisplayPosition() const
+    glm::ivec2 MainWindow::GetWindowPosition() const
     {
         return BackendMainWindow->GetWindowPosition();
     }
 
-    void MainWindow::SetDisplayPosition(glm::ivec2 pos)
+    void MainWindow::SetWindowPosition(glm::ivec2 pos)
     {
         BackendMainWindow->SetWindowPosition(pos);
     }
@@ -162,7 +162,7 @@ namespace ssGUI
 
     glm::ivec2 MainWindow::GetRelativeMousePosition(glm::ivec2 mousePos) const
     {
-        return mousePos - GetDisplayPosition() - GetPositionOffset();
+        return mousePos - GetWindowPosition() - GetPositionOffset();
     }
     
     void MainWindow::SetWindowSize(glm::ivec2 size)
@@ -173,6 +173,21 @@ namespace ssGUI
     glm::ivec2 MainWindow::GetWindowSize() const
     {
         return BackendMainWindow->GetWindowSize();
+    }
+    
+    bool MainWindow::SetRenderContext()
+    {
+        return BackendMainWindow->SetGLContext();
+    }
+
+    void MainWindow::SaveState()
+    {
+        BackendDrawing->SaveState();        
+    }
+    
+    void MainWindow::RestoreState()
+    {
+        BackendDrawing->RestoreState();        
     }
 
     void MainWindow::SetEnabled(bool enabled)
