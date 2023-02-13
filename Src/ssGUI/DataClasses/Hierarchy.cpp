@@ -16,7 +16,7 @@
 #include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 
 namespace ssGUI
@@ -100,9 +100,7 @@ namespace ssGUI
     {        
         ssLOG_FUNC_ENTRY();
         
-        #if SSGUI_USE_DEBUG
-        ssLOG_LINE("Setting "<<CurrentObject<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
-        #endif
+        ssGUI_DEBUG(ssGUI_DATA_TAG, "Setting "<<CurrentObject<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
 
         CurrentRenderer->RedrawObject();
 
@@ -115,7 +113,7 @@ namespace ssGUI
             if(!result)
             {
                 PopChildrenIterator();
-                ssLOG_LINE("Invalid parent detected");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid parent detected");
                 ssLOG_EXIT_PROGRAM();
                 return;
             }
@@ -144,7 +142,7 @@ namespace ssGUI
                 {
                     if(checkParent == static_cast<ssGUI::GUIObject*>(CurrentObject))
                     {
-                        ssLOG_LINE("Invalid parent detected");
+                        ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid parent detected");
                         ssLOG_EXIT_PROGRAM();
                         return;
                     }
@@ -265,7 +263,7 @@ namespace ssGUI
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(CurrentObject))
             {
-                ssLOG_LINE("Invalid parent detected");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid parent detected");
                 ssLOG_EXIT_PROGRAM();
                 return;
             }
@@ -296,7 +294,7 @@ namespace ssGUI
         {
             if(currentParent == static_cast<ssGUI::GUIObject*>(CurrentObject))
             {
-                ssLOG_LINE("Invalid parent detected");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid parent detected");
                 ssLOG_EXIT_PROGRAM();
                 return;
             }
@@ -489,7 +487,7 @@ namespace ssGUI
         {
             if(CurrentObjectsReferences.GetObjectReference(CurrentChild->ChildIndex) == nullptr)
             {
-                ssLOG_LINE("invalid child found");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "invalid child found");
                 ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
@@ -568,15 +566,13 @@ namespace ssGUI
     {
         ssLOG_FUNC_ENTRY();
         
-        #if SSGUI_USE_DEBUG
-        ssLOG_LINE(CurrentObject<<" removing child "<<obj);
-        #endif
+        ssGUI_DEBUG(ssGUI_DATA_TAG, CurrentObject<<" removing child "<<obj);
         
         StashChildrenIterator();
         if(!FindChild(obj))
         {
             PopChildrenIterator();
-            ssLOG_LINE("Remove failed");
+            ssGUI_ERROR(ssGUI_DATA_TAG, "Remove failed");
             ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -599,9 +595,7 @@ namespace ssGUI
         Children.remove(*it);
         PopChildrenIterator();
 
-        #if SSGUI_USE_DEBUG
-        ssLOG_LINE("Remove success");
-        #endif
+        ssGUI_DEBUG(ssGUI_DATA_TAG, "Remove success");
         ssLOG_FUNC_EXIT();
     }
 
@@ -726,10 +720,7 @@ namespace ssGUI
         }
         ObjectDelete = true;
 
-        #if SSGUI_USE_DEBUG
-        ssLOG_LINE(CurrentObject<<" object is getting deleted");
-        #endif
-
+        ssGUI_DEBUG(ssGUI_DATA_TAG, CurrentObject<<" object is getting deleted");
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
 
         //Delete children first

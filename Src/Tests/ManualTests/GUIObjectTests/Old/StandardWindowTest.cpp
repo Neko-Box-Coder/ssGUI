@@ -1,8 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
-
-
-
+#include "ssLogger/ssLog.hpp"
 
 //Standard window test
 int main()

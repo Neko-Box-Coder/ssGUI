@@ -2,7 +2,7 @@
 
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -28,14 +28,12 @@ namespace ssGUI
         {
             if(it.second != nullptr)
             {
-                #if SSGUI_USE_DEBUG
-                ssLOG_LINE("Adding external dependency to "<<it.second);
-                #endif
+                ssGUI_DEBUG(ssGUI_DATA_TAG, "Adding external dependency to "<<it.second);
                 it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
             }
             else
             {
-                ssLOG_LINE("Invalid object reference found!");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid object reference found!");
                 ssLOG_EXIT_PROGRAM();
             }
         }
@@ -62,14 +60,12 @@ namespace ssGUI
         {
             if(it.second != nullptr)
             {
-                #if SSGUI_USE_DEBUG
-                ssLOG_LINE("Adding external dependency to "<<it.second);
-                #endif
+                ssGUI_DEBUG(ssGUI_DATA_TAG, "Adding external dependency to "<<it.second);
                 it.second->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, it.first);
             }
             else
             {
-                ssLOG_LINE("Invalid object reference found!");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid object reference found!");
                 ssLOG_EXIT_PROGRAM();
             }
         }
@@ -95,7 +91,7 @@ namespace ssGUI
         
         if(obj == nullptr)
         {
-            ssLOG_LINE("Attempted to add nullptr");
+            ssGUI_ERROR(ssGUI_DATA_TAG, "Attempted to add nullptr");
             // ssLOG_FUNC_EXIT();
             ssLOG_EXIT_PROGRAM();
             return -1;
@@ -144,7 +140,7 @@ namespace ssGUI
 
         if(obj == nullptr)
         {
-            ssLOG_LINE("Attempted to set nullptr");
+            ssGUI_ERROR(ssGUI_DATA_TAG, "Attempted to set nullptr");
             // ssLOG_FUNC_EXIT();
             ssLOG_EXIT_PROGRAM();
             return;
@@ -195,7 +191,7 @@ namespace ssGUI
 
         if(dependency == nullptr)
         {
-            ssLOG_LINE("Adding null dependency found");
+            ssGUI_ERROR(ssGUI_DATA_TAG, "Adding null dependency found");
             // ssLOG_FUNC_EXIT();
             ssLOG_EXIT_PROGRAM();
             return;
@@ -262,17 +258,13 @@ namespace ssGUI
 
         for(auto it : ExternalObjectsDependencies)
         {
-            #if SSGUI_USE_DEBUG
-            ssLOG_LINE("Removing "<<it.first<<" external reference of this object");
-            #endif
+            ssGUI_DEBUG(ssGUI_DATA_TAG, "Removing "<<it.first<<" external reference of this object");
             it.first->RemoveObjectReference(it.second, true);
         }
 
         for(auto it : ObjectsReferencesTable)
         {
-            #if SSGUI_USE_DEBUG
-            ssLOG_LINE("Removing external depenency record stored on "<<it.second);
-            #endif
+            ssGUI_DEBUG(ssGUI_DATA_TAG, "Removing external depenency record stored on "<<it.second);
             it.second->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);
         }
         
@@ -285,15 +277,15 @@ namespace ssGUI
     {
         ssLOG_FUNC_ENTRY();
         
-        ssLOG_LINE("Object Reference: "<<this);
+        ssGUI_DEBUG(ssGUI_DATA_TAG, "Object Reference: "<<this);
         //Iterate all objects references and check
         for(auto it : ObjectsReferencesTable)
         {
-            ssLOG_LINE("Checking record: "<<it.second<<" with index "<<it.first);
+            ssGUI_DEBUG(ssGUI_DATA_TAG, "Checking record: "<<it.second<<" with index "<<it.first);
             
             if(it.second == nullptr)
             {
-                ssLOG_LINE("Invalid record found");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid record found");
                 ssLOG_EXIT_PROGRAM();
             }
             else
@@ -303,11 +295,11 @@ namespace ssGUI
         //Iterate all external objects references and check
         for(auto it : ExternalObjectsDependencies)
         {
-            ssLOG_LINE("Checking dependency: "<<it.first);
+            ssGUI_DEBUG(ssGUI_DATA_TAG, "Checking dependency: "<<it.first);
             
             if(it.first == nullptr)
             {
-                ssLOG_LINE("Invalid dependency found");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid dependency found");
                 ssLOG_EXIT_PROGRAM();
             }
             else

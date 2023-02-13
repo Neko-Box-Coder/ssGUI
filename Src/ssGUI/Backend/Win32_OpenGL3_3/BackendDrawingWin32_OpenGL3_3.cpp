@@ -5,7 +5,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Backend/Win32_OpenGL3_3/BackendMainWindowWin32_OpenGL3_3.hpp"
 #include "ssGUI/Backend/BackendManager.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
@@ -20,7 +20,7 @@
     x;\
     if((err = glGetError()) != GL_NO_ERROR)\
     {\
-        ssLOG_LINE("Failed: "<<err);\
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed: "<<err);\
     }\
 }
 
@@ -50,7 +50,7 @@ namespace Backend
 
         if(mainWindow == nullptr)
         {
-            ssLOG_LINE("Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
             return;
         }
 
@@ -71,7 +71,7 @@ namespace Backend
     BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3(BackendDrawingWin32_OpenGL3_3 const& other)
     {
         //TODO
-        ssLOG_LINE("Not implemented");
+        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not implemented");
         ssLOG_EXIT_PROGRAM();
     }
     
@@ -94,13 +94,13 @@ namespace Backend
         
         if(mainWindow == nullptr)
         {
-            ssLOG_LINE("Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
             return;
         }
 
         if(!mainWindow->SetGLContext())
         {
-            ssLOG_LINE("Failed to set GL state");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
             return;
         }
 
@@ -120,13 +120,13 @@ namespace Backend
         
         if(mainWindow == nullptr)
         {
-            ssLOG_LINE("Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
             return;
         }
 
         if(!mainWindow->SetGLContext())
         {
-            ssLOG_LINE("Failed to set GL state");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
             return;
         }
 
@@ -191,7 +191,7 @@ namespace Backend
         
         if(mainWindow == nullptr)
         {
-            ssLOG_LINE("Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
             return;
         }
         
@@ -199,7 +199,7 @@ namespace Backend
         HDC hDC = GetDC(static_cast<ssGUI::Backend::Win32_OpenGL_Handles*>(mainWindow->GetRawHandle())->WindowHandle);
         if(hDC == NULL)
         {
-            ssLOG_LINE("Failed to GetDC");
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to GetDC");
             ssLOG_EXIT_PROGRAM();
         }
         SwapBuffers(hDC);

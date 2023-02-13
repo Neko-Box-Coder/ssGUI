@@ -11,7 +11,7 @@
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "glm/geometric.hpp"
 #include <cmath>
@@ -311,7 +311,7 @@ namespace ssGUI
                         ssGUI::ImageData rotationCursor;
                         if(!rotationCursor.LoadFromPath("Resources/RotationCursor.png"))
                         {
-                            ssLOG_LINE("Failed to load rotation cursor");
+                            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load rotation cursor");
                             return;
                         }
 

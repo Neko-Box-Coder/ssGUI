@@ -1,6 +1,6 @@
 #include "ssGUI/GUIObjectClasses/Image.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -115,7 +115,7 @@ namespace ssGUI
                 DrawingVerticies.push_back(imgDrawPosition + glm::vec2(0, GetSize().y));
                 break;
             default:
-                ssLOG_LINE("Invalid ssGUI::Enums::ImageFitting: " << (int)imgFitting);
+                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Invalid ssGUI::Enums::ImageFitting: " << (int)imgFitting);
                 ssLOG_EXIT_PROGRAM();
         }
 

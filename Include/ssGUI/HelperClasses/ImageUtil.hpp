@@ -2,6 +2,7 @@
 #define SSGUI_IMAGE_UTIL_H
 
 #include "ssGUI/DataClasses/ImageFormat.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssLogger/ssLog.hpp"
 
 #include "glm/vec2.hpp"
@@ -58,7 +59,7 @@ namespace ssGUI
                 outputFormat.IndexG < 0 ||
                 outputFormat.IndexB < 0)
             {
-                ssLOG_LINE("Invalid output format");
+                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Invalid output format");
                 return false;
             }
 
@@ -276,7 +277,7 @@ namespace ssGUI
                 case 16:
                     return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
                 default:
-                    ssLOG_LINE("Unsupported bit depth");
+                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
                     return false;
             }   
         }
@@ -297,7 +298,7 @@ namespace ssGUI
                 case 16:
                     return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
                 default:
-                    ssLOG_LINE("Unsupported bit depth");
+                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
                     return false;
             }
         }
@@ -318,7 +319,7 @@ namespace ssGUI
                 case 16:
                     return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
                 default:
-                    ssLOG_LINE("Unsupported bit depth");
+                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
                     return false;
             }
         }
@@ -409,7 +410,7 @@ namespace ssGUI
                             *(c + 3) * heightAndInverseWidth + 
                             *(d + 3) * widthHeight;
                                     
-                    //ssLOG_LINE("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
+                    //ssGUI_DEBUG("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
 
                     // range is 0 to 255 thus bitwise AND with 0xff
                     outputPixels[offset * 4] =      (uint8_t)(((int)red) & 0xff);

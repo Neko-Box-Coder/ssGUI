@@ -1,5 +1,4 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-
 #include "ssLogger/ssLog.hpp"
 
 //Text font test

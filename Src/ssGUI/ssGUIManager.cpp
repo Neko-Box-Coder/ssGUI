@@ -3,7 +3,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/Backend/BackendFactory.hpp"
 
@@ -24,7 +24,7 @@ namespace ssGUI
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                ssLOG_LINE("Invalid object type added to gui manager");
+                ssGUI_WARNING(ssGUI_MANAGER_TAG, "Invalid object type added to gui manager");
                 continue;
             }
 
@@ -61,8 +61,8 @@ namespace ssGUI
             }
             ssLOG_FUNC_EXIT("ssGUIManagerPreUpdateEvent");
 
-            #if SSGUI_DEBUG_STATE 
-                ssLOG_LINE("Update");
+            #ifdef SSGUI_LOG_MANAGER_STATE
+                ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Update");
             #endif
 
             UpdateObjects();
@@ -93,8 +93,8 @@ namespace ssGUI
                 ssGUI::GUIObject::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
             }
 
-            #if SSGUI_DEBUG_STATE 
-                ssLOG_LINE("Render");
+            #ifdef SSGUI_LOG_MANAGER_STATE
+                ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Render");
             #endif
 
             //Dispatch Custom Rendering event
@@ -111,8 +111,8 @@ namespace ssGUI
             else
                 Render();
             
-            #if SSGUI_DEBUG_STATE 
-                ssLOG_LINE("Post Render");
+            #ifdef SSGUI_LOG_MANAGER_STATE
+                ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Post Render");
             #endif
 
             if(lastCursor != BackendInput->GetCursorType() || 
@@ -141,14 +141,14 @@ namespace ssGUI
                     averageFrameTime += FrameTimes[i];
                 
                 averageFrameTime /= FrameTimes.size();
-                // ssLOG_LINE("averageFrameTime: "<<averageFrameTime);
-                // ssLOG_LINE("TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
+                // ssGUI_DEBUG(ssGUI_MANAGER_TAG, "averageFrameTime: "<<averageFrameTime);
+                // ssGUI_DEBUG(ssGUI_MANAGER_TAG, "TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
 
                 //There's no guarantee that the thread will sleep for how long we ask for (especially on Windows *cough* *cough*)
                 //so we need to adjust the sleep time depending on how long will have actually slept
                 uint32_t preSleepTime = BackendInput->GetElapsedTime();
                 int64_t sleepDuration = static_cast<int64_t>(TargetFrameInterval - averageFrameTime) *threadSleepMultiplier;
-                //ssLOG_LINE("sleepDuration: "<<sleepDuration<<", "<<"TargetFrameInterval: "<<TargetFrameInterval);
+                //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "sleepDuration: "<<sleepDuration<<", "<<"TargetFrameInterval: "<<TargetFrameInterval);
                 std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
                 uint32_t actualSleptDuration = BackendInput->GetElapsedTime() - preSleepTime;
                 threadSleepMultiplier = (double)sleepDuration / (double)actualSleptDuration;
@@ -200,7 +200,7 @@ namespace ssGUI
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                ssLOG_LINE("Invalid object type added to gui manager");
+                ssGUI_WARNING(ssGUI_MANAGER_TAG, "Invalid object type added to gui manager");
                 continue;
             }
 
@@ -286,8 +286,8 @@ namespace ssGUI
             //Render if needed
             if(renderNeeded)
             {
-                #if SSGUI_USE_DEBUG
-                    ssLOG_LINE("Rendering");
+                #ifdef SSGUI_LOG_MANAGER_STATE
+                    ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Rendering");
                 #endif
 
                 while(!renderQueue.empty())
@@ -329,10 +329,9 @@ namespace ssGUI
             }
             else
             {
-                #if SSGUI_USE_DEBUG
-                    ssLOG_LINE("Caching");
+                #ifdef SSGUI_LOG_MANAGER_STATE
+                    ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Caching");
                 #endif
-
                 currentMainWindowP->ClearBackBuffer();
             }
         }
@@ -358,7 +357,7 @@ namespace ssGUI
         {            
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                ssLOG_LINE("Invalid object type added to gui manager");
+                ssGUI_WARNING(ssGUI_MANAGER_TAG, "Invalid object type added to gui manager");
                 continue;
             }
             if(mainWindow->Internal_IsDeleted() || static_cast<ssGUI::Window*>(mainWindow)->IsClosed())
@@ -405,10 +404,8 @@ namespace ssGUI
                 {
                     updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), inputStatus, mainWindow);
                     
-                    #if SSGUI_USE_DEBUG
-                    ssLOG_LINE("object "<<updateQueue.front()<<" checking validity");
-                    updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
-                    #endif
+                    //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "object "<<updateQueue.front()<<" checking validity");
+                    //updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
                 }
                 updateQueue.pop();
             }

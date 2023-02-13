@@ -1,7 +1,7 @@
 #include "ssGUI/Extensions/BoxShadow.hpp" //Or the location of your custom extension header
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <cmath>
 
@@ -50,21 +50,21 @@ namespace Extensions
         bool invalidAngle = false;
         if(startToEndAngle < 0)
         {
-            ssLOG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_EXT_TAG, "anti-clockwise placements of vertices detected. Rounded corners failed.");
             invalidAngle = true;
         }
         else if(startToEndAngle > pi())
         {
-            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_EXT_TAG, "Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            ssLOG_LINE("startToEndAngle: "<<startToEndAngle);
-            ssLOG_LINE("start: "<<start.x<<", "<<start.y);
-            ssLOG_LINE("end: "<<end.x<<", "<<end.y);
-            ssLOG_LINE("circlePos: "<<circlePos.x<<", "<<circlePos.y);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "startToEndAngle: "<<startToEndAngle);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "start: "<<start.x<<", "<<start.y);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "end: "<<end.x<<", "<<end.y);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "circlePos: "<<circlePos.x<<", "<<circlePos.y);
             ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -75,7 +75,7 @@ namespace Extensions
         //https://stackoverflow.com/questions/15525941/find-points-on-circle
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // ssLOG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
+        // ssGUI_DEBUG(ssGUI_EXT_TAG, "points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
         for(int i = 0; i < (int)(arcRadius * startToEndAngle * 1) + 2; i++)
         {
             double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)((int)(arcRadius * startToEndAngle * 1) + 1));

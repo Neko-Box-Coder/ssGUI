@@ -1,6 +1,7 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"                                        //Extension for positioning
 #include "glad/glad.h"
+#include "ssLogger/ssLog.hpp"
 
 //Modified from https://github.com/opengl-tutorials/ogl/blob/master/common/shader.cpp
 int CreateShaders(std::string& vertexShaderCode, std::string& fragmentShaderCode)

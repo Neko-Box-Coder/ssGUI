@@ -426,8 +426,6 @@ namespace Extensions
             if(AdditionalShapes[i].ID != id)
                 continue;
 
-            ConstructAdditionalCircle(AdditionalShapes[i], pos, size, color, behindGUIObject);
-
             if( AdditionalShapes[i].Type == ShapeType::CIRCLE && 
                 pos == AdditionalShapes[i].Data.Circle.Pos &&
                 size == AdditionalShapes[i].Data.Circle.Size &&
@@ -443,6 +441,8 @@ namespace Extensions
                 return;
             }
 
+            ConstructAdditionalCircle(AdditionalShapes[i], pos, size, color, behindGUIObject);
+
             if(Container != nullptr)
                 Container->RedrawObject();
 
@@ -456,8 +456,6 @@ namespace Extensions
         {
             if(AdditionalShapes[i].ID != id)
                 continue;
-
-            ConstructAdditionalLine(AdditionalShapes[i], start, end, startThickness, endThickness, startColor, endColor, behindGUIObject);
 
             if( AdditionalShapes[i].Type == ShapeType::LINE && 
                 start == AdditionalShapes[i].Data.Line.StartPos &&
@@ -476,6 +474,8 @@ namespace Extensions
                 
                 return;
             }
+
+            ConstructAdditionalLine(AdditionalShapes[i], start, end, startThickness, endThickness, startColor, endColor, behindGUIObject);
 
             if(Container != nullptr)
                 Container->RedrawObject();

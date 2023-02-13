@@ -4,7 +4,7 @@
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "clip.h"   //TODO: Add macro for switching between this and SFML one.
 #include <codecvt>
@@ -84,7 +84,7 @@ namespace Backend
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
-            ssLOG_LINE("Failed to load cursor!");
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to load cursor!");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -347,7 +347,7 @@ namespace Backend
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            ssLOG_LINE("Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
             return;
         }
 
@@ -372,7 +372,7 @@ namespace Backend
                 
                 if(imgPtr == nullptr)
                 {
-                    ssLOG_LINE("Failed to create custom cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to create custom cursor");
                     return;
                 }
                 
@@ -383,7 +383,7 @@ namespace Backend
                 if(!result)
                 {
                     delete[] convertedRawImg;
-                    ssLOG_LINE("Failed to convert image");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
                     return;
                 }
                 else
@@ -549,7 +549,7 @@ namespace Backend
                                             glm::ivec2( CustomCursors[CurrentCustomCursor].first.getSize().x, 
                                                         CustomCursors[CurrentCustomCursor].first.getSize().y)))
         {
-            ssLOG_LINE("Failed to load custom cursor image");   
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");   
         }
 
         hotspot = CustomCursors[CurrentCustomCursor].second;
@@ -573,7 +573,7 @@ namespace Backend
                                             glm::ivec2( CustomCursors[cursorName].first.getSize().x, 
                                                         CustomCursors[cursorName].first.getSize().y)))
         {
-            ssLOG_LINE("Failed to load custom cursor image");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");
         }
 
         hotspot = CustomCursors[cursorName].second;
@@ -593,60 +593,60 @@ namespace Backend
                 break;
             case ssGUI::Enums::CursorType::NORMAL:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::TEXT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Text))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HAND:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Hand))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeRight))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_UP:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTop))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_DOWN:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::MOVE:
                 if (!SFMLCursor.loadFromSystem(sf::Cursor::SizeAll)) //Not supported natively for mac os
                     if(!SFMLCursor.loadFromSystem(sf::Cursor::Cross))
-                        ssLOG_LINE("Failed to load cursor");
+                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HELP:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Help))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::NOT_ALLOWED:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::CUSTOM:
                 if(!CurrentCustomCursor.empty() && CustomCursors[CurrentCustomCursor].first.getPixelsPtr() != nullptr)
@@ -654,11 +654,11 @@ namespace Backend
                     if(!SFMLCursor.loadFromPixels(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize(), 
                         sf::Vector2u(CustomCursors[CurrentCustomCursor].second.x, CustomCursors[CurrentCustomCursor].second.y)))
                     {
-                        ssLOG_LINE("Failed to load cursor");
+                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                     }
                 }
                 else
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
         }
 
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)

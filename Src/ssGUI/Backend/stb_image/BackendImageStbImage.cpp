@@ -10,7 +10,7 @@
 
 #include "stb_image.h"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
@@ -58,7 +58,7 @@ namespace Backend
 
     void* BackendImageStbImage::GetRawHandle()
     {
-        ssLOG_LINE("There's no raw handle for Stb Image");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "There's no raw handle for Stb Image");
         return nullptr;
     }
 
@@ -73,7 +73,7 @@ namespace Backend
         
         if(!inputStream)
         {
-            ssLOG_LINE("Failed to open file");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to open file");
             return false;
         }
         size_t fileSize = inputStream.tellg();
@@ -87,7 +87,7 @@ namespace Backend
     
         if(!inputStream)
         {
-            ssLOG_LINE("Failed to read the file");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to read the file");
             return false;
         }
         
@@ -177,8 +177,9 @@ namespace Backend
                     CurrentImageFormat.IndexA = 3;
                     break;
                 default:
-                    ssLOG_LINE("What?");
-                    ssLOG_EXIT_PROGRAM();
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "What?");
+                    return false;
+                    //ssLOG_EXIT_PROGRAM();
             }
             
             ImageWidth = width;

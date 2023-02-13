@@ -1,5 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
+#include "ssLogger/ssLog.hpp"
 
 
 //Rounded corners test 2

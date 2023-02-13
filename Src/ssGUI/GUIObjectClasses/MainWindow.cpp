@@ -6,7 +6,7 @@
 
 #include "ssGUI/Backend/BackendFactory.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -279,7 +279,7 @@ namespace ssGUI
 
     void MainWindow::Internal_OnClose()
     {
-        ssLOG_LINE("Main Window closing");
+        ssGUI_DEBUG(ssGUI_GUI_OBJECT_TAG, "Main Window closing");
         
         //Forwarding signal to window
         Window::Internal_OnClose();

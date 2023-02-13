@@ -1,7 +1,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/gtx/norm.hpp"
 #include <cmath>
@@ -1080,7 +1080,7 @@ namespace ssGUI
         auto font = new ssGUI::Font();
         if(!font->GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
         {
-            ssLOG_LINE("Failed to load default font");
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
             ssGUI::Factory::Dispose(font);
         }
         else
@@ -1129,7 +1129,7 @@ namespace ssGUI
 
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
-            ssLOG_LINE("Failed to find any fonts");
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to find any fonts");
             ssLOG_FUNC_EXIT();
             return;
         }

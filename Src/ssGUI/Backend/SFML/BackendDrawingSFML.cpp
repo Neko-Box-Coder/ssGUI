@@ -4,7 +4,7 @@
 
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #ifdef SSGUI_FONT_BACKEND_FREE_TYPE
     #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
@@ -28,13 +28,13 @@ namespace Backend
             //Notify each image to delink
             for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
             {
-                ssLOG_LINE("Removing link: "<<it->first);
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Removing link: "<<it->first);
                 it->first->RemoveBackendDrawingLinking(this);
             }
             ImageTextures.clear();
         #endif
         //TODO: AddDrawingInterface
-        ssLOG_LINE("Not implemented");
+        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not implemented");
         ssLOG_EXIT_PROGRAM();
     }
 
@@ -279,7 +279,7 @@ namespace Backend
                 if(!result)
                 {
                     delete[] convertedRawImg;
-                    ssLOG_LINE("Failed to convert image");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
                     return false;
                 }
                 else
@@ -356,7 +356,7 @@ namespace Backend
                 if(!result)
                 {
                     delete[] convertedRawImg;
-                    ssLOG_LINE("Failed to convert image");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
                     return false;
                 }
                 else

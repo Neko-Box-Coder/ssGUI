@@ -20,6 +20,15 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(ssGUI_OUTPUT_STATIC ON CACHE BOOL "Use and create static library instead")
 set(ssGUI_BUILD_TESTS ON CACHE BOOL "Build tests")
 set(ssGUI_BUILD_EXAMPLES ON CACHE BOOL "Build examples")
+set(ssGUI_LOG_LEVEL "Warning" CACHE STRING "Log level")
+set(ssGUI_LOG_TAG "None" CACHE STRING "Log tag (overrides level)")
+set(ssGUI_LOG_MANAGER_STATE OFF CACHE BOOL "Log all the state in ssGUIManager")
+
+set_property(CACHE ssGUI_LOG_LEVEL PROPERTY STRINGS "None" "Debug" "Info" "Warning" "Error")     # Allow dropdown option
+set_property(CACHE ssGUI_LOG_TAG PROPERTY STRINGS "None" "ssGUI_MANAGER_TAG" "ssGUI_IMAGE_UTIL_TAG" "ssGUI_BACKEND_TAG" 
+                                                    "ssGUI_DATA_TAG" "ssGUI_EXT_TAG" "ssGUI_GUI_OBJECT_TAG")     # Allow dropdown option
+
+
 set(ssGUI_MAIN_BACKEND_DESCRIPTION "The main backend that will be used by ssGUI")
 set(ssGUI_FONT_BACKEND_DESCRIPTION "The font backend that will be used by ssGUI")
 set(ssGUI_IMAGE_BACKEND_DESCRIPTION "The image backend that will be used by ssGUI")
@@ -78,8 +87,6 @@ if(ssGUI_MAIN_BACKEND STREQUAL "Template")
 endif()
 
 # Debug Variables
-set(ssGUI_USE_DEBUG OFF CACHE BOOL "Prints extra debug information")
-set(ssGUI_DEBUG_STATE OFF CACHE BOOL "Prints each stage in ssGUIManager")
 set(ssGUI_REFRESH_CONSOLE OFF CACHE BOOL "Clears the console at the end of each frame")
 set(ssGUI_SLOW_UPDATE OFF CACHE BOOL "Fps will be set to 1 for easier debugging")
 
@@ -315,14 +322,6 @@ endif()
 # ==========================================================
 # ssGUI compiler definitions
 # ==========================================================
-if(ssGUI_USE_DEBUG)
-    target_compile_definitions(ssGUI PUBLIC SSGUI_USE_DEBUG=1)
-endif()
-
-if(ssGUI_DEBUG_STATE)
-    target_compile_definitions(ssGUI PUBLIC SSGUI_DEBUG_STATE=1)
-endif()
-
 if(ssGUI_REFRESH_CONSOLE)
     target_compile_definitions(ssGUI PUBLIC SSGUI_REFRESH_CONSOLE=1)
 endif()
@@ -333,6 +332,39 @@ endif()
 
 if(ssGUI_USE_SFML_TIME)
     target_compile_definitions(ssGUI PUBLIC SSGUI_USE_SFML_TIME=1)
+endif()
+
+if(ssGUI_LOG_MANAGER_STATE)
+    target_compile_definitions(ssGUI PUBLIC SSGUI_LOG_MANAGER_STATE=1)
+endif()
+
+#See ssGUI/HelperClasses/LogWithTagsAndLevel.hpp for log tags and levels
+if(NOT ssGUI_LOG_TAG STREQUAL "None")
+    if(ssGUI_LOG_TAG STREQUAL "ssGUI_MANAGER_TAG")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=1)
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_IMAGE_UTIL_TAG")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=2)
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_BACKEND_TAG")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=3)
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_DATA_TAG")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=4)
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_EXT_TAG")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=5)
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_GUI_OBJECT_TAG")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=6)
+    endif()
+else()
+
+    if(ssGUI_LOG_LEVEL STREQUAL "Debug")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_LEVEL=4)
+    elseif(ssGUI_LOG_LEVEL STREQUAL "Info")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_LEVEL=3)
+    elseif(ssGUI_LOG_LEVEL STREQUAL "Warning")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_LEVEL=2)
+    elseif(ssGUI_LOG_LEVEL STREQUAL "Error")
+        target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_LEVEL=1)
+    endif()
+
 endif()
 
 # ==========================================================

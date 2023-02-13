@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 
 #include <cmath>
@@ -56,7 +56,7 @@ namespace Backend
             //If the fixed font size is not really relative close, report it
             if(lastDiff > size * 0.25)
             {
-                ssLOG_LINE("Closest font size: " << (chosenIndex == lastIndex ? size + lastDiff : size - lastDiff));
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Closest font size: " << (chosenIndex == lastIndex ? size + lastDiff : size - lastDiff));
                 return false;
             }
 
@@ -65,7 +65,7 @@ namespace Backend
             //If failed to select size, just don't change anything
             if(error)
             {
-                ssLOG_LINE("Failed with error: " << error);
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Failed with error: " << error);
                 return false;
             }
             
@@ -84,7 +84,7 @@ namespace Backend
             //If failed to select size, just don't change anything
             if(error)
             {
-                ssLOG_LINE("Failed with error: " << error);
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed with error: " << error);
                 return false;
             }
 
@@ -117,22 +117,22 @@ namespace Backend
         {
             if(!LoadFromMemory(other.FontMemory, other.FontMemoryLength))
             {
-                ssLOG_LINE("Failed to copy via memory");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to copy via memory");
             }
         }
         else if(!other.FontPath.empty())
         {
             if(!LoadFromPath(other.FontPath))
             {
-                ssLOG_LINE("Failed to copy via path");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to copy via path");
             }
         }
         else
         {
-            ssLOG_LINE("What? This is unexpected condition, exiting...");
-            ssLOG_LINE("other.IsValid(): " << other.IsValid());
-            ssLOG_LINE("other.FontMemory: " << other.FontMemory);
-            ssLOG_LINE("other.FontPath: " << other.FontPath);
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "What? This is unexpected condition, exiting...");
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.IsValid(): " << other.IsValid());
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.FontMemory: " << other.FontMemory);
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.FontPath: " << other.FontPath);
             ssLOG_EXIT_PROGRAM();
         }
     }
@@ -153,7 +153,7 @@ namespace Backend
             FT_Error error = FT_Init_FreeType(FreeTypeLib.Obj);
             if(error)
             {
-                ssLOG_LINE("Failed to initialize FreeType library with error: " << error);
+                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to initialize FreeType library with error: " << error);
                 ssLOG_EXIT_PROGRAM();
             }
 
@@ -200,7 +200,7 @@ namespace Backend
         
         if(!SetSizeIfDifferent(charSize))
         {
-            ssLOG_LINE("Failed to set character size, aborting...");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, aborting...");
             info.Valid = false;
             return info;
         }
@@ -216,8 +216,8 @@ namespace Backend
 
         if(error)
         {
-            ssLOG_LINE("Failed to load glyph with error: " << error);
-            ssLOG_LINE("Aborting...");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph with error: " << error);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Aborting...");
             info.Valid = false;
             return info;
         }
@@ -242,13 +242,13 @@ namespace Backend
             return 0;
 
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
 
         FT_Vector delta;    //Delta is expressed in 1/64 of points
         FT_Error err = FT_Get_Kerning(FontFace, charUnicode, secondCharUnicode, ft_kerning_default, &delta);
         if(err)
         {
-            ssLOG_LINE("Failed to get kerning");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get kerning");
             return 0;
         }
 
@@ -258,7 +258,7 @@ namespace Backend
     float BackendFontFreeType::GetLineSpacing(float charSize)
     {
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
         
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
@@ -268,7 +268,7 @@ namespace Backend
     float BackendFontFreeType::GetUnderlineOffset(float charSize)
     {
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
@@ -278,7 +278,7 @@ namespace Backend
     float BackendFontFreeType::GetUnderlineThickness(float charSize)
     {
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
@@ -315,7 +315,7 @@ namespace Backend
 
         if(error)
         {
-            ssLOG_LINE("Failed to laod font");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to laod font");
             Valid = false;
             return false;
         }
@@ -365,7 +365,7 @@ namespace Backend
 
         if(error)
         {
-            ssLOG_LINE("Failed to laod font: "<<error);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to laod font: "<<error);
             Valid = false;
             return false;
         }
@@ -410,7 +410,7 @@ namespace Backend
         
         if(error)
         {
-            ssLOG_LINE("Failed to load glyph");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph");
             return false;
         }
         
@@ -432,14 +432,14 @@ namespace Backend
                 error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
                 if(error)
                 {
-                    ssLOG_LINE("Failed to FT_Render_Glyph");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to FT_Render_Glyph");
                     return false;
                 }
             }
             
             if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_BGRA)
             {
-                ssLOG_LINE("Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
                 return false;
             }
             
@@ -469,14 +469,14 @@ namespace Backend
                  error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
                 if(error)
                 {
-                    ssLOG_LINE("Failed to FT_Render_Glyph");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to FT_Render_Glyph");
                     return false;
                 }
             }
             
             if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
             {
-                ssLOG_LINE("Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
                 return false;
             }
         

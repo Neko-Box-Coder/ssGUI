@@ -1,9 +1,6 @@
 #ifndef SSGUI_STANDARD_GROUP_H
 #define SSGUI_STANDARD_GROUP_H
 
-// #include "ssGUI/DebugAndBuild/ssGUIDebugMacro.hpp"
-
-#include "ssLogger/ssLog.hpp"
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/DataClasses/CharacterDetails.hpp"
 #include "ssGUI/DataClasses/CharacterRenderInfo.hpp"

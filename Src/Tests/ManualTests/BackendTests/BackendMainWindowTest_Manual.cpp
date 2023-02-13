@@ -1,8 +1,8 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
-#include "ssLogger/ssLog.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
+#include "ssLogger/ssLog.hpp"
 
 #include <thread>
 

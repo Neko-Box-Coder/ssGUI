@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Template/BackendImageTemplate.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -14,7 +14,7 @@ namespace Backend
 
     BackendImageTemplate::BackendImageTemplate()
     {
-        ssLOG_LINE("BackendImageTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendImageTemplate is being created, is this intended?");
     }
 
     BackendImageTemplate::~BackendImageTemplate()

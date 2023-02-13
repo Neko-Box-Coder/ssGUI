@@ -1,4 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
+#include "ssLogger/ssLog.hpp"
 #include <ctime>
 
 //** DONT RUN THIS TEST UNLESS THE COPY CONSTRUCTOR IN BACKEND IS IMPLEMENTED **

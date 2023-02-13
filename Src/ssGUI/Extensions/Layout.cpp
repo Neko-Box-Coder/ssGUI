@@ -1319,7 +1319,7 @@ namespace Extensions
                 ssLOG_FUNC_ENTRY("OnRecursiveChildAddEventCallback");
                 if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 {
-                    ssLOG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Layout extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
                     return;
                 }
@@ -1379,7 +1379,7 @@ namespace Extensions
                 ssLOG_FUNC_ENTRY("ChildPositionChangedEventCallback");
                 if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 {
-                    ssLOG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Layout extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
                     return;
                 }

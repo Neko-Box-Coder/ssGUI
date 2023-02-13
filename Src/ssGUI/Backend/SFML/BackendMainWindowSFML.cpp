@@ -1,5 +1,5 @@
 #include "ssGUI/Backend/SFML/BackendMainWindowSFML.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -120,13 +120,13 @@ namespace Backend
 
     void BackendMainWindowSFML::SetWindowSize(glm::ivec2 size)
     {
-        //ssLOG_LINE("SFML doesn't support setting window size, setting render size instead");
+        //ssGUI_WARNING(ssGUI_BACKEND_TAG, "SFML doesn't support setting window size, setting render size instead");
         SetRenderSize(size);
     }
 
     glm::ivec2 BackendMainWindowSFML::GetWindowSize() const
     {
-        //ssLOG_LINE("SFML doesn't support setting window size, getting render size instead");
+        //ssGUI_WARNING(ssGUI_BACKEND_TAG, "SFML doesn't support setting window size, getting render size instead");
         return GetRenderSize();
     }
     

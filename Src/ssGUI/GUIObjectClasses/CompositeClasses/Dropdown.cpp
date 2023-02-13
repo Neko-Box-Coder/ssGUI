@@ -8,7 +8,7 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/EventCallbacks/ItemSelectedEventCallback.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -58,7 +58,7 @@ namespace ssGUI
         auto dropdownArrow = ssGUI::Factory::Create<ssGUI::ImageData>();
         if(!dropdownArrow->LoadFromPath("Resources/DownArrow.png"))
         {
-            ssLOG_LINE("Failed to load default font");
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
             ssGUI::Factory::Dispose<ssGUI::ImageData>(dropdownArrow);
         }
         else

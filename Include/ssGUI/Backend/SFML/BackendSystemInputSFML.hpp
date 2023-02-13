@@ -76,7 +76,7 @@ namespace Backend
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
-            ssLOG_LINE("Failed to load cursor!");
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to load cursor!");
             ssLOG_EXIT_PROGRAM();
         }
 

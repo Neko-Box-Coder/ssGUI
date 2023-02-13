@@ -1,7 +1,7 @@
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <functional>
 #include <limits>
@@ -78,8 +78,8 @@ namespace Backend
             //Check byte alignment
             if(format.BitDepthPerChannel % 8 != 0 || format.BitPerPixel % 8 != 0)
             {
-                ssLOG_LINE("BitDepthPerChannel or BitPerPixel is not byte aligned, this is not supported.");
-                ssLOG_LINE("Aborting...");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "BitDepthPerChannel or BitPerPixel is not byte aligned, this is not supported.");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Aborting...");
                 return false;
             }
             

@@ -1,7 +1,7 @@
 #ifndef SSGUI_OBJECTS_REFERENCES_H
 #define SSGUI_OBJECTS_REFERENCES_H
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include <unordered_map>
 #include <vector>
 #include <type_traits>
@@ -96,7 +96,7 @@ namespace ssGUI
                     return static_cast<T*>(GetObjectReference(index));
                 else
                 {
-                    ssLOG_LINE("Invalid object type");
+                    ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid object type");
                     ssLOG_EXIT_PROGRAM();
                     return nullptr; 
                 }
