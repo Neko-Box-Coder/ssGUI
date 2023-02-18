@@ -368,12 +368,13 @@ else()
 endif()
 
 # ==========================================================
-# Building tests and examples 
+# Copy resources 
 # ==========================================================
 
-# Copy resources for the library 
-file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-        DESTINATION "${CMAKE_BINARY_DIR}")
+function(CopyResources targetDir)
+    file(MAKE_DIRECTORY ${targetDir})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${targetDir}/Resources)
+endfunction()
 
 # ==========================================================
 # Building tests and examples 
@@ -420,33 +421,65 @@ endfunction()
 # TODO: Leave it for now, but remove this later
 #if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/" "BackendTests")
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
 #endif()
+
+CopyResources(${CMAKE_CURRENT_BINARY_DIR})
 
 
 if(ssGUI_BUILD_TESTS)
     #AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
     
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" "AutoTests/BackendTests")
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/EventCallbackTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" "AutoTests/EventCallbackTests")
+    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/BackendTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
+                            "AutoTests/BackendTests")
+    
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/")
+    
+    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
+                            "AutoTests/EventCallbackTests")
 
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" "ManualTests/BackendTests")
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/EventCallbackTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" "ManualTests/EventCallbackTests")
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/")
     
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" "AutoTests")
     
+    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/BackendTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 
+                            "ManualTests/BackendTests")
+    
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/")
+    
+    
+    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/EventCallbackTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" 
+                            "ManualTests/EventCallbackTests")
+    
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/")
+    
+    
+    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" 
+                            "AutoTests")
+    
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
     
     # Copy resources for the Tests 
-    file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-            DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests") 
+    #file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+    #        DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests") 
 
 endif()
 
 
 if(ssGUI_BUILD_EXAMPLES)
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/" "${CMAKE_CURRENT_BINARY_DIR}/Examples/" "Examples")
+    
+    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Examples/" 
+                            "Examples")
 
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Examples/")
+    
     # Copy resources for the Examples 
-    file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-            DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Examples") 
+    #file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+    #        DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Examples") 
 
 endif()

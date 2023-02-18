@@ -7,9 +7,9 @@
 
 ssGUI::Backend::BackendImageInterface* TestImage = nullptr;
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\..\\..\\Resources\\";
+    std::string ResourcesFolderPath = "..\\Resources\\";
 #else
-    std::string ResourcesFolderPath = "../../Resources/";
+    std::string ResourcesFolderPath = "./Resources/";
 #endif
 
 ssTEST_INIT();

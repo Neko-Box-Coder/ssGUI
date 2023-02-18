@@ -14,9 +14,9 @@ ssGUI::Backend::BackendSystemInputInterface* inputs = nullptr;
 bool showInfo = true;
 
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\..\\..\\Resources\\";
+    std::string ResourcesFolderPath = "..\\Resources\\";
 #else
-    std::string ResourcesFolderPath = "../../Resources/";
+    std::string ResourcesFolderPath = "./Resources/";
 #endif
 
 void SetUp()
