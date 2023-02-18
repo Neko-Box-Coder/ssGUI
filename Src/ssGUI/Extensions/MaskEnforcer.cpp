@@ -1,6 +1,6 @@
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/Dockable.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 

@@ -7,7 +7,7 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {

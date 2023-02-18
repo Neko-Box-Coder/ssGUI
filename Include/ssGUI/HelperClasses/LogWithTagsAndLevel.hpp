@@ -24,8 +24,8 @@
 #if defined (ssGUI_LOG_TAG)
     #define ssGUI_DEBUG(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("🐞 DEBUG: "););ssLOG_LINE(__VA_ARGS__); }
     #define ssGUI_INFO(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("💬 INFO: "););ssLOG_LINE(__VA_ARGS__); }
-    #define ssGUI_WARNING(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⚠️ WARNING: "););ssLOG_LINE(__VA_ARGS__); }
-    #define ssGUI_ERROR(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("☢️ ERROR: "););ssLOG_LINE(__VA_ARGS__); }
+    #define ssGUI_WARNING(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("❗ WARNING: "););ssLOG_LINE(__VA_ARGS__); }
+    #define ssGUI_ERROR(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⛔ ERROR: "););ssLOG_LINE(__VA_ARGS__); }
 
 #elif defined (ssGUI_LOG_LEVEL)
 
@@ -42,13 +42,13 @@
     #endif
 
     #if ssGUI_LOG_LEVEL >= ssGUI_LOG_LEVEL_WARNING
-        #define ssGUI_WARNING(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⚠️ WARNING: "););ssLOG_LINE(__VA_ARGS__); }
+        #define ssGUI_WARNING(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("❗ WARNING: "););ssLOG_LINE(__VA_ARGS__); }
     #else
         #define ssGUI_WARNING(...) {}
     #endif
 
     #if ssGUI_LOG_LEVEL >= ssGUI_LOG_LEVEL_ERROR
-        #define ssGUI_ERROR(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("☢️ ERROR: "););ssLOG_LINE(__VA_ARGS__); }
+        #define ssGUI_ERROR(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⛔ ERROR: "););ssLOG_LINE(__VA_ARGS__); }
     #else
         #define ssGUI_ERROR(...) {}
     #endif

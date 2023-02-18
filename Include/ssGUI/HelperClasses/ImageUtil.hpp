@@ -3,7 +3,6 @@
 
 #include "ssGUI/DataClasses/ImageFormat.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
-#include "ssLogger/ssLog.hpp"
 
 #include "glm/vec2.hpp"
 

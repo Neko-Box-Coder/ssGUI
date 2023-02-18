@@ -4,7 +4,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {

@@ -9,7 +9,7 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {

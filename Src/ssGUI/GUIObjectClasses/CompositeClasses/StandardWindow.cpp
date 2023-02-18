@@ -12,7 +12,7 @@
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {

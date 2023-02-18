@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/SFML/BackendFontSFML.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 
 namespace ssGUI

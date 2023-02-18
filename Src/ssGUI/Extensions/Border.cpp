@@ -1,6 +1,5 @@
 #include "ssGUI/Extensions/Border.hpp"
-#include "ssLogger/ssLog.hpp"
-
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
