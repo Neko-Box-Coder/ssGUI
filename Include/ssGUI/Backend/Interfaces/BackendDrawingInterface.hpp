@@ -117,6 +117,7 @@ namespace Backend
             virtual void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
             
         protected:
+            //TODO: Use float for character size
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,
                                     const std::vector<glm::u8vec4>& colors,
@@ -133,6 +134,7 @@ namespace Backend
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::u8vec4>& colors) = 0;
 
+            //TODO: Use float for character size
             //NOTE: End index is exclusive
             virtual bool DrawShape( const std::vector<glm::vec2>& vertices, 
                                     const std::vector<glm::vec2>& texCoords,

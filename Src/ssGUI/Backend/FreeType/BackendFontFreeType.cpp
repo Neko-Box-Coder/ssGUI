@@ -26,14 +26,14 @@ namespace Backend
                 return false;
             
             int lastIndex = 0;
-            float lastDiff = 0;
+            float lastDiff = 1000000000;
 
             int chosenIndex = 0;
 
             //Select the closest size
             for(int i = 0; i < FontFace->num_fixed_sizes; i++)
             {
-                if(FontFace->available_sizes[i].height > size)
+                if(FontFace->available_sizes[i].height >= size)
                 {
                     float curDiff = FontFace->available_sizes[i].height - size;
                     if(curDiff < lastDiff)
@@ -48,16 +48,23 @@ namespace Backend
                         break;
                     }
                 }
-
-                lastDiff = size - FontFace->available_sizes[i].height;
-                lastIndex = i;
+                else
+                {
+                    float curDiff = size - FontFace->available_sizes[i].height;
+                    if(lastDiff < curDiff)
+                    {
+                        lastDiff = curDiff;
+                        lastIndex = i;
+                    }
+                }
             }
 
             //If the fixed font size is not really relative close, report it
             if(lastDiff > size * 0.25)
             {
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Requested font size: " << size);
                 ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Closest font size: " << (chosenIndex == lastIndex ? size + lastDiff : size - lastDiff));
-                return false;
+                //return false;
             }
 
             error = FT_Select_Size(FontFace, 0);
@@ -227,6 +234,11 @@ namespace Backend
         info.Size = glm::vec2(FontFace->glyph->bitmap.width, FontFace->glyph->bitmap.rows);
         info.Rendered = true;   //This is handled in Text.cpp
         info.Valid = true;
+        info.RenderFontSize = CurrentSize;
+        info.TargetSizeMultiplier = charSize / CurrentSize; 
+        
+        if(info.Size == glm::vec2())
+            info.Advance = 0;
         
         return info;
     }
@@ -262,7 +274,15 @@ namespace Backend
         
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
-        return static_cast<float>( FT_MulFix(FontFace->height, FontFace->size->metrics.y_scale) ) / static_cast<float>(64);
+        FT_Long rawLineSpace = FT_MulFix(FontFace->height, FontFace->size->metrics.y_scale);
+        
+        if(rawLineSpace == 0)
+            return charSize;
+        
+        if(charSize == CurrentSize)
+            return static_cast<float>(rawLineSpace) / static_cast<float>(64);
+        else
+            return static_cast<float>(rawLineSpace) / static_cast<float>(64) * (charSize / CurrentSize);
     }
     
     float BackendFontFreeType::GetUnderlineOffset(float charSize)
@@ -272,7 +292,16 @@ namespace Backend
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
-        return std::abs(static_cast<float>( FT_MulFix(FontFace->underline_position, FontFace->size->metrics.y_scale)) ) / static_cast<float>(64);;
+        
+        FT_Long underlineOffset = FT_MulFix(FontFace->underline_position, FontFace->size->metrics.y_scale);
+        
+        if(underlineOffset == 0)
+            return charSize / 5;
+        
+        if(charSize == CurrentSize)
+            return std::abs(static_cast<float>(underlineOffset) ) / static_cast<float>(64);
+        else
+            return std::abs(static_cast<float>(underlineOffset) ) / static_cast<float>(64) * (charSize / CurrentSize);
     }
     
     float BackendFontFreeType::GetUnderlineThickness(float charSize)
@@ -282,7 +311,16 @@ namespace Backend
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
-        return static_cast<float>( FT_MulFix(FontFace->underline_thickness, FontFace->size->metrics.y_scale) ) / static_cast<float>(64);
+        
+        FT_Long underlineThickness = FT_MulFix(FontFace->underline_thickness, FontFace->size->metrics.y_scale);
+        
+        if(underlineThickness == 0)
+            return charSize / 25;
+        
+        if(charSize == CurrentSize)
+            return static_cast<float>(underlineThickness) / static_cast<float>(64);
+        else
+            return static_cast<float>(underlineThickness) / static_cast<float>(64) * (charSize / CurrentSize);
     }
 
     bool BackendFontFreeType::LoadFromPath(std::string path)
@@ -391,7 +429,6 @@ namespace Backend
     
         fontSizes.clear();
     
-        //Select the closest size
         for(int i = 0; i < FontFace->num_fixed_sizes; i++)
             fontSizes.push_back(FontFace->available_sizes[i].height);
         
@@ -401,8 +438,8 @@ namespace Backend
     bool BackendFontFreeType::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
     {
         if(!SetSizeIfDifferent(charSize))
-            return false;
-        
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
+
         bool result = false;
 
         FT_UInt glyphIndex = FT_Get_Char_Index(FontFace, static_cast<FT_ULong>(charUnicode));
@@ -437,9 +474,17 @@ namespace Backend
                 }
             }
             
-            if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_BGRA)
+            if(FontFace->glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
+                format.ImgType = ssGUI::Enums::ImageType::MONO;
+                format.BitDepthPerChannel = 1;
+                format.HasAlpha = false;
+                format.IndexMono = 0;
+                format.BitPerPixel = 1;
+            }
+            else if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_BGRA)
+            {
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << (int)FontFace->glyph->bitmap.pixel_mode);
                 return false;
             }
             
@@ -474,7 +519,15 @@ namespace Backend
                 }
             }
             
-            if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
+            if(FontFace->glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO)
+            {
+                format.ImgType = ssGUI::Enums::ImageType::MONO;
+                format.BitDepthPerChannel = 1;
+                format.HasAlpha = false;
+                format.IndexMono = 0;
+                format.BitPerPixel = 1;
+            }
+            else if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
             {
                 ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
                 return false;

@@ -173,10 +173,10 @@ namespace ssGUI
         if(targetFont == nullptr)
             return;
         
-        DrawingVerticies.push_back(position                                 + info.DrawOffset);
-        DrawingVerticies.push_back(position + glm::vec2(info.Size.x, 0)     + info.DrawOffset);
-        DrawingVerticies.push_back(position + info.Size                     + info.DrawOffset);
-        DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y)     + info.DrawOffset);
+        DrawingVerticies.push_back(position                                                         + info.DrawOffset * info.TargetSizeMultiplier);
+        DrawingVerticies.push_back(position + glm::vec2(info.Size.x * info.TargetSizeMultiplier, 0) + info.DrawOffset * info.TargetSizeMultiplier);
+        DrawingVerticies.push_back(position + info.Size * info.TargetSizeMultiplier                 + info.DrawOffset * info.TargetSizeMultiplier);
+        DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y * info.TargetSizeMultiplier) + info.DrawOffset * info.TargetSizeMultiplier);
 
         DrawingColours.push_back(details.CharacterColor);
         DrawingColours.push_back(details.CharacterColor);
@@ -450,7 +450,11 @@ namespace ssGUI
                 }
                 
                 curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
-                float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
+                ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize);
+                
+                float whitespaceWidth = 0;
+                whitespaceWidth = info.Advance * info.TargetSizeMultiplier;
+                whitespaceWidth += GetCharacterSpace();
 
                 switch (curChar)
                 {
@@ -477,10 +481,18 @@ namespace ssGUI
             else 
             {
                 ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                float characterLength = info.Advance;
-                bool oriValid = curRenderInfo.Valid;
+                if(!info.Valid)
+                {
+                    prevChar = 0;
+                    curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
+                    curRenderInfo.Valid = false;
+                    continue;
+                }
+                
+                float characterLength = info.Advance * info.TargetSizeMultiplier;
+                //bool oriValid = curRenderInfo.Valid;
                 curRenderInfo = info;
-                curRenderInfo.Valid = oriValid;
+                //curRenderInfo.Valid = oriValid;
 
                 //Check newline
                 if(nextCharIsAtNewline)
@@ -546,7 +558,9 @@ namespace ssGUI
                     {
                         CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                         CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
-                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + 
+                                                            backendFont->GetLineSpacing(curMaxFontNewline) + 
+                                                            GetLineSpace();
                     }
 
                     curMaxFontNewline = 0;
@@ -562,7 +576,9 @@ namespace ssGUI
                     {
                         CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                         CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;//-backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
-                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + 
+                                                            backendFont->GetLineSpacing(curMaxFontNewline) + 
+                                                            GetLineSpace();
                     }
 
                     curMaxFontNewline = 0;
@@ -589,7 +605,9 @@ namespace ssGUI
                 {
                     CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                     CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
-                    CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                    CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + 
+                                                        backendFont->GetLineSpacing(curMaxFontNewline) + 
+                                                        GetLineSpace();
                 }
 
                 //Update vertical overflow
@@ -632,8 +650,10 @@ namespace ssGUI
                 //Align the previous line first
                 if(i > 0)
                 {
-                    lineEndPos = CharactersRenderInfos[i-1].BaselinePosition.x + CharactersRenderInfos[i-1].DrawOffset.x +
-                        CharactersRenderInfos[i-1].Size.x + GetHorizontalPadding();
+                    lineEndPos =    CharactersRenderInfos[i-1].BaselinePosition.x + 
+                                    CharactersRenderInfos[i-1].DrawOffset.x * CharactersRenderInfos[i-1].TargetSizeMultiplier +
+                                    CharactersRenderInfos[i-1].Size.x * CharactersRenderInfos[i-1].TargetSizeMultiplier + 
+                                    GetHorizontalPadding();
                     float alignOffset = 0; 
 
                     switch(CurrentHorizontalAlignment)
@@ -663,8 +683,10 @@ namespace ssGUI
             //End of character
             if(i == CharactersRenderInfos.size() - 1)
             {
-                lineEndPos = CharactersRenderInfos[i].BaselinePosition.x + CharactersRenderInfos[i].DrawOffset.x +
-                        CharactersRenderInfos[i].Size.x + GetHorizontalPadding();
+                lineEndPos =    CharactersRenderInfos[i].BaselinePosition.x + 
+                                CharactersRenderInfos[i].DrawOffset.x * CharactersRenderInfos[i].TargetSizeMultiplier +
+                                CharactersRenderInfos[i].Size.x * CharactersRenderInfos[i].TargetSizeMultiplier + 
+                                GetHorizontalPadding();
                 float alignOffset = 0; 
 
                 switch(CurrentHorizontalAlignment)
@@ -692,8 +714,12 @@ namespace ssGUI
         
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
         {
-            if(CharactersRenderInfos[i].BaselinePosition.y + CharactersRenderInfos[i].DrawOffset.y < lineStartPos)
-                lineStartPos = CharactersRenderInfos[i].BaselinePosition.y + CharactersRenderInfos[i].DrawOffset.y;
+            if( CharactersRenderInfos[i].BaselinePosition.y + 
+                CharactersRenderInfos[i].DrawOffset.y * CharactersRenderInfos[i].TargetSizeMultiplier < lineStartPos)
+            {
+                lineStartPos =  CharactersRenderInfos[i].BaselinePosition.y + 
+                                CharactersRenderInfos[i].DrawOffset.y * CharactersRenderInfos[i].TargetSizeMultiplier;
+            }
         }
 
         lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetVerticalPadding();
@@ -737,14 +763,19 @@ namespace ssGUI
 
         auto drawHighlight = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 highlightColor)
         {
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
+            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMinY));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    CharactersRenderInfos[inclusiveEndIndex].LineMinY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
 
             DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
                 glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
@@ -797,17 +828,23 @@ namespace ssGUI
 
         auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
         {
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(0, underlineOffset));
+            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(0, underlineOffset));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() + 
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() + 
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    underlineOffset));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() + 
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset + thickness));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() + 
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    underlineOffset + thickness));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() + 
-                glm::vec2(0, underlineOffset + thickness));
+            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                        GetGlobalPosition() + 
+                                        glm::vec2(  0, underlineOffset + thickness));
 
             for(int i = 0; i < 4; i++)
             {

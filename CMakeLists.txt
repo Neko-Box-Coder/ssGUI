@@ -463,6 +463,12 @@ if(ssGUI_BUILD_TESTS)
     
     CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
     
+    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/" 
+                            "ManualTests")
+    
+    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/")
+    
     # Copy resources for the Tests 
     #file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
     #        DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests") 

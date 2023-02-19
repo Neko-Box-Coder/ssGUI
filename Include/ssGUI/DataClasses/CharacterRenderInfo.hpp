@@ -49,6 +49,16 @@ namespace ssGUI
             //var: LineMaxY
             //Maximum Y bound of the current line (Relative to BaselinePosition)
             float LineMaxY = 0;
+            
+            //var: RenderFontSize
+            //This is the actual font size that gets displayed,
+            //since it is possible that the requested font size is not available.
+            float RenderFontSize = 0;
+            
+            //var: TargetSizeMultiplier 
+            //The multiplier to be applied to Advance, Size and DrawOffset
+            //in order to render the character at the target size
+            float TargetSizeMultiplier = 1;
     };
 }
 

@@ -279,20 +279,23 @@ namespace Backend
             GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, textureId); );
             GL_CHECK_ERROR( glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); );
             GL_CHECK_ERROR( glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); );
-            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); );
-            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); );
+            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); );
+            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); );
 
             //Convert it to rgba32
             uint8_t* rgba32Img = new uint8_t[charImgData.GetSize().x * charImgData.GetSize().y * 4];
             ssGUI::ImageFormat format;
             void* rawPixel = charImgData.GetPixelPtr(format);
             
-            ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPixel, format, imgSize);
+            if(!ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPixel, format, imgSize))
+            {
+                delete[] rgba32Img;
+                GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
+                return false;
+            }
 
             GL_CHECK_ERROR( glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgSize.x, imgSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
                             rgba32Img); );
-
-            GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, textureId); );
 
             CharTextures[curIdentifier] = textureId;
 
@@ -348,7 +351,12 @@ namespace Backend
 
             //Convert it to rgba32
             uint8_t* rgba32Img = new uint8_t[image.GetSize().x * image.GetSize().y * 4];            
-            ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize());
+            if(!ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img), rawPtr, format, image.GetSize()))
+            {
+                delete[] rgba32Img;
+                GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
+                return false;
+            }
 
             GLuint textureId = 0;
 
@@ -356,15 +364,12 @@ namespace Backend
             GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, textureId); );
             GL_CHECK_ERROR( glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); );
             GL_CHECK_ERROR( glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); );
-            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); );
-            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); );
+            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); );
+            GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); );
             
             //Save it to gpu
             GL_CHECK_ERROR( glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgSize.x, imgSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
                             rgba32Img); );
-
-            GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, textureId); );
-
 
             ImageTextures[const_cast<ssGUI::Backend::BackendImageInterface*>(&image)] = textureId;
 

@@ -58,18 +58,22 @@ namespace Backend
             bool IsCharacterSupported(wchar_t charUnicode) override;
             
             //function: GetKerning
+            //For fixed size font, this is undefined.
             //See <BackendFontInterface::GetKerning>
             float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) override;
             
             //function: GetLineSpacing
+            //For fixed size font, this is undefined.
             //See <BackendFontInterface::GetLineSpacing>
             float GetLineSpacing(float charSize) override;
             
             //function: GetUnderlineOffset
+            //For fixed size font, this is undefined.
             //See <BackendFontInterface::GetUnderlineOffset>
             float GetUnderlineOffset(float charSize) override;
             
             //function: GetUnderlineThickness
+            //For fixed size font, this is undefined.
             //See <BackendFontInterface::GetUnderlineThickness>
             float GetUnderlineThickness(float charSize) override;
 

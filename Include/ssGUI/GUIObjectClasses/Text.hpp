@@ -278,7 +278,7 @@ namespace ssGUI
             //Removes a range of character details
             virtual void RemoveCurrentCharacterDetails(int startIndex, int exclusiveEndIndex);
 
-            //function: ClearAllOverrideCharacterDetails
+            //function: ClearAllCurrentCharacterDetails
             //Removes all override character details
             virtual void ClearAllCurrentCharacterDetails();
 

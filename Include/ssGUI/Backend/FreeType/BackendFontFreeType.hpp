@@ -69,6 +69,8 @@ namespace Backend
             ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) override;
             
             //function: IsCharacterSupported
+            //For fixed size font, this will return the closest fixed size font 
+            //and populate the TargetSizeMultiplier field.
             //See <BackendFontInterface::IsCharacterSupported>
             bool IsCharacterSupported(wchar_t charUnicode) override;
             
@@ -77,14 +79,20 @@ namespace Backend
             float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) override;
             
             //function: GetLineSpacing
+            //For fixed size font, 
+            //this will return always return the corresponding line spacing to charSize
             //See <BackendFontInterface::GetLineSpacing>
             float GetLineSpacing(float charSize) override;
             
             //function: GetUnderlineOffset
             //See <BackendFontInterface::GetUnderlineOffset>
+            //For fixed size font, 
+            //this will return always return the corresponding underline offset to charSize
             float GetUnderlineOffset(float charSize) override;
             
             //function: GetUnderlineThickness
+            //For fixed size font, 
+            //this will return always return the corresponding underline thickness to charSize
             //See <BackendFontInterface::GetUnderlineThickness>
             float GetUnderlineThickness(float charSize) override;
 

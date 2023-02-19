@@ -25,7 +25,8 @@ namespace Backend
             virtual bool IsValid() const = 0;
 
             //function: GetCharacterRenderInfo
-            //Gets the rendering infomation of a character
+            //Gets the rendering infomation of a character.
+            //For fixed size font behaviour, please see the backend you are using.
             virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) = 0;
             
             //function: IsCharacterSupported
@@ -38,15 +39,18 @@ namespace Backend
             virtual float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) = 0;
             
             //function: GetLineSpacing
-            //Returns how much a line space is based on the font size
+            //Returns how much a line space is based on the font size.
+            //For fixed size font behaviour, please see the backend you are using.
             virtual float GetLineSpacing(float charSize) = 0;
             
             //function: GetUnderlineOffset
             //Gets the vertical offset for underline based on the font size 
+            //For fixed size font behaviour, please see the backend you are using.
             virtual float GetUnderlineOffset(float charSize) = 0;
             
             //function: GetUnderlineThickness
             //Gets the thickness for underline based on the font size 
+            //For fixed size font behaviour, please see the backend you are using.
             virtual float GetUnderlineThickness(float charSize) = 0;
 
             //function: LoadFromPath
@@ -64,6 +68,7 @@ namespace Backend
 
             //function: GetCharacterImage
             //Returns the character image
+            //For fixed size font behaviour, please see the backend you are using.
             virtual bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage) = 0;
  
             //function: GetRawHandle

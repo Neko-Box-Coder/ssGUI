@@ -42,11 +42,29 @@ namespace Backend
         
         sf::Glyph glyph = Font.getGlyph(charUnicode, charSize, false);
 
+        if( glyph.advance == 0 &&
+            glyph.lsbDelta == 0 &&
+            glyph.rsbDelta == 0 &&
+            glyph.bounds.height == 0 &&
+            glyph.bounds.width == 0 &&
+            glyph.bounds.left == 0 &&
+            glyph.bounds.top == 0 &&
+            glyph.textureRect.height == 0 &&
+            glyph.textureRect.width == 0 &&
+            glyph.textureRect.left == 0 &&
+            glyph.textureRect.top == 0)
+        {
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Aborting...");
+            return info;
+        }
+
         info.Advance = glyph.advance;
         info.DrawOffset = glm::vec2(glyph.bounds.left, glyph.bounds.top);
         info.Size = glm::vec2(glyph.textureRect.width, glyph.textureRect.height);
         info.Rendered = true;   //This is handled in Text.cpp
         info.Valid = true;
+        info.RenderFontSize = charSize;
 
         return info;
     }
@@ -117,7 +135,8 @@ namespace Backend
     {
         if(!SFFontValid)
             return false;
-            
+
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "GetFixedAvailableFontSizes is not supported on SFML");
         return true;
     }
     
