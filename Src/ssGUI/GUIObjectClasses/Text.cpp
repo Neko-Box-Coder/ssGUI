@@ -458,10 +458,6 @@ namespace ssGUI
                 float whitespaceWidth = 0;
                 whitespaceWidth = whitespaceInfo.Advance * whitespaceInfo.TargetSizeMultiplier;
                 whitespaceWidth += GetCharacterSpace();
-                ssLOG_LINE("whitespaceWidth: "<<whitespaceWidth);
-                ssLOG_LINE("info.Valid: "<<info.Valid);
-                ssLOG_LINE("info.Advance: "<<info.Advance);
-                ssLOG_LINE("info.TargetSizeMultiplier: "<<info.TargetSizeMultiplier);
 
                 switch (curChar)
                 {
@@ -482,7 +478,6 @@ namespace ssGUI
                         break;
                     //Characters that have no texture
                     default:
-                        ssLOG_LINE("curChar: "<<(uint32_t)curChar);
                         drawXPos += info.Advance * info.TargetSizeMultiplier;
                         CharactersRenderInfos[i].Advance = info.Advance * info.TargetSizeMultiplier; 
                         break;

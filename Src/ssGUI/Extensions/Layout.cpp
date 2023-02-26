@@ -1069,7 +1069,6 @@ namespace Extensions
         
         if(GetUpdateContainerMinMaxSize())
         {
-            ssLOG_LINE("Container: "<<Container);
             SyncContainerMinMaxSize();
             const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
             
@@ -1085,9 +1084,6 @@ namespace Extensions
                 // std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1)
             );
         }
-        ssLOG_LINE("Container: "<<Container);
-        ssLOG_LINE("child->GetMinSize(): "<<child->GetMinSize().x<<", "<<child->GetMinSize().y);
-        ssLOG_LINE("Container->GetMinSize(): "<<Container->GetMinSize().x<<", "<<Container->GetMinSize().y);
 
         ssLOG_FUNC_EXIT();
     }
