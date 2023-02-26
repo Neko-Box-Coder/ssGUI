@@ -298,17 +298,7 @@ namespace Extensions
                 continue;
             }
 
-            if(Container->GetCurrentChild() != nullptr && Container->GetCurrentChild()->GetType() == ssGUI::Enums::GUIObjectType::WINDOW &&
-                !Container->GetCurrentChild()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-            {
-                //NOTE: Not too sure what was this about
-                //ssGUI::Window* childWin = static_cast<ssGUI::Window*>(Container->GetCurrentChild());
-                //glm::ivec4 tColor = childWin->GetTitlebarColor();
-                
-                //NOTE: This was outside this if statement, didn't make too much sense to be outside
-                validChildrenSize++;
-            }
-            
+            validChildrenSize++;
             Container->MoveChildrenIteratorNext();
         }
         Container->PopChildrenIterator();
@@ -1079,6 +1069,7 @@ namespace Extensions
         
         if(GetUpdateContainerMinMaxSize())
         {
+            ssLOG_LINE("Container: "<<Container);
             SyncContainerMinMaxSize();
             const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
             
@@ -1094,6 +1085,9 @@ namespace Extensions
                 // std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1)
             );
         }
+        ssLOG_LINE("Container: "<<Container);
+        ssLOG_LINE("child->GetMinSize(): "<<child->GetMinSize().x<<", "<<child->GetMinSize().y);
+        ssLOG_LINE("Container->GetMinSize(): "<<Container->GetMinSize().x<<", "<<Container->GetMinSize().y);
 
         ssLOG_FUNC_EXIT();
     }

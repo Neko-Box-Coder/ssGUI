@@ -260,44 +260,45 @@ namespace Backend
                 //If failed to import, clean up and exit
                 if(!rawFont->GetCharacterImage(character, characterSize, imgData))
                 {
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get character image");
                     return false;
                 }
                 
                 #ifdef SSGUI_IMAGE_BACKEND_SFML
-                CharTextures[id] = *static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
+                    CharTextures[id] = *static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
                 #else
 
-                ssGUI::ImageFormat imgFmt;
-                void* imgRawPtr = imgData.GetPixelPtr(imgFmt);
-                sf::Image img;
-                bool result = false;
-                
-                
-                uint8_t* convertedRawImg = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
-
-                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgData.GetSize());
-                if(!result)
-                {
-                    delete[] convertedRawImg;
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
-                    return false;
-                }
-                else
-                {
-                    img.create(sf::Vector2u(imgData.GetSize().x, imgData.GetSize().y), convertedRawImg);
-                    delete[] convertedRawImg;
-                }
+                    ssGUI::ImageFormat imgFmt;
+                    void* imgRawPtr = imgData.GetPixelPtr(imgFmt);
+                    sf::Image img;
+                    bool result = false;
                     
-                //Create texture
-                result = CharTextures[id].loadFromImage(img);
-                
-                //Failed to upload to gpu for whatever reason   
-                if(!result)
-                {
-                    //Cleanup the failed texture
-                    CharTextures.erase(id);
-                    return false;
-                }                
+                    
+                    uint8_t* convertedRawImg = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
+
+                    result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgData.GetSize());
+                    if(!result)
+                    {
+                        delete[] convertedRawImg;
+                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
+                        return false;
+                    }
+                    else
+                    {
+                        img.create(sf::Vector2u(imgData.GetSize().x, imgData.GetSize().y), convertedRawImg);
+                        delete[] convertedRawImg;
+                    }
+                        
+                    //Create texture
+                    result = CharTextures[id].loadFromImage(img);
+                    
+                    //Failed to upload to gpu for whatever reason   
+                    if(!result)
+                    {
+                        //Cleanup the failed texture
+                        CharTextures.erase(id);
+                        return false;
+                    }                
                 #endif
             }
 

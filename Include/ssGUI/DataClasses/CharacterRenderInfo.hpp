@@ -35,7 +35,7 @@ namespace ssGUI
             bool CharacterAtNewline = false;
 
             //var: Rendered
-            //When true, this means there's font assigned to this character and not space, tab or newline character.
+            //When true, this means there's font assigned to this character and not space, tab, newline character or empty character.
             bool Rendered = false;
 
             //var: Valid

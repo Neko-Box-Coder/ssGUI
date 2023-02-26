@@ -75,14 +75,6 @@ namespace Backend
     
         if(conversionNeeded)
         {
-            //Check byte alignment
-            if(format.BitDepthPerChannel % 8 != 0 || format.BitPerPixel % 8 != 0)
-            {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "BitDepthPerChannel or BitPerPixel is not byte aligned, this is not supported.");
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Aborting...");
-                return false;
-            }
-            
             bool result = false;
             
             uint8_t* convertedRawImg = new uint8_t[imageSize.x * imageSize.y * 4];

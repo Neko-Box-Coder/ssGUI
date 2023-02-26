@@ -300,6 +300,7 @@ namespace ssGUI
             currentWordLength += curRenderInfo.Advance + GetCharacterSpace();
 
             //See if the current word exceeds widget width when a word *finishes*
+            //We do this by setting space, newline, tab or last character as word separator
             if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t') || i == lastValidIndex)
             {
                 //check if adding current word length to current line length exceeds widget width
@@ -437,9 +438,11 @@ namespace ssGUI
             drawXPos += fontInterface->GetKerning(prevChar, curChar, curDetail.FontSize);
 
             prevChar = curChar;
+            ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
 
             //If space or tab or newline character, just append
-            if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
+            //It is possible for any other character that has no texture, we handle it here as well
+            if (curChar == L' ' || curChar == L'\n' || curChar == L'\t' || info.Size == glm::vec2())
             {
                 //Check newline
                 if(nextCharIsAtNewline)
@@ -450,11 +453,15 @@ namespace ssGUI
                 }
                 
                 curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
-                ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize);
+                ssGUI::CharacterRenderInfo whitespaceInfo = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize);
                 
                 float whitespaceWidth = 0;
-                whitespaceWidth = info.Advance * info.TargetSizeMultiplier;
+                whitespaceWidth = whitespaceInfo.Advance * whitespaceInfo.TargetSizeMultiplier;
                 whitespaceWidth += GetCharacterSpace();
+                ssLOG_LINE("whitespaceWidth: "<<whitespaceWidth);
+                ssLOG_LINE("info.Valid: "<<info.Valid);
+                ssLOG_LINE("info.Advance: "<<info.Advance);
+                ssLOG_LINE("info.TargetSizeMultiplier: "<<info.TargetSizeMultiplier);
 
                 switch (curChar)
                 {
@@ -473,6 +480,12 @@ namespace ssGUI
                     case L'\n': 
                         nextCharIsAtNewline = true;
                         break;
+                    //Characters that have no texture
+                    default:
+                        ssLOG_LINE("curChar: "<<(uint32_t)curChar);
+                        drawXPos += info.Advance * info.TargetSizeMultiplier;
+                        CharactersRenderInfos[i].Advance = info.Advance * info.TargetSizeMultiplier; 
+                        break;
                 }
 
                 if(drawXPos + GetHorizontalPadding() > GetSize().x)
@@ -480,7 +493,6 @@ namespace ssGUI
             }
             else 
             {
-                ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
                 if(!info.Valid)
                 {
                     prevChar = 0;
@@ -490,9 +502,7 @@ namespace ssGUI
                 }
                 
                 float characterLength = info.Advance * info.TargetSizeMultiplier;
-                //bool oriValid = curRenderInfo.Valid;
                 curRenderInfo = info;
-                //curRenderInfo.Valid = oriValid;
 
                 //Check newline
                 if(nextCharIsAtNewline)

@@ -229,16 +229,18 @@ namespace Backend
             return info;
         }
 
-        info.Advance = static_cast<float>(FontFace->glyph->advance.x) / 64.f;
-        info.DrawOffset = glm::vec2(FontFace->glyph->bitmap_left, -FontFace->glyph->bitmap_top);
-        info.Size = glm::vec2(FontFace->glyph->bitmap.width, FontFace->glyph->bitmap.rows);
-        info.Rendered = true;   //This is handled in Text.cpp
-        info.Valid = true;
-        info.RenderFontSize = CurrentSize;
-        info.TargetSizeMultiplier = charSize / CurrentSize; 
-        
-        if(info.Size == glm::vec2())
-            info.Advance = 0;
+        //For some reason, variable selections is taking spaces. We don't want that
+        //https://en.wikipedia.org/wiki/Variation_Selectors_(Unicode_block)
+        if(charUnicode < L'\uFE00' || charUnicode > L'\uFE0F')
+        {
+            info.Advance = static_cast<float>(FontFace->glyph->advance.x) / 64.f;
+            info.DrawOffset = glm::vec2(FontFace->glyph->bitmap_left, -FontFace->glyph->bitmap_top);
+            info.Size = glm::vec2(FontFace->glyph->bitmap.width, FontFace->glyph->bitmap.rows);
+            info.Rendered = true;   //This is handled in Text.cpp
+            info.Valid = true;
+            info.RenderFontSize = CurrentSize;
+            info.TargetSizeMultiplier = charSize / CurrentSize; 
+        }
         
         return info;
     }
@@ -488,6 +490,10 @@ namespace Backend
                 return false;
             }
             
+            //If it is am empty character, it shouldn't be render, so return false
+            if(GetCurrentGlyph()->bitmap.width == 0 || GetCurrentGlyph()->bitmap.rows == 0)
+                return false;
+            
             result = characterImage.LoadRawFromMemory(  GetCurrentGlyph()->bitmap.buffer, 
                                                         format, 
                                                         glm::ivec2( GetCurrentGlyph()->bitmap.width, 
@@ -532,6 +538,10 @@ namespace Backend
                 ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
                 return false;
             }
+            
+            //If it is am empty character, it shouldn't be render, so return false
+            if(GetCurrentGlyph()->bitmap.width == 0 || GetCurrentGlyph()->bitmap.rows == 0)
+                return false;
         
             result = characterImage.LoadRawFromMemory(  GetCurrentGlyph()->bitmap.buffer, 
                                                         format, 

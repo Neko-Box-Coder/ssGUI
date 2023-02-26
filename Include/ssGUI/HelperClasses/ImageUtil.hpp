@@ -338,6 +338,7 @@ namespace ssGUI
             if(!result)\
             {\
                 delete[] monoImgPtr;\
+                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Failed to convert bitmap to mono");\
                 return result; \
             }\
             \
