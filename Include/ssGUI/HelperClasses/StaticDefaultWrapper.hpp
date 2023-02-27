@@ -6,6 +6,7 @@
 
 #include "ssGUI/Factory.hpp"
 
+//TODO: Optimize this for better and more robust design
 namespace ssGUI 
 {
     template<typename T>

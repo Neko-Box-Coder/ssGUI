@@ -365,4 +365,6 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
         return temp;
     }
+    
+    void GUIObject::InitiateDefaultResources(){}
 }

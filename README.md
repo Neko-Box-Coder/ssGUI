@@ -1,7 +1,7 @@
 > ⚠️ This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
 > ⚠️ Documentation is for the current stable version (v0.93.00.b), not for this version. Some info may not up-to-date.
-### 🔌 Status of ssGUI (v0.93.03)
+### 🔌 Status of ssGUI (v0.94.00)
 - #### 🔀 Branches
     <!--- ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)-->
     - ![](https://img.shields.io/badge/Latest_Development-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)

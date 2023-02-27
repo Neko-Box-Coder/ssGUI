@@ -29,6 +29,8 @@ namespace ssGUI
         ssGUIObjectIndex WindowTitle;       //See <GetWindowTitleObject>
         ssGUIObjectIndex WindowIcon;        //See <GetWindowIconObject>
         ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
+
+        static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
     =================================================================
     ============================== C++ ==============================
     StandardWindow::StandardWindow() :  HorizontalPadding(5),
@@ -66,9 +68,9 @@ namespace ssGUI
         windowIcon->SetMinSize(glm::vec2(5, 5));
         WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
-        auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-        data->LoadFromPath("Resources/WindowIcon.png");
-        windowIcon->SetImageData(data);
+        InitiateDefaultResources();
+        if(DefaultIcon != nullptr)
+            windowIcon->SetImageData(DefaultIcon);
 
         //Setup button
         auto closeButton = new ssGUI::Button();
@@ -176,6 +178,8 @@ namespace ssGUI
 
         ssLOG_FUNC_EXIT();
     }
+    
+    ssGUI::ImageData* StandardWindow::DefaultIcon = nullptr;
     =================================================================
     */
     class StandardWindow : public Window
@@ -196,7 +200,7 @@ namespace ssGUI
             ssGUIObjectIndex WindowIcon;        //See <GetWindowIconObject>
             ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
-            static ssGUI::ImageData* DefaultIcon;
+            static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
 
             StandardWindow(StandardWindow const& other);
 
@@ -299,10 +303,6 @@ namespace ssGUI
             //Gets the title text color difference to titlebar color (TitleTextColor-TitlebarColor)
             virtual glm::ivec4 GetAdaptiveTitleColorDifference() const;
 
-            //function: CleanUpDefaultIconData
-            //Dispose default icon data
-            static void CleanUpDefaultIconData();
-
             //function: SetTitlebarColor
             //See <Window::SetTitlebarColor>
             virtual void SetTitlebarColor(glm::u8vec4 color) override;
@@ -322,6 +322,14 @@ namespace ssGUI
             //function: Clone
             //See <Window::Clone>
             virtual StandardWindow* Clone(bool cloneChildren) override;
+            
+            //function: InitiateDefaultResources
+            //See <GUIObject::InitiateDefaultResources>
+            virtual void InitiateDefaultResources() override;
+            
+            //function: CleanUpDefaultIcon
+            //Deallocates default default window icon. This is handled automatically in <ssGUIManager>
+            static void CleanUpDefaultIcon();
     };
 }
 

@@ -54,6 +54,8 @@ namespace ssGUI
 
         bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
         glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
+
+        static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
     =================================================================
     ============================== C++ ==============================
     ImageCanvas::ImageCanvas() :    HorizontalScrollbar(-1),
@@ -183,6 +185,8 @@ namespace ssGUI
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
     }
+    
+    ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
     =================================================================
     */
     class ImageCanvas : public Image
@@ -227,6 +231,7 @@ namespace ssGUI
             bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
             glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
 
+            static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
 
             ImageCanvas(ImageCanvas const& other);
 
@@ -404,6 +409,14 @@ namespace ssGUI
             //function: Clone
             //See <Widget::Clone>
             virtual ImageCanvas* Clone(bool cloneChildren) override;
+    
+            //function: InitiateDefaultResources
+            //See <GUIObject::InitiateDefaultResources>
+            virtual void InitiateDefaultResources() override;
+            
+            //function: CleanUpDefaultRotationCursor
+            //Deallocates default rotation cursor iamge. This is handled automatically in <ssGUIManager>
+            static void CleanUpDefaultRotationCursor();
     };
 }
 

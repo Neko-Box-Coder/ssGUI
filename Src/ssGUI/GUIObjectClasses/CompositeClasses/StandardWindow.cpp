@@ -1,5 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
+#include "ssGUI/EmbeddedResources.hpp"
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
@@ -213,15 +214,9 @@ namespace ssGUI
         windowIcon->SetMinSize(glm::vec2(5, 5));
         WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
-        if(DefaultIcon == nullptr)
-        {
-            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-            if(data->LoadFromPath("Resources/WindowIcon.png"))
-            {
-                DefaultIcon = data;
-                windowIcon->SetImageData(DefaultIcon);
-            }
-        }
+        InitiateDefaultResources();
+        if(DefaultIcon != nullptr)
+            windowIcon->SetImageData(DefaultIcon);
 
         //Setup button
         auto closeButton = new ssGUI::Button();
@@ -524,12 +519,6 @@ namespace ssGUI
         return TitleColorDifference;
     }
 
-    void StandardWindow::CleanUpDefaultIconData()
-    {
-        if(DefaultIcon != nullptr)
-            ssGUI::Factory::Dispose(DefaultIcon);
-    }
-
     void StandardWindow::SetTitlebarColor(glm::u8vec4 color)
     {
         Window::SetTitlebarColor(color);
@@ -650,5 +639,35 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
         return temp;
     }
+    
+    void StandardWindow::InitiateDefaultResources()
+    {
+        if(DefaultIcon == nullptr)
+        {
+            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+            size_t fileSize = 0;
+            const char* fileContent = find_embedded_file("WindowIcon.png", &fileSize);
+            
+            if(fileContent == nullptr)
+            {
+                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded window icon");
+                ssGUI::Factory::Dispose(data);
+                return;
+            }
 
+            if(data->LoadImgFileFromMemory(fileContent, fileSize))
+                DefaultIcon = data;
+            else
+                ssGUI::Factory::Dispose(data);
+        }
+    }
+    
+    void StandardWindow::CleanUpDefaultIcon()
+    {
+        if(DefaultIcon != nullptr)
+        {
+            ssGUI::Factory::Dispose(DefaultIcon);
+            DefaultIcon = nullptr;
+        }
+    }
 }

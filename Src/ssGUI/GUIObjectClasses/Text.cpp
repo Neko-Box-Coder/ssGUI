@@ -1,6 +1,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include "ssGUI/EmbeddedResources.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/gtx/norm.hpp"
@@ -10,8 +11,7 @@
 
 namespace ssGUI
 {    
-    std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> Text::DefaultFonts = std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>>();
-    bool Text::DefaultFontsInitialized = false;
+    std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();
     uint32_t Text::DefaultFontsChangeID = 1;
 
     Text::Text(Text const& other) : Widget(other)
@@ -1108,41 +1108,6 @@ namespace ssGUI
 //     #endif
 //     } // GetFilesInDirectory
 
-
-    void Text::InitializeDefaultFontIfNeeded()
-    {
-        ssLOG_FUNC_ENTRY();
-
-        if(DefaultFontsInitialized)
-        {
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-
-        auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
-        {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
-            ssGUI::Factory::Dispose(font);
-        }
-        else
-        {
-            ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-            wrapper.Obj = font;
-            wrapper.ssGUIDefault = true;
-            
-            DefaultFonts.push_back(wrapper);
-            DefaultFontsInitialized = true;
-            
-            //Needs to manually set the font for temp wrapper to be nullptr
-            //otherwise it will trigger the destructor and deallocate the font
-            wrapper.Obj = nullptr;
-
-            DefaultFontsChangeID++;
-        }
-        ssLOG_FUNC_EXIT();
-    }
-
     void Text::ConstructRenderInfo()
     {
         ssLOG_FUNC_ENTRY();
@@ -1321,7 +1286,7 @@ namespace ssGUI
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
         SetInteractable(true);
-        Text::InitializeDefaultFontIfNeeded();
+        InitiateDefaultResources();
 
         auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
@@ -2120,16 +2085,7 @@ namespace ssGUI
         if(font == nullptr)
             return;
 
-        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-        wrapper.Obj = font;
-        wrapper.ssGUIDefault = false;
-
-        DefaultFonts.push_back(wrapper);
-
-        //Needs to manually set the font for temp wrapper to be nullptr
-        //otherwise it will trigger the destructor and deallocate the font
-        wrapper.Obj = nullptr;
-
+        DefaultFonts.push_back(font);
         DefaultFontsChangeID++;
     }
 
@@ -2138,15 +2094,7 @@ namespace ssGUI
         if(font == nullptr)
             return;
 
-        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-        wrapper.Obj = font;
-        wrapper.ssGUIDefault = false;
-
-        DefaultFonts.insert(DefaultFonts.begin() + index, wrapper);
-    
-        //Needs to manually set the font for temp wrapper to be nullptr
-        //otherwise it will trigger the destructor and deallocate the font
-        wrapper.Obj = nullptr;
+        DefaultFonts.insert(DefaultFonts.begin() + index, font);
         DefaultFontsChangeID++;
     }
     
@@ -2155,7 +2103,7 @@ namespace ssGUI
         if(index < 0 || index >= DefaultFonts.size())
             return nullptr;
         
-        return DefaultFonts[index].Obj;
+        return DefaultFonts[index];
     }
 
     void Text::SetDefaultFont(ssGUI::Font* font, int index)
@@ -2163,13 +2111,15 @@ namespace ssGUI
         if(index < 0 || index >= DefaultFonts.size() || font == nullptr)
             return;
 
-        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-        wrapper.Obj = font;
-        wrapper.ssGUIDefault = false;
+        ssGUI::Factory::Dispose(DefaultFonts[index]);
+        
+        if(font == nullptr)
+        {
+            DefaultFonts.erase(DefaultFonts.begin() + index);
+            return;    
+        }
 
-        DefaultFonts[index] = wrapper;
-
-        wrapper.Obj = nullptr;
+        DefaultFonts[index] = font;
         DefaultFontsChangeID++;
     }
 
@@ -2178,6 +2128,7 @@ namespace ssGUI
         if(index < 0 || index >= DefaultFonts.size())
             return;
 
+        ssGUI::Factory::Dispose(DefaultFonts[index]);
         DefaultFonts.erase(DefaultFonts.begin() + index);
         DefaultFontsChangeID++;
     }
@@ -2189,8 +2140,11 @@ namespace ssGUI
 
     void Text::CleanUpAllDefaultFonts()
     {
-        //This will trigger the static wrapper to do deallocation
-        DefaultFonts.clear();        
+        for(int i = 0; i < DefaultFonts.size(); i++)
+            ssGUI::Factory::Dispose(DefaultFonts[i]);
+        
+        DefaultFonts.clear();
+        DefaultFontsChangeID++;
     }
 
     ssGUI::Enums::GUIObjectType Text::GetType() const
@@ -2215,5 +2169,39 @@ namespace ssGUI
 
         ssLOG_FUNC_EXIT();
         return temp;
+    }
+    
+    void Text::InitiateDefaultResources()
+    {
+        ssLOG_FUNC_ENTRY();
+
+        if(!DefaultFonts.empty())
+        {
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        size_t fileSize = 0;
+        char* fileContent = const_cast<char*>(find_embedded_file("NotoSans-Regular.ttf", &fileSize));
+
+        if(fileContent == nullptr)
+        {
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        auto font = new ssGUI::Font();
+        if(!font->GetBackendFontInterface()->LoadFromMemory(fileContent, fileSize))
+        {
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
+            ssGUI::Factory::Dispose(font);
+        }
+        else
+        {
+            DefaultFonts.push_back(font);
+            DefaultFontsChangeID++;
+        }
+        ssLOG_FUNC_EXIT();
     }
 }

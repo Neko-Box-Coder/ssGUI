@@ -2,7 +2,6 @@
 #define SSGUI_DROPDOWN_H
 
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
-#include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"
 
 #include <vector>
 #include <string>
@@ -25,9 +24,8 @@ namespace ssGUI
         std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;                     //See <GetItem>
         bool Toggle;                                                                            //(Internal variable) Used to set focus
 
-        static ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* DefaultDropdownArrowImageData;     //(Internal variable) used to store default arrow image
+        static ssGUI::ImageData* DefaultDropdownArrowImageData;                                 //(Internal variable) used to store default arrow image
                                                                                                 //TODO: Allow this to be configured
-        static bool DefaultDropdownInitialized;                                                 //(Internal variable) Used to see if the default dropdown image needs initializing
     =================================================================
     ============================== C++ ==============================
     Dropdown::Dropdown() :  DropdownMenu(-1),
@@ -53,9 +51,10 @@ namespace ssGUI
         layout->SetPreferredSizeMultiplier(0, textMulti);
         layout->SetPreferredSizeMultiplier(1, iconMulti);
 
+        InitiateDefaultResources();
         //Set icon to dropdown arrow
-        if(DefaultDropdownArrowImageData->Obj != nullptr)
-            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData->Obj);
+        if(DefaultDropdownArrowImageData != nullptr)
+            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData);
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
@@ -74,7 +73,7 @@ namespace ssGUI
             this,
             [](ssGUI::EventInfo info)
             {
-                auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.EventCallbackContainer);
+                auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.Container);
                 
                 auto dropdownMenu = dropdownContainer->Internal_GetObjectsReferences()->GetObjectReference(dropdownContainer->DropdownMenu);
                 if(dropdownMenu == nullptr)
@@ -101,20 +100,19 @@ namespace ssGUI
                 dropdownContainer->Toggle = true;
                 
                 auto castedDropdownMenu = static_cast<ssGUI::Menu*>(dropdownMenu);
-                if(castedDropdownMenu->CanForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition() + glm::vec2(0, info.EventCallbackContainer->GetSize().y), 
+                if(castedDropdownMenu->CanForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y), 
                     ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT))
                 {
-                    castedDropdownMenu->ForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition() + glm::vec2(0, info.EventCallbackContainer->GetSize().y),
+                    castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y),
                         ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT);
                 }
                 else
-                    castedDropdownMenu->ForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
+                    castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
             }
         );
     }
 
-    ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* Dropdown::DefaultDropdownArrowImageData = nullptr;
-    bool Dropdown::DefaultDropdownInitialized = false;
+    ssGUI::ImageData* Dropdown::DefaultDropdownArrowImageData = nullptr;
     =================================================================
     */
     class Dropdown : public StandardButton
@@ -128,15 +126,11 @@ namespace ssGUI
             std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;                     //See <GetItem>
             bool Toggle;                                                                            //(Internal variable) Used to set focus
 
-            static ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* DefaultDropdownArrowImageData;     //(Internal variable) used to store default arrow image
+            static ssGUI::ImageData* DefaultDropdownArrowImageData;                                 //(Internal variable) used to store default arrow image
                                                                                                     //TODO: Allow this to be configured
-            static bool DefaultDropdownInitialized;                                                 //(Internal variable) Used to see if the default dropdown image needs initializing
-
             Dropdown(Dropdown const& other);
 
             void AddItemListener(ssGUI::EventCallbacks::EventCallback* ecb, int index);
-
-            static void InitializeDefaultDropdownArrowIfNeeded();
 
             virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
@@ -189,9 +183,6 @@ namespace ssGUI
             //Sets the dropdown menu GUI object
             virtual void SetDropdownMenu(ssGUI::Menu* menu);
 
-            //function: CleanUpAllDefaultDropdownImage
-            static void CleanUpAllDefaultDropdownImage();
-
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
@@ -199,6 +190,14 @@ namespace ssGUI
             //function: Clone
             //See <Widget::Clone>
             virtual Dropdown* Clone(bool cloneChildren) override;
+            
+            //function: InitiateDefaultResources
+            //See <GUIObject::InitiateDefaultResources>
+            virtual void InitiateDefaultResources() override;
+            
+            //function: CleanUpDefaultDropdownArrowImage
+            //Deallocates default dropdown arrow image. This is handled automatically in <ssGUIManager>
+            static void CleanUpDefaultDropdownArrowImage();
     };
 }
 

@@ -1,6 +1,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/ImageCanvas.hpp"
 
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
+#include "ssGUI/EmbeddedResources.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/Border.hpp"
@@ -18,6 +19,8 @@
 
 namespace ssGUI
 {
+    ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
+
     ImageCanvas::ImageCanvas(ImageCanvas const& other) : Image(other)
     {
         HorizontalScrollbar = other.HorizontalScrollbar;
@@ -308,18 +311,22 @@ namespace ssGUI
                     //Load rotation cursor if it wasn't loaded
                     if(!inputInterface->HasCustomCursor("RotationCursor"))
                     {
-                        ssGUI::ImageData rotationCursor;
-                        if(!rotationCursor.LoadFromPath("Resources/RotationCursor.png"))
+                        InitiateDefaultResources();
+                        if(DefaultRotationCursor == nullptr)
                         {
                             ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load rotation cursor");
-                            return;
                         }
-
-                        inputInterface->CreateCustomCursor(rotationCursor.GetBackendImageInterface(), "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
+                        else
+                        {
+                            inputInterface->CreateCustomCursor(DefaultRotationCursor->GetBackendImageInterface(), "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
+                        }
                     }
-                    
-                    inputInterface->SetCurrentCustomCursor("RotationCursor");
-                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::CUSTOM);
+
+                    if(inputInterface->HasCustomCursor("RotationCursor"))
+                    {
+                        inputInterface->SetCurrentCustomCursor("RotationCursor");
+                        inputInterface->SetCursorType(ssGUI::Enums::CursorType::CUSTOM);
+                    }
                 }
 
                 //Get image position
@@ -786,5 +793,40 @@ namespace ssGUI
 
         ssLOG_FUNC_EXIT();
         return temp;
+    }
+    
+    void ImageCanvas::InitiateDefaultResources()
+    {
+        if(DefaultRotationCursor == nullptr)
+        {
+            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+            size_t fileSize = 0;
+            const char* fileContent = find_embedded_file("RotationCursor.png", &fileSize);
+            
+            if(fileContent == nullptr)
+            {
+                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded rotation cursor");
+                ssGUI::Factory::Dispose(data);
+                return;
+            }
+            
+            if(!data->LoadImgFileFromMemory(fileContent, fileSize))
+            {
+                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load rotation cursor");
+                ssGUI::Factory::Dispose(data);
+                return;
+            }
+            else
+                DefaultRotationCursor = data;
+        }
+    }
+    
+    void ImageCanvas::CleanUpDefaultRotationCursor()
+    {
+        if(DefaultRotationCursor != nullptr)
+        {
+            ssGUI::Factory::Dispose(DefaultRotationCursor);
+            DefaultRotationCursor = nullptr;
+        }       
     }
 }

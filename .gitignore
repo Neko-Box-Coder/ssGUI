@@ -46,6 +46,8 @@ Build/
 v0.*/
 *.bak
 Releases/
+Resources/embed
+Resources/embed.exe
 
 # Natural Docs cache data
 DocsGeneration/ND_Config/Working\ Data

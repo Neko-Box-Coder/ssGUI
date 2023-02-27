@@ -58,6 +58,7 @@ namespace Backend
             //_path_ can be either absolute or relative.
             virtual bool LoadFromPath(std::string path) = 0;
 
+            //TODO: Use const pointer instead
             //function: LoadFromMemory
             //Load the raw font file in memory, which is copied and stored internally.
             virtual bool LoadFromMemory(void* dataPtr, int lengthInBytes) = 0;

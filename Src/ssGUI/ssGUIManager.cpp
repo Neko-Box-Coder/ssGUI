@@ -451,6 +451,7 @@ namespace ssGUI
 
     ssGUIManager::~ssGUIManager()
     {
+        CleanUpDefaultResources();
         delete BackendInput;
     }
     
@@ -483,7 +484,6 @@ namespace ssGUI
     {
         ssLOG_FUNC_ENTRY();
         Internal_Update();
-        CleanUpDefaultSystemGUIObjects();
         ssLOG_FUNC_EXIT();
     }
 
@@ -626,12 +626,5 @@ namespace ssGUI
     float ssGUIManager::GetTargetFramerate()
     {
         return 1000 / TargetFrameInterval;
-    }
-
-    void ssGUIManager::CleanUpDefaultSystemGUIObjects()
-    {
-        Text::CleanUpAllDefaultFonts();
-        Dropdown::CleanUpAllDefaultDropdownImage();
-        StandardWindow::CleanUpDefaultIconData();
     }
 }

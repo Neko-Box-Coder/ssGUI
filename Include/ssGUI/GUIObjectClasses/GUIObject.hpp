@@ -71,7 +71,7 @@ namespace ssGUI
             //function: GetType
             //Returns the type of this GUI Object. Note that <ssGUI::Enums::GUIObjectType> is a bit-operated enum class.
             virtual ssGUI::Enums::GUIObjectType GetType() const;
-            
+                        
             //function: AddTag
             //Adds a tag to this GUI Object
             virtual void AddTag(std::string tag);
@@ -105,7 +105,10 @@ namespace ssGUI
             //The cloned object will be allocated on the heap and the clean up will be managed by ssGUI.
             //Setting cloneChildren will clone all the children recursively with all the ObjectsReferences respectively.
             virtual GUIObject* Clone(bool cloneChildren);
-
+            
+            //function: InitiateDefaultResources
+            //Initiate default resources that this GUI object needs
+            virtual void InitiateDefaultResources();
     };
 }
 

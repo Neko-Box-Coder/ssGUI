@@ -55,7 +55,7 @@ if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" "stb_image" "Template")          # Allow dropdown option
 
     # This might not be needed 
-    set(ssGUI_SFML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml/include" CACHE PATH "Provide the directory of ")
+    set(ssGUI_SFML_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/External/sfml/include" CACHE PATH "Provide the directory of ")
     set (CMAKE_CXX_STANDARD 17)
 else()
     unset(ssGUI_USE_LOCAL_SFML CACHE)
@@ -129,9 +129,9 @@ set_target_properties(clip PROPERTIES FOLDER External)  # Set folder name for ID
 
 if(ssGUI_USE_LOCAL_SFML AND ssGUI_MAIN_BACKEND STREQUAL "SFML")
 
-    set(SFML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/External/sfml/lib/cmake/SFML")
+    set(SFML_DIR "${CMAKE_CURRENT_LIST_DIR}/External/sfml/lib/cmake/SFML")
 
-    # set(INCLUDE_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+    # set(INCLUDE_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../include")
     # message("${SFML_DIR}")
 
     # target_link_options(ssGUI PRIVATE -mwindows) # uncomment to disabling console on Windows
@@ -154,7 +154,7 @@ endif()
 # ssLogger 
 # ==========================================================
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/ssLogger")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/ssLogger")
 
 set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
@@ -162,7 +162,7 @@ set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name fo
 # ssLogger 
 # ==========================================================
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
 set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
 # ==========================================================
@@ -170,7 +170,7 @@ set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for 
 # ==========================================================
 
 if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
     unset(FT_DISABLE_HARFBUZZ CACHE)
     set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
     set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
@@ -185,9 +185,9 @@ if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
     
     #target_sources( stb_image INTERFACE 
     #                FILE_SET HEADERS
-    #                BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image"
-    #                FILES "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image/stb_image.h")
-    target_include_directories(ssGUI_stb_image INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/External/stb_image")
+    #                BASE_DIRS "${CMAKE_CURRENT_LIST_DIR}/External/stb_image"
+    #                FILES "${CMAKE_CURRENT_LIST_DIR}/External/stb_image/stb_image.h")
+    target_include_directories(ssGUI_stb_image INTERFACE "${CMAKE_CURRENT_LIST_DIR}/External/stb_image")
     set_target_properties(ssGUI_stb_image PROPERTIES FOLDER External)   # Set folder name for IDEs such as Visual Studio
 endif()
 
@@ -196,13 +196,15 @@ endif()
 # ==========================================================
 if(ssGUI_OUTPUT_STATIC)
     add_library(ssGUI STATIC
-    "${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/ssGUIManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Factory.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
 )
 else()
     add_library(ssGUI SHARED
-    "${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/ssGUIManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Factory.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
 )
 endif()
 
@@ -217,40 +219,40 @@ endif()
 # set (CMAKE_CXX_FLAGS "-m32")
 # set (CMAKE_C_FLAGS "-m32")
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend")
 
 # Adding Main Backend
 if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/SFML")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/SFML")
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/Win32_OpenGL3_3")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Win32_OpenGL3_3")
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/Template")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Template")
 elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/X11_OpenGL3_3")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/X11_OpenGL3_3")
 else()
     message(FATAL_ERROR "Invalid Backend")
 endif()
 
 # Adding Font Backend
 if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/FreeType")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/FreeType")
 endif()
 
 # Adding Image Backend
 if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Backend/stb_image")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/stb_image")
 endif()
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/DataClasses")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/EventCallbacks")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/Extensions")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/GUIObjectClasses")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src/ssGUI/GUIObjectClasses/CompositeClasses")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/DataClasses")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallbacks")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Extensions")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/GUIObjectClasses")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/GUIObjectClasses/CompositeClasses")
 
 # ssGUI include directory
-target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Include"
-                                        "${CMAKE_CURRENT_SOURCE_DIR}/External/glm"
+target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Include"
+                                        "${CMAKE_CURRENT_LIST_DIR}/External/glm"
                                         "${ssGUI_SFML_INCLUDE_DIR}")                            # This might not be needed
 
 # DEBUG
@@ -368,13 +370,46 @@ else()
 endif()
 
 # ==========================================================
-# Copy resources 
+# Copy and embed resources 
 # ==========================================================
+
+add_executable(embed EXCLUDE_FROM_ALL "${CMAKE_CURRENT_LIST_DIR}/External/embed/embed.c")
 
 function(CopyResources targetDir)
     file(MAKE_DIRECTORY ${targetDir})
-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${targetDir}/Resources)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_LIST_DIR}/Resources ${targetDir}/Resources)
 endfunction()
+
+function(RunEmbedExecutable embedPath)
+    file(   COPY "${embedPath}" 
+            DESTINATION "${CMAKE_CURRENT_LIST_DIR}/Resources/"
+            FILE_PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+
+    execute_process(WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/Resources"
+                    OUTPUT_FILE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
+                    RESULT_VARIABLE EMBED_RESULT
+                    COMMAND "${CMAKE_CURRENT_LIST_DIR}/Resources/embed" "NotoSans-Regular.ttf" "DownArrow.png" "RotationCursor.png" "WindowIcon.png")
+
+    if(NOT EMBED_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to embed default resources")
+    endif()
+endfunction()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Release/embed.exe")
+        RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/Release/embed.exe")
+    elseif(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Debug/embed.exe")
+        RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/Debug/embed.exe")
+    else()
+        message(WARNING "Embed resource not found, please build the embed target inside Visual Studio in release mode before building the ssGUI")
+    endif()
+else()
+    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/embed")
+        RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/embed")
+    else()
+        message(WARNING "Embed resource not found, please run \"cmake --build . --target embed\" in the build folder before building the ssGUI")
+    endif()
+endif()
 
 # ==========================================================
 # Building tests and examples 
@@ -416,76 +451,52 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName)
 
     endforeach(CUR_SOURCE_PATH "${ssGUI_EXE_CPP_FILES}")
 
+    CopyResources(${binSubFolder})
+
 endfunction()
 
 # TODO: Leave it for now, but remove this later
 #if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
-    AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/" "BackendTests")
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/BackendTests/")
+    AddFilesToExecutables("${CMAKE_CURRENT_LIST_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/" "BackendTests")
 #endif()
 
 CopyResources(${CMAKE_CURRENT_BINARY_DIR})
 
 
 if(ssGUI_BUILD_TESTS)
-    #AddFilesToExecutables("${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
+    #AddFilesToExecutables("${CMAKE_CURRENT_LIST_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
     
-    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/BackendTests/" 
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
                             "AutoTests/BackendTests")
     
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/")
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
                             "AutoTests/EventCallbackTests")
 
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/")
-    
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/BackendTests/" 
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 
                             "ManualTests/BackendTests")
     
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/")
-    
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/EventCallbackTests/" 
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" 
                             "ManualTests/EventCallbackTests")
     
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/")
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/GUIObjectTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/GUIObjectTests/" 
+                            "ManualTests/GUIObjectTests")
     
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/AutoTests/" 
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" 
                             "AutoTests")
     
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Tests/ManualTests/" 
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/" 
                             "ManualTests")
-    
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/")
-    
-    # Copy resources for the Tests 
-    #file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-    #        DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests") 
-
 endif()
 
-
 if(ssGUI_BUILD_EXAMPLES)
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_SOURCE_DIR}/Src/Examples/" 
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Examples/" 
                             "Examples")
-
-    CopyResources("${CMAKE_CURRENT_BINARY_DIR}/Examples/")
-    
-    # Copy resources for the Examples 
-    #file(   COPY "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-    #        DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Examples") 
-
 endif()
