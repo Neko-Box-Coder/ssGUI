@@ -122,7 +122,7 @@ namespace EventCallbacks
             virtual std::string GetEventCallbackName() const = 0;
             
             //function: Clone
-            //Clone this event callback with the option of copying the listeners
+            //Clone this event callback (and attach to newContainer if not nullptr) with the option of copying the listeners
             virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) = 0;
     };
     

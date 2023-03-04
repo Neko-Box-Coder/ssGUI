@@ -11,6 +11,7 @@ namespace EventCallbacks
 {
     //class: ssGUI::EventCallbacks::OnFontChangeEventCallback
     //This event callback is triggered *before* the font of a text is changed. Text(Container) will be the source for triggering this event callback.
+    //Please note that this is not triggered by any changes to default fonts.
     class OnFontChangeEventCallback : public BaseEventCallback
     {        
         public:
