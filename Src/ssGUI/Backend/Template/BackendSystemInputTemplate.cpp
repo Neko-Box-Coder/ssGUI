@@ -140,6 +140,21 @@ namespace Backend
     {
 
     }
+    
+    int BackendSystemInputTemplate::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    {
+        return 0;
+    }
+    
+    void BackendSystemInputTemplate::RemoveRawEventHandler(int id)
+    {
+    
+    }
+    
+    void BackendSystemInputTemplate::ClearRawEventHandler()
+    {
+    
+    }
 
     bool BackendSystemInputTemplate::ClearClipboard()
     {

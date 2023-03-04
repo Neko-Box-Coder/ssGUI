@@ -80,6 +80,7 @@ namespace Backend
                                                         CursorMappedWindow(),
                                                         CustomCursors(),
                                                         CurrentCustomCursor(""),
+                                                        RawEventHandlers(),
                                                         ElapsedTime()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
@@ -126,6 +127,20 @@ namespace Backend
             
             while (sfWindow->pollEvent(event))
             {
+                //Custom handler for events
+                bool handled = false;
+                for(int j = 0; j < RawEventHandlers.size(); j++)
+                {
+                    if(RawEventHandlers[j] != nullptr)
+                        handled = RawEventHandlers[j](ssGUI::Backend::BackendManager::GetMainWindowInterface(i), &event);               
+                
+                    if(handled)
+                        break;
+                }
+                
+                if(handled)
+                    continue;
+                
                 //Add a new item to realtime input info, that continues from the last input state
                 ssGUI::RealtimeInputInfo curInfo;
 
@@ -679,6 +694,26 @@ namespace Backend
             }
         }
         ssLOG_FUNC_EXIT();
+    }
+
+    int BackendSystemInputSFML::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    {
+        RawEventHandlers.push_back(handler);
+        return RawEventHandlers.size() - 1;
+    }
+    
+    void BackendSystemInputSFML::RemoveRawEventHandler(int id)
+    {
+        if(id < 0 || id >= RawEventHandlers.size())
+            return;
+        
+        RawEventHandlers[id] = nullptr;
+    }
+    
+    void BackendSystemInputSFML::ClearRawEventHandler()
+    {
+        for(int i = 0; i < RawEventHandlers.size(); i++)
+            RawEventHandlers[i] = nullptr;
     }
 
     bool BackendSystemInputSFML::ClearClipboard()

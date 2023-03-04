@@ -138,7 +138,8 @@ namespace Backend
                                                                                 MainWindowRawHandles(),
                                                                                 CustomCursors(),
                                                                                 CurrentCustomCursor(""),
-                                                                                StartTime()
+                                                                                StartTime(),
+                                                                                RawEventHandlers()
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -164,6 +165,7 @@ namespace Backend
                 if(static_cast<Win32_OpenGL_Handles*>(currentMainWindow->GetRawHandle())->WindowHandle == msg.hwnd)
                 {
                     MainWindowRawHandles[msg.hwnd] = currentMainWindow;
+                    mainWindowIt = MainWindowRawHandles[msg.hwnd];
                     found = true;
                     break;
                 }
@@ -173,9 +175,24 @@ namespace Backend
             {
                 //TODO: Silence this, for now. Will enable this back when tags are added to logging 
                 // ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to find main window from handle: "<<msg.hwnd);
-                return false;
+                //return false;
             }
         }
+        
+        //Custom handler for events
+        bool handled = false;
+        for(int j = 0; j < RawEventHandlers.size(); j++)
+        {
+            if(RawEventHandlers[j] != nullptr)
+                handled = RawEventHandlers[j](mainWindowIt == MainWindowRawHandles.end() ? nullptr : mainWindowIt->second, &msg);               
+        
+            if(handled)
+                return true;
+        }
+
+        //No associated main window, can't process it
+        if(mainWindowIt == MainWindowRawHandles.end())
+            return false;
 
         ssGUI::RealtimeInputInfo curInfo;
 
@@ -663,6 +680,26 @@ namespace Backend
         }
 
         ssLOG_FUNC_EXIT();
+    }
+    
+    int BackendSystemInputWin32_OpenGL3_3::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    {
+        RawEventHandlers.push_back(handler);
+        return RawEventHandlers.size() - 1;
+    }
+    
+    void BackendSystemInputWin32_OpenGL3_3::RemoveRawEventHandler(int id)
+    {
+        if(id < 0 || id >= RawEventHandlers.size())
+            return;
+        
+        RawEventHandlers[id] = nullptr;
+    }
+    
+    void BackendSystemInputWin32_OpenGL3_3::ClearRawEventHandler()
+    {
+        for(int i = 0; i < RawEventHandlers.size(); i++)
+            RawEventHandlers[i] = nullptr;
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::ClearClipboard()

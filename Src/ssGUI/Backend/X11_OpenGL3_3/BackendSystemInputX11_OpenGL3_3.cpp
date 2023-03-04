@@ -140,7 +140,8 @@ namespace Backend
                                                                             StartTime(),
                                                                             CursorHidden(false),
                                                                             LastKeyDownTime(0),
-                                                                            LastKeyUpTime(0)
+                                                                            LastKeyUpTime(0),
+                                                                            RawEventHandlers()
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -247,6 +248,33 @@ namespace Backend
         
         for(int i = 0; i < CurrentEvents.size(); i++)
         {
+            ssGUI::Backend::BackendMainWindowInterface* curBackendMainWindow = nullptr;
+            for(int j = 0; j < ssGUI::Backend::BackendManager::GetMainWindowCount(); j++)
+            {
+                X11RawHandle* curHandle = static_cast<X11RawHandle*>(
+                    ssGUI::Backend::BackendManager::GetMainWindowInterface(j)->GetRawHandle());
+                
+                if((Atom)CurrentEvents[i].xany.window == curHandle->WindowId)
+                {
+                    curBackendMainWindow = ssGUI::Backend::BackendManager::GetMainWindowInterface(j);
+                    break;
+                }   
+            }
+        
+            //Custom handler for events
+            bool handled = false;
+            for(int j = 0; j < RawEventHandlers.size(); j++)
+            {
+                if(RawEventHandlers[j] != nullptr)
+                    handled = RawEventHandlers[j](curBackendMainWindow, &CurrentEvents[i]);               
+            
+                if(handled)
+                    break;
+            }
+            
+            if(handled)
+                continue;
+            
             ssGUI::RealtimeInputInfo curInfo;
             
             //NOTE: XFilterEvent redirects key presses back to the queue so that IME can process it
@@ -925,6 +953,26 @@ namespace Backend
             
             XFlush(rawHandle->WindowDisplay);
         }
+    }
+
+    int BackendSystemInputX11_OpenGL3_3::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    {
+        RawEventHandlers.push_back(handler);
+        return RawEventHandlers.size() - 1;
+    }
+    
+    void BackendSystemInputX11_OpenGL3_3::RemoveRawEventHandler(int id)
+    {
+        if(id < 0 || id >= RawEventHandlers.size())
+            return;
+        
+        RawEventHandlers[id] = nullptr;
+    }
+    
+    void BackendSystemInputX11_OpenGL3_3::ClearRawEventHandler()
+    {
+        for(int i = 0; i < RawEventHandlers.size(); i++)
+            RawEventHandlers[i] = nullptr;
     }
 
     bool BackendSystemInputX11_OpenGL3_3::ClearClipboard()

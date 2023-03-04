@@ -49,6 +49,8 @@ namespace Backend
 
         std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;        //See <GetCustomCursor>
         std::string CurrentCustomCursor;                                                        //See <GetCurrentCustomCursorName>
+        std::vector<std::function
+            <bool(ssGUI::Backend::BackendMainWindowInterface*, void*)>> RawEventHandlers;       //See <AddRawEventHandler>
 
         #if SSGUI_USE_SFML_TIME
             sf::Clock ElapsedTime;                                                              //See <GetElapsedTime>
@@ -72,6 +74,7 @@ namespace Backend
                                                         CursorMappedWindow(),
                                                         CustomCursors(),
                                                         CurrentCustomCursor(""),
+                                                        RawEventHandlers(),
                                                         ElapsedTime()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
@@ -107,6 +110,8 @@ namespace Backend
 
             std::unordered_map<std::string, std::pair<sf::Image, glm::ivec2>> CustomCursors;        //See <GetCustomCursor>
             std::string CurrentCustomCursor;                                                        //See <GetCurrentCustomCursorName>
+            std::vector<std::function
+                <bool(ssGUI::Backend::BackendMainWindowInterface*, void*)>> RawEventHandlers;       //See <AddRawEventHandler>
 
             #if SSGUI_USE_SFML_TIME
                 sf::Clock ElapsedTime;                                                              //See <GetElapsedTime>
@@ -222,6 +227,18 @@ namespace Backend
             //function: UpdateCursor
             //See <BackendSystemInputInterface::UpdateCursor>
             void UpdateCursor() override;
+            
+            //function: AddRawEventHandler
+            //See <BackendSystemInputInterface::AddRawEventHandler>
+            int AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler) override;
+
+            //function: RemoveRawEventHandler
+            //See <BackendSystemInputInterface::RemoveRawEventHandler>
+            void RemoveRawEventHandler(int id) override;
+
+            //function: ClearRawEventHandler
+            //See <<BackendSystemInputInterface::ClearRawEventHandler>
+            void ClearRawEventHandler() override;
 
             //function: ClearClipboard
             //See <BackendSystemInputInterface::ClearClipboard>
