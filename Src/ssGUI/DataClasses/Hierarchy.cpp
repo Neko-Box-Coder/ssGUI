@@ -718,10 +718,10 @@ namespace ssGUI
             ssLOG_FUNC_EXIT();
             return;
         }
-        ObjectDelete = true;
 
         ssGUI_DEBUG(ssGUI_DATA_TAG, CurrentObject<<" object is getting deleted");
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        ObjectDelete = true;
 
         //Delete children first
         std::vector<ssGUI::GUIObject*> childrenToDelete;
