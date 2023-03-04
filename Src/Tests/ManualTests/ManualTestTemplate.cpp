@@ -19,9 +19,9 @@ void Instructions()
 
 int main()
 {
-    SetUp();
-    
     Instructions();
+    
+    SetUp();
     
     //Perform manual test here
     

@@ -1,12 +1,43 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssLogger/ssLog.hpp"
 
+ssGUI::MainWindow* mainWindow;
+ssGUI::Button* button;
+ssGUI::ssGUIManager* manager;
+
 void SetUp()
 {
+    mainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
+    button = ssGUI::Factory::Create<ssGUI::Button>();
+    manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
+    auto* ecb = button->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+    ecb->AddEventListener(  "TestKey",    
+                            [](ssGUI::EventInfo info)
+                            {
+                                ssGUI::Enums::ButtonState state =
+                                    static_cast<ssGUI::Button*>(info.Container)->GetButtonState();
+                                
+                                ssLOG_SIMPLE("State: "<<ssGUI::Enums::ToString(state));
+                            });    
+    
+    button->SetPosition(glm::vec2(50, 50));
+    button->SetParent(mainWindow);
+    
+    manager->AddGUIObject(mainWindow);
+    manager->AddPostGUIUpdateEventListener([&]()
+    {
+        auto* inputInterface = manager->GetBackendInputInterface();
+        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
+            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
+        {
+            button->SetInteractable(!button->IsInteractable());
+        }
+    });
 }
 
 void CleanUp()
 {
+    ssGUI::Factory::Dispose(manager);
 }
 
 void Instructions()
@@ -18,38 +49,11 @@ void Instructions()
 
 int main()
 {
-    SetUp();
-    
     Instructions();
     
-    ssGUI::MainWindow mainWindow;
-    ssGUI::Button button;
-    auto* ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
-    ecb->AddEventListener(  "TestKey",    
-                            [](ssGUI::EventInfo info)
-                            {
-                                ssGUI::Enums::ButtonState state =
-                                    static_cast<ssGUI::Button*>(info.Container)->GetButtonState();
-                                
-                                ssLOG_SIMPLE("State: "<<ssGUI::Enums::ToString(state));
-                            });    
+    SetUp();
     
-    button.SetPosition(glm::vec2(50, 50));
-    button.SetParent(&mainWindow);
-    
-    ssGUI::ssGUIManager manager;
-    manager.AddGUIObject(&mainWindow);
-    manager.AddPostGUIUpdateEventListener([&]()
-    {
-        auto* inputInterface = manager.GetBackendInputInterface();
-        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
-            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
-        {
-            button.SetInteractable(!button.IsInteractable());
-        }
-    });
-    
-    manager.StartRunning();
+    manager->StartRunning();
     
     CleanUp();   
 }
