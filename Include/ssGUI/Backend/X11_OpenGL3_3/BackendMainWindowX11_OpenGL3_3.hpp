@@ -20,19 +20,19 @@ namespace Backend
     struct X11RawHandle
     {
         //var: WindowDisplay
-        Display* WindowDisplay;
+        ::Display* WindowDisplay;
         
         //var: WindowColormap
-        Colormap WindowColormap;
+        ::Colormap WindowColormap;
         
         //var: WindowId
-        Window WindowId;
+        ::Window WindowId;
         
         //var: WindowContext
         GLXContext WindowContext;
         
         //var: WindowCloseEventId
-        Atom WindowCloseEventId;
+        ::Atom WindowCloseEventId;
         
         //var: XInputContext
         XIC XInputContext;
