@@ -50,13 +50,17 @@ namespace Backend
             //See <BackendImageInterface::GetPixelPtr>
             void* GetPixelPtr(ssGUI::ImageFormat& format) const override;
             
-            //function: AddBackendDrawingLinking
-            //See <BackendImageInterface::AddBackendDrawingLinking>
-            void AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            //function: UpdateCache
+            //See <BackendImageInterface::UpdateCache>
+            void UpdateCache() override;
             
-            //function: RemoveBackendDrawingLinking
-            //See <BackendImageInterface::RemoveBackendDrawingLinking>
-            void RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            //function: Internal_AddBackendDrawingRecord
+            //See <BackendImageInterface::Internal_AddBackendDrawingRecord>
+            void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+
+            //function: Internal_RemoveBackendDrawingRecord
+            //See <BackendImageInterface::Internal_RemoveBackendDrawingRecord>
+            void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
 
             //function: Clone
             //See <BackendImageInterface::Clone>

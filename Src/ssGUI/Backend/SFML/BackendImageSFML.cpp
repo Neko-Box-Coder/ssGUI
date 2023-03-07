@@ -126,12 +126,17 @@ namespace Backend
         //return nullptr;
     }
 
-    void BackendImageSFML::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageSFML::UpdateCache()
+    {
+        //No need to update cache, SFML is handling images.        
+    }
+
+    void BackendImageSFML::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
         //This is only used natively with SFML, no need to link to backend drawing
     }
 
-    void BackendImageSFML::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageSFML::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
         //This is only used natively with SFML, no need to link to backend drawing
     }

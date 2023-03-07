@@ -86,9 +86,17 @@ namespace Backend
             //See <BackendDrawingInterface::ClearBackBuffer>
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
             
-            //function: RemoveImageLinking
-            //See <BackendDrawingInterface::RemoveImageLinking>
-            void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            //function: AddImageCache
+            //See <BackendDrawingInterface::AddImageCache>
+            void AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            
+            //function: RemoveImageCache
+            //See <BackendDrawingInterface::RemoveImageCache>
+            void RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            
+            //function: GetRawImageCacheHandle
+            //See <BackendDrawingInterface::GetRawImageCacheHandle>
+            void* GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage) override;
 
         protected:
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
