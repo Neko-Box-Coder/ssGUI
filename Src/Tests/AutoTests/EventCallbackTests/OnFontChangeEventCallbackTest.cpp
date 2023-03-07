@@ -20,7 +20,7 @@ ssTEST_SET_UP
     callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnFontChangeEventCallback>();
     textObj = ssGUI::Factory::Create<ssGUI::Text>();
     customFont = ssGUI::Factory::Create<ssGUI::Font>();
-    customFont->GetBackendFontInterface()->LoadFromPath(ResourcesFolderPath+"/NotoColorEmoji.ttf");
+    customFont->GetBackendFontInterface()->LoadFromPath(ResourcesFolderPath+"arial.ttf");
     
     
     //Timing is making sure the listener is triggered **before** the event

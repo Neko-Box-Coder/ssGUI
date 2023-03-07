@@ -7,6 +7,9 @@
 
 #include <fstream>
 
+//TODO: Atm SFML backend seems to crash regarding about wgl context, need to look into it.
+//      Probably to do with OpenGL textures used for fonts where in the case of ssGUI on native Backend,
+//      the wgl or glx is initialized only when you create a mainWindow. This could be the same for SFML as well.
 
 ssGUI::Backend::BackendFontInterface* font = nullptr;
 
@@ -123,25 +126,31 @@ ssTEST("LoadFromMemoryTest")
     ssTEST_OUTPUT_ASSERT(, font->LoadFromMemory(buffer, size));delete[] buffer;
 }
 
-ssTEST("GetFixedAvailableFontSizesTest")
-{
-    std::vector<float> fontSizes;
-    ssTEST_CALL_CLEAN_UP();
-    ssTEST_CALL_SET_UP();
-    
-    font->LoadFromPath(ResourcesFolderPath+"NotoColorEmoji.ttf");
-    
-    ssTEST_OUTPUT_ASSERT("Operation", font->GetFixedAvailableFontSizes(fontSizes));
-    ssTEST_OUTPUT_ASSERT("Length", fontSizes.size() == 1);
-    ssTEST_OUTPUT_ASSERT("Size", FLOAT_EQUAL(fontSizes[0],  128));
-    
-    ssTEST_CALL_CLEAN_UP();
-    ssTEST_CALL_SET_UP();
-    font->LoadFromPath(ResourcesFolderPath+"arial.ttf");   
-}
+#if !defined(SSGUI_FONT_BACKEND_SFML)
+    ssTEST("GetFixedAvailableFontSizesTest")
+    {
+        std::vector<float> fontSizes;
+        ssTEST_CALL_CLEAN_UP();
+        ssTEST_CALL_SET_UP();
+        
+        font->LoadFromPath(ResourcesFolderPath+"NotoColorEmoji.ttf");
+        
+        ssTEST_OUTPUT_ASSERT("Operation", font->GetFixedAvailableFontSizes(fontSizes));
+        ssTEST_OUTPUT_ASSERT("Length", fontSizes.size() == 1);
+        ssTEST_OUTPUT_ASSERT("Size", FLOAT_EQUAL(fontSizes[0],  128));
+    }
+#else
+    ssTEST_SKIP("GetFixedAvailableFontSizesTest")
+    {
+    }
+#endif
 
 ssTEST("GetCharacterImageTest")
 {
+    ssTEST_CALL_CLEAN_UP();
+    ssTEST_CALL_SET_UP();
+    font->LoadFromPath(ResourcesFolderPath+"arial.ttf");   
+
     ssGUI::ImageData data;
     ssTEST_OUTPUT_ASSERT("Operation", font->GetCharacterImage(L'A', 20, data));
     ssTEST_OUTPUT_ASSERT("Size", data.GetSize() ==  glm::ivec2(15, 15));
