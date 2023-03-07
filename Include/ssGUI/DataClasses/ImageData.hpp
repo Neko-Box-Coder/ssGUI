@@ -65,6 +65,10 @@ namespace ssGUI
             //See <ssGUI::Backend::BackendImageInterface::GetPixelPtr>
             virtual void* GetPixelPtr(ssGUI::ImageFormat& format);
 
+            //function: UpdateCache
+            //See <ssGUI::Backend::BackendImageInterface::UpdateCache>
+            virtual void UpdateCache();
+
             //function: Clone
             //Clones this ImageData object. Use this function instead of assignment operator or copy constructor.
             virtual ImageData* Clone();

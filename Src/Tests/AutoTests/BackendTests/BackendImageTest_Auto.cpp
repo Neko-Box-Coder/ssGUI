@@ -137,6 +137,14 @@ ssTEST("GetPixelPtrTest")
                             pixelPtr[columnWidth*3 * 4 + 3] == 127);
 }
 
+ssTEST_SKIP("Internal_AddBackendDrawingRecordTest")
+{
+}
+
+ssTEST_SKIP("Internal_RemoveBackendDrawingRecord")
+{
+}
+
 ssTEST("CloneTest")
 {
     ssGUI::Backend::BackendImageInterface* clonedImg = TestImage->Clone();

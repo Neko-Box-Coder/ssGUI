@@ -101,20 +101,30 @@ namespace Backend
                                         const std::vector<int>& counts,
                                         const std::vector<ssGUI::DrawingProperty>& properties) = 0;
 
-            /*function: Render
-            Renders every entity that are drawn to the <MainWindow>. This will automatically clear the back buffer. 
-            If you are using <ssGUIManager>, this will be automatically called.*/
+            //function: Render
+            //Renders every entity that are drawn to the <MainWindow>. This will automatically clear the back buffer. 
+            //If you are using <ssGUIManager>, this will be automatically called.
             virtual void Render(glm::u8vec3 clearColor) = 0;
 
-            /*function: ClearBackBuffer
-            Clears the back buffer manually. If you are using <ssGUIManager>, this will be automatically called for caching.*/
+            //function: ClearBackBuffer
+            //Clears the back buffer manually. If you are using <ssGUIManager>, this will be automatically called for caching.
             virtual void ClearBackBuffer(glm::u8vec3 clearColor) = 0;
             
-            //function: RemoveImageLinking
-            //This notifies the backend drawing that the image is not being used and
-            //should be removed from the GPU and memory.
-            //Normally, this is *handled by backend* and should not be called manually
-            virtual void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
+            //function: AddImageCache
+            //Add the backend image to cache (this can be uploading the image to GPU memory) or system memory for drawing
+            //To update the cache, call <ssGUI::Backend::BackendImageInterface::UpdateCache>.
+            //Calling this fuction multiple times will not update the cache.
+            virtual void AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
+            
+            //function: RemoveImageCache
+            //This removes the backend image from the cache.
+            virtual void RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
+            
+            //function: GetRawImageCacheHandle
+            //This returns the handle of the image cache. What is returned is backend independent.
+            //You can use the returned handle to modify the cached image.
+            //If no cache is found, it will return nullptr.
+            virtual void* GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
             
         protected:
             //TODO: Use float for character size

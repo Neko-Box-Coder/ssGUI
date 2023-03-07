@@ -57,11 +57,16 @@ namespace Backend
         return nullptr;
     }
 
-    void BackendImageTemplate::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageTemplate::UpdateCache()
+    {
+        
+    }
+
+    void BackendImageTemplate::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
     }
 
-    void BackendImageTemplate::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageTemplate::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
     }
 

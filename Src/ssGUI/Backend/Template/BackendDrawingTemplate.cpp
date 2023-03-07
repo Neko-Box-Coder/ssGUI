@@ -36,7 +36,7 @@ namespace Backend
                                 const std::vector<int>& counts,
                                 const std::vector<ssGUI::DrawingProperty>& properties)
     {
-        return true;   
+        return true;
     }
 
     void BackendDrawingTemplate::Render(glm::u8vec3 clearColor)
@@ -49,11 +49,21 @@ namespace Backend
         
     }
     
-    void BackendDrawingTemplate::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingTemplate::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
     {
     
     }
     
+    void BackendDrawingTemplate::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+    
+    }
+    
+    void* BackendDrawingTemplate::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+        return nullptr;
+    }
+
     bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,

@@ -165,7 +165,7 @@ namespace Backend
                 if(static_cast<Win32_OpenGL_Handles*>(currentMainWindow->GetRawHandle())->WindowHandle == msg.hwnd)
                 {
                     MainWindowRawHandles[msg.hwnd] = currentMainWindow;
-                    mainWindowIt = MainWindowRawHandles[msg.hwnd];
+                    mainWindowIt = MainWindowRawHandles.find(msg.hwnd);
                     found = true;
                     break;
                 }
