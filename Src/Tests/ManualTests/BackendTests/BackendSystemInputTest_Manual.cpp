@@ -208,13 +208,15 @@ void CustomCursorTest()
         }
 
         ssGUI::Backend::BackendImageInterface* img = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
-        if(!img->LoadFromPath(ResourcesFolderPath+"CustomCursor.png"))           //https://www.pngwing.com/en/free-png-zgwrc
+        //if(!img->LoadFromPath(ResourcesFolderPath+"CustomCursor.png"))           //https://www.pngwing.com/en/free-png-zgwrc
+        if(!img->LoadFromPath(ResourcesFolderPath+"sd.png"))
         // if(!img.LoadFromPath(ResourcesFolderPath+"BlueCursor.png"))          //https://www.subpng.com/png-ttdxzq/
         {
             ssLOG_SIMPLE("Failed to load");
         }
         
-        inputs->CreateCustomCursor(img, "custom normal cursor", glm::ivec2(13, 20), glm::ivec2(3, 3));
+        //inputs->CreateCustomCursor(img, "custom normal cursor", glm::ivec2(13, 20), glm::ivec2(3, 3));
+        inputs->CreateCustomCursor(img, "custom normal cursor", glm::ivec2(50, 50), glm::ivec2(3, 3));
         inputs->SetCurrentCustomCursor("custom normal cursor");
         
         ssLOG_SIMPLE("Custom cursor Set");

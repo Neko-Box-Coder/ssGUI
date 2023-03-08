@@ -722,11 +722,12 @@ namespace Backend
             std::unordered_map<Display*, Cursor>()
         };
 
-        //If the image size fits the cursor size, we just need to convert it to ARGB and set it
+        //If the image size fits the cursor size, we just need to convert it to BGRA (Little Endian) and set it
         if(customCursor->GetSize() == cursorSize)
         {
+            ssLOG_LINE();
             uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
-            bool result = ssGUI::ImageUtil::ConvertToARGB32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+            bool result = ssGUI::ImageUtil::ConvertToBGRA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
         
             if(!result)
             {
@@ -736,10 +737,10 @@ namespace Backend
             }
         
             ssGUI::ImageFormat convertedFormat;
-            convertedFormat.IndexA = 0;
-            convertedFormat.IndexR = 1;
+            convertedFormat.IndexB = 0;    
+            convertedFormat.IndexG = 1;
             convertedFormat.IndexR = 2;
-            convertedFormat.IndexB = 3;    
+            convertedFormat.IndexA = 3;   
             cursorData.CursorImage->LoadRawFromMemory(convertedPtr, convertedFormat, cursorSize);
             cursorData.Hotspot = hotspot;
             delete[] convertedPtr;
@@ -749,7 +750,7 @@ namespace Backend
             if(!result)
                 return;
         }
-        //Otherwise we need to convert it to RGBA first, then resize itm then convert it to ARGB
+        //Otherwise we need to convert it to RGBA first, then resize itm then convert it to BGRA (Little Endian)
         else
         {
             uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
@@ -768,7 +769,7 @@ namespace Backend
             delete[] convertedPtr;
             convertedPtr = new uint8_t[cursorSize.x * cursorSize.y * 4];
             
-            result = ssGUI::ImageUtil::ConvertToARGB32(convertedPtr, resizedPtr, ssGUI::ImageFormat(), cursorSize);
+            result = ssGUI::ImageUtil::ConvertToBGRA32(convertedPtr, resizedPtr, ssGUI::ImageFormat(), cursorSize);
             if(!result)
             {
                 ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
@@ -778,10 +779,10 @@ namespace Backend
             }
             
             ssGUI::ImageFormat convertedFormat;
-            convertedFormat.IndexA = 0;
-            convertedFormat.IndexR = 1;
+            convertedFormat.IndexB = 0;    
+            convertedFormat.IndexG = 1;
             convertedFormat.IndexR = 2;
-            convertedFormat.IndexB = 3;    
+            convertedFormat.IndexA = 3;
             cursorData.CursorImage->LoadRawFromMemory(convertedPtr, convertedFormat, cursorSize);
             cursorData.Hotspot = hotspot;
             
@@ -912,7 +913,7 @@ namespace Backend
                     {
                         CursorData& currentCursorData = CustomCursors[CurrentCustomCursor];
                         
-                        //If this is a new window that the custom cursor didn't add, add it
+                        //If this is a new display server that the custom cursor didn't add, add it
                         if(currentCursorData.X11CursorHandles.find(rawHandle->WindowDisplay) == currentCursorData.X11CursorHandles.end())
                         {
                             bool result = PopulateCursorDataHandles(currentCursorData);

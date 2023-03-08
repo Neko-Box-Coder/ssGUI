@@ -354,7 +354,6 @@ namespace Backend
         return CurrentCursor;
     }
 
-    //TODO: refactor this function, see Win32 version
     void BackendSystemInputSFML::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssLOG_FUNC_ENTRY();
@@ -366,174 +365,44 @@ namespace Backend
             return;
         }
 
-        //Check if we already have the cursor
-        if(CustomCursors.find(cursorName) != CustomCursors.end() && CustomCursors[cursorName].first.getSize().x == cursorSize.x && 
-            CustomCursors[cursorName].first.getSize().y == cursorSize.y)
+        ssGUI::ImageFormat customCursorFormat;
+        void* customCursorPtr = customCursor->GetPixelPtr(customCursorFormat);
+        if(customCursorPtr == nullptr)
         {
-            CustomCursors[cursorName].second = hotspot;
-            ssLOG_FUNC_EXIT();
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid custom cursor image");
             return;
         }
-        //Otherwise we can add the cursor to our cache
-        else
-        {
-            #ifdef SSGUI_IMAGE_BACKEND_SFML
-                sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
-            #else
-                //Convert everything to sf::Image
-                sf::Image cursorImg;
-                ssGUI::ImageFormat cursorFormat;
-                void* imgPtr = customCursor->GetPixelPtr(cursorFormat);
-                
-                if(imgPtr == nullptr)
-                {
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to create custom cursor");
-                    return;
-                }
-                
-                bool result = false;
-                uint8_t* convertedRawImg = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
-
-                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgPtr, cursorFormat, customCursor->GetSize());
-                if(!result)
-                {
-                    delete[] convertedRawImg;
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
-                    return;
-                }
-                else
-                {
-                    cursorImg.create(sf::Vector2u(customCursor->GetSize().x, customCursor->GetSize().y), convertedRawImg);
-                    delete[] convertedRawImg;
-                }
-            #endif
         
+        //If the cursor already exists, we need to clean up the cursor first
+        if(CustomCursors.find(cursorName) != CustomCursors.end())
+            CustomCursors.erase(cursorName);
+
+        #ifdef SSGUI_IMAGE_BACKEND_SFML
+            sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
+        #else
+            uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
+            bool result = ssGUI::ImageUtil::ConvertToRGBA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+            if(!result)
+            {
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
+                delete[] convertedPtr;
+                return;
+            }
+            
             if(customCursor->GetSize() == cursorSize)
             {
-                #ifdef SSGUI_IMAGE_BACKEND_SFML
-                    CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
-                #else
-                    CustomCursors[cursorName].first = cursorImg;
-                #endif
+                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), convertedPtr);
             }
             else
             {
-                //Original cursor image
-                auto& oriCursorImg = cursorImg;
-
-                //temporary image pointers for resizing
-                uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
-                uint8_t* cursorPtr1 = new uint8_t[1];
-                uint8_t* cursorPtrArr[] = {cursorPtr, cursorPtr1};
-
-                //Flag for indicating which pointer has just been populated
-                int populatedImg = 0;
-
-                //Populate the first temporary image pointer
-                for(int i = 0; i < oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4; i++)
-                    cursorPtr[i] = (*(oriCursorImg.getPixelsPtr() + i));
-
-                //Record the current image size
-                glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
-
-                //Resize width until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.x < cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
-                        (currentCursorSize.x > cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
-                {
-                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
-                    
-                    //Enlarging
-                    if(currentCursorSize.x < cursorSize.x)
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x * 2,
-                            currentCursorSize.y
-                        );
-
-                        currentCursorSize.x *= 2;
-                    }
-                    //Reducing
-                    else
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x * 0.5,
-                            currentCursorSize.y
-                        );
-
-                        currentCursorSize.x *= 0.5;
-                    }
-
-                    populatedImg = (populatedImg + 1) % 2;
-                }
-                
-                //Resize height until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.y < cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
-                        (currentCursorSize.y > cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
-                {
-                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
-                    
-                    //Enlarging
-                    if(currentCursorSize.y < cursorSize.y)
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x,
-                            currentCursorSize.y * 2
-                        );
-
-                        currentCursorSize.y *= 2;
-                    }
-                    //Reducing
-                    else
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg],
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x,
-                            currentCursorSize.y * 0.5
-                        );
-
-                        currentCursorSize.y *= 0.5;
-                    }
-
-                    populatedImg = (populatedImg + 1) % 2;
-                }
-
-                //Do the final round of resizing
-                cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
-                ssGUI::ImageUtil::ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
-                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), cursorPtrArr[(populatedImg + 1) % 2]);
-
-                delete[] cursorPtr;
-                delete[] cursorPtr1;
+                uint8_t* resizedPtr = new uint8_t[cursorSize.x * cursorSize.y * 4];
+                ssGUI::ImageUtil::ResizeRGBA(convertedPtr, customCursor->GetSize().x, customCursor->GetSize().y, resizedPtr, cursorSize.x, cursorSize.y);
+                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), resizedPtr);
+                delete[] resizedPtr;
             }
-        }
-        
+            delete[] convertedPtr;
+        #endif
+
         //Setting hotspot
         CustomCursors[cursorName].second = hotspot;
 
