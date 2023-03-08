@@ -85,6 +85,10 @@ namespace Backend
 
     BackendDrawingWin32_OpenGL3_3::~BackendDrawingWin32_OpenGL3_3()
     {
+        //Notify each image
+        for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
+            it->first->Internal_RemoveBackendDrawingRecord(this);
+        
         ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
 

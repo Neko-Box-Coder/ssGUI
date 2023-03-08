@@ -52,13 +52,13 @@ namespace Backend
 
     BackendDrawingSFML::~BackendDrawingSFML()
     {
-        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
-        
         #ifndef SSGUI_IMAGE_BACKEND_SFML
             //Notify each image
             for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
                 it->first->Internal_RemoveBackendDrawingRecord(this);
         #endif
+        
+        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
 
     void BackendDrawingSFML::SaveState()
