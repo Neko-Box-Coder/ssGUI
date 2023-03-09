@@ -2080,22 +2080,20 @@ namespace ssGUI
             return false;
     }
 
-    void Text::AddDefaultFont(ssGUI::Font* font)
+    ssGUI::Font* Text::AddDefaultFont()
     {
-        if(font == nullptr)
-            return;
-
+        ssGUI::Font* font = ssGUI::Factory::Create<ssGUI::Font>();
         DefaultFonts.push_back(font);
         DefaultFontsChangeID++;
+        return font;
     }
 
-    void Text::AddDefaultFont(ssGUI::Font* font, int index)
+    ssGUI::Font* Text::AddDefaultFont(int index)
     {
-        if(font == nullptr)
-            return;
-
+        ssGUI::Font* font = ssGUI::Factory::Create<ssGUI::Font>();
         DefaultFonts.insert(DefaultFonts.begin() + index, font);
         DefaultFontsChangeID++;
+        return font;
     }
     
     ssGUI::Font* Text::GetDefaultFont(int index)
@@ -2104,23 +2102,6 @@ namespace ssGUI
             return nullptr;
         
         return DefaultFonts[index];
-    }
-
-    void Text::SetDefaultFont(ssGUI::Font* font, int index)
-    {
-        if(index < 0 || index >= DefaultFonts.size() || font == nullptr)
-            return;
-
-        ssGUI::Factory::Dispose(DefaultFonts[index]);
-        
-        if(font == nullptr)
-        {
-            DefaultFonts.erase(DefaultFonts.begin() + index);
-            return;    
-        }
-
-        DefaultFonts[index] = font;
-        DefaultFontsChangeID++;
     }
 
     void Text::RemoveDefaultFont(int index)

@@ -56,6 +56,7 @@ namespace ssGUI
         glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
 
         static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
+                                                            //TODO: Add ability to set it
     =================================================================
     ============================== C++ ==============================
     ImageCanvas::ImageCanvas() :    HorizontalScrollbar(-1),
@@ -232,7 +233,7 @@ namespace ssGUI
             glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
 
             static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
-
+                                                                //TODO: Add ability to set it
             ImageCanvas(ImageCanvas const& other);
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c

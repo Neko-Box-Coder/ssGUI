@@ -27,7 +27,7 @@ namespace ssGUI
         float FontSizeMultiplier;           //See <GetAutoFontSizeMultiplier>
         
         ssGUIObjectIndex WindowTitle;       //See <GetWindowTitleObject>
-        ssGUIObjectIndex WindowIcon;        //See <GetWindowIconObject>
+        ssGUIObjectIndex WindowIcon;        //See <GetWindowIconGUIObject>
         ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
         static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
@@ -197,7 +197,7 @@ namespace ssGUI
             float FontSizeMultiplier;           //See <GetAutoFontSizeMultiplier>
             
             ssGUIObjectIndex WindowTitle;       //See <GetWindowTitleObject>
-            ssGUIObjectIndex WindowIcon;        //See <GetWindowIconObject>
+            ssGUIObjectIndex WindowIcon;        //See <GetWindowIconGUIObject>
             ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
             static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
@@ -241,15 +241,17 @@ namespace ssGUI
             //Gets the font size multiplier to have a finer adjustment over it
             virtual float GetAutoFontSizeMultiplier() const;
 
-            /*function: SetWindowIconObject
+            /*function: SetWindowIconGUIObject
             Sets the window icon image object.
             You can use <GUIObject::SetUserCreated> and <GUIObject::SetHeapAllocated> to allow 
             Standard Window to manage the lifetime of the text object instead.*/
-            virtual void SetWindowIconObject(ssGUI::Image* image);
+            virtual void SetWindowIconGUIObject(ssGUI::Image* image);
 
-            //function: GetWindowIconObject
+            //function: GetWindowIconGUIObject
             //Returns the pointer to the window icon image object. Nullptr if it doesn't exist
-            virtual ssGUI::Image* GetWindowIconObject() const;
+            virtual ssGUI::Image* GetWindowIconGUIObject() const;
+            
+            //TODO: Add a way to set default window icon
 
             /*function: SetCloseButtonObject
             Sets the close button object.

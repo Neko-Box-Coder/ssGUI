@@ -392,7 +392,7 @@ namespace ssGUI
         return FontSizeMultiplier;
     }
 
-    void StandardWindow::SetWindowIconObject(ssGUI::Image* image)
+    void StandardWindow::SetWindowIconGUIObject(ssGUI::Image* image)
     {
         auto oldIcon = CurrentObjectsReferences.GetObjectReference(WindowIcon);
         
@@ -417,7 +417,7 @@ namespace ssGUI
         UpdateIconImage();
     }
     
-    ssGUI::Image* StandardWindow::GetWindowIconObject() const
+    ssGUI::Image* StandardWindow::GetWindowIconGUIObject() const
     {
         return static_cast<ssGUI::Image*>(CurrentObjectsReferences.GetObjectReference(WindowIcon));
     }

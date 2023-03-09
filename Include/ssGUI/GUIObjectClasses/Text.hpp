@@ -473,22 +473,21 @@ namespace ssGUI
 
             //function: AddDefaultFont
             //Adds the font to the end of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
-            static void AddDefaultFont(ssGUI::Font* font);
+            static ssGUI::Font* AddDefaultFont();
+
+            //TODO: Add ability to add default font from another default font
 
             //function: AddDefaultFont
             //Adds the font to the index position of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
-            static void AddDefaultFont(ssGUI::Font* font, int index);
+            static ssGUI::Font* AddDefaultFont(int index);
 
             //function: GetDefaultFont
             static ssGUI::Font* GetDefaultFont(int index);
 
-            //function: SetDefaultFont
-            static void SetDefaultFont(ssGUI::Font* font, int index);
-
             //function: RemoveDefaultFont
             static void RemoveDefaultFont(int index);
 
-            //function:GetDefaultFontsCount 
+            //function: GetDefaultFontsCount 
             static int GetDefaultFontsCount();
             
             //function: CleanUpAllDefaultFonts

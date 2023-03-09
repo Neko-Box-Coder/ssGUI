@@ -59,7 +59,7 @@ ssTEST("EventTest")
     textObj->AddFont(customFont);
     ssTEST_OUTPUT_ASSERT("Text font", textObj->GetFontsCount() == 1 && listerNum == 1);
     
-    ssGUI::Text::AddDefaultFont(customFont);
+    ssGUI::Text::AddDefaultFont()->GetBackendFontInterface()->LoadFromPath(ResourcesFolderPath+"arial.ttf");
     ssTEST_OUTPUT_ASSERT("Default font not triggering event", textObj->GetDefaultFontsCount() == 2 && listerNum == 1);
 }
 
