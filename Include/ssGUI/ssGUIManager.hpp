@@ -160,9 +160,17 @@ namespace ssGUI
             //Returns index that can be used to remove the event callback later.
             int AddPostGUIUpdateEventListener(std::function<void()> event);
 
+            //function: AddPreGUIRenderEventListener
+            //See <AddPostGUIUpdateEventListener>
+            int AddPreGUIRenderEventListener(std::function<void()> event);
+
             //function: RemovePostGUIUpdateEventListener
             //Removes event callback that gets triggered after the update function (before render function) is called for GUI objects
             void RemovePostGUIUpdateEventListener(int index);
+
+            //function: RemovePreGUIRenderEventListener
+            //See <RemovePostGUIUpdateEventListener>
+            void RemovePreGUIRenderEventListener(int index);
 
             //function: AddPostGUIRenderEventListener
             //Adds event callback that gets triggered after the render function is called for GUI objects.

@@ -544,11 +544,24 @@ namespace ssGUI
 
         return addedIndex;
     }
+    
+    int ssGUIManager::AddPreGUIRenderEventListener(std::function<void()> event)
+    {
+        return AddPostGUIUpdateEventListener(event);
+    }
 
     void ssGUIManager::RemovePostGUIUpdateEventListener(int index)
     {
+        if(index < 0 || index >= PostGUIUpdateEventListeners.size())
+            return;
+        
         PostGUIUpdateEventListenersValid[index] = false;
         PostGUIUpdateEventListenersNextFreeIndices.push(index);
+    }
+    
+    void ssGUIManager::RemovePreGUIRenderEventListener(int index)
+    {
+        RemovePostGUIUpdateEventListener(index);    
     }
 
     int ssGUIManager::AddPostGUIRenderEventListener(std::function<void(ssGUI::MainWindow*)> event)
