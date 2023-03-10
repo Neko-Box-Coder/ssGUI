@@ -640,4 +640,143 @@ namespace ssGUI
     {
         return 1000 / TargetFrameInterval;
     }
+    
+    bool ssGUIManager::IsButtonOrKeyDown(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    {
+        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && !BackendInput->IsButtonOrKeyPressExistLastFrame(input);
+    }
+    
+    bool ssGUIManager::IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    {
+        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && BackendInput->IsButtonOrKeyPressExistLastFrame(input);
+    }
+    
+    bool ssGUIManager::IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    {
+        return !BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && BackendInput->IsButtonOrKeyPressExistLastFrame(input);
+    }
+    
+    glm::ivec2 ssGUIManager::GetMousePosition(ssGUI::MainWindow* mainWindow) const
+    {
+        return BackendInput->GetCurrentMousePosition(mainWindow == nullptr ? nullptr : mainWindow->GetBackendWindowInterface());   
+    }
+    
+    glm::ivec2 ssGUIManager::GetMousePositionDelta(ssGUI::MainWindow* mainWindow) const
+    {
+        return  BackendInput->GetCurrentMousePosition(mainWindow == nullptr ? nullptr : mainWindow->GetBackendWindowInterface()) - 
+                BackendInput->GetLastMousePosition(mainWindow == nullptr ? nullptr : mainWindow->GetBackendWindowInterface());
+    }
+    
+    glm::vec2 ssGUIManager::GetMouseScrollDelta() const
+    {
+        return BackendInput->GetCurrentMouseScrollDelta();
+    }
+    
+    void ssGUIManager::GetTextInput(std::wstring& textInput) const
+    {
+        textInput = BackendInput->GetTextInput();
+    }
+    
+    void ssGUIManager::GetTextInput(std::string& textInput) const
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        textInput = converter.to_bytes(BackendInput->GetTextInput());
+    }
+    
+    void ssGUIManager::SetCursorType(ssGUI::Enums::CursorType cursorType)
+    {
+        BackendInput->SetCursorType(cursorType);    
+    }
+    
+    ssGUI::Enums::CursorType ssGUIManager::GetCursorType() const
+    {
+        return BackendInput->GetCursorType();
+    }
+    
+    void ssGUIManager::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    {
+        BackendInput->CreateCustomCursor(customCursor->GetBackendImageInterface(), cursorName, cursorSize, hotspot);
+    }
+    
+    void ssGUIManager::SetCurrentCustomCursor(std::string cursorName)
+    {
+        BackendInput->SetCurrentCustomCursor(cursorName);
+    }
+    
+    void ssGUIManager::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
+    {
+        BackendInput->GetCurrentCustomCursor(*customCursor.GetBackendImageInterface(), hotspot);
+    }
+    
+    void ssGUIManager::GetCurrentCustomCursorName(std::string& name)
+    {
+        name = BackendInput->GetCurrentCustomCursorName();
+    }
+    
+    void ssGUIManager::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    {
+        BackendInput->GetCustomCursor(*customCursor.GetBackendImageInterface(), cursorName, hotspot);
+    }
+    
+    bool ssGUIManager::HasCustomCursor(const std::string& cursorName)
+    {
+        return BackendInput->HasCustomCursor(cursorName);
+    }
+    
+    bool ssGUIManager::ClearClipboard()
+    {
+        return BackendInput->ClearClipboard();
+    }
+    
+    bool ssGUIManager::ClipbaordHasText()
+    {
+        return BackendInput->ClipbaordHasText();
+    }
+    
+    bool ssGUIManager::ClipbaordHasImage()
+    {
+        return BackendInput->ClipbaordHasImage();
+    }
+    
+    bool ssGUIManager::SetClipboardImage(const ssGUI::ImageData& imgData)
+    {
+        return BackendInput->SetClipboardImage(*imgData.GetBackendImageInterface());
+    }
+    
+    bool ssGUIManager::SetClipboardText(const std::wstring& str)
+    {
+        return BackendInput->SetClipboardText(str);
+    }
+    
+    bool ssGUIManager::SetClipboardText(const std::string& str)
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        return BackendInput->SetClipboardText(converter.from_bytes(str));
+    }
+    
+    bool ssGUIManager::GetClipboardImage(ssGUI::ImageData& imgData)
+    {
+        return BackendInput->GetClipboardImage(*imgData.GetBackendImageInterface());
+    }
+    
+    bool ssGUIManager::GetClipboardText(std::wstring& str)
+    {
+        return BackendInput->GetClipboardText(str);
+    }
+    
+    bool ssGUIManager::GetClipboardText(std::string& str)
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring clipboardText;
+        bool result = BackendInput->GetClipboardText(clipboardText);
+        str = converter.to_bytes(clipboardText);
+        return result;
+    }
+    
+    uint64_t ssGUIManager::GetElapsedTimeInMillisecond() const
+    {
+        return BackendInput->GetElapsedTime();
+    }
+    
+
 }

@@ -205,6 +205,134 @@ namespace ssGUI
             //function: GetTargetFramerate
             //Returns the target framerate (FPS), negative if disabled
             float GetTargetFramerate();
+            
+            //function: IsButtonOrKeyDown
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyDown>
+            bool IsButtonOrKeyDown(ssGUI::Enums::GenericButtonAndKeyInput input) const;
+            
+            //function: IsButtonOrKeyDown
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyDown>
+            template<typename T>
+            bool IsButtonOrKeyDown(T input) const
+            {
+                return IsButtonOrKeyDown(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            }
+            
+            //function: IsButtonOrKeyHeld
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyHeld>
+            bool IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const;
+            
+            //function: IsButtonOrKeyHeld
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyHeld>
+            template<typename T>
+            bool IsButtonOrKeyHeld(T input) const
+            {
+                return IsButtonOrKeyHeld(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            }
+            
+            //function: IsButtonOrKeyUp
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyUp>
+            bool IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const;
+            
+            //function: IsButtonOrKeyUp
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyUp>
+            template<typename T>
+            bool IsButtonOrKeyUp(T input) const
+            {
+                return IsButtonOrKeyUp(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            }
+            
+            //function: GetMousePosition
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetMousePosition>
+            glm::ivec2 GetMousePosition(ssGUI::MainWindow* mainWindow) const;
+            
+            //function: GetMousePositionDelta
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetMousePositionDelta>            
+            glm::ivec2 GetMousePositionDelta(ssGUI::MainWindow* mainWindow) const;
+            
+            //function: GetMouseScrollDelta
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetMouseScrollDelta>            
+            glm::vec2 GetMouseScrollDelta() const;
+            
+            //function: GetTextInput
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetTextInput>            
+            void GetTextInput(std::wstring& textInput) const;
+            
+            //function: GetTextInput
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetTextInput>            
+            void GetTextInput(std::string& textInput) const;
+            
+            //function: SetCursorType
+            //See <ssGUI::Backend::BackendSystemInputInterface::SetCursorType>
+            void SetCursorType(ssGUI::Enums::CursorType cursorType);
+            
+            //function: Enums
+            //See <ssGUI::Backend::Enums>BackendSystemInputInterface::            
+            ssGUI::Enums::CursorType GetCursorType() const;
+            
+            //function: CreateCustomCursor
+            //See <ssGUI::Backend::BackendSystemInputInterface::CreateCustomCursor>            
+            void CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot);
+            
+            //function: SetCurrentCustomCursor
+            //See <ssGUI::Backend::BackendSystemInputInterface::SetCurrentCustomCursor>            
+            void SetCurrentCustomCursor(std::string cursorName);
+            
+            //function: GetCurrentCustomCursor
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetCurrentCustomCursor>            
+            void GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot);
+            
+            //function: GetCurrentCustomCursorName
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetCurrentCustomCursorName>            
+            void GetCurrentCustomCursorName(std::string& name);
+            
+            //function: GetCustomCursor
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetCustomCursor>            
+            void GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot);
+            
+            //function: HasCustomCursor
+            //See <ssGUI::Backend::BackendSystemInputInterface::HasCustomCursor>
+            bool HasCustomCursor(const std::string& cursorName);
+            
+            //function: ClearClipboard
+            //See <ssGUI::Backend::BackendSystemInputInterface::ClearClipboard>            
+            bool ClearClipboard();
+            
+            //function: ClipbaordHasText
+            //See <ssGUI::Backend::BackendSystemInputInterface::ClipbaordHasText>            
+            bool ClipbaordHasText();
+            
+            //function: ClipbaordHasImage
+            //See <ssGUI::Backend::BackendSystemInputInterface::ClipbaordHasImage>            
+            bool ClipbaordHasImage();
+            
+            //function: SetClipboardImage
+            //See <ssGUI::Backend::BackendSystemInputInterface::SetClipboardImage>            
+            bool SetClipboardImage(const ssGUI::ImageData& imgData);
+            
+            //function: SetClipboardText
+            //See <ssGUI::Backend::BackendSystemInputInterface::SetClipboardText>
+            bool SetClipboardText(const std::wstring& str);
+            
+            //function: SetClipboardText
+            //See <ssGUI::Backend::BackendSystemInputInterface::SetClipboardText>            
+            bool SetClipboardText(const std::string& str);
+            
+            //function: GetClipboardImage
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetClipboardImage>            
+            bool GetClipboardImage(ssGUI::ImageData& imgData);
+            
+            //function: GetClipboardText
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetClipboardText>            
+            bool GetClipboardText(std::wstring& str);
+            
+            //function: GetClipboardText
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetClipboardText>            
+            bool GetClipboardText(std::string& str);
+            
+            //function: GetElapsedTimeInMillisecond
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetElapsedTimeInMillisecond>            
+            uint64_t GetElapsedTimeInMillisecond() const;
 
             //function: Clear
             //Clears the console
