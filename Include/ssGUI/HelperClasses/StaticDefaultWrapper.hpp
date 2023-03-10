@@ -24,7 +24,7 @@ namespace ssGUI
                 if(CleanUpFunc.empty())
                 {
                     if(Obj != nullptr && ssGUIDefault)
-                        ssGUI::Factory::Dispose(Obj);
+                        ssGUI::Dispose(Obj);
                 }
                 else
                 {

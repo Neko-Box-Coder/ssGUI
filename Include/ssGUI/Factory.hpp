@@ -16,7 +16,7 @@ namespace ssGUI
         public:
             static void SetHeapAllocatedFlagForGUIObject(ssGUI::GUIObject* obj);
             
-            //function: Create< template<typename T> class Wrapper, typename T>
+            //function: Create
             //Creates the object on the heap
             template< template<typename T> class Wrapper, typename T> 
             static Wrapper<T>* Create()
@@ -24,7 +24,7 @@ namespace ssGUI
                 return new Wrapper<T>();
             }
 
-            //function: Create<typename T> 
+            //function: Create 
             //Creates the object on the heap
             template<typename T> 
             static T* Create()
@@ -52,6 +52,30 @@ namespace ssGUI
     };
     
     //namespace: ssGUI
+    //function: Create
+    //See <ssGUI::Factory::Create>
+    template< template<typename T> class Wrapper, typename T> 
+    Wrapper<T>* Create()
+    {
+        return ssGUI::Factory::Create<Wrapper<T>, T>();
+    }
+    
+    //function: Create
+    //See <ssGUI::Factory::Create>
+    template<typename T> 
+    T* Create()
+    {
+        return ssGUI::Factory::Create<T>();
+    }
+    
+    //function: Dispose
+    //See <ssGUI::Factory::Dispose>
+    template<typename T>
+    void Dispose(T* obj)
+    {
+        ssGUI::Factory::Dispose(obj);
+    }
+    
     //function: CleanUpDefaultResources
     //Cleans up all default resources used by ssGUI. This is called automatically by <ssGUIManager>
     void CleanUpDefaultResources();
