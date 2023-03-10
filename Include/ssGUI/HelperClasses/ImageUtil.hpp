@@ -2,7 +2,7 @@
 #define SSGUI_IMAGE_UTIL_H
 
 #include "ssGUI/DataClasses/ImageFormat.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "glm/vec2.hpp"
 
@@ -36,6 +36,65 @@ namespace ssGUI
                     static_cast<float>(std::numeric_limits<OutputType>::max()) + 0.5f;      //Finally scale it back to 255
         }
 
+        //This is only used by Freetype, it is assumed pixels are arranged from MSB to LSB
+        template<typename OutputChannelType>
+        static bool ConvertBitmapToMono(void* outImg,
+                                        void const * inImg,
+                                        glm::ivec2 imageSize,
+                                        ssGUI::ImageFormat outputFormat)
+        {
+            OutputChannelType* outImgPixelPtr = static_cast<OutputChannelType*>(outImg);
+            
+            if(outputFormat.ImgType != ssGUI::Enums::ImageType::MONO)
+            {
+                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Invalid output format");
+                return false;
+            }
+            
+            std::function<void(uint8_t const*, int, int)> conversionFunc;                   //function pointer for doing conversion
+            
+            if(outputFormat.HasAlpha)
+            {
+                conversionFunc =    [&](uint8_t const* curPixelPtr, int x, int y)
+                                    {
+                                        //Each pixel pointer represents 8 pixels in bit map
+                                        for(int i = 0; i < 8; i++)
+                                        {
+                                            uint8_t curPix = curPixelPtr[i] >> (8 - i) & 0x1;
+                                            outImgPixelPtr[(imageSize.x * y + x + i) * 2 + outputFormat.IndexMono] = std::numeric_limits<OutputChannelType>::max();
+                                            outImgPixelPtr[(imageSize.x * y + x + i) * 2 + outputFormat.IndexA] =  curPix > 0 ? std::numeric_limits<OutputChannelType>::max() : 0;
+                                        }
+                                    };
+            }
+            else
+            {
+                conversionFunc =    [&](uint8_t const* curPixelPtr, int x, int y)
+                                    {
+                                        //Each pixel pointer represents 8 pixels in bit map
+                                        for(int i = 0; i < 8; i++)
+                                        {
+                                            uint8_t curPix = curPixelPtr[i] >> (8 - i) & 0x1;
+                                            ssLOG_LINE("("<<(x+i)<<", "<<y<<"): "<<curPix);
+                                            outImgPixelPtr[(imageSize.x * y + x + i) * 1 + outputFormat.IndexMono] = curPix > 0 ? std::numeric_limits<OutputChannelType>::max() : 0;
+                                        }
+                                    };
+            }
+            
+            //Then we call the conversion function for each pixel
+            for(int y = 0; y < imageSize.y; y++)
+            {
+                int currentRowBytes = y * imageSize.x / 8;
+                for(int x = 0; x < imageSize.x; x += 8)
+                {
+                    uint8_t const* curPixelPtr = reinterpret_cast<uint8_t const*>(inImg);
+                    curPixelPtr = curPixelPtr + currentRowBytes + x;
+                    conversionFunc(curPixelPtr, x, y);
+                }
+            }
+            
+            return true;
+        }
+
         //outImg must be allocated already before passing to this function
         template<typename InputChannelType, typename OutputChannelType>
         static bool ConvertToRGB(   void* outImg, 
@@ -58,7 +117,7 @@ namespace ssGUI
                 outputFormat.IndexG < 0 ||
                 outputFormat.IndexB < 0)
             {
-                ssLOG_LINE("Invalid output format");
+                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Invalid output format");
                 return false;
             }
 
@@ -264,26 +323,72 @@ namespace ssGUI
             return true;
         }
         
+        #define CONVERT_MONO_IF_NEEDED(dummyBool)\
+        if(format.ImgType == ssGUI::Enums::ImageType::MONO && format.BitDepthPerChannel == 1)\
+        {\
+            ssGUI::ImageFormat outputFormat;\
+            outputFormat.ImgType = ssGUI::Enums::ImageType::MONO;\
+            outputFormat.BitDepthPerChannel = 8;\
+            outputFormat.BitPerPixel = 8;\
+            outputFormat.HasAlpha = false;\
+            outputFormat.IndexMono = 0;\
+            \
+            uint8_t* monoImgPtr = new uint8_t[imageSize.x * imageSize.y];\
+            bool result = ssGUI::ImageUtil::ConvertBitmapToMono<uint8_t>(monoImgPtr, inImg, imageSize, outputFormat);\
+            if(!result)\
+            {\
+                delete[] monoImgPtr;\
+                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Failed to convert bitmap to mono");\
+                return result; \
+            }\
+            \
+            inPtrReplaced = true;\
+            format = outputFormat;\
+            inImg = monoImgPtr;\
+        }
+        
         public:        
         static bool ConvertToRGBA32(void* outImg, void const * inImg, ssGUI::ImageFormat format, 
                                     glm::ivec2 imageSize)
         {
+            bool inPtrReplaced = false;
+            
+            CONVERT_MONO_IF_NEEDED(inPtrReplaced);
+            
             ssGUI::ImageFormat outputFormat;
             switch(format.BitDepthPerChannel)
             {
                 case 8:
-                    return ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                {
+                    bool result = ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat); 
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    return result; 
+                }
                 case 16:
-                    return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                {
+                    bool result = ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    return result; 
+                }
                 default:
-                    ssLOG_LINE("Unsupported bit depth");
+                {
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
                     return false;
+                }
             }   
         }
         
         static bool ConvertToBGRA32(void* outImg, void const * inImg, ssGUI::ImageFormat format, 
                                     glm::ivec2 imageSize)
         {
+            bool inPtrReplaced = false;
+            
+            CONVERT_MONO_IF_NEEDED(inPtrReplaced);
+        
             ssGUI::ImageFormat outputFormat;
             outputFormat.IndexB = 0;
             outputFormat.IndexR = 1;
@@ -293,18 +398,36 @@ namespace ssGUI
             switch(format.BitDepthPerChannel)
             {
                 case 8:
-                    return ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                {
+                    bool result = ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    return result;
+                }
                 case 16:
-                    return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                {
+                    bool result = ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    return result;
+                }
                 default:
-                    ssLOG_LINE("Unsupported bit depth");
+                {
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
                     return false;
+                }
             }
         }
         
         static bool ConvertToARGB32(void* outImg, void const * inImg, ssGUI::ImageFormat format, 
                                     glm::ivec2 imageSize)
         {
+            bool inPtrReplaced = false;
+            
+            CONVERT_MONO_IF_NEEDED(inPtrReplaced);
+        
             ssGUI::ImageFormat outputFormat;
             outputFormat.IndexA = 0;
             outputFormat.IndexR = 1;
@@ -314,12 +437,26 @@ namespace ssGUI
             switch(format.BitDepthPerChannel)
             {
                 case 8:
-                    return ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                {
+                    bool result = ssGUI::ImageUtil::ConvertToRGB<uint8_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    return result;
+                }
                 case 16:
-                    return ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                {
+                    bool result = ssGUI::ImageUtil::ConvertToRGB<uint16_t, uint8_t>(outImg, inImg, format, imageSize, outputFormat);
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    return result;
+                }
                 default:
-                    ssLOG_LINE("Unsupported bit depth");
+                {
+                    if(inPtrReplaced)
+                        delete[] reinterpret_cast<uint8_t*>(const_cast<void*>(inImg));
+                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
                     return false;
+                }
             }
         }
 
@@ -409,7 +546,7 @@ namespace ssGUI
                             *(c + 3) * heightAndInverseWidth + 
                             *(d + 3) * widthHeight;
                                     
-                    //ssLOG_LINE("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
+                    //ssGUI_DEBUG("Pixel["<<i<<"]["<<j<<"]: ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")");
 
                     // range is 0 to 255 thus bitwise AND with 0xff
                     outputPixels[offset * 4] =      (uint8_t)(((int)red) & 0xff);

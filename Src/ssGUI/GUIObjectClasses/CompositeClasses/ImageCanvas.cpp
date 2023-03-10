@@ -1,6 +1,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/ImageCanvas.hpp"
 
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
+#include "ssGUI/EmbeddedResources.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/Border.hpp"
@@ -11,13 +12,15 @@
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "glm/geometric.hpp"
 #include <cmath>
 
 namespace ssGUI
 {
+    ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
+
     ImageCanvas::ImageCanvas(ImageCanvas const& other) : Image(other)
     {
         HorizontalScrollbar = other.HorizontalScrollbar;
@@ -308,18 +311,22 @@ namespace ssGUI
                     //Load rotation cursor if it wasn't loaded
                     if(!inputInterface->HasCustomCursor("RotationCursor"))
                     {
-                        ssGUI::ImageData rotationCursor;
-                        if(!rotationCursor.LoadFromPath("Resources/RotationCursor.png"))
+                        InitiateDefaultResources();
+                        if(DefaultRotationCursor == nullptr)
                         {
-                            ssLOG_LINE("Failed to load rotation cursor");
-                            return;
+                            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load rotation cursor");
                         }
-
-                        inputInterface->CreateCustomCursor(rotationCursor.GetBackendImageInterface(), "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
+                        else
+                        {
+                            inputInterface->CreateCustomCursor(DefaultRotationCursor->GetBackendImageInterface(), "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
+                        }
                     }
-                    
-                    inputInterface->SetCurrentCustomCursor("RotationCursor");
-                    inputInterface->SetCursorType(ssGUI::Enums::CursorType::CUSTOM);
+
+                    if(inputInterface->HasCustomCursor("RotationCursor"))
+                    {
+                        inputInterface->SetCurrentCustomCursor("RotationCursor");
+                        inputInterface->SetCursorType(ssGUI::Enums::CursorType::CUSTOM);
+                    }
                 }
 
                 //Get image position
@@ -419,34 +426,30 @@ namespace ssGUI
                                     MousePressed(false),
                                     MouseButtonDownPosition()
     {
-        ssGUI::Extensions::Mask* mask = ssGUI::Factory::Create<ssGUI::Extensions::Mask>();
+        AddExtension<ssGUI::Extensions::MaskEnforcer>()->AddTargetMaskObject(this, {1, 2, 3, 4});
+        
+        ssGUI::Extensions::Mask* mask = AddExtension<ssGUI::Extensions::Mask>();
         mask->SetMaskChildren(false);
         mask->SetMaskContainer(true);
-
-        ssGUI::Extensions::MaskEnforcer* mf = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();
-        mf->AddTargetMaskObject(this, {1, 2, 3, 4});
-        AddExtension(mf);
-        AddExtension(mask);
     
-        ssGUI::Extensions::Shape* shape = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+        ssGUI::Extensions::Shape* shape = AddExtension<ssGUI::Extensions::Shape>();
         OuterCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);
         BackgroundCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);
         InnerCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);    
-        AddExtension(shape);
 
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        AddExtension<ssGUI::Extensions::Border>();
 
         auto hScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         hScrollbar->SetUserCreated(false);
         hScrollbar->SetVertical(false, true);
-        auto ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        auto ecb = hScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
         ssGUIObjectIndex index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
             ListenerKey, this,
             [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -462,30 +465,26 @@ namespace ssGUI
                 imageCanvas->SetImagePosition(glm::vec2(imgXPos, imageCanvas->GetImagePosition().y));
             }
         );
-        hScrollbar->AddEventCallback(ecb);
 
-        auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-        auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+        auto as = hScrollbar->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        auto ap = hScrollbar->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         as->SetHorizontalPercentage(1);
         as->SetHorizontalPixel(-hScrollbar->GetSize().y);
         as->SetVerticalPixel(hScrollbar->GetSize().y);
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
-        hScrollbar->AddExtension(as);
-        hScrollbar->AddExtension(ap);
-
 
         auto vScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         vScrollbar->SetUserCreated(false);
         vScrollbar->SetVertical(true, true);
-        ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        ecb = vScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
         index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
             ListenerKey, this,
             [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -501,17 +500,14 @@ namespace ssGUI
                 imageCanvas->SetImagePosition(glm::vec2(imageCanvas->GetImagePosition().x, imgYPos));
             }
         );
-        vScrollbar->AddEventCallback(ecb);
 
-        as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-        ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+        as = vScrollbar->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        ap = vScrollbar->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         as->SetHorizontalPixel(vScrollbar->GetSize().x);
         as->SetVerticalPercentage(1);
         as->SetVerticalPixel(-vScrollbar->GetSize().x);
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
-        vScrollbar->AddExtension(as);
-        vScrollbar->AddExtension(ap);
 
         hScrollbar->SetParent(this, true);
         vScrollbar->SetParent(this, true);
@@ -786,5 +782,40 @@ namespace ssGUI
 
         ssLOG_FUNC_EXIT();
         return temp;
+    }
+    
+    void ImageCanvas::InitiateDefaultResources()
+    {
+        if(DefaultRotationCursor == nullptr)
+        {
+            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+            size_t fileSize = 0;
+            const char* fileContent = find_embedded_file("RotationCursor.png", &fileSize);
+            
+            if(fileContent == nullptr)
+            {
+                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded rotation cursor");
+                ssGUI::Factory::Dispose(data);
+                return;
+            }
+            
+            if(!data->LoadImgFileFromMemory(fileContent, fileSize))
+            {
+                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load rotation cursor");
+                ssGUI::Factory::Dispose(data);
+                return;
+            }
+            else
+                DefaultRotationCursor = data;
+        }
+    }
+    
+    void ImageCanvas::CleanUpDefaultRotationCursor()
+    {
+        if(DefaultRotationCursor != nullptr)
+        {
+            ssGUI::Factory::Dispose(DefaultRotationCursor);
+            DefaultRotationCursor = nullptr;
+        }       
     }
 }

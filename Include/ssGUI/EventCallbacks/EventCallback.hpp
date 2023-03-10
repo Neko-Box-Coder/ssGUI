@@ -123,7 +123,7 @@ namespace EventCallbacks
             
             //function: Clone
             //Clone this event callback with the option of copying the listeners
-            virtual EventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) = 0;
+            virtual EventCallback* Clone(bool copyListeners) = 0;
     };
     
     inline EventCallback::~EventCallback(){}   //Pure virtual destructor needs to be defined

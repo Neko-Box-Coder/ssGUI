@@ -1,7 +1,7 @@
 #include "ssGUI/Extensions/Outline.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <cmath>
 
@@ -115,7 +115,7 @@ namespace Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        ssLOG_LINE("Failed to construct outline");
+                        ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct outline");
                         VerticesToOutline.clear();
                         VerticesToOutlinePrevVertices.clear();
                         VerticesToOutlineNextVertices.clear();
@@ -133,7 +133,7 @@ namespace Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        ssLOG_LINE("Failed to construct outline");
+                        ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct outline");
                         VerticesToOutline.clear();
                         VerticesToOutlinePrevVertices.clear();
                         VerticesToOutlineNextVertices.clear();
@@ -151,7 +151,7 @@ namespace Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        ssLOG_LINE("Failed to construct outline");
+                        ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct outline");
                         VerticesToOutline.clear();
                         VerticesToOutlinePrevVertices.clear();
                         VerticesToOutlineNextVertices.clear();
@@ -199,7 +199,7 @@ namespace Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            ssLOG_LINE("Failed to construct outline");
+                            ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct outline");
                             VerticesToOutline.clear();
                             VerticesToOutlinePrevVertices.clear();
                             VerticesToOutlineNextVertices.clear();
@@ -217,7 +217,7 @@ namespace Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            ssLOG_LINE("Failed to construct rounded corner");
+                            ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner");
                             VerticesToOutline.clear();
                             VerticesToOutlinePrevVertices.clear();
                             VerticesToOutlineNextVertices.clear();
@@ -235,7 +235,7 @@ namespace Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            ssLOG_LINE("Failed to construct rounded corner");
+                            ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner");
                             VerticesToOutline.clear();
                             VerticesToOutlinePrevVertices.clear();
                             VerticesToOutlineNextVertices.clear();
@@ -300,12 +300,12 @@ nextVertex (n)    (a)                   curVertex
         auto lineAngle = std::abs(GetAngle(prevVertex - curVertex, nextVertex - curVertex)) * 0.5;
         if(lineAngle < 0)
         {
-            ssLOG_LINE("anti-clockwise placements of vertices detected. inner outline failed.");
+            ssGUI_WARNING(ssGUI_EXT_TAG, "anti-clockwise placements of vertices detected. inner outline failed.");
             return false;
         }
         else if(lineAngle > pi() * 0.5)
         {
-            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. inner outline failed.");
+            ssGUI_WARNING(ssGUI_EXT_TAG, "Angle between 2 tangents should not be larger than 180 degrees. inner outline failed.");
             return false;
         }
         else if(pi() * 0.5 - lineAngle < 0.001)
@@ -339,21 +339,21 @@ nextVertex (n)    (a)                   curVertex
         bool invalidAngle = false;
         if(startToEndAngle < 0)
         {
-            ssLOG_LINE("anti-clockwise placements of vertices detected. outline failed.");
+            ssGUI_ERROR(ssGUI_EXT_TAG, "anti-clockwise placements of vertices detected. outline failed.");
             invalidAngle = true;
         }
         else if(startToEndAngle > pi())
         {
-            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. outline failed.");
+            ssGUI_ERROR(ssGUI_EXT_TAG, "Angle between 2 tangents should not be larger than 180 degrees. outline failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            ssLOG_LINE("startToEndAngle: "<<startToEndAngle);
-            ssLOG_LINE("start: "<<start.x<<", "<<start.y);
-            ssLOG_LINE("end: "<<end.x<<", "<<end.y);
-            ssLOG_LINE("circlePos: "<<circlePos.x<<", "<<circlePos.y);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "startToEndAngle: "<<startToEndAngle);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "start: "<<start.x<<", "<<start.y);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "end: "<<end.x<<", "<<end.y);
+            ssGUI_ERROR(ssGUI_EXT_TAG, "circlePos: "<<circlePos.x<<", "<<circlePos.y);
             ssLOG_EXIT_PROGRAM();
             ssLOG_FUNC_EXIT();
             return;
@@ -365,7 +365,7 @@ nextVertex (n)    (a)                   curVertex
         //https://stackoverflow.com/questions/15525941/find-points-on-circle
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // ssLOG_LINE("points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
+        // ssGUI_WARNING(ssGUI_EXT_TAG, "points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
         for(int i = 0; i <= (int)(arcRadius * startToEndAngle * 1) + 2; i++)
         {
             double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)(arcRadius * startToEndAngle * 1));
@@ -863,11 +863,9 @@ nextVertex (n)    (a)                   curVertex
         return nullptr;
     }
 
-    Outline* Outline::Clone(ssGUI::GUIObject* newContainer)
+    Outline* Outline::Clone()
     {
         Outline* temp = new Outline(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

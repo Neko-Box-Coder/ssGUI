@@ -7,7 +7,7 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -49,7 +49,7 @@ namespace ssGUI
             ListenerKey, this,
             [](ssGUI::EventInfo info)
             {
-                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.EventCallbackContainer);
+                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.Container);
                 int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();
                 

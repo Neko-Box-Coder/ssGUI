@@ -54,6 +54,9 @@ namespace ssGUI
 
         bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
         glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
+
+        static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
+                                                            //TODO: Add ability to set it
     =================================================================
     ============================== C++ ==============================
     ImageCanvas::ImageCanvas() :    HorizontalScrollbar(-1),
@@ -83,34 +86,30 @@ namespace ssGUI
                                     MousePressed(false),
                                     MouseButtonDownPosition()
     {
-        ssGUI::Extensions::Mask* mask = ssGUI::Factory::Create<ssGUI::Extensions::Mask>();
+        AddExtension<ssGUI::Extensions::MaskEnforcer>()->AddTargetMaskObject(this, {1, 2, 3, 4});
+        
+        ssGUI::Extensions::Mask* mask = AddExtension<ssGUI::Extensions::Mask>();
         mask->SetMaskChildren(false);
         mask->SetMaskContainer(true);
-
-        ssGUI::Extensions::MaskEnforcer* mf = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();
-        mf->AddTargetMaskObject(this, {1, 2, 3, 4});
-        AddExtension(mf);
-        AddExtension(mask);
     
-        ssGUI::Extensions::Shape* shape = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+        ssGUI::Extensions::Shape* shape = AddExtension<ssGUI::Extensions::Shape>();
         OuterCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);
         BackgroundCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);
         InnerCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);    
-        AddExtension(shape);
 
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        AddExtension<ssGUI::Extensions::Border>();
 
         auto hScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         hScrollbar->SetUserCreated(false);
         hScrollbar->SetVertical(false, true);
-        auto ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        auto ecb = hScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
         ssGUIObjectIndex index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
             ListenerKey, this,
             [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -126,30 +125,26 @@ namespace ssGUI
                 imageCanvas->SetImagePosition(glm::vec2(imgXPos, imageCanvas->GetImagePosition().y));
             }
         );
-        hScrollbar->AddEventCallback(ecb);
 
-        auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-        auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+        auto as = hScrollbar->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        auto ap = hScrollbar->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         as->SetHorizontalPercentage(1);
         as->SetHorizontalPixel(-hScrollbar->GetSize().y);
         as->SetVerticalPixel(hScrollbar->GetSize().y);
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::LEFT);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::BOTTOM);
-        hScrollbar->AddExtension(as);
-        hScrollbar->AddExtension(ap);
-
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
 
         auto vScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         vScrollbar->SetUserCreated(false);
         vScrollbar->SetVertical(true, true);
-        ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        ecb = vScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
         index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
             ListenerKey, this,
             [index](ssGUI::EventInfo info)
             {
-                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.EventCallbackReferences->GetObjectReference(index));
+                auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
                     return;
 
@@ -165,17 +160,14 @@ namespace ssGUI
                 imageCanvas->SetImagePosition(glm::vec2(imageCanvas->GetImagePosition().x, imgYPos));
             }
         );
-        vScrollbar->AddEventCallback(ecb);
 
-        as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-        ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+        as = vScrollbar->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        ap = vScrollbar->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         as->SetHorizontalPixel(vScrollbar->GetSize().x);
         as->SetVerticalPercentage(1);
         as->SetVerticalPixel(-vScrollbar->GetSize().x);
-        ap->SetHorizontalAnchor(ssGUI::Extensions::AdvancedPosition::HorizontalAnchor::RIGHT);
-        ap->SetVerticalAnchor(ssGUI::Extensions::AdvancedPosition::VerticalAnchor::TOP);
-        vScrollbar->AddExtension(as);
-        vScrollbar->AddExtension(ap);
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
 
         hScrollbar->SetParent(this, true);
         vScrollbar->SetParent(this, true);
@@ -183,6 +175,8 @@ namespace ssGUI
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
     }
+    
+    ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
     =================================================================
     */
     class ImageCanvas : public Image
@@ -227,7 +221,8 @@ namespace ssGUI
             bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
             glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
 
-
+            static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
+                                                                //TODO: Add ability to set it
             ImageCanvas(ImageCanvas const& other);
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
@@ -404,6 +399,14 @@ namespace ssGUI
             //function: Clone
             //See <Widget::Clone>
             virtual ImageCanvas* Clone(bool cloneChildren) override;
+    
+            //function: InitiateDefaultResources
+            //See <GUIObject::InitiateDefaultResources>
+            virtual void InitiateDefaultResources() override;
+            
+            //function: CleanUpDefaultRotationCursor
+            //Deallocates default rotation cursor iamge. This is handled automatically in <ssGUIManager>
+            static void CleanUpDefaultRotationCursor();
     };
 }
 

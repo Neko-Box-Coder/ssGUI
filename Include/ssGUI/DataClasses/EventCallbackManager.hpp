@@ -1,8 +1,10 @@
 #ifndef SSGUI_EVENT_CALLBACK_MANAGER_H
 #define SSGUI_EVENT_CALLBACK_MANAGER_H
 
+#include "ssGUI/DataClasses/Renderer.hpp"
 #include "ssGUI/EventCallbacks/EventCallback.hpp"
 #include <unordered_map>
+#include <type_traits>
 #include <string>
 #include <vector>
 
@@ -47,8 +49,51 @@ namespace ssGUI
             virtual void SetDependentComponents(ssGUI::Renderer* renderer, ssGUI::GUIObject* obj);
 
             //function: AddEventCallback
-            //Adds an eventCallback to this GUI Object
-            virtual void AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback);
+            //Adds an eventCallback to this GUI Object. If the eventCallback already exists, nothing will be modified.
+            template<typename T>
+            T* AddEventCallback()
+            {
+                if(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value)
+                {
+                    if(IsAnyEventCallbackExist<T>())
+                        return GetAnyEventCallback<T>();
+                        
+                    auto* eventCallback = ssGUI::Factory::Create<T>();
+                    EventCallbacks[eventCallback->GetEventCallbackName()] = eventCallback;
+                    eventCallback->BindToObject(CurrentObject);
+                    CurrentRenderer->RedrawObject();
+                    return eventCallback;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non event callback type");
+                    return nullptr;
+                }
+            }
+            
+            //function: AddEventCallbackCopy
+            //Adds an eventCallback to this GUI Object by copying an already existing eventCallback. 
+            //If an eventCallback already exists in this GUI object, nothing will be modified.
+            template<typename T>
+            T* AddEventCallbackCopy(T* copy, bool copyListeners)
+            {
+                if(std::is_base_of<ssGUI::EventCallbacks::EventCallback, T>::value)
+                {
+                    if(IsEventCallbackExist(copy->GetEventCallbackName()))
+                        return static_cast<T*>(GetEventCallback(copy->GetEventCallbackName()));
+                        
+                    auto* eventCallback = copy->Clone(copyListeners);
+                    EventCallbacks[eventCallback->GetEventCallbackName()] = eventCallback;
+                    eventCallback->BindToObject(CurrentObject);
+                    CurrentRenderer->RedrawObject();
+                    return eventCallback;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non event callback type");
+                    return nullptr;
+                }
+            }
             
             //function: GetEventCallback
             //Gets the eventCallback by the name of it

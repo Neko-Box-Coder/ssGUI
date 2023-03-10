@@ -2,6 +2,7 @@
 #include "ssGUI/Extensions/Outline.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 #include "ssGUI/Extensions/Shape.hpp"
+#include "ssLogger/ssLog.hpp"
 
 
 //Outline test

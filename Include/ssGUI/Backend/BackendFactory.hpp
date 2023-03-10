@@ -3,7 +3,7 @@
 
 //TODO: Move method implementation to .cpp
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
@@ -65,7 +65,7 @@ namespace Backend
                 #elif defined SSGUI_MAIN_BACKEND_X11_OPENGL
                     return static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingX11_OpenGL3_3());
                 #else
-                    ssLOG_LINE("Unimplemented backend");
+                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();
                 #endif
 
@@ -80,7 +80,7 @@ namespace Backend
                 #elif defined SSGUI_FONT_BACKEND_FREE_TYPE
                     return static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontFreeType());
                 #else
-                    ssLOG_LINE("Unimplemented backend");
+                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();
                 #endif
                 
@@ -95,7 +95,7 @@ namespace Backend
                 #elif defined SSGUI_IMAGE_BACKEND_STB_IMAGE
                     return static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageStbImage());
                 #else
-                    ssLOG_LINE("Unimplemented backend");
+                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();
                 #endif
                 return nullptr;
@@ -111,7 +111,7 @@ namespace Backend
                 #elif defined SSGUI_MAIN_BACKEND_X11_OPENGL
                     return static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputX11_OpenGL3_3());
                 #else
-                    ssLOG_LINE("Unimplemented backend");
+                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();
                 #endif
                 return nullptr;
@@ -127,7 +127,7 @@ namespace Backend
                 #elif defined SSGUI_MAIN_BACKEND_X11_OPENGL
                     return static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowX11_OpenGL3_3());
                 #else
-                    ssLOG_LINE("Unimplemented backend");
+                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
                     ssLOG_EXIT_PROGRAM();
                 #endif
                 return nullptr;

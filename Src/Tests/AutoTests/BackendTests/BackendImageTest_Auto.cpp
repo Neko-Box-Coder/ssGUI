@@ -7,9 +7,9 @@
 
 ssGUI::Backend::BackendImageInterface* TestImage = nullptr;
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\..\\..\\Resources\\";
+    std::string ResourcesFolderPath = "..\\Resources\\";
 #else
-    std::string ResourcesFolderPath = "../../Resources/";
+    std::string ResourcesFolderPath = "./Resources/";
 #endif
 
 ssTEST_INIT();
@@ -27,16 +27,23 @@ ssTEST_CLEAN_UP
 ssTEST("GetRawHandleTest")
 {
     #ifdef SSGUI_IMAGE_BACKEND_STB_IMAGE
-        ssTEST_OUTPUT_SKIP();
+        ssTEST_OUTPUT_SKIP("No Image loaded");
+        ssTEST_OUTPUT_SKIP("Image loaded");
     #else
-        ssTEST_OUTPUT_ASSERT(TestImage->GetRawHandle() != nullptr);
+        ssTEST_OUTPUT_ASSERT("No Image loaded", TestImage->GetRawHandle() == nullptr);
+        TestImage->LoadFromPath(ResourcesFolderPath+"sd.png");
+        ssTEST_OUTPUT_ASSERT("Image loaded", TestImage->GetRawHandle() != nullptr);
     #endif
 }
 
 ssTEST("IsValidTest")
 {
-    ssTEST_OUTPUT_ASSERT(!TestImage->IsValid());
-    ssTEST_OUTPUT_ASSERT(TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"));
+    ssTEST_CALL_CLEAN_UP();
+    ssTEST_CALL_SET_UP();
+
+    ssTEST_OUTPUT_ASSERT("No image loaded", !TestImage->IsValid());
+    TestImage->LoadFromPath(ResourcesFolderPath+"sd.png");
+    ssTEST_OUTPUT_ASSERT("Image loaded", TestImage->IsValid());
 }
 
 ssTEST("LoadFromPathTest")
@@ -135,6 +142,14 @@ ssTEST("GetPixelPtrTest")
                             pixelPtr[columnWidth*3 * 4 + 1] == 0 &&
                             pixelPtr[columnWidth*3 * 4 + 2] == 0 &&
                             pixelPtr[columnWidth*3 * 4 + 3] == 127);
+}
+
+ssTEST_SKIP("Internal_AddBackendDrawingRecordTest")
+{
+}
+
+ssTEST_SKIP("Internal_RemoveBackendDrawingRecord")
+{
 }
 
 ssTEST("CloneTest")

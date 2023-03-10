@@ -25,7 +25,7 @@ ssTEST_SET_UP
                                     ssTEST_OUTPUT_ASSERT("EventSource", info.EventSource == testObj); 
                                     listerNum = 1;
                                 });
-    callback->Clone(testWindow, true);
+    testWindow->AddEventCallbackCopy(callback, true);
 }
 
 ssTEST_CLEAN_UP

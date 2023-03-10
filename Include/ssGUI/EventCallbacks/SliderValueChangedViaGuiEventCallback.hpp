@@ -33,7 +33,7 @@ namespace EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual SliderValueChangedViaGuiEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual SliderValueChangedViaGuiEventCallback* Clone(bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

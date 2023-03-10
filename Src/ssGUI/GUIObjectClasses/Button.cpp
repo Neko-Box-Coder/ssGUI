@@ -1,7 +1,7 @@
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -134,7 +134,7 @@ namespace ssGUI
                         ButtonColor(100, 100, 100, 255)
     {
         SetSize(glm::vec2(25, 25));
-        auto stateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto stateChangedEventCallback = AddEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         stateChangedEventCallback->AddEventListener(
             ListenerKey, this,
             [](ssGUI::EventInfo info)
@@ -167,8 +167,7 @@ namespace ssGUI
             }
         ); 
         
-        AddEventCallback(stateChangedEventCallback);
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        AddExtension<ssGUI::Extensions::Border>();
         SetBackgroundColor(GetButtonColor());
     }
 

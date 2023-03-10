@@ -76,13 +76,13 @@ namespace ssGUI
             //function: GetBackendDrawingInterface
             virtual ssGUI::Backend::BackendDrawingInterface* GetBackendDrawingInterface();
             
-            //function: GetDisplayPosition
+            //function: GetWindowPosition
             //See <BackendMainWindowInterface::GetWindowPosition>
-            virtual glm::ivec2 GetDisplayPosition() const;
+            virtual glm::ivec2 GetWindowPosition() const;
 
-            //function: SetDisplayPosition
+            //function: SetWindowPosition
             //See <BackendMainWindowInterface::SetWindowPosition>
-            virtual void SetDisplayPosition(glm::ivec2 pos);
+            virtual void SetWindowPosition(glm::ivec2 pos);
 
             //function: GetPositionOffset
             //See <BackendMainWindowInterface::GetPositionOffset>
@@ -146,6 +146,18 @@ namespace ssGUI
             //function: GetWindowSize
             //See <BackendMainWindowInterface::GetWindowSize>
             virtual glm::ivec2 GetWindowSize() const;
+            
+            //function: SetRenderContext 
+            //See <BackendMainWindowInterface::SetGLContext>
+            bool SetRenderContext();
+            
+            //function: SaveState 
+            //See <BackendDrawingInterface::SaveState>
+            void SaveState();
+
+            //function: RestoreState 
+            //See <BackendDrawingInterface::RestoreState>
+            void RestoreState();
 
             //function: SetEnabled
             //Proxy function for <SetVisible>
@@ -168,22 +180,22 @@ namespace ssGUI
             virtual void SetFocus(bool focus) override;
             
             //function: GetPosition
-            //This will always return (0, 0). To get the main window's position on the monitor, see <GetDisplayPosition>
+            //This will always return (0, 0). To get the main window's position on the monitor, see <GetWindowPosition>
             //See <ssGUI::Hierarchy::GetPosition>
             virtual glm::vec2 GetPosition() const override;
             
             //function: SetPosition
-            //This will not set the position of the main window, to do that, see <SetDisplayPosition>
+            //This will not set the position of the main window, to do that, see <SetWindowPosition>
             //See <ssGUI::Hierarchy::SetPosition>
             virtual void SetPosition(glm::vec2 position) override;
             
             //function: GetGlobalPosition
-            //This will always return (0, 0). To get the main window's position on the monitor, see <GetDisplayPosition>
+            //This will always return (0, 0). To get the main window's position on the monitor, see <GetWindowPosition>
             //See <ssGUI::Hierarchy::GetGlobalPosition>
             virtual glm::vec2 GetGlobalPosition() override;
             
             //function: SetGlobalPosition
-            //This will not set the position of the main window, to do that, see <SetDisplayPosition>
+            //This will not set the position of the main window, to do that, see <SetWindowPosition>
             //See <ssGUI::Hierarchy::SetGlobalPosition>
             virtual void SetGlobalPosition(glm::vec2 position) override;
             

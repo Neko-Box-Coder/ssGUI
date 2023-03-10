@@ -1,5 +1,5 @@
 #include "ssGUI/Backend/X11_OpenGL3_3/X11InputConverter.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <X11/keysym.h>
 
@@ -225,7 +225,7 @@ namespace Backend
             case XK_KP_Enter:
                 return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::NUMPAD_ENTER);
             default:
-                //ssLOG_LINE("Unknown input: "<<keysym);
+                //ssGUI_WARNING(ssGUI_BACKEND_TAG, "Unknown input: "<<keysym);
                 return ssGUI::Enums::NO_INPUT;
         }
     }

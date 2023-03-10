@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    FocusLostEventCallback* FocusLostEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    FocusLostEventCallback* FocusLostEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(FocusLostEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(FocusLostEventCallback, copyListeners);
     }
 
     const std::string FocusLostEventCallback::EVENT_NAME = "FocusLostEvent";

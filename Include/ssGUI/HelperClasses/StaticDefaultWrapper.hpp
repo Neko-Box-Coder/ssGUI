@@ -6,6 +6,7 @@
 
 #include "ssGUI/Factory.hpp"
 
+//TODO: Optimize this for better and more robust design
 namespace ssGUI 
 {
     template<typename T>
@@ -23,7 +24,7 @@ namespace ssGUI
                 if(CleanUpFunc.empty())
                 {
                     if(Obj != nullptr && ssGUIDefault)
-                        ssGUI::Factory::Dispose(Obj);
+                        ssGUI::Dispose(Obj);
                 }
                 else
                 {

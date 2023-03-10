@@ -50,15 +50,13 @@ namespace EventCallbacks
             static void operator delete(void* p)        {free(p);};
             static void operator delete[](void* p)      {free(p);};
             
-            #define INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(eventType, newContainer, copyListeners)\
+            #define INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(eventType, copyListeners)\
             [&](){\
                 eventType* temp;\
                 if(copyListeners)\
                     temp = new eventType(*this);\
                 else\
                     temp = new eventType();\
-                if(newContainer != nullptr)\
-                    newContainer->AddEventCallback(temp);\
                 return temp;\
             }()
 
@@ -125,7 +123,7 @@ namespace EventCallbacks
             
             //function: Clone
             //See <EventCallback::Clone>
-            virtual BaseEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual BaseEventCallback* Clone(bool copyListeners) override;
 
             //const: EVENT_NAME
             //This is what you use in order to get the EventCallback that is added to the GUIObject

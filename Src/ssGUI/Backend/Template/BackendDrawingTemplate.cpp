@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Template/BackendDrawingTemplate.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -14,7 +14,7 @@ namespace Backend
 
     BackendDrawingTemplate::BackendDrawingTemplate()
     {
-        ssLOG_LINE("BackendDrawingTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendDrawingTemplate is being created, is this intended?");
     }
 
     BackendDrawingTemplate::~BackendDrawingTemplate()
@@ -36,7 +36,7 @@ namespace Backend
                                 const std::vector<int>& counts,
                                 const std::vector<ssGUI::DrawingProperty>& properties)
     {
-        return true;   
+        return true;
     }
 
     void BackendDrawingTemplate::Render(glm::u8vec3 clearColor)
@@ -49,11 +49,21 @@ namespace Backend
         
     }
     
-    void BackendDrawingTemplate::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingTemplate::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
     {
     
     }
     
+    void BackendDrawingTemplate::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+    
+    }
+    
+    void* BackendDrawingTemplate::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+        return nullptr;
+    }
+
     bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,

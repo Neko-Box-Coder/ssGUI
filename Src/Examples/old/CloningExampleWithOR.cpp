@@ -43,14 +43,21 @@ int main()
     //By default, button has state changed event callback attached to it
     //Gets the event callback for the button state change
     auto ecb = button.GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+
+    //Adds the text widget parented to the window to the event callback so it can be referenced
+    //<AddObjectReference> return a <ssGUIObjectIndex> which is just an ID you can use to retrieve the text widget back
+    ssGUI::ssGUIObjectIndex textIndex = ecb->AddObjectReference(&text);
     ecb->AddEventListener
     (
         "AnyKey",
-        [&](ssGUI::EventInfo info)
+        [textIndex](ssGUI::EventInfo info)
         {
             //When the button is clicked, sets the text
-            if(static_cast<ssGUI::Button*>(info.EventCallbackContainer)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
-                text.SetText(L"(`oωo´)");
+            if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            {
+                ssGUI::Text* text = static_cast<ssGUI::Text*>(info.References->GetObjectReference(textIndex));
+                text->SetText(L"(`oωo´)");
+            }
         }
     );
 
@@ -70,7 +77,7 @@ int main()
                 window.Clone(true)->SetPosition(glm::vec2(window.GetPosition().x + 10, window.GetPosition().y + 10));
             }
         }
-    );
+    );    
 
     guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();

@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Template/BackendSystemInputTemplate.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -14,7 +14,7 @@ namespace Backend
 
     BackendSystemInputTemplate::BackendSystemInputTemplate()
     {
-        ssLOG_LINE("BackendSystemInputTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendSystemInputTemplate is being created, is this intended?");
     }
 
     BackendSystemInputTemplate::~BackendSystemInputTemplate()
@@ -139,6 +139,21 @@ namespace Backend
     void BackendSystemInputTemplate::UpdateCursor()
     {
 
+    }
+    
+    int BackendSystemInputTemplate::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    {
+        return 0;
+    }
+    
+    void BackendSystemInputTemplate::RemoveRawEventHandler(int id)
+    {
+    
+    }
+    
+    void BackendSystemInputTemplate::ClearRawEventHandler()
+    {
+    
     }
 
     bool BackendSystemInputTemplate::ClearClipboard()

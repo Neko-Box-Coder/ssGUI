@@ -1,5 +1,5 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -59,6 +59,12 @@ namespace Extensions
     {
         return VerticalPixelValue;
     }
+    
+    void AdvancedSize::SetSizingPixel(float hori, float vert)
+    {
+        SetHorizontalPixel(hori);        
+        SetVerticalPixel(vert);        
+    }
 
     void AdvancedSize::SetHorizontalPercentage(float percentage)
     {
@@ -80,6 +86,12 @@ namespace Extensions
     float AdvancedSize::GetVerticalPercentage() const
     {
         return VerticalPercentageValue;
+    }
+    
+    void AdvancedSize::SetSizingPercentage(float hori, float vert)
+    {
+        SetHorizontalPercentage(hori);
+        SetVerticalPercentage(vert);
     }
 
     void AdvancedSize::SetEnabled(bool enabled)
@@ -168,11 +180,9 @@ namespace Extensions
         return nullptr;
     }
 
-    AdvancedSize* AdvancedSize::Clone(ssGUI::GUIObject* newContainer)
+    AdvancedSize* AdvancedSize::Clone()
     {
         AdvancedSize* temp = new AdvancedSize(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }   
 }

@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    ChildRemovedEventCallback* ChildRemovedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    ChildRemovedEventCallback* ChildRemovedEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(ChildRemovedEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(ChildRemovedEventCallback, copyListeners);
     }
 
     const std::string ChildRemovedEventCallback::EVENT_NAME = "ChildRemovedEvent";

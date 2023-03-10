@@ -1,7 +1,7 @@
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <cmath>
 
@@ -91,7 +91,7 @@ namespace Extensions
         //Vertices are either at the same place or on a line
         if(nba + nbc == glm::vec2())
         {
-            ssLOG_LINE("Vertices at same place or on a line");
+            ssGUI_WARNING(ssGUI_EXT_TAG, "Vertices at same place or on a line");
             return;
         }
 
@@ -122,24 +122,24 @@ namespace Extensions
         bool invalidAngle = false;
         if(angleT1CirT2 < 0)
         {
-            ssLOG_LINE("anti-clockwise placements of vertices detected. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_EXT_TAG, "anti-clockwise placements of vertices detected. Rounded corners failed.");
             invalidAngle = true;
         }
         else if(angleT1CirT2 > pi())
         {
-            ssLOG_LINE("Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_EXT_TAG, "Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            ssLOG_LINE("angleT1CirT2: "<<angleT1CirT2);
-            ssLOG_LINE("a: "<<a.x<<", "<<a.y);
-            ssLOG_LINE("b: "<<b.x<<", "<<b.y);
-            ssLOG_LINE("c: "<<c.x<<", "<<c.y);
-            ssLOG_LINE("t1: "<<t1.x<<", "<<t1.y);
-            ssLOG_LINE("t2: "<<t2.x<<", "<<t2.y);
-            ssLOG_LINE("cir: "<<cir.x<<", "<<cir.y);
+            ssGUI_WARNING(ssGUI_EXT_TAG, "angleT1CirT2: "<<angleT1CirT2);
+            ssGUI_WARNING(ssGUI_EXT_TAG, "a: "<<a.x<<", "<<a.y);
+            ssGUI_WARNING(ssGUI_EXT_TAG, "b: "<<b.x<<", "<<b.y);
+            ssGUI_WARNING(ssGUI_EXT_TAG, "c: "<<c.x<<", "<<c.y);
+            ssGUI_WARNING(ssGUI_EXT_TAG, "t1: "<<t1.x<<", "<<t1.y);
+            ssGUI_WARNING(ssGUI_EXT_TAG, "t2: "<<t2.x<<", "<<t2.y);
+            ssGUI_WARNING(ssGUI_EXT_TAG, "cir: "<<cir.x<<", "<<cir.y);
             // ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -152,20 +152,20 @@ namespace Extensions
         //Using the information with tangent points, angles between them and clockwise information
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // ssLOG_LINE("points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
+        // ssGUI_DEBUG(ssGUI_EXT_TAG, "points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
         int minSamples = 5;
         int sampleCount = (int)(roundRadius * angleT1CirT2 * 1) + 2;
         int finalSampleCount = sampleCount < minSamples ? minSamples : sampleCount;
-        //ssLOG_LINE("originLineToT1Angle: "<<originLineToT1Angle);
-        //ssLOG_LINE("angleT1CirT2: "<<angleT1CirT2);
+        //ssGUI_DEBUG(ssGUI_EXT_TAG, "originLineToT1Angle: "<<originLineToT1Angle);
+        //ssGUI_DEBUG(ssGUI_EXT_TAG, "angleT1CirT2: "<<angleT1CirT2);
         for(int i = 1; i < finalSampleCount; i++)
         {
-            //ssLOG_LINE("i: "<<i<<"/"<<finalSampleCount);
-            //ssLOG_LINE("((double)i / (double)finalSampleCount): "<<((double)i / (double)finalSampleCount));
+            //ssGUI_DEBUG(ssGUI_EXT_TAG, "i: "<<i<<"/"<<finalSampleCount);
+            //ssGUI_DEBUG(ssGUI_EXT_TAG, "((double)i / (double)finalSampleCount): "<<((double)i / (double)finalSampleCount));
             double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)finalSampleCount);
-            //ssLOG_LINE("currentAngle: "<<currentAngle);
+            //ssGUI_DEBUG(ssGUI_EXT_TAG, "currentAngle: "<<currentAngle);
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)roundRadius;
-            //ssLOG_LINE("plotPoint: "<<plotPoint.x<<", "<<plotPoint.y);
+            //ssGUI_DEBUG(ssGUI_EXT_TAG, "plotPoint: "<<plotPoint.x<<", "<<plotPoint.y);
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + cir);
         }
     }
@@ -209,9 +209,9 @@ namespace Extensions
                 //Invlaid index check
                 if(currentVertexIndex >= drawingVertices.size())
                 {
-                    ssLOG_LINE("Invalid target vertex detected: "<<TargetVertices[i]);
-                    ssLOG_LINE("currentVertexIndex: "<<currentVertexIndex);
-                    ssLOG_LINE("drawingVertices.size(): "<<drawingVertices.size());
+                    ssGUI_WARNING(ssGUI_EXT_TAG, "Invalid target vertex detected: "<<TargetVertices[i]);
+                    ssGUI_WARNING(ssGUI_EXT_TAG, "currentVertexIndex: "<<currentVertexIndex);
+                    ssGUI_WARNING(ssGUI_EXT_TAG, "drawingVertices.size(): "<<drawingVertices.size());
                     continue;
                 }
 
@@ -231,7 +231,7 @@ namespace Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
+                        ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                         VerticesToRound.clear();
                         VerticesToRoundPrevVertices.clear();
                         VerticesToRoundNextVertices.clear();
@@ -249,7 +249,7 @@ namespace Extensions
                     loopCount++;
                     if(loopCount > endIndex - startIndex + 1)
                     {
-                        ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
+                        ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                         VerticesToRound.clear();
                         VerticesToRoundPrevVertices.clear();
                         VerticesToRoundNextVertices.clear();
@@ -295,7 +295,7 @@ namespace Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
+                            ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                             VerticesToRound.clear();
                             VerticesToRoundPrevVertices.clear();
                             VerticesToRoundNextVertices.clear();
@@ -313,7 +313,7 @@ namespace Extensions
                         loopCount++;
                         if(loopCount > drawingCounts[curShape])
                         {
-                            ssLOG_LINE("Failed to construct rounded corner due to multiple consecutive vertices having the same position");
+                            ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
                             VerticesToRound.clear();
                             VerticesToRoundPrevVertices.clear();
                             VerticesToRoundNextVertices.clear();
@@ -382,10 +382,10 @@ namespace Extensions
                                     glm::vec4(drawingColors[nextIndex]) * coord.z +
                                     0.5001f);   //0.5 for the rounding
 
-                // ssLOG_LINE("drawingColors[prevIndex]: "<<(int)drawingColors[prevIndex].r<<", "<<(int)drawingColors[prevIndex].g<<", "<<(int)drawingColors[prevIndex].b<<", "<<(int)drawingColors[prevIndex].a);
-                // ssLOG_LINE("drawingColors[currentIndex]: "<<(int)drawingColors[currentIndex].r<<", "<<(int)drawingColors[currentIndex].g<<", "<<(int)drawingColors[currentIndex].b<<", "<<(int)drawingColors[currentIndex].a);
-                // ssLOG_LINE("drawingColors[nextIndex]: "<<(int)drawingColors[nextIndex].r<<", "<<(int)drawingColors[nextIndex].g<<", "<<(int)drawingColors[nextIndex].b<<", "<<(int)drawingColors[prevIndex].a);
-                // ssLOG_LINE("newColors.back(): "<<(int)newColors.back().r<<", "<<(int)newColors.back().g<<", "<<(int)newColors.back().b<<", "<<(int)newColors.back().a);
+                // ssGUI_DEBUG(ssGUI_EXT_TAG, "drawingColors[prevIndex]: "<<(int)drawingColors[prevIndex].r<<", "<<(int)drawingColors[prevIndex].g<<", "<<(int)drawingColors[prevIndex].b<<", "<<(int)drawingColors[prevIndex].a);
+                // ssGUI_DEBUG(ssGUI_EXT_TAG, "drawingColors[currentIndex]: "<<(int)drawingColors[currentIndex].r<<", "<<(int)drawingColors[currentIndex].g<<", "<<(int)drawingColors[currentIndex].b<<", "<<(int)drawingColors[currentIndex].a);
+                // ssGUI_DEBUG(ssGUI_EXT_TAG, "drawingColors[nextIndex]: "<<(int)drawingColors[nextIndex].r<<", "<<(int)drawingColors[nextIndex].g<<", "<<(int)drawingColors[nextIndex].b<<", "<<(int)drawingColors[prevIndex].a);
+                // ssGUI_DEBUG(ssGUI_EXT_TAG, "newColors.back(): "<<(int)newColors.back().r<<", "<<(int)newColors.back().g<<", "<<(int)newColors.back().b<<", "<<(int)newColors.back().a);
             }
         }
 
@@ -620,11 +620,9 @@ namespace Extensions
         return nullptr;
     }
 
-    RoundedCorners* RoundedCorners::Clone(ssGUI::GUIObject* newContainer)
+    RoundedCorners* RoundedCorners::Clone()
     {
         RoundedCorners* temp = new RoundedCorners(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

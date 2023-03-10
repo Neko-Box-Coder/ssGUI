@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Template/BackendMainWindowTemplate.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -14,7 +14,7 @@ namespace Backend
 
     BackendMainWindowTemplate::BackendMainWindowTemplate()
     {
-        ssLOG_LINE("BackendMainWindowTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendMainWindowTemplate is being created, is this intended?");
     }
 
     BackendMainWindowTemplate::~BackendMainWindowTemplate()

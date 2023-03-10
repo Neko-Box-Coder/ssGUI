@@ -1,6 +1,5 @@
 #include "ssGUI/Extensions/Border.hpp"
-#include "ssLogger/ssLog.hpp"
-
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -266,11 +265,9 @@ namespace Extensions
         return nullptr;
     }
 
-    Border* Border::Clone(ssGUI::GUIObject* newContainer)
+    Border* Border::Clone()
     {
         Border* temp = new Border(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

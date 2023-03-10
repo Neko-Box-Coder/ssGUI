@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    BackgroundColorChangedEventCallback* BackgroundColorChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    BackgroundColorChangedEventCallback* BackgroundColorChangedEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(BackgroundColorChangedEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(BackgroundColorChangedEventCallback, copyListeners);
     }
 
     const std::string BackgroundColorChangedEventCallback::EVENT_NAME = "BackgroundColorChangedEvent";

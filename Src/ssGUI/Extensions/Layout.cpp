@@ -9,7 +9,7 @@
 #include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -298,17 +298,7 @@ namespace Extensions
                 continue;
             }
 
-            if(Container->GetCurrentChild() != nullptr && Container->GetCurrentChild()->GetType() == ssGUI::Enums::GUIObjectType::WINDOW &&
-                !Container->GetCurrentChild()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-            {
-                //NOTE: Not too sure what was this about
-                //ssGUI::Window* childWin = static_cast<ssGUI::Window*>(Container->GetCurrentChild());
-                //glm::ivec4 tColor = childWin->GetTitlebarColor();
-                
-                //NOTE: This was outside this if statement, didn't make too much sense to be outside
-                validChildrenSize++;
-            }
-            
+            validChildrenSize++;
             Container->MoveChildrenIteratorNext();
         }
         Container->PopChildrenIterator();
@@ -891,7 +881,7 @@ namespace Extensions
                     currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
                 if(!Container->GetCurrentChild()->IsEventCallbackExist(onMinMaxSizeChangedEventName))
-                    Container->GetCurrentChild()->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>());
+                    Container->GetCurrentChild()->AddEventCallback<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>();
 
                 //This will override the existing event listener if it already exists, otherwise it will just add it.
                 Container->GetCurrentChild()->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener
@@ -1020,7 +1010,7 @@ namespace Extensions
         if(wrapper != nullptr)
         {
             if(!child->IsAnyExtensionExist<ssGUI::Extensions::AdvancedPosition>())
-                child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+                child->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
             ssGUI::Extensions::AdvancedPosition* ap = child->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
         
@@ -1084,7 +1074,7 @@ namespace Extensions
             
             //Add MinMax size changed callback
             if(!child->IsEventCallbackExist(onMinMaxSizeChangedEventName))
-                child->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>());
+                child->AddEventCallback<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>();
             
 
             child->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener
@@ -1309,7 +1299,7 @@ namespace Extensions
             SetUpdateContainerMinMaxSize(true);
 
         if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))
-            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback>());
+            Container->AddEventCallback<ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback>();
 
         Container->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME)->AddEventListener
         (
@@ -1317,15 +1307,15 @@ namespace Extensions
             [](ssGUI::EventInfo info)
             {
                 ssLOG_FUNC_ENTRY("OnRecursiveChildAddEventCallback");
-                if(!info.EventCallbackContainer->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+                if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 {
-                    ssLOG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Layout extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
                     return;
                 }
 
                 ssGUI::Extensions::Layout* containerLayout = static_cast<ssGUI::Extensions::Layout*>
-                    (info.EventCallbackContainer->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+                    (info.Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
                 ObjectsReferences* layoutOR = containerLayout->Internal_GetObjectsReferences();
                 int childIndex =    layoutOR->IsObjectReferenceExist(info.EventSource) ? 
                                     layoutOR->GetObjectIndex(info.EventSource) : 
@@ -1338,7 +1328,7 @@ namespace Extensions
                 if( !info.EventSource->IsExtensionExist(ssGUI::Extensions::WindowLayoutItemEnforcer::EXTENSION_NAME) && 
                     info.EventSource->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
                 {
-                    info.EventSource->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::WindowLayoutItemEnforcer>());
+                    info.EventSource->AddExtension<ssGUI::Extensions::WindowLayoutItemEnforcer>();
                 }
                 ssLOG_FUNC_EXIT("OnRecursiveChildAddEventCallback");
             }
@@ -1349,13 +1339,13 @@ namespace Extensions
         const std::string childPositionChangedEventName = ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME;
 
         if(!Container->IsEventCallbackExist(onChildAddedEventName))
-            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>());
+            Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
         
         if(!Container->IsEventCallbackExist(onChildRemovedEventName))
-            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>());
+            Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>();
 
         if(!Container->IsEventCallbackExist(childPositionChangedEventName))
-            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>());
+            Container->AddEventCallback<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>();
 
         Container->GetEventCallback(onChildAddedEventName)->AddEventListener
         (
@@ -1377,15 +1367,15 @@ namespace Extensions
             [](ssGUI::EventInfo info)
             {                    
                 ssLOG_FUNC_ENTRY("ChildPositionChangedEventCallback");
-                if(!info.EventCallbackContainer->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+                if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
                 {
-                    ssLOG_LINE("Failed to find Layout extension. Probably something wrong with cloning");
+                    ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Layout extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
                     return;
                 }
 
                 ssGUI::Extensions::Layout* containerLayout = static_cast<ssGUI::Extensions::Layout*>
-                    (info.EventCallbackContainer->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+                    (info.Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
 
                 if(containerLayout->IsOverrideChildrenResizeTypeAndOnTop())
                     containerLayout->UpdateChildrenResizeTypesAndOnTop();
@@ -1421,12 +1411,9 @@ namespace Extensions
         return &CurrentObjectsReferences;
     }
 
-    Layout* Layout::Clone(ssGUI::GUIObject* newContainer)
+    Layout* Layout::Clone()
     {
         Layout* temp = new Layout(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
-        
         return temp;
     }
 }

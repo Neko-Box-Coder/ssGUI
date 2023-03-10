@@ -26,7 +26,7 @@ namespace Backend
     private:
         int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
         glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
-        std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+        std::unordered_map<CharTextureIdentifier, GLuint> CharTextures;                         //(Internal variable) This is used to keep track of all the character textures 
         std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
     ====================================================
     ======================== C++ =======================
@@ -44,7 +44,7 @@ namespace Backend
         private:
             int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
             glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
-            std::unordered_map<uint32_t, GLuint> CharTextures;                                      //(Internal variable) This is used to keep track of all the character textures 
+            std::unordered_map<CharTextureIdentifier, GLuint> CharTextures;                         //(Internal variable) This is used to keep track of all the character textures 
             std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
 
             ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
@@ -86,9 +86,17 @@ namespace Backend
             //See <BackendDrawingInterface::ClearBackBuffer>
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
             
-            //function: RemoveImageLinking
-            //See <BackendDrawingInterface::RemoveImageLinking>
-            void RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            //function: AddImageCache
+            //See <BackendDrawingInterface::AddImageCache>
+            void AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            
+            //function: RemoveImageCache
+            //See <BackendDrawingInterface::RemoveImageCache>
+            void RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            
+            //function: GetRawImageCacheHandle
+            //See <BackendDrawingInterface::GetRawImageCacheHandle>
+            void* GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage) override;
 
         protected:
             bool DrawShape( const std::vector<glm::vec2>& vertices, 

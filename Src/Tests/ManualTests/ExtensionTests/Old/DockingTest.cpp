@@ -6,6 +6,7 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
+#include "ssLogger/ssLog.hpp"
 
 
 

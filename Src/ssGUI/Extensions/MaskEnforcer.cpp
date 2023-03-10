@@ -1,6 +1,6 @@
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/Dockable.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
@@ -303,11 +303,9 @@ namespace Extensions
         return &CurrentObjectsReferences;
     }
 
-    MaskEnforcer* MaskEnforcer::Clone(ssGUI::GUIObject* newContainer)
+    MaskEnforcer* MaskEnforcer::Clone()
     {
         MaskEnforcer* temp = new MaskEnforcer(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

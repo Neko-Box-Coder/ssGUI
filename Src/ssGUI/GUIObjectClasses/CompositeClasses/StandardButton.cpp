@@ -10,7 +10,7 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/ssGUITags.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -88,7 +88,7 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedPosition* ap;
         
         if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            buttonImgObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
+            buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
         as = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
@@ -98,7 +98,7 @@ namespace ssGUI
         as->SetVerticalPixel(0);
 
         if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            buttonImgObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+            buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
 
         ap = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
@@ -123,25 +123,21 @@ namespace ssGUI
         //Adjust Extensions
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
-        auto boxShadow = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
-        AddExtension(boxShadow);
+        auto boxShadow = AddExtension<ssGUI::Extensions::BoxShadow>();
 
-        auto roundedCorners = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
+        auto roundedCorners = AddExtension<ssGUI::Extensions::RoundedCorners>();
         roundedCorners->SetRoundedCornersRadius(5);
-        AddExtension(roundedCorners);
 
-        auto outline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+        auto outline = AddExtension<ssGUI::Extensions::Outline>();
         outline->SetSimpleOutline(false);
         outline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         outline->SetOutlineThickness(1);
-        AddExtension(outline);
 
-        auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+        auto layout = AddExtension<ssGUI::Extensions::Layout>();
         layout->SetHorizontalLayout(true);
         layout->SetSpacing(0);
         layout->AddPreferredSizeMultiplier(0.25);
         layout->AddPreferredSizeMultiplier(0.75);
-        AddExtension(layout);
 
         //Add Button Image
         auto wrapper = ssGUI::Factory::Create<ssGUI::Widget>();
@@ -171,12 +167,8 @@ namespace ssGUI
         SetAdaptiveButtonTextColor(true);   //Update the text color
 
         //Add button text clean-up
-        ssGUI::EventCallbacks::OnObjectDestroyEventCallback* onDestroyCallback = nullptr;
         if(!IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
-        {
-            onDestroyCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
-            AddEventCallback(onDestroyCallback);
-        }
+            AddEventCallback<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
 
         //Change button callback
         auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
@@ -186,7 +178,7 @@ namespace ssGUI
             ListenerKey, this,
             [](ssGUI::EventInfo info)
             {
-                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.EventCallbackContainer);
+                ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.Container);
                 auto iconImage = btn->GetButtonIconObject();
                 int buttonReactAmount = 20;
                 glm::u8vec4 bgcolor = btn->GetButtonColor();

@@ -31,18 +31,6 @@ namespace ssGUI
         CurrentObject = obj;
     }
 
-    void ExtensionManager::AddExtension(ssGUI::Extensions::Extension* extension)
-    {
-        if(IsExtensionExist(extension->GetExtensionName()))
-            return;
-
-        Extensions[extension->GetExtensionName()] = extension;
-        ExtensionsDrawOrder.push_back(extension->GetExtensionName());
-        ExtensionsUpdateOrder.push_back(extension->GetExtensionName());
-        extension->BindToObject(CurrentObject);
-        CurrentRenderer->RedrawObject();
-    }
-
     ssGUI::Extensions::Extension* ExtensionManager::GetExtension(std::string extensionName)
     {
         if(!IsExtensionExist(extensionName))

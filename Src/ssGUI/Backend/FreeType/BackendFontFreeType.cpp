@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 
 #include <cmath>
@@ -26,14 +26,14 @@ namespace Backend
                 return false;
             
             int lastIndex = 0;
-            float lastDiff = 0;
+            float lastDiff = 1000000000;
 
             int chosenIndex = 0;
 
             //Select the closest size
             for(int i = 0; i < FontFace->num_fixed_sizes; i++)
             {
-                if(FontFace->available_sizes[i].height > size)
+                if(FontFace->available_sizes[i].height >= size)
                 {
                     float curDiff = FontFace->available_sizes[i].height - size;
                     if(curDiff < lastDiff)
@@ -48,16 +48,23 @@ namespace Backend
                         break;
                     }
                 }
-
-                lastDiff = size - FontFace->available_sizes[i].height;
-                lastIndex = i;
+                else
+                {
+                    float curDiff = size - FontFace->available_sizes[i].height;
+                    if(lastDiff < curDiff)
+                    {
+                        lastDiff = curDiff;
+                        lastIndex = i;
+                    }
+                }
             }
 
             //If the fixed font size is not really relative close, report it
             if(lastDiff > size * 0.25)
             {
-                ssLOG_LINE("Closest font size: " << (chosenIndex == lastIndex ? size + lastDiff : size - lastDiff));
-                return false;
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Requested font size: " << size);
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Closest font size: " << (chosenIndex == lastIndex ? size + lastDiff : size - lastDiff));
+                //return false;
             }
 
             error = FT_Select_Size(FontFace, 0);
@@ -65,7 +72,7 @@ namespace Backend
             //If failed to select size, just don't change anything
             if(error)
             {
-                ssLOG_LINE("Failed with error: " << error);
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Failed with error: " << error);
                 return false;
             }
             
@@ -84,7 +91,7 @@ namespace Backend
             //If failed to select size, just don't change anything
             if(error)
             {
-                ssLOG_LINE("Failed with error: " << error);
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed with error: " << error);
                 return false;
             }
 
@@ -117,22 +124,22 @@ namespace Backend
         {
             if(!LoadFromMemory(other.FontMemory, other.FontMemoryLength))
             {
-                ssLOG_LINE("Failed to copy via memory");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to copy via memory");
             }
         }
         else if(!other.FontPath.empty())
         {
             if(!LoadFromPath(other.FontPath))
             {
-                ssLOG_LINE("Failed to copy via path");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to copy via path");
             }
         }
         else
         {
-            ssLOG_LINE("What? This is unexpected condition, exiting...");
-            ssLOG_LINE("other.IsValid(): " << other.IsValid());
-            ssLOG_LINE("other.FontMemory: " << other.FontMemory);
-            ssLOG_LINE("other.FontPath: " << other.FontPath);
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "What? This is unexpected condition, exiting...");
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.IsValid(): " << other.IsValid());
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.FontMemory: " << other.FontMemory);
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.FontPath: " << other.FontPath);
             ssLOG_EXIT_PROGRAM();
         }
     }
@@ -153,7 +160,7 @@ namespace Backend
             FT_Error error = FT_Init_FreeType(FreeTypeLib.Obj);
             if(error)
             {
-                ssLOG_LINE("Failed to initialize FreeType library with error: " << error);
+                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to initialize FreeType library with error: " << error);
                 ssLOG_EXIT_PROGRAM();
             }
 
@@ -200,7 +207,7 @@ namespace Backend
         
         if(!SetSizeIfDifferent(charSize))
         {
-            ssLOG_LINE("Failed to set character size, aborting...");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, aborting...");
             info.Valid = false;
             return info;
         }
@@ -216,17 +223,24 @@ namespace Backend
 
         if(error)
         {
-            ssLOG_LINE("Failed to load glyph with error: " << error);
-            ssLOG_LINE("Aborting...");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph with error: " << error);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Aborting...");
             info.Valid = false;
             return info;
         }
 
-        info.Advance = static_cast<float>(FontFace->glyph->advance.x) / 64.f;
-        info.DrawOffset = glm::vec2(FontFace->glyph->bitmap_left, -FontFace->glyph->bitmap_top);
-        info.Size = glm::vec2(FontFace->glyph->bitmap.width, FontFace->glyph->bitmap.rows);
-        info.Rendered = true;   //This is handled in Text.cpp
-        info.Valid = true;
+        //For some reason, variable selections is taking spaces. We don't want that
+        //https://en.wikipedia.org/wiki/Variation_Selectors_(Unicode_block)
+        if(charUnicode < L'\uFE00' || charUnicode > L'\uFE0F')
+        {
+            info.Advance = static_cast<float>(FontFace->glyph->advance.x) / 64.f;
+            info.DrawOffset = glm::vec2(FontFace->glyph->bitmap_left, -FontFace->glyph->bitmap_top);
+            info.Size = glm::vec2(FontFace->glyph->bitmap.width, FontFace->glyph->bitmap.rows);
+            info.Rendered = true;   //This is handled in Text.cpp
+            info.Valid = true;
+            info.RenderFontSize = CurrentSize;
+            info.TargetSizeMultiplier = charSize / CurrentSize; 
+        }
         
         return info;
     }
@@ -242,13 +256,13 @@ namespace Backend
             return 0;
 
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
 
         FT_Vector delta;    //Delta is expressed in 1/64 of points
         FT_Error err = FT_Get_Kerning(FontFace, charUnicode, secondCharUnicode, ft_kerning_default, &delta);
         if(err)
         {
-            ssLOG_LINE("Failed to get kerning");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get kerning");
             return 0;
         }
 
@@ -258,31 +272,57 @@ namespace Backend
     float BackendFontFreeType::GetLineSpacing(float charSize)
     {
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
         
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
-        return static_cast<float>( FT_MulFix(FontFace->height, FontFace->size->metrics.y_scale) ) / static_cast<float>(64);
+        FT_Long rawLineSpace = FT_MulFix(FontFace->height, FontFace->size->metrics.y_scale);
+        
+        if(rawLineSpace == 0)
+            return charSize;
+        
+        if(charSize == CurrentSize)
+            return static_cast<float>(rawLineSpace) / static_cast<float>(64);
+        else
+            return static_cast<float>(rawLineSpace) / static_cast<float>(64) * (charSize / CurrentSize);
     }
     
     float BackendFontFreeType::GetUnderlineOffset(float charSize)
     {
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
-        return std::abs(static_cast<float>( FT_MulFix(FontFace->underline_position, FontFace->size->metrics.y_scale)) ) / static_cast<float>(64);;
+        
+        FT_Long underlineOffset = FT_MulFix(FontFace->underline_position, FontFace->size->metrics.y_scale);
+        
+        if(underlineOffset == 0)
+            return charSize / 5;
+        
+        if(charSize == CurrentSize)
+            return std::abs(static_cast<float>(underlineOffset) ) / static_cast<float>(64);
+        else
+            return std::abs(static_cast<float>(underlineOffset) ) / static_cast<float>(64) * (charSize / CurrentSize);
     }
     
     float BackendFontFreeType::GetUnderlineThickness(float charSize)
     {
         if(!SetSizeIfDifferent(charSize))
-            ssLOG_LINE("Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
-        return static_cast<float>( FT_MulFix(FontFace->underline_thickness, FontFace->size->metrics.y_scale) ) / static_cast<float>(64);
+        
+        FT_Long underlineThickness = FT_MulFix(FontFace->underline_thickness, FontFace->size->metrics.y_scale);
+        
+        if(underlineThickness == 0)
+            return charSize / 25;
+        
+        if(charSize == CurrentSize)
+            return static_cast<float>(underlineThickness) / static_cast<float>(64);
+        else
+            return static_cast<float>(underlineThickness) / static_cast<float>(64) * (charSize / CurrentSize);
     }
 
     bool BackendFontFreeType::LoadFromPath(std::string path)
@@ -315,7 +355,7 @@ namespace Backend
 
         if(error)
         {
-            ssLOG_LINE("Failed to laod font");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to laod font");
             Valid = false;
             return false;
         }
@@ -365,7 +405,7 @@ namespace Backend
 
         if(error)
         {
-            ssLOG_LINE("Failed to laod font: "<<error);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to laod font: "<<error);
             Valid = false;
             return false;
         }
@@ -391,7 +431,6 @@ namespace Backend
     
         fontSizes.clear();
     
-        //Select the closest size
         for(int i = 0; i < FontFace->num_fixed_sizes; i++)
             fontSizes.push_back(FontFace->available_sizes[i].height);
         
@@ -401,8 +440,8 @@ namespace Backend
     bool BackendFontFreeType::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
     {
         if(!SetSizeIfDifferent(charSize))
-            return false;
-        
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
+
         bool result = false;
 
         FT_UInt glyphIndex = FT_Get_Char_Index(FontFace, static_cast<FT_ULong>(charUnicode));
@@ -410,7 +449,7 @@ namespace Backend
         
         if(error)
         {
-            ssLOG_LINE("Failed to load glyph");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph");
             return false;
         }
         
@@ -432,16 +471,28 @@ namespace Backend
                 error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
                 if(error)
                 {
-                    ssLOG_LINE("Failed to FT_Render_Glyph");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to FT_Render_Glyph");
                     return false;
                 }
             }
             
-            if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_BGRA)
+            if(FontFace->glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO)
             {
-                ssLOG_LINE("Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
+                format.ImgType = ssGUI::Enums::ImageType::MONO;
+                format.BitDepthPerChannel = 1;
+                format.HasAlpha = false;
+                format.IndexMono = 0;
+                format.BitPerPixel = 1;
+            }
+            else if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_BGRA)
+            {
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << (int)FontFace->glyph->bitmap.pixel_mode);
                 return false;
             }
+            
+            //If it is am empty character, it shouldn't be render, so return false
+            if(GetCurrentGlyph()->bitmap.width == 0 || GetCurrentGlyph()->bitmap.rows == 0)
+                return false;
             
             result = characterImage.LoadRawFromMemory(  GetCurrentGlyph()->bitmap.buffer, 
                                                         format, 
@@ -469,16 +520,28 @@ namespace Backend
                  error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
                 if(error)
                 {
-                    ssLOG_LINE("Failed to FT_Render_Glyph");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to FT_Render_Glyph");
                     return false;
                 }
             }
             
-            if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
+            if(FontFace->glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO)
             {
-                ssLOG_LINE("Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
+                format.ImgType = ssGUI::Enums::ImageType::MONO;
+                format.BitDepthPerChannel = 1;
+                format.HasAlpha = false;
+                format.IndexMono = 0;
+                format.BitPerPixel = 1;
+            }
+            else if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
+            {
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid pixel mode: " << FontFace->glyph->bitmap.pixel_mode);
                 return false;
             }
+            
+            //If it is am empty character, it shouldn't be render, so return false
+            if(GetCurrentGlyph()->bitmap.width == 0 || GetCurrentGlyph()->bitmap.rows == 0)
+                return false;
         
             result = characterImage.LoadRawFromMemory(  GetCurrentGlyph()->bitmap.buffer, 
                                                         format, 

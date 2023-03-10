@@ -1,7 +1,8 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/gtx/norm.hpp"
 #include <cmath>
@@ -10,8 +11,7 @@
 
 namespace ssGUI
 {    
-    std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> Text::DefaultFonts = std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>>();
-    bool Text::DefaultFontsInitialized = false;
+    std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();
     uint32_t Text::DefaultFontsChangeID = 1;
 
     Text::Text(Text const& other) : Widget(other)
@@ -173,10 +173,10 @@ namespace ssGUI
         if(targetFont == nullptr)
             return;
         
-        DrawingVerticies.push_back(position                                 + info.DrawOffset);
-        DrawingVerticies.push_back(position + glm::vec2(info.Size.x, 0)     + info.DrawOffset);
-        DrawingVerticies.push_back(position + info.Size                     + info.DrawOffset);
-        DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y)     + info.DrawOffset);
+        DrawingVerticies.push_back(position                                                         + info.DrawOffset * info.TargetSizeMultiplier);
+        DrawingVerticies.push_back(position + glm::vec2(info.Size.x * info.TargetSizeMultiplier, 0) + info.DrawOffset * info.TargetSizeMultiplier);
+        DrawingVerticies.push_back(position + info.Size * info.TargetSizeMultiplier                 + info.DrawOffset * info.TargetSizeMultiplier);
+        DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y * info.TargetSizeMultiplier) + info.DrawOffset * info.TargetSizeMultiplier);
 
         DrawingColours.push_back(details.CharacterColor);
         DrawingColours.push_back(details.CharacterColor);
@@ -300,6 +300,7 @@ namespace ssGUI
             currentWordLength += curRenderInfo.Advance + GetCharacterSpace();
 
             //See if the current word exceeds widget width when a word *finishes*
+            //We do this by setting space, newline, tab or last character as word separator
             if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t') || i == lastValidIndex)
             {
                 //check if adding current word length to current line length exceeds widget width
@@ -437,9 +438,11 @@ namespace ssGUI
             drawXPos += fontInterface->GetKerning(prevChar, curChar, curDetail.FontSize);
 
             prevChar = curChar;
+            ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
 
             //If space or tab or newline character, just append
-            if (curChar == L' ' || curChar == L'\n' || curChar == L'\t')
+            //It is possible for any other character that has no texture, we handle it here as well
+            if (curChar == L' ' || curChar == L'\n' || curChar == L'\t' || info.Size == glm::vec2())
             {
                 //Check newline
                 if(nextCharIsAtNewline)
@@ -450,7 +453,11 @@ namespace ssGUI
                 }
                 
                 curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
-                float whitespaceWidth = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize).Advance + GetCharacterSpace();
+                ssGUI::CharacterRenderInfo whitespaceInfo = fontInterface->GetCharacterRenderInfo(L' ', curDetail.FontSize);
+                
+                float whitespaceWidth = 0;
+                whitespaceWidth = whitespaceInfo.Advance * whitespaceInfo.TargetSizeMultiplier;
+                whitespaceWidth += GetCharacterSpace();
 
                 switch (curChar)
                 {
@@ -469,6 +476,11 @@ namespace ssGUI
                     case L'\n': 
                         nextCharIsAtNewline = true;
                         break;
+                    //Characters that have no texture
+                    default:
+                        drawXPos += info.Advance * info.TargetSizeMultiplier;
+                        CharactersRenderInfos[i].Advance = info.Advance * info.TargetSizeMultiplier; 
+                        break;
                 }
 
                 if(drawXPos + GetHorizontalPadding() > GetSize().x)
@@ -476,11 +488,16 @@ namespace ssGUI
             }
             else 
             {
-                ssGUI::CharacterRenderInfo info = fontInterface->GetCharacterRenderInfo(curChar, curDetail.FontSize);
-                float characterLength = info.Advance;
-                bool oriValid = curRenderInfo.Valid;
+                if(!info.Valid)
+                {
+                    prevChar = 0;
+                    curRenderInfo.BaselinePosition = glm::vec2(drawXPos, 0);
+                    curRenderInfo.Valid = false;
+                    continue;
+                }
+                
+                float characterLength = info.Advance * info.TargetSizeMultiplier;
                 curRenderInfo = info;
-                curRenderInfo.Valid = oriValid;
 
                 //Check newline
                 if(nextCharIsAtNewline)
@@ -546,7 +563,9 @@ namespace ssGUI
                     {
                         CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                         CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
-                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + 
+                                                            backendFont->GetLineSpacing(curMaxFontNewline) + 
+                                                            GetLineSpace();
                     }
 
                     curMaxFontNewline = 0;
@@ -562,7 +581,9 @@ namespace ssGUI
                     {
                         CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                         CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;//-backendFont->GetLineSpacing(curMaxFontNewline) - GetLineSpace();
-                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                        CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + 
+                                                            backendFont->GetLineSpacing(curMaxFontNewline) + 
+                                                            GetLineSpace();
                     }
 
                     curMaxFontNewline = 0;
@@ -589,7 +610,9 @@ namespace ssGUI
                 {
                     CharactersRenderInfos[i].BaselinePosition.y += currentOffset;
                     CharactersRenderInfos[i].LineMinY = -curMaxFontNewline;
-                    CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + backendFont->GetLineSpacing(curMaxFontNewline) + GetLineSpace();
+                    CharactersRenderInfos[i].LineMaxY = -curMaxFontNewline + 
+                                                        backendFont->GetLineSpacing(curMaxFontNewline) + 
+                                                        GetLineSpace();
                 }
 
                 //Update vertical overflow
@@ -632,8 +655,10 @@ namespace ssGUI
                 //Align the previous line first
                 if(i > 0)
                 {
-                    lineEndPos = CharactersRenderInfos[i-1].BaselinePosition.x + CharactersRenderInfos[i-1].DrawOffset.x +
-                        CharactersRenderInfos[i-1].Size.x + GetHorizontalPadding();
+                    lineEndPos =    CharactersRenderInfos[i-1].BaselinePosition.x + 
+                                    CharactersRenderInfos[i-1].DrawOffset.x * CharactersRenderInfos[i-1].TargetSizeMultiplier +
+                                    CharactersRenderInfos[i-1].Size.x * CharactersRenderInfos[i-1].TargetSizeMultiplier + 
+                                    GetHorizontalPadding();
                     float alignOffset = 0; 
 
                     switch(CurrentHorizontalAlignment)
@@ -663,8 +688,10 @@ namespace ssGUI
             //End of character
             if(i == CharactersRenderInfos.size() - 1)
             {
-                lineEndPos = CharactersRenderInfos[i].BaselinePosition.x + CharactersRenderInfos[i].DrawOffset.x +
-                        CharactersRenderInfos[i].Size.x + GetHorizontalPadding();
+                lineEndPos =    CharactersRenderInfos[i].BaselinePosition.x + 
+                                CharactersRenderInfos[i].DrawOffset.x * CharactersRenderInfos[i].TargetSizeMultiplier +
+                                CharactersRenderInfos[i].Size.x * CharactersRenderInfos[i].TargetSizeMultiplier + 
+                                GetHorizontalPadding();
                 float alignOffset = 0; 
 
                 switch(CurrentHorizontalAlignment)
@@ -692,8 +719,12 @@ namespace ssGUI
         
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
         {
-            if(CharactersRenderInfos[i].BaselinePosition.y + CharactersRenderInfos[i].DrawOffset.y < lineStartPos)
-                lineStartPos = CharactersRenderInfos[i].BaselinePosition.y + CharactersRenderInfos[i].DrawOffset.y;
+            if( CharactersRenderInfos[i].BaselinePosition.y + 
+                CharactersRenderInfos[i].DrawOffset.y * CharactersRenderInfos[i].TargetSizeMultiplier < lineStartPos)
+            {
+                lineStartPos =  CharactersRenderInfos[i].BaselinePosition.y + 
+                                CharactersRenderInfos[i].DrawOffset.y * CharactersRenderInfos[i].TargetSizeMultiplier;
+            }
         }
 
         lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetVerticalPadding();
@@ -737,14 +768,19 @@ namespace ssGUI
 
         auto drawHighlight = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 highlightColor)
         {
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
+            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMinY));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    CharactersRenderInfos[inclusiveEndIndex].LineMinY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
 
             DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
                 glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
@@ -797,17 +833,23 @@ namespace ssGUI
 
         auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
         {
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(0, underlineOffset));
+            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                        GetGlobalPosition() +
+                                        glm::vec2(0, underlineOffset));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() + 
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() + 
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    underlineOffset));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + GetGlobalPosition() + 
-                glm::vec2(CharactersRenderInfos[inclusiveEndIndex].Advance, underlineOffset + thickness));
+            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                        GetGlobalPosition() + 
+                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                    underlineOffset + thickness));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() + 
-                glm::vec2(0, underlineOffset + thickness));
+            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                        GetGlobalPosition() + 
+                                        glm::vec2(  0, underlineOffset + thickness));
 
             for(int i = 0; i < 4; i++)
             {
@@ -1066,41 +1108,6 @@ namespace ssGUI
 //     #endif
 //     } // GetFilesInDirectory
 
-
-    void Text::InitializeDefaultFontIfNeeded()
-    {
-        ssLOG_FUNC_ENTRY();
-
-        if(DefaultFontsInitialized)
-        {
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-
-        auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
-        {
-            ssLOG_LINE("Failed to load default font");
-            ssGUI::Factory::Dispose(font);
-        }
-        else
-        {
-            ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-            wrapper.Obj = font;
-            wrapper.ssGUIDefault = true;
-            
-            DefaultFonts.push_back(wrapper);
-            DefaultFontsInitialized = true;
-            
-            //Needs to manually set the font for temp wrapper to be nullptr
-            //otherwise it will trigger the destructor and deallocate the font
-            wrapper.Obj = nullptr;
-
-            DefaultFontsChangeID++;
-        }
-        ssLOG_FUNC_EXIT();
-    }
-
     void Text::ConstructRenderInfo()
     {
         ssLOG_FUNC_ENTRY();
@@ -1129,7 +1136,7 @@ namespace ssGUI
 
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
-            ssLOG_LINE("Failed to find any fonts");
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to find any fonts");
             ssLOG_FUNC_EXIT();
             return;
         }
@@ -1279,9 +1286,9 @@ namespace ssGUI
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
         SetInteractable(true);
-        Text::InitializeDefaultFontIfNeeded();
+        InitiateDefaultResources();
 
-        auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto sizeChangedCallback = AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
@@ -1290,8 +1297,6 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
-
-        AddEventCallback(sizeChangedCallback);
     }
 
     Text::~Text()
@@ -2073,39 +2078,20 @@ namespace ssGUI
             return false;
     }
 
-    void Text::AddDefaultFont(ssGUI::Font* font)
+    ssGUI::Font* Text::AddDefaultFont()
     {
-        if(font == nullptr)
-            return;
-
-        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-        wrapper.Obj = font;
-        wrapper.ssGUIDefault = false;
-
-        DefaultFonts.push_back(wrapper);
-
-        //Needs to manually set the font for temp wrapper to be nullptr
-        //otherwise it will trigger the destructor and deallocate the font
-        wrapper.Obj = nullptr;
-
+        ssGUI::Font* font = ssGUI::Factory::Create<ssGUI::Font>();
+        DefaultFonts.push_back(font);
         DefaultFontsChangeID++;
+        return font;
     }
 
-    void Text::AddDefaultFont(ssGUI::Font* font, int index)
+    ssGUI::Font* Text::AddDefaultFont(int index)
     {
-        if(font == nullptr)
-            return;
-
-        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-        wrapper.Obj = font;
-        wrapper.ssGUIDefault = false;
-
-        DefaultFonts.insert(DefaultFonts.begin() + index, wrapper);
-    
-        //Needs to manually set the font for temp wrapper to be nullptr
-        //otherwise it will trigger the destructor and deallocate the font
-        wrapper.Obj = nullptr;
+        ssGUI::Font* font = ssGUI::Factory::Create<ssGUI::Font>();
+        DefaultFonts.insert(DefaultFonts.begin() + index, font);
         DefaultFontsChangeID++;
+        return font;
     }
     
     ssGUI::Font* Text::GetDefaultFont(int index)
@@ -2113,22 +2099,7 @@ namespace ssGUI
         if(index < 0 || index >= DefaultFonts.size())
             return nullptr;
         
-        return DefaultFonts[index].Obj;
-    }
-
-    void Text::SetDefaultFont(ssGUI::Font* font, int index)
-    {
-        if(index < 0 || index >= DefaultFonts.size() || font == nullptr)
-            return;
-
-        ssGUI::StaticDefaultWrapper<ssGUI::Font> wrapper = ssGUI::StaticDefaultWrapper<ssGUI::Font>();
-        wrapper.Obj = font;
-        wrapper.ssGUIDefault = false;
-
-        DefaultFonts[index] = wrapper;
-
-        wrapper.Obj = nullptr;
-        DefaultFontsChangeID++;
+        return DefaultFonts[index];
     }
 
     void Text::RemoveDefaultFont(int index)
@@ -2136,6 +2107,7 @@ namespace ssGUI
         if(index < 0 || index >= DefaultFonts.size())
             return;
 
+        ssGUI::Factory::Dispose(DefaultFonts[index]);
         DefaultFonts.erase(DefaultFonts.begin() + index);
         DefaultFontsChangeID++;
     }
@@ -2147,8 +2119,11 @@ namespace ssGUI
 
     void Text::CleanUpAllDefaultFonts()
     {
-        //This will trigger the static wrapper to do deallocation
-        DefaultFonts.clear();        
+        for(int i = 0; i < DefaultFonts.size(); i++)
+            ssGUI::Factory::Dispose(DefaultFonts[i]);
+        
+        DefaultFonts.clear();
+        DefaultFontsChangeID++;
     }
 
     ssGUI::Enums::GUIObjectType Text::GetType() const
@@ -2173,5 +2148,39 @@ namespace ssGUI
 
         ssLOG_FUNC_EXIT();
         return temp;
+    }
+    
+    void Text::InitiateDefaultResources()
+    {
+        ssLOG_FUNC_ENTRY();
+
+        if(!DefaultFonts.empty())
+        {
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        size_t fileSize = 0;
+        char* fileContent = const_cast<char*>(find_embedded_file("NotoSans-Regular.ttf", &fileSize));
+
+        if(fileContent == nullptr)
+        {
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        auto font = new ssGUI::Font();
+        if(!font->GetBackendFontInterface()->LoadFromMemory(fileContent, fileSize))
+        {
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
+            ssGUI::Factory::Dispose(font);
+        }
+        else
+        {
+            DefaultFonts.push_back(font);
+            DefaultFontsChangeID++;
+        }
+        ssLOG_FUNC_EXIT();
     }
 }

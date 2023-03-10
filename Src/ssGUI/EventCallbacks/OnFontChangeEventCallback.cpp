@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    OnFontChangeEventCallback* OnFontChangeEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    OnFontChangeEventCallback* OnFontChangeEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(OnFontChangeEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(OnFontChangeEventCallback, copyListeners);
     }
 
     const std::string OnFontChangeEventCallback::EVENT_NAME = "OnFontChangeEvent";

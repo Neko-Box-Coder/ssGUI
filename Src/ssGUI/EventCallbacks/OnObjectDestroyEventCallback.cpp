@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    OnObjectDestroyEventCallback* OnObjectDestroyEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    OnObjectDestroyEventCallback* OnObjectDestroyEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(OnObjectDestroyEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(OnObjectDestroyEventCallback, copyListeners);
     }
 
     const std::string OnObjectDestroyEventCallback::EVENT_NAME = "OnObjectDestroyEvent";

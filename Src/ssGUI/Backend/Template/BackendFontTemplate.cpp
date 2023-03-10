@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Template/BackendFontTemplate.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -14,7 +14,7 @@ namespace Backend
 
     BackendFontTemplate::BackendFontTemplate()
     {
-        ssLOG_LINE("BackendFontTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendFontTemplate is being created, is this intended?");
     }
     
     BackendFontTemplate::~BackendFontTemplate()

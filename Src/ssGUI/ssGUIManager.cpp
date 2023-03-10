@@ -3,7 +3,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/Backend/BackendFactory.hpp"
 
@@ -24,7 +24,7 @@ namespace ssGUI
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                ssLOG_LINE("Invalid object type added to gui manager");
+                ssGUI_WARNING(ssGUI_MANAGER_TAG, "Invalid object type added to gui manager");
                 continue;
             }
 
@@ -61,8 +61,8 @@ namespace ssGUI
             }
             ssLOG_FUNC_EXIT("ssGUIManagerPreUpdateEvent");
 
-            #if SSGUI_DEBUG_STATE 
-                ssLOG_LINE("Update");
+            #ifdef SSGUI_LOG_MANAGER_STATE
+                ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Update");
             #endif
 
             UpdateObjects();
@@ -70,6 +70,15 @@ namespace ssGUI
             //Clear up any main windows that are deleted
             CheckMainWindowExistence();
 
+            //Dispatch Update event
+            ssLOG_FUNC_ENTRY("ssGUIManagerPostUpdateEvent");
+            for(int i = 0; i < PostGUIUpdateEventListeners.size(); i++)
+            {                
+                if(PostGUIUpdateEventListenersValid[i])
+                    PostGUIUpdateEventListeners[i]();
+            }
+            ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
+            
             //Clean up deleted objects
             if(!ssGUI::GUIObject::ObjsToDelete.empty())
             {
@@ -84,17 +93,8 @@ namespace ssGUI
                 ssGUI::GUIObject::ObjsToDelete = std::vector<ssGUI::GUIObject*>();
             }
 
-            //Dispatch Update event
-            ssLOG_FUNC_ENTRY("ssGUIManagerPostUpdateEvent");
-            for(int i = 0; i < PostGUIUpdateEventListeners.size(); i++)
-            {                
-                if(PostGUIUpdateEventListenersValid[i])
-                    PostGUIUpdateEventListeners[i]();
-            }
-            ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
-
-            #if SSGUI_DEBUG_STATE 
-                ssLOG_LINE("Render");
+            #ifdef SSGUI_LOG_MANAGER_STATE
+                ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Render");
             #endif
 
             //Dispatch Custom Rendering event
@@ -111,8 +111,8 @@ namespace ssGUI
             else
                 Render();
             
-            #if SSGUI_DEBUG_STATE 
-                ssLOG_LINE("Post Render");
+            #ifdef SSGUI_LOG_MANAGER_STATE
+                ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Post Render");
             #endif
 
             if(lastCursor != BackendInput->GetCursorType() || 
@@ -141,13 +141,14 @@ namespace ssGUI
                     averageFrameTime += FrameTimes[i];
                 
                 averageFrameTime /= FrameTimes.size();
-                // ssLOG_LINE("averageFrameTime: "<<averageFrameTime);
-                // ssLOG_LINE("TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
+                // ssGUI_DEBUG(ssGUI_MANAGER_TAG, "averageFrameTime: "<<averageFrameTime);
+                // ssGUI_DEBUG(ssGUI_MANAGER_TAG, "TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
 
                 //There's no guarantee that the thread will sleep for how long we ask for (especially on Windows *cough* *cough*)
                 //so we need to adjust the sleep time depending on how long will have actually slept
                 uint32_t preSleepTime = BackendInput->GetElapsedTime();
                 int64_t sleepDuration = static_cast<int64_t>(TargetFrameInterval - averageFrameTime) *threadSleepMultiplier;
+                //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "sleepDuration: "<<sleepDuration<<", "<<"TargetFrameInterval: "<<TargetFrameInterval);
                 std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
                 uint32_t actualSleptDuration = BackendInput->GetElapsedTime() - preSleepTime;
                 threadSleepMultiplier = (double)sleepDuration / (double)actualSleptDuration;
@@ -199,7 +200,7 @@ namespace ssGUI
         {
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                ssLOG_LINE("Invalid object type added to gui manager");
+                ssGUI_WARNING(ssGUI_MANAGER_TAG, "Invalid object type added to gui manager");
                 continue;
             }
 
@@ -254,7 +255,7 @@ namespace ssGUI
             //Check if render is needed
             bool renderNeeded = false;
 
-            if(!IsForceRendering())
+            if(!IsRedrawEveryFrame())
             {
                 if(!currentMainWindowP->IsRedrawNeeded())
                 {
@@ -285,8 +286,8 @@ namespace ssGUI
             //Render if needed
             if(renderNeeded)
             {
-                #if SSGUI_USE_DEBUG
-                    ssLOG_LINE("Rendering");
+                #ifdef SSGUI_LOG_MANAGER_STATE
+                    ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Rendering");
                 #endif
 
                 while(!renderQueue.empty())
@@ -299,7 +300,7 @@ namespace ssGUI
                     if(currentObjP->Internal_IsDeleted())
                         continue;
 
-                    if(IsForceRendering())
+                    if(IsRedrawEveryFrame())
                         currentObjP->RedrawObject();
 
                     (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
@@ -316,10 +317,10 @@ namespace ssGUI
 
                 //Dispatch Post Rendering Update event
                 ssLOG_FUNC_ENTRY("ssGUIManagerPostRenderingUpdateEvent");
-                for(int i = 0; i < PostGUIRenderingUpdateEventListeners.size(); i++)
+                for(int i = 0; i < PostGUIRenderEventListeners.size(); i++)
                 {
-                    if(PostGUIRenderingUpdateEventListenersValid[i])
-                        PostGUIRenderingUpdateEventListeners[i](currentMainWindowP);
+                    if(PostGUIRenderEventListenersValid[i])
+                        PostGUIRenderEventListeners[i](currentMainWindowP);
                 }
                 ssLOG_FUNC_EXIT("ssGUIManagerPostRenderingUpdateEvent");
 
@@ -328,10 +329,9 @@ namespace ssGUI
             }
             else
             {
-                #if SSGUI_USE_DEBUG
-                    ssLOG_LINE("Caching");
+                #ifdef SSGUI_LOG_MANAGER_STATE
+                    ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Caching");
                 #endif
-
                 currentMainWindowP->ClearBackBuffer();
             }
         }
@@ -357,7 +357,7 @@ namespace ssGUI
         {            
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             {
-                ssLOG_LINE("Invalid object type added to gui manager");
+                ssGUI_WARNING(ssGUI_MANAGER_TAG, "Invalid object type added to gui manager");
                 continue;
             }
             if(mainWindow->Internal_IsDeleted() || static_cast<ssGUI::Window*>(mainWindow)->IsClosed())
@@ -404,10 +404,8 @@ namespace ssGUI
                 {
                     updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), inputStatus, mainWindow);
                     
-                    #if SSGUI_USE_DEBUG
-                    ssLOG_LINE("object "<<updateQueue.front()<<" checking validity");
-                    updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
-                    #endif
+                    //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "object "<<updateQueue.front()<<" checking validity");
+                    //updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
                 }
                 updateQueue.pop();
             }
@@ -441,8 +439,8 @@ namespace ssGUI
                                     PreGUIUpdateEventListenersValid(), PreGUIUpdateEventListenersNextFreeIndices(),
                                     PostGUIUpdateEventListeners(), PostGUIUpdateEventListenersValid(), 
                                     PostGUIUpdateEventListenersNextFreeIndices(),
-                                    PostGUIRenderingUpdateEventListeners(), PostGUIRenderingUpdateEventListenersValid(), 
-                                    PostGUIRenderingUpdateEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
+                                    PostGUIRenderEventListeners(), PostGUIRenderEventListenersValid(), 
+                                    PostGUIRenderEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
                                     OnCustomRenderEventListenersValid(), OnCustomRenderEventListenersNextFreeIndices(), 
                                     IsCustomRendering(false), ForceRendering(false), TargetFrameInterval(20),
                                     FrameTimeIndex(0), FrameTimes()
@@ -453,10 +451,11 @@ namespace ssGUI
 
     ssGUIManager::~ssGUIManager()
     {
+        CleanUpDefaultResources();
         delete BackendInput;
     }
     
-    void ssGUIManager::AddGUIObject(ssGUI::GUIObject* obj)
+    void ssGUIManager::AddRootGUIObject(ssGUI::GUIObject* obj)
     {
         if(obj->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             return;
@@ -485,7 +484,6 @@ namespace ssGUI
     {
         ssLOG_FUNC_ENTRY();
         Internal_Update();
-        CleanUpDefaultSystemGUIObjects();
         ssLOG_FUNC_EXIT();
     }
 
@@ -546,38 +544,51 @@ namespace ssGUI
 
         return addedIndex;
     }
+    
+    int ssGUIManager::AddPreGUIRenderEventListener(std::function<void()> event)
+    {
+        return AddPostGUIUpdateEventListener(event);
+    }
 
     void ssGUIManager::RemovePostGUIUpdateEventListener(int index)
     {
+        if(index < 0 || index >= PostGUIUpdateEventListeners.size())
+            return;
+        
         PostGUIUpdateEventListenersValid[index] = false;
         PostGUIUpdateEventListenersNextFreeIndices.push(index);
     }
+    
+    void ssGUIManager::RemovePreGUIRenderEventListener(int index)
+    {
+        RemovePostGUIUpdateEventListener(index);    
+    }
 
-    int ssGUIManager::AddPostGUIRenderingUpdateEventListener(std::function<void(ssGUI::MainWindow*)> event)
+    int ssGUIManager::AddPostGUIRenderEventListener(std::function<void(ssGUI::MainWindow*)> event)
     {
         int addedIndex = -1;
 
-        if(PostGUIRenderingUpdateEventListenersNextFreeIndices.empty())
+        if(PostGUIRenderEventListenersNextFreeIndices.empty())
         {
-            PostGUIRenderingUpdateEventListeners.push_back(event);
-            PostGUIRenderingUpdateEventListenersValid.push_back(true);
-            addedIndex = PostGUIRenderingUpdateEventListeners.size() - 1;
+            PostGUIRenderEventListeners.push_back(event);
+            PostGUIRenderEventListenersValid.push_back(true);
+            addedIndex = PostGUIRenderEventListeners.size() - 1;
         }
         else
         {
-            addedIndex = PostGUIRenderingUpdateEventListenersNextFreeIndices.front();
-            PostGUIRenderingUpdateEventListeners[PostGUIRenderingUpdateEventListenersNextFreeIndices.front()] = event;
-            PostGUIRenderingUpdateEventListenersValid[PostGUIRenderingUpdateEventListenersNextFreeIndices.front()] = true;
-            PostGUIRenderingUpdateEventListenersNextFreeIndices.pop();
+            addedIndex = PostGUIRenderEventListenersNextFreeIndices.front();
+            PostGUIRenderEventListeners[PostGUIRenderEventListenersNextFreeIndices.front()] = event;
+            PostGUIRenderEventListenersValid[PostGUIRenderEventListenersNextFreeIndices.front()] = true;
+            PostGUIRenderEventListenersNextFreeIndices.pop();
         }
 
         return addedIndex;
     }
 
-    void ssGUIManager::RemovePostGUIRenderingUpdateEventListener(int index)
+    void ssGUIManager::RemovePostGUIRenderEventListener(int index)
     {
-        PostGUIRenderingUpdateEventListenersValid[index] = false;
-        PostGUIRenderingUpdateEventListenersNextFreeIndices.push(index);
+        PostGUIRenderEventListenersValid[index] = false;
+        PostGUIRenderEventListenersNextFreeIndices.push(index);
     }
 
     int ssGUIManager::AddOnCustomRenderEventListener(std::function<void( std::list<ssGUI::GUIObject*>& ) > event)
@@ -607,12 +618,12 @@ namespace ssGUI
         OnCustomRenderEventListenersNextFreeIndices.push(index);
     }
 
-    void ssGUIManager::SetForceRendering(bool force)
+    void ssGUIManager::SetRedrawEveryFrame(bool redraw)
     {
-        ForceRendering = force;
+        ForceRendering = redraw;
     }
 
-    bool ssGUIManager::IsForceRendering()
+    bool ssGUIManager::IsRedrawEveryFrame()
     {
         return ForceRendering;
     }
@@ -629,11 +640,143 @@ namespace ssGUI
     {
         return 1000 / TargetFrameInterval;
     }
-
-    void ssGUIManager::CleanUpDefaultSystemGUIObjects()
+    
+    bool ssGUIManager::IsButtonOrKeyDown(ssGUI::Enums::GenericButtonAndKeyInput input) const
     {
-        Text::CleanUpAllDefaultFonts();
-        Dropdown::CleanUpAllDefaultDropdownImage();
-        StandardWindow::CleanUpDefaultIconData();
+        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && !BackendInput->IsButtonOrKeyPressExistLastFrame(input);
     }
+    
+    bool ssGUIManager::IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    {
+        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && BackendInput->IsButtonOrKeyPressExistLastFrame(input);
+    }
+    
+    bool ssGUIManager::IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    {
+        return !BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && BackendInput->IsButtonOrKeyPressExistLastFrame(input);
+    }
+    
+    glm::ivec2 ssGUIManager::GetMousePosition(ssGUI::MainWindow* mainWindow) const
+    {
+        return BackendInput->GetCurrentMousePosition(mainWindow == nullptr ? nullptr : mainWindow->GetBackendWindowInterface());   
+    }
+    
+    glm::ivec2 ssGUIManager::GetMousePositionDelta(ssGUI::MainWindow* mainWindow) const
+    {
+        return  BackendInput->GetCurrentMousePosition(mainWindow == nullptr ? nullptr : mainWindow->GetBackendWindowInterface()) - 
+                BackendInput->GetLastMousePosition(mainWindow == nullptr ? nullptr : mainWindow->GetBackendWindowInterface());
+    }
+    
+    glm::vec2 ssGUIManager::GetMouseScrollDelta() const
+    {
+        return BackendInput->GetCurrentMouseScrollDelta();
+    }
+    
+    void ssGUIManager::GetTextInput(std::wstring& textInput) const
+    {
+        textInput = BackendInput->GetTextInput();
+    }
+    
+    void ssGUIManager::GetTextInput(std::string& textInput) const
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        textInput = converter.to_bytes(BackendInput->GetTextInput());
+    }
+    
+    void ssGUIManager::SetCursorType(ssGUI::Enums::CursorType cursorType)
+    {
+        BackendInput->SetCursorType(cursorType);    
+    }
+    
+    ssGUI::Enums::CursorType ssGUIManager::GetCursorType() const
+    {
+        return BackendInput->GetCursorType();
+    }
+    
+    void ssGUIManager::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    {
+        BackendInput->CreateCustomCursor(customCursor->GetBackendImageInterface(), cursorName, cursorSize, hotspot);
+    }
+    
+    void ssGUIManager::SetCurrentCustomCursor(std::string cursorName)
+    {
+        BackendInput->SetCurrentCustomCursor(cursorName);
+    }
+    
+    void ssGUIManager::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
+    {
+        BackendInput->GetCurrentCustomCursor(*customCursor.GetBackendImageInterface(), hotspot);
+    }
+    
+    void ssGUIManager::GetCurrentCustomCursorName(std::string& name)
+    {
+        name = BackendInput->GetCurrentCustomCursorName();
+    }
+    
+    void ssGUIManager::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    {
+        BackendInput->GetCustomCursor(*customCursor.GetBackendImageInterface(), cursorName, hotspot);
+    }
+    
+    bool ssGUIManager::HasCustomCursor(const std::string& cursorName)
+    {
+        return BackendInput->HasCustomCursor(cursorName);
+    }
+    
+    bool ssGUIManager::ClearClipboard()
+    {
+        return BackendInput->ClearClipboard();
+    }
+    
+    bool ssGUIManager::ClipbaordHasText()
+    {
+        return BackendInput->ClipbaordHasText();
+    }
+    
+    bool ssGUIManager::ClipbaordHasImage()
+    {
+        return BackendInput->ClipbaordHasImage();
+    }
+    
+    bool ssGUIManager::SetClipboardImage(const ssGUI::ImageData& imgData)
+    {
+        return BackendInput->SetClipboardImage(*imgData.GetBackendImageInterface());
+    }
+    
+    bool ssGUIManager::SetClipboardText(const std::wstring& str)
+    {
+        return BackendInput->SetClipboardText(str);
+    }
+    
+    bool ssGUIManager::SetClipboardText(const std::string& str)
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        return BackendInput->SetClipboardText(converter.from_bytes(str));
+    }
+    
+    bool ssGUIManager::GetClipboardImage(ssGUI::ImageData& imgData)
+    {
+        return BackendInput->GetClipboardImage(*imgData.GetBackendImageInterface());
+    }
+    
+    bool ssGUIManager::GetClipboardText(std::wstring& str)
+    {
+        return BackendInput->GetClipboardText(str);
+    }
+    
+    bool ssGUIManager::GetClipboardText(std::string& str)
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring clipboardText;
+        bool result = BackendInput->GetClipboardText(clipboardText);
+        str = converter.to_bytes(clipboardText);
+        return result;
+    }
+    
+    uint64_t ssGUIManager::GetElapsedTimeInMillisecond() const
+    {
+        return BackendInput->GetElapsedTime();
+    }
+    
+
 }

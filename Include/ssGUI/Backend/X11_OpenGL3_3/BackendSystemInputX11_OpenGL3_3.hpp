@@ -49,6 +49,8 @@ namespace Backend
         std::vector<std::pair<Time, wchar_t>> InputCharsBuffer;                                         //(Internal variable) Characters buffer until IME finishes outputing
         Time LastKeyDownTime;                                                                           //(Internal variable) Tracking time to filter out redirected key down events
         Time LastKeyUpTime;                                                                             //(Internal variable) Tracking time to filter out redirected key up events
+        std::vector<std::function
+            <bool(ssGUI::Backend::BackendMainWindowInterface*, void*)>> RawEventHandlers;               //See <AddRawEventHandler>
     ====================================================
     ======================== C++ =======================
     BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3() :    CurrentEvents(),
@@ -68,7 +70,8 @@ namespace Backend
                                                                             StartTime(),
                                                                             CursorHidden(false),
                                                                             LastKeyDownTime(0),
-                                                                            LastKeyUpTime(0)
+                                                                            LastKeyUpTime(0),
+                                                                            RawEventHandlers()
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -104,6 +107,8 @@ namespace Backend
             std::vector<std::pair<Time, wchar_t>> InputCharsBuffer;                                         //(Internal variable) Characters buffer until IME finishes outputing
             Time LastKeyDownTime;                                                                           //(Internal variable) Tracking time to filter out redirected key down events
             Time LastKeyUpTime;                                                                             //(Internal variable) Tracking time to filter out redirected key up events
+            std::vector<std::function
+                <bool(ssGUI::Backend::BackendMainWindowInterface*, void*)>> RawEventHandlers;               //See <AddRawEventHandler>
 
             template <class T>
             void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
@@ -128,127 +133,139 @@ namespace Backend
             void FetchEvents();
             
             //function: UpdateInput
-            //See <BackendMainWindowInterface::UpdateInput>
+            //See <BackendSystemInputInterface::UpdateInput>
             void UpdateInput() override;
 
             //function: GetLastButtonAndKeyPresses
-            //See <BackendMainWindowInterface::GetLastButtonAndKeyPresses>
+            //See <BackendSystemInputInterface::GetLastButtonAndKeyPresses>
             const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetLastButtonAndKeyPresses() override;
             
             //function: GetCurrentButtonAndKeyPresses
-            //See <BackendMainWindowInterface::GetCurrentButtonAndKeyPresses>
+            //See <BackendSystemInputInterface::GetCurrentButtonAndKeyPresses>
             const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetCurrentButtonAndKeyPresses() override;
 
             //function: IsButtonOrKeyPressExistLastFrame
-            //See <BackendMainWindowInterface::IsButtonOrKeyPressExistLastFrame>
+            //See <BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
             bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
 
             //function: IsButtonOrKeyPressExistCurrentFrame
-            //See <BackendMainWindowInterface::IsButtonOrKeyPressExistCurrentFrame>
+            //See <BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame>
             bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
 
             //function: GetLastMousePosition
-            //See <BackendMainWindowInterface::GetLastMousePosition>
+            //See <BackendSystemInputInterface::GetLastMousePosition>
             glm::ivec2 GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const override;
             
             //function: GetCurrentMousePosition
-            //See <BackendMainWindowInterface::GetCurrentMousePosition>
+            //See <BackendSystemInputInterface::GetCurrentMousePosition>
             glm::ivec2 GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const override;
             
             //function: SetMousePosition
-            //See <BackendMainWindowInterface::SetMousePosition>
+            //See <BackendSystemInputInterface::SetMousePosition>
             void SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow) override;
 
             //function: GetLastMouseButton
-            //See <BackendMainWindowInterface::GetLastMouseButton>
+            //See <BackendSystemInputInterface::GetLastMouseButton>
             bool GetLastMouseButton(ssGUI::Enums::MouseButton button) const override;
             
             //function: GetCurrentMouseButton
-            //See <BackendMainWindowInterface::GetCurrentMouseButton>
+            //See <BackendSystemInputInterface::GetCurrentMouseButton>
             bool GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const override;
 
             //function: GetCurrentMouseScrollDelta
-            //See <BackendMainWindowInterface::GetCurrentMouseScrollDelta>
+            //See <BackendSystemInputInterface::GetCurrentMouseScrollDelta>
             glm::vec2 GetCurrentMouseScrollDelta() const override;
 
             //function: GetLastRealtimeInputs
-            //See <BackendMainWindowInterface::GetLastRealtimeInputs>
+            //See <BackendSystemInputInterface::GetLastRealtimeInputs>
             std::vector<ssGUI::RealtimeInputInfo> const & GetLastRealtimeInputs() const override;
 
             //function: GetCurrentRealtimeInputs
-            //See <BackendMainWindowInterface::GetCurrentRealtimeInputs>
+            //See <BackendSystemInputInterface::GetCurrentRealtimeInputs>
             std::vector<ssGUI::RealtimeInputInfo> const & GetCurrentRealtimeInputs() const override;
 
             //function: GetTextInput
-            //See <BackendMainWindowInterface::GetTextInput>
+            //See <BackendSystemInputInterface::GetTextInput>
             std::wstring GetTextInput() const override;
             
             //function: SetCursorType
-            //See <BackendMainWindowInterface::SetCursorType>
+            //See <BackendSystemInputInterface::SetCursorType>
             void SetCursorType(ssGUI::Enums::CursorType cursorType) override;
 
             //function: GetCursorType
-            //See <BackendMainWindowInterface::GetCursorType>
+            //See <BackendSystemInputInterface::GetCursorType>
             ssGUI::Enums::CursorType GetCursorType() const override;
 
             //function: CreateCustomCursor
-            //See <BackendMainWindowInterface::CreateCustomCursor>
+            //See <BackendSystemInputInterface::CreateCustomCursor>
             void CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) override;
             
             //function: SetCurrentCustomCursor
-            //See <BackendMainWindowInterface::SetCurrentCustomCursor>
+            //See <BackendSystemInputInterface::SetCurrentCustomCursor>
             void SetCurrentCustomCursor(std::string cursorName) override;
 
             //function: GetCurrentCustomCursor
-            //See <BackendMainWindowInterface::GetCurrentCustomCursor>
+            //See <BackendSystemInputInterface::GetCurrentCustomCursor>
             void GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot) override;
 
             //function: GetCurrentCustomCursorName
-            //See <BackendMainWindowInterface::GetCurrentCustomCursorName>
+            //See <BackendSystemInputInterface::GetCurrentCustomCursorName>
             std::string GetCurrentCustomCursorName() override;
             
             //function: GetCustomCursor
-            //See <BackendMainWindowInterface::GetCustomCursor>
+            //See <BackendSystemInputInterface::GetCustomCursor>
             void GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot) override;
 
             //function: HasCustomCursor
-            //See <BackendMainWindowInterface::HasCustomCursor>
+            //See <BackendSystemInputInterface::HasCustomCursor>
             bool HasCustomCursor(std::string cursorName) override;
 
             //function: UpdateCursor
-            //See <BackendMainWindowInterface::UpdateCursor>
+            //See <BackendSystemInputInterface::UpdateCursor>
             void UpdateCursor() override;
+            
+            //function: AddRawEventHandler
+            //See <BackendSystemInputInterface::AddRawEventHandler>
+            int AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler) override;
+            
+            //function: RemoveRawEventHandler
+            //See <BackendSystemInputInterface::RemoveRawEventHandler>
+            void RemoveRawEventHandler(int id) override;
+            
+            //function: ClearRawEventHandler
+            //See <<BackendSystemInputInterface::ClearRawEventHandler>
+            void ClearRawEventHandler() override;
 
             //function: ClearClipboard
-            //See <BackendMainWindowInterface::ClearClipboard>
+            //See <BackendSystemInputInterface::ClearClipboard>
             bool ClearClipboard() override;
 
             //function: ClipbaordHasText
-            //See <BackendMainWindowInterface::ClipbaordHasText>
+            //See <BackendSystemInputInterface::ClipbaordHasText>
             bool ClipbaordHasText() override;
             
             //function: ClipbaordHasImage
-            //See <BackendMainWindowInterface::ClipbaordHasImage>
+            //See <BackendSystemInputInterface::ClipbaordHasImage>
             bool ClipbaordHasImage() override;
 
             //function: SetClipboardImage
-            //See <BackendMainWindowInterface::SetClipboardImage>
+            //See <BackendSystemInputInterface::SetClipboardImage>
             bool SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData) override;
             
             //function: SetClipboardText
-            //See <BackendMainWindowInterface::SetClipboardText>
+            //See <BackendSystemInputInterface::SetClipboardText>
             bool SetClipboardText(const std::wstring& str) override;
             
             //function: GetClipboardImage
-            //See <BackendMainWindowInterface::GetClipboardImage>
+            //See <BackendSystemInputInterface::GetClipboardImage>
             bool GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData) override;
 
             //function: GetClipboardText
-            //See <BackendMainWindowInterface::GetClipboardText>
+            //See <BackendSystemInputInterface::GetClipboardText>
             bool GetClipboardText(std::wstring& str) override;
 
             //function: GetElapsedTime
-            //See <BackendMainWindowInterface::GetElapsedTime>
+            //See <BackendSystemInputInterface::GetElapsedTime>
             uint64_t GetElapsedTime() const override;
     };
 }

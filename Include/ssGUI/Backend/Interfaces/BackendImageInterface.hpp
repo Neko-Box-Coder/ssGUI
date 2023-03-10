@@ -49,18 +49,16 @@ namespace Backend
             //Returns the pixel data pointer of the image and also the format of the image
             virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const = 0;
             
-            //function: AddBackendDrawingLinking
-            //Adds a linking record of indicating this image is stored in backend drawing in GPU and memory.
-            //This should be called by backend drawing when rendering the image.
-            //Normally, this is *handled by backend* and should not be called manually
-            virtual void AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
+            //function: UpdateCache
+            virtual void UpdateCache() = 0;
             
-            //function: RemoveBackendDrawingLinking
-            //Removes the linking record between this image and the backend drawing
-            //for indicating the image is no longer stored in backend drawing in GPU and memory.
-            //This should be called by backend drawing when it decides to remove the image from GPU and memory.
-            //Normally, this is *handled by backend* and should not be called manually
-            virtual void RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
+            //function: Internal_AddBackendDrawingRecord
+            //(Internal ssGUI function) Adds a linking record of indicating this image is stored in backend drawing.
+            virtual void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
+            
+            //function: Internal_RemoveBackendDrawingRecord
+            //(Internal ssGUI function) Removes a linking record of indicating this image is stored in backend drawing.
+            virtual void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
 
             //function: Clone
             //Clones the backend image

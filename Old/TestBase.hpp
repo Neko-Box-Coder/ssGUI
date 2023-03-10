@@ -3,7 +3,7 @@
 
 #include <exception>
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #define SSGUI_TEST_FILE_NAME()\
 []()\

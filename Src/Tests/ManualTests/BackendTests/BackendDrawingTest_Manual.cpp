@@ -5,9 +5,9 @@
 #include <thread>
 
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\..\\..\\Resources\\";
+    std::string ResourcesFolderPath = "..\\Resources\\";
 #else
-    std::string ResourcesFolderPath = "../../Resources/";
+    std::string ResourcesFolderPath = "./Resources/";
 #endif
 
 ssGUI::Backend::BackendDrawingInterface* drawing = nullptr;
@@ -125,6 +125,9 @@ void Instructions()
     ssLOG_SIMPLE("Press 1 to test drawing shapes");
     ssLOG_SIMPLE("Press 2 to test drawing textures");
     ssLOG_SIMPLE("Press 3 to test drawing fonts");
+    ssLOG_SIMPLE("Press 4 to test removing iamge cache");
+    ssLOG_SIMPLE("Press 5 to test getting raw image cache handle pointer");
+    ssLOG_SIMPLE("Please note that cache doesn't apply to SFML backend and it will always return the handle regardless.");
 }
 
 void DrawColorShapesTest()
@@ -265,6 +268,33 @@ void DrawFontTest()
     }
 }
 
+//NOTE: Skipping AddImageCache for now, it is used internally anyway so it should be working.
+
+void RemoveImageCacheTest()
+{
+    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
+        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
+    {
+        drawing->RemoveImageCache(img);
+    
+        ssLOG_SIMPLE("Removed Image cache");
+        ssLOG_SIMPLE("If try to get image cache now, it should be a non-nullptr address");
+    }
+}
+
+void GetRawImageCacheHandleTest()
+{
+    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FIVE) &&
+        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE))
+    {
+        void* rawImageHandle = drawing->GetRawImageCacheHandle(img);
+    
+        ssLOG_SIMPLE("rawImageCacheHandle: "<<rawImageHandle);
+        ssLOG_SIMPLE("If the image has been rendered before, it should be a non-nullptr address");
+        ssLOG_SIMPLE("Otherwise if the image hasn't been rendered or the cache is removed, it should return nullptr");
+    }
+}
+
 int main()
 {
     SetUp();
@@ -283,6 +313,8 @@ int main()
             DrawColorShapesTest();
             DrawTextureTest();
             DrawFontTest();
+            RemoveImageCacheTest();
+            GetRawImageCacheHandleTest();
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));

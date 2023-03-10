@@ -3,7 +3,7 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"    //This is for getting the MainWindow offset
 #include "ssGUI/ssGUIManager.hpp"                   //This is for accessing DeletedObjs
 #include "ssGUI/GUIObjectClasses/Menu.hpp"          //This is for spawning right click menu
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {    
@@ -131,7 +131,7 @@ namespace ssGUI
             auto oriParent = originalObjsToClone[i]->GetParent();
             if(originalObjsIndex.find(oriParent) == originalObjsIndex.end())
             {
-                ssLOG_LINE("Unable to clone, original parent can't be found: "<<oriParent);
+                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Unable to clone, original parent can't be found: "<<oriParent);
                 ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
@@ -149,7 +149,7 @@ namespace ssGUI
         for(auto extension : Extensions)
         {
             if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
-                extension.second->Clone(clonedObj);
+                clonedObj->AddExtensionCopy(extension.second);
             else
                 clonedObj->GetExtension(extension.first)->Copy(extension.second);
         }
@@ -166,7 +166,7 @@ namespace ssGUI
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
             
             if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                eventCallback.second->Clone(clonedObj, true);
+                clonedObj->AddEventCallbackCopy(eventCallback.second, true);
         }
 
         ssLOG_FUNC_EXIT();
@@ -365,4 +365,6 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
         return temp;
     }
+    
+    void GUIObject::InitiateDefaultResources(){}
 }

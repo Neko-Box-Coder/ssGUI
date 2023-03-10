@@ -18,8 +18,8 @@ int main()
     parentWidget.SetPosition(glm::vec2(50, 70));
     parentWidget.SetSize(glm::vec2(350, 350));
     parentWidget.SetBackgroundColor(glm::vec4(200, 200, 200, 255));
-    parentWidget.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());                 //Adding a border to indicate where the widget is
-    parentWidget.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Mask>());                   //Adding a mask extension for masking the draggable window
+    parentWidget.AddExtension<ssGUI::Extensions::Border>();                 //Adding a border to indicate where the widget is
+    parentWidget.AddExtension<ssGUI::Extensions::Mask>();                   //Adding a mask extension for masking the draggable window
 
     //A caption text for parent widget
     ssGUI::Text parentWidgetCaption;
@@ -31,9 +31,8 @@ int main()
 
     //Indicator line to visualize the position system
     ssGUI::Widget lineWidget;
-    auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+    auto shapeEx = lineWidget.AddExtension<ssGUI::Extensions::Shape>();
     int lineIndex = shapeEx->AddAdditionalLine();                                                   //we will set the values of the line later
-    lineWidget.AddExtension(shapeEx); 
     lineWidget.AddTag(ssGUI::Tags::OVERLAY);                                                        //By adding an overlay tag, it will always show in front
     lineWidget.SetParent(&mainWindow);
 
@@ -49,7 +48,7 @@ int main()
     parentWindow.SetPosition(glm::vec2(450, 70));
     parentWindow.GetWindowTitleObject()->SetText("Parent Window GUI Object");
     parentWindow.SetSize(glm::vec2(350, 350));
-    parentWindow.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Mask>());                   //Adding a mask extension for masking the child window
+    parentWindow.AddExtension<ssGUI::Extensions::Mask>();                   //Adding a mask extension for masking the child window
     parentWindow.RemoveAnyExtension<ssGUI::Extensions::Dockable>();                                 //Remove it for now
     parentWindow.SetParent(&mainWindow);
 
@@ -200,7 +199,7 @@ int main()
         }
     );
 
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }

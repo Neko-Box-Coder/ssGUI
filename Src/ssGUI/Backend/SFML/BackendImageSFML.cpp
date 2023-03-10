@@ -1,7 +1,7 @@
 #include "ssGUI/Backend/SFML/BackendImageSFML.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <functional>
 #include <limits>
@@ -75,14 +75,6 @@ namespace Backend
     
         if(conversionNeeded)
         {
-            //Check byte alignment
-            if(format.BitDepthPerChannel % 8 != 0 || format.BitPerPixel % 8 != 0)
-            {
-                ssLOG_LINE("BitDepthPerChannel or BitPerPixel is not byte aligned, this is not supported.");
-                ssLOG_LINE("Aborting...");
-                return false;
-            }
-            
             bool result = false;
             
             uint8_t* convertedRawImg = new uint8_t[imageSize.x * imageSize.y * 4];
@@ -134,12 +126,17 @@ namespace Backend
         //return nullptr;
     }
 
-    void BackendImageSFML::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageSFML::UpdateCache()
+    {
+        //No need to update cache, SFML is handling images.        
+    }
+
+    void BackendImageSFML::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
         //This is only used natively with SFML, no need to link to backend drawing
     }
 
-    void BackendImageSFML::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageSFML::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
         //This is only used natively with SFML, no need to link to backend drawing
     }

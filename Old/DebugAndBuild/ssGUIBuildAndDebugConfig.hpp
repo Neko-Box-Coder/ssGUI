@@ -1,7 +1,7 @@
 #ifndef SSGUI_CONFIG
 #define SSGUI_CONFIG
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 // #include "ssGUI/DebugAndBuild/ssGUIDebugMacro.hpp"
 #include <string>
 #include <stack>

@@ -10,7 +10,7 @@
 
 #include "stb_image.h"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
@@ -52,13 +52,14 @@ namespace Backend
             free(ImageBuffer);
         
         //Remove all linked backend drawing
-        for(int i = 0; i < LinkedBackendDrawing.size(); i++)
-            LinkedBackendDrawing[i]->RemoveImageLinking(this);
+        std::vector<ssGUI::Backend::BackendDrawingInterface*> backends = LinkedBackendDrawing;
+        for(int i = 0; i < backends.size(); i++)
+            backends[i]->RemoveImageCache(this);
     }
 
     void* BackendImageStbImage::GetRawHandle()
     {
-        ssLOG_LINE("There's no raw handle for Stb Image");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "There's no raw handle for Stb Image");
         return nullptr;
     }
 
@@ -73,7 +74,7 @@ namespace Backend
         
         if(!inputStream)
         {
-            ssLOG_LINE("Failed to open file");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to open file");
             return false;
         }
         size_t fileSize = inputStream.tellg();
@@ -87,7 +88,7 @@ namespace Backend
     
         if(!inputStream)
         {
-            ssLOG_LINE("Failed to read the file");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to read the file");
             return false;
         }
         
@@ -177,8 +178,9 @@ namespace Backend
                     CurrentImageFormat.IndexA = 3;
                     break;
                 default:
-                    ssLOG_LINE("What?");
-                    ssLOG_EXIT_PROGRAM();
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "What?");
+                    return false;
+                    //ssLOG_EXIT_PROGRAM();
             }
             
             ImageWidth = width;
@@ -223,8 +225,18 @@ namespace Backend
         format = CurrentImageFormat;
         return ImageBuffer;
     }
+    
+    void BackendImageStbImage::UpdateCache()
+    {
+        std::vector<ssGUI::Backend::BackendDrawingInterface*> backends = LinkedBackendDrawing;
+        for(int i = 0; i < backends.size(); i++)
+        {
+            backends[i]->RemoveImageCache(this);
+            backends[i]->AddImageCache(this);
+        }
+    }
 
-    void BackendImageStbImage::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageStbImage::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
         for(int i = 0; i < LinkedBackendDrawing.size(); i++)
         {
@@ -235,7 +247,7 @@ namespace Backend
         LinkedBackendDrawing.push_back(backendDrawing);
     }
 
-    void BackendImageStbImage::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageStbImage::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
         for(int i = 0; i < LinkedBackendDrawing.size(); i++)
         {

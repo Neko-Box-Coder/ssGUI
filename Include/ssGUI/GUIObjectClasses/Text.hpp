@@ -1,7 +1,6 @@
 #ifndef SSGUI_TEXT_H
 #define SSGUI_TEXT_H
 
-#include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"
 #include "ssGUI/DataClasses/Font.hpp"
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/DataClasses/CharacterDetails.hpp"
@@ -59,8 +58,7 @@ namespace ssGUI
 
         uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
 
-        static std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> DefaultFonts;      //See <GetDefaultFont>
-        static bool DefaultFontsInitialized;                                            //(Internal variable) Used to see if the default fonts need initializing
+        static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
         static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
     =================================================================
     ============================== C++ ==============================
@@ -74,8 +72,8 @@ namespace ssGUI
                     TextUnderline(false),
                     MultilineAllowed(true),
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING),
-                    HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
-                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP),
+                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT),
+                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP),
                     CurrentFonts(),
                     HorizontalPadding(5),
                     VerticalPadding(5),
@@ -92,9 +90,9 @@ namespace ssGUI
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
         SetInteractable(true);
-        Text::InitializeDefaultFontIfNeeded();
+        InitiateDefaultResources();
 
-        auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto sizeChangedCallback = AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
@@ -103,12 +101,9 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
-
-        AddEventCallback(sizeChangedCallback);
     }
 
-    std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> Text::DefaultFonts = std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>>();
-    bool Text::DefaultFontsInitialized = false;
+    std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();
     uint32_t Text::DefaultFontsChangeID = 1;
     =================================================================
     */
@@ -149,8 +144,7 @@ namespace ssGUI
 
             uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
 
-            static std::vector<ssGUI::StaticDefaultWrapper<ssGUI::Font>> DefaultFonts;      //See <GetDefaultFont>
-            static bool DefaultFontsInitialized;                                            //(Internal variable) Used to see if the default fonts need initializing
+            static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
             static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
 
 
@@ -184,8 +178,6 @@ namespace ssGUI
 
             virtual void DrawAllCharacters();
 
-            static void InitializeDefaultFontIfNeeded();
-            
             virtual void ConstructRenderInfo() override;
 
             virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -278,7 +270,7 @@ namespace ssGUI
             //Removes a range of character details
             virtual void RemoveCurrentCharacterDetails(int startIndex, int exclusiveEndIndex);
 
-            //function: ClearAllOverrideCharacterDetails
+            //function: ClearAllCurrentCharacterDetails
             //Removes all override character details
             virtual void ClearAllCurrentCharacterDetails();
 
@@ -479,22 +471,21 @@ namespace ssGUI
 
             //function: AddDefaultFont
             //Adds the font to the end of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
-            static void AddDefaultFont(ssGUI::Font* font);
+            static ssGUI::Font* AddDefaultFont();
+
+            //TODO: Add ability to add default font from another default font
 
             //function: AddDefaultFont
             //Adds the font to the index position of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
-            static void AddDefaultFont(ssGUI::Font* font, int index);
+            static ssGUI::Font* AddDefaultFont(int index);
 
             //function: GetDefaultFont
             static ssGUI::Font* GetDefaultFont(int index);
 
-            //function: SetDefaultFont
-            static void SetDefaultFont(ssGUI::Font* font, int index);
-
             //function: RemoveDefaultFont
             static void RemoveDefaultFont(int index);
 
-            //function:GetDefaultFontsCount 
+            //function: GetDefaultFontsCount 
             static int GetDefaultFontsCount();
             
             //function: CleanUpAllDefaultFonts
@@ -507,7 +498,10 @@ namespace ssGUI
             //function: Clone
             //See <GUIObject::Clone>
             virtual Text* Clone(bool cloneChildren) override;
-
+            
+            //function: InitiateDefaultResources
+            //See <GUIObject::InitiateDefaultResources>
+            virtual void InitiateDefaultResources() override;
     };
 }
 

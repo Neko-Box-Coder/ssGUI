@@ -11,14 +11,17 @@ namespace ssGUI
     //This is the structure that holds the information for an event that can be consumed by event listeners
     struct EventInfo
     {
-        //var: GUI Object that triggered the callback
+        //var: EventSource
+        //GUI Object that triggered the callback
         GUIObject* EventSource = nullptr;
 
-        //var: GUI Object that contains the event callback
-        GUIObject* EventCallbackContainer = nullptr;
+        //var: Container
+        //GUI Object that contains the event callback
+        GUIObject* Container = nullptr;
 
-        //var: <ObjectsReferences> that this event callback has
-        ObjectsReferences* EventCallbackReferences = nullptr;
+        //var: References
+        //<ObjectsReferences> that this event callback has
+        ObjectsReferences* References = nullptr;
     };
 }
 

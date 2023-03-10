@@ -34,7 +34,7 @@ namespace EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual RecursiveChildRemovedEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual RecursiveChildRemovedEventCallback* Clone(bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

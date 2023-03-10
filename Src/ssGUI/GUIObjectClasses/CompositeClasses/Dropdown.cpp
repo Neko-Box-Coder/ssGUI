@@ -1,5 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 
+#include "ssGUI/EmbeddedResources.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 #include "ssGUI/GUIObjectClasses/Image.hpp"
@@ -8,12 +9,11 @@
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/EventCallbacks/ItemSelectedEventCallback.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
-    ssGUI::StaticDefaultWrapper<ssGUI::ImageData>* Dropdown::DefaultDropdownArrowImageData = nullptr;
-    bool Dropdown::DefaultDropdownInitialized = false;
+    ssGUI::ImageData* Dropdown::DefaultDropdownArrowImageData = nullptr;
     
     Dropdown::Dropdown(Dropdown const& other) : StandardButton(other)
     {
@@ -32,8 +32,8 @@ namespace ssGUI
             this,
             [index, dropdownRefIndex](ssGUI::EventInfo info)
             {
-                auto itemContainer = static_cast<ssGUI::MenuItem*>(info.EventCallbackContainer);
-                auto dropdown = static_cast<ssGUI::Dropdown*>(info.EventCallbackReferences->GetObjectReference(dropdownRefIndex));
+                auto itemContainer = static_cast<ssGUI::MenuItem*>(info.Container);
+                auto dropdown = static_cast<ssGUI::Dropdown*>(info.References->GetObjectReference(dropdownRefIndex));
 
                 if(itemContainer == nullptr || dropdown == nullptr)
                     return;
@@ -43,33 +43,6 @@ namespace ssGUI
             }
         );
     }
-
-    void Dropdown::InitializeDefaultDropdownArrowIfNeeded()
-    {
-        ssLOG_FUNC_ENTRY();
-        if(DefaultDropdownInitialized)
-        {
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-
-        ssGUI::ImageData* defaultImg;
-
-        auto dropdownArrow = ssGUI::Factory::Create<ssGUI::ImageData>();
-        if(!dropdownArrow->LoadFromPath("Resources/DownArrow.png"))
-        {
-            ssLOG_LINE("Failed to load default font");
-            ssGUI::Factory::Dispose<ssGUI::ImageData>(dropdownArrow);
-        }
-        else
-        {
-            DefaultDropdownArrowImageData = ssGUI::Factory::Create<ssGUI::StaticDefaultWrapper, ssGUI::ImageData>();
-            DefaultDropdownArrowImageData->Obj = dropdownArrow;
-        }
-
-        ssLOG_FUNC_EXIT();
-    }
-
 
     void Dropdown::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                             ssGUI::GUIObject* mainWindow)
@@ -90,7 +63,6 @@ namespace ssGUI
                             Items(),
                             Toggle(false)
     {
-        InitializeDefaultDropdownArrowIfNeeded();
         SetSize(glm::vec2(100, 35));
         
         //Swap the order of text and icon
@@ -108,9 +80,10 @@ namespace ssGUI
         layout->SetPreferredSizeMultiplier(0, textMulti);
         layout->SetPreferredSizeMultiplier(1, iconMulti);
 
+        InitiateDefaultResources();
         //Set icon to dropdown arrow
-        if(DefaultDropdownArrowImageData->Obj != nullptr)
-            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData->Obj);
+        if(DefaultDropdownArrowImageData != nullptr)
+            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData);
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
@@ -129,7 +102,7 @@ namespace ssGUI
             this,
             [](ssGUI::EventInfo info)
             {
-                auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.EventCallbackContainer);
+                auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.Container);
                 
                 auto dropdownMenu = dropdownContainer->Internal_GetObjectsReferences()->GetObjectReference(dropdownContainer->DropdownMenu);
                 if(dropdownMenu == nullptr)
@@ -156,14 +129,14 @@ namespace ssGUI
                 dropdownContainer->Toggle = true;
                 
                 auto castedDropdownMenu = static_cast<ssGUI::Menu*>(dropdownMenu);
-                if(castedDropdownMenu->CanForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition() + glm::vec2(0, info.EventCallbackContainer->GetSize().y), 
+                if(castedDropdownMenu->CanForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y), 
                     ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT))
                 {
-                    castedDropdownMenu->ForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition() + glm::vec2(0, info.EventCallbackContainer->GetSize().y),
+                    castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y),
                         ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT);
                 }
                 else
-                    castedDropdownMenu->ForceSpawnMenu(info.EventCallbackContainer->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
+                    castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
             }
         );
     }
@@ -329,13 +302,6 @@ namespace ssGUI
             AddItem(Items[i].first);
     }
 
-    void Dropdown::CleanUpAllDefaultDropdownImage()
-    {
-        //This will trigger the static wrapper to do deallocation
-        ssGUI::Factory::Dispose(DefaultDropdownArrowImageData);
-        DefaultDropdownArrowImageData = nullptr; 
-    }
-
     ssGUI::Enums::GUIObjectType Dropdown::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::BUTTON |
@@ -359,5 +325,47 @@ namespace ssGUI
 
         ssLOG_FUNC_EXIT();
         return temp;
+    }
+    
+    void Dropdown::InitiateDefaultResources()
+    {
+        ssLOG_FUNC_ENTRY();
+        if(DefaultDropdownArrowImageData != nullptr)
+        {
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        ssGUI::ImageData* defaultImg;
+
+        auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+        size_t fileSize = 0;
+        const char* fileContent = find_embedded_file("DownArrow.png", &fileSize);
+        
+        if(fileContent == nullptr)
+        {
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded dropdown icon");
+            ssGUI::Factory::Dispose(data);
+            return;
+        }        
+        
+        if(!data->LoadImgFileFromMemory(fileContent, fileSize))
+        {
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
+            ssGUI::Factory::Dispose<ssGUI::ImageData>(data);
+        }
+        else
+            DefaultDropdownArrowImageData = data;
+
+        ssLOG_FUNC_EXIT();
+    }
+    
+    void Dropdown::CleanUpDefaultDropdownArrowImage()
+    {
+        if(DefaultDropdownArrowImageData != nullptr)
+        {
+            ssGUI::Factory::Dispose(DefaultDropdownArrowImageData);
+            DefaultDropdownArrowImageData = nullptr;
+        }
     }
 }

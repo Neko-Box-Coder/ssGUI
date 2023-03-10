@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Template/BackendImageTemplate.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -14,7 +14,7 @@ namespace Backend
 
     BackendImageTemplate::BackendImageTemplate()
     {
-        ssLOG_LINE("BackendImageTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendImageTemplate is being created, is this intended?");
     }
 
     BackendImageTemplate::~BackendImageTemplate()
@@ -57,11 +57,16 @@ namespace Backend
         return nullptr;
     }
 
-    void BackendImageTemplate::AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageTemplate::UpdateCache()
+    {
+        
+    }
+
+    void BackendImageTemplate::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
     }
 
-    void BackendImageTemplate::RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageTemplate::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
     }
 

@@ -13,8 +13,8 @@ int main()
     ssGUI::Window window;
     window.SetSize(glm::vec2(300, 600));
     window.SetParent(&mainWindow);
-    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
-    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Docker>());
+    window.AddExtension<ssGUI::Extensions::Layout>();
+    window.AddExtension<ssGUI::Extensions::Docker>();
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
     ssGUI::StandardWindow window2;
@@ -33,7 +33,7 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }

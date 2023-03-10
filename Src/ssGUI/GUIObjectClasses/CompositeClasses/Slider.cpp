@@ -10,7 +10,7 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -484,13 +484,11 @@ namespace ssGUI
     {
         SetMinSize(glm::vec2(5, 5));
         SetSize(glm::vec2(300, 10));
-        auto rc = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
+        auto rc = AddExtension<ssGUI::Extensions::RoundedCorners>();
         rc->SetRoundedCornersRadius(10);
         rc->AddTargetShape(1);
-        AddExtension(rc);
 
-        auto outline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
-        AddExtension(outline);
+        AddExtension<ssGUI::Extensions::Outline>();
 
         //Create knob object
         auto button = ssGUI::Factory::Create<ssGUI::Button>();
@@ -498,15 +496,11 @@ namespace ssGUI
         button->SetSize(glm::vec2(KnobSize, KnobSize));
         button->SetButtonColor(GetBackgroundColor());
         
-        auto rc2 = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
-        rc2->SetRoundedCornersRadius(KnobSize);
-        button->AddExtension(rc2);
+        button->AddExtension<ssGUI::Extensions::RoundedCorners>()->SetRoundedCornersRadius(KnobSize);
 
         button->RemoveAnyExtension<ssGUI::Extensions::Border>();
-        auto outline2 = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
-        outline2->SetOutlineThickness(1.5);
         button->SetUserCreated(false);
-        button->AddExtension(outline2);
+        button->AddExtension<ssGUI::Extensions::Outline>()->SetOutlineThickness(1.5);
         button->SetParent(this, true);
 
         auto ecb = button->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();

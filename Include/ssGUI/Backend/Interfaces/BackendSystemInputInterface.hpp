@@ -159,6 +159,15 @@ namespace Backend
             //function: UpdateCursor
             //Updates the cursor. This needs to be called after a new cursor is set.
             virtual void UpdateCursor() = 0;
+            
+            //function: AddRawEventHandler
+            virtual int AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler) = 0;
+            
+            //function: RemoveRawEventHandler
+            virtual void RemoveRawEventHandler(int id) = 0;
+            
+            //function: ClearRawEventHandler
+            virtual void ClearRawEventHandler() = 0;
 
             //function: ClearClipboard
             //Clears the clipboard

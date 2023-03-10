@@ -33,7 +33,7 @@ namespace EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual WindowDragStateChangedEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual WindowDragStateChangedEventCallback* Clone(bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

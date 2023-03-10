@@ -4,7 +4,7 @@
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "clip.h"   //TODO: Add macro for switching between this and SFML one.
 #include <codecvt>
@@ -80,11 +80,12 @@ namespace Backend
                                                         CursorMappedWindow(),
                                                         CustomCursors(),
                                                         CurrentCustomCursor(""),
+                                                        RawEventHandlers(),
                                                         ElapsedTime()
     {
         if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
         {
-            ssLOG_LINE("Failed to load cursor!");
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to load cursor!");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -126,6 +127,20 @@ namespace Backend
             
             while (sfWindow->pollEvent(event))
             {
+                //Custom handler for events
+                bool handled = false;
+                for(int j = 0; j < RawEventHandlers.size(); j++)
+                {
+                    if(RawEventHandlers[j] != nullptr)
+                        handled = RawEventHandlers[j](ssGUI::Backend::BackendManager::GetMainWindowInterface(i), &event);               
+                
+                    if(handled)
+                        break;
+                }
+                
+                if(handled)
+                    continue;
+                
                 //Add a new item to realtime input info, that continues from the last input state
                 ssGUI::RealtimeInputInfo curInfo;
 
@@ -339,7 +354,6 @@ namespace Backend
         return CurrentCursor;
     }
 
-    //TODO: refactor this function, see Win32 version
     void BackendSystemInputSFML::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssLOG_FUNC_ENTRY();
@@ -347,178 +361,48 @@ namespace Backend
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            ssLOG_LINE("Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
             return;
         }
 
-        //Check if we already have the cursor
-        if(CustomCursors.find(cursorName) != CustomCursors.end() && CustomCursors[cursorName].first.getSize().x == cursorSize.x && 
-            CustomCursors[cursorName].first.getSize().y == cursorSize.y)
+        ssGUI::ImageFormat customCursorFormat;
+        void* customCursorPtr = customCursor->GetPixelPtr(customCursorFormat);
+        if(customCursorPtr == nullptr)
         {
-            CustomCursors[cursorName].second = hotspot;
-            ssLOG_FUNC_EXIT();
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid custom cursor image");
             return;
         }
-        //Otherwise we can add the cursor to our cache
-        else
-        {
-            #ifdef SSGUI_IMAGE_BACKEND_SFML
-                sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
-            #else
-                //Convert everything to sf::Image
-                sf::Image cursorImg;
-                ssGUI::ImageFormat cursorFormat;
-                void* imgPtr = customCursor->GetPixelPtr(cursorFormat);
-                
-                if(imgPtr == nullptr)
-                {
-                    ssLOG_LINE("Failed to create custom cursor");
-                    return;
-                }
-                
-                bool result = false;
-                uint8_t* convertedRawImg = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
-
-                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgPtr, cursorFormat, customCursor->GetSize());
-                if(!result)
-                {
-                    delete[] convertedRawImg;
-                    ssLOG_LINE("Failed to convert image");
-                    return;
-                }
-                else
-                {
-                    cursorImg.create(sf::Vector2u(customCursor->GetSize().x, customCursor->GetSize().y), convertedRawImg);
-                    delete[] convertedRawImg;
-                }
-            #endif
         
+        //If the cursor already exists, we need to clean up the cursor first
+        if(CustomCursors.find(cursorName) != CustomCursors.end())
+            CustomCursors.erase(cursorName);
+
+        #ifdef SSGUI_IMAGE_BACKEND_SFML
+            sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
+        #else
+            uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
+            bool result = ssGUI::ImageUtil::ConvertToRGBA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+            if(!result)
+            {
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
+                delete[] convertedPtr;
+                return;
+            }
+            
             if(customCursor->GetSize() == cursorSize)
             {
-                #ifdef SSGUI_IMAGE_BACKEND_SFML
-                    CustomCursors[cursorName].first = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
-                #else
-                    CustomCursors[cursorName].first = cursorImg;
-                #endif
+                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), convertedPtr);
             }
             else
             {
-                //Original cursor image
-                auto& oriCursorImg = cursorImg;
-
-                //temporary image pointers for resizing
-                uint8_t* cursorPtr = new uint8_t[oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4];
-                uint8_t* cursorPtr1 = new uint8_t[1];
-                uint8_t* cursorPtrArr[] = {cursorPtr, cursorPtr1};
-
-                //Flag for indicating which pointer has just been populated
-                int populatedImg = 0;
-
-                //Populate the first temporary image pointer
-                for(int i = 0; i < oriCursorImg.getSize().x * oriCursorImg.getSize().y * 4; i++)
-                    cursorPtr[i] = (*(oriCursorImg.getPixelsPtr() + i));
-
-                //Record the current image size
-                glm::ivec2 currentCursorSize = glm::ivec2(oriCursorImg.getSize().x, oriCursorImg.getSize().y);
-
-                //Resize width until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.x < cursorSize.x && currentCursorSize.x * 2 < cursorSize.x) ||
-                        (currentCursorSize.x > cursorSize.x && (int)(currentCursorSize.x * 0.5) > cursorSize.x))
-                {
-                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
-                    
-                    //Enlarging
-                    if(currentCursorSize.x < cursorSize.x)
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * 2 * currentCursorSize.y * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x * 2,
-                            currentCursorSize.y
-                        );
-
-                        currentCursorSize.x *= 2;
-                    }
-                    //Reducing
-                    else
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[(int)(currentCursorSize.x * 0.5) * currentCursorSize.y * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x * 0.5,
-                            currentCursorSize.y
-                        );
-
-                        currentCursorSize.x *= 0.5;
-                    }
-
-                    populatedImg = (populatedImg + 1) % 2;
-                }
-                
-                //Resize height until the new cursor size is within 2x or 0.5x
-                while ((currentCursorSize.y < cursorSize.y && currentCursorSize.y * 2 < cursorSize.y) ||
-                        (currentCursorSize.y > cursorSize.y && (int)(currentCursorSize.y * 0.5) > cursorSize.y))
-                {
-                    delete[] cursorPtrArr[(populatedImg + 1) % 2];
-                    
-                    //Enlarging
-                    if(currentCursorSize.y < cursorSize.y)
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * currentCursorSize.y * 2 * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg], 
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x,
-                            currentCursorSize.y * 2
-                        );
-
-                        currentCursorSize.y *= 2;
-                    }
-                    //Reducing
-                    else
-                    {
-                        cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[currentCursorSize.x * (int)(currentCursorSize.y * 0.5) * 4];
-
-                        ssGUI::ImageUtil::ResizeBilinear
-                        (
-                            cursorPtrArr[populatedImg],
-                            currentCursorSize.x, 
-                            currentCursorSize.y,
-                            cursorPtrArr[(populatedImg + 1) % 2],
-                            currentCursorSize.x,
-                            currentCursorSize.y * 0.5
-                        );
-
-                        currentCursorSize.y *= 0.5;
-                    }
-
-                    populatedImg = (populatedImg + 1) % 2;
-                }
-
-                //Do the final round of resizing
-                cursorPtrArr[(populatedImg + 1) % 2] = new uint8_t[cursorSize.x * cursorSize.y * 4];
-                ssGUI::ImageUtil::ResizeBilinear(cursorPtrArr[populatedImg], currentCursorSize.x, currentCursorSize.y, cursorPtrArr[(populatedImg + 1) % 2], cursorSize.x, cursorSize.y);
-                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), cursorPtrArr[(populatedImg + 1) % 2]);
-
-                delete[] cursorPtr;
-                delete[] cursorPtr1;
+                uint8_t* resizedPtr = new uint8_t[cursorSize.x * cursorSize.y * 4];
+                ssGUI::ImageUtil::ResizeRGBA(convertedPtr, customCursor->GetSize().x, customCursor->GetSize().y, resizedPtr, cursorSize.x, cursorSize.y);
+                CustomCursors[cursorName].first.create(sf::Vector2u(cursorSize.x, cursorSize.y), resizedPtr);
+                delete[] resizedPtr;
             }
-        }
-        
+            delete[] convertedPtr;
+        #endif
+
         //Setting hotspot
         CustomCursors[cursorName].second = hotspot;
 
@@ -549,7 +433,7 @@ namespace Backend
                                             glm::ivec2( CustomCursors[CurrentCustomCursor].first.getSize().x, 
                                                         CustomCursors[CurrentCustomCursor].first.getSize().y)))
         {
-            ssLOG_LINE("Failed to load custom cursor image");   
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");   
         }
 
         hotspot = CustomCursors[CurrentCustomCursor].second;
@@ -573,7 +457,7 @@ namespace Backend
                                             glm::ivec2( CustomCursors[cursorName].first.getSize().x, 
                                                         CustomCursors[cursorName].first.getSize().y)))
         {
-            ssLOG_LINE("Failed to load custom cursor image");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");
         }
 
         hotspot = CustomCursors[cursorName].second;
@@ -593,60 +477,60 @@ namespace Backend
                 break;
             case ssGUI::Enums::CursorType::NORMAL:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Arrow))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::TEXT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Text))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HAND:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Hand))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeLeft))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeRight))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_UP:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTop))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_DOWN:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottom))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopLeft))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_TOP_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeTopRight))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_RIGHT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomRight))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::RESIZE_BOTTOM_LEFT:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::SizeBottomLeft))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::MOVE:
                 if (!SFMLCursor.loadFromSystem(sf::Cursor::SizeAll)) //Not supported natively for mac os
                     if(!SFMLCursor.loadFromSystem(sf::Cursor::Cross))
-                        ssLOG_LINE("Failed to load cursor");
+                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::HELP:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::Help))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::NOT_ALLOWED:
                 if(!SFMLCursor.loadFromSystem(sf::Cursor::NotAllowed))
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                 break;
             case ssGUI::Enums::CursorType::CUSTOM:
                 if(!CurrentCustomCursor.empty() && CustomCursors[CurrentCustomCursor].first.getPixelsPtr() != nullptr)
@@ -654,11 +538,11 @@ namespace Backend
                     if(!SFMLCursor.loadFromPixels(CustomCursors[CurrentCustomCursor].first.getPixelsPtr(), CustomCursors[CurrentCustomCursor].first.getSize(), 
                         sf::Vector2u(CustomCursors[CurrentCustomCursor].second.x, CustomCursors[CurrentCustomCursor].second.y)))
                     {
-                        ssLOG_LINE("Failed to load cursor");
+                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                     }
                 }
                 else
-                    ssLOG_LINE("Failed to load cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
         }
 
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
@@ -679,6 +563,26 @@ namespace Backend
             }
         }
         ssLOG_FUNC_EXIT();
+    }
+
+    int BackendSystemInputSFML::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    {
+        RawEventHandlers.push_back(handler);
+        return RawEventHandlers.size() - 1;
+    }
+    
+    void BackendSystemInputSFML::RemoveRawEventHandler(int id)
+    {
+        if(id < 0 || id >= RawEventHandlers.size())
+            return;
+        
+        RawEventHandlers[id] = nullptr;
+    }
+    
+    void BackendSystemInputSFML::ClearRawEventHandler()
+    {
+        for(int i = 0; i < RawEventHandlers.size(); i++)
+            RawEventHandlers[i] = nullptr;
     }
 
     bool BackendSystemInputSFML::ClearClipboard()

@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    SliderValueChangedViaGuiEventCallback* SliderValueChangedViaGuiEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    SliderValueChangedViaGuiEventCallback* SliderValueChangedViaGuiEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(SliderValueChangedViaGuiEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(SliderValueChangedViaGuiEventCallback, copyListeners);
     }
 
     const std::string SliderValueChangedViaGuiEventCallback::EVENT_NAME = "SliderValueChangedViaGuiEvent";

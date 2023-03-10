@@ -53,6 +53,11 @@ namespace ssGUI
     {
         return BackendImage->GetPixelPtr(format);
     }
+    
+    void ImageData::UpdateCache()
+    {
+        return BackendImage->UpdateCache();
+    }
 
     ImageData* ImageData::Clone()
     {   

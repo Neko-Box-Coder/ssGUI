@@ -13,7 +13,7 @@ int main()
     ssGUI::Window window;
     window.SetSize(glm::vec2(300, 600));
     window.SetParent(&mainWindow);
-    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+    window.AddExtension<ssGUI::Extensions::Layout>();
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
     //The 3 windows with different titlebar color
@@ -33,13 +33,13 @@ int main()
     text.SetSize(glm::vec2(150, 30));
     text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
-    text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());             //Adding border to better visualize the text widget
-    text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());   //AdvancedPosition for centering the text widget
+    text.AddExtension<ssGUI::Extensions::Border>();             //Adding border to better visualize the text widget
+    text.AddExtension<ssGUI::Extensions::AdvancedPosition>();   //AdvancedPosition for centering the text widget
     text.SetParent(&window2);
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }

@@ -155,6 +155,13 @@ namespace Extensions
             //Adds a new entry for representing the size of the child to be the size of sizeMultiplier.
             //0 = 0%, 1 = 100%
             virtual void AddPreferredSizeMultiplier(float sizeMultiplier);
+            
+            //function: AddPreferredSizeMultiplier
+            template<typename... floats>
+            inline void AddPreferredSizeMultiplier(float sizeMultiplier, floats... sizeMultipliers)
+            {
+                AddPreferredSizeMultiplier(sizeMultiplier);
+            }
 
             //function: AddPreferredSizeMultiplier
             virtual void AddPreferredSizeMultiplier(float sizeMultipliers[], int count);
@@ -345,7 +352,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Layout* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Layout* Clone() override;
     };
 }
 

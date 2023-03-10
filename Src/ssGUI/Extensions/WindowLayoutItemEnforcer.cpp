@@ -3,7 +3,7 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -304,11 +304,9 @@ namespace Extensions
         return nullptr;
     }
 
-    WindowLayoutItemEnforcer* WindowLayoutItemEnforcer::Clone(ssGUI::GUIObject* newContainer)
+    WindowLayoutItemEnforcer* WindowLayoutItemEnforcer::Clone()
     {
         WindowLayoutItemEnforcer* temp = new WindowLayoutItemEnforcer(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

@@ -130,7 +130,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual MaskEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual MaskEnforcer* Clone() override;
     };
 }
 

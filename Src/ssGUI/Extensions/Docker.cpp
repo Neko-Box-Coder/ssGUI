@@ -6,7 +6,7 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -85,11 +85,8 @@ namespace Extensions
             static_cast<ssGUI::Widget*>((*widget))->SetInteractable(false);
             static_cast<ssGUI::Widget*>((*widget))->SetBlockInput(false);
 
-            auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
-            auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>(); 
-
-            (*widget)->AddExtension(ap);
-            (*widget)->AddExtension(as);
+            (*widget)->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+            (*widget)->AddExtension<ssGUI::Extensions::AdvancedSize>();
             (*widget)->AddTag(ssGUI::Tags::FLOATING);
             (*widget)->SetBackgroundColor(color);
         }
@@ -508,7 +505,7 @@ namespace Extensions
             //This is not supposed to happen
             if(mainWindow == nullptr)
             {
-                ssLOG_LINE("what?");
+                ssGUI_WARNING(ssGUI_EXT_TAG, "what?");
                 ssLOG_FUNC_EXIT();
                 return;
             }
@@ -616,30 +613,30 @@ namespace Extensions
                     static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetHorizontalLayout(originalOrientation);
                 }
                 else
-                    parentLayout->Clone(Container);            
+                    Container->AddExtensionCopy(parentLayout);            
             }
             else if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                Container->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+                Container->AddExtension<ssGUI::Extensions::Layout>();
         }
         //Otherwise we generate layout extension if there isn't one
         else
         {            
             //Check if there's a layout extension for container
             if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                Container->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+                Container->AddExtension<ssGUI::Extensions::Layout>();
         }
 
         if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))    
-            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildRemovedEventCallback>());
+            Container->AddEventCallback<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
         
         Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener
         (
             EXTENSION_NAME,
             [](ssGUI::EventInfo info)
             {
-                if(!info.EventCallbackContainer->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+                if(!info.Container->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
                 {
-                    ssLOG_LINE("Failed to find docker extension. Probably something wrong with cloning");
+                    ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find docker extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
                     return;
                 }
@@ -648,7 +645,7 @@ namespace Extensions
                     // return;
 
                 ssGUI::Extensions::Docker* containerDocker = static_cast<ssGUI::Extensions::Docker*>
-                        (info.EventCallbackContainer->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
+                        (info.Container->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
 
                 containerDocker->ChildRemoved(info.EventSource);
             }
@@ -681,11 +678,9 @@ namespace Extensions
         return nullptr;
     }
 
-    Docker* Docker::Clone(ssGUI::GUIObject* newContainer)
+    Docker* Docker::Clone()
     {
         Docker* temp = new Docker(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

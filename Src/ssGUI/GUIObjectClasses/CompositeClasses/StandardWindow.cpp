@@ -1,5 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
+#include "ssGUI/EmbeddedResources.hpp"
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
@@ -12,7 +13,7 @@
 #include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -47,10 +48,10 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedSize* as;
 
         if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            windowTitleObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+            windowTitleObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
         if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            windowTitleObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
+            windowTitleObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
         as = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
@@ -100,10 +101,10 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedSize* as;
         
         if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            windowIconObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+            windowIconObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
         if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            windowIconObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
+            windowIconObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
@@ -149,10 +150,10 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedSize* as;
         
         if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            closeButtonObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+            closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
         if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            closeButtonObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
+            closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
         as = static_cast<ssGUI::Extensions::AdvancedSize*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
@@ -213,15 +214,9 @@ namespace ssGUI
         windowIcon->SetMinSize(glm::vec2(5, 5));
         WindowIcon = CurrentObjectsReferences.AddObjectReference(windowIcon);
 
-        if(DefaultIcon == nullptr)
-        {
-            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-            if(data->LoadFromPath("Resources/WindowIcon.png"))
-            {
-                DefaultIcon = data;
-                windowIcon->SetImageData(DefaultIcon);
-            }
-        }
+        InitiateDefaultResources();
+        if(DefaultIcon != nullptr)
+            windowIcon->SetImageData(DefaultIcon);
 
         //Setup button
         auto closeButton = new ssGUI::Button();
@@ -232,17 +227,15 @@ namespace ssGUI
         closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
         //Change button shape to circle
-        auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+        auto shapeEx = closeButton->AddExtension<ssGUI::Extensions::Shape>();
         shapeEx->RemoveGUIObjectShape(0);
         int circleId = shapeEx->AddAdditionalCircle(glm::vec2(), closeButton->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
-        closeButton->AddExtension(shapeEx);
 
         //Add outline to button
-        auto closeButtonOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+        auto closeButtonOutline = closeButton->AddExtension<ssGUI::Extensions::Outline>();
         closeButtonOutline->SetOutlineThickness(4);
         closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
         closeButton->SetButtonColor(glm::u8vec4(255, 127, 127, 255));
-        closeButton->AddExtension(closeButtonOutline);
 
         //Setup button event
         auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
@@ -286,7 +279,7 @@ namespace ssGUI
         );
 
         //Update button's shape size when button's size is changed
-        auto shapeEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto shapeEvent = closeButton->AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         shapeEvent->AddEventListener
         (
             ListenerKey, this,
@@ -296,11 +289,10 @@ namespace ssGUI
                 shape->SetAdditionalCircle(circleId, glm::vec2(), info.EventSource->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
-        closeButton->AddEventCallback(shapeEvent);
         CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
 
         //Add rounded corners to window
-        auto rc = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
+        auto rc = AddExtension<ssGUI::Extensions::RoundedCorners>();
         rc->ClearTargetShapes();
         rc->AddTargetVertex(0);
         rc->AddTargetVertex(1);
@@ -308,21 +300,18 @@ namespace ssGUI
         rc->AddTargetVertex(3);
         rc->AddTargetVertex(4);
         rc->AddTargetVertex(5);
-        AddExtension(rc);
 
         //Make window dockable
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Dockable>());
+        AddExtension<ssGUI::Extensions::Dockable>();
         
         //Add outline to window
-        auto windowOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+        auto windowOutline = AddExtension<ssGUI::Extensions::Outline>();
         windowOutline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
-        AddExtension(windowOutline);
 
         //Add shadow to window
-        auto shadowEx = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
+        auto shadowEx = AddExtension<ssGUI::Extensions::BoxShadow>();
         shadowEx->SetBlurRadius(20);
         shadowEx->SetSizeOffset(glm::vec2(10, 10));
-        AddExtension(shadowEx);
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
         UpdateTitleText();
@@ -397,7 +386,7 @@ namespace ssGUI
         return FontSizeMultiplier;
     }
 
-    void StandardWindow::SetWindowIconObject(ssGUI::Image* image)
+    void StandardWindow::SetWindowIconGUIObject(ssGUI::Image* image)
     {
         auto oldIcon = CurrentObjectsReferences.GetObjectReference(WindowIcon);
         
@@ -422,7 +411,7 @@ namespace ssGUI
         UpdateIconImage();
     }
     
-    ssGUI::Image* StandardWindow::GetWindowIconObject() const
+    ssGUI::Image* StandardWindow::GetWindowIconGUIObject() const
     {
         return static_cast<ssGUI::Image*>(CurrentObjectsReferences.GetObjectReference(WindowIcon));
     }
@@ -522,12 +511,6 @@ namespace ssGUI
     glm::ivec4 StandardWindow::GetAdaptiveTitleColorDifference() const
     {
         return TitleColorDifference;
-    }
-
-    void StandardWindow::CleanUpDefaultIconData()
-    {
-        if(DefaultIcon != nullptr)
-            ssGUI::Factory::Dispose(DefaultIcon);
     }
 
     void StandardWindow::SetTitlebarColor(glm::u8vec4 color)
@@ -650,5 +633,35 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
         return temp;
     }
+    
+    void StandardWindow::InitiateDefaultResources()
+    {
+        if(DefaultIcon == nullptr)
+        {
+            auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
+            size_t fileSize = 0;
+            const char* fileContent = find_embedded_file("WindowIcon.png", &fileSize);
+            
+            if(fileContent == nullptr)
+            {
+                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded window icon");
+                ssGUI::Factory::Dispose(data);
+                return;
+            }
 
+            if(data->LoadImgFileFromMemory(fileContent, fileSize))
+                DefaultIcon = data;
+            else
+                ssGUI::Factory::Dispose(data);
+        }
+    }
+    
+    void StandardWindow::CleanUpDefaultIcon()
+    {
+        if(DefaultIcon != nullptr)
+        {
+            ssGUI::Factory::Dispose(DefaultIcon);
+            DefaultIcon = nullptr;
+        }
+    }
 }

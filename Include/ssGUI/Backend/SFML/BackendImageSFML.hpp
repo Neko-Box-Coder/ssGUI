@@ -80,13 +80,17 @@ namespace Backend
             //This will return nullptr
             void* GetPixelPtr(ssGUI::ImageFormat& format) const override;
 
-            //function: AddBackendDrawingLinking
+            //function: UpdateCache 
             //This is not used, SFML handles image memory internally
-            void AddBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void UpdateCache() override;
             
-            //function: RemoveBackendDrawingLinking
+            //function: Internal_AddBackendDrawingRecord 
             //This is not used, SFML handles image memory internally
-            void RemoveBackendDrawingLinking(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            
+            //function: Internal_RemoveBackendDrawingRecord 
+            //This is not used, SFML handles image memory internally
+            void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
 
             //function: Clone
             ssGUI::Backend::BackendImageInterface* Clone() override;

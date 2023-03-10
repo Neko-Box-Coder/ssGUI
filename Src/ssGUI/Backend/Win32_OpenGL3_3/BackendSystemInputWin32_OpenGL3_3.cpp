@@ -7,7 +7,7 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"        //For getting cursor in MainWindow space
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/Backend/Win32_OpenGL3_3/Win32InputConverter.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "clip.h"
 #include <codecvt>
@@ -138,7 +138,8 @@ namespace Backend
                                                                                 MainWindowRawHandles(),
                                                                                 CustomCursors(),
                                                                                 CurrentCustomCursor(""),
-                                                                                StartTime()
+                                                                                StartTime(),
+                                                                                RawEventHandlers()
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -164,6 +165,7 @@ namespace Backend
                 if(static_cast<Win32_OpenGL_Handles*>(currentMainWindow->GetRawHandle())->WindowHandle == msg.hwnd)
                 {
                     MainWindowRawHandles[msg.hwnd] = currentMainWindow;
+                    mainWindowIt = MainWindowRawHandles.find(msg.hwnd);
                     found = true;
                     break;
                 }
@@ -172,10 +174,25 @@ namespace Backend
             if(!found)
             {
                 //TODO: Silence this, for now. Will enable this back when tags are added to logging 
-                // ssLOG_LINE("Failed to find main window from handle: "<<msg.hwnd);
-                return false;
+                // ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to find main window from handle: "<<msg.hwnd);
+                //return false;
             }
         }
+        
+        //Custom handler for events
+        bool handled = false;
+        for(int j = 0; j < RawEventHandlers.size(); j++)
+        {
+            if(RawEventHandlers[j] != nullptr)
+                handled = RawEventHandlers[j](mainWindowIt == MainWindowRawHandles.end() ? nullptr : mainWindowIt->second, &msg);               
+        
+            if(handled)
+                return true;
+        }
+
+        //No associated main window, can't process it
+        if(mainWindowIt == MainWindowRawHandles.end())
+            return false;
 
         ssGUI::RealtimeInputInfo curInfo;
 
@@ -311,7 +328,7 @@ namespace Backend
         POINT p;
         if(!GetCursorPos(&p))
         {
-            ssLOG_LINE("Failed to get cursor position");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get cursor position");
         }
         CurrentMousePosition = glm::ivec2(p.x, p.y);
 
@@ -365,7 +382,7 @@ namespace Backend
         {
             if(!SetCursorPos(position.x, position.y))
             {
-                ssLOG_LINE("Failed to set mouse position");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set mouse position");
                 return;
             }
 
@@ -378,7 +395,7 @@ namespace Backend
             ClientToScreen(hwnd, &pt);
             if(!SetCursorPos(pt.x, pt.y))
             {
-                ssLOG_LINE("Failed to set mouse position");
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set mouse position");
                 return;
             }
 
@@ -443,7 +460,7 @@ namespace Backend
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            ssLOG_LINE("Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
             ssLOG_FUNC_EXIT();
             return;
         }
@@ -452,7 +469,7 @@ namespace Backend
         void* customCursorPtr = customCursor->GetPixelPtr(customCursorFormat);
         if(customCursorPtr == nullptr)
         {
-            ssLOG_LINE("Invalid custom cursor image");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid custom cursor image");
             ssLOG_FUNC_EXIT();    
             return;
         }
@@ -515,7 +532,7 @@ namespace Backend
         cursorData.Win32CursorHandle = CreateWin32Cursor(hotspot, cursorData.CursorImage.get());
         if(cursorData.Win32CursorHandle == nullptr)
         {
-            ssLOG_LINE("Failed to recreate the cursor");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to recreate the cursor");
             ssLOG_FUNC_EXIT();
             return;
         }
@@ -564,7 +581,7 @@ namespace Backend
                                             imgFormat,
                                             CustomCursors[cursorName].CursorImage->GetSize()))
         {
-            ssLOG_LINE("Failed to load custom cursor image");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");
             return;
         }
 
@@ -594,7 +611,7 @@ namespace Backend
                 HCURSOR cursor = LoadCursor(NULL, win32Cursor);\
                 if(cursor == NULL)\
                 {\
-                    ssLOG_LINE("Failed to load cursor");\
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");\
                     break;\
                 }\
                 SetClassLongPtr(mainWindowHandle, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(cursor));\
@@ -650,12 +667,12 @@ namespace Backend
                     }
                     else
                     {
-                        ssLOG_LINE("Failed to load cursor");
+                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
                         break;
                     }
                 }
                 default:
-                    ssLOG_LINE("Unimplemented Cursor");
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Unimplemented Cursor");
                     ssLOG_EXIT_PROGRAM();
             }
 
@@ -663,6 +680,26 @@ namespace Backend
         }
 
         ssLOG_FUNC_EXIT();
+    }
+    
+    int BackendSystemInputWin32_OpenGL3_3::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    {
+        RawEventHandlers.push_back(handler);
+        return RawEventHandlers.size() - 1;
+    }
+    
+    void BackendSystemInputWin32_OpenGL3_3::RemoveRawEventHandler(int id)
+    {
+        if(id < 0 || id >= RawEventHandlers.size())
+            return;
+        
+        RawEventHandlers[id] = nullptr;
+    }
+    
+    void BackendSystemInputWin32_OpenGL3_3::ClearRawEventHandler()
+    {
+        for(int i = 0; i < RawEventHandlers.size(); i++)
+            RawEventHandlers[i] = nullptr;
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::ClearClipboard()

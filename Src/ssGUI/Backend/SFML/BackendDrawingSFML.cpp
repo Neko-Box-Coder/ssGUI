@@ -4,7 +4,7 @@
 
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #ifdef SSGUI_FONT_BACKEND_FREE_TYPE
     #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
@@ -18,7 +18,6 @@ namespace Backend
     BackendDrawingSFML::BackendDrawingSFML(BackendDrawingSFML const& other)
     {
         BackendIndex = other.BackendIndex;   
-        CharTexturesQueue = other.CharTexturesQueue;
         
         #ifndef SSGUI_FONT_BACKEND_SFML
             CharTextures = other.CharTextures;
@@ -29,18 +28,17 @@ namespace Backend
             //Notify each image to delink
             for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
             {
-                ssLOG_LINE("Removing link: "<<it->first);
-                it->first->RemoveBackendDrawingLinking(this);
+                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Removing link: "<<it->first);
+                it->first->Internal_RemoveBackendDrawingRecord(this);
             }
             ImageTextures.clear();
         #endif
         //TODO: AddDrawingInterface
-        ssLOG_LINE("Not implemented");
+        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not implemented");
         ssLOG_EXIT_PROGRAM();
     }
 
     BackendDrawingSFML::BackendDrawingSFML() :  BackendIndex(0),
-                                                CharTexturesQueue(),
                                                 #ifndef SSGUI_FONT_BACKEND_SFML
                                                     CharTextures(),
                                                 #endif
@@ -54,13 +52,13 @@ namespace Backend
 
     BackendDrawingSFML::~BackendDrawingSFML()
     {
-        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
-        
         #ifndef SSGUI_IMAGE_BACKEND_SFML
             //Notify each image
             for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
-                it->first->RemoveBackendDrawingLinking(this);
+                it->first->Internal_RemoveBackendDrawingRecord(this);
         #endif
+        
+        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
 
     void BackendDrawingSFML::SaveState()
@@ -170,12 +168,74 @@ namespace Backend
 
         targetWindow->clear(sf::Color(clearColor.r, clearColor.g, clearColor.b, 255));        
     }
+    
+    
+    void BackendDrawingSFML::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+        #if !defined(SSGUI_IMAGE_BACKEND_SFML)
+            if(!backendImage->IsValid())
+                return;
+        
+            //If we don't have the image stored on the GPU, do it
+            if(ImageTextures.find(backendImage) == ImageTextures.end())
+            {            
+                ssGUI::ImageFormat imgFmt;
+                void* imgRawPtr = backendImage->GetPixelPtr(imgFmt);
+                sf::Image img;
+                bool result = false;
+                
+                uint8_t* convertedRawImg = new uint8_t[backendImage->GetSize().x * backendImage->GetSize().y * 4];
 
-    void BackendDrawingSFML::RemoveImageLinking(ssGUI::Backend::BackendImageInterface* backendImage)
+                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, backendImage->GetSize());
+                if(!result)
+                {
+                    delete[] convertedRawImg;
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
+                    return;
+                }
+                else
+                {
+                    img.create(sf::Vector2u(backendImage->GetSize().x, backendImage->GetSize().y), convertedRawImg);
+                    delete[] convertedRawImg;
+                }
+                    
+                //Create texture
+                result = ImageTextures[backendImage].loadFromImage(img);
+                
+                //Failed to upload to gpu for whatever reason   
+                if(!result)
+                {
+                    //Cleanup the failed texture
+                    ImageTextures.erase(backendImage);
+                    return;
+                }
+                
+                //Add link for removing image
+                backendImage->Internal_AddBackendDrawingRecord(this);
+            }
+        #endif
+    }
+    
+    void BackendDrawingSFML::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
     {
         #ifndef SSGUI_IMAGE_BACKEND_SFML
             if(ImageTextures.find(backendImage) != ImageTextures.end())
+            {
                 ImageTextures.erase(backendImage);
+                backendImage->Internal_RemoveBackendDrawingRecord(this);
+            }
+        #endif
+    }
+    
+    void* BackendDrawingSFML::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    {
+        #if !defined(SSGUI_IMAGE_BACKEND_SFML)
+            if(ImageTextures.find(backendImage) == ImageTextures.end())
+                return nullptr;
+
+            return &ImageTextures[backendImage];
+        #else
+            return backendImage->GetRawHandle();
         #endif
     }
 
@@ -262,44 +322,45 @@ namespace Backend
                 //If failed to import, clean up and exit
                 if(!rawFont->GetCharacterImage(character, characterSize, imgData))
                 {
+                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get character image");
                     return false;
                 }
                 
                 #ifdef SSGUI_IMAGE_BACKEND_SFML
-                CharTextures[id] = *static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
+                    CharTextures[id] = *static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
                 #else
 
-                ssGUI::ImageFormat imgFmt;
-                void* imgRawPtr = imgData.GetPixelPtr(imgFmt);
-                sf::Image img;
-                bool result = false;
-                
-                
-                uint8_t* convertedRawImg = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
-
-                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgData.GetSize());
-                if(!result)
-                {
-                    delete[] convertedRawImg;
-                    ssLOG_LINE("Failed to convert image");
-                    return false;
-                }
-                else
-                {
-                    img.create(sf::Vector2u(imgData.GetSize().x, imgData.GetSize().y), convertedRawImg);
-                    delete[] convertedRawImg;
-                }
+                    ssGUI::ImageFormat imgFmt;
+                    void* imgRawPtr = imgData.GetPixelPtr(imgFmt);
+                    sf::Image img;
+                    bool result = false;
                     
-                //Create texture
-                result = CharTextures[id].loadFromImage(img);
-                
-                //Failed to upload to gpu for whatever reason   
-                if(!result)
-                {
-                    //Cleanup the failed texture
-                    CharTextures.erase(id);
-                    return false;
-                }                
+                    
+                    uint8_t* convertedRawImg = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
+
+                    result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgData.GetSize());
+                    if(!result)
+                    {
+                        delete[] convertedRawImg;
+                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
+                        return false;
+                    }
+                    else
+                    {
+                        img.create(sf::Vector2u(imgData.GetSize().x, imgData.GetSize().y), convertedRawImg);
+                        delete[] convertedRawImg;
+                    }
+                        
+                    //Create texture
+                    result = CharTextures[id].loadFromImage(img);
+                    
+                    //Failed to upload to gpu for whatever reason   
+                    if(!result)
+                    {
+                        //Cleanup the failed texture
+                        CharTextures.erase(id);
+                        return false;
+                    }                
                 #endif
             }
 
@@ -340,47 +401,12 @@ namespace Backend
         #else            
             //TODO: Again same thing, change const to avoid const cast
             auto imgPtr = const_cast<ssGUI::Backend::BackendImageInterface*>(&image);
+
+            AddImageCache(imgPtr);
             
             //If we don't have the image stored on the GPU, do it
             if(ImageTextures.find(imgPtr) == ImageTextures.end())
-            {
-                if(!imgPtr->IsValid())
-                    return false;
-                
-                ssGUI::ImageFormat imgFmt;
-                void* imgRawPtr = imgPtr->GetPixelPtr(imgFmt);
-                sf::Image img;
-                bool result = false;
-                
-                uint8_t* convertedRawImg = new uint8_t[imgPtr->GetSize().x * imgPtr->GetSize().y * 4];
-
-                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgPtr->GetSize());
-                if(!result)
-                {
-                    delete[] convertedRawImg;
-                    ssLOG_LINE("Failed to convert image");
-                    return false;
-                }
-                else
-                {
-                    img.create(sf::Vector2u(imgPtr->GetSize().x, imgPtr->GetSize().y), convertedRawImg);
-                    delete[] convertedRawImg;
-                }
-                    
-                //Create texture
-                result = ImageTextures[imgPtr].loadFromImage(img);
-                
-                //Failed to upload to gpu for whatever reason   
-                if(!result)
-                {
-                    //Cleanup the failed texture
-                    ImageTextures.erase(imgPtr);
-                    return false;
-                }
-                
-                //Add link for removing image
-                imgPtr->AddBackendDrawingLinking(this);
-            }
+                return false;
 
             //Draw the texture
             targetWindow->draw(outputShape, &ImageTextures[imgPtr]);

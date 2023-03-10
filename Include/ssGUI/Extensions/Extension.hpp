@@ -82,7 +82,7 @@ namespace Extensions
 
             //function: Clone
             //Clones this extension to a new extension that can be attached to a different container
-            virtual Extension* Clone(ssGUI::GUIObject* newContainer) = 0;
+            virtual Extension* Clone() = 0;
     };
 
     inline Extension::~Extension(){}   //Pure virtual destructor needs to be defined

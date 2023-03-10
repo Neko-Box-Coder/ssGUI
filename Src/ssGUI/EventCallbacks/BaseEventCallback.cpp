@@ -1,6 +1,6 @@
 #include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
@@ -89,8 +89,8 @@ namespace EventCallbacks
         {
             ssGUI::EventInfo info;
             info.EventSource = source;
-            info.EventCallbackContainer = Container;
-            info.EventCallbackReferences = &CurrentObjectsReferences;
+            info.Container = Container;
+            info.References = &CurrentObjectsReferences;
             it->second(info);
         }
         ssLOG_FUNC_EXIT();
@@ -126,9 +126,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    BaseEventCallback* BaseEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    BaseEventCallback* BaseEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(BaseEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(BaseEventCallback, copyListeners);
     }
 
     const std::string BaseEventCallback::EVENT_NAME = "BaseEvent";

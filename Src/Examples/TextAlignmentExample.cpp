@@ -21,17 +21,16 @@ int main()
     text.SetText("Align me!!");
     text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
-    text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+    text.AddExtension<ssGUI::Extensions::Border>();
 
     //Create buttons for aligning text
     for(int i = 0; i < 9; i++)
     {
         auto button = ssGUI::Factory::Create<ssGUI::StandardButton>();
-        auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+        auto ap = button->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         button->SetSize(glm::vec2(70, 50));
         button->GetButtonTextObject()->SetWrappingMode(ssGUI::Enums::TextWrapping::WORD_WRAPPING);
         button->GetButtonTextObject()->SetNewCharacterFontSize(15);
-        button->AddExtension(ap);
 
         using ssGUI::Extensions::AdvancedPosition;
         //Set buttons text and position
@@ -142,7 +141,7 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }
