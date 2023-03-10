@@ -34,7 +34,7 @@ ssTEST_SET_UP
                                     listerNum += 1;
                                 });
 
-    callback->Clone(textObj, true);
+    textObj->AddEventCallbackCopy(callback, true);
 }
 
 ssTEST_CLEAN_UP

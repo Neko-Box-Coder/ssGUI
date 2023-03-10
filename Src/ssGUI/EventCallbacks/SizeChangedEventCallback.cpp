@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    SizeChangedEventCallback* SizeChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    SizeChangedEventCallback* SizeChangedEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(SizeChangedEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(SizeChangedEventCallback, copyListeners);
     }
 
     const std::string SizeChangedEventCallback::EVENT_NAME = "SizeChangedEvent";

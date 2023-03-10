@@ -237,7 +237,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Mask* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Mask* Clone() override;
     };
 }
 

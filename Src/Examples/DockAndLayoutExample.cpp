@@ -18,7 +18,7 @@ int main()
     window.SetParent(&mainWindow);
     // window.AddExtension(new ssGUI::Extensions::Layout());
     // window.RemoveExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME);
-    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Docker>());
+    window.AddExtension<ssGUI::Extensions::Docker>();
     // window.GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(5);
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
@@ -44,7 +44,7 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }

@@ -23,7 +23,7 @@ void SetUp()
     button->SetPosition(glm::vec2(50, 50));
     button->SetParent(mainWindow);
     
-    manager->AddGUIObject(mainWindow);
+    manager->AddRootGUIObject(mainWindow);
     manager->AddPostGUIUpdateEventListener([&]()
     {
         auto* inputInterface = manager->GetBackendInputInterface();

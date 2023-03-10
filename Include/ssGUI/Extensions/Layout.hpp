@@ -352,7 +352,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Layout* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Layout* Clone() override;
     };
 }
 

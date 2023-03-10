@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    FocusedEventCallback* FocusedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    FocusedEventCallback* FocusedEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(FocusedEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(FocusedEventCallback, copyListeners);
     }
 
     const std::string FocusedEventCallback::EVENT_NAME = "FocusedEvent";

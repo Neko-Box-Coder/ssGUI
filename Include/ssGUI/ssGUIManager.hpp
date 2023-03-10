@@ -5,6 +5,7 @@
 #include "ssGUI/Enums/GUIObjectType.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
 
+#include <type_traits>
 #include <stack>
 #include <queue>
 
@@ -79,9 +80,46 @@ namespace ssGUI
             ssGUIManager();
             virtual ~ssGUIManager();
 
-            //function: AddGUIObject
+            //function: AddRootGUIObject (Obselete)
+            //This is only used internally, used the template version instead.
             //Only main window should be added, the reason why it is accepting <ssGUI::GUIObject> is for future compatibility.
-            void AddGUIObject(ssGUI::GUIObject* obj);
+            void AddRootGUIObject(ssGUI::GUIObject* obj);
+            
+            //function: AddRootGUIObject
+            //Adds a GUI Object (Has to be MainWindow for now) to this ssGUIManager, the lifetime is managed by ssGUIManager. 
+            template<typename T>
+            T* AddRootGUIObject()
+            {
+                if(std::is_base_of<ssGUI::MainWindow, T>::value)
+                {
+                    auto* mainWindow = ssGUI::Factory::Create<T>();
+                    AddRootGUIObject(mainWindow);
+                    return mainWindow;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_MANAGER_TAG, "You cannot add non MainWindow object as root GUI Object");
+                    return nullptr;
+                }
+            }
+            
+            //function: AddGUIObjectAsChild
+            //Adds a GUI Object as a child to a GUIObject under this ssGUIManager, the lifetime is managed by ssGUIManager. 
+            template<typename T>
+            T* AddGUIObjectAsChild(ssGUI::GUIObject* parent)
+            {
+                if(std::is_base_of<ssGUI::GUIObject, T>::value)
+                {
+                    auto* guiObject = ssGUI::Factory::Create<T>();
+                    guiObject->SetParent(parent);
+                    return guiObject;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_MANAGER_TAG, "You cannot add non GUI object to manager");
+                    return nullptr;
+                }
+            }
 
             //function :UseCustomRendering
             //If true, it will not render any objects and call the custom rendering event, which you can add using <AddOnCustomRenderEventListener>.
@@ -144,13 +182,13 @@ namespace ssGUI
             //Removes the event callback that is responsible of rendering all the GUI Objects instead of using the default rendering by <ssGUIManager>
             void RemoveOnCustomRenderEventListener(int index);
 
-            //function: SetForceRendering
-            //Sets if we force all GUI objects to redraw
-            void SetForceRendering(bool force);
+            //function: SetRedrawEveryFrame
+            //Sets if we force all GUI objects to redraw every frame
+            void SetRedrawEveryFrame(bool redraw);
 
-            //function: IsForceRendering
-            //Returns if we force all GUI objects to redraw
-            bool IsForceRendering();
+            //function: IsRedrawEveryFrame
+            //Returns if we force all GUI objects to redraw every frame
+            bool IsRedrawEveryFrame();
 
             //function: SetTargetFramerate
             //Sets the target framerate (FPS), negative to disable it

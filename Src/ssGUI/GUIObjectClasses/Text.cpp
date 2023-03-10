@@ -1288,7 +1288,7 @@ namespace ssGUI
         SetInteractable(true);
         InitiateDefaultResources();
 
-        auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto sizeChangedCallback = AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
@@ -1297,8 +1297,6 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
-
-        AddEventCallback(sizeChangedCallback);
     }
 
     Text::~Text()

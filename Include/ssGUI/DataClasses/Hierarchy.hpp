@@ -1,9 +1,11 @@
 #ifndef SSGUI_HIERARCHY_H
 #define SSGUI_HIERARCHY_H
 
+#include "ssGUI/Factory.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include <vector>
 #include <tuple>
+#include <type_traits>
 #include <list>
 
 //namespace: ssGUI
@@ -132,7 +134,28 @@ namespace ssGUI
             
             //function: SetParent
             //Sets the parent of the GUI Object. Setting nullptr will unset the parent.
+            //Consider using <ssGUI::ssGUIManager::AddGUIObjectAsChild> or <AddChild> instead if possible
             virtual void SetParent(ssGUI::GUIObject* newParent, bool compositeChild = false);
+
+            //function: AddChild
+            //Adds a GUI Object as a child of this GUI Object. 
+            //The lifetime of the child GUI object is managed by <ssGUIManager> if this GUI object is (recursively) added to <ssGUIManager>.
+            //Otherwise, the user needs to manage the lifetime of the child GUI object.
+            template<typename T>
+            T* AddChild(bool compositeChild = false)
+            {
+                if(std::is_base_of<ssGUI::GUIObject, T>::value)
+                {
+                    auto* guiObject = ssGUI::Factory::Create<T>();
+                    guiObject->SetParent(this);
+                    return guiObject;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
+                    return nullptr;
+                }
+            }
 
             //function: IsChildComposite
             //True if the current child (see <FindChild>) belongs to this composite object

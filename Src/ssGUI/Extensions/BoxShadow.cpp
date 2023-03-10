@@ -355,11 +355,9 @@ namespace Extensions
         return nullptr;
     }
 
-    BoxShadow* BoxShadow::Clone(ssGUI::GUIObject* newContainer)
+    BoxShadow* BoxShadow::Clone()
     {
         BoxShadow* temp = new BoxShadow(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

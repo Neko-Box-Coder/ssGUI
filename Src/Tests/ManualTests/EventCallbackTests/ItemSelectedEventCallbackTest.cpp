@@ -19,8 +19,7 @@ void SetUp()
     dropdown->AddItem("Test2");
     dropdown->AddItem("Test3");
     
-    auto* ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::ItemSelectedEventCallback>();
-    dropdown->AddEventCallback(ecb);
+    auto* ecb = dropdown->AddEventCallback<ssGUI::EventCallbacks::ItemSelectedEventCallback>();
     ecb->AddEventListener(  "key", 
                             [](ssGUI::EventInfo info)
                             {
@@ -30,7 +29,7 @@ void SetUp()
                                 ssLOG_SIMPLE("Selected text: "<<curDropdown->GetItem(curDropdown->GetSelectedIndex()));
                             });
     
-    manager->AddGUIObject(mainWindow);
+    manager->AddRootGUIObject(mainWindow);
 }
 
 void CleanUp()

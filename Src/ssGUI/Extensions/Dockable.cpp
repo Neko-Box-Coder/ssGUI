@@ -106,11 +106,8 @@ namespace Extensions
             static_cast<ssGUI::Widget*>((*widget))->SetInteractable(false);
             static_cast<ssGUI::Widget*>((*widget))->SetBlockInput(false);
 
-            auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
-            auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>(); 
-
-            (*widget)->AddExtension(ap);
-            (*widget)->AddExtension(as);
+            (*widget)->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+            (*widget)->AddExtension<ssGUI::Extensions::AdvancedSize>();
             (*widget)->AddTag(ssGUI::Tags::FLOATING);
             (*widget)->SetBackgroundColor(color);
         }
@@ -453,12 +450,12 @@ namespace Extensions
         //The docker will automatically create docker & layout extension if not exist
         if(!newParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
         {
-            newParent->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Docker>());
+            newParent->AddExtension<ssGUI::Extensions::Docker>();
             dockLayout = static_cast<ssGUI::Extensions::Layout*>(newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
         }
 
         if(!newParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-            newParent->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+            newParent->AddExtension<ssGUI::Extensions::Layout>();
 
         //Check if the generated docker does not use parent docker & layout or not.
         if( newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
@@ -940,8 +937,7 @@ namespace Extensions
             event = Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME);
         else
         {
-            event = ssGUI::Factory::Create<ssGUI::EventCallbacks::WindowDragStateChangedEventCallback>();
-            Container->AddEventCallback(event);
+            event = Container->AddEventCallback<ssGUI::EventCallbacks::WindowDragStateChangedEventCallback>();
         }
 
         if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
@@ -999,11 +995,9 @@ namespace Extensions
         return &CurrentObjectsReferences;
     }
 
-    Dockable* Dockable::Clone(ssGUI::GUIObject* newContainer)
+    Dockable* Dockable::Clone()
     {
         Dockable* temp = new Dockable(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

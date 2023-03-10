@@ -36,8 +36,8 @@ void SetUp()
             return "unknown";
     };
     
-    auto* ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::FocusedEventCallback>();
-    auto* ecb2 = ssGUI::Factory::Create<ssGUI::EventCallbacks::FocusLostEventCallback>();
+    auto* ecb = window->AddEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>();
+    auto* ecb2 = window->AddEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>();
     ecb->AddEventListener(  "TestKey",    
                             [&](ssGUI::EventInfo info)
                             {
@@ -57,14 +57,12 @@ void SetUp()
     widget->SetBackgroundColor(glm::u8vec4(0, 255, 0, 255));
     widget2->SetBackgroundColor(glm::u8vec4(0, 0, 255, 255));
     
-    window->AddEventCallback(ecb);
-    window->AddEventCallback(ecb2);
-    ecb->Clone(window2, true);
-    ecb2->Clone(window2, true);
-    ecb->Clone(widget, true);
-    ecb2->Clone(widget, true);
-    ecb->Clone(widget2, true);
-    ecb2->Clone(widget2, true);
+    window2->AddEventCallbackCopy(ecb, true);
+    window2->AddEventCallbackCopy(ecb2, true);
+    widget->AddEventCallbackCopy(ecb, true);
+    widget->AddEventCallbackCopy(ecb2, true);
+    widget2->AddEventCallbackCopy(ecb, true);
+    widget2->AddEventCallbackCopy(ecb2, true);
 
     window->SetParent(mainWindow);
     window2->SetParent(mainWindow);
@@ -78,7 +76,7 @@ void SetUp()
     ssLOG_SIMPLE("");
     ssLOG_SIMPLE("");
 
-    manager->AddGUIObject(mainWindow);
+    manager->AddRootGUIObject(mainWindow);
     manager->AddPostGUIUpdateEventListener([&]()
     {
         auto* inputInterface = manager->GetBackendInputInterface();

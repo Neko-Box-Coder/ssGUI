@@ -7,7 +7,7 @@ int main()
 {
     ssGUI::MainWindow mainWindow;
 
-    auto callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
+    auto callback = mainWindow.AddEventCallback<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
     callback->AddEventListener
     (
         "AnyKey",
@@ -17,8 +17,6 @@ int main()
         }
     );
 
-    mainWindow.AddEventCallback(callback);
-
     //Creating window
     ssGUI::Window window;
     window.SetSize(glm::vec2(400, 300));
@@ -27,7 +25,7 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
 
     return 0;

@@ -71,7 +71,7 @@ ssTEST("NotifyTest")
 
     ssGUI::GUIObject* notifySrcObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
     
-    auto* clonedEvent = callback->Clone(testObj, false);
+    auto* clonedEvent = testObj->AddEventCallbackCopy(callback, false);
     clonedEvent->AddEventListener(  "key",   
                                     [&](ssGUI::EventInfo info)
                                     { 
@@ -127,18 +127,18 @@ ssTEST("CloneTest")
                                     testNum = 1;
                                 });
     
-    auto* clonedCallback = callback->Clone(nullptr, false);
+    auto* clonedCallback = callback->Clone(false);
     ssTEST_OUTPUT_ASSERT("Validity", clonedCallback != nullptr);
     if(clonedCallback == nullptr)
         return;
         
-    clonedCallback = callback->Clone(nullptr, true);
+    clonedCallback = callback->Clone(true);
     clonedCallback->Notify(nullptr);
     ssTEST_OUTPUT_ASSERT("Listener", testNum == 1);
     ssGUI::Factory::Dispose(clonedCallback);
     testNum = 0;
     
-    clonedCallback = callback->Clone(testObj, true);
+    clonedCallback = testObj->AddEventCallbackCopy(callback, true);
     ssTEST_OUTPUT_ASSERT(   "New Container", 
                             testObj->IsAnyEventCallbackExist<ssGUI::EventCallbacks::BaseEventCallback>());
 }

@@ -15,14 +15,11 @@ int main()
     ssGUI::StandardWindow window;
     window.SetSize(glm::vec2(400, 400));
     window.GetWindowTitleObject()->SetText("Mask Example");
-    auto maskEx = ssGUI::Factory::Create<ssGUI::Extensions::Mask>();
+    auto maskEx = window.AddExtension<ssGUI::Extensions::Mask>();
     
-    //This will add mask enforcer to the children
-    window.AddExtension(maskEx);
-
     ssGUI::Window window2;
     window2.SetSize(glm::vec2(200, 200));
-    window2.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Mask>());
+    window2.AddExtension<ssGUI::Extensions::Mask>();
     window2.SetTitlebarColor(glm::u8vec4(255, 127, 127, 255));
     window2.SetBackgroundColor(glm::u8vec4(150, 127, 127, 255));
 
@@ -32,10 +29,9 @@ int main()
 
     ssGUI::Image img;
     img.SetBackgroundColor(glm::u8vec4(255, 255, 255, 0));
-    auto sizeEx = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
+    auto sizeEx = img.AddExtension<ssGUI::Extensions::AdvancedSize>();
     sizeEx->SetHorizontalPercentage(1);
     sizeEx->SetVerticalPercentage(1);
-    img.AddExtension(sizeEx);
     ssGUI::ImageData imgData;
     imgData.LoadFromPath("Resources/sd.png");
     img.SetImageData(&imgData);
@@ -49,7 +45,7 @@ int main()
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
 
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }

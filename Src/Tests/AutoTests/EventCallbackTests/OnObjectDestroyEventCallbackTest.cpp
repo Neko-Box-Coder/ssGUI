@@ -19,7 +19,7 @@ ssTEST_SET_UP
                                     ssTEST_OUTPUT_ASSERT("Timing", !testObj->Internal_IsDeleted());
                                     listerNum += 1;
                                 });
-    callback->Clone(testObj, true);
+    testObj->AddEventCallbackCopy(callback, true);
 }
 
 ssTEST_CLEAN_UP

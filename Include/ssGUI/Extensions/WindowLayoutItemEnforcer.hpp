@@ -100,7 +100,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual WindowLayoutItemEnforcer* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual WindowLayoutItemEnforcer* Clone() override;
     };
 }
 

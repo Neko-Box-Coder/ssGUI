@@ -28,16 +28,6 @@ namespace ssGUI
         CurrentObject = obj;
     }
 
-    void EventCallbackManager::AddEventCallback(ssGUI::EventCallbacks::EventCallback* eventCallback)
-    {
-        if(IsEventCallbackExist(eventCallback->GetEventCallbackName()))
-            return;
-
-        EventCallbacks[eventCallback->GetEventCallbackName()] = eventCallback;
-        eventCallback->BindToObject(CurrentObject);
-        CurrentRenderer->RedrawObject();
-    }
-
     ssGUI::EventCallbacks::EventCallback* EventCallbackManager::GetEventCallback(std::string eventCallbackName)
     {
         if(!IsEventCallbackExist(eventCallbackName))

@@ -21,8 +21,8 @@ ssTEST_SET_UP
                                     ssTEST_OUTPUT_ASSERT("Timing", testObj->GetParent() == testWindow); 
                                     listerNum = 1;
                                 });
-    callback->Clone(testObj, true);
-    callback->Clone(testWindow, true);
+    testObj->AddEventCallbackCopy(callback, true);
+    testWindow->AddEventCallbackCopy(callback, true);
 }
 
 ssTEST_CLEAN_UP

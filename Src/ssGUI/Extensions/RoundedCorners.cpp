@@ -620,11 +620,9 @@ namespace Extensions
         return nullptr;
     }
 
-    RoundedCorners* RoundedCorners::Clone(ssGUI::GUIObject* newContainer)
+    RoundedCorners* RoundedCorners::Clone()
     {
         RoundedCorners* temp = new RoundedCorners(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

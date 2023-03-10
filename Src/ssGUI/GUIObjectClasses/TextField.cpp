@@ -923,17 +923,14 @@ namespace ssGUI
     {
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>());
+        AddExtension<ssGUI::Extensions::RoundedCorners>();
         
-        auto outlineEx = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
-        outlineEx->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
-        AddExtension(outlineEx);
+        AddExtension<ssGUI::Extensions::Outline>()->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
         
         //Add shadow to window
-        auto shadowEx = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
+        auto shadowEx = AddExtension<ssGUI::Extensions::BoxShadow>();
         shadowEx->SetBlurRadius(20);
         shadowEx->SetSizeOffset(glm::vec2(10, 10));
-        AddExtension(shadowEx);
     }
 
     TextField::~TextField()

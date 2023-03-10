@@ -153,7 +153,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual AdvancedSize* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual AdvancedSize* Clone() override;
     };
 }
 

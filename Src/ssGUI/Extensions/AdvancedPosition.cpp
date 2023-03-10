@@ -261,11 +261,9 @@ namespace Extensions
         return nullptr;
     }
 
-    AdvancedPosition* AdvancedPosition::Clone(ssGUI::GUIObject* newContainer)
+    AdvancedPosition* AdvancedPosition::Clone()
     {
         AdvancedPosition* temp = new AdvancedPosition(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }   
 }

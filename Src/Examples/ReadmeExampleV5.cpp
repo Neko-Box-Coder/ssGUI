@@ -7,9 +7,8 @@ int main()
 {
     ssGUI::MainWindow mainWindow;                                               //Create the main window for showing content
     mainWindow.SetRenderSize(glm::vec2(450, 80));
-    auto* layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
-    mainWindow.AddExtension(layout);                                            //Add layout for auto sizing child GUI objects
-    
+    auto* layout = mainWindow.AddExtension<ssGUI::Extensions::Layout>();        //Add layout for auto sizing child GUI objects
+
     ssGUI::Text text;                                                           //Create a text widget and set the respective properties
     text.SetNewCharacterFontSize(17);
     text.SetText("Click on the button to show the message");
@@ -22,7 +21,7 @@ int main()
                                             AlignmentVertical::CENTER);         //      stays the same and won't be changed by layout
                                                                                 
     ssGUI::ssGUIManager guiManager;                                             //Create the GUIManager, which manages the flow of the program.
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);                    //Add the main window (which has both text and button parented to it)
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);                    //Add the main window (which has both text and button parented to it)
     guiManager.AddPostGUIUpdateEventListener                                    
     (
         [&]()

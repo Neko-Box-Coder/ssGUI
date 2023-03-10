@@ -32,7 +32,7 @@ namespace EventCallbacks
             
             //function: Clone
             //See <BaseEventCallback::Clone>
-            virtual BackgroundColorChangedEventCallback* Clone(ssGUI::GUIObject* newContainer, bool copyListeners) override;
+            virtual BackgroundColorChangedEventCallback* Clone(bool copyListeners) override;
             
             //const: EVENT_NAME
             //See <BaseEventCallback::EVENT_NAME>

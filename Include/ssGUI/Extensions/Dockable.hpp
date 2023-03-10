@@ -295,7 +295,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Dockable* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Dockable* Clone() override;
     };
 }
 

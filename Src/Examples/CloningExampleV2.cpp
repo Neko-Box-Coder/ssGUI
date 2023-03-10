@@ -12,8 +12,7 @@ int main()
     ssGUI::StandardWindow window;                                                   //Create a standard window, just a fancier window
     window.RemoveAnyExtension<ssGUI::Extensions::Dockable>();                       //We don't need docking
     window.SetRenderSize(glm::ivec2(450, 80));                                      //Render size same as before
-    auto layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();              //Add layout for auto sizing child GUI objects
-    window.AddExtension(layout);
+    auto layout = window.AddExtension<ssGUI::Extensions::Layout>();                 //Add layout for auto sizing child GUI objects
     window.SetParent(&mainWindow);                                                  //This time we set our window to the "actual" window        
     
     ssGUI::Text text;                                                               //Create a text widget and set the respective properties
@@ -47,14 +46,13 @@ int main()
 
     ssGUI::StandardButton cloneButton;                                              //A button for cloning the window
     cloneButton.GetButtonTextObject()->SetText("Clone!!");                          //Text for indication
-    auto posExt = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();    //We create an create an extension for positioning the button easily
+    auto posExt = cloneButton.AddExtension<ssGUI::Extensions::AdvancedPosition>();  //We create an create an extension for positioning the button easily
     posExt->SetVerticalAlignment(AlignmentVertical::BOTTOM);                        //By default, it centers the GUI Object relative to its parent, we are setting it bottom 
     posExt->SetVerticalPixel(20);                                                   //Setting it to be 20 pixels from the bottom of the parent   
-    cloneButton.AddExtension(posExt);                                               //Finally we just need to attach it
     cloneButton.SetParent(&mainWindow);                                             //And set its parent to mainWindow
 
     ssGUI::ssGUIManager guiManager;                                                 //Create the GUIManager, which manages the flow of the program.
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);                        //Add the main window (which has both text and button parented to it)
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);                        //Add the main window (which has both text and button parented to it)
     guiManager.AddPostGUIUpdateEventListener                                    
     (
         [&]()

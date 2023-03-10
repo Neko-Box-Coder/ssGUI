@@ -85,11 +85,8 @@ namespace Extensions
             static_cast<ssGUI::Widget*>((*widget))->SetInteractable(false);
             static_cast<ssGUI::Widget*>((*widget))->SetBlockInput(false);
 
-            auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
-            auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>(); 
-
-            (*widget)->AddExtension(ap);
-            (*widget)->AddExtension(as);
+            (*widget)->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+            (*widget)->AddExtension<ssGUI::Extensions::AdvancedSize>();
             (*widget)->AddTag(ssGUI::Tags::FLOATING);
             (*widget)->SetBackgroundColor(color);
         }
@@ -616,21 +613,21 @@ namespace Extensions
                     static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetHorizontalLayout(originalOrientation);
                 }
                 else
-                    parentLayout->Clone(Container);            
+                    Container->AddExtensionCopy(parentLayout);            
             }
             else if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                Container->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+                Container->AddExtension<ssGUI::Extensions::Layout>();
         }
         //Otherwise we generate layout extension if there isn't one
         else
         {            
             //Check if there's a layout extension for container
             if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-                Container->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+                Container->AddExtension<ssGUI::Extensions::Layout>();
         }
 
         if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))    
-            Container->AddEventCallback(ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildRemovedEventCallback>());
+            Container->AddEventCallback<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
         
         Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener
         (
@@ -681,11 +678,9 @@ namespace Extensions
         return nullptr;
     }
 
-    Docker* Docker::Clone(ssGUI::GUIObject* newContainer)
+    Docker* Docker::Clone()
     {
         Docker* temp = new Docker(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

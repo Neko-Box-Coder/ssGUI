@@ -152,9 +152,8 @@ int main()
     fpsText.SetAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);           //Align content to top-right within itself
     fpsText.SetParent(&mainWindow); 
 
-    auto* posExt = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();  
+    auto* posExt = fpsText.AddExtension<ssGUI::Extensions::AdvancedPosition>();  
     posExt->SetAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);           //Align the text GUI Object to top-right of the main window
-    fpsText.AddExtension(posExt);                                                       //Attach the extension to the text GUI Object
 
     //NOTE: It is very important to do any GL calls *AFTER* the first MainWindow creation
     //      because it loads GLAD when a MainWindow is created the first time.
@@ -164,7 +163,7 @@ int main()
     InitiateRendering(vertexArrayID, programID, vertexbuffer);
 
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     
     uint64_t lastSecond = guiManager.GetBackendInputInterface()->GetElapsedTime();      //Record the last time we displayed FPS
     int frameCount = 0;
@@ -191,7 +190,7 @@ int main()
             mainWindow.RestoreState();                //Restores back the state ssGUI was using
         }
     );
-    guiManager.SetForceRendering(true);             //Forces ssGUIManager to render every frame
+    guiManager.SetRedrawEveryFrame(true);             //Forces ssGUIManager to render every frame
     guiManager.SetTargetFramerate(-1);              //By default, ssGUIManager limits the (update) framerate to 60.
     guiManager.StartRunning();                      //      We set it to a negative number to disable it.
     

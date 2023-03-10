@@ -12,7 +12,7 @@ int main()
 
     //Creating ssGUIManager and run it
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
 
     return 0;

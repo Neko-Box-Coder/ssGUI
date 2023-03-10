@@ -146,7 +146,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual BoxShadow* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual BoxShadow* Clone() override;
     };
 }
 

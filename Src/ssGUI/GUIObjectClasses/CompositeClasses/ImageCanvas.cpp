@@ -426,27 +426,23 @@ namespace ssGUI
                                     MousePressed(false),
                                     MouseButtonDownPosition()
     {
-        ssGUI::Extensions::Mask* mask = ssGUI::Factory::Create<ssGUI::Extensions::Mask>();
+        AddExtension<ssGUI::Extensions::MaskEnforcer>()->AddTargetMaskObject(this, {1, 2, 3, 4});
+        
+        ssGUI::Extensions::Mask* mask = AddExtension<ssGUI::Extensions::Mask>();
         mask->SetMaskChildren(false);
         mask->SetMaskContainer(true);
-
-        ssGUI::Extensions::MaskEnforcer* mf = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();
-        mf->AddTargetMaskObject(this, {1, 2, 3, 4});
-        AddExtension(mf);
-        AddExtension(mask);
     
-        ssGUI::Extensions::Shape* shape = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+        ssGUI::Extensions::Shape* shape = AddExtension<ssGUI::Extensions::Shape>();
         OuterCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);
         BackgroundCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);
         InnerCircleId = shape->AddAdditionalCircle(glm::vec2(), glm::vec2(), glm::u8vec4(), false);    
-        AddExtension(shape);
 
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        AddExtension<ssGUI::Extensions::Border>();
 
         auto hScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         hScrollbar->SetUserCreated(false);
         hScrollbar->SetVertical(false, true);
-        auto ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        auto ecb = hScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
         ssGUIObjectIndex index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
@@ -469,23 +465,19 @@ namespace ssGUI
                 imageCanvas->SetImagePosition(glm::vec2(imgXPos, imageCanvas->GetImagePosition().y));
             }
         );
-        hScrollbar->AddEventCallback(ecb);
 
-        auto as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-        auto ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+        auto as = hScrollbar->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        auto ap = hScrollbar->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         as->SetHorizontalPercentage(1);
         as->SetHorizontalPixel(-hScrollbar->GetSize().y);
         as->SetVerticalPixel(hScrollbar->GetSize().y);
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
-        hScrollbar->AddExtension(as);
-        hScrollbar->AddExtension(ap);
-
 
         auto vScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         vScrollbar->SetUserCreated(false);
         vScrollbar->SetVertical(true, true);
-        ecb = ssGUI::Factory::Create<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        ecb = vScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
         index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
@@ -508,17 +500,14 @@ namespace ssGUI
                 imageCanvas->SetImagePosition(glm::vec2(imageCanvas->GetImagePosition().x, imgYPos));
             }
         );
-        vScrollbar->AddEventCallback(ecb);
 
-        as = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>();
-        ap = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
+        as = vScrollbar->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        ap = vScrollbar->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         as->SetHorizontalPixel(vScrollbar->GetSize().x);
         as->SetVerticalPercentage(1);
         as->SetVerticalPixel(-vScrollbar->GetSize().x);
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
-        vScrollbar->AddExtension(as);
-        vScrollbar->AddExtension(ap);
 
         hScrollbar->SetParent(this, true);
         vScrollbar->SetParent(this, true);

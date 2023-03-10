@@ -10,9 +10,9 @@ namespace EventCallbacks
         return EVENT_NAME;
     }
 
-    ChildPositionChangedEventCallback* ChildPositionChangedEventCallback::Clone(ssGUI::GUIObject* newContainer, bool copyListeners)
+    ChildPositionChangedEventCallback* ChildPositionChangedEventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(ChildPositionChangedEventCallback, newContainer, copyListeners);
+        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(ChildPositionChangedEventCallback, copyListeners);
     }
 
     const std::string ChildPositionChangedEventCallback::EVENT_NAME = "ChildPositionChangedEvent";

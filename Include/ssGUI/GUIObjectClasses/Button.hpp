@@ -24,13 +24,15 @@ namespace ssGUI
                         ButtonColor(100, 100, 100, 255)
     {
         SetSize(glm::vec2(25, 25));
-        auto stateChangedEventCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto stateChangedEventCallback = AddEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
         stateChangedEventCallback->AddEventListener(
             ListenerKey, this,
             [](ssGUI::EventInfo info)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(info.EventSource);
                 glm::u8vec4 btnColor = btn->GetButtonColor();
+                
+                static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
                 switch(btn->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
@@ -55,8 +57,7 @@ namespace ssGUI
             }
         ); 
         
-        AddEventCallback(stateChangedEventCallback);
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        AddExtension<ssGUI::Extensions::Border>();
         SetBackgroundColor(GetButtonColor());
     }
     =================================================================

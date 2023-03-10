@@ -9,7 +9,7 @@ int main()
     ssGUI::MainWindow mainWindow;
     mainWindow.SetSize(glm::vec2(450, 110));
     mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
-    mainWindow.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
+    mainWindow.AddExtension<ssGUI::Extensions::Layout>();
     mainWindow.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.5);
     mainWindow.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.5);
 
@@ -19,13 +19,13 @@ int main()
     text.SetText("Click on the button to show the message");
     text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
-    text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+    text.AddExtension<ssGUI::Extensions::Border>();
 
     //Create a button
     ssGUI::StandardButton button;
-    button.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
+    button.AddExtension<ssGUI::Extensions::AdvancedPosition>();
     ssGUI::GUIObject wrapper;
-    wrapper.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+    wrapper.AddExtension<ssGUI::Extensions::Border>();
 
     //Set the parents
     text.SetParent(&mainWindow);
@@ -34,7 +34,7 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.AddPostGUIUpdateEventListener
     (
         [&]()

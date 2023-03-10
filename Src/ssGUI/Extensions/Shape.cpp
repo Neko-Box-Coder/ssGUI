@@ -655,11 +655,9 @@ namespace Extensions
         return nullptr;
     }
 
-    Shape* Shape::Clone(ssGUI::GUIObject* newContainer)
+    Shape* Shape::Clone()
     {
         Shape* temp = new Shape(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

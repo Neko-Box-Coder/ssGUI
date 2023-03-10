@@ -72,8 +72,8 @@ namespace ssGUI
                     TextUnderline(false),
                     MultilineAllowed(true),
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING),
-                    HorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT),
-                    VerticalAlignment(ssGUI::Enums::TextAlignmentVertical::TOP),
+                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT),
+                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP),
                     CurrentFonts(),
                     HorizontalPadding(5),
                     VerticalPadding(5),
@@ -92,7 +92,7 @@ namespace ssGUI
         SetInteractable(true);
         InitiateDefaultResources();
 
-        auto sizeChangedCallback = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto sizeChangedCallback = AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
@@ -101,8 +101,6 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
-
-        AddEventCallback(sizeChangedCallback);
     }
 
     std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();

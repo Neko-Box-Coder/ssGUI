@@ -180,11 +180,9 @@ namespace Extensions
         return nullptr;
     }
 
-    AdvancedSize* AdvancedSize::Clone(ssGUI::GUIObject* newContainer)
+    AdvancedSize* AdvancedSize::Clone()
     {
         AdvancedSize* temp = new AdvancedSize(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }   
 }

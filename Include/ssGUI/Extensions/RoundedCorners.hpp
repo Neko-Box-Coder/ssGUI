@@ -200,7 +200,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual RoundedCorners* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual RoundedCorners* Clone() override;
     };
 }
 

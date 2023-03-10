@@ -255,7 +255,7 @@ namespace ssGUI
             //Check if render is needed
             bool renderNeeded = false;
 
-            if(!IsForceRendering())
+            if(!IsRedrawEveryFrame())
             {
                 if(!currentMainWindowP->IsRedrawNeeded())
                 {
@@ -300,7 +300,7 @@ namespace ssGUI
                     if(currentObjP->Internal_IsDeleted())
                         continue;
 
-                    if(IsForceRendering())
+                    if(IsRedrawEveryFrame())
                         currentObjP->RedrawObject();
 
                     (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
@@ -455,7 +455,7 @@ namespace ssGUI
         delete BackendInput;
     }
     
-    void ssGUIManager::AddGUIObject(ssGUI::GUIObject* obj)
+    void ssGUIManager::AddRootGUIObject(ssGUI::GUIObject* obj)
     {
         if(obj->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
             return;
@@ -605,12 +605,12 @@ namespace ssGUI
         OnCustomRenderEventListenersNextFreeIndices.push(index);
     }
 
-    void ssGUIManager::SetForceRendering(bool force)
+    void ssGUIManager::SetRedrawEveryFrame(bool redraw)
     {
-        ForceRendering = force;
+        ForceRendering = redraw;
     }
 
-    bool ssGUIManager::IsForceRendering()
+    bool ssGUIManager::IsRedrawEveryFrame()
     {
         return ForceRendering;
     }

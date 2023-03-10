@@ -303,11 +303,9 @@ namespace Extensions
         return &CurrentObjectsReferences;
     }
 
-    MaskEnforcer* MaskEnforcer::Clone(ssGUI::GUIObject* newContainer)
+    MaskEnforcer* MaskEnforcer::Clone()
     {
         MaskEnforcer* temp = new MaskEnforcer(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

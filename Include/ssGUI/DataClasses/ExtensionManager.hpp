@@ -2,8 +2,10 @@
 #define SSGUI_EXTENSION_MANAGER_H
 
 #include <unordered_map>
+#include <type_traits>
 #include <vector>
 #include <string>
+#include "ssGUI/DataClasses/Renderer.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 
 //namespace: ssGUI
@@ -53,8 +55,55 @@ namespace ssGUI
             virtual void SetDependentComponents(ssGUI::Renderer* renderer, ssGUI::GUIObject* obj);
             
             //function: AddExtension
-            //Adds the extension to this GUI Object. Note that the extension *must* be allocated on heap.
-            virtual void AddExtension(ssGUI::Extensions::Extension* extension);
+            //Adds an extension to this GUI Object. If the extension already exists, nothing will be modified.
+            template<typename T>
+            T* AddExtension()
+            {
+                if(std::is_base_of<ssGUI::Extensions::Extension, T>::value)
+                {
+                    if(IsAnyExtensionExist<T>())
+                        return GetAnyExtension<T>();
+
+                    auto* extension = ssGUI::Factory::Create<T>();
+                    Extensions[extension->GetExtensionName()] = extension;
+                    ExtensionsDrawOrder.push_back(extension->GetExtensionName());
+                    ExtensionsUpdateOrder.push_back(extension->GetExtensionName());
+                    extension->BindToObject(CurrentObject);
+                    CurrentRenderer->RedrawObject();
+                    return extension;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non extension type");
+                    return nullptr;
+                }                
+            }
+            
+            //function: AddExtensionCopy
+            //Adds an extension to this GUI Object by copying an already existing extension. 
+            //If the extension already exists in this GUI object, nothing will be modified.
+            template<typename T>
+            T* AddExtensionCopy(T* copy)
+            {
+                if(std::is_base_of<ssGUI::Extensions::Extension, T>::value)
+                {
+                    if(IsExtensionExist(copy->GetExtensionName()))
+                        return static_cast<T*>(GetExtension(copy->GetExtensionName()));
+
+                    auto* extension = copy->Clone();
+                    Extensions[extension->GetExtensionName()] = extension;
+                    ExtensionsDrawOrder.push_back(extension->GetExtensionName());
+                    ExtensionsUpdateOrder.push_back(extension->GetExtensionName());
+                    extension->BindToObject(CurrentObject);
+                    CurrentRenderer->RedrawObject();
+                    return extension;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non extension type");
+                    return nullptr;
+                }                
+            }
             
             //function: GetExtension
             //Gets the extension by the name of it. Nullptr will be returned if not found.

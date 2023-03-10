@@ -8,16 +8,14 @@ int main()
     ssGUI::MainWindow mainWindow;
     mainWindow.SetSize(glm::vec2(450, 125));
 
-    //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
-
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetText(L"Click on the button to show the message");
     text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
-    positionExtension->SetVerticalPixel(-30);
-    text.AddExtension(positionExtension);
+    
+    //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
+    text.AddExtension<ssGUI::Extensions::AdvancedPosition>()->SetVerticalPixel(-30);
     
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
@@ -35,9 +33,7 @@ int main()
     );
 
     //Clone the extension for the button widget
-    ssGUI::Extensions::AdvancedPosition* positionExtension2 = 
-        static_cast<ssGUI::Extensions::AdvancedPosition*>(positionExtension->Clone(&button));
-    positionExtension2->SetVerticalPixel(20);
+    button.AddExtensionCopy(text.GetAnyExtension<ssGUI::Extensions::AdvancedPosition>())->SetVerticalPixel(20);
 
     //Add the text and button widget to the main window
     text.SetParent(&mainWindow);
@@ -45,7 +41,7 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }

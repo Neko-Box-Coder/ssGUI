@@ -688,9 +688,8 @@ namespace Extensions
 
             if(!child->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
             {
-                auto enforcer = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();
-                enforcer->AddTargetMaskObject(Container);
-                child->AddExtension(enforcer);
+                child   ->AddExtension<ssGUI::Extensions::MaskEnforcer>()
+                        ->AddTargetMaskObject(Container);
             }
             else
             {
@@ -864,8 +863,7 @@ namespace Extensions
             }
             else
             {
-                auto event = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
-                Container->AddEventCallback(event);
+                auto* event = Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
 
                 event->AddEventListener
                 (
@@ -886,8 +884,7 @@ namespace Extensions
             }
             else
             {
-                auto event = ssGUI::Factory::Create<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>();
-                Container->AddEventCallback(event);
+                auto* event = Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>();
 
                 event->AddEventListener
                 (
@@ -938,9 +935,8 @@ namespace Extensions
         {
             if(!Container->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
             {
-                auto enforcer = ssGUI::Factory::Create<ssGUI::Extensions::MaskEnforcer>();
-                enforcer->AddTargetMaskObject(Container);
-                Container->AddExtension(enforcer);
+                Container   ->AddExtension<ssGUI::Extensions::MaskEnforcer>()
+                            ->AddTargetMaskObject(Container);
             }
             else
             {
@@ -1333,11 +1329,9 @@ namespace Extensions
         return nullptr;
     }
 
-    Mask* Mask::Clone(ssGUI::GUIObject* newContainer)
+    Mask* Mask::Clone()
     {
         Mask* temp = new Mask(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

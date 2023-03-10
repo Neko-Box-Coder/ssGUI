@@ -171,7 +171,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual AdvancedPosition* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual AdvancedPosition* Clone() override;
     };
 }
 

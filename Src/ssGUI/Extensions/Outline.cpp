@@ -863,11 +863,9 @@ nextVertex (n)    (a)                   curVertex
         return nullptr;
     }
 
-    Outline* Outline::Clone(ssGUI::GUIObject* newContainer)
+    Outline* Outline::Clone()
     {
         Outline* temp = new Outline(*this);
-        if(newContainer != nullptr)
-            newContainer->AddExtension(temp);
         return temp;
     }
 }

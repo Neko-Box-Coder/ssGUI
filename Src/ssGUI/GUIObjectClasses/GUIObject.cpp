@@ -149,7 +149,7 @@ namespace ssGUI
         for(auto extension : Extensions)
         {
             if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
-                extension.second->Clone(clonedObj);
+                clonedObj->AddExtensionCopy(extension.second);
             else
                 clonedObj->GetExtension(extension.first)->Copy(extension.second);
         }
@@ -166,7 +166,7 @@ namespace ssGUI
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
             
             if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
-                eventCallback.second->Clone(clonedObj, true);
+                clonedObj->AddEventCallbackCopy(eventCallback.second, true);
         }
 
         ssLOG_FUNC_EXIT();

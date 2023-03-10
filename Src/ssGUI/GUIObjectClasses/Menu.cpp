@@ -51,8 +51,8 @@ namespace ssGUI
                     MenuTarget(nullptr)
     {
         SetSize(glm::vec2(200, GetSize().y));
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+        AddExtension<ssGUI::Extensions::Layout>();
+        AddExtension<ssGUI::Extensions::Border>();
         GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(2);
         GetAnyExtension<ssGUI::Extensions::Layout>()->SetSpacing(0);
         SetBackgroundColor(glm::u8vec4(150, 150, 150, 255));

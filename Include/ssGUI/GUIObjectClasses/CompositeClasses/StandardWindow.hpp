@@ -59,7 +59,7 @@ namespace ssGUI
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
         SetAdaptiveTitleColorDifference(glm::ivec4(150, 150, 150, 0));
-
+        
         auto windowIcon = new ssGUI::Image();
         windowIcon->SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
         windowIcon->SetUserCreated(false);
@@ -81,17 +81,15 @@ namespace ssGUI
         closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
         //Change button shape to circle
-        auto shapeEx = ssGUI::Factory::Create<ssGUI::Extensions::Shape>();
+        auto shapeEx = closeButton->AddExtension<ssGUI::Extensions::Shape>();
         shapeEx->RemoveGUIObjectShape(0);
         int circleId = shapeEx->AddAdditionalCircle(glm::vec2(), closeButton->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
-        closeButton->AddExtension(shapeEx);
 
         //Add outline to button
-        auto closeButtonOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+        auto closeButtonOutline = closeButton->AddExtension<ssGUI::Extensions::Outline>();
         closeButtonOutline->SetOutlineThickness(4);
         closeButtonOutline->SetOutlineColor(glm::u8vec4(255, 127, 127, 255));
         closeButton->SetButtonColor(glm::u8vec4(255, 127, 127, 255));
-        closeButton->AddExtension(closeButtonOutline);
 
         //Setup button event
         auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
@@ -104,6 +102,8 @@ namespace ssGUI
                 auto closeButtonObj = static_cast<ssGUI::Button*>(info.EventSource);
                 auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
                 int amount = 60;
+                
+                static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
                 switch(closeButtonObj->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:
@@ -133,7 +133,7 @@ namespace ssGUI
         );
 
         //Update button's shape size when button's size is changed
-        auto shapeEvent = ssGUI::Factory::Create<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto shapeEvent = closeButton->AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
         shapeEvent->AddEventListener
         (
             ListenerKey, this,
@@ -143,11 +143,10 @@ namespace ssGUI
                 shape->SetAdditionalCircle(circleId, glm::vec2(), info.EventSource->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
-        closeButton->AddEventCallback(shapeEvent);
         CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
 
         //Add rounded corners to window
-        auto rc = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
+        auto rc = AddExtension<ssGUI::Extensions::RoundedCorners>();
         rc->ClearTargetShapes();
         rc->AddTargetVertex(0);
         rc->AddTargetVertex(1);
@@ -155,21 +154,18 @@ namespace ssGUI
         rc->AddTargetVertex(3);
         rc->AddTargetVertex(4);
         rc->AddTargetVertex(5);
-        AddExtension(rc);
 
         //Make window dockable
-        AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Dockable>());
+        AddExtension<ssGUI::Extensions::Dockable>();
         
         //Add outline to window
-        auto windowOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+        auto windowOutline = AddExtension<ssGUI::Extensions::Outline>();
         windowOutline->SetOutlineColor(glm::u8vec4(0, 0, 0, 127));
-        AddExtension(windowOutline);
 
         //Add shadow to window
-        auto shadowEx = ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>();
+        auto shadowEx = AddExtension<ssGUI::Extensions::BoxShadow>();
         shadowEx->SetBlurRadius(20);
         shadowEx->SetSizeOffset(glm::vec2(10, 10));
-        AddExtension(shadowEx);
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
         UpdateTitleText();

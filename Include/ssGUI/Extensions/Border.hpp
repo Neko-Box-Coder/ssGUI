@@ -140,7 +140,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual Border* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Border* Clone() override;
     };
 }
 

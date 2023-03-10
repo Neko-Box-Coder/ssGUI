@@ -11,15 +11,9 @@ int main()
     mainWindow.SetSize(glm::vec2(450, 125));
 
     //Adds a layout extension to the main window to allow GUI objects to be stacked next to each other
-    ssGUI::Extensions::Layout* layoutExtension = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
+    ssGUI::Extensions::Layout* layoutExtension = mainWindow.AddExtension<ssGUI::Extensions::Layout>();
     layoutExtension->SetHorizontalLayout(false);
     layoutExtension->SetSpacing(10);
-    mainWindow.AddExtension(layoutExtension);
-
-    //AdvancedPosition extension allows a GUI Object to be centered.
-    ssGUI::Extensions::AdvancedPosition* positionExtension = ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>();
-    positionExtension->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-    positionExtension->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);    
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
@@ -30,7 +24,6 @@ int main()
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
     button.SetSize(glm::vec2(50, 30));
-    button.AddExtension(positionExtension);
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
         "AnyKey",
@@ -43,6 +36,11 @@ int main()
         }
     );
 
+    //AdvancedPosition extension allows a GUI Object to be centered.
+    ssGUI::Extensions::AdvancedPosition* positionExtension = button.AddExtension<ssGUI::Extensions::AdvancedPosition>();
+    positionExtension->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    positionExtension->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);    
+
     //Wraps the button inside an empty widget for consistence size under layout extension
     ssGUI::Widget emptyWidget;
     button.SetParent(&emptyWidget);
@@ -53,7 +51,7 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }

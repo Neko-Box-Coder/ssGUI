@@ -223,7 +223,7 @@ namespace Extensions
             
             //function: Clone
             //See <Extension::Clone>
-            virtual Docker* Clone(ssGUI::GUIObject* newContainer) override;
+            virtual Docker* Clone() override;
     };
 }
 

@@ -49,7 +49,7 @@ int main()
                     window.RemoveAnyExtension<ssGUI::Extensions::Border>();
                 else
                 {
-                    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
+                    window.AddExtension<ssGUI::Extensions::Border>();
                     window.GetAnyExtension<ssGUI::Extensions::Border>()->SetBorderWidth(2);
                 }
             }
@@ -67,7 +67,7 @@ int main()
                     window.RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
                 else
                 {
-                    window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::BoxShadow>());
+                    window.AddExtension<ssGUI::Extensions::BoxShadow>();
                 }
             }
         }
@@ -84,7 +84,7 @@ int main()
                     window.RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
                 else
                 {
-                    auto rc = ssGUI::Factory::Create<ssGUI::Extensions::RoundedCorners>();
+                    auto rc = window.AddExtension<ssGUI::Extensions::RoundedCorners>();
                     rc->SetRoundedCornersRadius(15);
                     rc->ClearTargetShapes();
                     rc->AddTargetVertex(0);
@@ -93,7 +93,6 @@ int main()
                     rc->AddTargetVertex(3);
                     rc->AddTargetVertex(4);
                     rc->AddTargetVertex(5);
-                    window.AddExtension(rc);
                     window.ChangeAnyExtensionDrawOrder<ssGUI::Extensions::RoundedCorners>(0);
                 }
             }
@@ -111,9 +110,8 @@ int main()
                     window.RemoveAnyExtension<ssGUI::Extensions::Outline>();
                 else
                 {
-                    auto windowOutline = ssGUI::Factory::Create<ssGUI::Extensions::Outline>();
+                    auto windowOutline = window.AddExtension<ssGUI::Extensions::Outline>();
                     windowOutline->SetOutlineThickness(2);
-                    window.AddExtension(windowOutline);
                 }
             }
         }
@@ -121,7 +119,7 @@ int main()
 
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);
+    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     guiManager.StartRunning();
     return 0;
 }
