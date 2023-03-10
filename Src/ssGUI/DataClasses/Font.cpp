@@ -24,6 +24,11 @@ namespace ssGUI
     {
         return BackendFont;
     }
+    
+    ssGUI::CharacterRenderInfo Font::GetCharacterRenderInfo(wchar_t charUnicode, float charSize)
+    {
+        return BackendFont->GetCharacterRenderInfo(charUnicode, charSize);
+    }
 
     bool Font::IsCharacterSupported(wchar_t charUnicode)
     {
@@ -48,6 +53,31 @@ namespace ssGUI
     int Font::GetUnderlineThickness(int charSize)
     {
         return BackendFont->GetUnderlineThickness(charSize);
+    }
+
+    bool Font::LoadFromPath(std::string path)
+    {
+        return BackendFont->LoadFromPath(path);
+    }
+    
+    bool Font::LoadFromMemory(void* dataPtr, int lengthInBytes)
+    {
+        return BackendFont->LoadFromMemory(dataPtr, lengthInBytes);
+    }
+    
+    bool Font::GetFixedAvailableFontSizes(std::vector<float>& fontSizes)
+    {
+        return BackendFont->GetFixedAvailableFontSizes(fontSizes);
+    }
+    
+    bool Font::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
+    {
+        return BackendFont->GetCharacterImage(charUnicode, charSize, characterImage);
+    }
+    
+    void* Font::GetRawHandle()
+    {
+        return BackendFont->GetRawHandle();
     }
 
     Font* Font::Clone()
