@@ -4,20 +4,21 @@
 ### 🔌 Status of ssGUI (v0.94.00)
 - #### 🔀 Branches
     <!--- ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)-->
-    - ![](https://img.shields.io/badge/Latest_Development-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Current_Development-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)
         <!--- ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434)-->
+        - ![](https://img.shields.io/badge/Status_📋:-Missing_Documentations-2E2E2E?style=flat-square&labelColor=D53434)
     - ![](https://img.shields.io/badge/Development_Release-v0.93.03-brightgreen?style=for-the-badge&logo=GitHub)
     - ![](https://img.shields.io/badge/Stable_Release-v0.93.00.b-brightgreen?style=for-the-badge&logo=GitHub)
-    - ![](https://img.shields.io/badge/Main-v0.93.03-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Main-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)
 
 - #### 🖥️ OS support
     - ![](https://img.shields.io/badge/Linux-Working-brightgreen?style=for-the-badge&logo=linux&logoColor=white)
     - ![](https://img.shields.io/badge/Windows-Working-brightgreen?style=for-the-badge&logo=windows)
-    - ![](https://img.shields.io/badge/OSX-Unknown-red?style=for-the-badge&logo=apple)
+    - ![](https://img.shields.io/badge/OSX-Coming_Soon_(Possible_with_SFML)_-red?style=for-the-badge&logo=apple)
 
 - #### 📈 Current Progress
     - ![](https://img.shields.io/badge/v0.93-|█████ 100％ █████|-29D236?style=for-the-badge&logo=)
-    - ![](https://img.shields.io/badge/v0.94-|█████  70％  ██───|-E5FF3C?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.94-|█████  90％  ████─|-E5FF3C?style=for-the-badge)
 ---
 
 ### ❓ What is ssGUI?
@@ -161,17 +162,21 @@ int main()
 
 ### ❤️ Special Thanks
 
-#### SFML With Awesome Documentation:
+- #### SFML With Awesome Documentation:
 
 ![](DocsGeneration/ND_Config/Images/SFML.png)
 
-#### GLM With Great Math Structs And Math Functions: 
+- #### GLM With Great Math Structs And Math Functions: 
 
 ![](DocsGeneration/ND_Config/Images/Glm.png)
 
-#### Natural Docs With Amazing And Intuative Documentation Generation::
+- #### Natural Docs With Amazing And Intuative Documentation Generation::
 
 ![](DocsGeneration/ND_Config/Images/NaturalDocs.svg) 
+
+- #### stb_image for easy importing for different image formats
+- #### freetype for easy  font importing
+- #### clip for cross-platfrom clipboard implementation
 
 ---
 
@@ -179,14 +184,22 @@ int main()
 This project is under Apache-2.0 License. 
 Licenses for resoureces used by testing and examples are stored as "Credits.txt" under the same folder.
 
-GLM:
-- The Happy Bunny License or MIT License
+- GLM:
+    - The Happy Bunny License or MIT License
 
-SFML:
-- zlib/png license
-- Components used by ssGUI:
-    - freetype is under the FreeType license or the GPL license
-    - stb_image and stb_image_write are public domain
-- If you want to use other components, please visit https://github.com/SFML/SFML/blob/master/license.md for their licenses
-
+- SFML:
+    - zlib/png license
+    - Components used by ssGUI:
+        - freetype is under the FreeType license or the GPL license
+        - stb_image and stb_image_write are public domain
+    - If you want to use other components, please visit https://github.com/SFML/SFML/blob/master/license.md for their licenses
+    
+- stb_image:
+    - MIT License or Public Domain
+    
+- freetype:
+    - The FreeType License or GPLv2
+    
+- clip:
+    - The clip license (Copyright (c) 2015-2022 David Capello)
 
