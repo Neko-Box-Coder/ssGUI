@@ -1,18 +1,36 @@
 #ifndef SSGUI_BASE_EVENT_CALLBACK_H
 #define SSGUI_BASE_EVENT_CALLBACK_H
 
-#include "ssGUI/EventCallbacks/EventCallback.hpp"
-#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
+#include "ssGUI/DataClasses/ObjectsReferences.hpp"
+#include "ssGUI/Factory.hpp"
+#include "ssGUI/Enums/EventType.hpp"
+#include "ssGUI/DataClasses/EventInfo.hpp"
+#include <functional>
 #include <queue>
+#include <unordered_map>
 
 namespace ssGUI
 {
 
-//namespace: ssGUI::EventCallbacks
-namespace EventCallbacks
-{
-    /*class: ssGUI::EventCallbacks::BaseEventCallback
-    Implementation class for <EventCallback>
+    /*class: ssGUI::EventCallback    
+    EventCallback enables the ablity to act against a certain event. 
+
+    In order to add a class's function as a listener to an event callback
+    > int index = EventCallback->AddEventListener("AnyKey", std::bind(&some::class::function, objectPointer, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    
+    Alternatively, you can add a lambda as an event listener to an <EventCallback> object.
+    =================================== C++ ===================================
+    int index = EventCallback->AddEventListener
+    (
+        "AnyKey",
+        //source is what *triggered* the callback
+        //container is the GUI Object that holds this event callback
+        [](ssGUI::EventInfo info)
+        {
+            //Do something
+        }    
+    );
+    ===========================================================================
     
     Variables & Constructor:
     ============================== C++ ==============================
@@ -21,15 +39,17 @@ namespace EventCallbacks
         std::unordered_map<std::string, std::function<void(EventInfo)>> EventListeners;     //See <AddEventListener>            
         ssGUI::GUIObject* Container;                                                        //See <BindToObject>
         ssGUI::ObjectsReferences CurrentObjectsReferences;                                  //See <GetObjectReference> and <Internal_GetObjectsReferences>
+        ssGUI::Enums::EventType CurrentEventType;                                           //See <GetEventType>
     =================================================================
     ============================== C++ ==============================
     BaseEventCallback::BaseEventCallback() :    EventListeners(),
                                                 Container(nullptr),
-                                                CurrentObjectsReferences()
+                                                CurrentObjectsReferences(),
+                                                CurrentEventType(ssGUI::Enums::EventType::NONE)
     {}
     =================================================================
     */
-    class BaseEventCallback : public EventCallback
+    class EventCallback
     {
         public:
             friend class ssGUI::Factory;
@@ -39,97 +59,87 @@ namespace EventCallbacks
             std::unordered_map<std::string, std::function<void(EventInfo)>> EventListeners;     //See <AddEventListener>            
             ssGUI::GUIObject* Container;                                                        //See <BindToObject>
             ssGUI::ObjectsReferences CurrentObjectsReferences;                                  //See <GetObjectReference> and <Internal_GetObjectsReferences>
+            ssGUI::Enums::EventType CurrentEventType;                                           //See <GetEventType>
         
         protected:
-            BaseEventCallback();
-            ~BaseEventCallback();
-            BaseEventCallback(BaseEventCallback const & other) = default;
-            BaseEventCallback& operator=(BaseEventCallback const & other) = default;
+            EventCallback();
+            virtual ~EventCallback();
+            EventCallback(EventCallback const & other) = default;
+            EventCallback& operator=(EventCallback const & other) = default;
             static void* operator new(size_t size)      {return ::operator new(size);};
             static void* operator new[](size_t size)    {return ::operator new(size);};
             static void operator delete(void* p)        {free(p);};
             static void operator delete[](void* p)      {free(p);};
             
-            #define INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(eventType, copyListeners)\
-            [&](){\
-                eventType* temp;\
-                if(copyListeners)\
-                    temp = new eventType(*this);\
-                else\
-                    temp = new eventType();\
-                return temp;\
-            }()
-
         public:
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
-            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback) override;
+            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback);
             
             //function: AddEventListener
             //See <EventCallback::AddEventListener>
-            virtual void AddEventListener(std::string key, std::function<void(EventInfo)> callback) override;
+            virtual void AddEventListener(std::string key, std::function<void(EventInfo)> callback);
             
             //function: IsEventListenerExist
             //See <EventCallback::IsEventListenerExist>
-            virtual bool IsEventListenerExist(std::string key, ssGUI::GUIObject* adder) override;
+            virtual bool IsEventListenerExist(std::string key, ssGUI::GUIObject* adder);
 
             //function: IsEventListenerExist
             //See <EventCallback::IsEventListenerExist>
-            virtual bool IsEventListenerExist(std::string key) override;
+            virtual bool IsEventListenerExist(std::string key);
 
             //function: RemoveEventListener
             //See <EventCallback::RemoveEventListener>
-            virtual void RemoveEventListener(std::string key, ssGUI::GUIObject* adder) override;
+            virtual void RemoveEventListener(std::string key, ssGUI::GUIObject* adder);
 
             //function: RemoveEventListener
             //See <EventCallback::RemoveEventListener>
-            virtual void RemoveEventListener(std::string key) override;
+            virtual void RemoveEventListener(std::string key);
 
             //function: ClearEventListeners
             //See <EventCallback::ClearEventListeners>
-            virtual void ClearEventListeners() override;
+            virtual void ClearEventListeners();
             
             //function: GetEventListenerCount
             //See <EventCallback::GetEventListenerCount>
-            virtual int GetEventListenerCount() const override;
+            virtual int GetEventListenerCount() const;
             
             //function: Notify
             //See <EventCallback::Notify>
-            virtual void Notify(ssGUI::GUIObject* source) override;
+            virtual void Notify(ssGUI::GUIObject* source);
             
             //function: BindToObject
             //See <EventCallback::BindToObject>
-            virtual void BindToObject(ssGUI::GUIObject* bindObj) override;
+            virtual void BindToObject(ssGUI::GUIObject* bindObj);
 
             //function: AddObjectReference
             //See <EventCallback::AddObjectReference>
-            virtual ssGUI::ssGUIObjectIndex AddObjectReference(ssGUI::GUIObject* obj) override;
+            virtual ssGUI::ssGUIObjectIndex AddObjectReference(ssGUI::GUIObject* obj);
 
             //function: GetObjectReference
             //See <EventCallback::GetObjectReference>
-            virtual ssGUI::GUIObject* GetObjectReference(ssGUI::ssGUIObjectIndex index) const override;
+            virtual ssGUI::GUIObject* GetObjectReference(ssGUI::ssGUIObjectIndex index) const;
 
             //function: RemoveObjectReference
             //See <EventCallback::RemoveObjectReference>
-            virtual void RemoveObjectReference(ssGUI::ssGUIObjectIndex index) override;
+            virtual void RemoveObjectReference(ssGUI::ssGUIObjectIndex index);
 
             //function: Internal_GetObjectsReferences
             //(Internal ssGUI function) Returns structure that contains all the referenced GUI Objects. 
-            virtual ssGUI::ObjectsReferences* Internal_GetObjectsReferences() override;
+            virtual ssGUI::ObjectsReferences* Internal_GetObjectsReferences();
 
-            //function: GetEventCallbackName
-            //See <EventCallback::GetEventCallbackName>
-            virtual std::string GetEventCallbackName() const override;
+            //function: SetEventType
+            //This sets the type of the event callback, normally you don't need to set this.
+            virtual void SetEventType(ssGUI::Enums::EventType eventType);
+
+            //function: GetEventType
+            //This gets the type of the event callback
+            virtual ssGUI::Enums::EventType GetEventType() const;
             
             //function: Clone
             //See <EventCallback::Clone>
-            virtual BaseEventCallback* Clone(bool copyListeners) override;
-
-            //const: EVENT_NAME
-            //This is what you use in order to get the EventCallback that is added to the GUIObject
-            static const std::string EVENT_NAME;
+            virtual EventCallback* Clone(bool copyListeners);
     };
-}
 
 }
 

@@ -1,6 +1,5 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
 
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
     std::string ResourcesFolderPath = "..\\Resources\\";
@@ -8,7 +7,7 @@
     std::string ResourcesFolderPath = "./Resources/";
 #endif
 
-ssGUI::EventCallbacks::OnFontChangeEventCallback* callback = nullptr;
+ssGUI::EventCallback* callback = nullptr;
 ssGUI::Text* textObj = nullptr;
 ssGUI::Font* customFont = nullptr;
 int listerNum = 0;
@@ -17,7 +16,8 @@ ssTEST_INIT();
 
 ssTEST_SET_UP
 {
-    callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnFontChangeEventCallback>();
+    callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+    callback->SetEventType(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE);
     textObj = ssGUI::Factory::Create<ssGUI::Text>();
     customFont = ssGUI::Factory::Create<ssGUI::Font>();
     customFont->GetBackendFontInterface()->LoadFromPath(ResourcesFolderPath+"arial.ttf");
@@ -43,11 +43,6 @@ ssTEST_CLEAN_UP
     ssGUI::Factory::Dispose(textObj);
     ssGUI::Factory::Dispose(customFont);
     ssGUI::CleanUpDefaultResources();
-}
-
-ssTEST("GetEventCallbackNameTest")
-{
-    ssTEST_OUTPUT_ASSERT(callback->GetEventCallbackName() == "OnFontChangeEvent");
 }
 
 ssTEST("EventTest")

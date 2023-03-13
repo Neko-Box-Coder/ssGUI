@@ -7,7 +7,6 @@
 #include "ssGUI/DataClasses/Hierarchy.hpp"
 #include "ssGUI/DataClasses/ExtensionManager.hpp"
 #include "ssGUI/DataClasses/EventCallbackManager.hpp"
-#include "ssGUI/EventCallbacks/EventCallback.hpp"
 
 #include "glm/vec4.hpp"
 #include <vector>

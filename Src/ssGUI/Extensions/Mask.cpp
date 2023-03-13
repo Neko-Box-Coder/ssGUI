@@ -795,19 +795,19 @@ namespace Extensions
     {
         if(Container != nullptr)
         {
-            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName)
+            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, ssGUI::Enums::EventType eventType)
             {
-                if(!target->IsEventCallbackExist(eventCallbackName))
+                if(!target->IsEventCallbackExist(eventType))
                     return;
 
-                target->GetEventCallback(eventCallbackName)->RemoveEventListener(EXTENSION_NAME);
+                target->GetEventCallback(eventType)->RemoveEventListener(EXTENSION_NAME);
             
-                if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
-                    target->RemoveEventCallback(eventCallbackName);
+                if(target->GetEventCallback(eventType)->GetEventListenerCount() == 0)
+                    target->RemoveEventCallback(eventType);
             };
 
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME);
+            eventCallbackCleanUp(Container, ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED);
+            eventCallbackCleanUp(Container, ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED);
         }
     } 
 
@@ -852,61 +852,61 @@ namespace Extensions
         if(MaskChildren)
         {
             AddMaskEnforcerToChildren(Container, IsMaskContainer());      
-            if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME))
+            if(Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED))
             {
-                Container->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME)->AddEventListener
+                Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_OnRecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
-                    // std::bind(&ssGUI::Extensions::Mask::Internal_OnRecursiveChildAdded, this, std::placeholders::_1)
+                    [this](ssGUI::EventInfo info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildAdded, this, std::placeholders::_1)
                 );
             }
             else
             {
-                auto* event = Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
+                auto* event = Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED);
 
                 event->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_OnRecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
-                    // std::bind(&ssGUI::Extensions::Mask::Internal_OnRecursiveChildAdded, this, std::placeholders::_1)
+                    [this](ssGUI::EventInfo info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildAdded, this, std::placeholders::_1)
                 );
             }
 
-            if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME))
+            if(Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED))
             {
-                Container->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME)->AddEventListener
+                Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_OnRecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
-                    // std::bind(&ssGUI::Extensions::Mask::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1)
+                    [this](ssGUI::EventInfo info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildRemoved, this, std::placeholders::_1)
                 );
             }
             else
             {
-                auto* event = Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>();
+                auto* event = Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED);
 
                 event->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_OnRecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
-                    // std::bind(&ssGUI::Extensions::Mask::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1)
+                    [this](ssGUI::EventInfo info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildRemoved, this, std::placeholders::_1)
                 );
             }
         }
         else
         {
             RemoveMaskEnforcerToChildren(Container, IsMaskContainer());
-            if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME))
+            if(Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED))
             {
-                Container->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME)->
+                Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->
                     RemoveEventListener(EXTENSION_NAME);
                 
             }
 
-            if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME))
+            if(Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED))
             {
-                Container->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME)->
+                Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->
                     RemoveEventListener(EXTENSION_NAME);
                 
             }
@@ -1039,14 +1039,14 @@ namespace Extensions
         return IsPointContainedInMask(point, GetGlobalPosition(), GetGlobalPosition() + GetSize());
     }
 
-    void Mask::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
+    void Mask::Internal_RecursiveChildAdded(ssGUI::GUIObject* child)
     {
         ssLOG_FUNC_ENTRY();
         AddMaskEnforcerToChildren(child, true);
         ssLOG_FUNC_EXIT();
     }
 
-    void Mask::Internal_OnRecursiveChildRemoved(ssGUI::GUIObject* child)
+    void Mask::Internal_RecursiveChildRemoved(ssGUI::GUIObject* child)
     {
         ssLOG_FUNC_ENTRY();
         RemoveMaskEnforcerToChildren(child, true);

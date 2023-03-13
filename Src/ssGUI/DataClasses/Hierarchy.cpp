@@ -5,17 +5,6 @@
 #include "ssGUI/DataClasses/Renderer.hpp"
 #include "ssGUI/DataClasses/Transform.hpp"
 
-#include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
-#include "ssGUI/EventCallbacks/OnRecursiveChildRemoveEventCallback.hpp"
-#include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/OnRecursiveChildAddEventCallback.hpp"
-#include "ssGUI/EventCallbacks/ChildAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
-
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 
@@ -51,10 +40,10 @@ namespace ssGUI
         }
         
         DestroyEventCalled = true;
-        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
+        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY))
         {
-            CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME)->Notify(CurrentObject);
-            CurrentEventCallbackManager->RemoveEventCallback(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME);
+            CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->Notify(CurrentObject);
+            CurrentEventCallbackManager->RemoveEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY);
         }
         ssLOG_FUNC_EXIT();
     }
@@ -160,8 +149,8 @@ namespace ssGUI
                 if(originalParent == newParent)
                     break;
 
-                if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::OnRecursiveChildRemoveEventCallback::EVENT_NAME))
-                    originalParent->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildRemoveEventCallback::EVENT_NAME)->Notify(CurrentObject);
+                if(originalParent->IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_REMOVE))
+                    originalParent->GetEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_REMOVE)->Notify(CurrentObject);
                 
                 originalParent = originalParent->GetParent();
             }
@@ -239,15 +228,15 @@ namespace ssGUI
         //Send event callback if any object is subscribed to child removed
         if(originalParent != nullptr && originalParent != newParent)
         {
-            if(originalParent->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))
-                originalParent->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->Notify(CurrentObject);
+            if(originalParent->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_REMOVED))
+                originalParent->GetEventCallback(ssGUI::Enums::EventType::CHILD_REMOVED)->Notify(CurrentObject);
         }
 
         //Send event callback to objects that are subscribed to recursive child removed
         for(auto obj : objsToNotify)
         {
-            if(obj->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME))
-                obj->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME)->Notify(CurrentObject);
+            if(obj->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED))
+                obj->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->Notify(CurrentObject);
         }
 
         //Exit if this object is parented to nothing
@@ -268,8 +257,8 @@ namespace ssGUI
                 return;
             }
             
-            if(currentParent->IsEventCallbackExist(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))
-                currentParent->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME)->Notify(CurrentObject);    
+            if(currentParent->IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD))
+                currentParent->GetEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD)->Notify(CurrentObject);    
             
             currentParent = currentParent->GetParent();
         }
@@ -285,8 +274,8 @@ namespace ssGUI
             SetFocus(true);
         
         //Send event callback if any object is subscribed to child added
-        if(newParent->IsEventCallbackExist(ssGUI::EventCallbacks::ChildAddedEventCallback::EVENT_NAME))
-            newParent->GetEventCallback(ssGUI::EventCallbacks::ChildAddedEventCallback::EVENT_NAME)->Notify(CurrentObject);
+        if(newParent->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_ADDED))
+            newParent->GetEventCallback(ssGUI::Enums::EventType::CHILD_ADDED)->Notify(CurrentObject);
         
         //Send event callback if any object is subscribed to recursive children added
         currentParent = CurrentObjectsReferences.GetObjectReference(Parent);
@@ -299,8 +288,8 @@ namespace ssGUI
                 return;
             }
             
-            if(currentParent->IsEventCallbackExist(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME))
-                currentParent->GetEventCallback(ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME)->Notify(CurrentObject);    
+            if(currentParent->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED))
+                currentParent->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->Notify(CurrentObject);    
             
             currentParent = currentParent->GetParent();
         }
@@ -508,9 +497,9 @@ namespace ssGUI
     {
         Children.splice(position, Children, child);
 
-        if(CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>())
+        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED))
         {
-            CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>()->
+            CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED)->
                 Notify(CurrentObjectsReferences.GetObjectReference(child->ChildIndex));   
         }
     }
@@ -520,9 +509,9 @@ namespace ssGUI
     {
         Children.splice(++position, Children, child);
 
-        if(CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>())
+        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED))
         {
-            CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>()->
+            CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED)->
                 Notify(CurrentObjectsReferences.GetObjectReference(child->ChildIndex));   
         }
     }   
@@ -665,10 +654,10 @@ namespace ssGUI
 
         if(focus != originalFocus)
         {
-            if(focus && CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusedEventCallback>())
-                CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>()->Notify(CurrentObject);
-            else if(!focus && CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>())
-                CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>()->Notify(CurrentObject);
+            if(focus && CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::FOCUSED))
+                CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::FOCUSED)->Notify(CurrentObject);
+            else if(!focus && CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::FOCUS_LOST))
+                CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::FOCUS_LOST)->Notify(CurrentObject);
         }
 
         if(focus)
@@ -701,10 +690,10 @@ namespace ssGUI
 
         if(focus != originalFocus)
         {
-            if(focus && CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusedEventCallback>())
-                CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>()->Notify(CurrentObject);
-            else if(!focus && CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>())
-                CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>()->Notify(CurrentObject);
+            if(focus && CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::FOCUSED))
+                CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::FOCUSED)->Notify(CurrentObject);
+            else if(!focus && CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::FOCUS_LOST))
+                CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::FOCUS_LOST)->Notify(CurrentObject);
         }
     }
 

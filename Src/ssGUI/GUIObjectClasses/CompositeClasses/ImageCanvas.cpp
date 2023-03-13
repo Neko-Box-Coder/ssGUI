@@ -442,7 +442,7 @@ namespace ssGUI
         auto hScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         hScrollbar->SetUserCreated(false);
         hScrollbar->SetVertical(false, true);
-        auto ecb = hScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        auto ecb = hScrollbar->AddEventCallback(ssGUI::Enums::EventType::SCROLLBAR_VALUE_CHANGED_VIA_GUI);
         ssGUIObjectIndex index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
@@ -477,7 +477,7 @@ namespace ssGUI
         auto vScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         vScrollbar->SetUserCreated(false);
         vScrollbar->SetVertical(true, true);
-        ecb = vScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        ecb = vScrollbar->AddEventCallback(ssGUI::Enums::EventType::SCROLLBAR_VALUE_CHANGED_VIA_GUI);
         index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (

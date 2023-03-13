@@ -144,10 +144,10 @@ namespace ssGUI
 
     void Menu::RegisterMenuItem(ssGUI::MenuItem* menuItem)
     {
-        if(!menuItem->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>())
+        if(!menuItem->IsEventCallbackExist(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED))
             return;
 
-        auto ecb = menuItem->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto ecb = menuItem->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         int menuIndex = ecb->AddObjectReference(this);        
         ecb->AddEventListener
         (
@@ -189,11 +189,11 @@ namespace ssGUI
 
     void Menu::LinkMenuItemToSubMenu(ssGUI::MenuItem* menuItem, ssGUI::Menu* subMenu)
     {
-        if(!menuItem->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>())
+        if(!menuItem->IsEventCallbackExist(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED))
             return;
         
         //If the menu item is already registered with event callback, remove it
-        auto ecb = menuItem->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto ecb = menuItem->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         if(ecb->IsEventListenerExist(ListenerKey, this))
         {
             ecb->RemoveEventListener(ListenerKey, this);

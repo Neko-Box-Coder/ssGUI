@@ -1,10 +1,5 @@
 #include "ssGUI/Extensions/Layout.hpp"
 
-#include "ssGUI/EventCallbacks/OnRecursiveChildAddEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/WindowLayoutItemEnforcer.hpp"
 #include "ssGUI/ssGUITags.hpp"
@@ -41,27 +36,27 @@ namespace Extensions
     {
         if(Container != nullptr)
         {
-            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, std::string eventCallbackName)
+            auto eventCallbackCleanUp = [&](ssGUI::GUIObject* target, ssGUI::Enums::EventType eventType)
             {
-                if(!target->IsEventCallbackExist(eventCallbackName))
+                if(!target->IsEventCallbackExist(eventType))
                     return;
 
-                target->GetEventCallback(eventCallbackName)->RemoveEventListener(EXTENSION_NAME);
+                target->GetEventCallback(eventType)->RemoveEventListener(EXTENSION_NAME);
             
-                if(target->GetEventCallback(eventCallbackName)->GetEventListenerCount() == 0)
-                    target->RemoveEventCallback(eventCallbackName);
+                if(target->GetEventCallback(eventType)->GetEventListenerCount() == 0)
+                    target->RemoveEventCallback(eventType);
             };
 
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME);
-            eventCallbackCleanUp(Container, ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME);
+            eventCallbackCleanUp(Container, ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD);
+            eventCallbackCleanUp(Container, ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED);
+            eventCallbackCleanUp(Container, ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED);
+            eventCallbackCleanUp(Container, ssGUI::Enums::EventType::CHILD_POSITION_CHANGED);
         
             Container->StashChildrenIterator();
             Container->MoveChildrenIteratorToFirst();
             while(!Container->IsChildrenIteratorEnd())
             {
-                eventCallbackCleanUp(Container->GetCurrentChild(), ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME);
+                eventCallbackCleanUp(Container->GetCurrentChild(), ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED);
                 Container->MoveChildrenIteratorNext();
             }
             Container->PopChildrenIterator();
@@ -834,8 +829,6 @@ namespace Extensions
             return;
         }
         
-        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME;
-        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
         UpdateChildrenResizeTypesAndOnTop();
 
         ssLOG_FUNC_EXIT();
@@ -858,10 +851,6 @@ namespace Extensions
             return;
         }
 
-        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME;
-        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
-        const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
-
         if(update)
         {
             //Iterate each child to see if event callback exists
@@ -880,11 +869,11 @@ namespace Extensions
                 if(currentChildIndex == -1)
                     currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
-                if(!Container->GetCurrentChild()->IsEventCallbackExist(onMinMaxSizeChangedEventName))
-                    Container->GetCurrentChild()->AddEventCallback<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>();
+                if(!Container->GetCurrentChild()->IsEventCallbackExist(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED))
+                    Container->GetCurrentChild()->AddEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED);
 
                 //This will override the existing event listener if it already exists, otherwise it will just add it.
-                Container->GetCurrentChild()->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener
+                Container->GetCurrentChild()->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->AddEventListener
                 (
                     EXTENSION_NAME,
                     [this](ssGUI::EventInfo info){Internal_OnChildMinMaxSizeChanged(info.EventSource);}     //TODO: Use ObjectsReferences instead of this
@@ -910,13 +899,13 @@ namespace Extensions
                 if(currentChildIndex == -1)
                     currentChildIndex = CurrentObjectsReferences.AddObjectReference(Container->GetCurrentChild());
                 
-                if(Container->GetCurrentChild()->IsEventCallbackExist(onMinMaxSizeChangedEventName))
+                if(Container->GetCurrentChild()->IsEventCallbackExist(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED))
                 {
-                    Container->GetCurrentChild()->GetEventCallback(onMinMaxSizeChangedEventName)->RemoveEventListener(EXTENSION_NAME);
+                    Container->GetCurrentChild()->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->RemoveEventListener(EXTENSION_NAME);
                     
                     //If we were the only one using the event callback, remove it
-                    if(Container->GetCurrentChild()->GetEventCallback(onMinMaxSizeChangedEventName)->GetEventListenerCount() == 0)
-                        Container->GetCurrentChild()->RemoveEventCallback(onMinMaxSizeChangedEventName);
+                    if(Container->GetCurrentChild()->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->GetEventListenerCount() == 0)
+                        Container->GetCurrentChild()->RemoveEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED);
                 }
 
                 Container->MoveChildrenIteratorNext();
@@ -1070,14 +1059,12 @@ namespace Extensions
         if(GetUpdateContainerMinMaxSize())
         {
             SyncContainerMinMaxSize();
-            const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
             
             //Add MinMax size changed callback
-            if(!child->IsEventCallbackExist(onMinMaxSizeChangedEventName))
-                child->AddEventCallback<ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback>();
-            
+            if(!child->IsEventCallbackExist(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED))
+                child->AddEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED);
 
-            child->GetEventCallback(onMinMaxSizeChangedEventName)->AddEventListener
+            child->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->AddEventListener
             (
                 EXTENSION_NAME,
                 [this](ssGUI::EventInfo info){Internal_OnChildMinMaxSizeChanged(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
@@ -1119,12 +1106,11 @@ namespace Extensions
         }
 
         //Remove MinMax size changed callbacks
-        const std::string onMinMaxSizeChangedEventName = ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME;
-        if(child->IsEventCallbackExist(onMinMaxSizeChangedEventName))
+        if(child->IsEventCallbackExist(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED))
         {                
-            child->GetEventCallback(onMinMaxSizeChangedEventName)->RemoveEventListener(EXTENSION_NAME);
-            if(child->GetEventCallback(onMinMaxSizeChangedEventName)->GetEventListenerCount() == 0)
-                child->RemoveEventCallback(onMinMaxSizeChangedEventName);
+            child->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->RemoveEventListener(EXTENSION_NAME);
+            if(child->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->GetEventListenerCount() == 0)
+                child->RemoveEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED);
         }
 
         if(GetUpdateContainerMinMaxSize())
@@ -1298,10 +1284,10 @@ namespace Extensions
         if(GetUpdateContainerMinMaxSize())
             SetUpdateContainerMinMaxSize(true);
 
-        if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME))
-            Container->AddEventCallback<ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback>();
+        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD))
+            Container->AddEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD);
 
-        Container->GetEventCallback(ssGUI::EventCallbacks::OnRecursiveChildAddEventCallback::EVENT_NAME)->AddEventListener
+        Container->GetEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD)->AddEventListener
         (
             EXTENSION_NAME,
             [](ssGUI::EventInfo info)
@@ -1334,34 +1320,30 @@ namespace Extensions
             }
         );
 
-        const std::string onChildAddedEventName = ssGUI::EventCallbacks::RecursiveChildAddedEventCallback::EVENT_NAME;
-        const std::string onChildRemovedEventName = ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback::EVENT_NAME;
-        const std::string childPositionChangedEventName = ssGUI::EventCallbacks::ChildPositionChangedEventCallback::EVENT_NAME;
-
-        if(!Container->IsEventCallbackExist(onChildAddedEventName))
-            Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
+        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED))
+            Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED);
         
-        if(!Container->IsEventCallbackExist(onChildRemovedEventName))
-            Container->AddEventCallback<ssGUI::EventCallbacks::RecursiveChildRemovedEventCallback>();
+        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED))
+            Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED);
 
-        if(!Container->IsEventCallbackExist(childPositionChangedEventName))
-            Container->AddEventCallback<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>();
+        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED))
+            Container->AddEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED);
 
-        Container->GetEventCallback(onChildAddedEventName)->AddEventListener
+        Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->AddEventListener
         (
             EXTENSION_NAME,
             [this](ssGUI::EventInfo info){Internal_OnRecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
             // std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1)
         );
         
-        Container->GetEventCallback(onChildRemovedEventName)->AddEventListener
+        Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->AddEventListener
         (
             EXTENSION_NAME,
             [this](ssGUI::EventInfo info){Internal_OnRecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
             // std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1)
         );
 
-        Container->GetEventCallback(childPositionChangedEventName)->AddEventListener
+        Container->GetEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED)->AddEventListener
         (
             EXTENSION_NAME,
             [](ssGUI::EventInfo info)

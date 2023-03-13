@@ -5,7 +5,6 @@
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/Extensions/Docker.hpp"
-#include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
@@ -43,15 +42,15 @@ namespace Extensions
     
     Dockable::~Dockable()
     {
-        if(Container != nullptr && Container->IsEventCallbackExist(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME))
+        if(Container != nullptr && Container->IsEventCallbackExist(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED))
         {
-            Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->
+            Container->GetEventCallback(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED)->
                 RemoveEventListener(EXTENSION_NAME);
             
-            if(Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->
+            if(Container->GetEventCallback(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED)->
                 GetEventListenerCount() == 0)
             {
-                Container->RemoveEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME);
+                Container->RemoveEventCallback(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED);
             }
         }
 
@@ -932,12 +931,12 @@ namespace Extensions
         
         Container = bindObj;
 
-        ssGUI::EventCallbacks::EventCallback* event = nullptr;
-        if(Container->IsEventCallbackExist(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME))
-            event = Container->GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME);
+        ssGUI::EventCallback* event = nullptr;
+        if(Container->IsEventCallbackExist(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED))
+            event = Container->GetEventCallback(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED);
         else
         {
-            event = Container->AddEventCallback<ssGUI::EventCallbacks::WindowDragStateChangedEventCallback>();
+            event = Container->AddEventCallback(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED);
         }
 
         if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)

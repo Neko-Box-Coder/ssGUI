@@ -1,8 +1,7 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 
-ssGUI::EventCallbacks::ChildRemovedEventCallback* callback = nullptr;
+ssGUI::EventCallback* callback = nullptr;
 ssGUI::GUIObject* testObj = nullptr;
 ssGUI::Window* testWindow = nullptr;
 int listerNum = 0;
@@ -11,7 +10,8 @@ ssTEST_INIT();
 
 ssTEST_SET_UP
 {
-    callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
+    callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+    callback->SetEventType(ssGUI::Enums::EventType::CHILD_REMOVED);
     testObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
     testWindow = ssGUI::Factory::Create<ssGUI::Window>();
     
@@ -30,11 +30,6 @@ ssTEST_CLEAN_UP
     ssGUI::Factory::Dispose(callback);
     ssGUI::Factory::Dispose(testObj);
     ssGUI::Factory::Dispose(testWindow);
-}
-
-ssTEST("GetEventCallbackNameTest")
-{
-    ssTEST_OUTPUT_ASSERT(callback->GetEventCallbackName() == "ChildRemovedEvent");
 }
 
 ssTEST("EventTest")

@@ -1288,7 +1288,7 @@ namespace ssGUI
         SetInteractable(true);
         InitiateDefaultResources();
 
-        auto sizeChangedCallback = AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto sizeChangedCallback = AddEventCallback(ssGUI::Enums::EventType::SIZE_CHANGED);
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
@@ -1650,8 +1650,8 @@ namespace ssGUI
         if(font == nullptr)
             return;
 
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME))
-            GetEventCallback(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME)->Notify(this);
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
         
         CurrentFonts.push_back(font);
         RecalculateTextNeeded = true;
@@ -1663,8 +1663,8 @@ namespace ssGUI
         if(font == nullptr)
             return;
         
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME))
-            GetEventCallback(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME)->Notify(this);
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
         
         CurrentFonts.insert(CurrentFonts.begin() + index, font);
         RecalculateTextNeeded = true;
@@ -1684,8 +1684,8 @@ namespace ssGUI
         if(index < 0 || index >= CurrentFonts.size() || font == nullptr)
             return;
 
-        if(font != CurrentFonts[index] && IsEventCallbackExist(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME))
-            GetEventCallback(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME)->Notify(this);
+        if(font != CurrentFonts[index] && IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
 
         CurrentFonts[index] = font;
         RecalculateTextNeeded = true;
@@ -1697,8 +1697,8 @@ namespace ssGUI
         if(index < 0 || index >= CurrentFonts.size())
             return;
 
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME))
-            GetEventCallback(ssGUI::EventCallbacks::OnFontChangeEventCallback::EVENT_NAME)->Notify(this);
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
 
         CurrentFonts.erase(CurrentFonts.begin() + index);
         RecalculateTextNeeded = true;

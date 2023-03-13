@@ -3,7 +3,6 @@
 #include "ssGUI/DataClasses/Hierarchy.hpp"
 #include "ssGUI/DataClasses/EventCallbackManager.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
-#include "ssGUI/EventCallbacks/BackgroundColorChangedEventCallback.hpp"
 
 namespace ssGUI
 {
@@ -131,8 +130,8 @@ namespace ssGUI
     void Renderer::SetBackgroundColor(glm::u8vec4 color)
     {
         BackgroundColour = color;
-        if(CurrentEventCallbackManager->IsAnyEventCallbackExist<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>())
-            CurrentEventCallbackManager->GetAnyEventCallback<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>()->Notify(CurrentObject);
+        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED))
+            CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED)->Notify(CurrentObject);
         RedrawObject();
     }
 

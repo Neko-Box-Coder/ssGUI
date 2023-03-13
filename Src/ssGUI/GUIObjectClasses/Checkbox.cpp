@@ -57,7 +57,7 @@ namespace ssGUI
         border->SetBorderWidth(2);
         border->SetBorderColor(GetBackgroundColor());
 
-        auto buttonEvent = GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto buttonEvent = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEvent->ClearEventListeners();
         buttonEvent->AddEventListener(
             ListenerKey, this,

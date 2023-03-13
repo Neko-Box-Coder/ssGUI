@@ -10,7 +10,7 @@ void SetUp()
     mainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
     button = ssGUI::Factory::Create<ssGUI::Button>();
     manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
-    auto* ecb = button->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+    auto* ecb = button->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
     ecb->AddEventListener(  "TestKey",    
                             [](ssGUI::EventInfo info)
                             {

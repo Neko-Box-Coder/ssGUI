@@ -92,7 +92,7 @@ namespace ssGUI
         closeButton->SetButtonColor(glm::u8vec4(255, 127, 127, 255));
 
         //Setup button event
-        auto buttonEvent = closeButton->GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
+        auto buttonEvent = closeButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEvent->RemoveEventListener(ssGUI::Button::ListenerKey, closeButton);
         buttonEvent->AddEventListener
         (
@@ -133,7 +133,7 @@ namespace ssGUI
         );
 
         //Update button's shape size when button's size is changed
-        auto shapeEvent = closeButton->AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto shapeEvent = closeButton->AddEventCallback(ssGUI::Enums::EventType::SIZE_CHANGED);
         shapeEvent->AddEventListener
         (
             ListenerKey, this,

@@ -199,12 +199,14 @@ if(ssGUI_OUTPUT_STATIC)
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 else()
     add_library(ssGUI SHARED
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 endif()
 
@@ -245,7 +247,6 @@ if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
 endif()
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/DataClasses")
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallbacks")
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Extensions")
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/GUIObjectClasses")
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/GUIObjectClasses/CompositeClasses")

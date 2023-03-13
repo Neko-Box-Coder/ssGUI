@@ -1,23 +1,22 @@
-#include "ssGUI/EventCallbacks/BaseEventCallback.hpp"
+#include "ssGUI/EventCallback.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
 {
 
-namespace EventCallbacks
-{    
-    BaseEventCallback::BaseEventCallback() :    EventListeners(),
-                                                Container(nullptr),
-                                                CurrentObjectsReferences()
+    EventCallback::EventCallback() :    EventListeners(),
+                                        Container(nullptr),
+                                        CurrentObjectsReferences(),
+                                        CurrentEventType(ssGUI::Enums::EventType::NONE)
     {}
 
-    BaseEventCallback::~BaseEventCallback()
+    EventCallback::~EventCallback()
     {
         CurrentObjectsReferences.CleanUp();
     }
     
-    void BaseEventCallback::AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback)
+    void EventCallback::AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback)
     {
         if(adder != nullptr)
         {
@@ -28,12 +27,12 @@ namespace EventCallbacks
             EventListeners[key] = callback;
     }
 
-    void BaseEventCallback::AddEventListener(std::string key, std::function<void(EventInfo)> callback)
+    void EventCallback::AddEventListener(std::string key, std::function<void(EventInfo)> callback)
     {
         AddEventListener(key, nullptr, callback);
     }
     
-    bool BaseEventCallback::IsEventListenerExist(std::string key, ssGUI::GUIObject* adder)
+    bool EventCallback::IsEventListenerExist(std::string key, ssGUI::GUIObject* adder)
     {
         if(adder != nullptr)
         {
@@ -48,12 +47,12 @@ namespace EventCallbacks
             return EventListeners.find(key) != EventListeners.end();
     }
 
-    bool BaseEventCallback::IsEventListenerExist(std::string key)
+    bool EventCallback::IsEventListenerExist(std::string key)
     {
         return IsEventListenerExist(key, nullptr);
     }
 
-    void BaseEventCallback::RemoveEventListener(std::string key, ssGUI::GUIObject* adder)
+    void EventCallback::RemoveEventListener(std::string key, ssGUI::GUIObject* adder)
     {
         if(!IsEventListenerExist(key, adder))
             return;
@@ -67,22 +66,22 @@ namespace EventCallbacks
             EventListeners.erase(key);
     }
 
-    void BaseEventCallback::RemoveEventListener(std::string key)
+    void EventCallback::RemoveEventListener(std::string key)
     {
         RemoveEventListener(key, nullptr);
     }
 
-    void BaseEventCallback::ClearEventListeners()
+    void EventCallback::ClearEventListeners()
     {
         EventListeners.clear();
     }
 
-    int BaseEventCallback::GetEventListenerCount() const
+    int EventCallback::GetEventListenerCount() const
     {
         return EventListeners.size();
     }
 
-    void BaseEventCallback::Notify(ssGUI::GUIObject* source)
+    void EventCallback::Notify(ssGUI::GUIObject* source)
     {
         ssLOG_FUNC_ENTRY();
         for(auto it = EventListeners.begin(); it != EventListeners.end(); it++)
@@ -96,42 +95,49 @@ namespace EventCallbacks
         ssLOG_FUNC_EXIT();
     }
 
-    void BaseEventCallback::BindToObject(ssGUI::GUIObject* bindObj)
+    void EventCallback::BindToObject(ssGUI::GUIObject* bindObj)
     {
         Container = bindObj;
     }
 
-    ssGUIObjectIndex BaseEventCallback::AddObjectReference(ssGUI::GUIObject* obj)
+    ssGUIObjectIndex EventCallback::AddObjectReference(ssGUI::GUIObject* obj)
     {
         return CurrentObjectsReferences.AddObjectReference(obj);
     }
 
-    ssGUI::GUIObject* BaseEventCallback::GetObjectReference(ssGUIObjectIndex index) const
+    ssGUI::GUIObject* EventCallback::GetObjectReference(ssGUIObjectIndex index) const
     {
         return CurrentObjectsReferences.GetObjectReference(index);
     }
 
-    void BaseEventCallback::RemoveObjectReference(ssGUIObjectIndex index)
+    void EventCallback::RemoveObjectReference(ssGUIObjectIndex index)
     {
         CurrentObjectsReferences.RemoveObjectReference(index);
     }
 
-    ObjectsReferences* BaseEventCallback::Internal_GetObjectsReferences()
+    ObjectsReferences* EventCallback::Internal_GetObjectsReferences()
     {
         return &CurrentObjectsReferences;
     }
 
-    std::string BaseEventCallback::GetEventCallbackName() const
+    void EventCallback::SetEventType(ssGUI::Enums::EventType eventType)
     {
-        return EVENT_NAME;
+        CurrentEventType = eventType;
+    }
+    
+    ssGUI::Enums::EventType EventCallback::GetEventType() const
+    {
+        return CurrentEventType;
     }
 
-    BaseEventCallback* BaseEventCallback::Clone(bool copyListeners)
+    EventCallback* EventCallback::Clone(bool copyListeners)
     {
-        return INTERNAL_SSGUI_EVENT_CALLBACK_CLONE(BaseEventCallback, copyListeners);
+        EventCallback* temp;
+        if(copyListeners)
+            temp = new EventCallback(*this);
+        else
+            temp = new EventCallback();
+        return temp;
     }
-
-    const std::string BaseEventCallback::EVENT_NAME = "BaseEvent";
-}
 
 }

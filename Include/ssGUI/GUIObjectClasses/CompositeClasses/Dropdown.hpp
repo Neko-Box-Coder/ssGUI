@@ -130,7 +130,7 @@ namespace ssGUI
                                                                                                     //TODO: Allow this to be configured
             Dropdown(Dropdown const& other);
 
-            void AddItemListener(ssGUI::EventCallbacks::EventCallback* ecb, int index);
+            void AddItemListener(ssGUI::EventCallback* ecb, int index);
 
             virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;

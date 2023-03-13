@@ -66,7 +66,7 @@ namespace ssGUI
                         OnTransformBeginSize(),
                         MouseDownPosition()
     {       
-        AddEventCallback<ssGUI::EventCallbacks::OnWindowCloseEventCallback>();
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_WINDOW_CLOSE);
         AddExtension<ssGUI::Extensions::Border>();
         SetSize(glm::vec2(200, 200));
         SetAdaptiveTitlebarColor(true);

@@ -1,4 +1,3 @@
-#include "ssGUI/EventCallbacks/ItemSelectedEventCallback.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 #include "ssLogger/ssLog.hpp"
@@ -19,7 +18,7 @@ void SetUp()
     dropdown->AddItem("Test2");
     dropdown->AddItem("Test3");
     
-    auto* ecb = dropdown->AddEventCallback<ssGUI::EventCallbacks::ItemSelectedEventCallback>();
+    auto* ecb = dropdown->AddEventCallback(ssGUI::Enums::EventType::ITEM_SELECTED);
     ecb->AddEventListener(  "key", 
                             [](ssGUI::EventInfo info)
                             {

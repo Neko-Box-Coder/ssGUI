@@ -1,7 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
-#include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
@@ -167,11 +166,11 @@ namespace ssGUI
         SetAdaptiveButtonTextColor(true);   //Update the text color
 
         //Add button text clean-up
-        if(!IsEventCallbackExist(ssGUI::EventCallbacks::OnObjectDestroyEventCallback::EVENT_NAME))
-            AddEventCallback<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
+        if(!IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY))
+            AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY);
 
         //Change button callback
-        auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
+        auto buttonEventCallback = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEventCallback->RemoveEventListener(Button::ListenerKey, this);
         buttonEventCallback->AddEventListener
         (

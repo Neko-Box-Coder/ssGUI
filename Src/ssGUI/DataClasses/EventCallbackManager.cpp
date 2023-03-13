@@ -7,7 +7,7 @@ namespace ssGUI
 {
     EventCallbackManager::EventCallbackManager(EventCallbackManager const& other)
     {
-        EventCallbacks = std::unordered_map<std::string, ssGUI::EventCallbacks::EventCallback*>();
+        EventCallbacks = std::unordered_map<ssGUI::Enums::EventType, ssGUI::EventCallback*>();
         CurrentRenderer = nullptr;
         CurrentObject = nullptr;
     }
@@ -27,34 +27,58 @@ namespace ssGUI
         CurrentRenderer = renderer;
         CurrentObject = obj;
     }
-
-    ssGUI::EventCallbacks::EventCallback* EventCallbackManager::GetEventCallback(std::string eventCallbackName)
+    
+    ssGUI::EventCallback* EventCallbackManager::AddEventCallback(ssGUI::Enums::EventType eventType)
     {
-        if(!IsEventCallbackExist(eventCallbackName))
+        if(IsEventCallbackExist(eventType))
+            return GetEventCallback(eventType);
+                        
+        ssGUI::EventCallback* eventCallback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+        EventCallbacks[eventCallback->GetEventType()] = eventCallback;
+        eventCallback->BindToObject(CurrentObject);
+        CurrentRenderer->RedrawObject();
+        return eventCallback;
+    }
+    
+    ssGUI::EventCallback* EventCallbackManager::AddEventCallbackCopy(ssGUI::EventCallback* copy, bool copyListeners)
+    {
+        if(IsEventCallbackExist(copy->GetEventType()))
+            return GetEventCallback(copy->GetEventType());
+                        
+        ssGUI::EventCallback* eventCallback = copy->Clone(copyListeners);
+        EventCallbacks[eventCallback->GetEventType()] = eventCallback;
+        eventCallback->BindToObject(CurrentObject);
+        CurrentRenderer->RedrawObject();
+        return eventCallback;
+    }
+
+    ssGUI::EventCallback* EventCallbackManager::GetEventCallback(ssGUI::Enums::EventType eventType)
+    {
+        if(!IsEventCallbackExist(eventType))
             return nullptr;
 
-        return EventCallbacks[eventCallbackName];
+        return EventCallbacks[eventType];
     }
 
-    bool EventCallbackManager::IsEventCallbackExist(std::string eventCallbackName) const
+    bool EventCallbackManager::IsEventCallbackExist(ssGUI::Enums::EventType eventType) const
     {
-        return EventCallbacks.find(eventCallbackName) != EventCallbacks.end();
+        return EventCallbacks.find(eventType) != EventCallbacks.end();
     }
 
-    void EventCallbackManager::RemoveEventCallback(std::string eventCallbackName)
+    void EventCallbackManager::RemoveEventCallback(ssGUI::Enums::EventType eventType)
     {
-        if(!IsEventCallbackExist(eventCallbackName))
+        if(!IsEventCallbackExist(eventType))
             return;
 
-        auto ecb = EventCallbacks.at(eventCallbackName);
-        EventCallbacks.erase(eventCallbackName);
+        auto ecb = EventCallbacks.at(eventType);
+        EventCallbacks.erase(eventType);
         ssGUI::Factory::Dispose(ecb);
         CurrentRenderer->RedrawObject();
     }
 
-    std::vector<ssGUI::EventCallbacks::EventCallback*> EventCallbackManager::GetListOfEventCallbacks()
+    std::vector<ssGUI::EventCallback*> EventCallbackManager::GetListOfEventCallbacks()
     {
-        std::vector<ssGUI::EventCallbacks::EventCallback*> returnVector = std::vector<ssGUI::EventCallbacks::EventCallback*>();
+        std::vector<ssGUI::EventCallback*> returnVector = std::vector<ssGUI::EventCallback*>();
         
         for(auto eventCallback : EventCallbacks)
             returnVector.push_back(eventCallback.second);

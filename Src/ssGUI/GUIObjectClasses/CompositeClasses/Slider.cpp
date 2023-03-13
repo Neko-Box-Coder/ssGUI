@@ -3,9 +3,6 @@
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 #include "ssGUI/HelperClasses/DrawCircle.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
-#include "ssGUI/EventCallbacks/SliderValueChangedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/SliderValueFinishedChangingEventCallback.hpp"
-#include "ssGUI/EventCallbacks/SliderValueChangedViaGuiEventCallback.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
@@ -430,22 +427,22 @@ namespace ssGUI
 
         if(guiInteracted)
         {
-            if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::SliderValueChangedViaGuiEventCallback>())
-                GetAnyEventCallback<ssGUI::EventCallbacks::SliderValueChangedViaGuiEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::SLIDER_VALUE_CHANGED_VIA_GUI))
+                GetEventCallback(ssGUI::Enums::EventType::SLIDER_VALUE_CHANGED_VIA_GUI)->Notify(static_cast<ssGUI::GUIObject*>(this));
         }
 
         if(LastSliderValue != GetSliderValue())
         {
-            if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::SliderValueChangedEventCallback>())
-                GetAnyEventCallback<ssGUI::EventCallbacks::SliderValueChangedEventCallback>()->Notify(static_cast<ssGUI::GUIObject*>(this));
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::SLIDER_VALUE_CHANGED))
+                GetEventCallback(ssGUI::Enums::EventType::SLIDER_VALUE_CHANGED)->Notify(static_cast<ssGUI::GUIObject*>(this));
 
             LastValueChanged = true;
         }
         else if(LastValueChanged)
         {
-            if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::SliderValueFinishedChangingEventCallback>())
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::SLIDER_VALUE_FINISHED_CHANGING))
             {
-                GetAnyEventCallback<ssGUI::EventCallbacks::SliderValueFinishedChangingEventCallback>()->
+                GetEventCallback(ssGUI::Enums::EventType::SLIDER_VALUE_FINISHED_CHANGING)->
                     Notify(static_cast<ssGUI::GUIObject*>(this));
             }
             
@@ -503,7 +500,7 @@ namespace ssGUI
         button->AddExtension<ssGUI::Extensions::Outline>()->SetOutlineThickness(1.5);
         button->SetParent(this, true);
 
-        auto ecb = button->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto ecb = button->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         ecb->ClearEventListeners();
         ecb->AddEventListener
         (

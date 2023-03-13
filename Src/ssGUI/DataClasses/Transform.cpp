@@ -3,8 +3,6 @@
 #include "ssGUI/DataClasses/Renderer.hpp"
 #include "ssGUI/DataClasses/EventCallbackManager.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
-#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/MinMaxSizeChangedEventCallback.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
@@ -217,8 +215,8 @@ namespace ssGUI
 
         if(Size != oriSize)
         {
-            if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME))
-                CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME)->Notify(CurrentObject);
+            if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::SIZE_CHANGED))
+                CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::SIZE_CHANGED)->Notify(CurrentObject);
             CurrentRenderer->RedrawObject();
         }
     }
@@ -245,8 +243,8 @@ namespace ssGUI
         else if(size.y < MinSize.y)        
             SetSize(glm::vec2(size.x, MinSize.y));
             
-        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
-            CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(CurrentObject);
+        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED))
+            CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->Notify(CurrentObject);
     }
 
     glm::vec2 Transform::GetMaxSize() const
@@ -271,8 +269,8 @@ namespace ssGUI
         else if(size.y > MaxSize.y)
             SetSize(glm::vec2(size.x, MaxSize.y));
 
-        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME))
-            CurrentEventCallbackManager->GetEventCallback(ssGUI::EventCallbacks::MinMaxSizeChangedEventCallback::EVENT_NAME)->Notify(CurrentObject);
+        if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED))
+            CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->Notify(CurrentObject);
     }
 
     ssGUI::Enums::AnchorType Transform::GetAnchorType() const

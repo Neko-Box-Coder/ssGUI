@@ -1,7 +1,6 @@
 #ifndef SSGUI_DOCKER_H
 #define SSGUI_DOCKER_H
 
-#include "ssGUI/EventCallbacks/ChildRemovedEventCallback.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/ssGUITags.hpp"

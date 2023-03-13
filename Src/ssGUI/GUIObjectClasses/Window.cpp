@@ -2,10 +2,7 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssGUI/EventCallbacks/BackgroundColorChangedEventCallback.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
-#include "ssGUI/EventCallbacks/OnWindowCloseEventCallback.hpp"
-#include "ssGUI/EventCallbacks/WindowDragStateChangedEventCallback.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -19,8 +16,8 @@ namespace ssGUI
         
         CurrentDragState = dragState;
 
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME))
-           GetEventCallback(ssGUI::EventCallbacks::WindowDragStateChangedEventCallback::EVENT_NAME)->Notify(this);
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED))
+           GetEventCallback(ssGUI::Enums::EventType::WINDOW_DRAG_STATE_CHANGED)->Notify(this);
     }
 
     void Window::OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& inputStatus)
@@ -393,7 +390,7 @@ namespace ssGUI
                         OnTransformBeginSize(),
                         MouseDownPosition()
     {       
-        AddEventCallback<ssGUI::EventCallbacks::OnWindowCloseEventCallback>();
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_WINDOW_CLOSE);
         AddExtension<ssGUI::Extensions::Border>();
         SetSize(glm::vec2(200, 200));
         SetAdaptiveTitlebarColor(true);
@@ -423,9 +420,9 @@ namespace ssGUI
 
     void Window::Internal_OnClose()
     {        
-        if(IsEventCallbackExist(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME))
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_WINDOW_CLOSE))
         {
-            GetEventCallback(ssGUI::EventCallbacks::OnWindowCloseEventCallback::EVENT_NAME)->Notify(this);
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_WINDOW_CLOSE)->Notify(this);
             if(IsClosingAborted)
             {
                 IsClosingAborted = false;
@@ -637,8 +634,8 @@ namespace ssGUI
             SetTitlebarColor(titlebarColor);
         }
 
-        if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>())
-            GetAnyEventCallback<ssGUI::EventCallbacks::BackgroundColorChangedEventCallback>()->Notify(this);
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED))
+            GetEventCallback(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED)->Notify(this);
 
         RedrawObject();
     }

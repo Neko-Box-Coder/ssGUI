@@ -1,4 +1,3 @@
-#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 
 
@@ -7,7 +6,7 @@ int main()
 {
     ssGUI::MainWindow mainWindow;
 
-    auto callback = mainWindow.AddEventCallback<ssGUI::EventCallbacks::RecursiveChildAddedEventCallback>();
+    auto callback = mainWindow.AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED);
     callback->AddEventListener
     (
         "AnyKey",

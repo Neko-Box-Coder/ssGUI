@@ -7,7 +7,6 @@
 #include "ssGUI/GUIObjectClasses/Menu.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/MenuItem.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
-#include "ssGUI/EventCallbacks/ItemSelectedEventCallback.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
@@ -23,7 +22,7 @@ namespace ssGUI
         Toggle = other.Toggle;
     }
 
-    void Dropdown::AddItemListener(ssGUI::EventCallbacks::EventCallback* ecb, int index)
+    void Dropdown::AddItemListener(ssGUI::EventCallback* ecb, int index)
     {
         ssGUI::ssGUIObjectIndex dropdownRefIndex = ecb->AddObjectReference(this);
         ecb->AddEventListener
@@ -95,7 +94,7 @@ namespace ssGUI
         DropdownMenu = CurrentObjectsReferences.AddObjectReference(dropdownMenu);
 
         //Add event listener to show dropdown menu when toggled
-        auto ecb = GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto ecb = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         ecb->AddEventListener
         (
             ListenerKey,
@@ -170,8 +169,8 @@ namespace ssGUI
                 GetButtonTextObject()->SetText(Items[index].first);
         }
 
-        if(IsAnyEventCallbackExist<ssGUI::EventCallbacks::ItemSelectedEventCallback>())
-            GetAnyEventCallback<ssGUI::EventCallbacks::ItemSelectedEventCallback>()->Notify(this);
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::ITEM_SELECTED))
+            GetEventCallback(ssGUI::Enums::EventType::ITEM_SELECTED)->Notify(this);
     }
 
     int Dropdown::AddItem(std::string item)
@@ -192,7 +191,7 @@ namespace ssGUI
 
         Items.push_back(std::make_pair(item, menuItemIndex));
 
-        auto ecb = menuItem->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto ecb = menuItem->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         if(ecb == nullptr)
             return -1;
 
@@ -236,7 +235,7 @@ namespace ssGUI
             if(currentItem == nullptr)
                 continue;
 
-            auto ecb = currentItem->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+            auto ecb = currentItem->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
             if(ecb == nullptr)
                 continue;
             

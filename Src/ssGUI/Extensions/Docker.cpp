@@ -37,12 +37,12 @@ namespace Extensions
         DiscardTriggerArea();
         
         //Remove EventCallback
-        if(Container != nullptr && Container->IsAnyEventCallbackExist<ssGUI::EventCallbacks::ChildRemovedEventCallback>())
+        if(Container != nullptr && Container->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_REMOVED))
         {
-            auto ecb = Container->GetAnyEventCallback<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
+            auto ecb = Container->GetEventCallback(ssGUI::Enums::EventType::CHILD_REMOVED);
             ecb->RemoveEventListener(EXTENSION_NAME);
             if(ecb->GetEventListenerCount() == 0)
-                Container->RemoveAnyEventCallback<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
+                Container->RemoveEventCallback(ssGUI::Enums::EventType::CHILD_REMOVED);
         }
     }
 
@@ -626,10 +626,10 @@ namespace Extensions
                 Container->AddExtension<ssGUI::Extensions::Layout>();
         }
 
-        if(!Container->IsEventCallbackExist(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME))    
-            Container->AddEventCallback<ssGUI::EventCallbacks::ChildRemovedEventCallback>();
+        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_REMOVED))    
+            Container->AddEventCallback(ssGUI::Enums::EventType::CHILD_REMOVED);
         
-        Container->GetEventCallback(ssGUI::EventCallbacks::ChildRemovedEventCallback::EVENT_NAME)->AddEventListener
+        Container->GetEventCallback(ssGUI::Enums::EventType::CHILD_REMOVED)->AddEventListener
         (
             EXTENSION_NAME,
             [](ssGUI::EventInfo info)
