@@ -34,6 +34,7 @@ namespace ssGUI
             return GetEventCallback(eventType);
                         
         ssGUI::EventCallback* eventCallback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+        eventCallback->SetEventType(eventType);
         EventCallbacks[eventCallback->GetEventType()] = eventCallback;
         eventCallback->BindToObject(CurrentObject);
         CurrentRenderer->RedrawObject();
