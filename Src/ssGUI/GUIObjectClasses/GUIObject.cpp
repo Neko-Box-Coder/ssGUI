@@ -288,9 +288,16 @@ namespace ssGUI
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
-            EnableRedrawObjectRequest();
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
+                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(this);
 
             drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
+            
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
+                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(this);
+            
+            EnableRedrawObjectRequest();
+            
             CacheRendering();
             DrawingVerticies.clear();
             DrawingUVs.clear();
@@ -300,7 +307,15 @@ namespace ssGUI
             Redraw = false;
         }
         else
+        {
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
+                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(this);
+            
             drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
+        
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
+                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(this);
+        }
 
         ssLOG_FUNC_EXIT();
     }

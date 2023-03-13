@@ -17,8 +17,11 @@ namespace ssGUI
         
         BEFORE_FONT_CHANGE                  - Triggered *before* the font of a text is changed. Text(Container) will be the source for triggering this event callback. 
                                                 Please note that this is not triggered by any changes to default fonts.
+
         BEFORE_OBJECT_DESTROY               - Triggered *before* the GUI object is destroyed. Container will be the source for triggering this event callback.
-        BEFORE_OBJECT_RENDER                - Triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
+        BEFORE_OBJECT_RENDER                - Triggered *before* this GUI Object is drawing to the MainWindow. Container will be the source for triggering this event callback.
+                                                You can call <ssGUI::Renderer::IsRedrawNeeded> to determine if cache is being drawn or not
+        
         BEFORE_RECURSIVE_CHILD_ADD          - Triggered *before* a child is paranted recursively on this GUI object. The child object being added will be the source for triggering this event callback.
         BEFORE_RECURSIVE_CHILD_REMOVE       - Triggered *before* a child is removed recursively on this GUI object. The child object being removed will be the source for triggering this event callback.
         BEFORE_WINDOW_CLOSE                 - Triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
@@ -39,7 +42,9 @@ namespace ssGUI
         FOCUS_LOST                          - Triggered *after* the GUI Object lost focus
         ITEM_SELECTED                       - Triggered *after* an item is selected. Dropdown(Container) will be the source for triggering this event callback.
         MIN_MAX_SIZE_CHANGED                - Triggered *after* min or max size of a GUI object has changed. Container will be the source for triggering this event callback.
-        OBJECT_RENDERED                     - Triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
+        OBJECT_RENDERED                     - Triggered *after* this GUI Object is drawing to the MainWindow. Container will be the source for triggering this event callback.
+                                                You can call <ssGUI::Renderer::IsRedrawNeeded> to determine if cache is being drawn or not
+
         RECURSIVE_CHILD_ADDED               - Triggered *after* a child is paranted recursively on this GUI object. The child object being added will be the source for triggering this event callback.
         RECURSIVE_CHILD_REMOVED             - Triggered *after* a child is removed recursively on this GUI object. The child object being removed will be the source for triggering this event callback.
         SIZE_CHANGED                        - Triggered *after* this GUI object's size has changed. Container will be the source for triggering this event callback.
