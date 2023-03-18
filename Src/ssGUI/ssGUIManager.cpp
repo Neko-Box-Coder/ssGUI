@@ -648,7 +648,7 @@ namespace ssGUI
     
     bool ssGUIManager::IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const
     {
-        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && BackendInput->IsButtonOrKeyPressExistLastFrame(input);
+        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input);
     }
     
     bool ssGUIManager::IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const
