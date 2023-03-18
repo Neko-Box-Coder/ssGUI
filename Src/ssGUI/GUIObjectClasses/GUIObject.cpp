@@ -289,12 +289,12 @@ namespace ssGUI
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
             if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
-                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(this);
+                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
 
             drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
             
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
-                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(this);
+                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
             
             EnableRedrawObjectRequest();
             
@@ -309,12 +309,12 @@ namespace ssGUI
         else
         {
             if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
-                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(this);
+                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
             
             drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
         
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
-                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(this);
+                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
         }
 
         ssLOG_FUNC_EXIT();
