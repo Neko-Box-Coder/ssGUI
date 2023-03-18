@@ -81,7 +81,7 @@ namespace ssGUI
         return EventListeners.size();
     }
 
-    void EventCallback::Notify(ssGUI::GUIObject* source)
+    void EventCallback::Notify(ssGUI::GUIObject* source, void* customInfo)
     {
         ssLOG_FUNC_ENTRY();
         for(auto it = EventListeners.begin(); it != EventListeners.end(); it++)
@@ -90,6 +90,7 @@ namespace ssGUI
             info.EventSource = source;
             info.Container = Container;
             info.References = &CurrentObjectsReferences;
+            info.CustomInfo = customInfo;
             it->second(info);
         }
         ssLOG_FUNC_EXIT();

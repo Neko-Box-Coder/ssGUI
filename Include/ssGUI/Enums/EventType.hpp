@@ -20,11 +20,13 @@ namespace ssGUI
 
         BEFORE_OBJECT_DESTROY               - Triggered *before* the GUI object is destroyed. Container will be the source for triggering this event callback.
         BEFORE_OBJECT_RENDER                - Triggered *before* this GUI Object is drawing to the MainWindow. MainWindow will be the source for triggering this event callback.
-                                                You can call <ssGUI::Renderer::IsRedrawNeeded> to determine if cache is being drawn or not
+                                                You can call <ssGUI::Renderer::IsRedrawNeeded> to determine if cache is being drawn or not.
         
         BEFORE_RECURSIVE_CHILD_ADD          - Triggered *before* a child is paranted recursively on this GUI object. The child object being added will be the source for triggering this event callback.
         BEFORE_RECURSIVE_CHILD_REMOVE       - Triggered *before* a child is removed recursively on this GUI object. The child object being removed will be the source for triggering this event callback.
         BEFORE_WINDOW_CLOSE                 - Triggered *before* this GUI Object (Window) is closed. Window(Container) will be the source for triggering this event callback.
+        BEFORE_OBJECT_UPDATE                - Triggered *before* this GUI object is being updated. Container will be the source for triggering this event callback.
+                                                <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::ObjectUpdateInfo> struct.
         
         BUTTON_STATE_CHANGED                - Triggered *after* the button state has changed. Button(Container) will be the source for triggering this event callback.
         CHILD_ADDED                         - Triggered *after* a child is paranted on this GUI object. The child object being added will be the source for triggering this event callback.
@@ -56,6 +58,8 @@ namespace ssGUI
                                                 
                                                 This is triggered under the <ssGUI::Slider::MainLogic> method therefore the event is not immediate.
         WINDOW_DRAG_STATE_CHANGED           - Triggered *after* this GUI object (window) drag state is changed. Window(Container) will be the source for triggering this event callback.
+        OBJECT_UPDATED                      - Triggered *after* this GUI object is being updated. Container will be the source for triggering this event callback.
+                                                <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::ObjectUpdateInfo> struct.
         
         COUNT                               - Count
         
@@ -74,6 +78,7 @@ namespace ssGUI
             BEFORE_RECURSIVE_CHILD_ADD,
             BEFORE_RECURSIVE_CHILD_REMOVE,
             BEFORE_WINDOW_CLOSE,
+            BEFORE_OBJECT_UPDATE,
             
             BUTTON_STATE_CHANGED,
             CHILD_ADDED,
@@ -91,6 +96,7 @@ namespace ssGUI
             SLIDER_VALUE_CHANGED_VIA_GUI,
             SLIDER_VALUE_FINISHED_CHANGING,
             WINDOW_DRAG_STATE_CHANGED,
+            OBJECT_UPDATED,
             
             COUNT,
             
@@ -102,7 +108,7 @@ namespace ssGUI
         //function: EventTypeToString
         inline std::string EventTypeToString(EventType event)
         {
-            static_assert((int)EventType::COUNT == 24, "ToString");
+            static_assert((int)EventType::COUNT == 26, "ToString");
             switch(event)
             {
                 RETURN_ENUM_STRING(EventType::NONE);
@@ -114,6 +120,7 @@ namespace ssGUI
                 RETURN_ENUM_STRING(EventType::BEFORE_RECURSIVE_CHILD_ADD);
                 RETURN_ENUM_STRING(EventType::BEFORE_RECURSIVE_CHILD_REMOVE);
                 RETURN_ENUM_STRING(EventType::BEFORE_WINDOW_CLOSE);
+                RETURN_ENUM_STRING(EventType::BEFORE_OBJECT_UPDATE);
                 
                 RETURN_ENUM_STRING(EventType::BUTTON_STATE_CHANGED);
                 RETURN_ENUM_STRING(EventType::CHILD_ADDED);
@@ -131,6 +138,7 @@ namespace ssGUI
                 RETURN_ENUM_STRING(EventType::SLIDER_VALUE_CHANGED_VIA_GUI);
                 RETURN_ENUM_STRING(EventType::SLIDER_VALUE_FINISHED_CHANGING);
                 RETURN_ENUM_STRING(EventType::WINDOW_DRAG_STATE_CHANGED);
+                RETURN_ENUM_STRING(EventType::OBJECT_UPDATED);
                 
                 RETURN_ENUM_STRING(EventType::COUNT);
             }

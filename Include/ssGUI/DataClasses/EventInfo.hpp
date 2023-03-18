@@ -4,8 +4,27 @@
 //namespace: ssGUI
 namespace ssGUI
 {
+    namespace Backend
+    {
+        class BackendSystemInputInterface;
+    }
+
     class GUIObject;
     class ObjectsReferences;
+    class InputStatus;
+    
+    //struct: ssGUI::ObjectUpdateInfo
+    struct ObjectUpdateInfo
+    {
+        //var: InputInterface
+        ssGUI::Backend::BackendSystemInputInterface* InputInterface;
+        
+        //var: InputStatus
+        ssGUI::InputStatus& InputStatus;
+        
+        //var: MainWindow
+        ssGUI::GUIObject* MainWindow;
+    };
 
     //struct: ssGUI::EventInfo
     //This is the structure that holds the information for an event that can be consumed by event listeners
@@ -22,6 +41,9 @@ namespace ssGUI
         //var: References
         //<ObjectsReferences> that this event callback has
         ObjectsReferences* References = nullptr;
+    
+        //var: CustomInfo
+        void* CustomInfo = nullptr;
     };
 }
 

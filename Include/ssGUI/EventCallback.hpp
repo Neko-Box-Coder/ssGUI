@@ -106,7 +106,7 @@ namespace ssGUI
             
             //function: Notify
             //See <EventCallback::Notify>
-            virtual void Notify(ssGUI::GUIObject* source);
+            virtual void Notify(ssGUI::GUIObject* source, void* customInfo = nullptr);
             
             //function: BindToObject
             //See <EventCallback::BindToObject>

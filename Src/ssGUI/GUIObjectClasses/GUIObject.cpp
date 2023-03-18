@@ -340,10 +340,23 @@ namespace ssGUI
 
             Extensions.at(extension)->Internal_Update(true, inputInterface, inputStatus, mainWindow);
         }
+        
+        ssGUI::ObjectUpdateInfo updateInfo = 
+        {
+            inputInterface,
+            inputStatus,
+            mainWindow
+        };
+        
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE)->Notify(mainWindow, &updateInfo);
 
         CheckRightClickMenu(inputInterface, inputStatus, mainWindow);
         MainLogic(inputInterface, inputStatus, mainWindow);
 
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_UPDATED))
+            GetEventCallback(ssGUI::Enums::EventType::OBJECT_UPDATED)->Notify(mainWindow, &updateInfo);
+        
         for(auto extension : ExtensionsUpdateOrder)
         {
             //Guard against extension being deleted by other extensions
