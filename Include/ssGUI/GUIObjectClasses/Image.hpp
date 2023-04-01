@@ -20,11 +20,13 @@ namespace ssGUI
         ssGUI::ImageData* ImageData;                //See <GetImageData>
         ssGUI::Enums::ImageFitting Fitting;         //See <GetFitting>
         glm::u8vec4 ImageTint;                      //See <GetImageTint>
+        int ImageDataChangedId;                     //(Internal variable) Used for tracking image data chagne callback
     =================================================================
     ============================== C++ ==============================
     Image::Image() :    ImageData(nullptr),
                         Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE),
-                        ImageTint(255, 255, 255, 255)
+                        ImageTint(255, 255, 255, 255),
+                        ImageDataChangedId(-1)
     {
         // AddExtension(new ssGUI::Extensions::Border());
     }
@@ -39,6 +41,7 @@ namespace ssGUI
             ssGUI::ImageData* ImageData;                //See <GetImageData>
             ssGUI::Enums::ImageFitting Fitting;         //See <GetFitting>
             glm::u8vec4 ImageTint;                      //See <GetImageTint>
+            int ImageDataChangedId;                     //(Internal variable) Used for tracking image data chagne callback
             
             Image(Image const& other);
 
@@ -53,7 +56,9 @@ namespace ssGUI
             virtual ssGUI::ImageData* GetImageData() const;
 
             //function: SetImageData
-            //Sets the ImageData object to be used by this Image widget
+            //Sets the ImageData object to be used by this Image widget.
+            //To unset the image data from this object, simply pass in nullptr.
+            //Note that the image data must be valid (if non-nullptr is set) before this object is destroyed.
             virtual void SetImageData(ssGUI::ImageData* imageData);
 
             //function: GetFitting

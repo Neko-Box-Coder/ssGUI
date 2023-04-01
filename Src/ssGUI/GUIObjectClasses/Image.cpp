@@ -132,13 +132,17 @@ namespace ssGUI
     
     Image::Image() :    ImageData(nullptr),
                         Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE),
-                        ImageTint(255, 255, 255, 255)
+                        ImageTint(255, 255, 255, 255),
+                        ImageDataChangedId(-1)
     {
         // AddExtension(new ssGUI::Extensions::Border());
     }
 
     Image::~Image()
     {
+        if(ImageData != nullptr)
+            ImageData->RemoveDataChangedCallback(ImageDataChangedId);
+
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
     }
 
@@ -149,7 +153,14 @@ namespace ssGUI
 
     void Image::SetImageData(ssGUI::ImageData* imageData)
     {
+        if(ImageData != nullptr)
+            ImageData->RemoveDataChangedCallback(ImageDataChangedId);
+        
         ImageData = imageData;
+        
+        if(ImageData != nullptr)
+            ImageDataChangedId = ImageData->AddDataChangedCallback([&](ssGUI::ImageData*){RedrawObject();});
+        
         RedrawObject();
     }
 
