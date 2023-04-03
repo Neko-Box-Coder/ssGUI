@@ -147,7 +147,7 @@ namespace ssGUI
                 if(std::is_base_of<ssGUI::GUIObject, T>::value)
                 {
                     auto* guiObject = ssGUI::Factory::Create<T>();
-                    guiObject->SetParent(this);
+                    guiObject->SetParent(CurrentObject);
                     return guiObject;
                 }
                 else
