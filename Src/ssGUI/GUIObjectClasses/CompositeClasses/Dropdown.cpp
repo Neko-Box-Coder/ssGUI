@@ -128,7 +128,7 @@ namespace ssGUI
                 dropdownContainer->Toggle = true;
                 
                 auto castedDropdownMenu = static_cast<ssGUI::Menu*>(dropdownMenu);
-                if(castedDropdownMenu->CanForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y), 
+                if(castedDropdownMenu->CanSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y), 
                     ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT))
                 {
                     castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y),
