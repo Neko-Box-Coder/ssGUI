@@ -245,11 +245,13 @@ namespace ssGUI
             virtual ~ImageCanvas() override;
 
             //function: GetUVFromGlobalPosition
-            //Gets the UV position (0 to image size) from global position
+            //Gets the UV position (scales from 0 to image size) from global position.
+            //Note that the UV position returned can go out of bound.
             virtual glm::vec2 GetUVFromGlobalPosition(glm::vec2 globalPos);
             
             //function: GetGlobalPositionFromUV
-            //Gets the global position from the UV position (0 to image size)
+            //Gets the global position from the UV position (scales from 0 to image size)
+            //Note that the global position returned can go outside of the widget.
             virtual glm::vec2 GetGlobalPositionFromUV(glm::vec2 uv);
 
             //function: SetImageRotation
@@ -261,12 +263,12 @@ namespace ssGUI
             virtual float GetImageRotation(bool radians = false) const;
 
             //function: SetImageScale
-            //Sets the scale of the image in percentage (0 to 1), 1 meaning the height/width (determined by <IsMeasureScaleByHeight>)
+            //Sets the scale of the image in percentage (1 = 100%), 1 meaning the height/width (determined by <IsMeasureScaleByHeight>)
             //of the image is the same size of ImageCanvas GUI Object.
             virtual void SetImageScale(float scale);
             
             //function: GetImageScale
-            //Gets the scale of the image in percentage (0 to 1), 1 meaning the height/width (determined by <IsMeasureScaleByHeight>)
+            //Gets the scale of the image in percentage (1 = 100%), 1 meaning the height/width (determined by <IsMeasureScaleByHeight>)
             //of the image is the same size of ImageCanvas.
             virtual float GetImageScale() const;
 
@@ -283,12 +285,12 @@ namespace ssGUI
             virtual void SetMeasureScaleByHeight(bool scaleByHeight);
 
             //function: SetImagePosition
-            //Sets the position of center of the image, represented by percentage (0 to 1).
+            //Sets the position of center of the image, represented by percentage (1 = 100%).
             //Setting it to (0, 0) will set the center of the image to be top-left, (0.5, 0.5) will be center of ImageCanvas, etc.
             virtual void SetImagePosition(glm::vec2 position);
 
             //function: GetImagePosition
-            //Gets the position of center of the image, represented by percentage (0 to 1).
+            //Gets the position of center of the image, represented by percentage (1 = 100%).
             //(0, 0) will indicates the center of the image to be top-left, (0.5, 0.5) will be center of ImageCanvas, etc.
             virtual glm::vec2 GetImagePosition() const;
 

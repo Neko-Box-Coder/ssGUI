@@ -24,7 +24,7 @@ int main()
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;
     button.SetSize(glm::vec2(50, 30));
-    button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
+    button.GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
     (
         "AnyKey",
         [&](ssGUI::EventInfo info)

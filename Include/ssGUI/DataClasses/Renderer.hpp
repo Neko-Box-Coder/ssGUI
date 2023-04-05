@@ -178,7 +178,7 @@ namespace ssGUI
 
             //function: Extension_GetGUIObjectFirstVertexIndex
             //This returns the index of first vertex created by the GUI Object
-            //Again similar to <Extension_GetGUIObjectFirstShapeIndex> but with indices instead
+            //Again similar to <Extension_GetGUIObjectFirstShapeIndex> but with vertex index instead
             virtual int Extension_GetGUIObjectFirstVertexIndex() const;
 
             //function: RedrawObject

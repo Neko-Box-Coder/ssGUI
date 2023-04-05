@@ -9,8 +9,6 @@
 #include "ssGUI/Enums/AlignmentHorizontal.hpp"
 #include "ssGUI/Enums/AlignmentVertical.hpp"
 #include "ssGUI/Extensions/Border.hpp"
-#include "ssGUI/EventCallbacks/OnFontChangeEventCallback.hpp"
-#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
 #include "ssGUI/DataClasses/SegmentedVector.hpp"
 #include <string>
 
@@ -92,7 +90,7 @@ namespace ssGUI
         SetInteractable(true);
         InitiateDefaultResources();
 
-        auto sizeChangedCallback = AddEventCallback<ssGUI::EventCallbacks::SizeChangedEventCallback>();
+        auto sizeChangedCallback = AddEventCallback(ssGUI::Enums::EventType::SIZE_CHANGED);
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,

@@ -1,8 +1,7 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/EventCallbacks/ChildPositionChangedEventCallback.hpp"
 
-ssGUI::EventCallbacks::ChildPositionChangedEventCallback* callback = nullptr;
+ssGUI::EventCallback* callback = nullptr;
 ssGUI::GUIObject* testObj = nullptr;
 ssGUI::GUIObject* testObj2 = nullptr;
 ssGUI::Window* testWindow = nullptr;
@@ -12,7 +11,8 @@ ssTEST_INIT();
 
 ssTEST_SET_UP
 {
-    callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::ChildPositionChangedEventCallback>();
+    callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+    callback->SetEventType(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED);
     testObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
     testObj2 = ssGUI::Factory::Create<ssGUI::GUIObject>();
     testWindow = ssGUI::Factory::Create<ssGUI::Window>();
@@ -34,11 +34,6 @@ ssTEST_CLEAN_UP
     ssGUI::Factory::Dispose(testObj);
     ssGUI::Factory::Dispose(testObj2);
     ssGUI::Factory::Dispose(testWindow);
-}
-
-ssTEST("GetEventCallbackNameTest")
-{
-    ssTEST_OUTPUT_ASSERT(callback->GetEventCallbackName() == "ChildPositionChangedEvent");
 }
 
 ssTEST("EventTest")

@@ -19,7 +19,7 @@ int main()
     ssGUI::Button button;
     button.SetSize(glm::vec2(50, 30));
     button.SetPosition(glm::vec2(200, 60));
-    button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
+    button.GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
     (
         "AnyKey",
         [&](ssGUI::EventInfo info)

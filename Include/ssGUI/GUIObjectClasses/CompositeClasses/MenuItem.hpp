@@ -26,7 +26,7 @@ namespace ssGUI
         GetButtonTextObject()->SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT);
         GetButtonTextObject()->SetHorizontalPadding(15);
 
-        auto buttonEventCallback = GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME);
+        auto buttonEventCallback = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEventCallback->ClearEventListeners();
         buttonEventCallback->AddEventListener
         (

@@ -1,14 +1,15 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 
-ssGUI::EventCallbacks::BaseEventCallback* callback = nullptr;
+ssGUI::EventCallback* callback = nullptr;
 ssGUI::GUIObject* testObj = nullptr;
 
 ssTEST_INIT();
 
 ssTEST_SET_UP
 {
-    callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::BaseEventCallback>();
+    callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+    callback->SetEventType(ssGUI::Enums::EventType::NONE);
     testObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
 }
 
@@ -112,11 +113,6 @@ ssTEST("RemoveObjectReferenceTest")
     ssTEST_OUTPUT_ASSERT(callback->GetObjectReference(objRefIndex) == nullptr);
 }
 
-ssTEST("GetEventCallbackNameTest")
-{
-    ssTEST_OUTPUT_ASSERT(callback->GetEventCallbackName() == "BaseEvent");
-}
-
 ssTEST("CloneTest")
 {
     int testNum = 0;
@@ -140,7 +136,7 @@ ssTEST("CloneTest")
     
     clonedCallback = testObj->AddEventCallbackCopy(callback, true);
     ssTEST_OUTPUT_ASSERT(   "New Container", 
-                            testObj->IsAnyEventCallbackExist<ssGUI::EventCallbacks::BaseEventCallback>());
+                            testObj->IsEventCallbackExist(ssGUI::Enums::EventType::NONE));
 }
 
 ssTEST("EventTest")

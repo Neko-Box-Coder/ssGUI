@@ -1,9 +1,5 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 
-#include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
-#include "ssGUI/EventCallbacks/SizeChangedEventCallback.hpp"
-
 #include "ssGUI/Backend/BackendFactory.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -144,10 +140,10 @@ namespace ssGUI
         if(focused)
             RedrawObject();
         
-        if(focused && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusedEventCallback>())
-            GetAnyEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>()->Notify(this);
-        else if(!focused && IsAnyEventCallbackExist<ssGUI::EventCallbacks::FocusLostEventCallback>())
-            GetAnyEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>()->Notify(this);
+        if(focused && IsEventCallbackExist(ssGUI::Enums::EventType::FOCUSED))
+            GetEventCallback(ssGUI::Enums::EventType::FOCUSED)->Notify(this);
+        else if(!focused && IsEventCallbackExist(ssGUI::Enums::EventType::FOCUS_LOST))
+            GetEventCallback(ssGUI::Enums::EventType::FOCUS_LOST)->Notify(this);
     }
 
     void MainWindow::SetVisible(bool visible)
@@ -422,8 +418,8 @@ namespace ssGUI
         {
             RedrawObject();
 
-            if(IsEventCallbackExist(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME))
-                GetEventCallback(ssGUI::EventCallbacks::SizeChangedEventCallback::EVENT_NAME)->Notify(this);
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::SIZE_CHANGED))
+                GetEventCallback(ssGUI::Enums::EventType::SIZE_CHANGED)->Notify(this);
 
             RedrawCount = 0;
         }

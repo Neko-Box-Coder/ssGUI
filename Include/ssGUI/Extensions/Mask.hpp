@@ -5,8 +5,6 @@
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
 #include "ssGUI/GUIObjectClasses/Window.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildAddedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/RecursiveChildRemovedEventCallback.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 #include "glm/geometric.hpp"
@@ -186,13 +184,13 @@ namespace Extensions
             //If true, the (global) point is inside the mask
             virtual bool IsPointContainedInMask(glm::vec2 point) const;
             
-            //function: Internal_OnRecursiveChildAdded
+            //function: Internal_RecursiveChildAdded
             //(Internal ssGUI function) Trigger function when a child is added
-            virtual void Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child);
+            virtual void Internal_RecursiveChildAdded(ssGUI::GUIObject* child);
             
-            //function: Internal_OnRecursiveChildRemoved
+            //function: Internal_RecursiveChildRemoved
             //(Internal ssGUI function) Trigger function when a child is removed
-            virtual void Internal_OnRecursiveChildRemoved(ssGUI::GUIObject* child);
+            virtual void Internal_RecursiveChildRemoved(ssGUI::GUIObject* child);
             
             //function: MaskObject
             //Public function for masking a GUI object.

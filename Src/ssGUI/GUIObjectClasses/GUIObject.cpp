@@ -15,7 +15,7 @@ namespace ssGUI
     {
         LastGlobalPosition = other.LastGlobalPosition;
         CurrentTags = other.CurrentTags;// std::unordered_set<std::string>();
-        RightClickMenu = other.RightClickMenu;
+        RightClickMenuId = other.RightClickMenuId;
 
         SetupComponents();
 
@@ -165,7 +165,7 @@ namespace ssGUI
         {
             std::vector<ssGUI::GUIObject*> tempVec = std::vector<ssGUI::GUIObject*>();
             
-            if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventCallbackName()))
+            if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventType()))
                 clonedObj->AddEventCallbackCopy(eventCallback.second, true);
         }
 
@@ -175,7 +175,7 @@ namespace ssGUI
     void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
         ssGUI::GUIObject* mainWindow)
     {
-        if(inputStatus.MouseInputBlockedObject != nullptr || RightClickMenu == nullptr)
+        if(inputStatus.MouseInputBlockedObject != nullptr || RightClickMenuId < 0)
             return;
         
         //Mouse Input blocking
@@ -194,8 +194,16 @@ namespace ssGUI
         if(mouseInWindowBoundX && mouseInWindowBoundY && (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT)))
         {
             inputStatus.MouseInputBlockedObject = this;
-            RightClickMenu->SetMenuTarget(this);
-            RightClickMenu->SpawnMenu(currentMousePos);
+            auto* curMenu = CurrentObjectsReferences.GetObjectReference<ssGUI::Menu>(RightClickMenuId);
+            
+            if(curMenu == nullptr)
+            {
+                RightClickMenuId = -1;
+                return;
+            }
+
+            curMenu->SetMenuTarget(this);
+            curMenu->SpawnMenu(currentMousePos);
         }
     }
 
@@ -206,7 +214,7 @@ namespace ssGUI
 
     GUIObject::GUIObject() :    LastGlobalPosition(),
                                 CurrentTags(),
-                                RightClickMenu(nullptr)
+                                RightClickMenuId(-1)
     {
         SetupComponents();
     }
@@ -255,12 +263,13 @@ namespace ssGUI
 
     void GUIObject::RegisterRightClickMenu(ssGUI::Menu* menu)
     {
-        RightClickMenu = menu;
+        RightClickMenuId = CurrentObjectsReferences.AddObjectReference(menu);
+        menu->SetEnabled(false);
     }
 
     void GUIObject::ClearRightClickMenu()
     {
-        RightClickMenu = nullptr;
+        RightClickMenuId = -1;
     }
 
     void GUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -288,9 +297,16 @@ namespace ssGUI
             for(auto extension : ExtensionsDrawOrder)
                 Extensions.at(extension)->Internal_Draw(false, drawingInterface, mainWindow, mainWindowPositionOffset);
 
-            EnableRedrawObjectRequest();
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
+                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
 
             drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
+            
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
+                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
+            
+            EnableRedrawObjectRequest();
+            
             CacheRendering();
             DrawingVerticies.clear();
             DrawingUVs.clear();
@@ -300,7 +316,15 @@ namespace ssGUI
             Redraw = false;
         }
         else
+        {
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
+                GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
+            
             drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
+        
+            if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
+                GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
+        }
 
         ssLOG_FUNC_EXIT();
     }
@@ -325,10 +349,23 @@ namespace ssGUI
 
             Extensions.at(extension)->Internal_Update(true, inputInterface, inputStatus, mainWindow);
         }
+        
+        ssGUI::ObjectUpdateInfo updateInfo = 
+        {
+            inputInterface,
+            inputStatus,
+            mainWindow
+        };
+        
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE)->Notify(mainWindow, &updateInfo);
 
         CheckRightClickMenu(inputInterface, inputStatus, mainWindow);
         MainLogic(inputInterface, inputStatus, mainWindow);
 
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_UPDATED))
+            GetEventCallback(ssGUI::Enums::EventType::OBJECT_UPDATED)->Notify(mainWindow, &updateInfo);
+        
         for(auto extension : ExtensionsUpdateOrder)
         {
             //Guard against extension being deleted by other extensions

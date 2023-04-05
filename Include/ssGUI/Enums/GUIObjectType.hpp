@@ -1,6 +1,7 @@
 #ifndef SSGUI_OBJECT_TYPE_H
 #define SSGUI_OBJECT_TYPE_H
 
+#include <cstdint>
 namespace ssGUI 
 { 
     
@@ -46,7 +47,7 @@ namespace Enums
     SCROLLBAR       - Scrollbar object type
     IMAGE_CANVAS    - ImageCanvas object type
     */
-    enum class GUIObjectType
+    enum class GUIObjectType : uint64_t
     {
         WINDOW =            1 << 0,
         WIDGET =            1 << 1,

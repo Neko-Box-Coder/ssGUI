@@ -4,7 +4,6 @@
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 #include "ssGUI/Enums/ButtonState.hpp"
-#include "ssGUI/EventCallbacks/ButtonStateChangedEventCallback.hpp"
 #include "glm/vec4.hpp"
 
 //namespace: ssGUI
@@ -24,7 +23,7 @@ namespace ssGUI
                         ButtonColor(100, 100, 100, 255)
     {
         SetSize(glm::vec2(25, 25));
-        auto stateChangedEventCallback = AddEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto stateChangedEventCallback = AddEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         stateChangedEventCallback->AddEventListener(
             ListenerKey, this,
             [](ssGUI::EventInfo info)

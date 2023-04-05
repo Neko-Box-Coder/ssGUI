@@ -3,9 +3,6 @@
 
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Slider.hpp"
-#include "ssGUI/EventCallbacks/ScrollbarValueChangedEventCallback.hpp"
-#include "ssGUI/EventCallbacks/ScrollbarValueChangedViaGuiEventCallback.hpp"
-#include "ssGUI/EventCallbacks/ScrollbarValueFinishedChangingEventCallback.hpp"
 
 //namespace: ssGUI
 namespace ssGUI

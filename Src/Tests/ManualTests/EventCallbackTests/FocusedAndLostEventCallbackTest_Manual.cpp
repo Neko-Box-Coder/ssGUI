@@ -1,5 +1,3 @@
-#include "ssGUI/EventCallbacks/FocusLostEventCallback.hpp"
-#include "ssGUI/EventCallbacks/FocusedEventCallback.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssLogger/ssLog.hpp"
 
@@ -36,8 +34,8 @@ void SetUp()
             return "unknown";
     };
     
-    auto* ecb = window->AddEventCallback<ssGUI::EventCallbacks::FocusedEventCallback>();
-    auto* ecb2 = window->AddEventCallback<ssGUI::EventCallbacks::FocusLostEventCallback>();
+    auto* ecb = window->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
+    auto* ecb2 = window->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
     ecb->AddEventListener(  "TestKey",    
                             [&](ssGUI::EventInfo info)
                             {

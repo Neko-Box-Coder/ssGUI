@@ -4,7 +4,6 @@
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
 using namespace ssGUI::Enums;
-using namespace ssGUI::EventCallbacks;
 int main()
 {
     ssGUI::MainWindow mainWindow;
@@ -27,7 +26,7 @@ int main()
                                             AlignmentVertical::CENTER);             //      stays the same and won't be changed by layout
     
     //First we get the event callback for button state changed, it is attached to buttons by default.
-    auto* buttonEventCallback =  button.GetAnyEventCallback<ButtonStateChangedEventCallback>();
+    auto* buttonEventCallback =  button.GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
     
     //Then we add the text GUI Object to be referenced in the listener, 
     //and pass the reference ID to the listener lambda

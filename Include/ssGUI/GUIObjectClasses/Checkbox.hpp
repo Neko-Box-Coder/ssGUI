@@ -25,7 +25,7 @@ namespace ssGUI
         border->SetBorderWidth(2);
         border->SetBorderColor(GetBackgroundColor());
 
-        auto buttonEvent = GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>();
+        auto buttonEvent = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEvent->ClearEventListeners();
         buttonEvent->AddEventListener(
             ListenerKey, this,
@@ -33,6 +33,8 @@ namespace ssGUI
             {
                 ssGUI::Checkbox* btn = static_cast<ssGUI::Checkbox*>(info.EventSource);
                 glm::u8vec4 bgcolor = btn->GetBackgroundColor();
+                
+                static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
                 switch(btn->GetButtonState())
                 {
                     case ssGUI::Enums::ButtonState::NORMAL:

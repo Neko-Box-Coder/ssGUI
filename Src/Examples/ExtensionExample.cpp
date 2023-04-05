@@ -38,7 +38,7 @@ int main()
     outlineButton->GetButtonTextObject()->SetText("Outline");
     outlineButton->SetPosition(glm::vec2(400, 230));
     
-    borderButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
+    borderButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
     (
         "AnyKey",
         [&](ssGUI::EventInfo info)
@@ -56,7 +56,7 @@ int main()
         }
     );
 
-    boxShadowButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
+    boxShadowButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
     (
         "AnyKey",
         [&](ssGUI::EventInfo info)
@@ -73,7 +73,7 @@ int main()
         }
     );
 
-    roundedCornersButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
+    roundedCornersButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
     (
         "AnyKey",
         [&](ssGUI::EventInfo info)
@@ -99,7 +99,7 @@ int main()
         }
     );
 
-    outlineButton->GetAnyEventCallback<ssGUI::EventCallbacks::ButtonStateChangedEventCallback>()->AddEventListener
+    outlineButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
     (
         "AnyKey",
         [&](ssGUI::EventInfo info)

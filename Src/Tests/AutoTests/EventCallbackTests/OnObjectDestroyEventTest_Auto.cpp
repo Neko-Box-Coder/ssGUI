@@ -1,8 +1,7 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/EventCallbacks/OnObjectDestroyEventCallback.hpp"
 
-ssGUI::EventCallbacks::OnObjectDestroyEventCallback* callback = nullptr;
+ssGUI::EventCallback* callback = nullptr;
 ssGUI::GUIObject* testObj = nullptr;
 int listerNum = 0;
 
@@ -10,7 +9,8 @@ ssTEST_INIT();
 
 ssTEST_SET_UP
 {
-    callback = ssGUI::Factory::Create<ssGUI::EventCallbacks::OnObjectDestroyEventCallback>();
+    callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+    callback->SetEventType(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY);
     testObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
     
     //Timing is making sure the listener is triggered **before** the event
@@ -26,11 +26,6 @@ ssTEST_CLEAN_UP
 {
     ssGUI::Factory::Dispose(callback);
     ssGUI::Factory::Dispose(testObj);
-}
-
-ssTEST("GetEventCallbackNameTest")
-{
-    ssTEST_OUTPUT_ASSERT(callback->GetEventCallbackName() == "OnObjectDestroyEvent");
 }
 
 ssTEST("EventTest")
