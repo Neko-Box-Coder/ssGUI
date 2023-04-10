@@ -135,23 +135,32 @@ namespace ssGUI
                     FrameTimeIndex %= 100;
                 }
                 
-                float averageFrameTime = 0;
+                float averageFrameTime = 1;
 
                 for(int i = 0; i < FrameTimes.size(); i++)
                     averageFrameTime += FrameTimes[i];
                 
                 averageFrameTime /= FrameTimes.size();
-                // ssGUI_DEBUG(ssGUI_MANAGER_TAG, "averageFrameTime: "<<averageFrameTime);
-                // ssGUI_DEBUG(ssGUI_MANAGER_TAG, "TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
+                //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "averageFrameTime: "<<averageFrameTime);
+                //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "TargetFrameInterval - averageFrameTime: "<<TargetFrameInterval - averageFrameTime);
+                //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "threadSleepMultiplier: "<<threadSleepMultiplier);
 
                 //There's no guarantee that the thread will sleep for how long we ask for (especially on Windows *cough* *cough*)
                 //so we need to adjust the sleep time depending on how long will have actually slept
                 uint32_t preSleepTime = BackendInput->GetElapsedTime();
-                int64_t sleepDuration = static_cast<int64_t>(TargetFrameInterval - averageFrameTime) *threadSleepMultiplier;
-                //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "sleepDuration: "<<sleepDuration<<", "<<"TargetFrameInterval: "<<TargetFrameInterval);
+                int64_t sleepDuration = static_cast<int64_t>((TargetFrameInterval - averageFrameTime) * threadSleepMultiplier);
+                //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "sleepDuration: "<<sleepDuration<<", "<<"TargetFrameInterval: "<<TargetFrameInterval<<", averageFrameTime: "<<averageFrameTime);
                 std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
                 uint32_t actualSleptDuration = BackendInput->GetElapsedTime() - preSleepTime;
-                threadSleepMultiplier = (double)sleepDuration / (double)actualSleptDuration;
+                
+                #ifndef FLOAT_EQ
+                #define FLOAT_EQ(a, b) (a + 0.0001f > b && a - 0.0001f < b)
+                #endif
+
+                if(FLOAT_EQ(actualSleptDuration, 0))
+                    threadSleepMultiplier = 1.f;
+                else
+                    threadSleepMultiplier = (double)sleepDuration / (double)actualSleptDuration;
             }
 
             #if SSGUI_REFRESH_CONSOLE
