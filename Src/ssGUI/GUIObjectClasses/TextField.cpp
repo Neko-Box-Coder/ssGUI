@@ -355,11 +355,11 @@ namespace ssGUI
             baseCD = CurrentCharactersDetails[insertIndex + 1];
         else
         {
-            baseCD.CharacterColor = GetNewCharacterColor();
+            baseCD.CharacterColor = GetNewTextColor();
             baseCD.DefaultFontIndex = GetFontsCount() == 0 ? 0 : -1;
             baseCD.FontIndex = GetFontsCount() == 0 ? -1 : 0;
-            baseCD.FontSize = GetNewCharacterFontSize();
-            baseCD.Underlined = IsNewCharacterUnderlined();
+            baseCD.FontSize = GetNewTextFontSize();
+            baseCD.Underlined = IsNewTextUnderlined();
         }
 
         int charCount = 0;
@@ -391,12 +391,13 @@ namespace ssGUI
                             if(wordMode)
                             {
                                 int indexOfPrevWord = GetEndOfPreviousWord(insertIndex);
-                                RemoveCurrentCharacterDetails(indexOfPrevWord, insertIndex);
+                                RemoveCharacterDetails(indexOfPrevWord, insertIndex);
                                 charCount -= insertIndex - indexOfPrevWord;
+                                insertIndex -= insertIndex - indexOfPrevWord;
                             }
                             else
                             {
-                                RemoveCurrentCharacterDetails(--insertIndex);
+                                RemoveCharacterDetails(--insertIndex);
                                 charCount--;
                             }
                         }
@@ -406,7 +407,7 @@ namespace ssGUI
                     {
                         ssGUI::CharacterDetails cd = baseCD;
                         cd.Character = '\t';
-                        AddCurrentCharacterDetails(insertIndex, cd);
+                        AddCharacterDetails(insertIndex, cd);
                         insertIndex++;
                         charCount++;
                         alterText = true;
@@ -416,7 +417,7 @@ namespace ssGUI
                     {
                         ssGUI::CharacterDetails cd = baseCD;
                         cd.Character = '\n';
-                        AddCurrentCharacterDetails(insertIndex, cd);
+                        AddCharacterDetails(insertIndex, cd);
                         insertIndex++;
                         charCount++;
                         alterText = true;
@@ -426,7 +427,7 @@ namespace ssGUI
                     {
                         ssGUI::CharacterDetails cd = baseCD;
                         cd.Character = '\n';
-                        AddCurrentCharacterDetails(insertIndex, cd);
+                        AddCharacterDetails(insertIndex, cd);
                         insertIndex++;
                         charCount++;
                         alterText = true;
@@ -436,7 +437,7 @@ namespace ssGUI
                     {
                         ssGUI::CharacterDetails cd = baseCD;
                         cd.Character = '\n';
-                        AddCurrentCharacterDetails(insertIndex, cd);
+                        AddCharacterDetails(insertIndex, cd);
                         insertIndex++;
                         charCount++;
                         alterText = true;
@@ -452,11 +453,11 @@ namespace ssGUI
                             if(wordMode)
                             {
                                 int indexOfNextWord = GetEndOfNextWord(insertIndex);
-                                RemoveCurrentCharacterDetails(insertIndex, indexOfNextWord);
+                                RemoveCharacterDetails(insertIndex, indexOfNextWord);
                             }
                             else
                             {
-                                RemoveCurrentCharacterDetails(insertIndex);
+                                RemoveCharacterDetails(insertIndex);
                             }
                         }
                         
@@ -477,12 +478,12 @@ namespace ssGUI
             {                
                 if(GetStartSelectionIndex() < GetEndSelectionIndex())
                 {
-                    RemoveCurrentCharacterDetails(GetStartSelectionIndex(), GetEndSelectionIndex());
+                    RemoveCharacterDetails(GetStartSelectionIndex(), GetEndSelectionIndex());
                     SetEndSelectionIndex(GetStartSelectionIndex());
                 }
                 else
                 {
-                    RemoveCurrentCharacterDetails(GetEndSelectionIndex(), GetStartSelectionIndex());
+                    RemoveCharacterDetails(GetEndSelectionIndex(), GetStartSelectionIndex());
                     SetStartSelectionIndex(GetEndSelectionIndex());
                 }
             }
@@ -669,7 +670,7 @@ namespace ssGUI
         glm::vec2 drawPos = GetGlobalPosition();
         float height = 0;
         float caretWidth = GetEndSelectionIndex() < 0 || GetEndSelectionIndex() >= CurrentCharactersDetails.Size() ? 
-            GetNewCharacterFontSize() / 15.f : 
+            GetNewTextFontSize() / 15.f : 
             CurrentCharactersDetails[GetEndSelectionIndex()].FontSize / 15.f;
 
         if(GetEndSelectionIndex() >= 0 && lastValidIndex >= 0)
@@ -796,7 +797,7 @@ namespace ssGUI
                 return;
             }
 
-            height = fontInterface->GetLineSpacing(GetNewCharacterFontSize()) + GetLineSpace();
+            height = fontInterface->GetLineSpacing(GetNewTextFontSize()) + GetLineSpace();
             
             switch(GetHorizontalAlignment()) 
             {
@@ -820,7 +821,7 @@ namespace ssGUI
                     drawPos.y += GetSize().y / 2 - height / 2;
                     break;
                 case ssGUI::Enums::AlignmentVertical::BOTTOM:
-                    drawPos.y += GetSize().y - GetNewCharacterFontSize() - GetVerticalPadding();
+                    drawPos.y += GetSize().y - GetNewTextFontSize() - GetVerticalPadding();
                     break;
             }
 
@@ -921,6 +922,7 @@ namespace ssGUI
                                 LastArrowNavTime(0),
                                 ArrowNavInterval(20)
     {
+        SetBlockInput(true);
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 
         AddExtension<ssGUI::Extensions::RoundedCorners>();

@@ -38,7 +38,7 @@ int main()
         ssGUI::CharacterDetails detail;
         detail.Character = s[i];
         detail.FontIndex = 0;
-        text.AddCurrentCharacterDetails(detail);
+        text.AddCharacterDetails(detail);
     }
 
     int foundIndex = -1;
@@ -55,10 +55,10 @@ int main()
             //Reset the previous highlighted character
             if(foundIndex != -1)
             {
-                auto curDetail = text.GetCurrentCharacterDetails(foundIndex);
+                auto curDetail = text.GetCharacterDetails(foundIndex);
                 curDetail.FontIndex = 0;
                 curDetail.FontSize = 20;
-                text.SetCurrentCharacterDetails(foundIndex, curDetail);
+                text.SetCharacterDetails(foundIndex, curDetail);
             }
 
             // foundIndex = text.GetNearestCharacterIndexFromPos(curMousePos, false);
@@ -66,10 +66,10 @@ int main()
             //Highlight character
             if(foundIndex != -1)
             {
-                auto curDetail = text.GetCurrentCharacterDetails(foundIndex);
+                auto curDetail = text.GetCharacterDetails(foundIndex);
                 curDetail.FontIndex = 1;
                 curDetail.FontSize = 30;
-                text.SetCurrentCharacterDetails(foundIndex, curDetail);
+                text.SetCharacterDetails(foundIndex, curDetail);
             }
         }
     );

@@ -161,7 +161,7 @@ namespace ssGUI
         buttonText->SetHeapAllocated(true);
         buttonText->SetParent(this, true);
         buttonText->SetMinSize(glm::vec2(5, 5));
-        buttonText->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+        buttonText->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
         ButtonText = CurrentObjectsReferences.AddObjectReference(buttonText);
         SetAdaptiveButtonTextColor(true);   //Update the text color
 
@@ -230,12 +230,12 @@ namespace ssGUI
                             iconTintColor.a = 255 - buttonReactAmount * 2;
                             iconImage->SetImageTint(iconTintColor);
                         }
-                        auto textColor = btn->GetButtonTextObject()->GetNewCharacterColor();
+                        auto textColor = btn->GetButtonTextObject()->GetNewTextColor();
                         textColor.r = (uint8_t)((textColor.r + buttonReactAmount * 4) & 255);
                         textColor.g = (uint8_t)((textColor.g + buttonReactAmount * 4) & 255);
                         textColor.b = (uint8_t)((textColor.b + buttonReactAmount * 4) & 255);
-                        btn->GetButtonTextObject()->SetNewCharacterColor(textColor);
-                        btn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
+                        btn->GetButtonTextObject()->SetNewTextColor(textColor);
+                        btn->GetButtonTextObject()->ApplyNewTextSettingsToExistingText();
                         break;
                 }
             }
@@ -343,7 +343,7 @@ namespace ssGUI
 
         AdaptiveButtonTextColor = adaptive;
         auto buttonTextObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(ButtonText));
-        SetAdaptiveButtonTextColorDifference(buttonTextObj->GetNewCharacterColor() - GetButtonColor());
+        SetAdaptiveButtonTextColorDifference(buttonTextObj->GetNewTextColor() - GetButtonColor());
 
         SetButtonColor(GetButtonColor());   //Setting the button color to trigger the event callback
     }
@@ -424,8 +424,8 @@ namespace ssGUI
         textResult.a = textResult.a < 0 ? 0 : textResult.a;
         textResult.a = textResult.a > 255 ? 255 : textResult.a;
 
-        GetButtonTextObject()->SetNewCharacterColor(glm::u8vec4((uint8_t)textResult.r, (uint8_t)textResult.g, (uint8_t)textResult.b, (uint8_t)textResult.a));
-        GetButtonTextObject()->ApplyNewCharacterSettingsToText();
+        GetButtonTextObject()->SetNewTextColor(glm::u8vec4((uint8_t)textResult.r, (uint8_t)textResult.g, (uint8_t)textResult.b, (uint8_t)textResult.a));
+        GetButtonTextObject()->ApplyNewTextSettingsToExistingText();
     }
 
     ssGUI::Enums::GUIObjectType StandardButton::GetType() const

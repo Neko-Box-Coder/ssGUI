@@ -148,7 +148,7 @@ int main()
     ssGUI::MainWindow mainWindow;
 
     ssGUI::Text fpsText;
-    fpsText.SetNewCharacterColor(glm::u8vec4(0, 255, 0, 255));                          //Set the fps text color to green
+    fpsText.SetNewTextColor(glm::u8vec4(0, 255, 0, 255));                          //Set the fps text color to green
     fpsText.SetAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);           //Align content to top-right within itself
     fpsText.SetParent(&mainWindow); 
 

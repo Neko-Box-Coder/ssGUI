@@ -38,7 +38,7 @@ namespace ssGUI
         RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
         RemoveAnyExtension<ssGUI::Extensions::Outline>();
 
-        GetButtonTextObject()->SetNewCharacterFontSize(15);
+        GetButtonTextObject()->SetNewTextFontSize(15);
         GetButtonTextObject()->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
         GetButtonTextObject()->SetHorizontalPadding(15);
 
@@ -80,12 +80,12 @@ namespace ssGUI
                         bgcolor.g = bgcolor.g + buttonReactAmount > 255 ? 255 : bgcolor.g + buttonReactAmount;
                         bgcolor.b = bgcolor.b + buttonReactAmount > 255 ? 255 : bgcolor.b + buttonReactAmount;
                         btn->SetBackgroundColor(bgcolor);
-                        auto textColor = btn->GetButtonTextObject()->GetNewCharacterColor();
+                        auto textColor = btn->GetButtonTextObject()->GetNewTextColor();
                         textColor.r = (uint8_t)((textColor.r + buttonReactAmount * 4) & 255);
                         textColor.g = (uint8_t)((textColor.g + buttonReactAmount * 4) & 255);
                         textColor.b = (uint8_t)((textColor.b + buttonReactAmount * 4) & 255);
-                        btn->GetButtonTextObject()->SetNewCharacterColor(textColor);
-                        btn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
+                        btn->GetButtonTextObject()->SetNewTextColor(textColor);
+                        btn->GetButtonTextObject()->ApplyNewTextSettingsToExistingText();
                         break;
                 }
             }

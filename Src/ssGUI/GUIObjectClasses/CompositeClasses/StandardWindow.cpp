@@ -69,8 +69,8 @@ namespace ssGUI
 
         if(AutoFontSize)
         {
-            windowTitleObj->SetNewCharacterFontSize(textHeight * FontSizeMultiplier);
-            windowTitleObj->ApplyNewCharacterSettingsToText();
+            windowTitleObj->SetNewTextFontSize(textHeight * FontSizeMultiplier);
+            windowTitleObj->ApplyNewTextSettingsToExistingText();
         }
         windowTitleObj->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
         windowTitleObj->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
@@ -198,7 +198,7 @@ namespace ssGUI
         windowTitle->SetHeapAllocated(true);
         windowTitle->SetParent(this, true);
         windowTitle->SetMinSize(glm::vec2(5, 5));
-        windowTitle->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+        windowTitle->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
         windowTitle->SetText("Window");
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
@@ -476,7 +476,7 @@ namespace ssGUI
 
         AdaptiveTitleColor = adaptive;
         auto titleObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
-        SetAdaptiveTitleColorDifference(titleObj->GetNewCharacterColor() - GetTitlebarColor());
+        SetAdaptiveTitleColorDifference(titleObj->GetNewTextColor() - GetTitlebarColor());
 
         SetTitlebarColor(GetTitlebarColor());   //Setting the titlebar color to trigger the event callback
     }
@@ -544,8 +544,8 @@ namespace ssGUI
         titleResult.a = titleResult.a < 0 ? 0 : titleResult.a;
         titleResult.a = titleResult.a > 255 ? 255 : titleResult.a;
 
-        GetWindowTitleObject()->SetNewCharacterColor((glm::u8vec4)titleResult);
-        GetWindowTitleObject()->ApplyNewCharacterSettingsToText();
+        GetWindowTitleObject()->SetNewTextColor((glm::u8vec4)titleResult);
+        GetWindowTitleObject()->ApplyNewTextSettingsToExistingText();
     }
 
     void StandardWindow::SetTitlebar(bool set)

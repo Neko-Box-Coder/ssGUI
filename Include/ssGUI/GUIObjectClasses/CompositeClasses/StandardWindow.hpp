@@ -54,7 +54,7 @@ namespace ssGUI
         windowTitle->SetHeapAllocated(true);
         windowTitle->SetParent(this, true);
         windowTitle->SetMinSize(glm::vec2(5, 5));
-        windowTitle->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+        windowTitle->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
         windowTitle->SetText("Window");
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added

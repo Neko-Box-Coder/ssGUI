@@ -27,15 +27,15 @@ namespace ssGUI
     protected:
         bool RecalculateTextNeeded;                                                     //(Internal variable) Flag to recalculate all the cahracters locations
                                                                                         //TODO: Maybe just use redraw flag?
-        ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;       //See <GetCurrentCharacterDetails>
+        ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;       //See <GetCharacterDetails>
 
         std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;                  //(Internal variable) Vertices for rendering characters
         std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;     //(Internal variable) Valid characters for rendering
 
         bool Overflow;                                                                  //See <IsOverflow>
-        float FontSize;                                                                 //See <GetNewCharacterFontSize>
-        glm::u8vec4 TextColor;                                                          //See <GetNewCharacterColor>
-        bool TextUnderline;                                                             //See <IsNewCharacterUnderlined>
+        float FontSize;                                                                 //See <GetNewTextFontSize>
+        glm::u8vec4 TextColor;                                                          //See <GetNewTextColor>
+        bool TextUnderline;                                                             //See <IsNewTextUnderlined>
         bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
         ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
         ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
@@ -113,15 +113,15 @@ namespace ssGUI
         protected:
             bool RecalculateTextNeeded;                                                     //(Internal variable) Flag to recalculate all the cahracters locations
                                                                                             //TODO: Maybe just use redraw flag?
-            ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;       //See <GetCurrentCharacterDetails>
+            ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;       //See <GetCharacterDetails>
 
             std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;                  //(Internal variable) Vertices for rendering characters
             std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;     //(Internal variable) Valid characters for rendering
 
             bool Overflow;                                                                  //See <IsOverflow>
-            float FontSize;                                                                 //See <GetNewCharacterFontSize>
-            glm::u8vec4 TextColor;                                                          //See <GetNewCharacterColor>
-            bool TextUnderline;                                                             //See <IsNewCharacterUnderlined>
+            float FontSize;                                                                 //See <GetNewTextFontSize>
+            glm::u8vec4 TextColor;                                                          //See <GetNewTextColor>
+            bool TextUnderline;                                                             //See <IsNewTextUnderlined>
             bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
             ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
             ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
@@ -232,83 +232,83 @@ namespace ssGUI
             //Gets the character render info of the character at the index position
             virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(int index) const;
 
-            //function: SetCurrentCharacterDetails
+            //function: SetCharacterDetails
             //Sets the character details at the index position
-            virtual void SetCurrentCharacterDetails(int index, ssGUI::CharacterDetails details);
+            virtual void SetCharacterDetails(int index, ssGUI::CharacterDetails details);
 
-            //function: GetCurrentCharacterDetails
+            //function: GetCharacterDetails
             //Gets the character details at the index position
-            virtual ssGUI::CharacterDetails GetCurrentCharacterDetails(int index);
+            virtual ssGUI::CharacterDetails GetCharacterDetails(int index);
 
-            //function: GetCurrentCharactersDetailsCount
+            //function: GetCharactersDetailsCount
             //Returns the number of characater details, same as calling <GetCharacterCount>
-            virtual int GetCurrentCharactersDetailsCount() const;
+            virtual int GetCharactersDetailsCount() const;
 
-            //function: AddCurrentCharacterDetails
+            //function: AddCharacterDetails
             //Add the character details at the index position
-            virtual void AddCurrentCharacterDetails(int index, ssGUI::CharacterDetails details);
+            virtual void AddCharacterDetails(int index, ssGUI::CharacterDetails details);
 
-            //function: AddCurrentCharacterDetails
+            //function: AddCharacterDetails
             //Add the character details to the end
-            virtual void AddCurrentCharacterDetails(ssGUI::CharacterDetails details);
+            virtual void AddCharacterDetails(ssGUI::CharacterDetails details);
 
-            //function: AddCurrentCharacterDetails
+            //function: AddCharacterDetails
             //Add a number of character details at the index position
-            virtual void AddCurrentCharacterDetails(int index, std::vector<ssGUI::CharacterDetails>& details);
+            virtual void AddCharacterDetails(int index, std::vector<ssGUI::CharacterDetails>& details);
             
-            //function: AddCurrentCharacterDetails
+            //function: AddCharacterDetails
             //Add a number of character details to the end
-            virtual void AddCurrentCharacterDetails(std::vector<ssGUI::CharacterDetails>& details);
+            virtual void AddCharacterDetails(std::vector<ssGUI::CharacterDetails>& details);
 
-            //function: RemoveCurrentCharacterDetails
+            //function: RemoveCharacterDetails
             //Removes the character details at the index position
-            virtual void RemoveCurrentCharacterDetails(int index);
+            virtual void RemoveCharacterDetails(int index);
 
-            //function: RemoveCurrentCharacterDetails
+            //function: RemoveCharacterDetails
             //Removes a range of character details
-            virtual void RemoveCurrentCharacterDetails(int startIndex, int exclusiveEndIndex);
+            virtual void RemoveCharacterDetails(int startIndex, int exclusiveEndIndex);
 
-            //function: ClearAllCurrentCharacterDetails
+            //function: ClearAllCharacterDetails
             //Removes all override character details
-            virtual void ClearAllCurrentCharacterDetails();
+            virtual void ClearAllCharacterDetails();
 
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
             //If topLeftCorner is true, this will return the top-left corner of the character,
-            //Otherwise this will return the left-most position of the character on the horizontal line (Bottom Left corner).
+            //Otherwise this will return the left-most position of the character on the baseline (Bottom Left corner).
             virtual glm::vec2 GetCharacterGlobalPosition(int index, bool topLeftCorner);
             
             //function: IsOverflow
             //Returns true if the text is overflowing the text widget
             virtual bool IsOverflow() const;
             
-            //function: SetNewCharacterFontSize
-            //Sets the size of the font being used for new characters
-            virtual void SetNewCharacterFontSize(float size);
+            //function: SetNewTextFontSize
+            //Sets the size of the font being used for new text being added or set
+            virtual void SetNewTextFontSize(float size);
             
-            //function: GetNewCharacterFontSize
-            //Returns the size of the font being used for new characters
-            virtual float GetNewCharacterFontSize() const;
+            //function: GetNewTextFontSize
+            //Returns the size of the font being used for new text being added or set
+            virtual float GetNewTextFontSize() const;
 
-            //function: SetNewCharacterColor
-            //Sets the text color being used for new characters
-            virtual void SetNewCharacterColor(glm::u8vec4 color);
+            //function: SetNewTextColor
+            //Sets the text color being used for new text being added or set
+            virtual void SetNewTextColor(glm::u8vec4 color);
 
-            //function: GetNewCharacterColor
-            //Gets the text color being used for new characters
-            virtual glm::u8vec4 GetNewCharacterColor() const;
+            //function: GetNewTextColor
+            //Gets the text color being used for new text being added or set
+            virtual glm::u8vec4 GetNewTextColor() const;
 
-            //function: SetNewCharacterUnderlined
-            //Sets if text is underlined for new characters
-            virtual void SetNewCharacterUnderlined(bool underline);
+            //function: SetNewTextUnderlined
+            //Sets if text is underlined for new text being added or set
+            virtual void SetNewTextUnderlined(bool underline);
 
-            //function: IsNewCharacterUnderlined
-            //Returns if text is underlined for new characters
-            virtual bool IsNewCharacterUnderlined() const;
+            //function: IsNewTextUnderlined
+            //Returns if text is underlined for new text being added or set
+            virtual bool IsNewTextUnderlined() const;
             
-            //function: ApplyNewCharacterSettingsToText
+            //function: ApplyNewTextSettingsToExistingText
             //Applies the new character settings (color, font size, underline, etc...) to all characters
-            virtual void ApplyNewCharacterSettingsToText();
+            virtual void ApplyNewTextSettingsToExistingText();
 
             //function: SetMultilineAllowed
             //If true, newlines will be allowed
@@ -410,10 +410,12 @@ namespace ssGUI
             virtual bool IsTextSelectionAllowed() const;
 
             //function: SetStartSelectionIndex
-            //Sets the start selection index. If start and end index is the same, nothing is selected.
+            //Sets the start selection index. 
+            //If start and end index is the same, it just indicates the caret position and nothing is selected.
             //If start index is before the end index, characters in the range of start (inclusive) and end (exclusive) index are selected.
             //If start index is after the end index, characters in the range of start (exclusive) and end (inclusive) index are selected.
             //Note that it is possible for the start/end selection index to be equal to the total characters count.
+            //In that case, the caret is placed after the last character.
             virtual void SetStartSelectionIndex(int index);
 
             //function: GetStartSelectionIndex
