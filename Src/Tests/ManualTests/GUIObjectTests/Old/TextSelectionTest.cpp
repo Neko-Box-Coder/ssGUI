@@ -16,9 +16,9 @@ int main()
     text.SetPosition(glm::ivec2(75, 25));
     text.SetSize(glm::ivec2(500, 300));
     text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
-    text.SetNewCharacterFontSize(20);
-    text.SetNewCharacterUnderlined(true);
-    text.SetNewCharacterColor(glm::u8vec4(255, 0, 0, 255));
+    text.SetNewTextFontSize(20);
+    text.SetNewTextUnderlined(true);
+    text.SetNewTextColor(glm::u8vec4(255, 0, 0, 255));
     text.SetText(L"Just some text for testing selection.\nHere is a newline for you to test :D");
 
     text.SetBlockInput(true);

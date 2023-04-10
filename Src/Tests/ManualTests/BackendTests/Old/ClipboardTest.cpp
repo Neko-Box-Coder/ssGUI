@@ -12,7 +12,7 @@ int main()
     text.SetPosition(glm::ivec2(75, 25));
     text.SetSize(glm::ivec2(300, 150));
 
-    text.SetNewCharacterFontSize(20);
+    text.SetNewTextFontSize(20);
     text.SetWrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING);
 
     text.SetParent(&mainWindow);

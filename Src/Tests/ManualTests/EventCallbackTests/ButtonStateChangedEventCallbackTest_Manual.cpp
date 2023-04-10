@@ -1,16 +1,16 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssLogger/ssLog.hpp"
 
-ssGUI::MainWindow* mainWindow;
-ssGUI::Button* button;
-ssGUI::ssGUIManager* manager;
+ssGUI::MainWindow* MainWindow;
+ssGUI::Button* TestButton;
+ssGUI::ssGUIManager* Manager;
 
 void SetUp()
 {
-    mainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
-    button = ssGUI::Factory::Create<ssGUI::Button>();
-    manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
-    auto* ecb = button->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
+    MainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
+    TestButton = ssGUI::Factory::Create<ssGUI::Button>();
+    Manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
+    auto* ecb = TestButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
     ecb->AddEventListener(  "TestKey",    
                             [](ssGUI::EventInfo info)
                             {
@@ -20,24 +20,24 @@ void SetUp()
                                 ssLOG_SIMPLE("State: "<<ssGUI::Enums::ToString(state));
                             });    
     
-    button->SetPosition(glm::vec2(50, 50));
-    button->SetParent(mainWindow);
+    TestButton->SetPosition(glm::vec2(50, 50));
+    TestButton->SetParent(MainWindow);
     
-    manager->AddRootGUIObject(mainWindow);
-    manager->AddPostGUIUpdateEventListener([&]()
+    Manager->AddRootGUIObject(MainWindow);
+    Manager->AddPostGUIUpdateEventListener([&]()
     {
-        auto* inputInterface = manager->GetBackendInputInterface();
+        auto* inputInterface = Manager->GetBackendInputInterface();
         if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
             inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
         {
-            button->SetInteractable(!button->IsInteractable());
+            TestButton->SetInteractable(!TestButton->IsInteractable());
         }
     });
 }
 
 void CleanUp()
 {
-    ssGUI::Factory::Dispose(manager);
+    ssGUI::Factory::Dispose(Manager);
 }
 
 void Instructions()
@@ -53,7 +53,7 @@ int main()
     
     SetUp();
     
-    manager->StartRunning();
+    Manager->StartRunning();
     
     CleanUp();   
 }

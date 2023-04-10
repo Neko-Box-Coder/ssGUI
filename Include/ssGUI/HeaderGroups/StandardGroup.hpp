@@ -14,6 +14,7 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 #include "ssGUI/GUIObjectClasses/Menu.hpp"
 #include "ssGUI/GUIObjectClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/TextField.hpp"
 #include "ssGUI/GUIObjectClasses/Widget.hpp"
 #include "ssGUI/GUIObjectClasses/Window.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Slider.hpp"

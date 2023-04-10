@@ -15,7 +15,7 @@ int main()
     text.SetSize(glm::ivec2(500, 300));
     //text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
     // text.SetFontSize(20);
-    text.SetNewCharacterUnderlined(true);
+    text.SetNewTextUnderlined(true);
     // text.SetTextColor(glm::u8vec4(255, 0, 0, 255));
     text.SetWrappingMode(ssGUI::Enums::TextWrapping::WORD_WRAPPING);
     // text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::RIGHT);
@@ -42,7 +42,7 @@ int main()
             {
                 ssLOG_LINE("text.GetStartSelectionIndex(): "<<text.GetStartSelectionIndex());    
                 ssLOG_LINE("text.GetEndSelectionIndex(): "<<text.GetEndSelectionIndex());    
-                ssLOG_LINE("text.GetCurrentCharactersDetailsCount(): "<<text.GetCurrentCharactersDetailsCount());
+                ssLOG_LINE("text.GetCharactersDetailsCount(): "<<text.GetCharactersDetailsCount());
             }*/
         }
     );
