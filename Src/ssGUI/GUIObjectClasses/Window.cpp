@@ -432,7 +432,8 @@ namespace ssGUI
 
         Closed = true;
 
-        Delete();
+        if(IsDeleteAfterClosed())
+            Delete();
     }
     
     void Window::SetClosable(bool closable)
