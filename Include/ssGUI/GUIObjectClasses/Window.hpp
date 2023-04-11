@@ -137,6 +137,24 @@ namespace ssGUI
             //function: Internal_OnClose
             //(Internal ssGUI function) You should not be calling this function normally.
             virtual void Internal_OnClose();
+            
+            //function: SetClosable
+            //Sets if there's a close button for this window object. This *does not* affect <Close> function. 
+            //This has no affect on the <Window> class. Classes that derives this class (such as <StandardWindow>) may use this.
+            virtual void SetClosable(bool closable);
+            
+            //function: IsClosable
+            //Gets if there's a close button for this window object. This *does not* affect <Close> function. 
+            //This has no affect on the <Window> class. Classes that derives this class (such as <StandardWindow>) may use this.
+            virtual bool IsClosable() const;
+            
+            //function: SetDeleteAfterClosed
+            //If sets to true, the window will be deleted automatically after being closed
+            virtual void SetDeleteAfterClosed(bool deleteAfterClosed);
+
+            //function: IsDeleteAfterClosed
+            //If returns true, the window will be deleted automatically after being closed
+            virtual bool IsDeleteAfterClosed() const;
 
             //function: SetTitlebar
             //Sets if the titlebar exists or not
@@ -182,15 +200,9 @@ namespace ssGUI
             //Sets the resize hitbox. This is the range from the edge of the window for both direction.
             virtual void SetResizeHitbox(int hitbox);
             
-            //function: SetClosable
-            //Sets if there's a close button for this window object. This *does not* affect <Close> function. 
-            //This has no affect on the <Window> class. Classes that derives this class (such as <StandardWindow>) may use this.
-            virtual void SetClosable(bool closable);
-            
-            //function: IsClosable
-            //Gets if there's a close button for this window object. This *does not* affect <Close> function. 
-            //This has no affect on the <Window> class. Classes that derives this class (such as <StandardWindow>) may use this.
-            virtual bool IsClosable() const;
+            //function: IsResizing
+            //Returns true if the user is currently resizing the window. Not supporting MainWindow for now.
+            virtual bool IsResizing() const;
 
             //function: SetDraggable
             //Sets if the window can be dragged to move around
@@ -207,10 +219,6 @@ namespace ssGUI
             //Returns true if the user is currently dragging the window. Not supporting MainWindow for now.
             virtual bool IsDragging() const;
 
-            //function: IsResizing
-            //Returns true if the user is currently resizing the window. Not supporting MainWindow for now.
-            virtual bool IsResizing() const;
-
             //function: GetResizeDragData
             //Returns the current resize and drag status of the window
             virtual ssGUI::WindowResizeDragData GetResizeDragData() const;
@@ -219,14 +227,6 @@ namespace ssGUI
             //Sets the current resize and drag status of the window. 
             //Only use it if you know what you are doing 
             virtual void SetResizeDragData(ssGUI::WindowResizeDragData data);
-
-            //function: SetDeleteAfterClosed
-            //If sets to true, the window will be deleted automatically after being closed
-            virtual void SetDeleteAfterClosed(bool deleteAfterClosed);
-
-            //function: IsDeleteAfterClosed
-            //If returns true, the window will be deleted automatically after being closed
-            virtual bool IsDeleteAfterClosed() const;
 
             //function: SetOnTopWhenFocused
             //Set if the window will be on top when focused, meaning it will be the last child if true

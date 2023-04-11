@@ -434,6 +434,26 @@ namespace ssGUI
 
         Delete();
     }
+    
+    void Window::SetClosable(bool closable)
+    {
+        Closable = closable;
+    }
+
+    bool Window::IsClosable() const
+    {
+        return Closable;
+    }
+    
+    void Window::SetDeleteAfterClosed(bool deleteAfterClosed)
+    {
+        DeleteAfterClosed = deleteAfterClosed;
+    }
+
+    bool Window::IsDeleteAfterClosed() const
+    {
+        return DeleteAfterClosed;
+    }
 
     void Window::SetTitlebar(bool set)
     {
@@ -498,14 +518,9 @@ namespace ssGUI
         ResizeHitbox = hitbox;
     }
 
-    void Window::SetClosable(bool closable)
+    bool Window::IsResizing() const
     {
-        Closable = closable;
-    }
-
-    bool Window::IsClosable() const
-    {
-        return Closable;
+        return ResizingTop || ResizingRight || ResizingBot || ResizingLeft;
     }
 
     void Window::SetDraggable(bool draggable)
@@ -531,11 +546,6 @@ namespace ssGUI
     bool Window::IsDragging() const
     {
         return Dragging;
-    }
-
-    bool Window::IsResizing() const
-    {
-        return ResizingTop || ResizingRight || ResizingBot || ResizingLeft;
     }
 
     ssGUI::WindowResizeDragData Window::GetResizeDragData() const
@@ -566,16 +576,6 @@ namespace ssGUI
         TransformTotalMovedDistance = data.TransformTotalMovedDistance;
         OnTransformBeginSize = data.OnTransformBeginSize;
         MouseDownPosition = data.MouseDownPosition;
-    }
-
-    void Window::SetDeleteAfterClosed(bool deleteAfterClosed)
-    {
-        DeleteAfterClosed = deleteAfterClosed;
-    }
-
-    bool Window::IsDeleteAfterClosed() const
-    {
-        return DeleteAfterClosed;
     }
 
     void Window::SetOnTopWhenFocused(bool top)
