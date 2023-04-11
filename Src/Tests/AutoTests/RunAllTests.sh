@@ -13,3 +13,6 @@ set -e
 ./EventCallbackTests/MinMaxSizeChangedEventTest_Auto
 ./EventCallbackTests/OnFontChangeEventTest_Auto
 ./EventCallbackTests/OnObjectDestroyEventTest_Auto
+./GUIObjectTests/TextTest_Auto
+./GUIObjectTests/WidgetTest_Auto
+./GUIObjectTests/WindowTest_Auto
