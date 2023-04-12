@@ -105,12 +105,25 @@ int main()
         ssTEST_OUTPUT_ASSERT("Advance", FLOAT_EQ(testRenderInfo.Advance, 7));
         ssTEST_OUTPUT_ASSERT("DrawOffset", FLOAT_EQ(testRenderInfo.DrawOffset.x, 1) && FLOAT_EQ(testRenderInfo.DrawOffset.y, -8));
         ssTEST_OUTPUT_ASSERT("Size", FLOAT_EQ(testRenderInfo.Size.x, 6) && FLOAT_EQ(testRenderInfo.Size.y, 8));
-        ssTEST_OUTPUT_ASSERT("BaselinePosition", FLOAT_EQ(testRenderInfo.BaselinePosition.x, 94) && FLOAT_EQ(testRenderInfo.BaselinePosition.y, 20));
+        
+        //SFML GetKerning is returning -1 for some characters, while FreeType implementation doesn't (for now). 
+        #ifdef SSGUI_FONT_BACKEND_SFML
+            ssTEST_OUTPUT_ASSERT("BaselinePosition", FLOAT_EQ(testRenderInfo.BaselinePosition.x, 93) && FLOAT_EQ(testRenderInfo.BaselinePosition.y, 20));
+        #else
+            ssTEST_OUTPUT_ASSERT("BaselinePosition", FLOAT_EQ(testRenderInfo.BaselinePosition.x, 94) && FLOAT_EQ(testRenderInfo.BaselinePosition.y, 20));
+        #endif
+        
         ssTEST_OUTPUT_ASSERT("CharacterAtNewline", !testRenderInfo.CharacterAtNewline);
         ssTEST_OUTPUT_ASSERT("Rendered", testRenderInfo.Rendered);
         ssTEST_OUTPUT_ASSERT("Valid", testRenderInfo.Valid);
         ssTEST_OUTPUT_ASSERT("LineMinY", FLOAT_EQ(testRenderInfo.LineMinY, -15));
-        ssTEST_OUTPUT_ASSERT("LineMaxY", FLOAT_EQ(testRenderInfo.LineMaxY, 5.4375));
+        
+        #ifdef SSGUI_FONT_BACKEND_SFML
+            ssTEST_OUTPUT_ASSERT("LineMaxY", FLOAT_EQ(testRenderInfo.LineMaxY, 5));
+        #else
+            ssTEST_OUTPUT_ASSERT("LineMaxY", FLOAT_EQ(testRenderInfo.LineMaxY, 5.4375));
+        #endif
+        
         ssTEST_OUTPUT_ASSERT("RenderFontSize", FLOAT_EQ(testRenderInfo.RenderFontSize, 15));
         ssTEST_OUTPUT_ASSERT("TargetSizeMultiplier", FLOAT_EQ(testRenderInfo.TargetSizeMultiplier, 1));
         
