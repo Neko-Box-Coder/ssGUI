@@ -70,15 +70,18 @@ namespace ssGUI
             //Clear up any main windows that are deleted
             CheckMainWindowExistence();
 
-            //Dispatch Update event
-            ssLOG_FUNC_ENTRY("ssGUIManagerPostUpdateEvent");
-            for(int i = 0; i < PostGUIUpdateEventListeners.size(); i++)
-            {                
-                if(PostGUIUpdateEventListenersValid[i])
-                    PostGUIUpdateEventListeners[i]();
+            if(!MainWindowPList.empty())
+            {
+                //Dispatch Update event
+                ssLOG_FUNC_ENTRY("ssGUIManagerPostUpdateEvent");
+                for(int i = 0; i < PostGUIUpdateEventListeners.size(); i++)
+                {                
+                    if(PostGUIUpdateEventListenersValid[i])
+                        PostGUIUpdateEventListeners[i]();
+                }
+                ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
             }
-            ssLOG_FUNC_EXIT("ssGUIManagerPostUpdateEvent");
-            
+
             //Clean up deleted objects
             if(!ssGUI::GUIObject::ObjsToDelete.empty())
             {
