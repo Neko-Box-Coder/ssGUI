@@ -9,7 +9,7 @@ namespace ssGUI
     class GUIObject;
     
     //class: ssGUI::Factory
-    //<Extension>s & <EventCallback>s must be created and disposed via this class.
+    //<Extensions: Extensions::Extension> & <EventCallbacks: EventCallback> must be created and disposed via this class.
     //You can also create GUI Objects via this class but it is not required.
     class Factory
     {
@@ -52,6 +52,7 @@ namespace ssGUI
     };
     
     //namespace: ssGUI
+
     //function: Create
     //See <ssGUI::Factory::Create>
     template< template<typename T> class Wrapper, typename T> 

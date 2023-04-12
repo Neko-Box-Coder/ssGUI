@@ -258,6 +258,8 @@ namespace ssGUI
             //function: GetCloseButtonObject
             //Returns the pointer to the close button object. Nullptr if it doesn't exist
             virtual ssGUI::Button* GetCloseButtonObject() const;
+            
+            //TODO: Rename to titlebar padding instead
 
             //function: SetHorizontalPadding
             //Sets the horizontal padding for the icon, title and close button objects, in pixels

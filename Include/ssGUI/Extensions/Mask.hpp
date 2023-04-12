@@ -197,7 +197,7 @@ namespace Extensions
             //Offset of the mask position can be set by passing renderOffset.
             //Shapes can be specified to be masked by passing the index of the shapes.
             //If no shape indices are passed, masking will be applied to all shapes.
-            //GUI Object shape index can be obtained with <ssGUI::Renderer:Extension_GetGUIObjectFirstShapeIndex>.
+            //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
             virtual void MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset, const std::vector<int>& applyShapeIndices);
 
             //Override from Extension

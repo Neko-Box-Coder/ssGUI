@@ -30,8 +30,8 @@ namespace ssGUI
         
         BUTTON_STATE_CHANGED                - Triggered *after* the button state has changed. Button(Container) will be the source for triggering this event callback.
         CHILD_ADDED                         - Triggered *after* a child is paranted on this GUI object. The child object being added will be the source for triggering this event callback.
-        CHILD_POSITION_CHANGED              - Triggered *after* <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> is called.
-                                                The child that is passed to <GUIObject::ChangeChildOrderToBeforePosition> or <GUIObject::ChangeChildOrderToAfterPosition> will be the source 
+        CHILD_POSITION_CHANGED              - Triggered *after* <ssGUI::Hierarchy::ChangeChildOrderToBeforePosition> or <ssGUI::Hierarchy::ChangeChildOrderToAfterPosition> is called.
+                                                The child that is passed to <ssGUI::Hierarchy::ChangeChildOrderToBeforePosition> or <ssGUI::Hierarchy::ChangeChildOrderToAfterPosition> will be the source 
                                                 for triggering this event callback.
                                                 
                                                 The event will only be triggered once as a result of the ChangeChildOrderToXXXPosition function

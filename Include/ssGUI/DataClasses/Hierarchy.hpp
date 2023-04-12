@@ -168,6 +168,7 @@ namespace ssGUI
             //function: MoveChildrenIteratorToFirst
             //Moves the children iterator to the first child. 
             //To preserve the current children iterator, use <StashChildrenIterator>.
+            //
             //Please note that if the current children iterator points to a child that is removed 
             //then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorToFirst();
@@ -175,6 +176,7 @@ namespace ssGUI
             //function: MoveChildrenIteratorToLast
             //Moves the children iterator to the last child. 
             //To preserve the current children iterator, use <StashChildrenIterator>.
+            //
             //Please note that if the current children iterator points to a child that is removed 
             //then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorToLast();
@@ -182,6 +184,7 @@ namespace ssGUI
             //function: MoveChildrenIteratorNext
             //Moves the children iterator to the next child. 
             //To preserve the current children iterator, use <StashChildrenIterator>.
+            //
             //Please note that if the current children iterator points to a child that is removed 
             //then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorNext();
@@ -189,6 +192,7 @@ namespace ssGUI
             //function: MoveChildrenIteratorPrevious
             //Moves the children iterator to the previous child. 
             //To preserve the current children iterator, use <StashChildrenIterator>.
+            //
             //Please note that if the current children iterator points to a child that is removed 
             //then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorPrevious();
@@ -213,6 +217,7 @@ namespace ssGUI
 
             //function: PopChildrenIterator
             //Pops the most recent stashed children iterator back to the current children iterator.
+            //
             //Please note that if the stashed children iterator points to a child that is removed then the stashed children iterator will be invalid,
             //meaning <IsChildrenIteratorEnd> will be true.
             virtual void PopChildrenIterator();

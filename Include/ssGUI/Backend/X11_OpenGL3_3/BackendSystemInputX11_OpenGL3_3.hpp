@@ -236,7 +236,7 @@ namespace Backend
             void RemoveRawEventHandler(int id) override;
             
             //function: ClearRawEventHandler
-            //See <<BackendSystemInputInterface::ClearRawEventHandler>
+            //See <BackendSystemInputInterface::ClearRawEventHandler>
             void ClearRawEventHandler() override;
 
             //function: ClearClipboard

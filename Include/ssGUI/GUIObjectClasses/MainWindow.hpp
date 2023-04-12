@@ -10,7 +10,7 @@ namespace ssGUI
 {
     /*class: ssGUI::MainWindow
     Main Window is the *actual* window. Not to be confused with <ssGUI::Window> which lives inside MainWindow.
-    You should call <GUIObject::RedrawObject> after changing the properties of the MainWindow.
+    You should call <Renderer::RedrawObject> after changing the properties of the MainWindow.
     This class should not be overwritten unless you know what you are doing
     
     Variables & Constructor:
@@ -77,50 +77,50 @@ namespace ssGUI
             virtual ssGUI::Backend::BackendDrawingInterface* GetBackendDrawingInterface();
             
             //function: GetWindowPosition
-            //See <BackendMainWindowInterface::GetWindowPosition>
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetWindowPosition>
             virtual glm::ivec2 GetWindowPosition() const;
 
             //function: SetWindowPosition
-            //See <BackendMainWindowInterface::SetWindowPosition>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetWindowPosition>
             virtual void SetWindowPosition(glm::ivec2 pos);
 
             //function: GetPositionOffset
-            //See <BackendMainWindowInterface::GetPositionOffset>
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetPositionOffset>
             virtual glm::ivec2 GetPositionOffset() const;
 
             //function: SetTitle
-            //See <BackendMainWindowInterface::IsVSync>
+            //See <ssGUI::Backend::BackendMainWindowInterface::IsVSync>
             virtual void SetTitle(std::wstring title);
             //function: GetTitle
-            //See <BackendMainWindowInterface::IsVSync>
+            //See <ssGUI::Backend::BackendMainWindowInterface::IsVSync>
             virtual std::wstring GetTitle() const;
 
             //function: SetIcon
-            //See <BackendMainWindowInterface::SetIcon>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetIcon>
             virtual void SetIcon(ssGUI::ImageData& iconImage);
 
             //function: SetVSync
-            //See <BackendMainWindowInterface::SetVSync>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetVSync>
             virtual void SetVSync(bool vSync);
             
             //function: IsVSync
-            //See <BackendMainWindowInterface::IsVSync>
+            //See <ssGUI::Backend::BackendMainWindowInterface::IsVSync>
             virtual bool IsVSync() const;
             
             //function: SetMSAA
-            //See <BackendMainWindowInterface::SetMSAA>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetMSAA>
             virtual void SetMSAA(int level);
 
             //function: GetMSAA
-            //See <BackendMainWindowInterface::GetMSAA>
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetMSAA>
             virtual int GetMSAA() const;
 
             //function: SetWindowMode
-            //See <BackendMainWindowInterface::SetWindowMode>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetWindowMode>
             virtual void SetWindowMode(ssGUI::Enums::WindowMode WindowMode);
 
             //function: GetWindowMode
-            //See <BackendMainWindowInterface::GetWindowMode>
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetWindowMode>
             virtual ssGUI::Enums::WindowMode GetWindowMode() const;
 
             //function: Internal_FocusChanged
@@ -128,11 +128,11 @@ namespace ssGUI
             virtual void Internal_FocusChanged(bool focused);
 
             //function: SetVisible
-            //See <BackendMainWindowInterface::SetVisible>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetVisible>
             virtual void SetVisible(bool visible);
             
             //function: IsVisible
-            //See <BackendMainWindowInterface::IsVisible>
+            //See <ssGUI::Backend::BackendMainWindowInterface::IsVisible>
             virtual bool IsVisible() const;
 
             //function: GetRelativeMousePosition
@@ -140,15 +140,15 @@ namespace ssGUI
             virtual glm::ivec2 GetRelativeMousePosition(glm::ivec2 mousePos) const;
             
             //function: SetWindowSize
-            //See <BackendMainWindowInterface::SetWindowSize>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetWindowSize>
             virtual void SetWindowSize(glm::ivec2 size);
             
             //function: GetWindowSize
-            //See <BackendMainWindowInterface::GetWindowSize>
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetWindowSize>
             virtual glm::ivec2 GetWindowSize() const;
             
             //function: SetRenderContext 
-            //See <BackendMainWindowInterface::SetGLContext>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetGLContext>
             bool SetRenderContext();
             
             //function: SaveState 
@@ -172,11 +172,11 @@ namespace ssGUI
             virtual bool IsSelfEnabled() const override;
 
             //function: IsFocused
-            //See <BackendMainWindowInterface::IsFocused>
+            //See <ssGUI::Backend::BackendMainWindowInterface::IsFocused>
             virtual bool IsFocused() const override;
             
             //function: SetFocus
-            //See <BackendMainWindowInterface::SetFocus>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetFocus>
             virtual void SetFocus(bool focus) override;
             
             //function: GetPosition
@@ -200,19 +200,19 @@ namespace ssGUI
             virtual void SetGlobalPosition(glm::vec2 position) override;
             
             //function: GetSize
-            //See <BackendMainWindowInterface::GetRenderSize>
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetRenderSize>
             virtual glm::vec2 GetSize() const override;
             
             //function: SetSize
-            //See <BackendMainWindowInterface::SetRenderSize>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetRenderSize>
             virtual void SetSize(glm::vec2 size) override;
             
             //function: SetRenderSize
-            //See <BackendMainWindowInterface::SetRenderSize>
+            //See <ssGUI::Backend::BackendMainWindowInterface::SetRenderSize>
             virtual void SetRenderSize(glm::ivec2 size) override;
 
             //function: GetRenderSize
-            //See <BackendMainWindowInterface::GetRenderSize>
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetRenderSize>
             virtual glm::ivec2 GetRenderSize() const override;
 
             //function: GetType

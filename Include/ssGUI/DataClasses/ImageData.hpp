@@ -74,7 +74,7 @@ namespace ssGUI
             virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size);
 
             //function: LoadRawFromMemory
-            //See <BackendImageInterface::LoadRawFromMemory>
+            //See <ssGUI::Backend::BackendImageInterface::LoadRawFromMemory>
             bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize);
             
             //function: GetSize

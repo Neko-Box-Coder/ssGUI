@@ -71,6 +71,7 @@ namespace Backend
             //function: IsCharacterSupported
             //For fixed size font, this will return the closest fixed size font 
             //and populate the TargetSizeMultiplier field.
+            //
             //See <BackendFontInterface::IsCharacterSupported>
             bool IsCharacterSupported(wchar_t charUnicode) override;
             
@@ -120,6 +121,7 @@ namespace Backend
             //Clones the backend font object
             //Seems like freetype currently doesn't support font face cloning
             //https://gitlab.freedesktop.org/freetype/freetype/-/issues/1040
+            //
             //Therefore, this will just load the same font instead of copying
             //See <BackendFontInterface::Clone>
             BackendFontInterface* Clone() override;
