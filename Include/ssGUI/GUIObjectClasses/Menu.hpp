@@ -77,6 +77,8 @@ namespace ssGUI
             //This returns the spawn direction against the globalSpawnPosition
             ssGUI::Enums::MenuSpawnDirection GetMenuSpawnDirection(glm::vec2 globalSpawnPosition);
             
+            //TODO: Add SpawnMenu with direction
+            
             //function: SpawnMenu
             //Spawns the menu at globalPosition
             void SpawnMenu(glm::vec2 globalPosition);
