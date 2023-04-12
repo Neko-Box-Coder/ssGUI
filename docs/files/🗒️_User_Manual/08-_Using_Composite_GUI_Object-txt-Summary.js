@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("File:🗒️_User_Manual/08._Using_Composite_GUI_Object.txt","08. Using Composite GUI Object.txt");NDSummary.OnSummaryLoaded("File:🗒️_User_Manual/08._Using_Composite_GUI_Object.txt",[["Text File","TextFile"]],[["Sections","Section"]],[[1626,0,0,"Using Composite GUI Object","Using_Composite_GUI_Object"],[1706,0,0,"⛏️ WIP","⛏️_WIP"]]);

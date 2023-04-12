@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("app",["Function"],[["ApplyNewCharacterSettingsToText",,[["ssGUI::Text",,,,0,"File:◀️_ssGUI_API_▶️/GUIObjectClasses/Text.hpp:ssGUI.Text.ApplyNewCharacterSettingsToText","CClass:ssGUI.Text:ApplyNewCharacterSettingsToText"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("app",["Function"],[["ApplyNewTextSettingsToExistingText",,[["ssGUI::Text",,,,0,"File:◀️_ssGUI_API_▶️/GUIObjectClasses/Text.hpp:ssGUI.Text.ApplyNewTextSettingsToExistingText","CClass:ssGUI.Text:ApplyNewTextSettingsToExistingText"]]]]);

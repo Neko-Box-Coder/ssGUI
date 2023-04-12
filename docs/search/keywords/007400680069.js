@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("thi",["Variable"],[["this",,[["ssGUI::EventInfo","&lt;ObjectsReferences&gt; that this event callback has",,"<objectsreferences>that this event callback has",0,"File:◀️_ssGUI_API_▶️/DataClasses/EventInfo.hpp:ssGUI.EventInfo.<ObjectsReferences>that_this_event_callback_has","CClass:ssGUI.EventInfo:<ObjectsReferences>that_this_event_callback_has"]]]]);

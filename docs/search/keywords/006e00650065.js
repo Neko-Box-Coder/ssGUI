@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("nee",["Information"],[["needed",,[[,"Macros needed to be defined:",,,0,"File:🗒️_User_Manual/02._Using_ssGUI.txt:Macros_needed_to_be_defined_"]]]]);

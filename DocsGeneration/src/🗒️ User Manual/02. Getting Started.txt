@@ -1,0 +1,23 @@
+Title: 👟 Getting Started
+
+Section: 🗄️ What makes up ssGUI:
+
+In ssGUI, you will often see the following objects:
+
+- *GUI objects*
+
+- *Extensions* provide additional functionality to a GUI object. This can be in the form of visual changes, logic changes, or both.
+
+- *Event Callbacks* provides callback on different GUI events
+
+- *ssGUIManager* for orchestrating all the GUI objects
+
+
+
+Section: 🛳️ Objects Ownership:
+
+- <ssGUI::ssGUIManager> manages --> *GUI Objects* manage --> *Extensions* and *Event Callbacks* (as long as they are attached)
+
+- If an object is created on the stack, it must remain valid until nothing uses it
+
+Don't worry, this will become clear once we dive into different examples.
