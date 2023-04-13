@@ -92,8 +92,13 @@ int main()
         
         TestText->AddText(wideNewString);
         
-        //There's a VARIATION SELECTOR-16 character after ⚠️ and ☢️, therefore adding 2
-        ssTEST_OUTPUT_ASSERT(TestText->GetCharacterCount() == TestString.size() + 4 + 2);
+        #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+            //There's a VARIATION SELECTOR-16 character after ⚠️ and ☢️ and 🧪, therefore adding 3 characters
+            ssTEST_OUTPUT_ASSERT(TestText->GetCharacterCount() == TestString.size() + 4 + 3);
+        #else
+            //There's a VARIATION SELECTOR-16 character after ⚠️ and ☢️, therefore adding 2 characters
+            ssTEST_OUTPUT_ASSERT(TestText->GetCharacterCount() == TestString.size() + 4 + 2);
+        #endif
     }
     
     #define FLOAT_EQ(a, b) (a + 0.0001f > b && a - 0.0001f < b)
