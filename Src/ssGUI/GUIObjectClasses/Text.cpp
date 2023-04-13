@@ -11,6 +11,7 @@
 
 namespace ssGUI
 {    
+    int Text::TextObjectCount = 0;
     std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();
     uint32_t Text::DefaultFontsChangeID = 1;
 
@@ -40,6 +41,8 @@ namespace ssGUI
         SelectionColor = other.GetSelectionColor();
         TextSelectedColor = other.GetTextSelectedColor();
         LastDefaultFontsID = other.LastDefaultFontsID;
+        
+        TextObjectCount++;
     }
 
     ssGUI::CharacterDetails& Text::GetInternalCharacterDetail(int index)
@@ -1297,11 +1300,17 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
+        
+        TextObjectCount++;
     }
 
     Text::~Text()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        TextObjectCount--;
+        
+        if(TextObjectCount == 0)
+            CleanUpDefaultResources();
     }
     
     void Text::ComputeCharactersPositionAndSize()
@@ -2119,15 +2128,6 @@ namespace ssGUI
         return DefaultFonts.size();
     }
 
-    void Text::CleanUpAllDefaultFonts()
-    {
-        for(int i = 0; i < DefaultFonts.size(); i++)
-            ssGUI::Factory::Dispose(DefaultFonts[i]);
-        
-        DefaultFonts.clear();
-        DefaultFontsChangeID++;
-    }
-
     ssGUI::Enums::GUIObjectType Text::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
@@ -2184,5 +2184,17 @@ namespace ssGUI
             DefaultFontsChangeID++;
         }
         ssLOG_FUNC_EXIT();
+    }
+    
+    void Text::CleanUpDefaultResources()
+    {
+        if(DefaultFonts.empty())
+            return;
+        
+        for(int i = 0; i < DefaultFonts.size(); i++)
+            ssGUI::Dispose(DefaultFonts[i]);
+        
+        DefaultFonts.clear();
+        DefaultFontsChangeID++;
     }
 }

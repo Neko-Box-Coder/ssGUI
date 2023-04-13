@@ -55,6 +55,7 @@ namespace ssGUI
         bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
         glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
 
+        static int ImageCanvasObjectCount;                  //(Internal variable) Used for deallocating default resources
         static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
                                                             //TODO: Add ability to set it
     =================================================================
@@ -174,8 +175,10 @@ namespace ssGUI
 
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
+        ImageCanvasObjectCount++;
     }
     
+    int ImageCanvas::ImageCanvasObjectCount = 0;
     ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
     =================================================================
     */
@@ -221,6 +224,7 @@ namespace ssGUI
             bool MousePressed;                                  //(Internal variable) Used to indicate if user has clicked on this widget to pan the image
             glm::vec2 MouseButtonDownPosition;                  //(Internal variable) The initial position when the user clicked on this widget
 
+            static int ImageCanvasObjectCount;                  //(Internal variable) Used for deallocating default resources
             static ssGUI::ImageData* DefaultRotationCursor;     //(Internal variable) Default rotation cursor when rotating an image
                                                                 //TODO: Add ability to set it
             ImageCanvas(ImageCanvas const& other);
@@ -406,9 +410,9 @@ namespace ssGUI
             //See <GUIObject::InitiateDefaultResources>
             virtual void InitiateDefaultResources() override;
             
-            //function: CleanUpDefaultRotationCursor
-            //Deallocates default rotation cursor iamge. This is handled automatically in <ssGUIManager>
-            static void CleanUpDefaultRotationCursor();
+            //function: CleanUpDefaultResources
+            //See <GUIObject::CleanUpDefaultResources>
+            virtual void CleanUpDefaultResources() override;
     };
 }
 

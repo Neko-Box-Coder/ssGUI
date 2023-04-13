@@ -44,7 +44,6 @@ int main()
         ssGUI::Factory::Dispose(Callback);
         ssGUI::Factory::Dispose(TextObj);
         ssGUI::Factory::Dispose(CustomFont);
-        ssGUI::CleanUpDefaultResources();
     }
 
     ssTEST("EventTest")

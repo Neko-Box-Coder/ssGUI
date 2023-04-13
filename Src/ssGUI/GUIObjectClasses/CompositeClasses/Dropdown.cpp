@@ -12,6 +12,7 @@
 
 namespace ssGUI
 {
+    int Dropdown::DropdownObjectCount = 0;
     ssGUI::ImageData* Dropdown::DefaultDropdownArrowImageData = nullptr;
     
     Dropdown::Dropdown(Dropdown const& other) : StandardButton(other)
@@ -20,6 +21,8 @@ namespace ssGUI
         SelectedIndex = other.GetSelectedIndex();
         Items = other.Items;
         Toggle = other.Toggle;
+        
+        DropdownObjectCount++;
     }
 
     void Dropdown::AddItemListener(ssGUI::EventCallback* ecb, int index)
@@ -138,11 +141,18 @@ namespace ssGUI
                     castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
             }
         );
+        
+        DropdownObjectCount++;
     }
 
     Dropdown::~Dropdown()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+
+        DropdownObjectCount--;
+        
+        if(DropdownObjectCount == 0)
+            CleanUpDefaultResources();
 
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
@@ -359,11 +369,11 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
     }
     
-    void Dropdown::CleanUpDefaultDropdownArrowImage()
+    void Dropdown::CleanUpDefaultResources()
     {
         if(DefaultDropdownArrowImageData != nullptr)
         {
-            ssGUI::Factory::Dispose(DefaultDropdownArrowImageData);
+            ssGUI::Dispose(DefaultDropdownArrowImageData);
             DefaultDropdownArrowImageData = nullptr;
         }
     }

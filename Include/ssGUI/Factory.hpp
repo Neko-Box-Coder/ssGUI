@@ -76,10 +76,6 @@ namespace ssGUI
     {
         ssGUI::Factory::Dispose(obj);
     }
-    
-    //function: CleanUpDefaultResources
-    //Cleans up all default resources used by ssGUI. This is called automatically by <ssGUIManager>
-    void CleanUpDefaultResources();
 }
 
 #endif

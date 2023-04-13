@@ -15,6 +15,7 @@
 
 namespace ssGUI
 {
+    int StandardWindow::StandardWindowObjectCount = 0;
     ssGUI::ImageData* StandardWindow::DefaultIcon = nullptr;
 
     StandardWindow::StandardWindow(StandardWindow const& other) : Window(other)
@@ -30,6 +31,8 @@ namespace ssGUI
         WindowTitle = other.WindowTitle;
         WindowIcon = other.WindowIcon;
         CloseButton = other.CloseButton;
+        
+        StandardWindowObjectCount++;
     }
 
     void StandardWindow::UpdateTitleText()
@@ -316,12 +319,18 @@ namespace ssGUI
         UpdateIconImage();
         UpdateCloseButton();
 
+        StandardWindowObjectCount++;
         ssLOG_FUNC_EXIT();
     }
 
     StandardWindow::~StandardWindow()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+
+        StandardWindowObjectCount--;
+        
+        if(StandardWindowObjectCount == 0)
+            CleanUpDefaultResources();
 
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
@@ -654,11 +663,11 @@ namespace ssGUI
         }
     }
     
-    void StandardWindow::CleanUpDefaultIcon()
+    void StandardWindow::CleanUpDefaultResources()
     {
         if(DefaultIcon != nullptr)
         {
-            ssGUI::Factory::Dispose(DefaultIcon);
+            ssGUI::Dispose(DefaultIcon);
             DefaultIcon = nullptr;
         }
     }

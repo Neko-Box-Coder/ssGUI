@@ -30,6 +30,7 @@ namespace ssGUI
         ssGUIObjectIndex WindowIcon;        //See <GetWindowIconGUIObject>
         ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
+        static int StandardWindowObjectCount;   //(Internal variable) Used for deallocating default resources
         static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
     =================================================================
     ============================== C++ ==============================
@@ -172,9 +173,11 @@ namespace ssGUI
         UpdateIconImage();
         UpdateCloseButton();
 
+        StandardWindowObjectCount++;
         ssLOG_FUNC_EXIT();
     }
     
+    int StandardWindow::StandardWindowObjectCount = 0;
     ssGUI::ImageData* StandardWindow::DefaultIcon = nullptr;
     =================================================================
     */
@@ -196,6 +199,7 @@ namespace ssGUI
             ssGUIObjectIndex WindowIcon;        //See <GetWindowIconGUIObject>
             ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
+            static int StandardWindowObjectCount;   //(Internal variable) Used for deallocating default resources
             static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
 
             StandardWindow(StandardWindow const& other);
@@ -327,9 +331,9 @@ namespace ssGUI
             //See <GUIObject::InitiateDefaultResources>
             virtual void InitiateDefaultResources() override;
             
-            //function: CleanUpDefaultIcon
-            //Deallocates default default window icon. This is handled automatically in <ssGUIManager>
-            static void CleanUpDefaultIcon();
+            //function: CleanUpDefaultResources
+            //See <GUIObject::CleanUpDefaultResources>
+            virtual void CleanUpDefaultResources() override;
     };
 }
 

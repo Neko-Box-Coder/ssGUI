@@ -106,8 +106,12 @@ namespace ssGUI
             virtual GUIObject* Clone(bool cloneChildren);
             
             //function: InitiateDefaultResources
-            //Initiate default resources that this GUI object needs
+            //Initiate default resources that this GUI object needs, this is called automatically
             virtual void InitiateDefaultResources();
+            
+            //function: CleanUpDefaultResources
+            //Deallocate default resources that this GUI Object needs, this is called automatically
+            virtual void CleanUpDefaultResources();
     };
 }
 

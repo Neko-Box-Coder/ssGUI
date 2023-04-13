@@ -463,7 +463,6 @@ namespace ssGUI
 
     ssGUIManager::~ssGUIManager()
     {
-        CleanUpDefaultResources();
         delete BackendInput;
     }
     

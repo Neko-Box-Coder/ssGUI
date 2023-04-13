@@ -56,6 +56,7 @@ namespace ssGUI
 
         uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
 
+        static int TextObjectCount;                                                     //(Internal variable) Used for deallocating default resources
         static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
         static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
     =================================================================
@@ -99,8 +100,11 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
+    
+        TextObjectCount++;
     }
 
+    int Text::TextObjectCount = 0;
     std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();
     uint32_t Text::DefaultFontsChangeID = 1;
     =================================================================
@@ -142,6 +146,7 @@ namespace ssGUI
 
             uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
 
+            static int TextObjectCount;                                                     //(Internal variable) Used for deallocating default resources
             static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
             static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
 
@@ -488,9 +493,6 @@ namespace ssGUI
             //function: GetDefaultFontsCount 
             static int GetDefaultFontsCount();
             
-            //function: CleanUpAllDefaultFonts
-            static void CleanUpAllDefaultFonts();
-
             //function: GetType
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
@@ -502,6 +504,10 @@ namespace ssGUI
             //function: InitiateDefaultResources
             //See <GUIObject::InitiateDefaultResources>
             virtual void InitiateDefaultResources() override;
+            
+            //function: CleanUpDefaultResources
+            //See <GUIObject::CleanUpDefaultResources>
+            virtual void CleanUpDefaultResources() override;
     };
 }
 

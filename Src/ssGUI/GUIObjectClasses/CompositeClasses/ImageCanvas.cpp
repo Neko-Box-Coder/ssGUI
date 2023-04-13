@@ -19,6 +19,7 @@
 
 namespace ssGUI
 {
+    int ImageCanvas::ImageCanvasObjectCount = 0;
     ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
 
     ImageCanvas::ImageCanvas(ImageCanvas const& other) : Image(other)
@@ -55,6 +56,8 @@ namespace ssGUI
 
         MousePressed = other.MousePressed;
         MouseButtonDownPosition = other.MouseButtonDownPosition;
+        
+        ImageCanvasObjectCount++;
     }
 
     double ImageCanvas::GetAngle(glm::vec2 a, glm::vec2 b)
@@ -514,11 +517,19 @@ namespace ssGUI
 
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
+        ImageCanvasObjectCount++;
     }
 
     ImageCanvas::~ImageCanvas()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        
+        ImageCanvasObjectCount--;
+        
+        if(ImageCanvasObjectCount == 0)
+            CleanUpDefaultResources();
+        
+        //TODO: children deallocation
     }
 
     glm::vec2 ImageCanvas::GetUVFromGlobalPosition(glm::vec2 globalPos)
@@ -810,11 +821,11 @@ namespace ssGUI
         }
     }
     
-    void ImageCanvas::CleanUpDefaultRotationCursor()
+    void ImageCanvas::CleanUpDefaultResources()
     {
         if(DefaultRotationCursor != nullptr)
         {
-            ssGUI::Factory::Dispose(DefaultRotationCursor);
+            ssGUI::Dispose(DefaultRotationCursor);
             DefaultRotationCursor = nullptr;
         }       
     }
