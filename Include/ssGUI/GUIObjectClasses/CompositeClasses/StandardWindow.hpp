@@ -30,6 +30,7 @@ namespace ssGUI
         ssGUIObjectIndex WindowIcon;        //See <GetWindowIconGUIObject>
         ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
+        static int StandardWindowObjectCount;   //(Internal variable) Used for deallocating default resources
         static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
     =================================================================
     ============================== C++ ==============================
@@ -54,7 +55,7 @@ namespace ssGUI
         windowTitle->SetHeapAllocated(true);
         windowTitle->SetParent(this, true);
         windowTitle->SetMinSize(glm::vec2(5, 5));
-        windowTitle->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+        windowTitle->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
         windowTitle->SetText("Window");
         WindowTitle = CurrentObjectsReferences.AddObjectReference(windowTitle);
         SetAdaptiveTitleColor(true);    //Setting it here so that eventcallback is added
@@ -172,9 +173,11 @@ namespace ssGUI
         UpdateIconImage();
         UpdateCloseButton();
 
+        StandardWindowObjectCount++;
         ssLOG_FUNC_EXIT();
     }
     
+    int StandardWindow::StandardWindowObjectCount = 0;
     ssGUI::ImageData* StandardWindow::DefaultIcon = nullptr;
     =================================================================
     */
@@ -196,6 +199,7 @@ namespace ssGUI
             ssGUIObjectIndex WindowIcon;        //See <GetWindowIconGUIObject>
             ssGUIObjectIndex CloseButton;       //See <GetCloseButtonObject>
 
+            static int StandardWindowObjectCount;   //(Internal variable) Used for deallocating default resources
             static ssGUI::ImageData* DefaultIcon;   //(Internal variable) Default window icon image
 
             StandardWindow(StandardWindow const& other);
@@ -258,6 +262,8 @@ namespace ssGUI
             //function: GetCloseButtonObject
             //Returns the pointer to the close button object. Nullptr if it doesn't exist
             virtual ssGUI::Button* GetCloseButtonObject() const;
+            
+            //TODO: Rename to titlebar padding instead
 
             //function: SetHorizontalPadding
             //Sets the horizontal padding for the icon, title and close button objects, in pixels
@@ -325,9 +331,9 @@ namespace ssGUI
             //See <GUIObject::InitiateDefaultResources>
             virtual void InitiateDefaultResources() override;
             
-            //function: CleanUpDefaultIcon
-            //Deallocates default default window icon. This is handled automatically in <ssGUIManager>
-            static void CleanUpDefaultIcon();
+            //function: CleanUpDefaultResources
+            //See <GUIObject::CleanUpDefaultResources>
+            virtual void CleanUpDefaultResources() override;
     };
 }
 

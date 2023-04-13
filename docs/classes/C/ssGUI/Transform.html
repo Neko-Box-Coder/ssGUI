@@ -10,85 +10,85 @@
 
 <script type="text/javascript">var q = window.location.search;if (q.indexOf("?Theme=") == 0){var t = q.slice(7);var e = t.indexOf(";");if (e != -1){  t = t.slice(0, e);  }if (document.documentElement.className == undefined){ document.documentElement.className = t + "Theme"; }else{ document.documentElement.className += " " + t + "Theme"; }}</script>
 
-<a name="Topic429"></a><div class="CTopic TClass LC first">
+<a name="Topic663"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Transform</div>
- <div class="NDClassPrototype HasChildren" id="NDClassPrototype429"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Transform</div></div><a class="CPEntry Child TClass" href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1122);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;GUIObject</div></a></div>
+ <div class="NDClassPrototype HasChildren" id="NDClassPrototype663"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Transform</div></div><a class="CPEntry Child TClass" href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;GUIObject</div></a></div>
  <div class="CBody"><p>This manages all the position and size related information for a GUI Object</p><div class="CHeading">Variables &amp; Constructor</div><pre class="CCode"><span class="SHKeyword">protected</span>:<br />    <span class="SHComment">//Widget transform</span><br />    glm::vec2 Position;                                         <span class="SHComment">//See &lt;GetPosition&gt;</span><br />    glm::vec2 GlobalPosition;                                   <span class="SHComment">//See &lt;GetGlobalPosition&gt;</span><br />    glm::vec2 Size;                                             <span class="SHComment">//See &lt;GetSize&gt;</span><br />    glm::vec2 MinSize;                                          <span class="SHComment">//See &lt;GetMinSize&gt;</span><br />    glm::vec2 MaxSize;                                          <span class="SHComment">//See &lt;GetMaxSize&gt;</span><br />    ssGUI::Enums::AnchorType Anchor;                            <span class="SHComment">//See &lt;GetAnchorType&gt;</span><br /><br />    ssGUI::Hierarchy* CurrentHierarchy;                         <span class="SHComment">//(Internal variable) Used to sync the position and global position</span><br />    ssGUI::Renderer* CurrentRenderer;                           <span class="SHComment">//(Internal variable) Used to send redraw signal</span><br />    ssGUI::EventCallbackManager* CurrentEventCallbackManager;   <span class="SHComment">//(Internal variable) Used to call event callbacks listeners</span><br />    ssGUI::GUIObject* CurrentObject;                            <span class="SHComment">//(Internal variable) used to register the container for event callbacks listeners</span></pre><pre class="CCode">Transform::Transform() :    Position(<span class="SHNumber">0</span>, <span class="SHNumber">0</span>),<br />                            GlobalPosition(<span class="SHNumber">0</span>, <span class="SHNumber">0</span>),<br />                            Size(<span class="SHNumber">25</span>, <span class="SHNumber">25</span>),<br />                            MinSize(<span class="SHNumber">25</span>, <span class="SHNumber">25</span>),<br />                            MaxSize(std::numeric_limits&lt;<span class="SHKeyword">float</span>&gt;::max(), std::numeric_limits&lt;<span class="SHKeyword">float</span>&gt;::max()),<br />                            Anchor(ssGUI::Enums::AnchorType::TOP_LEFT),<br />                            CurrentHierarchy(nullptr),<br />                            CurrentRenderer(nullptr),<br />                            CurrentEventCallbackManager(nullptr),<br />                            CurrentObject(nullptr)<br />{}</pre></div>
 </div>
 
-<a name="Functions"></a><a name="Topic430"></a><div class="CTopic TGroup LC">
+<a name="Functions"></a><a name="Topic664"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="GetPosition"></a><a name="Topic431"></a><div class="CTopic TFunction LC">
+<a name="GetPosition"></a><a name="Topic665"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetPosition</div>
- <div id="NDPrototype431" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetPosition() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype665" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetPosition() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Gets the local position against the parent from the anchor point. By default the anchor point is at the top-left corner of the parent.&nbsp; Note that windows excludes title bar from the position calculation. Calling this function on MainWindow object will always return (0, 0)</p></div>
 </div>
 
-<a name="SetPosition"></a><a name="Topic432"></a><div class="CTopic TFunction LC">
+<a name="SetPosition"></a><a name="Topic666"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetPosition</div>
- <div id="NDPrototype432" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype666" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the local poisition against the parent from the anchor point</p></div>
 </div>
 
-<a name="GetGlobalPosition"></a><a name="Topic433"></a><div class="CTopic TFunction LC">
+<a name="GetGlobalPosition"></a><a name="Topic667"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetGlobalPosition</div>
- <div id="NDPrototype433" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetGlobalPosition()</div></div>
+ <div id="NDPrototype667" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetGlobalPosition()</div></div>
  <div class="CBody"><p>Gets the global position against the top-left corner of MainWindow it is parented. Title bar is excluded from the position calculation.</p></div>
 </div>
 
-<a name="SetGlobalPosition"></a><a name="Topic434"></a><div class="CTopic TFunction LC">
+<a name="SetGlobalPosition"></a><a name="Topic668"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetGlobalPosition</div>
- <div id="NDPrototype434" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetGlobalPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype668" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetGlobalPosition(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">position</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the global position against the top-left corner of MainWindow it is parented</p></div>
 </div>
 
-<a name="GetSize"></a><a name="Topic435"></a><div class="CTopic TFunction LC">
+<a name="GetSize"></a><a name="Topic669"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetSize</div>
- <div id="NDPrototype435" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetSize() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype669" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetSize() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Gets the size of the GUI Object</p></div>
 </div>
 
-<a name="SetSize"></a><a name="Topic436"></a><div class="CTopic TFunction LC">
+<a name="SetSize"></a><a name="Topic670"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetSize</div>
- <div id="NDPrototype436" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype670" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">size</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the size of the GUI Object</p></div>
 </div>
 
-<a name="GetMinSize"></a><a name="Topic437"></a><div class="CTopic TFunction LC">
+<a name="GetMinSize"></a><a name="Topic671"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetMinSize</div>
- <div id="NDPrototype437" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetMinSize() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype671" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetMinSize() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Gets the minimum size of the GUI Object. Setting the size to be below minimum size will set the size to minimum instead.</p></div>
 </div>
 
-<a name="SetMinSize"></a><a name="Topic438"></a><div class="CTopic TFunction LC">
+<a name="SetMinSize"></a><a name="Topic672"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetMinSize</div>
- <div id="NDPrototype438" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetMinSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">minSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype672" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetMinSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">minSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the minimum size of the GUI Object. Setting minimum size to be negative infinte is possible.</p></div>
 </div>
 
-<a name="GetMaxSize"></a><a name="Topic439"></a><div class="CTopic TFunction LC">
+<a name="GetMaxSize"></a><a name="Topic673"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetMaxSize</div>
- <div id="NDPrototype439" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetMaxSize() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype673" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::vec2 GetMaxSize() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Gets the maximum size of the GUI Object. Setting the size to be above maximum size will set the size to maximum instead.</p></div>
 </div>
 
-<a name="SetMaxSize"></a><a name="Topic440"></a><div class="CTopic TFunction LC">
+<a name="SetMaxSize"></a><a name="Topic674"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetMaxSize</div>
- <div id="NDPrototype440" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetMaxSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">maxSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype674" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetMaxSize(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">vec2&nbsp;</td><td class="PName last">maxSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the maximum size of the GUI Object. Setting maximum size to be infinte is possible.</p></div>
 </div>
 
-<a name="GetAnchorType"></a><a name="Topic441"></a><div class="CTopic TFunction LC">
+<a name="GetAnchorType"></a><a name="Topic675"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetAnchorType</div>
- <div id="NDPrototype441" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.Enums:AnchorType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,352);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::AnchorType</a> GetAnchorType() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype675" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.Enums:AnchorType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,202);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::AnchorType</a> GetAnchorType() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Returns the anchor type of this GUI Object</p></div>
 </div>
 
-<a name="SetAnchorType"></a><a name="Topic442"></a><div class="CTopic TFunction LC last">
+<a name="SetAnchorType"></a><a name="Topic676"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">SetAnchorType</div>
- <div id="NDPrototype442" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetAnchorType(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.Enums:AnchorType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,352);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.Enums:AnchorType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,352);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >AnchorType</a>&nbsp;</td><td class="PName last">anchorType</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype676" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetAnchorType(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.Enums:AnchorType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,202);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Enums::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.Enums:AnchorType" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,202);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >AnchorType</a>&nbsp;</td><td class="PName last">anchorType</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the anchor type of this GUI Object</p></div>
 </div>
 

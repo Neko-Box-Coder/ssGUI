@@ -16,12 +16,12 @@ namespace Extensions
     /*class: ssGUI::Extensions::RoundedCorners
     This extension rounds the corner of the selected shapes or vertices on the GUI object. This works best with anti-aliasing.
 
-    You should get familiar with <GUIObject::Extension_GetDrawingVertices>, <GUIObject::Extension_GetDrawingUVs>, <GUIObject::Extension_GetDrawingColours>, 
-    <GUIObject::Extension_GetDrawingCounts> if using this.
+    You should get familiar with <Renderer::Extension_GetDrawingVertices>, <Renderer::Extension_GetDrawingUVs>, <Renderer::Extension_GetDrawingColours>, 
+    <Renderer::Extension_GetDrawingCounts> if using this.
 
-    The indices for TargetShapes are mapped to <GUIObject::Extension_GetDrawingCounts> indicating the index of a shape.
+    The indices for TargetShapes are mapped to <Renderer::Extension_GetDrawingCounts> indicating the index of a shape.
 
-    The indices for TargetVertices are mapped to <GUIObject::Extension_GetDrawingVertices> indicating the index of a vertex.
+    The indices for TargetVertices are mapped to <Renderer::Extension_GetDrawingVertices> indicating the index of a vertex.
 
     You can add shapes to be rounded by calling <AddTargetShape>. You can also round specific vertices added by calling
     <AddTargetVertex>. However, target shape will be *ignored* if target vertices are used.

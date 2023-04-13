@@ -1058,6 +1058,8 @@ namespace Extensions
         
         if(GetUpdateContainerMinMaxSize())
         {
+            UpdateSpeicalObjectsToExclude();
+            UpdateExcludedObjects();
             SyncContainerMinMaxSize();
             
             //Add MinMax size changed callback
@@ -1114,7 +1116,11 @@ namespace Extensions
         }
 
         if(GetUpdateContainerMinMaxSize())
+        {
+            UpdateSpeicalObjectsToExclude();
+            UpdateExcludedObjects();
             SyncContainerMinMaxSize();
+        }
 
         if(IsOverrideChildrenResizeTypeAndOnTop())
             UpdateChildrenResizeTypesAndOnTop();

@@ -2,23 +2,26 @@
 
 //[Variables Declaration]
 
-ssTEST_INIT();
-
-ssTEST_SET_UP
+int main()
 {
-    //[Variables Initialization]
+    ssTEST_INIT();
+
+    ssTEST_SET_UP
+    {
+        //[Variables Initialization]
+    }
+
+    ssTEST_CLEAN_UP
+    {
+        //[Variables Cleanup]
+    }
+
+    ssTEST("DummyTest")
+    {
+        //[Perform some action...]
+
+        ssTEST_OUTPUT_ASSERT("Optional Info", true);
+    }
+
+    ssTEST_END();
 }
-
-ssTEST_CLEAN_UP
-{
-    //[Variables Cleanup]
-}
-
-ssTEST("DummyTest")
-{
-    //[Perform some action...]
-
-    ssTEST_OUTPUT_ASSERT("Optional Info", true);
-}
-
-ssTEST_END();

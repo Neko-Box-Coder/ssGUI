@@ -20,7 +20,7 @@ namespace Backend
     {
         public:
             //function: ConvertButtonAndKeys
-            //This converts sfml key events into <KeyPresses> 
+            //This converts sfml key events into <ssGUI::Enums::GenericButtonAndKeyInput> 
             static ssGUI::Enums::GenericButtonAndKeyInput ConvertButtonAndKeys(const sf::Event& event);
 
             //function: ConvertMouseButtons

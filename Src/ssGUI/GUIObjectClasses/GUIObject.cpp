@@ -404,4 +404,5 @@ namespace ssGUI
     }
     
     void GUIObject::InitiateDefaultResources(){}
+    void GUIObject::CleanUpDefaultResources(){}
 }

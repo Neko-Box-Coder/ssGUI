@@ -18,6 +18,7 @@ namespace Enums
     CLICKING            - When the button is being clicked (Will be triggered continuously)
     CLICKED             - The moment after the button is being clicked (Only trigger once)
     NOT_INTERACTABLE    - When the button is disabled
+    COUNT               - Count
     */
     enum class ButtonState
     {

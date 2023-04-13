@@ -82,7 +82,9 @@ namespace Backend
 
             //function: ClearBackBuffer
             //For some reason windows implementation of OpenGL (AMD and Nvidia) creates memory leak when calling GLClear without swapping buffer.
-            //Therefore, this doesn't do anything for now. For it's intended purpose:
+            //Therefore, this doesn't do anything for now. 
+            //
+            //For it's intended purpose:
             //See <BackendDrawingInterface::ClearBackBuffer>
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
             

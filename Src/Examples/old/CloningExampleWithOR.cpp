@@ -23,8 +23,8 @@ int main()
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;
-    text.SetNewCharacterFontSize(15);
-    text.SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+    text.SetNewTextFontSize(15);
+    text.SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
     text.SetText("Click button");
     text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);

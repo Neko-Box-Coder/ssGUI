@@ -44,7 +44,7 @@ namespace Backend
             virtual float GetLineSpacing(float charSize) = 0;
             
             //function: GetUnderlineOffset
-            //Gets the vertical offset for underline based on the font size 
+            //Gets the vertical offset for underline based on the font size.
             //For fixed size font behaviour, please see the backend you are using.
             virtual float GetUnderlineOffset(float charSize) = 0;
             
@@ -59,6 +59,7 @@ namespace Backend
             virtual bool LoadFromPath(std::string path) = 0;
 
             //TODO: Use const pointer instead
+            
             //function: LoadFromMemory
             //Load the raw font file in memory, which is copied and stored internally.
             virtual bool LoadFromMemory(void* dataPtr, int lengthInBytes) = 0;

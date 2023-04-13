@@ -60,6 +60,11 @@ namespace ssGUI
     Scrollbar::~Scrollbar()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        
+        //NOTE: Handled in Slider
+        //If the object deallocation is not handled by ssGUIManager
+        //if(!Internal_IsDeleted())
+        //    Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{KnobObject});
     }
 
     void Scrollbar::SetScrollbarSize(float size)

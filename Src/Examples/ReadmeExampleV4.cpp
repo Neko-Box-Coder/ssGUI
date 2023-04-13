@@ -11,7 +11,7 @@ int main()
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetSize(glm::vec2(450, 45));
-    text.SetNewCharacterFontSize(17);
+    text.SetNewTextFontSize(17);
     text.SetText("Click on the button to show the message");
     text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
     text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);

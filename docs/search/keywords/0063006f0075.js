@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("cou",["Constant"],[["COUNT",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/AlignmentHorizontal.hpp:ssGUI.Enums.COUNT","CClass:ssGUI.Enums:COUNT"]]]]);

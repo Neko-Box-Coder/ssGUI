@@ -130,7 +130,7 @@ namespace Backend
                     return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_NINE);
                 case sf::Keyboard::Numpad0:
                     return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_ZERO);
-                case sf::Keyboard::Tilde:   //Even though it is tilde, it is actually backquote button
+                case sf::Keyboard::Grave:   //Also known as backquote or backtick button
                     return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::BACK_QUOTE);
                 case sf::Keyboard::Hyphen:
                     return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::MINUS);
@@ -144,7 +144,7 @@ namespace Backend
                     return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::BACKSLASH);
                 case sf::Keyboard::Semicolon:
                     return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::SEMICOLON);
-                case sf::Keyboard::Quote:
+                case sf::Keyboard::Apostrophe:  //Also known as (single) quote
                     return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::QUOTE);
                 //HASH_UK missing
                 //BACKSLASH_UK missing

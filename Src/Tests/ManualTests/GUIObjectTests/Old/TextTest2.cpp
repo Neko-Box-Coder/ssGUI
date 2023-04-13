@@ -25,7 +25,7 @@ int main()
     text.AddFont(&font);
     text.AddFont(&font2);
     // ssGUI::Text::AddDefaultFont(&font);
-    text.SetNewCharacterFontSize(20);
+    text.SetNewTextFontSize(20);
     text.SetWrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING);
     // text.SetWrappingMode(ssGUI::Enums::TextWrapping::CHARACTER_WRAPPING);
     // text.SetText(L"これは非常に長い日本語の文章です~~~~~");
@@ -60,7 +60,7 @@ int main()
             details.Underlined = true;
         }
         
-        text.AddCurrentCharacterDetails(details);
+        text.AddCharacterDetails(details);
     }
 
     text.ComputeCharactersPositionAndSize();
@@ -88,21 +88,21 @@ int main()
             if( guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SymbolKey::EQUAL) &&
                 !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SymbolKey::EQUAL))
             {
-                for(int i = 0; i < text.GetCurrentCharactersDetailsCount(); i++)
+                for(int i = 0; i < text.GetCharactersDetailsCount(); i++)
                 {
-                    auto curDetails = text.GetCurrentCharacterDetails(i);
+                    auto curDetails = text.GetCharacterDetails(i);
                     curDetails.FontSize = curDetails.FontSize+1;
-                    text.SetCurrentCharacterDetails(i, curDetails);
+                    text.SetCharacterDetails(i, curDetails);
                 }
             }
             else if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SymbolKey::MINUS) &&
                     !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SymbolKey::MINUS))
             {
-                for(int i = 0; i < text.GetCurrentCharactersDetailsCount(); i++)
+                for(int i = 0; i < text.GetCharactersDetailsCount(); i++)
                 {
-                    auto curDetails = text.GetCurrentCharacterDetails(i);
+                    auto curDetails = text.GetCharacterDetails(i);
                     curDetails.FontSize = curDetails.FontSize-1;
-                    text.SetCurrentCharacterDetails(i, curDetails);
+                    text.SetCharacterDetails(i, curDetails);
                 }
             }
         }

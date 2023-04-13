@@ -228,9 +228,10 @@ namespace ssGUI
 
     void Transform::SetMinSize(glm::vec2 minSize)
     {
-        if(MinSize != minSize)
-            CurrentRenderer->RedrawObject();
-        
+        if(MinSize == minSize)
+            return;
+            
+        CurrentRenderer->RedrawObject();
         MinSize = minSize;
         MaxSize.x = MinSize.x > MaxSize.x ? MinSize.x : MaxSize.x;
         MaxSize.y = MinSize.y > MaxSize.y ? MinSize.y : MaxSize.y;
@@ -254,9 +255,10 @@ namespace ssGUI
 
     void Transform::SetMaxSize(glm::vec2 maxSize)
     {
-        if(MaxSize != maxSize)
-            CurrentRenderer->RedrawObject();
+        if(MaxSize == maxSize)
+            return;
         
+        CurrentRenderer->RedrawObject();
         MaxSize = maxSize;
         MinSize.x = MaxSize.x < MinSize.x ? MaxSize.x : MinSize.x;
         MinSize.y = MaxSize.y < MinSize.y ? MaxSize.y : MinSize.y;

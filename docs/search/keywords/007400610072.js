@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("tar",["Variable"],[["TargetSizeMultiplier",,[["ssGUI::CharacterRenderInfo",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/CharacterRenderInfo.hpp:ssGUI.CharacterRenderInfo.TargetSizeMultiplier","CClass:ssGUI.CharacterRenderInfo:TargetSizeMultiplier"]]]]);

@@ -7,6 +7,8 @@
 //namespace: ssGUI
 namespace ssGUI
 {
+    //function: GenericInputToString
+    //Returns the string for a given input
     inline std::string GenericInputToString(ssGUI::Enums::GenericButtonAndKeyInput input)
     {
         if(ssGUI::Enums::InputIsFunctionKey(input))

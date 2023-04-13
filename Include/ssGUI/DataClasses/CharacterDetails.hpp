@@ -35,6 +35,22 @@ namespace ssGUI
             //var: Underlined
             //If the character is underlined or not
             bool Underlined = false;
+            
+            #define FLOAT_EQ(a, b) (a + 0.0001f > b && a - 0.0001f < b)
+            inline bool operator==(CharacterDetails const & details)
+            {
+                return  Character == details.Character &&
+                        FontIndex == details.FontIndex &&
+                        DefaultFontIndex == details.DefaultFontIndex &&
+                        FLOAT_EQ(FontSize, details.FontSize) &&
+                        CharacterColor == details.CharacterColor &&
+                        Underlined == details.Underlined;
+            }
+            
+            inline bool operator!=(CharacterDetails const & details)
+            {
+                return !operator==(details);
+            }
     };
 }
 

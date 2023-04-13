@@ -112,7 +112,7 @@ namespace Backend
             
             //function: AddImageCache
             //Add the backend image to cache (this can be uploading the image to GPU memory) or system memory for drawing
-            //To update the cache, call <ssGUI::Backend::BackendImageInterface::UpdateCache>.
+            //To update the cache, call <BackendImageInterface::UpdateCache>.
             //Calling this fuction multiple times will not update the cache.
             virtual void AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
             

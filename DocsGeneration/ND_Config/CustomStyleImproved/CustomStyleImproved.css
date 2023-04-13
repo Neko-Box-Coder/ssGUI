@@ -1,36 +1,92 @@
-﻿/* Font & Font Size settings */
+﻿@font-face {
+    font-family: 'NotoColorEmoji';
+    src: url(NotoColorEmoji.ttf) format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NotoSans';
+    src: url(NotoSans-Regular.ttf);
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NotoSans';
+    src: url(NotoSans-Bold.ttf);
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Font & Font Size settings */
 * {
     font: none;
-    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-family: 'NotoSans', 'NotoColorEmoji', 'Segoe UI Emoji';
+    font-size: 1.1rem;
+    line-height: 2rem;
 }
 
 /* Code Fonts */
-.CTopic pre.CCode,
+.CTopic pre,
 .SHKeyword,
 .SHComment,
 .SHString,
-.PSection * {
+.PSection > *,
+.SHNumber{
     font-family: monospace;
+    font-size: 1rem;
+    line-height: 1.5rem;
 }
+
+/* Code Block */
+.CTopic pre {
+    padding: 0.5rem;
+    margin: 0.5rem;
+    width: 125%;
+    margin-left: 3rem;
+    border-color: #797979;
+}
+
+.CCode br,
+.CText br
+{
+    line-height: 0rem;
+}
+
+.NDPrototype {
+    padding: 0;
+}
+
+.PSection {
+    line-height: 1rem;
+    padding: 0.5rem;
+}
+
 
 /* Home page box */
 .HTitle,
 .HSubtitle {
     font: none;
-    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-family: 'NotoSans', 'NotoColorEmoji', 'Segoe UI Emoji';
 }
 
 .HTitle {
     font-size: 2.0rem;
     margin-bottom: 1.5rem;
+    line-height: 3rem;
 }
 
 .HSubtitle {
     font-size: 1.2rem;
 }
 
-#HTitle {
+#HTitle, #HTitle > *{
     text-shadow: 0;
+    font-size: 1.5rem;
 }
 
 .HContent {
@@ -59,11 +115,11 @@
 /* Content */
 .CTopic.TSection .CTitle{
     font-weight: bold;
-    font-size: 1.7rem;
+    font-size: 2rem;
 }
 
 .CTopic .CTitle {
-    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-family: 'NotoSans', 'NotoColorEmoji', 'Segoe UI Emoji';
     font-size: 1.5rem;
     text-transform: none;
 }
@@ -82,9 +138,17 @@
 
 .CHeading {
     font: none;
-    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-family: 'NotoSans', 'NotoColorEmoji', 'Segoe UI Emoji';
     font-weight: bold;
     font-size: 1.5rem;
+}
+
+.NDContentPage body {
+    max-width: 70rem;
+}
+
+.CTopic ul ul {
+    margin: 0 0 0 3rem;
 }
 
 /* Inheritance graph */
@@ -146,7 +210,7 @@
 /* Enum title */
 td.CDLEntry {
     font: none;
-    font-family: 'Segoe UI', Tahoma, 'Noto Sans', Verdana, sans-serif;
+    font-family: 'NotoSans', 'NotoColorEmoji', 'Segoe UI Emoji';
     font-weight: bold;
     font-size: 1.0rem;
 }
@@ -169,6 +233,7 @@ td.CDLEntry {
 
 .MTabTitle {
     font-style: normal;
+    font-size: 1.5rem;
 }
 
 #MFileTab .MTabIcon {
@@ -187,6 +252,8 @@ td.CDLEntry {
 
 .MEntry{
     padding: .30rem .30rem .30rem .30rem;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .MTab {
@@ -215,6 +282,16 @@ td.CDLEntry {
     border-left: 0.5rem solid #404040;
     background-color: #FFFFFF;
     font-weight: bold;
+}
+
+.SuEntry.TClass, 
+.SuEntry.TInterface, 
+.SuEntry.TStruct, 
+.SuEntry.TSection, 
+.SuEntry.TDatabase, 
+.SuEntry.TDatabaseTable, 
+.SuEntry.TFile.first {
+    font-size: 1.2rem;
 }
 
 /* Menu pane width */
@@ -312,7 +389,7 @@ body.NDContentPage {
     margin: 1rem 0;
     display: inline-block;
     border: 0.2rem solid black;
-    margin-left: 1rem;
+    margin-left: 3rem;
 }
 
 /* To remove weird gap at the bottom */
@@ -323,15 +400,13 @@ body.NDContentPage {
 /* Paragraph fomatting */
 .CTopic p {
     margin: 0 0 1rem 0;
-    text-indent: 0;
+    padding-left: 5.5rem;
+    text-indent: -2.25rem;
 }
 
-
-/* Code block border color */
-.CTopic pre {
-    border-color: #797979;
+.CTopic li p {
+    padding-left: 0;
 }
-
 
 /* Hyperlink color */
 .CTopic a:link,

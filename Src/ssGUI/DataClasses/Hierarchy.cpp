@@ -750,7 +750,7 @@ namespace ssGUI
         return HeapAllocated;
     }
     
-    void Hierarchy::Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex> generatedObjs)
+    void Hierarchy::Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex> generatedObjs)
     {
         for(int i = 0; i < generatedObjs.size(); i++)
         {

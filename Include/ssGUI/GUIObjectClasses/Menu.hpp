@@ -14,10 +14,17 @@ namespace ssGUI
     {
         //typedef: MenuSpawnDirection
         typedef ssGUI::Enums::AnchorType MenuSpawnDirection;
+        
+        //function: MenuSpawnDirectionToString
+        inline std::string MenuSpawnDirectionToString(MenuSpawnDirection menuDirection)
+        {
+            return AnchorTypeToString(menuDirection);
+        }
     }
     
     /*class: ssGUI::Menu
-    This class manages <ssGUI::MenuItem> to show menus such as right click menu or menu bar menu
+    This class manages <ssGUI::MenuItem> to show menus such as right click menu or menu bar menu.
+    Normally this should be added to MainWindow directly so that it can always be shown in front.
 
     Variables & Constructor:
     ============================== C++ ==============================
@@ -69,6 +76,8 @@ namespace ssGUI
             //When spawning the menu, it can be positioned differently depending on the spawn position.
             //This returns the spawn direction against the globalSpawnPosition
             ssGUI::Enums::MenuSpawnDirection GetMenuSpawnDirection(glm::vec2 globalSpawnPosition);
+            
+            //TODO: Add SpawnMenu with direction
             
             //function: SpawnMenu
             //Spawns the menu at globalPosition

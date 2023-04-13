@@ -6,7 +6,7 @@
 # Project Information
 # ------------------------------------------------------------------------
 
-Title: Super Simple GUI Library (ssGUI)
+Title: Super Simple GUI Library (v0.94.00)
 Subtitle: Press 📖 to go get to root menu.
 
 Copyright: Created by NekoBoxCoder

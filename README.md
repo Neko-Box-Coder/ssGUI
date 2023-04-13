@@ -1,14 +1,13 @@
 > ⚠️ This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
-> ⚠️ Documentation is for the current stable version (v0.93.00.b), not for this version. Some info may not up-to-date.
+<!-- ⚠️ Documentation is for the current stable version (v0.93.00.b), not for this version. Some info may not up-to-date.-->
 ### 🔌 Status of ssGUI (v0.94.00)
 - #### 🔀 Branches
     <!--- ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)-->
-    - ![](https://img.shields.io/badge/Current_Development-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Current_Development-v0.94.01-E5FF3C?style=for-the-badge&logo=GitHub)
         <!--- ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434)-->
-        - ![](https://img.shields.io/badge/Status_📋:-Missing_Documentations-2E2E2E?style=flat-square&labelColor=D53434)
-    - ![](https://img.shields.io/badge/Development_Release-v0.93.03-brightgreen?style=for-the-badge&logo=GitHub)
-    - ![](https://img.shields.io/badge/Stable_Release-v0.93.00.b-brightgreen?style=for-the-badge&logo=GitHub)
+    <!--- ![](https://img.shields.io/badge/Development_Release-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)-->
+    - ![](https://img.shields.io/badge/Stable_Release-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)
     - ![](https://img.shields.io/badge/Main-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)
 
 - #### 🖥️ OS support
@@ -18,59 +17,46 @@
 
 - #### 📈 Current Progress
     - ![](https://img.shields.io/badge/v0.93-|█████ 100％ █████|-29D236?style=for-the-badge&logo=)
-    - ![](https://img.shields.io/badge/v0.94-|█████  90％  ████─|-E5FF3C?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.94-|█████ 100％ █████|-29D236?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.95-|─────    0％    ─────|-E5FF3C?style=for-the-badge)
 ---
 
 ### ❓ What is ssGUI?
 
 ![](DocsGeneration/ND_Config/Images/Logo.png "Logo")
 
-ssGUI stands for Super Simple GUI. The goal for this library is "Simple to Use, Simple to Customize, Simple to Extend".
+- ### 🌍 Universal GUI Framework: 
+    ssGUI is aimed to be an universal framework that can be used for both **graphical intensive** applications 🔥 and **normal** GUI applications 🎹.
+    
+    Only one GUI framework for games and normal GUI application with support to OpenGL window and (WIP) ~~native OS window~~.
 
-This is a verbose library 💬, meaning you have high flexibility on changing different aspects of the GUI objects.
+- ### ✅ Cross Platform:
+    ssGUI supports multiple platforms: Windows, Linux and (WIP) ~~MacOS~~.
+    
+    Nothing is restricted ⛔, you can get the underlying system handle easily if you want.
 
-But that doesn't mean you need to go and set every value, most of the default values should work out of the box 📤.
+- ### 📖 Everything Is Documented
+    ssGUI functions are verbose and easy to understand.
+    
+    HTML Documentation provides step by step tutorial for getting started, (WIP) ~~with a number of mock up GUI examples to reference from.~~ 
+    
+    API is clearly documented with (WIP) ~~images to describe each properties.~~
 
-This library can be used for both *graphical intensive* applications 🔥 such as games or 2D/3D applications or *normal* day to day GUI applications 🎹.
+- ### 🦾 Easily Extensible
+    ssGUI heavily uses the extensions and event callbacks (signal) model. Only add the functionalities you need and you are good to go.
 
-Allowing user to build GUI with ease, and the ability to customize it with `ssGUI::Extensions::Extension`.
+- ### 📦 Everything You Need One Repo
+    It by default uses native system libraries, no need to install any external packages or download binaries libraries.
+    
+    You can just build ssGUI from source using CMake.
 
-You can visit the amazing documentation [here](https://neko-box-coder.github.io/ssGUI/)
-
-Currently, ssGUI only supports SFML but it is architectured to also be compatible with other backends. More backend will be added in the future. 
-
+- ### 🔙 ~~Source Compatible~~ (WIP)
+    ssGUI aims to be forward compatible in terms of souce compatibility, meaning no code change when migrating to newer ssGUI version. 
+    
+- ### 🏗️ ~~GUI Builder~~ (WIP)
+    Easy visualization on what the GUI, no longer need to recompile everytime you make a change.
 ---
 
-### ✨ What makes ssGUI special?
-
-![](DocsGeneration/ND_Config/Images/EasyToUse.png)
-**Simple To Use**
-
-![](DocsGeneration/ND_Config/Images/CrossPlatform.png)
-**Cross Platform**
-
-![](DocsGeneration/ND_Config/Images/Documentation.png)
-**Awesome Documentations**
-
-![](DocsGeneration/ND_Config/Images/Extension.png)
-**Customization With Extensions**
-
-![](DocsGeneration/ND_Config/Images/Compatible.png)
-**Source Compatible (WIP)**
-
-![](DocsGeneration/ND_Config/Images/Independent.png)
-**GUI Code Is Independent From Backend**
-
-![](DocsGeneration/ND_Config/Images/Swap.png)
-**Decopuled Backend Architecture**
-
-![](DocsGeneration/ND_Config/Images/Template.png)
-**Code Templates For Creating Your Own Widgets, Windows, Extensions And EventCallbacks**
-
-![](DocsGeneration/ND_Config/Images/Builder.png)
-**GUI Builder (WIP)**
-
----
 
 ### 📌 Cool Features
 #### Window Docking & Auto Layout:
@@ -122,41 +108,53 @@ Currently, ssGUI only supports SFML but it is architectured to also be compatibl
 using namespace ssGUI::Enums;
 int main()
 {
-    ssGUI::MainWindow mainWindow;                                               //Create the main window for showing content
+    ssGUI::MainWindow mainWindow;
     mainWindow.SetRenderSize(glm::vec2(450, 80));
-    auto* layout = ssGUI::Factory::Create<ssGUI::Extensions::Layout>();
-    mainWindow.AddExtension(layout);                                            //Add layout for auto sizing child GUI objects
+    auto* layout = mainWindow.AddExtension<ssGUI::Extensions::Layout>();
+
+    auto* text = mainWindow.AddChild<ssGUI::Text>();
+    text->SetNewTextFontSize(17);
+    text->SetText("Click on the button to show the message");
+    text->SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);
     
-    ssGUI::Text text;                                                           //Create a text widget and set the respective properties
-    text.SetNewCharacterFontSize(17);
-    text.SetText("Click on the button to show the message");
-    text.SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);  //We center the text right above the button we will be adding later
-    text.SetParent(&mainWindow);                                                //Attach text to main window, the layout will control its size.
-    
-    ssGUI::StandardButton button;                                               //Create a standard button, just a fancier button.
-    button.SetSize(glm::vec2(50, 30));
-    layout->AddChildWithAlignment(&button,  AlignmentHorizontal::CENTER,        //Attach button to main window with alignment, so that the size
-                                            AlignmentVertical::CENTER);         //      stays the same and won't be changed by layout
+    auto* button = ssGUI::Create<ssGUI::StandardButton>();
+    button->SetSize(glm::vec2(50, 30));
+    layout->AddChildWithAlignment(button,   AlignmentHorizontal::CENTER,
+                                            AlignmentVertical::CENTER);
                                                                                 
-    ssGUI::ssGUIManager guiManager;                                             //Create the GUIManager, which manages the flow of the program.
-    guiManager.AddGUIObject((ssGUI::GUIObject*)&mainWindow);                    //Add the main window (which has both text and button parented to it)
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddRootGUIObject(&mainWindow);
     guiManager.AddPostGUIUpdateEventListener                                    
     (
         [&]()
         {
-            if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)   //Then we want to check if the button is pressed every frame
-                text.SetText(L"(`oωo´)");                                       //If it is, we change the text to a cute little face :)
+            if(button->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+                text->SetText(L"(`oωo´)");
         }
     );
-    guiManager.StartRunning();                                                  //Finally we start running the program
+    guiManager.StartRunning();
     return 0;
 }
 ```
 
 ---
 
-### 🛣️ [Roadmap](https://ssGUI.nekoboxcoder.dev/b/ckQsLZToXDPFzsAzx/ssgui)
-![](DocsGeneration/ND_Config/Images/Roadmap.png)
+### 🛣️ Roadmap
+#### [Kanban Board](https://ssGUI.nekoboxcoder.dev/b/ckQsLZToXDPFzsAzx/ssgui)
+
+#### Main Features that are on Roadmap:
+- #### Mock up GUI examples
+- #### MacOS support
+- #### Support systems without OpenGL
+- #### GUI Builder
+- #### Optional immediate mode support
+- File Diaglog support
+- Tabs extension
+- Color picker
+- Instance rendering
+- etc...
+
+
 
 ---
 

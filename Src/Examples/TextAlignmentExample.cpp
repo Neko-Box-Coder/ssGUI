@@ -30,7 +30,7 @@ int main()
         auto ap = button->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         button->SetSize(glm::vec2(70, 50));
         button->GetButtonTextObject()->SetWrappingMode(ssGUI::Enums::TextWrapping::WORD_WRAPPING);
-        button->GetButtonTextObject()->SetNewCharacterFontSize(15);
+        button->GetButtonTextObject()->SetNewTextFontSize(15);
 
         using ssGUI::Extensions::AdvancedPosition;
         //Set buttons text and position

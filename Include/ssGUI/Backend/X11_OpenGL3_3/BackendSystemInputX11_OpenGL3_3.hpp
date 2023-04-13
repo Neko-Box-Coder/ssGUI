@@ -109,6 +109,7 @@ namespace Backend
             Time LastKeyUpTime;                                                                             //(Internal variable) Tracking time to filter out redirected key up events
             std::vector<std::function
                 <bool(ssGUI::Backend::BackendMainWindowInterface*, void*)>> RawEventHandlers;               //See <AddRawEventHandler>
+            uint64_t LastFrameTime;                                                                         //(Internal variable) Tracking FPS for resizing text input buffer
 
             template <class T>
             void AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo);
@@ -120,6 +121,8 @@ namespace Backend
             void FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
         
             bool PopulateCursorDataHandles(CursorData& cursorData);
+            float GetFPS(uint64_t curTimeInMs, uint64_t lastTimeInMs);
+            int GetTextInputBufferSize(float fps);
         
             BackendSystemInputX11_OpenGL3_3& operator=(BackendSystemInputX11_OpenGL3_3 const& other);
 
@@ -233,7 +236,7 @@ namespace Backend
             void RemoveRawEventHandler(int id) override;
             
             //function: ClearRawEventHandler
-            //See <<BackendSystemInputInterface::ClearRawEventHandler>
+            //See <BackendSystemInputInterface::ClearRawEventHandler>
             void ClearRawEventHandler() override;
 
             //function: ClearClipboard
