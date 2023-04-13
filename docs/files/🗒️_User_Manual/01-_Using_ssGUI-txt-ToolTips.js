@@ -1,1 +1,1 @@
-﻿NDContentPage.OnToolTipsLoaded({46:"<div class=\"NDToolTip TGroup LTextFile\"><div class=\"TTSummary\">To get started, either using ssGUI itself or using it in a project, click on configure multiple times until all the CMake options are configured (not red).</div></div>"});
+﻿NDContentPage.OnToolTipsLoaded({});

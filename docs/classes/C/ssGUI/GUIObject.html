@@ -74,10 +74,16 @@
  <div class="CBody"><p>Clone function for cloning the object. Use this function instead of assignment operator or copy constructor.&nbsp; The cloned object will be allocated on the heap and the clean up will be managed by ssGUI.&nbsp; Setting cloneChildren will clone all the children recursively with all the ObjectsReferences respectively.</p></div>
 </div>
 
-<a name="InitiateDefaultResources"></a><a name="Topic1569"></a><div class="CTopic TFunction LC last">
+<a name="InitiateDefaultResources"></a><a name="Topic1324"></a><div class="CTopic TFunction LC">
  <div class="CTitle">InitiateDefaultResources</div>
- <div id="NDPrototype1569" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> InitiateDefaultResources()</div></div>
- <div class="CBody"><p>Initiate default resources that this GUI object needs</p></div>
+ <div id="NDPrototype1324" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> InitiateDefaultResources()</div></div>
+ <div class="CBody"><p>Initiate default resources that this GUI object needs, this is called automatically</p></div>
+</div>
+
+<a name="CleanUpDefaultResources"></a><a name="Topic1354"></a><div class="CTopic TFunction LC last">
+ <div class="CTitle">CleanUpDefaultResources</div>
+ <div id="NDPrototype1354" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> CleanUpDefaultResources()</div></div>
+ <div class="CBody"><p>Deallocate default resources that this GUI Object needs, this is called automatically</p></div>
 </div>
 
 </body></html>

@@ -61,7 +61,7 @@ Title: 🟦 CMake:
 
 (See CMake_Resized.png)
 
-We only provide support CMake, as it greatly reduce the effort sorting out compiling and linking
+We only provide support to CMake, as it greatly reduce the effort sorting out compiling and linking
 and also unifies how to generate make files cross platform.
 
 You can still use Visual Studio by generating a solution file.
@@ -90,6 +90,9 @@ and link it to your target with
 > target_link_libraries(example PUBLIC ssGUI)
 
 Group: Configuring ssGUI in CMake GUI
+
+> ⚠️ On Windows, if you are building tests or embedded resources (Non release branch)
+> you will need to launch CMake GUI in administrator mode as it needs to create symlink. 
 
 To get started, either using ssGUI itself or using it in a project,
 click on configure multiple times until all the CMake options are configured (not red).
