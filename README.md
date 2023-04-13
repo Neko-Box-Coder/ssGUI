@@ -51,7 +51,7 @@
     You can just build ssGUI from source using CMake.
 
 - ### 🔙 ~~Source Compatible~~ (WIP)
-    ssGUI aims to be backward compatible in terms of souce compatibility. 
+    ssGUI aims to be forward compatible in terms of souce compatibility, meaning no code change when migrating to newer ssGUI version. 
     
 - ### 🏗️ ~~GUI Builder~~ (WIP)
     Easy visualization on what the GUI, no longer need to recompile everytime you make a change.
