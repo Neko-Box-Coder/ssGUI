@@ -300,9 +300,9 @@ namespace ssGUI
             //Gets the HeapAllocated flag of this GUI Object. If true, this object will be deleted from the heap automatically after the <Delete> function is called.
             virtual bool IsHeapAllocated() const;
 
-            //function: Internal_ManualDeletion
+            //function: Internal_ChildrenManualDeletion
             //(Internal ssGUI function) Allow a composite GUI object to be able to deallocate itself with its generated GUI objects when the destructor is being called
-            virtual void Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex> generatedObjs);
+            virtual void Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex> generatedObjs);
 
             //function: Internal_GetObjectsReferences
             //(Internal ssGUI function) Returns the pointer of the ObjectReferences

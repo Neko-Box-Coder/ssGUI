@@ -156,7 +156,7 @@ namespace ssGUI
 
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
-            Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{DropdownMenu});
+            Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{DropdownMenu});
     }
 
     int Dropdown::GetSelectedIndex() const

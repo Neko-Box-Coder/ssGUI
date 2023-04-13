@@ -334,7 +334,7 @@ namespace ssGUI
 
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
-            Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{WindowTitle, WindowIcon, CloseButton});
+            Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{WindowTitle, WindowIcon, CloseButton});
     }
 
     void StandardWindow::SetWindowTitleObject(ssGUI::Text* text)

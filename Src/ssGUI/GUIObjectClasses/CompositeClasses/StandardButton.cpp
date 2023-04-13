@@ -254,7 +254,7 @@ namespace ssGUI
 
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
-            Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{ButtonText, ButtonImage, ButtonImageWrapper});
+            Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{ButtonText, ButtonImage, ButtonImageWrapper});
     }
 
     void StandardButton::SetButtonIconObject(ssGUI::Image* image)

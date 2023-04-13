@@ -529,7 +529,9 @@ namespace ssGUI
         if(ImageCanvasObjectCount == 0)
             CleanUpDefaultResources();
         
-        //TODO: children deallocation
+        //If the object deallocation is not handled by ssGUIManager
+        if(!Internal_IsDeleted())
+            Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{HorizontalScrollbar, VerticalScrollbar});
     }
 
     glm::vec2 ImageCanvas::GetUVFromGlobalPosition(glm::vec2 globalPos)
