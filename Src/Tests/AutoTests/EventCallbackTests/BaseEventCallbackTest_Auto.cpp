@@ -1,153 +1,158 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 
-ssGUI::EventCallback* callback = nullptr;
-ssGUI::GUIObject* testObj = nullptr;
+ssGUI::EventCallback* Callback = nullptr;
+ssGUI::GUIObject* TestObj = nullptr;
 
-ssTEST_INIT();
-
-ssTEST_SET_UP
+int main()
 {
-    callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
-    callback->SetEventType(ssGUI::Enums::EventType::NONE);
-    testObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
-}
+    ssTEST_INIT();
 
-ssTEST_CLEAN_UP
-{
-    ssGUI::Factory::Dispose(callback);
-    ssGUI::Factory::Dispose(testObj);
-}
+    ssTEST_SET_UP
+    {
+        Callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+        Callback->SetEventType(ssGUI::Enums::EventType::NONE);
+        TestObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
+    }
 
-ssTEST("AddEventListenerTest")
-{
-    callback->AddEventListener("key", [](ssGUI::EventInfo info){});
-    ssTEST_OUTPUT_ASSERT("Without adder",   callback->GetEventListenerCount() == 1 && 
-                                            callback->IsEventListenerExist("key"));
-    
-    callback->AddEventListener("key", testObj, [](ssGUI::EventInfo info){});
-    ssTEST_OUTPUT_ASSERT("With adder",  callback->GetEventListenerCount() == 2 &&
-                                        callback->IsEventListenerExist("key", testObj));   
-}
+    ssTEST_CLEAN_UP
+    {
+        ssGUI::Factory::Dispose(Callback);
+        ssGUI::Factory::Dispose(TestObj);
+    }
 
-ssTEST_SKIP("IsEventListenerExistTest (Tested in AddEventListenerTest)"){}
+    ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
 
-ssTEST("RemoveEventListenerTest")
-{
-    callback->RemoveEventListener("key");
-    ssTEST_OUTPUT_ASSERT("Without adder",   callback->GetEventListenerCount() == 1 && 
-                                            !callback->IsEventListenerExist("key"));    
-
-    callback->RemoveEventListener("key", testObj);
-    
-    ssTEST_OUTPUT_ASSERT("With adder",  callback->GetEventListenerCount() == 0 &&
-                                        !callback->IsEventListenerExist("key", testObj));   
-}
-
-ssTEST("ClearEventListenersTest")
-{
-    callback->AddEventListener("key", [](ssGUI::EventInfo info){});
-    callback->AddEventListener("key1", [](ssGUI::EventInfo info){});
-    callback->AddEventListener("key2", [](ssGUI::EventInfo info){});
-    callback->AddEventListener("key3", testObj, [](ssGUI::EventInfo info){});
-    
-    callback->ClearEventListeners();
-    
-    ssTEST_OUTPUT_ASSERT(callback->GetEventListenerCount() == 0);
-}
-
-ssTEST_SKIP("GetEventListenerCountTest (Tested in AddEventListenerTest)"){}
-
-ssTEST("NotifyTest")
-{
-    int testNum = 0;
-    callback->AddEventListener("key",   [&](ssGUI::EventInfo info)
-                                        { 
-                                            testNum = 1;
-                                            ssTEST_OUTPUT_ASSERT("Nullptr Container", info.Container == nullptr);
-                                            ssTEST_OUTPUT_ASSERT("Nullptr Source", info.EventSource == nullptr);
-                                        });
-    callback->Notify(nullptr);
-    ssTEST_OUTPUT_ASSERT(testNum == 1);
-
-    ssGUI::GUIObject* notifySrcObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
-    
-    auto* clonedEvent = testObj->AddEventCallbackCopy(callback, false);
-    clonedEvent->AddEventListener(  "key",   
-                                    [&](ssGUI::EventInfo info)
-                                    { 
-                                        ssTEST_OUTPUT_ASSERT(   "Container", 
-                                                                info.Container == testObj);
-                                        ssTEST_OUTPUT_ASSERT(   "Source", 
-                                                                info.EventSource == notifySrcObj);
-                                    });
-    
-    clonedEvent->Notify(notifySrcObj);
-    ssGUI::Factory::Dispose(notifySrcObj);
-
-    ssTEST_CALL_CLEAN_UP();
-    ssTEST_CALL_SET_UP();
-}
-
-//Used internally, testing is not needed
-ssTEST_SKIP("BindToObjectTest")
-{
-};
-
-int objRefIndex = -1;
-
-ssTEST("AddObjectReferenceTest")
-{
-    objRefIndex = callback->AddObjectReference(testObj);
-    ssTEST_OUTPUT_ASSERT(objRefIndex != -1);
-}
-
-ssTEST("GetObjectReferenceTest")
-{
-    ssTEST_OUTPUT_ASSERT(callback->GetObjectReference(objRefIndex) == testObj);
-}
-
-ssTEST("RemoveObjectReferenceTest")
-{
-    callback->RemoveObjectReference(objRefIndex);
-    ssTEST_OUTPUT_ASSERT(callback->GetObjectReference(objRefIndex) == nullptr);
-}
-
-ssTEST("CloneTest")
-{
-    int testNum = 0;
-    std::string listenerKey = "key";
-    callback->AddEventListener( listenerKey, 
-                                [&](ssGUI::EventInfo info)
-                                {
-                                    testNum = 1;
-                                });
-    
-    auto* clonedCallback = callback->Clone(false);
-    ssTEST_OUTPUT_ASSERT("Validity", clonedCallback != nullptr);
-    if(clonedCallback == nullptr)
-        return;
+    ssTEST("AddEventListenerTest")
+    {
+        Callback->AddEventListener("key", [](ssGUI::EventInfo info){});
+        ssTEST_OUTPUT_ASSERT("Without adder",   Callback->GetEventListenerCount() == 1 && 
+                                                Callback->IsEventListenerExist("key"));
         
-    clonedCallback = callback->Clone(true);
-    clonedCallback->Notify(nullptr);
-    ssTEST_OUTPUT_ASSERT("Listener", testNum == 1);
-    ssGUI::Factory::Dispose(clonedCallback);
-    testNum = 0;
-    
-    clonedCallback = testObj->AddEventCallbackCopy(callback, true);
-    ssTEST_OUTPUT_ASSERT(   "New Container", 
-                            testObj->IsEventCallbackExist(ssGUI::Enums::EventType::NONE));
-}
+        Callback->AddEventListener("key", TestObj, [](ssGUI::EventInfo info){});
+        ssTEST_OUTPUT_ASSERT("With adder",  Callback->GetEventListenerCount() == 2 &&
+                                            Callback->IsEventListenerExist("key", TestObj));   
+    }
 
-ssTEST("EventTest")
-{
-    //testObj->SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
-    //ssTEST_OUTPUT_ASSERT("GUIObject", listerNum == 1);
-    //listerNum = 0;
-    
-    //callback->Clone(testWindow, true);
-    //testWindow->SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
-    //ssTEST_OUTPUT_ASSERT("Window", listerNum == 1);
-}
+    ssTEST_SKIP("IsEventListenerExistTest (Tested in AddEventListenerTest)"){}
 
-ssTEST_END();
+    ssTEST("RemoveEventListenerTest")
+    {
+        Callback->RemoveEventListener("key");
+        ssTEST_OUTPUT_ASSERT("Without adder",   Callback->GetEventListenerCount() == 1 && 
+                                                !Callback->IsEventListenerExist("key"));    
+
+        Callback->RemoveEventListener("key", TestObj);
+        
+        ssTEST_OUTPUT_ASSERT("With adder",  Callback->GetEventListenerCount() == 0 &&
+                                            !Callback->IsEventListenerExist("key", TestObj));   
+    }
+
+    ssTEST("ClearEventListenersTest")
+    {
+        Callback->AddEventListener("key", [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key1", [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key2", [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key3", TestObj, [](ssGUI::EventInfo info){});
+        
+        Callback->ClearEventListeners();
+        
+        ssTEST_OUTPUT_ASSERT(Callback->GetEventListenerCount() == 0);
+    }
+
+    ssTEST_SKIP("GetEventListenerCountTest (Tested in AddEventListenerTest)"){}
+
+    ssTEST("NotifyTest")
+    {
+        int testNum = 0;
+        Callback->AddEventListener("key",   [&](ssGUI::EventInfo info)
+                                            { 
+                                                testNum = 1;
+                                                ssTEST_OUTPUT_ASSERT("Nullptr Container", info.Container == nullptr);
+                                                ssTEST_OUTPUT_ASSERT("Nullptr Source", info.EventSource == nullptr);
+                                            });
+        Callback->Notify(nullptr);
+        ssTEST_OUTPUT_ASSERT(testNum == 1);
+
+        ssGUI::GUIObject* notifySrcObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
+        
+        auto* clonedEvent = TestObj->AddEventCallbackCopy(Callback, false);
+        clonedEvent->AddEventListener(  "key",   
+                                        [&](ssGUI::EventInfo info)
+                                        { 
+                                            ssTEST_OUTPUT_ASSERT(   "Container", 
+                                                                    info.Container == TestObj);
+                                            ssTEST_OUTPUT_ASSERT(   "Source", 
+                                                                    info.EventSource == notifySrcObj);
+                                        });
+        
+        clonedEvent->Notify(notifySrcObj);
+        ssGUI::Factory::Dispose(notifySrcObj);
+
+        ssTEST_CALL_CLEAN_UP();
+        ssTEST_CALL_SET_UP();
+    }
+
+    //Used internally, testing is not needed
+    ssTEST_SKIP("BindToObjectTest")
+    {
+    };
+
+    int objRefIndex = -1;
+
+    ssTEST("AddObjectReferenceTest")
+    {
+        objRefIndex = Callback->AddObjectReference(TestObj);
+        ssTEST_OUTPUT_ASSERT(objRefIndex != -1);
+    }
+
+    ssTEST("GetObjectReferenceTest")
+    {
+        ssTEST_OUTPUT_ASSERT(Callback->GetObjectReference(objRefIndex) == TestObj);
+    }
+
+    ssTEST("RemoveObjectReferenceTest")
+    {
+        Callback->RemoveObjectReference(objRefIndex);
+        ssTEST_OUTPUT_ASSERT(Callback->GetObjectReference(objRefIndex) == nullptr);
+    }
+
+    ssTEST("CloneTest")
+    {
+        int testNum = 0;
+        std::string listenerKey = "key";
+        Callback->AddEventListener( listenerKey, 
+                                    [&](ssGUI::EventInfo info)
+                                    {
+                                        testNum = 1;
+                                    });
+        
+        auto* clonedCallback = Callback->Clone(false);
+        ssTEST_OUTPUT_ASSERT("Validity", clonedCallback != nullptr);
+        if(clonedCallback == nullptr)
+            return;
+            
+        clonedCallback = Callback->Clone(true);
+        clonedCallback->Notify(nullptr);
+        ssTEST_OUTPUT_ASSERT("Listener", testNum == 1);
+        ssGUI::Factory::Dispose(clonedCallback);
+        testNum = 0;
+        
+        clonedCallback = TestObj->AddEventCallbackCopy(Callback, true);
+        ssTEST_OUTPUT_ASSERT(   "New Container", 
+                                TestObj->IsEventCallbackExist(ssGUI::Enums::EventType::NONE));
+    }
+
+    ssTEST("EventTest")
+    {
+        //TestObj->SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
+        //ssTEST_OUTPUT_ASSERT("GUIObject", ListenerNum == 1);
+        //ListenerNum = 0;
+        
+        //Callback->Clone(testWindow, true);
+        //testWindow->SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
+        //ssTEST_OUTPUT_ASSERT("Window", ListenerNum == 1);
+    }
+
+    ssTEST_END();
+}

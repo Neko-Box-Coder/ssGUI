@@ -1,47 +1,50 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 
-ssGUI::EventCallback* callback = nullptr;
-ssGUI::GUIObject* testObj = nullptr;
-ssGUI::Window* testWindow = nullptr;
-int listerNum = 0;
+ssGUI::EventCallback* Callback = nullptr;
+ssGUI::GUIObject* TestObj = nullptr;
+ssGUI::Window* TestWindow = nullptr;
+int ListenerNum = 0;
 
-glm::u8vec4 changeBGColor = glm::u8vec4(123, 111, 100, 201);
+glm::u8vec4 ChangeBGColor = glm::u8vec4(123, 111, 100, 201);
 
-ssTEST_INIT();
-
-ssTEST_SET_UP
+int main()
 {
-    callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
-    callback->SetEventType(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED);
-    testObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
-    testWindow = ssGUI::Factory::Create<ssGUI::Window>();
-    
-    //Timing is making sure the listener is triggered **after** the event
-    callback->AddEventListener( "key", [&](ssGUI::EventInfo info)
-                                {
-                                    ssTEST_OUTPUT_ASSERT("Timing", info.EventSource->GetBackgroundColor() == changeBGColor); 
-                                    listerNum = 1;
-                                });
-    testObj->AddEventCallbackCopy(callback, true);
-    testWindow->AddEventCallbackCopy(callback, true);
-}
+    ssTEST_INIT();
 
-ssTEST_CLEAN_UP
-{
-    ssGUI::Factory::Dispose(callback);
-    ssGUI::Factory::Dispose(testObj);
-    ssGUI::Factory::Dispose(testWindow);
-}
+    ssTEST_SET_UP
+    {
+        Callback = ssGUI::Factory::Create<ssGUI::EventCallback>();
+        Callback->SetEventType(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED);
+        TestObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
+        TestWindow = ssGUI::Factory::Create<ssGUI::Window>();
+        
+        //Timing is making sure the listener is triggered **after** the event
+        Callback->AddEventListener( "key", [&](ssGUI::EventInfo info)
+                                    {
+                                        ssTEST_OUTPUT_ASSERT("Timing", info.EventSource->GetBackgroundColor() == ChangeBGColor); 
+                                        ListenerNum = 1;
+                                    });
+        TestObj->AddEventCallbackCopy(Callback, true);
+        TestWindow->AddEventCallbackCopy(Callback, true);
+    }
 
-ssTEST("EventTest")
-{
-    testObj->SetBackgroundColor(changeBGColor);
-    ssTEST_OUTPUT_ASSERT("GUIObject", listerNum == 1);
-    
-    listerNum = 0;
-    testWindow->SetBackgroundColor(changeBGColor);
-    ssTEST_OUTPUT_ASSERT("Window", listerNum == 1);
-}
+    ssTEST_CLEAN_UP
+    {
+        ssGUI::Factory::Dispose(Callback);
+        ssGUI::Factory::Dispose(TestObj);
+        ssGUI::Factory::Dispose(TestWindow);
+    }
 
-ssTEST_END();
+    ssTEST("EventTest")
+    {
+        TestObj->SetBackgroundColor(ChangeBGColor);
+        ssTEST_OUTPUT_ASSERT("GUIObject", ListenerNum == 1);
+        
+        ListenerNum = 0;
+        TestWindow->SetBackgroundColor(ChangeBGColor);
+        ssTEST_OUTPUT_ASSERT("Window", ListenerNum == 1);
+    }
+
+    ssTEST_END();
+}

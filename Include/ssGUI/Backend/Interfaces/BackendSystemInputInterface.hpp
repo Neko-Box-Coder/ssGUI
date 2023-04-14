@@ -114,9 +114,12 @@ namespace Backend
             //are not recorded in here.
             virtual std::wstring GetTextInput() const = 0;
             
+            //TODO: Add std::string version for GetTextInput
+            
             //function: SetCursorType
             //Sets the cursor type it is currently using. 
             //By default, <ssGUI::ssGUIManager> sets the cursor type back to normal at the end of every frame.
+            //
             //Therefore you only need to set non normal cursor type every frame when you need to 
             //and don't need to care about setting it back to normal once you are done with it. 
             virtual void SetCursorType(ssGUI::Enums::CursorType cursorType) = 0;
@@ -124,6 +127,7 @@ namespace Backend
             //function: GetCursorType
             //Gets the cursor type it is currently using. 
             //By default, <ssGUI::ssGUIManager> sets the cursor type back to normal at the end of every frame.
+            //
             //Therefore you only need to set non normal cursor type every frame when you need to 
             //and don't need to care about setting it back to normal once you are done with it. 
             virtual ssGUI::Enums::CursorType GetCursorType() const = 0;
@@ -196,6 +200,8 @@ namespace Backend
             //function: GetClipboardText
             //Gets the clipboard text
             virtual bool GetClipboardText(std::wstring& str) = 0;
+
+            //TODO: Add std::string version for GetClipboardText
 
             //function: GetElapsedTime
             //Returns elapsed time since application startup in millisecond

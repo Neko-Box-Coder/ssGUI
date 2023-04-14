@@ -10,45 +10,91 @@
 
 <script type="text/javascript">var q = window.location.search;if (q.indexOf("?Theme=") == 0){var t = q.slice(7);var e = t.indexOf(";");if (e != -1){  t = t.slice(0, e);  }if (document.documentElement.className == undefined){ document.documentElement.className = t + "Theme"; }else{ document.documentElement.className += " " + t + "Theme"; }}</script>
 
-<a name="Topic617"></a><div class="CTopic TClass LC first">
+<a name="Topic549"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Font</div>
- <div class="NDClassPrototype" id="NDClassPrototype617"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Font</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype549"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Font</div></div></div>
  <div class="CBody"><div class="CHeading">Variables &amp; Constructor</div><pre class="CCode"><span class="SHKeyword">private</span>:<br />    ssGUI::Backend::BackendFontInterface* BackendFont;  <span class="SHComment">//See &lt;GetBackendFontInterface&gt;</span></pre><pre class="CCode">Font::Font()<br />{<br />    BackendFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();<br />}</pre></div>
 </div>
 
-<a name="Functions"></a><a name="Topic618"></a><div class="CTopic TGroup LC">
+<a name="Functions"></a><a name="Topic550"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="GetBackendFontInterface"></a><a name="Topic619"></a><div class="CTopic TFunction LC">
+<a name="GetBackendFontInterface"></a><a name="Topic551"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetBackendFontInterface</div>
- <div id="NDPrototype619" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,775);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface</a>* GetBackendFontInterface()</div></div>
+ <div id="NDPrototype551" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1120);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface</a>* GetBackendFontInterface()</div></div>
 </div>
 
-<a name="IsCharacterSupported"></a><a name="Topic620"></a><div class="CTopic TFunction LC">
+<a name="GetCharacterRenderInfo"></a><a name="Topic552"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetCharacterRenderInfo</div>
+ <div id="NDPrototype552" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.CharacterRenderInfo" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,464);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::CharacterRenderInfo</a> GetCharacterRenderInfo(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetCharacterRenderInfo" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1123);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetCharacterRenderInfo</a></p></div>
+</div>
+
+<a name="IsCharacterSupported"></a><a name="Topic553"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsCharacterSupported</div>
- <div id="NDPrototype620" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsCharacterSupported(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
- <div class="CBody"><p>Returns true if the character is supported by the font</p></div>
+ <div id="NDPrototype553" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsCharacterSupported(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:IsCharacterSupported" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1124);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::IsCharacterSupported</a></p></div>
 </div>
 
-<a name="GetLineSpacing"></a><a name="Topic621"></a><div class="CTopic TFunction LC">
+<a name="GetKerning"></a><a name="Topic554"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetKerning</div>
+ <div id="NDPrototype554" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetKerning(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">uint32_t&nbsp;</td><td class="PName last">charUnicode,</td></tr><tr><td class="PType first">uint32_t&nbsp;</td><td class="PName last">secondCharUnicode,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetKerning" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1125);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetKerning</a></p></div>
+</div>
+
+<a name="GetLineSpacing"></a><a name="Topic555"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetLineSpacing</div>
- <div id="NDPrototype621" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetLineSpacing(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype555" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetLineSpacing(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetLineSpacing" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1126);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetLineSpacing</a></p></div>
 </div>
 
-<a name="GetUnderlineOffset"></a><a name="Topic622"></a><div class="CTopic TFunction LC">
+<a name="GetUnderlineOffset"></a><a name="Topic556"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetUnderlineOffset</div>
- <div id="NDPrototype622" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetUnderlineOffset(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype556" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetUnderlineOffset(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetUnderlineOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1127);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetUnderlineOffset</a></p></div>
 </div>
 
-<a name="GetUnderlineThickness"></a><a name="Topic623"></a><div class="CTopic TFunction LC">
+<a name="GetUnderlineThickness"></a><a name="Topic557"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetUnderlineThickness</div>
- <div id="NDPrototype623" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetUnderlineThickness(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype557" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetUnderlineThickness(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">charSize</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetUnderlineThickness" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1128);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetUnderlineThickness</a></p></div>
 </div>
 
-<a name="Clone"></a><a name="Topic624"></a><div class="CTopic TFunction LC last">
+<a name="LoadFromPath"></a><a name="Topic558"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">LoadFromPath</div>
+ <div id="NDPrototype558" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadFromPath(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType"><span class="SHKeyword">string</span>&nbsp;</td><td class="PName last">path</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:LoadFromPath" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1129);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::LoadFromPath</a></p></div>
+</div>
+
+<a name="LoadFromMemory"></a><a name="Topic559"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">LoadFromMemory</div>
+ <div id="NDPrototype559" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> LoadFromMemory(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">void</span>*&nbsp;</td><td class="PName last">dataPtr,</td></tr><tr><td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td><td class="PName last">lengthInBytes</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:LoadFromMemory" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1130);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::LoadFromMemory</a></p></div>
+</div>
+
+<a name="GetFixedAvailableFontSizes"></a><a name="Topic560"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetFixedAvailableFontSizes</div>
+ <div id="NDPrototype560" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> GetFixedAvailableFontSizes(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">std::</td><td class="PType">vector&lt;<span class="SHKeyword">float</span>&gt;&amp;&nbsp;</td><td class="PName last">fontSizes</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetFixedAvailableFontSizes" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1131);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetFixedAvailableFontSizes</a></p></div>
+</div>
+
+<a name="GetCharacterImage"></a><a name="Topic561"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetCharacterImage</div>
+ <div id="NDPrototype561" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> GetCharacterImage(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType"><span class="SHKeyword">wchar_t</span>&nbsp;</td><td class="PName last">charUnicode,</td></tr><tr><td class="first"></td><td class="PType"><span class="SHKeyword">float</span>&nbsp;</td><td class="PName last">charSize,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.ImageData" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,535);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.ImageData" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,535);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ImageData</a>&amp;&nbsp;</td><td class="PName last">characterImage</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetCharacterImage" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1132);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetCharacterImage</a></p></div>
+</div>
+
+<a name="GetRawHandle"></a><a name="Topic562"></a><div class="CTopic TFunction LC">
+ <div class="CTitle">GetRawHandle</div>
+ <div id="NDPrototype562" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span>* GetRawHandle()</div></div>
+ <div class="CBody"><p>See <a href="../../../index.html#CClass:ssGUI.Backend.BackendFontInterface:GetRawHandle" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1133);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Backend::BackendFontInterface::GetRawHandle</a></p></div>
+</div>
+
+<a name="Clone"></a><a name="Topic563"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">Clone</div>
- <div id="NDPrototype624" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.Font" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,617);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Font</a>* Clone()</div></div>
+ <div id="NDPrototype563" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.Font" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,549);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Font</a>* Clone()</div></div>
+ <div class="CBody"><p>Clones the font object</p></div>
 </div>
 
 </body></html>

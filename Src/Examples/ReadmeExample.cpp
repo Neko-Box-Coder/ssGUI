@@ -12,7 +12,7 @@ int main()
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetPosition(glm::vec2(75, 25));
-    text.SetNewCharacterFontSize(20);
+    text.SetNewTextFontSize(20);
     text.SetText(L"Click on the button to change this text.");
 
     //Create a button and set an event callback to change the text when it is clicked

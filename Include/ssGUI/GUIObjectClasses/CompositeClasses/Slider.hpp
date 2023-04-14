@@ -9,7 +9,7 @@ namespace ssGUI
     /*class: ssGUI::Slider
     This class represents a slider GUI widget. A slider object can be either horizontal or vertical, 
     and can also start from either end of the slider using the <SetReverse> function.
-    This can also be used as a status bar using the fill color functions provided and de-assign the knob object.
+    This can also be used as a status bar using the fill color functions provided and unassign the knob object.
 
     The default orientation of the slider is from left (0) to right (1) if horizontal or bottom (0) to top (1) if vertical.
 

@@ -11,6 +11,7 @@
 
 namespace ssGUI
 {    
+    int Text::TextObjectCount = 0;
     std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();
     uint32_t Text::DefaultFontsChangeID = 1;
 
@@ -21,9 +22,9 @@ namespace ssGUI
         CharactersRenderInfos = other.CharactersRenderInfos;
         ProcessedCharacterDetails = other.ProcessedCharacterDetails;
         Overflow = other.Overflow;
-        FontSize = other.GetNewCharacterFontSize();
-        TextColor = other.GetNewCharacterColor();
-        TextUnderline = other.IsNewCharacterUnderlined();
+        FontSize = other.GetNewTextFontSize();
+        TextColor = other.GetNewTextColor();
+        TextUnderline = other.IsNewTextUnderlined();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
         CurrentHorizontalAlignment = other.GetHorizontalAlignment();
@@ -40,6 +41,8 @@ namespace ssGUI
         SelectionColor = other.GetSelectionColor();
         TextSelectedColor = other.GetTextSelectedColor();
         LastDefaultFontsID = other.LastDefaultFontsID;
+        
+        TextObjectCount++;
     }
 
     ssGUI::CharacterDetails& Text::GetInternalCharacterDetail(int index)
@@ -54,9 +57,9 @@ namespace ssGUI
         {
             ssGUI::CharacterDetails detail;
             detail.Character = s[i];
-            detail.FontSize = GetNewCharacterFontSize();
-            detail.CharacterColor = GetNewCharacterColor();
-            detail.Underlined = IsNewCharacterUnderlined();
+            detail.FontSize = GetNewTextFontSize();
+            detail.CharacterColor = GetNewTextColor();
+            detail.Underlined = IsNewTextUnderlined();
             details.push_back(detail);
         }
     }
@@ -821,7 +824,7 @@ namespace ssGUI
 
             //Check last character
             if(i == endIndex - 1)
-                drawHighlight(lineStartIndex, i, glm::u8vec4(51, 153, 255, 255));
+                drawHighlight(lineStartIndex, i, SelectionColor);
         }
 
         ssLOG_FUNC_EXIT();
@@ -1297,11 +1300,17 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
+        
+        TextObjectCount++;
     }
 
     Text::~Text()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        TextObjectCount--;
+        
+        if(TextObjectCount == 0)
+            CleanUpDefaultResources();
     }
     
     void Text::ComputeCharactersPositionAndSize()
@@ -1358,7 +1367,7 @@ namespace ssGUI
         ProcessedCharacterDetails.clear();
         std::vector<ssGUI::CharacterDetails> newDetails;
         ConstructCharacterDetails(text, newDetails);
-        AddCurrentCharacterDetails(newDetails);
+        AddCharacterDetails(newDetails);
         RedrawObject();
     }
 
@@ -1372,7 +1381,7 @@ namespace ssGUI
         std::wstring currentText = converter.from_bytes(text);
         std::vector<ssGUI::CharacterDetails> newDetails;
         ConstructCharacterDetails(currentText, newDetails);
-        AddCurrentCharacterDetails(newDetails);
+        AddCharacterDetails(newDetails);
         RedrawObject();
     }
 
@@ -1380,7 +1389,7 @@ namespace ssGUI
     {
         std::vector<ssGUI::CharacterDetails> newDetails;
         ConstructCharacterDetails(text, newDetails);
-        AddCurrentCharacterDetails(newDetails);
+        AddCharacterDetails(newDetails);
         RedrawObject();
     }
 
@@ -1390,7 +1399,7 @@ namespace ssGUI
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         std::wstring currentText = converter.from_bytes(text);
         ConstructCharacterDetails(currentText, newDetails);
-        AddCurrentCharacterDetails(newDetails);
+        AddCharacterDetails(newDetails);
         RedrawObject();
     }
 
@@ -1398,7 +1407,7 @@ namespace ssGUI
     {
         std::vector<ssGUI::CharacterDetails> newDetails;
         ConstructCharacterDetails(text, newDetails);
-        AddCurrentCharacterDetails(index, newDetails);
+        AddCharacterDetails(index, newDetails);
         RedrawObject();
     }
 
@@ -1408,13 +1417,13 @@ namespace ssGUI
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         std::wstring currentText = converter.from_bytes(text);
         ConstructCharacterDetails(currentText, newDetails);
-        AddCurrentCharacterDetails(index, newDetails);
+        AddCharacterDetails(index, newDetails);
         RedrawObject();
     }
 
     void Text::RemoveText(int startIndex, int exclusiveEndIndex)
     {
-        RemoveCurrentCharacterDetails(startIndex, exclusiveEndIndex);
+        RemoveCharacterDetails(startIndex, exclusiveEndIndex);
         RedrawObject();
     }
 
@@ -1441,7 +1450,7 @@ namespace ssGUI
         return CharactersRenderInfos[index];
     }
     
-    void Text::SetCurrentCharacterDetails(int index, ssGUI::CharacterDetails details)
+    void Text::SetCharacterDetails(int index, ssGUI::CharacterDetails details)
     {
         if(index < 0 || index >= CurrentCharactersDetails.Size())
             return;
@@ -1452,7 +1461,7 @@ namespace ssGUI
         RedrawObject();
     }
 
-    ssGUI::CharacterDetails Text::GetCurrentCharacterDetails(int index)
+    ssGUI::CharacterDetails Text::GetCharacterDetails(int index)
     {
         if(index < 0 || index >= CurrentCharactersDetails.Size())
             return ssGUI::CharacterDetails();
@@ -1460,12 +1469,12 @@ namespace ssGUI
         return CurrentCharactersDetails[index];
     }
 
-    int Text::GetCurrentCharactersDetailsCount() const
+    int Text::GetCharactersDetailsCount() const
     {
         return CurrentCharactersDetails.Size();
     }
 
-    void Text::AddCurrentCharacterDetails(int index, ssGUI::CharacterDetails details)
+    void Text::AddCharacterDetails(int index, ssGUI::CharacterDetails details)
     {
         if(index < 0 || index > CurrentCharactersDetails.Size())
             return;
@@ -1476,14 +1485,14 @@ namespace ssGUI
         RedrawObject();
     }
 
-    void Text::AddCurrentCharacterDetails(ssGUI::CharacterDetails details)
+    void Text::AddCharacterDetails(ssGUI::CharacterDetails details)
     {
         CurrentCharactersDetails.Add(details);
         RecalculateTextNeeded = true;
         RedrawObject();
     }
     
-    void Text::AddCurrentCharacterDetails(int index, std::vector<ssGUI::CharacterDetails>& details)
+    void Text::AddCharacterDetails(int index, std::vector<ssGUI::CharacterDetails>& details)
     {
         if(index < 0 || index > CurrentCharactersDetails.Size())
             return;
@@ -1494,12 +1503,12 @@ namespace ssGUI
         RedrawObject();
     }
 
-    void Text::AddCurrentCharacterDetails(std::vector<ssGUI::CharacterDetails>& details)
+    void Text::AddCharacterDetails(std::vector<ssGUI::CharacterDetails>& details)
     {
         CurrentCharactersDetails.Add(details);
     }
 
-    void Text::RemoveCurrentCharacterDetails(int index)
+    void Text::RemoveCharacterDetails(int index)
     {
         if(index < 0 || index >= CurrentCharactersDetails.Size())
             return;
@@ -1509,7 +1518,7 @@ namespace ssGUI
         RedrawObject();
     }
 
-    void Text::RemoveCurrentCharacterDetails(int startIndex, int exclusiveEndIndex)
+    void Text::RemoveCharacterDetails(int startIndex, int exclusiveEndIndex)
     {
         if(startIndex < 0 || startIndex >= CurrentCharactersDetails.Size())
             return;
@@ -1522,7 +1531,7 @@ namespace ssGUI
         RedrawObject();
     }
 
-    void Text::ClearAllCurrentCharacterDetails()
+    void Text::ClearAllCharacterDetails()
     {
         CurrentCharactersDetails.Clear();
         RecalculateTextNeeded = true;
@@ -1545,45 +1554,45 @@ namespace ssGUI
         return Overflow;
     }
 
-    void Text::SetNewCharacterFontSize(float size)
+    void Text::SetNewTextFontSize(float size)
     {
         FontSize = size;
     }
 
-    float Text::GetNewCharacterFontSize() const
+    float Text::GetNewTextFontSize() const
     {
         return FontSize;
     }
 
-    void Text::SetNewCharacterColor(glm::u8vec4 color)
+    void Text::SetNewTextColor(glm::u8vec4 color)
     {
         TextColor = color;
     }
 
-    glm::u8vec4 Text::GetNewCharacterColor() const
+    glm::u8vec4 Text::GetNewTextColor() const
     {
         return TextColor;
     } 
 
-    void Text::SetNewCharacterUnderlined(bool underline)
+    void Text::SetNewTextUnderlined(bool underline)
     {
         TextUnderline = underline;
     }
 
-    bool Text::IsNewCharacterUnderlined() const
+    bool Text::IsNewTextUnderlined() const
     {
         return TextUnderline;
     }
 
-    void Text::ApplyNewCharacterSettingsToText()
+    void Text::ApplyNewTextSettingsToExistingText()
     {
         RecalculateTextNeeded = true;
         
         for(size_t i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
-            CurrentCharactersDetails[i].FontSize = GetNewCharacterFontSize();
-            CurrentCharactersDetails[i].CharacterColor = GetNewCharacterColor();
-            CurrentCharactersDetails[i].Underlined = IsNewCharacterUnderlined();
+            CurrentCharactersDetails[i].FontSize = GetNewTextFontSize();
+            CurrentCharactersDetails[i].CharacterColor = GetNewTextColor();
+            CurrentCharactersDetails[i].Underlined = IsNewTextUnderlined();
         }
         
         RedrawObject();
@@ -1812,6 +1821,7 @@ namespace ssGUI
     void Text::SetSelectionColor(glm::u8vec4 color)
     {
         SelectionColor = color;
+        RedrawObject();
     }
 
     glm::u8vec4 Text::GetSelectionColor() const
@@ -1822,6 +1832,7 @@ namespace ssGUI
     void Text::SetTextSelectedColor(glm::u8vec4 color)
     {
         TextSelectedColor = color;
+        RedrawObject();
     }
 
     glm::u8vec4 Text::GetTextSelectedColor() const
@@ -2117,15 +2128,6 @@ namespace ssGUI
         return DefaultFonts.size();
     }
 
-    void Text::CleanUpAllDefaultFonts()
-    {
-        for(int i = 0; i < DefaultFonts.size(); i++)
-            ssGUI::Factory::Dispose(DefaultFonts[i]);
-        
-        DefaultFonts.clear();
-        DefaultFontsChangeID++;
-    }
-
     ssGUI::Enums::GUIObjectType Text::GetType() const
     {
         return ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::TEXT;
@@ -2182,5 +2184,17 @@ namespace ssGUI
             DefaultFontsChangeID++;
         }
         ssLOG_FUNC_EXIT();
+    }
+    
+    void Text::CleanUpDefaultResources()
+    {
+        if(DefaultFonts.empty())
+            return;
+        
+        for(int i = 0; i < DefaultFonts.size(); i++)
+            ssGUI::Dispose(DefaultFonts[i]);
+        
+        DefaultFonts.clear();
+        DefaultFontsChangeID++;
     }
 }

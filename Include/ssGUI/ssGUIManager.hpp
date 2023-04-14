@@ -126,11 +126,11 @@ namespace ssGUI
             void UseCustomRendering(bool customRendering);
 
             //function: RemoveGUIObject (Obselete)
-            //Removes the main window object added by <AddGUIObject>. <ssGUI::Hierarchy::Delete> should be used instead to remove any <ssGUI::MainWindow>.
+            //Removes the main window object added by <AddRootGUIObject>. <ssGUI::Hierarchy::Delete> should be used instead to remove any <ssGUI::MainWindow>.
             void RemoveGUIObject(ssGUI::GUIObject* obj);
 
             //function: GetGUIObjectCount
-            //Returns the number of main window added by <AddGUIObject>
+            //Returns the number of main window added by <AddRootGUIObject>
             int GetGUIObjectCount();
 
             //function: StartRunning
@@ -207,11 +207,13 @@ namespace ssGUI
             float GetTargetFramerate();
             
             //function: IsButtonOrKeyDown
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyDown>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
+            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
             bool IsButtonOrKeyDown(ssGUI::Enums::GenericButtonAndKeyInput input) const;
             
             //function: IsButtonOrKeyDown
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyDown>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
+            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
             template<typename T>
             bool IsButtonOrKeyDown(T input) const
             {
@@ -219,11 +221,13 @@ namespace ssGUI
             }
             
             //function: IsButtonOrKeyHeld
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyHeld>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
+            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
             bool IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const;
             
             //function: IsButtonOrKeyHeld
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyHeld>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
+            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
             template<typename T>
             bool IsButtonOrKeyHeld(T input) const
             {
@@ -231,11 +235,13 @@ namespace ssGUI
             }
             
             //function: IsButtonOrKeyUp
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyUp>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
+            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
             bool IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const;
             
             //function: IsButtonOrKeyUp
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyUp>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
+            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
             template<typename T>
             bool IsButtonOrKeyUp(T input) const
             {
@@ -243,15 +249,16 @@ namespace ssGUI
             }
             
             //function: GetMousePosition
-            //See <ssGUI::Backend::BackendSystemInputInterface::GetMousePosition>
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetCurrentMousePosition>
             glm::ivec2 GetMousePosition(ssGUI::MainWindow* mainWindow) const;
             
             //function: GetMousePositionDelta
-            //See <ssGUI::Backend::BackendSystemInputInterface::GetMousePositionDelta>            
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetCurrentMousePosition> and
+            //<ssGUI::Backend::BackendSystemInputInterface::GetLastMousePosition>
             glm::ivec2 GetMousePositionDelta(ssGUI::MainWindow* mainWindow) const;
             
             //function: GetMouseScrollDelta
-            //See <ssGUI::Backend::BackendSystemInputInterface::GetMouseScrollDelta>            
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetCurrentMouseScrollDelta>            
             glm::vec2 GetMouseScrollDelta() const;
             
             //function: GetTextInput
@@ -266,8 +273,8 @@ namespace ssGUI
             //See <ssGUI::Backend::BackendSystemInputInterface::SetCursorType>
             void SetCursorType(ssGUI::Enums::CursorType cursorType);
             
-            //function: Enums
-            //See <ssGUI::Backend::Enums>BackendSystemInputInterface::            
+            //function: GetCursorType
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetCursorType>
             ssGUI::Enums::CursorType GetCursorType() const;
             
             //function: CreateCustomCursor
@@ -331,7 +338,7 @@ namespace ssGUI
             bool GetClipboardText(std::string& str);
             
             //function: GetElapsedTimeInMillisecond
-            //See <ssGUI::Backend::BackendSystemInputInterface::GetElapsedTimeInMillisecond>            
+            //See <ssGUI::Backend::BackendSystemInputInterface::GetElapsedTime>            
             uint64_t GetElapsedTimeInMillisecond() const;
 
             //function: Clear

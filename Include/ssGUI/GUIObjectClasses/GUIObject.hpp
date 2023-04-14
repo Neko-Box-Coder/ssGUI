@@ -29,12 +29,12 @@ namespace ssGUI
     protected:
         glm::vec2 LastGlobalPosition;                   //(Internal variable) Used for cache rendering
         std::unordered_set<std::string> CurrentTags;    //See <HasTag>
-        ssGUI::Menu* RightClickMenu;                    //See <RegisterRightClickMenu>
+        ssGUI::ssGUIObjectIndex RightClickMenuId;       //See <RegisterRightClickMenu>
     =================================================================
     ============================== C++ ==============================
     GUIObject::GUIObject() :    LastGlobalPosition(),
                                 CurrentTags(),
-                                RightClickMenu(nullptr)
+                                RightClickMenuId(-1)
     {
         SetupComponents();
     }
@@ -48,7 +48,7 @@ namespace ssGUI
         protected:
             glm::vec2 LastGlobalPosition;                   //(Internal variable) Used for cache rendering
             std::unordered_set<std::string> CurrentTags;    //See <HasTag>
-            ssGUI::Menu* RightClickMenu;                    //See <RegisterRightClickMenu>
+            ssGUI::ssGUIObjectIndex RightClickMenuId;       //See <RegisterRightClickMenu>
 
             GUIObject(GUIObject const& other);
 
@@ -106,8 +106,12 @@ namespace ssGUI
             virtual GUIObject* Clone(bool cloneChildren);
             
             //function: InitiateDefaultResources
-            //Initiate default resources that this GUI object needs
+            //Initiate default resources that this GUI object needs, this is called automatically
             virtual void InitiateDefaultResources();
+            
+            //function: CleanUpDefaultResources
+            //Deallocate default resources that this GUI Object needs, this is called automatically
+            virtual void CleanUpDefaultResources();
     };
 }
 

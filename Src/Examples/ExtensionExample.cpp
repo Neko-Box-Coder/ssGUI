@@ -22,7 +22,7 @@ int main()
     auto borderButton = ssGUI::Factory::Create<ssGUI::StandardButton>();
     borderButton->SetPosition(glm::vec2(400, 20));
     borderButton->SetSize(glm::vec2(130, 50));
-    borderButton->GetButtonTextObject()->SetNewCharacterFontSize(15);
+    borderButton->GetButtonTextObject()->SetNewTextFontSize(15);
     borderButton->GetButtonTextObject()->SetText("Border");
     borderButton->SetParent(&mainWindow);
 

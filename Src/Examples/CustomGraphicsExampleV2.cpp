@@ -1,5 +1,4 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/Extensions/AdvancedPosition.hpp"                                        //Extension for positioning
 #include "glad/glad.h"
 #include "ssLogger/ssLog.hpp"
 
@@ -113,8 +112,11 @@ void InitiateRendering( GLuint& vertexArrayID, GLuint& programID, GLuint& vertex
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);    
 }
 
-void RenderGraphics(GLuint programID, GLuint vertexbuffer)
+void RenderGraphics(GLuint programID, GLuint vertexbuffer, ssGUI::MainWindow& mainWindow)
 {
+    mainWindow.SaveState();                   //Saves the state ssGUI was using
+    mainWindow.SetRenderContext();            //Set the mainWindow to be the current context for OpenGL calls
+
     glEnable(GL_DEPTH_TEST);
     
     // Use our shader
@@ -140,6 +142,20 @@ void RenderGraphics(GLuint programID, GLuint vertexbuffer)
     glUseProgram(0);
     
     glDisable(GL_DEPTH_TEST);
+    mainWindow.RestoreState();                //Restores back the state ssGUI was using
+}
+
+void CalculateAndShowFPS(ssGUI::ssGUIManager& guiManager, ssGUI::Text& fpsText)
+{
+    static uint64_t lastRecordedTime = guiManager.GetElapsedTimeInMillisecond();   //Record the last time we displayed FPS
+    static int frameCount = 0;
+    if(guiManager.GetElapsedTimeInMillisecond() - lastRecordedTime > 1000)
+    {
+        fpsText.SetText("Fps: "+std::to_string(frameCount));                       //Set the content of the text GUI Object every second
+        lastRecordedTime = guiManager.GetElapsedTimeInMillisecond();
+        frameCount = 0;
+    }
+    frameCount++;
 }
 
 using namespace ssGUI::Enums;
@@ -147,13 +163,10 @@ int main()
 {
     ssGUI::MainWindow mainWindow;
 
-    ssGUI::Text fpsText;
-    fpsText.SetNewCharacterColor(glm::u8vec4(0, 255, 0, 255));                          //Set the fps text color to green
-    fpsText.SetAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);           //Align content to top-right within itself
-    fpsText.SetParent(&mainWindow); 
-
-    auto* posExt = fpsText.AddExtension<ssGUI::Extensions::AdvancedPosition>();  
-    posExt->SetAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);           //Align the text GUI Object to top-right of the main window
+    auto* fpsText = mainWindow.AddChild<ssGUI::Text>();
+    fpsText->SetNewTextColor(glm::u8vec4(0, 255, 0, 255));                          //Set the fps text color to green
+    fpsText->SetAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);      //Align content to top-right within itself
+    fpsText->SetAnchorType(ssGUI::Enums::AnchorType::TOP_RIGHT);                    //Anchor the text widget to the top-right of the window
 
     //NOTE: It is very important to do any GL calls *AFTER* the first MainWindow creation
     //      because it loads GLAD when a MainWindow is created the first time.
@@ -165,34 +178,17 @@ int main()
     ssGUI::ssGUIManager guiManager;
     guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
     
-    uint64_t lastSecond = guiManager.GetBackendInputInterface()->GetElapsedTime();      //Record the last time we displayed FPS
-    int frameCount = 0;
     guiManager.AddPostGUIUpdateEventListener
     (
         [&]()
         {
-            if(mainWindow.IsClosed())                                                   //The main window can be closed when this listener is called.
-                return;                                                                 //Similar to GUI Objects being marked for deletion.
-
-            if(guiManager.GetBackendInputInterface()->GetElapsedTime() - lastSecond > 1000)
-            {
-                fpsText.SetText("Fps: "+std::to_string(frameCount));                    //Set the content of the text GUI Object every second
-                lastSecond = guiManager.GetBackendInputInterface()->GetElapsedTime();
-                frameCount = 0;
-            }
-            frameCount++;
-            
-            mainWindow.SaveState();                   //Saves the state ssGUI was using
-            mainWindow.SetRenderContext();            //Set the mainWindow to be the current context for OpenGL calls
-            
-            RenderGraphics(programID, vertexbuffer);  //Render our graphics with the function we created earlier
-            
-            mainWindow.RestoreState();                //Restores back the state ssGUI was using
+            CalculateAndShowFPS(guiManager, *fpsText);
+            RenderGraphics(programID, vertexbuffer, mainWindow);    //Render our graphics with the function we created earlier
         }
     );
-    guiManager.SetRedrawEveryFrame(true);             //Forces ssGUIManager to render every frame
-    guiManager.SetTargetFramerate(-1);              //By default, ssGUIManager limits the (update) framerate to 60.
-    guiManager.StartRunning();                      //      We set it to a negative number to disable it.
+    guiManager.SetRedrawEveryFrame(true);               //Forces ssGUIManager to render every frame
+    guiManager.SetTargetFramerate(-1);                  //By default, ssGUIManager limits the (update) framerate to 60.
+    guiManager.StartRunning();                          //      We set it to a negative number to disable it.
     
     // Cleanup GL stuff
     glDeleteBuffers(1, &vertexbuffer);

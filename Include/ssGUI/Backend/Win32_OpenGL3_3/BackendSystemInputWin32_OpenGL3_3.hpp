@@ -204,6 +204,7 @@ namespace Backend
             //function: SetCursorType
             //Sets the cursor type it is currently using. 
             //By default, <ssGUI::ssGUIManager> sets the cursor type back to normal at the end of every frame.
+            //
             //Therefore you only need to set non normal cursor type every frame when you need to 
             //and don't need to care about setting it back to normal once you are done with it. 
             void SetCursorType(ssGUI::Enums::CursorType cursorType) override;

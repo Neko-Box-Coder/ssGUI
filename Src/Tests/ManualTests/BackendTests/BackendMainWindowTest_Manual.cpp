@@ -6,9 +6,9 @@
 
 #include <thread>
 
-ssGUI::Backend::BackendDrawingInterface* drawing = nullptr;
-ssGUI::Backend::BackendMainWindowInterface* window = nullptr;
-ssGUI::Backend::BackendSystemInputInterface* inputs = nullptr;
+ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;
+ssGUI::Backend::BackendMainWindowInterface* TestWindow = nullptr;
+ssGUI::Backend::BackendSystemInputInterface* BackendInput = nullptr;
 
 ssGUI::ImageData TestImage;
 
@@ -23,16 +23,16 @@ int FocusEventIndex = -1;
 
 void SetUp()
 {
-    drawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
-    window = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
-    inputs = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+    BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+    TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
+    BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
 }
 
 void CleanUp()
 {
-    ssGUI::Factory::Dispose(drawing);
-    ssGUI::Factory::Dispose(window);
-    ssGUI::Factory::Dispose(inputs);
+    ssGUI::Factory::Dispose(BackendDrawing);
+    ssGUI::Factory::Dispose(TestWindow);
+    ssGUI::Factory::Dispose(BackendInput);
 }
 
 void GenerateImage()
@@ -71,10 +71,10 @@ void Instructions()
 void SetIconTest()
 {
     //SetIcon
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
+    if( !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
+        BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
     {
-        window->SetIcon(*TestImage.GetBackendImageInterface());
+        TestWindow->SetIcon(*TestImage.GetBackendImageInterface());
         ssLOG_SIMPLE("Icon set, you should be able to see a RGB column icon.");
     }
 }
@@ -82,18 +82,18 @@ void SetIconTest()
 void SetFocusTest()
 {
     //Set focus timer
-    if(UseFocus && inputs->GetElapsedTime() > NextFocusTime)
+    if(UseFocus && BackendInput->GetElapsedTime() > NextFocusTime)
     {
         UseFocus = false;
-        window->SetFocus(Focus, false);
+        TestWindow->SetFocus(Focus, false);
         ssLOG_SIMPLE("Focus is now set to "<<Focus);
     }
 
     //SetFocus
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
+    if( !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
+        BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
     {
-        NextFocusTime = inputs->GetElapsedTime() + 5000;
+        NextFocusTime = BackendInput->GetElapsedTime() + 5000;
         Focus = !Focus;
         UseFocus = true;
         
@@ -104,17 +104,17 @@ void SetFocusTest()
 void IsFocusedTest()
 {
     //Is Focus timer
-    if(UseIsFocus && inputs->GetElapsedTime() > NextIsFocusTime)
+    if(UseIsFocus && BackendInput->GetElapsedTime() > NextIsFocusTime)
     {
         UseIsFocus = false;
-        ssLOG_SIMPLE("Focus status is: "<<window->IsFocused());
+        ssLOG_SIMPLE("Focus status is: "<<TestWindow->IsFocused());
     }
 
     //IsFocus
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
+    if( !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
+        BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
     {
-        NextIsFocusTime = inputs->GetElapsedTime() + 5000;
+        NextIsFocusTime = BackendInput->GetElapsedTime() + 5000;
         UseIsFocus = true;
         
         ssLOG_SIMPLE("Focus status will be shown in 5 seconds");
@@ -124,12 +124,12 @@ void IsFocusedTest()
 void AddFocusChangedByUserEventTest()
 {
     //AddFocusChangedByUserEvent
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
+    if( !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
+        BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
     {
         if(FocusEventIndex < 0)
         {
-            FocusEventIndex = window->AddFocusChangedByUserEvent([](bool focus)
+            FocusEventIndex = TestWindow->AddFocusChangedByUserEvent([](bool focus)
             {
                 ssLOG_SIMPLE("Focus event called: "<<focus);
             });
@@ -146,12 +146,12 @@ void AddFocusChangedByUserEventTest()
 void RemoveFocusChangedByUserEventTest()
 {
     //RemoveFocusChangedByUserEvent
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FIVE) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE))
+    if( !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FIVE) &&
+        BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE))
     {
         if(FocusEventIndex >= 0)
         {
-            window->RemoveFocusChangedByUserEvent(FocusEventIndex);
+            TestWindow->RemoveFocusChangedByUserEvent(FocusEventIndex);
             FocusEventIndex = -1;
             ssLOG_SIMPLE("Focus event removed");
         }
@@ -165,10 +165,10 @@ void RemoveFocusChangedByUserEventTest()
 void CloneTest()
 {
     //RemoveFocusChangedByUserEvent
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::SIX) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::SIX))
+    if( !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::SIX) &&
+        BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::SIX))
     {
-        window->Clone();
+        TestWindow->Clone();
     }
 }
 
@@ -181,14 +181,14 @@ int main()
     GenerateImage();
     
     //Setup window and run it
-    window->SetRenderSize(glm::ivec2(1280, 720));
-    inputs->UpdateInput();
+    TestWindow->SetRenderSize(glm::ivec2(1280, 720));
+    BackendInput->UpdateInput();
 
-    while(!window->IsClosed())
+    while(!TestWindow->IsClosed())
     {
         //drawing->ClearBackBuffer(glm::u8vec4());
-        inputs->UpdateInput();
-        if(!window->IsClosed())
+        BackendInput->UpdateInput();
+        if(!TestWindow->IsClosed())
         {
             SetIconTest();       
         
@@ -205,7 +205,7 @@ int main()
             //TODO: SetGLContext
         
             //drawing->DrawEntities(pos, uv, color, counts, props);
-            drawing->Render(glm::u8vec3(255, 255, 255));
+            BackendDrawing->Render(glm::u8vec3(255, 255, 255));
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("opt",["Information"],[["options:",,[[,"CMake ssGUI options:",,,0,"File:🗒️_User_Manual/02._Using_ssGUI.txt:CMake_ssGUI_options_"]]]]);

@@ -12,6 +12,7 @@
 
 namespace ssGUI
 {
+    int Dropdown::DropdownObjectCount = 0;
     ssGUI::ImageData* Dropdown::DefaultDropdownArrowImageData = nullptr;
     
     Dropdown::Dropdown(Dropdown const& other) : StandardButton(other)
@@ -20,6 +21,8 @@ namespace ssGUI
         SelectedIndex = other.GetSelectedIndex();
         Items = other.Items;
         Toggle = other.Toggle;
+        
+        DropdownObjectCount++;
     }
 
     void Dropdown::AddItemListener(ssGUI::EventCallback* ecb, int index)
@@ -128,7 +131,7 @@ namespace ssGUI
                 dropdownContainer->Toggle = true;
                 
                 auto castedDropdownMenu = static_cast<ssGUI::Menu*>(dropdownMenu);
-                if(castedDropdownMenu->CanForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y), 
+                if(castedDropdownMenu->CanSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y), 
                     ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT))
                 {
                     castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition() + glm::vec2(0, info.Container->GetSize().y),
@@ -138,15 +141,22 @@ namespace ssGUI
                     castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
             }
         );
+        
+        DropdownObjectCount++;
     }
 
     Dropdown::~Dropdown()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
 
+        DropdownObjectCount--;
+        
+        if(DropdownObjectCount == 0)
+            CleanUpDefaultResources();
+
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
-            Internal_ManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{DropdownMenu});
+            Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{DropdownMenu});
     }
 
     int Dropdown::GetSelectedIndex() const
@@ -359,11 +369,11 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
     }
     
-    void Dropdown::CleanUpDefaultDropdownArrowImage()
+    void Dropdown::CleanUpDefaultResources()
     {
         if(DefaultDropdownArrowImageData != nullptr)
         {
-            ssGUI::Factory::Dispose(DefaultDropdownArrowImageData);
+            ssGUI::Dispose(DefaultDropdownArrowImageData);
             DefaultDropdownArrowImageData = nullptr;
         }
     }

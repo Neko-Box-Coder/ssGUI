@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("fre",["Struct","Variable"],[["FreeTypeHandles",,[[,,,,0,"File:◀️_ssGUI_API_▶️/Backend/FreeType/BackendFontFreeType.hpp:FreeTypeHandles","CClass:FreeTypeHandles"]]],["FreeTypeLib",,[["FreeTypeHandles",,,,1,"File:◀️_ssGUI_API_▶️/Backend/FreeType/BackendFontFreeType.hpp:FreeTypeHandles.FreeTypeLib","CClass:FreeTypeHandles:FreeTypeLib"]]]]);

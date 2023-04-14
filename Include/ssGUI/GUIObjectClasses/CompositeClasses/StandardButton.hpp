@@ -77,7 +77,7 @@ namespace ssGUI
         buttonText->SetHeapAllocated(true);
         buttonText->SetParent(this, true);
         buttonText->SetMinSize(glm::vec2(5, 5));
-        buttonText->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+        buttonText->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
         ButtonText = CurrentObjectsReferences.AddObjectReference(buttonText);
         SetAdaptiveButtonTextColor(true);   //Update the text color
 
@@ -146,12 +146,12 @@ namespace ssGUI
                             iconTintColor.a = 255 - buttonReactAmount * 2;
                             iconImage->SetImageTint(iconTintColor);
                         }
-                        auto textColor = btn->GetButtonTextObject()->GetNewCharacterColor();
+                        auto textColor = btn->GetButtonTextObject()->GetNewTextColor();
                         textColor.r = (uint8_t)((textColor.r + buttonReactAmount * 4) & 255);
                         textColor.g = (uint8_t)((textColor.g + buttonReactAmount * 4) & 255);
                         textColor.b = (uint8_t)((textColor.b + buttonReactAmount * 4) & 255);
-                        btn->GetButtonTextObject()->SetNewCharacterColor(textColor);
-                        btn->GetButtonTextObject()->ApplyNewCharacterSettingsToText();
+                        btn->GetButtonTextObject()->SetNewTextColor(textColor);
+                        btn->GetButtonTextObject()->ApplyNewTextSettingsToExistingText();
                         break;
                 }
             }

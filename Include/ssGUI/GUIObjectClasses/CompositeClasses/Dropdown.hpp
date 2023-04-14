@@ -24,6 +24,7 @@ namespace ssGUI
         std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;                     //See <GetItem>
         bool Toggle;                                                                            //(Internal variable) Used to set focus
 
+        static int DropdownObjectCount;                                                         //(Internal variable) Used for deallocating default resources
         static ssGUI::ImageData* DefaultDropdownArrowImageData;                                 //(Internal variable) used to store default arrow image
                                                                                                 //TODO: Allow this to be configured
     =================================================================
@@ -110,8 +111,11 @@ namespace ssGUI
                     castedDropdownMenu->ForceSpawnMenu(info.Container->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
             }
         );
+    
+        DropdownObjectCount++;
     }
 
+    int Dropdown::DropdownObjectCount = 0;
     ssGUI::ImageData* Dropdown::DefaultDropdownArrowImageData = nullptr;
     =================================================================
     */
@@ -126,6 +130,7 @@ namespace ssGUI
             std::vector<std::pair<std::string, ssGUI::ssGUIObjectIndex>> Items;                     //See <GetItem>
             bool Toggle;                                                                            //(Internal variable) Used to set focus
 
+            static int DropdownObjectCount;                                                         //(Internal variable) Used for deallocating default resources
             static ssGUI::ImageData* DefaultDropdownArrowImageData;                                 //(Internal variable) used to store default arrow image
                                                                                                     //TODO: Allow this to be configured
             Dropdown(Dropdown const& other);
@@ -195,9 +200,9 @@ namespace ssGUI
             //See <GUIObject::InitiateDefaultResources>
             virtual void InitiateDefaultResources() override;
             
-            //function: CleanUpDefaultDropdownArrowImage
-            //Deallocates default dropdown arrow image. This is handled automatically in <ssGUIManager>
-            static void CleanUpDefaultDropdownArrowImage();
+            //function: CleanUpDefaultResources
+            //See <GUIObject::CleanUpDefaultResources>
+            virtual void CleanUpDefaultResources() override;
     };
 }
 

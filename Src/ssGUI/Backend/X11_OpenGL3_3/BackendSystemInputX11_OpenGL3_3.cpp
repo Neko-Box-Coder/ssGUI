@@ -116,6 +116,22 @@ namespace Backend
         XcursorImageDestroy(cursorImg);   
         return true;
     }
+    
+    float BackendSystemInputX11_OpenGL3_3::GetFPS(uint64_t curTimeInMs, uint64_t lastTimeInMs)
+    {
+        return 1000.f / (float)(curTimeInMs - lastTimeInMs);
+    }
+    
+    int BackendSystemInputX11_OpenGL3_3::GetTextInputBufferSize(float fps)
+    {
+        int bufferSize = 30 - fps;
+        #define MAX_CHAR_INPUT_BUFFER_SIZE 20
+        #define MIN_CHAR_INPUT_BUFFER_SIZE 1
+        
+        return bufferSize < MIN_CHAR_INPUT_BUFFER_SIZE ?
+                    MIN_CHAR_INPUT_BUFFER_SIZE : 
+                    (bufferSize > MAX_CHAR_INPUT_BUFFER_SIZE ? MAX_CHAR_INPUT_BUFFER_SIZE : bufferSize);
+    }
 
     BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3(BackendSystemInputX11_OpenGL3_3 const& other)
     {
@@ -141,7 +157,8 @@ namespace Backend
                                                                             CursorHidden(false),
                                                                             LastKeyDownTime(0),
                                                                             LastKeyUpTime(0),
-                                                                            RawEventHandlers()
+                                                                            RawEventHandlers(),
+                                                                            LastFrameTime(0)
     {
         StartTime = std::chrono::high_resolution_clock::now();
         ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
@@ -544,10 +561,15 @@ namespace Backend
         //      Therefore we need to make sure that there's no more events
         //      that needs to be redirected to IME and no more redirected key events
         //      are sent from IME.
-        if( (!anyEventGotFiltered && 
-            !anyRedirectKeyEvent && 
-            !InputCharsBuffer.empty()) ||
-            InputCharsBuffer.size() == 10)
+        
+        //Get current FPS and use it to calculate how many characters we need to have in buffer
+        //ssLOG_LINE("GetElapsedTime(): "<<GetElapsedTime());
+        //ssLOG_LINE("LastFrameTime "<<LastFrameTime);
+        float curFps = GetFPS(GetElapsedTime(), LastFrameTime);
+        LastFrameTime = GetElapsedTime();
+        
+        if( (!anyEventGotFiltered && !anyRedirectKeyEvent && !InputCharsBuffer.empty()) ||
+            InputCharsBuffer.size() == GetTextInputBufferSize(curFps))
         {
             //Sort the buffer
             std::sort(InputCharsBuffer.begin(), InputCharsBuffer.end());

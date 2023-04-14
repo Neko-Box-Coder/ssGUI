@@ -60,7 +60,7 @@ int main()
     //Global and local button to visualizing the position system
     ssGUI::StandardButton globalButton;
     globalButton.SetButtonColor(glm::u8vec4(59, 155, 245, 255));
-    globalButton.GetButtonTextObject()->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+    globalButton.GetButtonTextObject()->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
     globalButton.GetButtonTextObject()->SetText("Global Position");
     globalButton.SetPosition(glm::vec2(300, 445));
     globalButton.SetSize(glm::vec2(120, 40));
@@ -74,7 +74,7 @@ int main()
     ssGUI::StandardButton* anchorTopLeftBtn = ssGUI::Factory::Create<ssGUI::StandardButton>();
     anchorTopLeftBtn->SetParent(&mainWindow);
     anchorTopLeftBtn->SetButtonColor(glm::u8vec4(161, 59, 245, 255));
-    anchorTopLeftBtn->GetButtonTextObject()->SetNewCharacterColor(glm::u8vec4(255, 255, 255, 255));
+    anchorTopLeftBtn->GetButtonTextObject()->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
     anchorTopLeftBtn->GetButtonTextObject()->SetText("Anchor Top Left");
     anchorTopLeftBtn->SetPosition(glm::vec2(130, 500));
     anchorTopLeftBtn->SetSize(glm::vec2(140, 40));

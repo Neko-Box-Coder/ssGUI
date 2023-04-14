@@ -278,7 +278,7 @@ namespace Backend
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
         // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
+        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, endIndex - startIndex);
 
         #ifdef SSGUI_FONT_BACKEND_SFML
             sf::IntRect charUV = ((ssGUI::Backend::BackendFontSFML&)font).GetSFMLFont()->getGlyph(character, characterSize, false).textureRect;
@@ -384,7 +384,7 @@ namespace Backend
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
         // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
+        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, endIndex - startIndex);
 
         for(int i = startIndex; i < endIndex; i++)
         {
@@ -432,7 +432,7 @@ namespace Backend
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
 
         // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::TriangleFan, endIndex - startIndex);
+        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, endIndex - startIndex);
 
         for(int i = startIndex; i < endIndex; i++)
         {                        

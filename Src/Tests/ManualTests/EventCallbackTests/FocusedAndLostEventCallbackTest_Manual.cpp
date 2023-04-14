@@ -2,40 +2,40 @@
 #include "ssLogger/ssLog.hpp"
 
 
-ssGUI::MainWindow* mainWindow;
-ssGUI::Window* window;
-ssGUI::Window* window2;
-ssGUI::Widget* widget;
-ssGUI::Widget* widget2;
+ssGUI::MainWindow* MainWindow;
+ssGUI::Window* TestWindow;
+ssGUI::Window* TestWindow2;
+ssGUI::Widget* TestWidget;
+ssGUI::Widget* TestWidget2;
 
-ssGUI::ssGUIManager* manager;
+ssGUI::ssGUIManager* Manager;
 
 
 void SetUp()
 {
-    mainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
-    window = ssGUI::Factory::Create<ssGUI::Window>();
-    window2 = ssGUI::Factory::Create<ssGUI::Window>();
-    widget = ssGUI::Factory::Create<ssGUI::Widget>();
-    widget2 = ssGUI::Factory::Create<ssGUI::Widget>();
-    manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
+    MainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
+    TestWindow = ssGUI::Factory::Create<ssGUI::Window>();
+    TestWindow2 = ssGUI::Factory::Create<ssGUI::Window>();
+    TestWidget = ssGUI::Factory::Create<ssGUI::Widget>();
+    TestWidget2 = ssGUI::Factory::Create<ssGUI::Widget>();
+    Manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
     
     auto objToPtr = [&](void* ptr)
     {
-        if(ptr == window)
+        if(ptr == TestWindow)
             return "window";
-        else if(ptr == window2)
+        else if(ptr == TestWindow2)
             return "window2";
-        else if(ptr == widget)
+        else if(ptr == TestWidget)
             return "widget";
-        else if(ptr == widget2)
+        else if(ptr == TestWidget2)
             return "widget2";
         else
             return "unknown";
     };
     
-    auto* ecb = window->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
-    auto* ecb2 = window->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
+    auto* ecb = TestWindow->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
+    auto* ecb2 = TestWindow->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
     ecb->AddEventListener(  "TestKey",    
                             [&](ssGUI::EventInfo info)
                             {
@@ -50,22 +50,22 @@ void SetUp()
                                 assert(!info.EventSource->IsFocused());
                             });
     
-    window->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
-    window2->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
-    widget->SetBackgroundColor(glm::u8vec4(0, 255, 0, 255));
-    widget2->SetBackgroundColor(glm::u8vec4(0, 0, 255, 255));
+    TestWindow->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
+    TestWindow2->SetBackgroundColor(glm::u8vec4(127, 127, 127, 255));
+    TestWidget->SetBackgroundColor(glm::u8vec4(0, 255, 0, 255));
+    TestWidget2->SetBackgroundColor(glm::u8vec4(0, 0, 255, 255));
     
-    window2->AddEventCallbackCopy(ecb, true);
-    window2->AddEventCallbackCopy(ecb2, true);
-    widget->AddEventCallbackCopy(ecb, true);
-    widget->AddEventCallbackCopy(ecb2, true);
-    widget2->AddEventCallbackCopy(ecb, true);
-    widget2->AddEventCallbackCopy(ecb2, true);
+    TestWindow2->AddEventCallbackCopy(ecb, true);
+    TestWindow2->AddEventCallbackCopy(ecb2, true);
+    TestWidget->AddEventCallbackCopy(ecb, true);
+    TestWidget->AddEventCallbackCopy(ecb2, true);
+    TestWidget2->AddEventCallbackCopy(ecb, true);
+    TestWidget2->AddEventCallbackCopy(ecb2, true);
 
-    window->SetParent(mainWindow);
-    window2->SetParent(mainWindow);
-    widget->SetParent(mainWindow);
-    widget2->SetParent(window2);
+    TestWindow->SetParent(MainWindow);
+    TestWindow2->SetParent(MainWindow);
+    TestWidget->SetParent(MainWindow);
+    TestWidget2->SetParent(TestWindow2);
 
     ssLOG_SIMPLE("window: Red");
     ssLOG_SIMPLE("window2: Grey");
@@ -74,43 +74,43 @@ void SetUp()
     ssLOG_SIMPLE("");
     ssLOG_SIMPLE("");
 
-    manager->AddRootGUIObject(mainWindow);
-    manager->AddPostGUIUpdateEventListener([&]()
+    Manager->AddRootGUIObject(MainWindow);
+    Manager->AddPostGUIUpdateEventListener([&]()
     {
-        auto* inputInterface = manager->GetBackendInputInterface();
+        auto* inputInterface = Manager->GetBackendInputInterface();
         if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
             inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
         {
-            window->SetFocus(!window->IsFocused());
-            ssLOG_SIMPLE("window focus set to: "<<window->IsFocused());
+            TestWindow->SetFocus(!TestWindow->IsFocused());
+            ssLOG_SIMPLE("window focus set to: "<<TestWindow->IsFocused());
         }
         
         if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
             inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
         {
-            window2->SetFocus(!window2->IsFocused());
-            ssLOG_SIMPLE("window2 focus set to: "<<window2->IsFocused());
+            TestWindow2->SetFocus(!TestWindow2->IsFocused());
+            ssLOG_SIMPLE("window2 focus set to: "<<TestWindow2->IsFocused());
         }
         
         if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
             inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
         {
-            widget->SetFocus(!widget->IsFocused());
-            ssLOG_SIMPLE("widget focus set to: "<<widget->IsFocused());
+            TestWidget->SetFocus(!TestWidget->IsFocused());
+            ssLOG_SIMPLE("widget focus set to: "<<TestWidget->IsFocused());
         }
         
         if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
             inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
         {
-            widget2->SetFocus(!widget2->IsFocused());
-            ssLOG_SIMPLE("widget2 focus set to: "<<widget2->IsFocused());
+            TestWidget2->SetFocus(!TestWidget2->IsFocused());
+            ssLOG_SIMPLE("widget2 focus set to: "<<TestWidget2->IsFocused());
         }
     });
 }
 
 void CleanUp()
 {
-    ssGUI::Factory::Dispose(manager);
+    ssGUI::Factory::Dispose(Manager);
 }
 
 void Instructions()
@@ -128,7 +128,7 @@ int main()
     Instructions();
     SetUp();
     
-    manager->StartRunning();
+    Manager->StartRunning();
     
     CleanUp();   
 }

@@ -31,6 +31,7 @@ namespace ssGUI
                                 LastArrowNavTime(0),
                                 ArrowNavInterval(20)
     {
+        SetBlockInput(true);
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 
         AddExtension<ssGUI::Extensions::RoundedCorners>();
@@ -71,8 +72,10 @@ namespace ssGUI
 
             virtual void GetNextLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive);
 
+            //TODO: Rename this to GetIndexForPreviousLine
             virtual int GetPositionForPreviousLine(int curIndex);
 
+            //TODO: Rename this to GetIndexForNextLine
             virtual int GetPositionForNextLine(int curIndex);
 
             virtual void TextInputUpdate(std::wstring& textInput, bool& refreshBlinkTimer, bool& wordMode);

@@ -539,6 +539,10 @@ namespace ssGUI
     Slider::~Slider()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+        
+        //If the object deallocation is not handled by ssGUIManager
+        if(!Internal_IsDeleted())
+            Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{KnobObject});
     }
 
     void Slider::SetReverse(bool reverse)

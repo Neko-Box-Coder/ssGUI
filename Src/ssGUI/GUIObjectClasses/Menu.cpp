@@ -16,6 +16,21 @@ namespace ssGUI
         MenuTarget = other.MenuTarget;
     }
 
+    void Menu::CloseRootMenu(ssGUI::GUIObject* currentMenu)
+    {
+        while (true)
+        {
+            currentMenu->SetEnabled(false);
+            auto newParent = currentMenu->GetParent();
+            if(newParent != nullptr && newParent->GetType() == ssGUI::Enums::GUIObjectType::MENU)
+                currentMenu = newParent;
+            else
+                break;
+        }
+        
+        currentMenu->SetEnabled(false);        
+    }
+
     void Menu::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
@@ -94,7 +109,7 @@ namespace ssGUI
         SetFocus(true);
     }
 
-    bool Menu::CanForceSpawnMenu(glm::vec2 globalSpawnPosition, ssGUI::Enums::MenuSpawnDirection direction)
+    bool Menu::CanSpawnMenu(glm::vec2 globalSpawnPosition, ssGUI::Enums::MenuSpawnDirection direction)
     {
         if(GetParent() == nullptr)
             return false;
@@ -144,6 +159,12 @@ namespace ssGUI
 
     void Menu::RegisterMenuItem(ssGUI::MenuItem* menuItem)
     {
+        if(menuItem == nullptr)
+        {
+            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Nullptr is passed to RegisterMenuItem, this is invalid.");
+            return;
+        }
+    
         if(!menuItem->IsEventCallbackExist(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED))
             return;
 
@@ -160,18 +181,7 @@ namespace ssGUI
                     if(info.References->GetObjectReference(menuIndex) != nullptr)
                     {
                         auto curParent = info.References->GetObjectReference(menuIndex);
-                        
-                        while (true)
-                        {
-                            curParent->SetEnabled(false);
-                            auto newParent = curParent->GetParent();
-                            if(newParent != nullptr && newParent->GetType() == ssGUI::Enums::GUIObjectType::MENU)
-                                curParent = newParent;
-                            else
-                                break;
-                        }
-                        
-                        curParent->SetEnabled(false);
+                        ssGUI::Menu::CloseRootMenu(curParent);
                     }
                 }
                 else if(btn->GetButtonState() == ssGUI::Enums::ButtonState::HOVER)
@@ -179,12 +189,34 @@ namespace ssGUI
             }
         );
         
-        menuItem->SetParent(this);
+        if(menuItem->GetParent() != this)
+            menuItem->SetParent(this);
     }
 
     void Menu::RemoveMenuItem(ssGUI::MenuItem* menuItem)
     {
+        glm::vec2 itemSize = menuItem->GetSize();
         menuItem->Delete();
+        
+        //Validation check
+        if(!IsAnyExtensionExist<ssGUI::Extensions::Layout>())
+            return;
+        
+        //Removing space created by the menu item that we deleted
+        auto* layout = GetAnyExtension<ssGUI::Extensions::Layout>();
+        float layoutItemSpacing = layout->GetSpacing() + layout->GetPadding() * 2;
+        
+        if(layout->IsHorizontalLayout())
+            SetSize(glm::vec2(GetSize().x - itemSize.x - layoutItemSpacing, GetSize().y));
+        else
+            SetSize(glm::vec2(GetSize().x, GetSize().y - itemSize.y - layoutItemSpacing));
+    }
+    
+    ssGUI::MenuItem* Menu::AddMenuItem()
+    {
+        ssGUI::MenuItem* menuItem = AddChild<ssGUI::MenuItem>();
+        RegisterMenuItem(menuItem);
+        return menuItem;
     }
 
     void Menu::LinkMenuItemToSubMenu(ssGUI::MenuItem* menuItem, ssGUI::Menu* subMenu)
@@ -208,7 +240,15 @@ namespace ssGUI
             [subMenuIndex, menuIndex](ssGUI::EventInfo info)
             {
                 auto btn = static_cast<ssGUI::Button*>(info.EventSource);
-                if(btn->GetButtonState() == ssGUI::Enums::ButtonState::HOVER)
+                if(btn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+                {
+                    if(info.References->GetObjectReference(menuIndex) != nullptr)
+                    {
+                        auto curParent = info.References->GetObjectReference(menuIndex);
+                        ssGUI::Menu::CloseRootMenu(curParent);
+                    }
+                }
+                else if(btn->GetButtonState() == ssGUI::Enums::ButtonState::HOVER)
                 {
                     btn->SetFocus(true);
                     
@@ -221,29 +261,24 @@ namespace ssGUI
                         if(info.References->GetObjectReference(menuIndex) != nullptr)
                             curSubMenu->SetMenuTarget(static_cast<ssGUI::Menu*>(info.References->GetObjectReference(menuIndex))->GetMenuTarget());
                         
-                        //Check Top right corner
-                        if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0)) == ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT)
-                            curSubMenu->SpawnMenu(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0));
-                        else if(curSubMenu->CanForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0), ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT))
-                            curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0), ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT);
+                        ssGUI::Enums::MenuSpawnDirection preferDir = curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + btn->GetSize() / 2.f);
                         
-                        //Check Bottom right corner
-                        else if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + btn->GetSize()) == ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT)
-                            curSubMenu->SpawnMenu(btn->GetGlobalPosition() + btn->GetSize());
-                        else if(curSubMenu->CanForceSpawnMenu(btn->GetGlobalPosition() + btn->GetSize(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT))
-                            curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + btn->GetSize(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
-                        
-                        //Check Top left corner
-                        else if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition()) == ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT)
-                            curSubMenu->SpawnMenu(btn->GetGlobalPosition());
-                        else if(curSubMenu->CanForceSpawnMenu(btn->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT))
-                            curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT);
-                        
-                        //Check Bottom left corner
-                        else if(curSubMenu->GetMenuSpawnDirection(btn->GetGlobalPosition() + glm::vec2(0, btn->GetSize().y)) == ssGUI::Enums::MenuSpawnDirection::TOP_LEFT)
-                            curSubMenu->SpawnMenu(btn->GetGlobalPosition() + glm::vec2(0, btn->GetSize().y));
-                        else if(curSubMenu->CanForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(0, btn->GetSize().y), ssGUI::Enums::MenuSpawnDirection::TOP_LEFT))
-                            curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(0, btn->GetSize().y), ssGUI::Enums::MenuSpawnDirection::TOP_LEFT);
+                        static_assert(static_cast<int>(ssGUI::Enums::MenuSpawnDirection::COUNT) == 4, "LinkMenuItemToSubMenu");
+                        switch(preferDir)
+                        {
+                            case ssGUI::Enums::MenuSpawnDirection::TOP_LEFT:
+                                curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(0, btn->GetSize().y), ssGUI::Enums::MenuSpawnDirection::TOP_LEFT);
+                                break;
+                            case ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT:
+                                curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + btn->GetSize(), ssGUI::Enums::MenuSpawnDirection::TOP_RIGHT);
+                                break;
+                            case ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT:
+                                curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition() + glm::vec2(btn->GetSize().x, 0), ssGUI::Enums::MenuSpawnDirection::BOTTOM_RIGHT);
+                                break;
+                            case ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT:
+                                curSubMenu->ForceSpawnMenu(btn->GetGlobalPosition(), ssGUI::Enums::MenuSpawnDirection::BOTTOM_LEFT);
+                                break;
+                        }
                     }
                 }
             }
@@ -259,6 +294,21 @@ namespace ssGUI
     {
         return MenuTarget;
     }
+
+    std::vector<ssGUI::MenuItem*> Menu::GetListOfMenuItems() const
+    {
+        std::vector<ssGUI::GUIObject*> children = GetListOfChildren();
+        std::vector<ssGUI::MenuItem*> items;
+        
+        for(int i = 0; i < children.size(); i++)
+        {
+            if(children[i]->GetType() == ssGUI::Enums::GUIObjectType::MENU_ITEM)
+                items.push_back(static_cast<ssGUI::MenuItem*>(children[i]));
+        }
+        
+        return items;
+    }
+    
 
     void Menu::SetFocus(bool focus)
     {       

@@ -135,31 +135,31 @@ namespace ssGUI
             //function: Extension_GetDrawingVertices
             //This returns a list of vertices for all the shapes that will be drawn by this GUI object.
             //A shape is formed by having the vertices drawn in clockwise direction. Undefined behaviour if they are listed in anti-clockwise direction.
-            //This function is mainly be called by <Extension::Internal_Draw>.
+            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
             virtual std::vector<glm::vec2>& Extension_GetDrawingVertices();
             
             //function: Extension_GetDrawingUVs
             //This returns the UVs that are mapped to each vertex at the same index location.
             //If no texture is used, you should still maintain the number of UVs same as the number of vertices.
-            //This function is mainly be called by <Extension::Internal_Draw>.
+            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
             virtual std::vector<glm::vec2>& Extension_GetDrawingUVs();
             
             //function: Extension_GetDrawingColours
             //This returns the colors that are mapped to each vertex at the same index location.
             //If texture is used, this essentially affects the tint of the image, with white as no tinting at all.
-            //This function is mainly be called by <Extension::Internal_Draw>.
+            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
             virtual std::vector<glm::u8vec4>& Extension_GetDrawingColours();
             
             //function: Extension_GetDrawingCounts
             //This returns the number of vertices each shape has, with the order same as vertices and others.
             //So for example if the first value is 4, then the first 4 vertices form a shape. So on and so forth...
-            //This function is mainly be called by <Extension::Internal_Draw>.
+            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
             virtual std::vector<int>& Extension_GetDrawingCounts();
             
             //function: Extension_GetDrawingProperties
             //This returns the property of each shape, mapped to the same index location as <Extension_GetDrawingCounts>.
             //This indicates if the shape is just a colored shape, an image or font. 
-            //This function is mainly be called by <Extension::Internal_Draw>.
+            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
             virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties();
 
             /*function: Extension_GetGUIObjectFirstShapeIndex
@@ -178,7 +178,7 @@ namespace ssGUI
 
             //function: Extension_GetGUIObjectFirstVertexIndex
             //This returns the index of first vertex created by the GUI Object
-            //Again similar to <Extension_GetGUIObjectFirstShapeIndex> but with indices instead
+            //Again similar to <Extension_GetGUIObjectFirstShapeIndex> but with vertex index instead
             virtual int Extension_GetGUIObjectFirstVertexIndex() const;
 
             //function: RedrawObject

@@ -73,7 +73,7 @@ namespace Extensions
             //function: AddTargetMaskObject
             //Add a <Mask> extension to mask this object. targetMaskObj should have <Mask> attached.
             //Only shapes with specified indices will be masked.
-            //GUI Object shape index can be obtained with <ssGUI::Renderer:Extension_GetGUIObjectFirstShapeIndex>.
+            //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
             virtual void AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, std::vector<int> targetShapeIndices);
 
             //function: HasTargetMaskObject
@@ -86,13 +86,13 @@ namespace Extensions
 
             //function: ChangeTargetShapeForMask
             //Allows to change which shapes to be masked
-            //GUI Object shape index can be obtained with <ssGUI::Renderer:Extension_GetGUIObjectFirstShapeIndex>.
+            //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
             virtual void ChangeTargetShapeForMask(ssGUI::GUIObject* targetMaskObj, std::vector<int> targetShapeIndices);
 
             //function: GetTargetMaskObjects
             //Returns a list of target mask objects, and a list of shape indices to be masked.
             //If list of shape indices is empty, masking is applied to all shapes
-            //GUI Object shape index can be obtained with <ssGUI::Renderer:Extension_GetGUIObjectFirstShapeIndex>.
+            //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
             virtual std::vector<std::pair<ssGUI::GUIObject*, std::vector<int>>> GetTargetMaskObjects();
 
             //Override from Extension

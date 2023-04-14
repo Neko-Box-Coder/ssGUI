@@ -2,23 +2,23 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 #include "ssLogger/ssLog.hpp"
 
-ssGUI::ssGUIManager* manager;
-ssGUI::MainWindow* mainWindow;
-ssGUI::Dropdown* dropdown;
+ssGUI::ssGUIManager* Manager;
+ssGUI::MainWindow* MainWindow;
+ssGUI::Dropdown* TestDropdown;
 
 void SetUp()
 {
-    manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
-    mainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
-    dropdown = ssGUI::Factory::Create<ssGUI::Dropdown>();
+    Manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
+    MainWindow = ssGUI::Factory::Create<ssGUI::MainWindow>();
+    TestDropdown = ssGUI::Factory::Create<ssGUI::Dropdown>();
 
-    dropdown->SetParent(mainWindow);
-    dropdown->SetPosition(glm::vec2(50, 50));
-    dropdown->AddItem("Test");
-    dropdown->AddItem("Test2");
-    dropdown->AddItem("Test3");
+    TestDropdown->SetParent(MainWindow);
+    TestDropdown->SetPosition(glm::vec2(50, 50));
+    TestDropdown->AddItem("Test");
+    TestDropdown->AddItem("Test2");
+    TestDropdown->AddItem("Test3");
     
-    auto* ecb = dropdown->AddEventCallback(ssGUI::Enums::EventType::ITEM_SELECTED);
+    auto* ecb = TestDropdown->AddEventCallback(ssGUI::Enums::EventType::ITEM_SELECTED);
     ecb->AddEventListener(  "key", 
                             [](ssGUI::EventInfo info)
                             {
@@ -28,12 +28,12 @@ void SetUp()
                                 ssLOG_SIMPLE("Selected text: "<<curDropdown->GetItem(curDropdown->GetSelectedIndex()));
                             });
     
-    manager->AddRootGUIObject(mainWindow);
+    Manager->AddRootGUIObject(MainWindow);
 }
 
 void CleanUp()
 {
-    ssGUI::Factory::Dispose(manager);
+    ssGUI::Factory::Dispose(Manager);
 }
 
 void Instructions()
@@ -48,7 +48,7 @@ int main()
     
     SetUp();
 
-    manager->StartRunning();
+    Manager->StartRunning();
     
     CleanUp();   
 }

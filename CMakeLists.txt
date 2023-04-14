@@ -17,17 +17,27 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # ==========================================================
 
 # Build Variables
-set(ssGUI_OUTPUT_STATIC ON CACHE BOOL "Use and create static library instead")
-set(ssGUI_BUILD_TESTS ON CACHE BOOL "Build tests")
-set(ssGUI_BUILD_EXAMPLES ON CACHE BOOL "Build examples")
-set(ssGUI_LOG_LEVEL "Warning" CACHE STRING "Log level")
-set(ssGUI_LOG_TAG "None" CACHE STRING "Log tag (overrides level)")
-set(ssGUI_LOG_MANAGER_STATE OFF CACHE BOOL "Log all the state in ssGUIManager")
+set(ssGUI_OUTPUT_STATIC     ON          CACHE BOOL      "Use and create static library instead")
+set(ssGUI_BUILD_TESTS       ON          CACHE BOOL      "Build tests")
+set(ssGUI_BUILD_EXAMPLES    ON          CACHE BOOL      "Build examples")
+set(ssGUI_LOG_LEVEL         "Warning"   CACHE STRING    "Log level")
+set(ssGUI_LOG_TAG           "None"      CACHE STRING    "Log tag (overrides level)")
+set(ssGUI_LOG_MANAGER_STATE OFF         CACHE BOOL      "Log all the state in ssGUIManager")
 
-set_property(CACHE ssGUI_LOG_LEVEL PROPERTY STRINGS "None" "Debug" "Info" "Warning" "Error")     # Allow dropdown option
-set_property(CACHE ssGUI_LOG_TAG PROPERTY STRINGS "None" "ssGUI_MANAGER_TAG" "ssGUI_IMAGE_UTIL_TAG" "ssGUI_BACKEND_TAG" 
-                                                    "ssGUI_DATA_TAG" "ssGUI_EXT_TAG" "ssGUI_GUI_OBJECT_TAG")     # Allow dropdown option
-
+#Dropdown
+set_property(CACHE ssGUI_LOG_LEVEL PROPERTY STRINGS "None" 
+                                                    "Debug" 
+                                                    "Info" 
+                                                    "Warning" 
+                                                    "Error")
+                                                    
+set_property(CACHE ssGUI_LOG_TAG PROPERTY STRINGS   "None" 
+                                                    "ssGUI_MANAGER_TAG" 
+                                                    "ssGUI_IMAGE_UTIL_TAG" 
+                                                    "ssGUI_BACKEND_TAG" 
+                                                    "ssGUI_DATA_TAG" 
+                                                    "ssGUI_EXT_TAG" 
+                                                    "ssGUI_GUI_OBJECT_TAG")
 
 set(ssGUI_MAIN_BACKEND_DESCRIPTION "The main backend that will be used by ssGUI")
 set(ssGUI_FONT_BACKEND_DESCRIPTION "The font backend that will be used by ssGUI")
@@ -37,11 +47,15 @@ set(ssGUI_IMAGE_BACKEND_DESCRIPTION "The image backend that will be used by ssGU
 # Backend options variable
 if(WIN32)
     set(ssGUI_MAIN_BACKEND "Win32_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "Win32_OpenGL3_3" "SFML" "Template")     # Allow dropdown option
+    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "Win32_OpenGL3_3" 
+                                                            "SFML" 
+                                                            "Template")
 # Linux
 else()
     set(ssGUI_MAIN_BACKEND "X11_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS "X11_OpenGL3_3" "SFML" "Template")                       # Allow dropdown option
+    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "X11_OpenGL3_3" 
+                                                            "SFML" 
+                                                            "Template")
 endif()
 
 # Show / unshow SFML options depending if SFML backend is selected or not
@@ -51,12 +65,17 @@ if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
     
     set(ssGUI_FONT_BACKEND "SFML" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
     set(ssGUI_IMAGE_BACKEND "SFML" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "SFML" "FreeType" "Template")            # Allow dropdown option
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" "stb_image" "Template")          # Allow dropdown option
+    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "SFML" 
+                                                            "FreeType" 
+                                                            "Template")
+    
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" 
+                                                            "stb_image" 
+                                                            "Template")
 
     # This might not be needed 
     set(ssGUI_SFML_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/External/sfml/include" CACHE PATH "Provide the directory of ")
-    set (CMAKE_CXX_STANDARD 17)
+    set (CMAKE_CXX_STANDARD 17) #SFML needs C++17
 else()
     unset(ssGUI_USE_LOCAL_SFML CACHE)
     unset(ssGUI_USE_SFML_TIME CACHE)
@@ -66,24 +85,30 @@ if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
     set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
     set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
+    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "FreeType" 
+                                                            "Template")
+    
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" 
+                                                            "Template")
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
     set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
     set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "FreeType" "Template")            # Allow dropdown option
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" "Template")                      # Allow dropdown option
+    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "FreeType" 
+                                                            "Template")
+    
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" 
+                                                            "Template")
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Template")
     set(ssGUI_FONT_BACKEND "Template" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
     set(ssGUI_IMAGE_BACKEND "Template" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "Template")            # Allow dropdown option
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")           # Allow dropdown option
+    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "Template")
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")
 endif()
 
 # Debug Variables
@@ -91,13 +116,13 @@ set(ssGUI_REFRESH_CONSOLE OFF CACHE BOOL "Clears the console at the end of each 
 set(ssGUI_SLOW_UPDATE OFF CACHE BOOL "Fps will be set to 1 for easier debugging")
 
 # Overriding ssLogger options
-set(ssLOG_BUILD_TESTS "FALSE" CACHE BOOL "If true, this will build tests")
-set(ssLOG_CALL_STACK "FALSE" CACHE BOOL "If true, this will build tests")
-set(ssLOG_THREAD_SAFE "FALSE" CACHE BOOL "Use std::thread and ensure thread safety for all logged functions")
+set(ssLOG_BUILD_TESTS   "FALSE" CACHE BOOL "If true, this will build tests")
+set(ssLOG_CALL_STACK    "FALSE" CACHE BOOL "If true, this will build tests")
+set(ssLOG_THREAD_SAFE   "FALSE" CACHE BOOL "Use std::thread and ensure thread safety for all logged functions")
 
 # Dividers
-set(ssGUI@_CMAKE_VARIABLES_START============================= "=================== I am just a divider :D ==================" CACHE STRING "Divider") 
-set(ssGUI__CMAKE_VARIABLES_END=============================== "=================== I am just a divider :D ==================" CACHE STRING "Divider") 
+set(ssGUI@_CMAKE_VARIABLES_START============================= "===========================================================" CACHE STRING "Divider") 
+set(ssGUI__CMAKE_VARIABLES_END=============================== "===========================================================" CACHE STRING "Divider") 
 
 #Find shared libraries in the same location as the executable
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,$ORIGIN")
@@ -159,7 +184,7 @@ add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssLogger" "${CMAKE_CURRENT_
 set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
 # ==========================================================
-# ssLogger 
+# ssTest 
 # ==========================================================
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
@@ -374,6 +399,7 @@ endif()
 # Copy and embed resources 
 # ==========================================================
 
+# This is only called when embed target is specified for CMake
 add_executable(embed EXCLUDE_FROM_ALL "${CMAKE_CURRENT_LIST_DIR}/External/embed/embed.c")
 
 function(CopyResources targetDir)
@@ -396,7 +422,9 @@ function(RunEmbedExecutable embedPath)
     endif()
 endfunction()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+# MSVC
+file (SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp" embeddedResourcesSize)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND embeddedResourcesSize LESS 1024)
     if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Release/embed.exe")
         RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/Release/embed.exe")
     elseif(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Debug/embed.exe")
@@ -404,7 +432,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     else()
         message(WARNING "Embed resource not found, please build the embed target inside Visual Studio in release mode before building the ssGUI")
     endif()
-else()
+# Others
+elseif(embeddedResourcesSize LESS 1024)
     if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/embed")
         RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/embed")
     else()
@@ -474,6 +503,22 @@ if(ssGUI_BUILD_TESTS)
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
                             "AutoTests/EventCallbackTests")
+    
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/GUIObjectTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/GUIObjectTests/" 
+                            "AutoTests/GUIObjectTests")    
+    
+    #TODO: Windows
+    if(WIN32)
+        file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.bat" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.bat")
+    else()
+        file(   CHMOD "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.sh"
+                PERMISSIONS  OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+        file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
+
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.bat" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.bat")
+    endif()
 
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 

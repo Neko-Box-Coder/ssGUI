@@ -27,6 +27,7 @@ namespace Enums
     HELP                - Help cursor
     NOT_ALLOWED         - Not allowed cursor
     CUSTOM              - Custom cursor (Will need to set the custom cursor from <BackendSystemInputInterface> first)
+    COUNT               - Count
     */
     enum class CursorType
     {

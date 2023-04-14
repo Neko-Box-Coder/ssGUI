@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("pre",["Section"],[["Pre-Requisite",,[[,"🔎 Pre-Requisite",,"🔎pre-requisite",0,"File:🗒️_User_Manual/02._Using_ssGUI.txt:🔎_Pre-Requisite"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("pre",["Variable"],[["PreMultipliedAlpha",,[["ssGUI::ImageFormat",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/ImageFormat.hpp:ssGUI.ImageFormat.PreMultipliedAlpha","CClass:ssGUI.ImageFormat:PreMultipliedAlpha"]]]]);

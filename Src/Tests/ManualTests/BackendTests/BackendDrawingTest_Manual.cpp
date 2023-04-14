@@ -10,12 +10,12 @@
     std::string ResourcesFolderPath = "./Resources/";
 #endif
 
-ssGUI::Backend::BackendDrawingInterface* drawing = nullptr;
-ssGUI::Backend::BackendMainWindowInterface* window = nullptr;
-ssGUI::Backend::BackendSystemInputInterface* inputs = nullptr;
+ssGUI::Backend::BackendDrawingInterface* DrawingBackend = nullptr;
+ssGUI::Backend::BackendMainWindowInterface* WindowBackend = nullptr;
+ssGUI::Backend::BackendSystemInputInterface* InputBackend = nullptr;
 
-ssGUI::Backend::BackendImageInterface* img;
-ssGUI::Backend::BackendFontInterface* font;
+ssGUI::Backend::BackendImageInterface* ImgBackend = nullptr;
+ssGUI::Backend::BackendFontInterface* FontBackend = nullptr;
 
 //========================================================================================
 //Helper functions
@@ -92,19 +92,19 @@ void CreateCounts(std::vector<int>& counts)
 
 void SetUp()
 {
-    img = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
-    if(!img->LoadFromPath(ResourcesFolderPath+"sd.png"))
+    ImgBackend = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
+    if(!ImgBackend->LoadFromPath(ResourcesFolderPath+"sd.png"))
     {
         ssLOG_LINE("Failed to load image");
     }
-    font = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
-    if(!font->LoadFromPath(ResourcesFolderPath+"arial.ttf"))
+    FontBackend = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
+    if(!FontBackend->LoadFromPath(ResourcesFolderPath+"arial.ttf"))
     {
         ssLOG_LINE("Failed to load font");
     }
-    drawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
-    window = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
-    inputs = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+    DrawingBackend = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+    WindowBackend = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
+    InputBackend = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
 }
 
 //========================================================================================
@@ -113,11 +113,11 @@ void SetUp()
 
 void CleanUp()
 {
-    ssGUI::Factory::Dispose(img);
-    ssGUI::Factory::Dispose(font);
-    ssGUI::Factory::Dispose(drawing);
-    ssGUI::Factory::Dispose(window);
-    ssGUI::Factory::Dispose(inputs);
+    ssGUI::Factory::Dispose(ImgBackend);
+    ssGUI::Factory::Dispose(FontBackend);
+    ssGUI::Factory::Dispose(DrawingBackend);
+    ssGUI::Factory::Dispose(WindowBackend);
+    ssGUI::Factory::Dispose(InputBackend);
 }
 
 void Instructions()
@@ -132,11 +132,11 @@ void Instructions()
 
 void DrawColorShapesTest()
 {
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
+    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
+        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
     {
-        drawing->Render(glm::u8vec3(255, 255, 255));
-        drawing->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         std::vector<glm::vec2> vertices;
         CreateShapes(vertices, glm::vec2(50, 50));
@@ -157,8 +157,8 @@ void DrawColorShapesTest()
             ssGUI::DrawingProperty()
         };
     
-        drawing->DrawEntities(vertices, texCoords, colors, counts, properties);
-        drawing->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->DrawEntities(vertices, texCoords, colors, counts, properties);
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         ssLOG_SIMPLE("Shapes drawn");
         ssLOG_SIMPLE("You should see a grey box");
@@ -170,13 +170,13 @@ void DrawColorShapesTest()
 
 void DrawTextureTest()
 {
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
+    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
+        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
     {
-        drawing->Render(glm::u8vec3(255, 255, 255));
-        drawing->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
-        glm::ivec2 imgSize = img->GetSize();
+        glm::ivec2 imgSize = ImgBackend->GetSize();
         
         std::vector<glm::vec2> vertices;
         CreateShapes(vertices, imgSize);
@@ -196,7 +196,7 @@ void DrawTextureTest()
         CreateCounts(counts);
 
         ssGUI::DrawingProperty prop;
-        prop.imageP = img;
+        prop.imageP = ImgBackend;
         
         std::vector<ssGUI::DrawingProperty> properties = 
         {
@@ -206,8 +206,8 @@ void DrawTextureTest()
             prop
         };
     
-        drawing->DrawEntities(vertices, texCoords, colors, counts, properties);
-        drawing->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->DrawEntities(vertices, texCoords, colors, counts, properties);
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         ssLOG_SIMPLE("Texture drawn");
         ssLOG_SIMPLE("You should see a squared image");
@@ -219,13 +219,13 @@ void DrawTextureTest()
 
 void DrawFontTest()
 {
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
+    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
+        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
     {
-        drawing->Render(glm::u8vec3(255, 255, 255));
-        drawing->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
-        ssGUI::CharacterRenderInfo info = font->GetCharacterRenderInfo(L'A', 40);
+        ssGUI::CharacterRenderInfo info = FontBackend->GetCharacterRenderInfo(L'A', 40);
         
         std::vector<glm::vec2> vertices;
         CreateShapes(vertices, info.Size);
@@ -245,7 +245,7 @@ void DrawFontTest()
         CreateCounts(counts);
 
         ssGUI::DrawingProperty prop;
-        prop.fontP = font;
+        prop.fontP = FontBackend;
         prop.character = L'A';
         prop.characterSize = 40;
         
@@ -257,8 +257,8 @@ void DrawFontTest()
             prop
         };
     
-        drawing->DrawEntities(vertices, texCoords, colors, counts, properties);
-        drawing->Render(glm::u8vec3(255, 255, 255));
+        DrawingBackend->DrawEntities(vertices, texCoords, colors, counts, properties);
+        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         ssLOG_SIMPLE("Character drawn");
         ssLOG_SIMPLE("You should see the letter A");
@@ -272,10 +272,10 @@ void DrawFontTest()
 
 void RemoveImageCacheTest()
 {
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
+    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
+        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
     {
-        drawing->RemoveImageCache(img);
+        DrawingBackend->RemoveImageCache(ImgBackend);
     
         ssLOG_SIMPLE("Removed Image cache");
         ssLOG_SIMPLE("If try to get image cache now, it should be a non-nullptr address");
@@ -284,10 +284,10 @@ void RemoveImageCacheTest()
 
 void GetRawImageCacheHandleTest()
 {
-    if( !inputs->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FIVE) &&
-        inputs->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE))
+    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FIVE) &&
+        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE))
     {
-        void* rawImageHandle = drawing->GetRawImageCacheHandle(img);
+        void* rawImageHandle = DrawingBackend->GetRawImageCacheHandle(ImgBackend);
     
         ssLOG_SIMPLE("rawImageCacheHandle: "<<rawImageHandle);
         ssLOG_SIMPLE("If the image has been rendered before, it should be a non-nullptr address");
@@ -302,13 +302,13 @@ int main()
     Instructions();
         
     //Setup window and run it
-    window->SetRenderSize(glm::ivec2(1280, 720));
-    inputs->UpdateInput();
+    WindowBackend->SetRenderSize(glm::ivec2(1280, 720));
+    InputBackend->UpdateInput();
 
-    while(!window->IsClosed())
+    while(!WindowBackend->IsClosed())
     {
-        inputs->UpdateInput();
-        if(!window->IsClosed())
+        InputBackend->UpdateInput();
+        if(!WindowBackend->IsClosed())
         {
             DrawColorShapesTest();
             DrawTextureTest();

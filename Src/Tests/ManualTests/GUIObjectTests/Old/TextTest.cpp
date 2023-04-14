@@ -22,9 +22,9 @@ int main()
     text.SetSize(glm::ivec2(500, 300));
     text.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
     //text.SetFont(&font);
-    text.SetNewCharacterFontSize(20);
-    text.SetNewCharacterUnderlined(true);
-    text.SetNewCharacterColor(glm::u8vec4(255, 0, 0, 255));
+    text.SetNewTextFontSize(20);
+    text.SetNewTextUnderlined(true);
+    text.SetNewTextColor(glm::u8vec4(255, 0, 0, 255));
     // text.SetText(L"これは非常に長い日本語の文章です~~~~~");
     text.SetText(L"Click on the button to change this text.");
 
