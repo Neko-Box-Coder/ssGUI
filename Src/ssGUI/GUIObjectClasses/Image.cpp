@@ -130,19 +130,29 @@ namespace ssGUI
         DrawingProperties.push_back(currentProperty);
     }
     
+    const std::string Image::ListenerKey = "Slider";
+    
     Image::Image() :    ImageData(nullptr),
                         Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE),
                         ImageTint(255, 255, 255, 255),
                         ImageDataChangedId(-1)
     {
-        // AddExtension(new ssGUI::Extensions::Border());
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* image = static_cast<ssGUI::Image*>(info.Container);
+                
+                if(image->ImageData != nullptr)
+                    image->ImageData->RemoveDataChangedCallback(image->ImageDataChangedId);
+            }
+        );
     }
 
     Image::~Image()
     {
-        if(ImageData != nullptr)
-            ImageData->RemoveDataChangedCallback(ImageDataChangedId);
-
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
     }
 

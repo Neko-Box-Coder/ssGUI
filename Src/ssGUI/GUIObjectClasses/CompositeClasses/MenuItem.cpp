@@ -97,11 +97,7 @@ namespace ssGUI
     MenuItem::~MenuItem()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        
-        //NOTE: Handled in Slider
-        //If the object deallocation is not handled by ssGUIManager
-        //if(!Internal_IsDeleted())
-        //    Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{KnobObject});
+        //NOTE: Children resources deallocation is Handled in Slider
     }
 
     ssGUI::Enums::GUIObjectType MenuItem::GetType() const

@@ -320,17 +320,28 @@ namespace ssGUI
         UpdateCloseButton();
 
         StandardWindowObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* standardWindow = static_cast<ssGUI::StandardWindow*>(info.Container);
+                
+                ssGUI::StandardWindow::StandardWindowObjectCount--;
+        
+                if(ssGUI::StandardWindow::StandardWindowObjectCount == 0)
+                    standardWindow->CleanUpDefaultResources();
+            }
+        );
+        
         ssLOG_FUNC_EXIT();
     }
 
     StandardWindow::~StandardWindow()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-
-        StandardWindowObjectCount--;
-        
-        if(StandardWindowObjectCount == 0)
-            CleanUpDefaultResources();
 
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())

@@ -518,16 +518,26 @@ namespace ssGUI
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
         ImageCanvasObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.Container);
+                
+                ssGUI::ImageCanvas::ImageCanvasObjectCount--;
+        
+                if(ssGUI::ImageCanvas::ImageCanvasObjectCount == 0)
+                    imageCanvas->CleanUpDefaultResources();
+            }
+        );
     }
 
     ImageCanvas::~ImageCanvas()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        
-        ImageCanvasObjectCount--;
-        
-        if(ImageCanvasObjectCount == 0)
-            CleanUpDefaultResources();
         
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
