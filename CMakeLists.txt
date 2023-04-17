@@ -545,4 +545,8 @@ if(ssGUI_BUILD_EXAMPLES)
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Examples/" 
                             "Examples")
+    
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/Playground/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/Examples/Playground/" 
+                            "Examples/Playground")
 endif()
