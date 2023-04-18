@@ -105,6 +105,17 @@
 }
 
 /* Header */
+.DarkTheme #NDHeader,
+.BlackTheme #NDHeader{
+    background-image: unset;
+    border-bottom-color: unset;
+    box-shadow: unset;
+}
+
+.BlackTheme #NDHeader{
+    background-color: rgb(25, 25, 25);
+}
+
 #NDHeader {
     background-color: #3b3b3b;
     padding: .65rem .65rem .65rem .65rem;
@@ -151,6 +162,11 @@
     margin: 0 0 0 3rem;
 }
 
+.CTopic.TVariable.LC > .CTitle,
+.CTopic.TFunction.LC > .CTitle {
+    font-weight: normal;
+}
+
 /* Inheritance graph */
 
 .NDClassPrototype.HasParents::before {
@@ -158,7 +174,7 @@
     display: block;
     position: absolute;
     margin-top: -2rem;
-    color: #000000;
+    /*color: #000000;*/
     font-weight: bold;
 }
 
@@ -172,9 +188,9 @@
     content: '🆑 Current Class:';
     display: block;
     position: absolute;
-    margin-top: -2rem;
+    margin-top: -2.5rem;
     margin-left: -0.5rem;
-    color: #000000;
+    /*color: #000000;*/
     font-weight: bold;
 }
 
@@ -183,9 +199,9 @@
     content: '🔽 Children (Derived) Classes:';
     display: block;
     position: absolute;
-    margin-top: 1.2rem;
+    margin-top: 0.7rem;
     margin-left: 1rem;
-    color: #000000;
+    /*color: #000000;*/
     font-weight: bold;
 }
 
@@ -400,8 +416,8 @@ body.NDContentPage {
 /* Paragraph fomatting */
 .CTopic p {
     margin: 0 0 1rem 0;
-    padding-left: 5.5rem;
-    text-indent: -2.25rem;
+    padding-left: 2.5rem;
+    text-indent: 0rem;
 }
 
 .CTopic li p {

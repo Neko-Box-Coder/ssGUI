@@ -25,27 +25,22 @@ namespace ssGUI
         bool ShowVerticalScrollbar;                         //See <IsShowVerticalScrollbar>
         
         std::vector<glm::vec2> ImageVertices;               //See <GetImageVertices>
-        float ImageMinX;                                    //See <GetImageMinX>
-        float ImageMaxX;                                    //See <GetImageMaxX>
-        float ImageMinY;                                    //See <GetImageMinY>
-        float ImageMaxY;                                    //See <GetImageMaxY>
+        float ImageMinX;                                    //See <GetImageMinGlobalX>
+        float ImageMaxX;                                    //See <GetImageMaxGlobalX>
+        float ImageMinY;                                    //See <GetImageMinGlobalY>
+        float ImageMaxY;                                    //See <GetImageMaxGlobalY>
+        float CurrentZoom;                                  //See <GetViewportZoom>
+        glm::vec2 CurrentPosition;                          //See <GetViewportCenterPosition>
+        float CurrentRotation;                              //See <GetViewportRotation>
 
-        bool Panable;                                       //See <IsUsingDefaultPanning>
-        glm::vec2 CurrentPosition;                          //See <GetImagePosition>
-        //TODO: Maybe implement these at some point
-        // float HorizontalPanBound;
-        // float VerticalPanBound;
-
-        bool Zoomable;                                      //See <IsUsingDefaultZooming>
-        float MinZoom;                                      //See <GetDefaultMinZoom>
-        float MaxZoom;                                      //See <GetDefaultMaxZoom>
-        float CurrentZoom;                                  //See <GetImageScale>
-        float ZoomAmount;                                   //(Internal variable) Amount of zoom.
+        ssGUI::Enums::GenericButtonAndKeyInput PanKey;
+        bool ScrollZoom;
+        float MinScrollZoom;
+        float MaxScrollZoom;
+        float ScrollZoomAmount;
                                                             //TODO: Will have public method for this in the future
-        bool MeasureScaleByHeight;                          //See <IsMeasureScaleByHeight>
+        ssGUI::Enums::GenericButtonAndKeyInput RotateKey;
 
-        bool Rotatable;                                     //See <IsUsingDefaultRotating>
-        float CurrentRotation;                              //See <GetImageRotation>
         float OnRotateStartRotation;                        //(Internal variable) Start rotation when user is rotating the image
         glm::vec2 OnRotateStartPosition;                    //(Internal variable) Start position when user is rotating the image
         int InnerCircleId;                                  //(Internal variable) Shape ID for the inner circle when user is rotating
@@ -69,16 +64,15 @@ namespace ssGUI
                                     ImageMaxX(0),
                                     ImageMinY(0),
                                     ImageMaxY(0),
-                                    Panable(true),
-                                    CurrentPosition(0.5, 0.5),
-                                    Zoomable(true),
-                                    MinZoom(0),
-                                    MaxZoom(10),
                                     CurrentZoom(1),
-                                    ZoomAmount(0.1),
-                                    MeasureScaleByHeight(true),
-                                    Rotatable(true),
+                                    CurrentPosition(0.5, 0.5),
                                     CurrentRotation(0),
+                                    PanKey(SSGUI_CAST_KEY(ssGUI::Enums::SystemKey::SPACE)),
+                                    ScrollZoom(true),
+                                    MinScrollZoom(0),
+                                    MaxScrollZoom(10),
+                                    ScrollZoomAmount(0.1),
+                                    RotateKey(SSGUI_CAST_KEY(ssGUI::Enums::LetterKey::R)),
                                     OnRotateStartRotation(0),
                                     OnRotateStartPosition(),
                                     InnerCircleId(0),
@@ -103,7 +97,7 @@ namespace ssGUI
         auto hScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         hScrollbar->SetUserCreated(false);
         hScrollbar->SetVertical(false, true);
-        auto ecb = hScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        auto ecb = hScrollbar->AddEventCallback(ssGUI::Enums::EventType::SCROLLBAR_VALUE_CHANGED_VIA_GUI);
         ssGUIObjectIndex index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
@@ -115,15 +109,17 @@ namespace ssGUI
                     return;
 
                 //Find min and max x
-                float minX = imageCanvas->GetImageMinX();
-                float maxX = imageCanvas->GetImageMaxX();
-
+                float minX = imageCanvas->GetImageMinGlobalX();
+                float maxX = imageCanvas->GetImageMaxGlobalX();
                 auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
-                float imgHalfSize = (maxX - minX) * 0.5;
-                float imgScrollDist = (maxX - minX - imageCanvas->GetSize().x) * scrollbar->GetScrollbarValue();
-                float imgXPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().x;
-
-                imageCanvas->SetImagePosition(glm::vec2(imgXPos, imageCanvas->GetImagePosition().y));
+                
+                //Get how much do we need to move in UI(Global) space
+                float targetX = ((maxX - minX) - imageCanvas->GetSize().x) * scrollbar->GetScrollbarValue() + minX;
+                float offsetX = targetX - imageCanvas->GetGlobalPosition().x;
+                glm::vec2 currentViewportPos = imageCanvas->GetViewportCenterPosition();
+                
+                //Finally get the viewport horizontal direction in UV space and multiply by how much we need move
+                imageCanvas->SetViewportCenterPosition(currentViewportPos + imageCanvas->GetViewportRightDirectionInUV() * offsetX);
             }
         );
 
@@ -138,7 +134,7 @@ namespace ssGUI
         auto vScrollbar = ssGUI::Factory::Create<ssGUI::Scrollbar>();
         vScrollbar->SetUserCreated(false);
         vScrollbar->SetVertical(true, true);
-        ecb = vScrollbar->AddEventCallback<ssGUI::EventCallbacks::ScrollbarValueChangedViaGuiEventCallback>();
+        ecb = vScrollbar->AddEventCallback(ssGUI::Enums::EventType::SCROLLBAR_VALUE_CHANGED_VIA_GUI);
         index = ecb->AddObjectReference(this);
         ecb->AddEventListener
         (
@@ -150,15 +146,17 @@ namespace ssGUI
                     return;
 
                 //Find min and max y
-                float minY = imageCanvas->GetImageMinY();
-                float maxY = imageCanvas->GetImageMaxY();
-
+                float minY = imageCanvas->GetImageMinGlobalY();
+                float maxY = imageCanvas->GetImageMaxGlobalY();
                 auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
-                float imgHalfSize = (maxY - minY) * 0.5;
-                float imgScrollDist = (maxY - minY - imageCanvas->GetSize().y) * scrollbar->GetScrollbarValue();
-                float imgYPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().y;
 
-                imageCanvas->SetImagePosition(glm::vec2(imageCanvas->GetImagePosition().x, imgYPos));
+                //Get how much do we need to move in UI(Global) space
+                float targetY = ((maxY - minY) - imageCanvas->GetSize().y) * scrollbar->GetScrollbarValue() + minY;
+                float offsetY = targetY - imageCanvas->GetGlobalPosition().y;
+                glm::vec2 currentViewportPos = imageCanvas->GetViewportCenterPosition();
+                
+                //Finally get the viewport horizontal direction in UV space and multiply by how much we need move
+                imageCanvas->SetViewportCenterPosition(currentViewportPos + imageCanvas->GetViewportDownDirectionInUV() * offsetY);
             }
         );
 
@@ -176,6 +174,21 @@ namespace ssGUI
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
         ImageCanvasObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.Container);
+                
+                ssGUI::ImageCanvas::ImageCanvasObjectCount--;
+        
+                if(ssGUI::ImageCanvas::ImageCanvasObjectCount == 0)
+                    imageCanvas->CleanUpDefaultResources();
+            }
+        );
     }
     
     int ImageCanvas::ImageCanvasObjectCount = 0;
@@ -184,6 +197,8 @@ namespace ssGUI
     */
     class ImageCanvas : public Image
     {
+        //TODO: Maybe implement pan bound at some point
+    
         private:
             ImageCanvas& operator=(ImageCanvas const& other) = default;
 
@@ -194,27 +209,22 @@ namespace ssGUI
             bool ShowVerticalScrollbar;                         //See <IsShowVerticalScrollbar>
             
             std::vector<glm::vec2> ImageVertices;               //See <GetImageVertices>
-            float ImageMinX;                                    //See <GetImageMinX>
-            float ImageMaxX;                                    //See <GetImageMaxX>
-            float ImageMinY;                                    //See <GetImageMinY>
-            float ImageMaxY;                                    //See <GetImageMaxY>
+            float ImageMinX;                                    //See <GetImageMinGlobalX>
+            float ImageMaxX;                                    //See <GetImageMaxGlobalX>
+            float ImageMinY;                                    //See <GetImageMinGlobalY>
+            float ImageMaxY;                                    //See <GetImageMaxGlobalY>
+            float CurrentZoom;                                  //See <GetViewportZoom>
+            glm::vec2 CurrentPosition;                          //See <GetViewportCenterPosition>
+            float CurrentRotation;                              //See <GetViewportRotation>
 
-            bool Panable;                                       //See <IsUsingDefaultPanning>
-            glm::vec2 CurrentPosition;                          //See <GetImagePosition>
-            //TODO: Maybe implement these at some point
-            // float HorizontalPanBound;
-            // float VerticalPanBound;
-
-            bool Zoomable;                                      //See <IsUsingDefaultZooming>
-            float MinZoom;                                      //See <GetDefaultMinZoom>
-            float MaxZoom;                                      //See <GetDefaultMaxZoom>
-            float CurrentZoom;                                  //See <GetImageScale>
-            float ZoomAmount;                                   //(Internal variable) Amount of zoom.
+            ssGUI::Enums::GenericButtonAndKeyInput PanKey;
+            bool ScrollZoom;
+            float MinScrollZoom;
+            float MaxScrollZoom;
+            float ScrollZoomAmount;
                                                                 //TODO: Will have public method for this in the future
-            bool MeasureScaleByHeight;                          //See <IsMeasureScaleByHeight>
+            ssGUI::Enums::GenericButtonAndKeyInput RotateKey;
 
-            bool Rotatable;                                     //See <IsUsingDefaultRotating>
-            float CurrentRotation;                              //See <GetImageRotation>
             float OnRotateStartRotation;                        //(Internal variable) Start rotation when user is rotating the image
             glm::vec2 OnRotateStartPosition;                    //(Internal variable) Start position when user is rotating the image
             int InnerCircleId;                                  //(Internal variable) Shape ID for the inner circle when user is rotating
@@ -235,19 +245,65 @@ namespace ssGUI
             //Return angle in radians. Positive if angle between a and b is clockwise
             virtual double GetAngle(glm::vec2 a, glm::vec2 b);
 
-            virtual glm::vec2 RotateVec(glm::vec2 vec, float radians);
+            virtual glm::vec2 RotateVec(glm::vec2 vec, float radians) const;
 
             virtual void ConstructRenderInfo() override;
 
             virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
         public:
+            //====================================================================
+            //Group: Constants
+            //====================================================================
+            
             //string: ListenerKey
             static const std::string ListenerKey;
 
             ImageCanvas();
             virtual ~ImageCanvas() override;
 
+            //====================================================================
+            //Group: Viewport Manipulations
+            //====================================================================
+
+            //function: SetViewportRotation
+            //Sets the rotation of the viewport, by default it uses degrees.
+            //Please note that the viewport rotates around the center of itself.
+            virtual void SetViewportRotation(float rotation, bool radians = false);
+
+            //function: GetViewportRotation
+            //Gets the rotation of the viewport, by default it uses degrees.
+            //Please note that the viewport rotates around the center of itself.
+            virtual float GetViewportRotation(bool radians = false) const;
+
+            //function: SetViewportZoom
+            //Sets the scale of the image in percentage (1 = 100%) of the image.
+            virtual void SetViewportZoom(float scale);
+            
+            //function: GetViewportZoom
+            //Gets the scale of the image in percentage (1 = 100%) of the image.
+            virtual float GetViewportZoom() const;
+
+            //function: SetViewportCenterPosition
+            //Sets the viewport center position in UV space (scales from 0 to image size).
+            //For example if it is set to (0, 0), the top left corner of the image would be in the middle of viewport.
+            virtual void SetViewportCenterPosition(glm::vec2 position);
+
+            //function: GetViewportCenterPosition
+            //Gets the viewport center position in UV space (scales from 0 to image size).
+            //For example if it is set to (0, 0), the top left corner of the image would be in the middle of viewport.
+            virtual glm::vec2 GetViewportCenterPosition() const;
+
+            //function: CenterViewportToImage
+            //Sets the viewport center position to be at the center of the image.
+            //Basically the same as 
+            //> SetViewportCenterPosition(glm::vec2(GetImageData()->GetSize()) * 0.5f)
+            virtual void CenterViewportToImage();
+            
+            //====================================================================
+            //Group: UV/Global Space Translations
+            //====================================================================
+            
             //function: GetUVFromGlobalPosition
             //Gets the UV position (scales from 0 to image size) from global position.
             //Note that the UV position returned can go out of bound.
@@ -258,106 +314,81 @@ namespace ssGUI
             //Note that the global position returned can go outside of the widget.
             virtual glm::vec2 GetGlobalPositionFromUV(glm::vec2 uv);
 
-            //function: SetImageRotation
-            //Sets the rotation of the image, by default it uses degrees
-            virtual void SetImageRotation(float rotation, bool radians = false);
-
-            //function: GetImageRotation
-            //Gets the rotation fo the image, by default it uses degrees
-            virtual float GetImageRotation(bool radians = false) const;
-
-            //function: SetImageScale
-            //Sets the scale of the image in percentage (1 = 100%), 1 meaning the height/width (determined by <IsMeasureScaleByHeight>)
-            //of the image is the same size of ImageCanvas GUI Object.
-            virtual void SetImageScale(float scale);
+            //function: GetViewportRightDirectionInUV
+            //Gets the right facing direction (i.e. glm::vec2(1, 0)) from global space to UV space.
+            //Please note that is is scaled with viewport zoom as well.
+            virtual glm::vec2 GetViewportRightDirectionInUV() const;
             
-            //function: GetImageScale
-            //Gets the scale of the image in percentage (1 = 100%), 1 meaning the height/width (determined by <IsMeasureScaleByHeight>)
-            //of the image is the same size of ImageCanvas.
-            virtual float GetImageScale() const;
-
-            //function: GetOriginalImageScale
-            //Gets the scale to set in order to have the original size of the image
-            virtual float GetOriginalImageScale() const;
-
-            //function: IsMeasureScaleByHeight
-            //Returns if the scaling is measured using height of ImageCanvas, false if it is measured using width of ImageCanvas. 
-            virtual bool IsMeasureScaleByHeight() const;
+            //function: GetViewportDownDirectionInUV
+            //Gets the downward facing direction (i.e. glm::vec2(0, 1)) from global space to UV space.
+            //Please note that is is scaled with viewport zoom as well.
+            virtual glm::vec2 GetViewportDownDirectionInUV() const;
             
-            //function: SetMeasureScaleByHeight
-            //Sets if the scaling is measured using height of ImageCanvas, false if it is measured using width of ImageCanvas. 
-            virtual void SetMeasureScaleByHeight(bool scaleByHeight);
-
-            //function: SetImagePosition
-            //Sets the position of center of the image, represented by percentage (1 = 100%).
-            //Setting it to (0, 0) will set the center of the image to be top-left, (0.5, 0.5) will be center of ImageCanvas, etc.
-            virtual void SetImagePosition(glm::vec2 position);
-
-            //function: GetImagePosition
-            //Gets the position of center of the image, represented by percentage (1 = 100%).
-            //(0, 0) will indicates the center of the image to be top-left, (0.5, 0.5) will be center of ImageCanvas, etc.
-            virtual glm::vec2 GetImagePosition() const;
-
             //function: GetImageVertices
             //Gets all the vertices (from last frame or this frame depending on when you call this) of the image itself in global position
             virtual const std::vector<glm::vec2>& GetImageVertices() const;
 
-            //function: GetImageMinX
+            //function: GetImageMinGlobalX
             //Gets the minimum global X position of the image (from last frame or this frame depending on when you call this)
-            virtual float GetImageMinX() const;
+            virtual float GetImageMinGlobalX() const;
             
-            //function: GetImageMaxX
+            //function: GetImageMaxGlobalX
             //Gets the maximum global X position of the image (from last frame or this frame depending on when you call this)
-            virtual float GetImageMaxX() const;
+            virtual float GetImageMaxGlobalX() const;
             
-            //function: GetImageMinY
+            //function: GetImageMinGlobalY
             //Gets the minimum global Y position of the image (from last frame or this frame depending on when you call this)
-            virtual float GetImageMinY() const;
+            virtual float GetImageMinGlobalY() const;
             
-            //function: GetImageMaxY
+            //function: GetImageMaxGlobalY
             //Gets the maximum global Y position of the image (from last frame or this frame depending on when you call this)
-            virtual float GetImageMaxY() const;
+            virtual float GetImageMaxGlobalY() const;
 
-            //function: UseDefaultPanning
-            //Sets if user can pan by default when holding space button
-            virtual void UseDefaultPanning(bool pan);
-
-            //function: IsUsingDefaultPanning
-            //Returns if user can pan by default when holding space button
-            virtual bool IsUsingDefaultPanning() const;
             
-            //function: UseDefaultZooming
-            //Sets if user can zoom by default when using the scroll wheel
-            virtual void UseDefaultZooming(bool zoom);
+            //====================================================================
+            //Group: Viewport Interactions
+            //====================================================================
 
-            //function: IsUsingDefaultZooming
-            //Returns if user can zoom by default when using the scroll wheel
-            virtual bool IsUsingDefaultZooming() const;
-
-            //function: SetDefaultMinZoom
-            //Sets the minimum scale value when using default zooming (inclusive)
-            virtual void SetDefaultMinZoom(float min);
+            //function: SetPanKey
+            //Sets the key to be used for panning the canvas. <ssGUI::Enums::NO_INPUT> to disable it.
+            virtual void SetPanKey(ssGUI::Enums::GenericButtonAndKeyInput key);
             
-            //function: GetDefaultMinZoom
-            //Gets the minimum scale value when using default zooming (inclusive)
-            virtual float GetDefaultMinZoom() const;
-
-            //function: SetDefaultMaxZoom
-            //Sets the maximum scale value when using default zooming (inclusive)
-            virtual void SetDefaultMaxZoom(float max);
-
-            //function: GetDefaultMaxZoom
-            //Gets the maximum scale value when using default zooming (inclusive)
-            virtual float GetDefaultMaxZoom() const;
-
-            //function: UseDefaultRotating
-            //Sets if the user can rotate by default when holding the R key
-            virtual void UseDefaultRotating(bool rotate);
+            //function: GetPanKey
+            //Gets the key to be used for panning the canvas. <ssGUI::Enums::NO_INPUT> if disabled.
+            virtual ssGUI::Enums::GenericButtonAndKeyInput GetPanKey() const;
             
-            //function: IsUsingDefaultRotating
-            //Returns if the user can rotate by default when holding the R key
-            virtual bool IsUsingDefaultRotating() const;
-
+            //function: SetUseScrollZooming
+            //Sets if the mouse scroll wheel is used for zooming the viewport
+            virtual void SetUseScrollZooming(bool useScrollZoom);
+            
+            //function: IsUseScrollZooming
+            //Returns if the mouse scroll wheel is used for zooming the viewport
+            virtual bool IsUseScrollZooming() const;
+            
+            //function: SetMinScrollZoom
+            //Sets the minimum zoom value for scroll zooming
+            virtual void SetMinScrollZoom(float min);
+            
+            //function: GetMinScrollZoom
+            //Returns the minimum zoom value for scroll zooming
+            virtual float GetMinScrollZoom() const;
+            
+            //function: SetMaxScrollZoom
+            //Sets the maximum zoom value for scroll zooming
+            virtual void SetMaxScrollZoom(float max);
+            
+            //function: GetMaxScrollZoom
+            //Returns the maximum zoom value for scroll zooming
+            virtual float GetMaxScrollZoom() const;
+            
+            //function: SetRotateKey
+            //Sets the key to be used for rotating the canvas. <ssGUI::Enums::NO_INPUT> to disable it.
+            virtual void SetRotateKey(ssGUI::Enums::GenericButtonAndKeyInput key);
+            
+            //function: GetRotateKey
+            //Returns the key to be used for rotating the canvas. <ssGUI::Enums::NO_INPUT> if disabled.
+            virtual ssGUI::Enums::GenericButtonAndKeyInput GetRotateKey() const;
+            
             //function: SetShowHorizontalScrollbar
             //Sets if the horizontal scrollbar is available to use when the image is zoomed larger than the ImageCanvas
             virtual void SetShowHorizontalScrollbar(bool scrollbar);
@@ -390,6 +421,10 @@ namespace ssGUI
             //Gets the vertical scrollbar object used by ImageCanvas
             virtual ssGUI::Scrollbar* GetVerticalScrollbar() const;
 
+            //====================================================================
+            //Group: Overrides
+            //====================================================================
+
             //function: GetFitting
             //*Fitting has no effect on <ImageCanvas>*
             virtual ssGUI::Enums::ImageFitting GetFitting() const override;
@@ -398,8 +433,13 @@ namespace ssGUI
             //*Fitting has no effect on <ImageCanvas>*
             virtual void SetFitting(ssGUI::Enums::ImageFitting fitting) override;
 
+            //function: SetImageData
+            //Setting image data will automatically call <CenterViewportToImage>.
+            //For description of SetImageData, see <ssGUI::Image::SetImageData>
+            virtual void SetImageData(ssGUI::ImageData* imageData) override;
+
             //function: GetType
-            //See <Widget::GetType>
+            //See <ssGUI::Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
 
             //function: Clone

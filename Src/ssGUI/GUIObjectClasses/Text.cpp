@@ -1302,15 +1302,26 @@ namespace ssGUI
         );
         
         TextObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* text = static_cast<ssGUI::Text*>(info.Container);
+                
+                ssGUI::Text::TextObjectCount--;
+                
+                if(ssGUI::Text::TextObjectCount == 0)
+                    text->CleanUpDefaultResources();
+            }
+        );
     }
 
     Text::~Text()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        TextObjectCount--;
-        
-        if(TextObjectCount == 0)
-            CleanUpDefaultResources();
     }
     
     void Text::ComputeCharactersPositionAndSize()

@@ -25,29 +25,27 @@ namespace ssGUI
     ImageCanvas::ImageCanvas(ImageCanvas const& other) : Image(other)
     {
         HorizontalScrollbar = other.HorizontalScrollbar;
-        SetShowHorizontalScrollbar(other.IsShowHorizontalScrollbar());
+        ShowHorizontalScrollbar = other.ShowVerticalScrollbar;
         VerticalScrollbar = other.VerticalScrollbar;
-        SetShowVerticalScrollbar(other.IsShowVerticalScrollbar());
+        ShowVerticalScrollbar = other.ShowVerticalScrollbar;
 
         ImageVertices = other.ImageVertices;
-        ImageMinX = other.GetImageMinX();
-        ImageMaxX = other.GetImageMaxX();
-        ImageMinY = other.GetImageMinY();
-        ImageMaxY = other.GetImageMaxY();
-
-        UseDefaultPanning(other.IsUsingDefaultPanning());
-        SetImagePosition(other.GetImagePosition());
-
-        UseDefaultZooming(other.IsUsingDefaultZooming());
-        SetDefaultMinZoom(other.GetDefaultMinZoom());
-        SetDefaultMaxZoom(other.GetDefaultMaxZoom());
-        SetImageScale(other.GetImageScale());
-
-        ZoomAmount = other.ZoomAmount;
-        SetMeasureScaleByHeight(other.IsMeasureScaleByHeight());
+        ImageMinX = other.ImageMinX;
+        ImageMaxX = other.ImageMaxX;
+        ImageMinY = other.ImageMinY;
+        ImageMaxY = other.ImageMaxY;
+        CurrentZoom = other.CurrentZoom;
+        CurrentPosition = other.CurrentPosition;
+        CurrentRotation = other.CurrentRotation;
         
-        UseDefaultRotating(other.IsUsingDefaultRotating());
-        SetImageRotation(other.GetImageRotation());
+        PanKey = other.PanKey;
+        ScrollZoom = other.ScrollZoom;
+        MinScrollZoom = other.MinScrollZoom;
+        MaxScrollZoom = other.MaxScrollZoom;
+        ScrollZoomAmount = other.ScrollZoomAmount;
+        
+        RotateKey = other.RotateKey;
+        
         OnRotateStartRotation = other.OnRotateStartRotation;
         OnRotateStartPosition = other.OnRotateStartPosition;
         InnerCircleId = other.InnerCircleId;
@@ -68,7 +66,7 @@ namespace ssGUI
         return atan2(glm::cross(a3, b3).z, glm::dot(glm::vec2(a), glm::vec2(b)));
     }
 
-    glm::vec2 ImageCanvas::RotateVec(glm::vec2 vec, float radians)
+    glm::vec2 ImageCanvas::RotateVec(glm::vec2 vec, float radians) const
     {        
         return glm::vec2(   cos(radians) * vec.x - sin(radians) * vec.y, 
                             sin(radians) * vec.x + cos(radians) * vec.y);
@@ -120,38 +118,45 @@ namespace ssGUI
         DrawingColours.push_back(ImageTint);
         DrawingColours.push_back(ImageTint);
 
-        //Scale Image
         glm::vec2 imgVertices[4] { glm::vec2() };
         
         float halfSizeX = imgSize.x * 0.5;
         float halfSizeY = imgSize.y * 0.5;
 
-        imgVertices[0] = glm::vec2(-halfSizeX, -halfSizeY);
-        imgVertices[1] = glm::vec2(halfSizeX, -halfSizeY);
-        imgVertices[2] = glm::vec2(halfSizeX, halfSizeY);
-        imgVertices[3] = glm::vec2(-halfSizeX, halfSizeY);
+        //imgVertices[0] = glm::vec2(-halfSizeX, -halfSizeY);
+        //imgVertices[1] = glm::vec2(halfSizeX, -halfSizeY);
+        //imgVertices[2] = glm::vec2(halfSizeX, halfSizeY);
+        //imgVertices[3] = glm::vec2(-halfSizeX, halfSizeY);
 
-        float scaleFactor = MeasureScaleByHeight ? 
-            GetSize().y / imgSize.y * CurrentZoom :
-            GetSize().x / imgSize.x * CurrentZoom;
-
-        imgVertices[0] *= scaleFactor;
-        imgVertices[1] *= scaleFactor;
-        imgVertices[2] *= scaleFactor;
-        imgVertices[3] *= scaleFactor;
-
-        //Rotate Image
-        imgVertices[0] = RotateVec(imgVertices[0], CurrentRotation);
-        imgVertices[1] = RotateVec(imgVertices[1], CurrentRotation);
-        imgVertices[2] = RotateVec(imgVertices[2], CurrentRotation);
-        imgVertices[3] = RotateVec(imgVertices[3], CurrentRotation);
+        imgVertices[0] = glm::vec2(0, 0);
+        imgVertices[1] = glm::vec2(imgSize.x, 0);
+        imgVertices[2] = glm::vec2(imgSize.x, imgSize.y);
+        imgVertices[3] = glm::vec2(0, imgSize.y);
 
         //Position Image
-        glm::vec2 imgPos = GetSize() * CurrentPosition;
-        imgVertices[0] += drawPosition + imgPos;
-        imgVertices[1] += drawPosition + imgPos;
-        imgVertices[2] += drawPosition + imgPos;
-        imgVertices[3] += drawPosition + imgPos;
+        imgVertices[0] -= CurrentPosition;
+        imgVertices[1] -= CurrentPosition;
+        imgVertices[2] -= CurrentPosition;
+        imgVertices[3] -= CurrentPosition;
+        
+        //Rotate Image
+        imgVertices[0] = RotateVec(imgVertices[0], -CurrentRotation);
+        imgVertices[1] = RotateVec(imgVertices[1], -CurrentRotation);
+        imgVertices[2] = RotateVec(imgVertices[2], -CurrentRotation);
+        imgVertices[3] = RotateVec(imgVertices[3], -CurrentRotation);
+        
+        //Scale Image
+        imgVertices[0] *= CurrentZoom;
+        imgVertices[1] *= CurrentZoom;
+        imgVertices[2] *= CurrentZoom;
+        imgVertices[3] *= CurrentZoom;
+        
+        //Offset
+        glm::vec2 canvasHalfSize = GetSize() / 2.f;
+        imgVertices[0] += drawPosition + canvasHalfSize;
+        imgVertices[1] += drawPosition + canvasHalfSize;
+        imgVertices[2] += drawPosition + canvasHalfSize;
+        imgVertices[3] += drawPosition + canvasHalfSize;
 
         DrawingVerticies.push_back(imgVertices[0]);
         DrawingVerticies.push_back(imgVertices[1]);
@@ -284,8 +289,8 @@ namespace ssGUI
                 inputStatus.MouseInputBlockedObject = this;
             }
 
-            //If space key is pressed, use delta cursor position to move image
-            if(IsUsingDefaultPanning() && inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::SPACE))
+            //If space key is pressed, use delta cursor position to move canvas
+            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(GetPanKey()))
             {
                 inputStatus.KeyInputBlockedObject = this;
                 
@@ -294,17 +299,17 @@ namespace ssGUI
                 
                 if(MousePressed)
                 {
-                    glm::vec2 diff = currentMousePos - inputInterface->GetLastMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
-                    diff /= GetSize();
-                    SetImagePosition(GetImagePosition() + diff);
+                    glm::vec2 lastMousePos = inputInterface->GetLastMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
+                    glm::vec2 diff = GetUVFromGlobalPosition(currentMousePos) - GetUVFromGlobalPosition(lastMousePos);
+                    SetViewportCenterPosition(GetViewportCenterPosition() - diff);
                     inputStatus.MouseInputBlockedObject = this;
                 }
 
                 SetFocus(true);
             }
 
-            //If r key is pressed, use start cursor position, start image position and current cursor position to rotate image
-            else if(IsUsingDefaultRotating() && inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::R))
+            //If r key is pressed, use start cursor position and current cursor position to rotate canvas
+            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(GetRotateKey()))
             {
                 inputStatus.KeyInputBlockedObject = this;
                 SetFocus(true);
@@ -332,23 +337,22 @@ namespace ssGUI
                     }
                 }
 
-                //Get image position
-                glm::vec2 imgPos = GetSize() * GetImagePosition();
-                
-                //Show image center gui when this is the first frame when the R button is pressed
+                //Show rotation gui when this is the first frame when the R button is pressed
                 if(shape != nullptr && !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::R))
                 {
                     glm::vec2 outerCircleSize = glm::vec2(9, 9);
                     glm::vec2 bgCircleSize = glm::vec2(6, 6);
                     glm::vec2 innerCircleSize = glm::vec2(3, 3);
                     
-                    shape->SetAdditionalCircle(BackgroundCircleId, imgPos - bgCircleSize/2.f, bgCircleSize, 
+                    //TODO: Set rotation cursor to be center
+                    glm::vec2 center = GetSize() * 0.5f;
+                    shape->SetAdditionalCircle(BackgroundCircleId, center - bgCircleSize/2.f, bgCircleSize, 
                         glm::u8vec4(255, 255, 255, 255), false);                
 
-                    shape->SetAdditionalCircle(InnerCircleId, imgPos - innerCircleSize/2.f, innerCircleSize, 
+                    shape->SetAdditionalCircle(InnerCircleId, center - innerCircleSize/2.f, innerCircleSize, 
                         glm::u8vec4(0, 0, 0, 255), false);
 
-                    shape->SetAdditionalCircle(OuterCircleId, imgPos - outerCircleSize/2.f, outerCircleSize, 
+                    shape->SetAdditionalCircle(OuterCircleId, center - outerCircleSize/2.f, outerCircleSize, 
                         glm::u8vec4(0, 0, 0, 255), false);
                 }
 
@@ -356,21 +360,20 @@ namespace ssGUI
                 {
                     if(!inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
                     {
-                        OnRotateStartRotation = GetImageRotation(true);
-                        OnRotateStartPosition = GetImagePosition();
+                        OnRotateStartRotation = GetViewportRotation(true);
+                        OnRotateStartPosition = GetViewportCenterPosition();
                     }
                     else
                     {
-                        glm::vec2 curImgGlobalPos = GetGlobalPosition() + imgPos;
-                        SetImageRotation(OnRotateStartRotation - GetAngle(glm::vec2(currentMousePos) - curImgGlobalPos, MouseButtonDownPosition - curImgGlobalPos), true);
+                        glm::vec2 canvasCenter = GetGlobalPosition() + GetSize() * 0.5f;
+                        SetViewportRotation(OnRotateStartRotation + GetAngle(glm::vec2(currentMousePos) - canvasCenter, MouseButtonDownPosition - canvasCenter), true);
                     }
                     inputStatus.MouseInputBlockedObject = this;
                 }
             }
 
             //Hide rotation circle when R button is not pressed
-            else if(IsUsingDefaultRotating() && 
-                    inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::R) &&
+            else if(inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::R) &&
                     !inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::R))
             {
                 if(shape != nullptr)
@@ -383,7 +386,7 @@ namespace ssGUI
         }
     
         //Handle scrolling for image zooming
-        if(IsUsingDefaultZooming() && mouseWithinWidget)
+        if(IsUseScrollZooming() && mouseWithinWidget)
         {
             inputStatus.MouseInputBlockedObject = this;
 
@@ -391,16 +394,18 @@ namespace ssGUI
             if(inputInterface->GetCurrentMouseScrollDelta().y > 0)
             {
                 SetFocus(true);
-                SetImageScale(GetImageScale() + ZoomAmount > GetDefaultMaxZoom() ? GetDefaultMaxZoom() : GetImageScale() + ZoomAmount);   
+                SetViewportZoom(GetViewportZoom() + ScrollZoomAmount > GetMaxScrollZoom() ? GetMaxScrollZoom() : GetViewportZoom() + ScrollZoomAmount);   
             }
             //Scrolling down
             else if(inputInterface->GetCurrentMouseScrollDelta().y)
             {
                 SetFocus(true);
-                SetImageScale(GetImageScale() - ZoomAmount < GetDefaultMinZoom() ? GetDefaultMinZoom() : GetImageScale() - ZoomAmount);
+                SetViewportZoom(GetViewportZoom() - ScrollZoomAmount < GetMinScrollZoom() ? GetMinScrollZoom() : GetViewportZoom() - ScrollZoomAmount);
             }
         }
     }
+
+    #define SSGUI_CAST_KEY(x) static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(x)
 
     ImageCanvas::ImageCanvas() :    HorizontalScrollbar(-1),
                                     ShowHorizontalScrollbar(true),
@@ -411,16 +416,15 @@ namespace ssGUI
                                     ImageMaxX(0),
                                     ImageMinY(0),
                                     ImageMaxY(0),
-                                    Panable(true),
-                                    CurrentPosition(0.5, 0.5),
-                                    Zoomable(true),
-                                    MinZoom(0),
-                                    MaxZoom(10),
                                     CurrentZoom(1),
-                                    ZoomAmount(0.1),
-                                    MeasureScaleByHeight(true),
-                                    Rotatable(true),
+                                    CurrentPosition(0.5, 0.5),
                                     CurrentRotation(0),
+                                    PanKey(SSGUI_CAST_KEY(ssGUI::Enums::SystemKey::SPACE)),
+                                    ScrollZoom(true),
+                                    MinScrollZoom(0),
+                                    MaxScrollZoom(10),
+                                    ScrollZoomAmount(0.1),
+                                    RotateKey(SSGUI_CAST_KEY(ssGUI::Enums::LetterKey::R)),
                                     OnRotateStartRotation(0),
                                     OnRotateStartPosition(),
                                     InnerCircleId(0),
@@ -457,15 +461,17 @@ namespace ssGUI
                     return;
 
                 //Find min and max x
-                float minX = imageCanvas->GetImageMinX();
-                float maxX = imageCanvas->GetImageMaxX();
-
+                float minX = imageCanvas->GetImageMinGlobalX();
+                float maxX = imageCanvas->GetImageMaxGlobalX();
                 auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
-                float imgHalfSize = (maxX - minX) * 0.5;
-                float imgScrollDist = (maxX - minX - imageCanvas->GetSize().x) * scrollbar->GetScrollbarValue();
-                float imgXPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().x;
-
-                imageCanvas->SetImagePosition(glm::vec2(imgXPos, imageCanvas->GetImagePosition().y));
+                
+                //Get how much do we need to move in UI(Global) space
+                float targetX = ((maxX - minX) - imageCanvas->GetSize().x) * scrollbar->GetScrollbarValue() + minX;
+                float offsetX = targetX - imageCanvas->GetGlobalPosition().x;
+                glm::vec2 currentViewportPos = imageCanvas->GetViewportCenterPosition();
+                
+                //Finally get the viewport horizontal direction in UV space and multiply by how much we need move
+                imageCanvas->SetViewportCenterPosition(currentViewportPos + imageCanvas->GetViewportRightDirectionInUV() * offsetX);
             }
         );
 
@@ -492,15 +498,17 @@ namespace ssGUI
                     return;
 
                 //Find min and max y
-                float minY = imageCanvas->GetImageMinY();
-                float maxY = imageCanvas->GetImageMaxY();
-
+                float minY = imageCanvas->GetImageMinGlobalY();
+                float maxY = imageCanvas->GetImageMaxGlobalY();
                 auto scrollbar = static_cast<ssGUI::Scrollbar*>(info.EventSource);
-                float imgHalfSize = (maxY - minY) * 0.5;
-                float imgScrollDist = (maxY - minY - imageCanvas->GetSize().y) * scrollbar->GetScrollbarValue();
-                float imgYPos = (imgHalfSize - imgScrollDist) / imageCanvas->GetSize().y;
 
-                imageCanvas->SetImagePosition(glm::vec2(imageCanvas->GetImagePosition().x, imgYPos));
+                //Get how much do we need to move in UI(Global) space
+                float targetY = ((maxY - minY) - imageCanvas->GetSize().y) * scrollbar->GetScrollbarValue() + minY;
+                float offsetY = targetY - imageCanvas->GetGlobalPosition().y;
+                glm::vec2 currentViewportPos = imageCanvas->GetViewportCenterPosition();
+                
+                //Finally get the viewport horizontal direction in UV space and multiply by how much we need move
+                imageCanvas->SetViewportCenterPosition(currentViewportPos + imageCanvas->GetViewportDownDirectionInUV() * offsetY);
             }
         );
 
@@ -518,76 +526,46 @@ namespace ssGUI
         HorizontalScrollbar = CurrentObjectsReferences.GetObjectIndex(hScrollbar);
         VerticalScrollbar = CurrentObjectsReferences.GetObjectIndex(vScrollbar);
         ImageCanvasObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.Container);
+                
+                ssGUI::ImageCanvas::ImageCanvasObjectCount--;
+        
+                if(ssGUI::ImageCanvas::ImageCanvasObjectCount == 0)
+                    imageCanvas->CleanUpDefaultResources();
+            }
+        );
     }
 
     ImageCanvas::~ImageCanvas()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
         
-        ImageCanvasObjectCount--;
-        
-        if(ImageCanvasObjectCount == 0)
-            CleanUpDefaultResources();
-        
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
             Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{HorizontalScrollbar, VerticalScrollbar});
     }
 
-    glm::vec2 ImageCanvas::GetUVFromGlobalPosition(glm::vec2 globalPos)
-    {
-        //Position
-        globalPos = globalPos - GetGlobalPosition() - GetImagePosition() * GetSize();
-
-        //Rotate
-        globalPos = RotateVec(globalPos, -CurrentRotation);
-
-        //Scale
-        glm::vec2 imgSize = GetImageData()->GetSize();
-        float scaleFactor = MeasureScaleByHeight ? 
-            GetSize().y / imgSize.y * GetImageScale() :
-            GetSize().x / imgSize.x * GetImageScale();
-        globalPos = globalPos / scaleFactor;
-
-        return globalPos - glm::vec2(-imgSize.x * 0.5, -imgSize.y * 0.5);
-    }
-
-    glm::vec2 ImageCanvas::GetGlobalPositionFromUV(glm::vec2 uv)
-    {
-        //Scale
-        glm::vec2 imgSize = GetImageData()->GetSize();
-        uv = uv - imgSize * 0.5f;
-
-        float scaleFactor = MeasureScaleByHeight ? 
-            GetSize().y / imgSize.y * GetImageScale() :
-            GetSize().x / imgSize.x * GetImageScale();
-
-        uv *= scaleFactor;
-
-        //Rotate Image
-        uv = RotateVec(uv, CurrentRotation);
-
-        //Position Image
-        glm::vec2 imgPos = GetSize() * GetImagePosition();
-        uv += GetGlobalPosition() + imgPos;
-        
-        return uv;
-    }
-
-    void ImageCanvas::SetImageRotation(float rotation, bool radians)
+    void ImageCanvas::SetViewportRotation(float rotation, bool radians)
     {
         constexpr float degreeConversion = (pi() / 180);
         CurrentRotation = radians ? rotation : degreeConversion * rotation;
         RedrawObject();
     }
 
-    float ImageCanvas::GetImageRotation(bool radians) const
+    float ImageCanvas::GetViewportRotation(bool radians) const
     {
         constexpr float degreeConversion = (pi() / 180);
         return radians ? CurrentRotation : degreeConversion * CurrentRotation;
     }
-
-    void ImageCanvas::SetImageScale(float scale)
+    
+    void ImageCanvas::SetViewportZoom(float scale)
     {
         if(scale <= 0)
             return;
@@ -596,60 +574,83 @@ namespace ssGUI
         RedrawObject();
     }
 
-    float ImageCanvas::GetImageScale() const
+    float ImageCanvas::GetViewportZoom() const
     {
         return CurrentZoom;
     }
-
-    void ImageCanvas::SetDefaultMinZoom(float min)
-    {
-        MinZoom = min;
-    }
-
-    float ImageCanvas::GetDefaultMinZoom() const
-    {
-        return MinZoom;
-    }
-
-    void ImageCanvas::SetDefaultMaxZoom(float max)
-    {
-        MaxZoom = max;
-    }
-
-    float ImageCanvas::GetDefaultMaxZoom() const
-    {
-        return MaxZoom;
-    }
     
-    float ImageCanvas::GetOriginalImageScale() const
-    {
-        if(GetImageData() == nullptr)
-            return -1;
-        
-        return MeasureScaleByHeight ? 
-            GetImageData()->GetSize().y / GetSize().y :
-            GetImageData()->GetSize().x / GetSize().x;
-    }
-
-    bool ImageCanvas::IsMeasureScaleByHeight() const
-    {
-        return MeasureScaleByHeight;
-    }
-
-    void ImageCanvas::SetMeasureScaleByHeight(bool scaleByHeight)
-    {
-        MeasureScaleByHeight = scaleByHeight;        
-    }
-
-    void ImageCanvas::SetImagePosition(glm::vec2 position)
+    void ImageCanvas::SetViewportCenterPosition(glm::vec2 position)
     {
         CurrentPosition = position;
         RedrawObject();
     }
+    
+    void ImageCanvas::CenterViewportToImage()
+    {
+        if(GetImageData() != nullptr)
+            SetViewportCenterPosition(glm::vec2(GetImageData()->GetSize()) * 0.5f);        
+    }
 
-    glm::vec2 ImageCanvas::GetImagePosition() const
+    glm::vec2 ImageCanvas::GetViewportCenterPosition() const
     {
         return CurrentPosition;
+    }
+    
+    glm::vec2 ImageCanvas::GetUVFromGlobalPosition(glm::vec2 globalPos)
+    {
+        if(GetImageData() == nullptr)
+            return glm::vec2();
+
+        //Transform global position to local position
+        globalPos -= GetGlobalPosition();
+        
+        //Transform the origin to the center of the viewport
+        globalPos -= GetSize() * 0.5f;
+        
+        //Rotate
+        globalPos = RotateVec(globalPos, CurrentRotation);
+        
+        //Scale
+        globalPos /= GetViewportZoom();
+        
+        //Viewport Position
+        globalPos += GetViewportCenterPosition();
+
+        //UV
+        return globalPos;
+    }
+
+    glm::vec2 ImageCanvas::GetGlobalPositionFromUV(glm::vec2 uv)
+    {
+        if(GetImageData() == nullptr)
+            return glm::vec2();
+        
+        //Canvas Position
+        uv -= GetViewportCenterPosition();
+        
+        //Scale
+        uv *= GetViewportZoom();
+        
+        //Rotate
+        uv = RotateVec(uv, -CurrentRotation);
+        
+        //Transform the origin to the top-left of the viewport
+        uv += GetSize() * 0.5f;
+        
+        //Transform local position to global
+        uv += GetGlobalPosition();
+        
+        return uv;
+    }
+    
+    glm::vec2 ImageCanvas::GetViewportRightDirectionInUV() const
+    {
+        return RotateVec(glm::vec2(1, 0), CurrentRotation) / CurrentZoom; 
+    }
+    
+    glm::vec2 ImageCanvas::GetViewportDownDirectionInUV() const
+    {
+        return RotateVec(glm::vec2(0, 1), CurrentRotation) / CurrentZoom; 
     }
 
     const std::vector<glm::vec2>& ImageCanvas::GetImageVertices() const
@@ -657,62 +658,80 @@ namespace ssGUI
         return ImageVertices;
     }
 
-    float ImageCanvas::GetImageMinX() const
+    float ImageCanvas::GetImageMinGlobalX() const
     {
         return ImageMinX;
     }
 
-    float ImageCanvas::GetImageMaxX() const
+    float ImageCanvas::GetImageMaxGlobalX() const
     {
         return ImageMaxX;
     }
 
-    float ImageCanvas::GetImageMinY() const
+    float ImageCanvas::GetImageMinGlobalY() const
     {
         return ImageMinY;
     }
 
-    float ImageCanvas::GetImageMaxY() const
+    float ImageCanvas::GetImageMaxGlobalY() const
     {
         return ImageMaxY;
     }
-
-    void ImageCanvas::UseDefaultPanning(bool pan)
+    
+    void ImageCanvas::SetPanKey(ssGUI::Enums::GenericButtonAndKeyInput key)
     {
-        Panable = pan;
-        RedrawObject();
-    }
-
-    bool ImageCanvas::IsUsingDefaultPanning() const
-    {
-        return Panable;
+        PanKey = key;
     }
     
-    void ImageCanvas::UseDefaultZooming(bool zoom)
+    ssGUI::Enums::GenericButtonAndKeyInput ImageCanvas::GetPanKey() const
     {
-        Zoomable = zoom;
-        RedrawObject();
+        return PanKey;
     }
-
-    bool ImageCanvas::IsUsingDefaultZooming() const
+    
+    void ImageCanvas::SetUseScrollZooming(bool useScrollZoom)
     {
-        return Zoomable;
+        ScrollZoom = useScrollZoom;
     }
-
-    void ImageCanvas::UseDefaultRotating(bool rotate)
+    
+    bool ImageCanvas::IsUseScrollZooming() const
     {
-        Rotatable = rotate;
-        RedrawObject();
+        return ScrollZoom;
     }
-
-    bool ImageCanvas::IsUsingDefaultRotating() const
+    
+    void ImageCanvas::SetMinScrollZoom(float min)
     {
-        return Rotatable;
+        MinScrollZoom = min;
+    }
+    
+    float ImageCanvas::GetMinScrollZoom() const
+    {
+        return MinScrollZoom;
+    }
+    
+    void ImageCanvas::SetMaxScrollZoom(float max)
+    {
+        MaxScrollZoom = max;
+    }
+    
+    float ImageCanvas::GetMaxScrollZoom() const
+    {
+        return MaxScrollZoom;
+    }
+    
+    void ImageCanvas::SetRotateKey(ssGUI::Enums::GenericButtonAndKeyInput key)
+    {
+        RotateKey = key;
+    }
+    
+    ssGUI::Enums::GenericButtonAndKeyInput ImageCanvas::GetRotateKey() const
+    {
+        return RotateKey;
     }
 
     void ImageCanvas::SetShowHorizontalScrollbar(bool scrollbar)
     {
         ShowHorizontalScrollbar = scrollbar;
+        RedrawObject();
     }
 
     bool ImageCanvas::IsShowHorizontalScrollbar() const
@@ -723,6 +742,7 @@ namespace ssGUI
     void ImageCanvas::SetShowVerticalScrollbar(bool scrollbar)
     {
         ShowVerticalScrollbar = scrollbar;
+        RedrawObject();
     }
 
     bool ImageCanvas::IsShowVerticalScrollbar() const
@@ -771,6 +791,12 @@ namespace ssGUI
 
     void ImageCanvas::SetFitting(ssGUI::Enums::ImageFitting fitting)
     {
+    }
+    
+    void ImageCanvas::SetImageData(ssGUI::ImageData* imageData)
+    {
+        ssGUI::Image::SetImageData(imageData);
+        CenterViewportToImage();
     }
 
     ssGUI::Enums::GUIObjectType ImageCanvas::GetType() const
