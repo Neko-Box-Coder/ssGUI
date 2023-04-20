@@ -266,14 +266,6 @@ namespace ssGUI
                                     currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                                     currentMousePos.y <= GetGlobalPosition().y + GetSize().y;
 
-        if(GetImageData() == nullptr)
-        {
-            if(mouseWithinWidget)
-                inputStatus.MouseInputBlockedObject = this;
-            
-            return;
-        }
-
         if(!inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT))
             MousePressed = false;
 
@@ -554,14 +546,14 @@ namespace ssGUI
 
     void ImageCanvas::SetViewportRotation(float rotation, bool radians)
     {
-        constexpr float degreeConversion = (pi() / 180);
+        constexpr float degreeConversion = (180 / pi());
         CurrentRotation = radians ? rotation : degreeConversion * rotation;
         RedrawObject();
     }
 
     float ImageCanvas::GetViewportRotation(bool radians) const
     {
-        constexpr float degreeConversion = (pi() / 180);
+        constexpr float degreeConversion = (180 / pi());
         return radians ? CurrentRotation : degreeConversion * CurrentRotation;
     }
     
@@ -598,9 +590,6 @@ namespace ssGUI
     
     glm::vec2 ImageCanvas::GetUVFromGlobalPosition(glm::vec2 globalPos)
     {
-        if(GetImageData() == nullptr)
-            return glm::vec2();
-
         //Transform global position to local position
         globalPos -= GetGlobalPosition();
         
@@ -622,9 +611,6 @@ namespace ssGUI
 
     glm::vec2 ImageCanvas::GetGlobalPositionFromUV(glm::vec2 uv)
     {
-        if(GetImageData() == nullptr)
-            return glm::vec2();
-        
         //Canvas Position
         uv -= GetViewportCenterPosition();
         
@@ -753,7 +739,14 @@ namespace ssGUI
     void ImageCanvas::SetHorizontalScrollbar(ssGUI::Scrollbar* scrollbar)
     {
         if(scrollbar == nullptr)
+        {
+            if(GetHorizontalScrollbar() != nullptr)
+                GetHorizontalScrollbar()->Delete();
+            
             SetShowHorizontalScrollbar(false);
+            HorizontalScrollbar = -1;
+            return;
+        }
 
         HorizontalScrollbar = CurrentObjectsReferences.AddObjectReference(scrollbar);
 
@@ -770,7 +763,14 @@ namespace ssGUI
     void ImageCanvas::SetVerticalScrollbar(ssGUI::Scrollbar* scrollbar)
     {
         if(scrollbar == nullptr)
+        {
+            if(GetVerticalScrollbar() != nullptr)
+                GetVerticalScrollbar()->Delete();
+        
             SetShowVerticalScrollbar(false);
+            VerticalScrollbar = -1;
+            return;
+        }
 
         VerticalScrollbar = CurrentObjectsReferences.AddObjectReference(scrollbar);
 
