@@ -406,19 +406,23 @@ namespace ssGUI
             virtual bool IsShowVerticalScrollbar() const;
 
             //function: SetHorizontalScrollbar
-            //Sets the horizontal scrollbar object used by ImageCanvas
+            //Sets the horizontal scrollbar object used by ImageCanvas.
+            //Pass in nullptr for unsetting (and deleting) the horizontal scrollbar.
             virtual void SetHorizontalScrollbar(ssGUI::Scrollbar* scrollbar);
             
             //function: GetHorizontalScrollbar
-            //Gets the horizontal scrollbar object used by ImageCanvas
+            //Gets the horizontal scrollbar object used by ImageCanvas.
+            //Nullptr if horizontal scrollbar is unset.
             virtual ssGUI::Scrollbar* GetHorizontalScrollbar() const;
 
             //function: SetVerticalScrollbar
-            //Sets the vertical scrollbar object used by ImageCanvas
+            //Sets the vertical scrollbar object used by ImageCanvas.
+            //Pass in nullptr for unsetting (and deleting) the vertical scrollbar.
             virtual void SetVerticalScrollbar(ssGUI::Scrollbar* scrollbar);
             
             //function: GetVerticalScrollbar
-            //Gets the vertical scrollbar object used by ImageCanvas
+            //Gets the vertical scrollbar object used by ImageCanvas.
+            //Nullptr if vertical scrollbar is unset.
             virtual ssGUI::Scrollbar* GetVerticalScrollbar() const;
 
             //====================================================================
