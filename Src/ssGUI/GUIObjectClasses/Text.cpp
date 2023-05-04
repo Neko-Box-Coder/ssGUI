@@ -1,7 +1,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/EmbeddedResources.h"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/gtx/norm.hpp"
@@ -2173,20 +2173,20 @@ namespace ssGUI
             return;
         }
 
-        size_t fileSize = 0;
-        char* fileContent = const_cast<char*>(find_embedded_file("NotoSans-Regular.ttf", &fileSize));
+        const uint8_t* fileContent = NotoSans_Regular;
+        size_t fileSize = NotoSans_Regular_size;
 
         if(fileContent == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
+            ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
             ssLOG_FUNC_EXIT();
             return;
         }
 
         auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromMemory(fileContent, fileSize))
+        if(!font->GetBackendFontInterface()->LoadFromMemory(const_cast<uint8_t*>(fileContent), fileSize))
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
+            ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
             ssGUI::Factory::Dispose(font);
         }
         else

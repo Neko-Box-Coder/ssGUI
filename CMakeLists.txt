@@ -223,14 +223,14 @@ if(ssGUI_OUTPUT_STATIC)
     add_library(ssGUI STATIC
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 else()
     add_library(ssGUI SHARED
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 endif()
@@ -400,44 +400,29 @@ endif()
 # ==========================================================
 
 # This is only called when embed target is specified for CMake
-add_executable(embed EXCLUDE_FROM_ALL "${CMAKE_CURRENT_LIST_DIR}/External/embed/embed.c")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/Embed2C" EXCLUDE_FROM_ALL)
+include("${CMAKE_CURRENT_LIST_DIR}/External/Embed2C/embedFile.cmake")
 
 function(CopyResources targetDir)
     file(MAKE_DIRECTORY ${targetDir})
     execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_LIST_DIR}/Resources ${targetDir}/Resources)
 endfunction()
 
-function(RunEmbedExecutable embedPath)
-    file(   COPY "${embedPath}" 
-            DESTINATION "${CMAKE_CURRENT_LIST_DIR}/Resources/"
-            FILE_PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c" EMBEDDED_FILE_SIZE)
+if(EMBEDDED_FILE_SIZE LESS 1024)
+    EMBED_FILES("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
+                "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoSans-Regular.ttf"
+                "NotoSans_Regular"
+                "${CMAKE_CURRENT_LIST_DIR}/Resources/DownArrow.png"
+                "DownArrow"
+                "${CMAKE_CURRENT_LIST_DIR}/Resources/RotationCursor.png"
+                "RotationCursor"
+                "${CMAKE_CURRENT_LIST_DIR}/Resources/WindowIcon.png"
+                "WindowIcon")
 
-    execute_process(WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/Resources"
-                    OUTPUT_FILE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp"
-                    RESULT_VARIABLE EMBED_RESULT
-                    COMMAND "${CMAKE_CURRENT_LIST_DIR}/Resources/embed" "NotoSans-Regular.ttf" "DownArrow.png" "RotationCursor.png" "WindowIcon.png")
-
-    if(NOT EMBED_RESULT EQUAL 0)
+    file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c" EMBEDDED_FILE_SIZE)
+    if(EMBEDDED_FILE_SIZE LESS 0)
         message(FATAL_ERROR "Failed to embed default resources")
-    endif()
-endfunction()
-
-# MSVC
-file (SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.cpp" embeddedResourcesSize)
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND embeddedResourcesSize LESS 1024)
-    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Release/embed.exe")
-        RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/Release/embed.exe")
-    elseif(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Debug/embed.exe")
-        RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/Debug/embed.exe")
-    else()
-        message(WARNING "Embed resource not found, please build the embed target inside Visual Studio in release mode before building the ssGUI")
-    endif()
-# Others
-elseif(embeddedResourcesSize LESS 1024)
-    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/embed")
-        RunEmbedExecutable("${CMAKE_CURRENT_BINARY_DIR}/embed")
-    else()
-        message(WARNING "Embed resource not found, please run \"cmake --build . --target embed\" in the build folder before building the ssGUI")
     endif()
 endif()
 
@@ -485,17 +470,10 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName)
 
 endfunction()
 
-# TODO: Leave it for now, but remove this later
-#if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
-    AddFilesToExecutables("${CMAKE_CURRENT_LIST_DIR}/Src/BackendTests/" "${CMAKE_CURRENT_BINARY_DIR}/BackendTests/" "BackendTests")
-#endif()
-
-CopyResources(${CMAKE_CURRENT_BINARY_DIR})
+#CopyResources(${CMAKE_CURRENT_BINARY_DIR})
 
 
 if(ssGUI_BUILD_TESTS)
-    #AddFilesToExecutables("${CMAKE_CURRENT_LIST_DIR}/Src/Tests/" "${CMAKE_CURRENT_BINARY_DIR}/Tests/")
-    
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
                             "AutoTests/BackendTests")

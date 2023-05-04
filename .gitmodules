@@ -10,3 +10,6 @@
 [submodule "External/ssTest"]
 	path = External/ssTest
 	url = https://github.com/Neko-Box-Coder/ssTest.git
+[submodule "External/Embed2C"]
+	path = External/Embed2C
+	url = https://github.com/Neko-Box-Coder/Embed2C.git

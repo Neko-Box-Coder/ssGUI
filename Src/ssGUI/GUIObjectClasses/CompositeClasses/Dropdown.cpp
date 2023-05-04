@@ -1,6 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 
-#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/EmbeddedResources.h"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 #include "ssGUI/GUIObjectClasses/Image.hpp"
@@ -358,8 +358,8 @@ namespace ssGUI
         ssGUI::ImageData* defaultImg;
 
         auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-        size_t fileSize = 0;
-        const char* fileContent = find_embedded_file("DownArrow.png", &fileSize);
+        const uint8_t* fileContent = DownArrow;
+        size_t fileSize = DownArrow_size;
         
         if(fileContent == nullptr)
         {

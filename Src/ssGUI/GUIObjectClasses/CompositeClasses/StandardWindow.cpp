@@ -1,6 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
-#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/EmbeddedResources.h"
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
@@ -657,8 +657,8 @@ namespace ssGUI
         if(DefaultIcon == nullptr)
         {
             auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-            size_t fileSize = 0;
-            const char* fileContent = find_embedded_file("WindowIcon.png", &fileSize);
+            const uint8_t* fileContent = ::WindowIcon;
+            size_t fileSize = WindowIcon_size;
             
             if(fileContent == nullptr)
             {

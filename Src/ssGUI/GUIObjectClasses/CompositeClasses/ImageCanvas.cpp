@@ -1,7 +1,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/ImageCanvas.hpp"
 
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
-#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/EmbeddedResources.h"
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/Border.hpp"
@@ -828,8 +828,8 @@ namespace ssGUI
         if(DefaultRotationCursor == nullptr)
         {
             auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-            size_t fileSize = 0;
-            const char* fileContent = find_embedded_file("RotationCursor.png", &fileSize);
+            const uint8_t* fileContent = RotationCursor;
+            size_t fileSize = RotationCursor_size;
             
             if(fileContent == nullptr)
             {
