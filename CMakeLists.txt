@@ -187,6 +187,7 @@ set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name fo
 # ssTest 
 # ==========================================================
 
+set(ssTEST_BUILD_CHECK OFF)
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
 set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
@@ -457,7 +458,6 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName targetsToL
 
         # Link targets
         foreach(linkTarget ${targetsToLink})
-            message("Linking: ${linkTarget}")
             target_link_libraries("${CUR_NAME}" PUBLIC ${linkTarget})
         endforeach()
 
@@ -498,20 +498,21 @@ if(ssGUI_BUILD_TESTS)
     
     add_library(ssGUI_Test_Resources "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/TestsResources.c")
     target_include_directories(ssGUI_Test_Resources PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Src/Tests")
+    set_target_properties(ssGUI_Test_Resources PROPERTIES FOLDER "Tests")
 
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
-                            "AutoTests/BackendTests"
+                            "Tests/AutoTests/BackendTests"
                             "ssGUI;ssGUI_Test_Resources")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
-                            "AutoTests/EventCallbackTests"
+                            "Tests/AutoTests/EventCallbackTests"
                             "ssGUI;ssGUI_Test_Resources")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/GUIObjectTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/GUIObjectTests/" 
-                            "AutoTests/GUIObjectTests"
+                            "Tests/AutoTests/GUIObjectTests"
                             "ssGUI;ssGUI_Test_Resources")    
     
     if(WIN32)
@@ -528,27 +529,27 @@ if(ssGUI_BUILD_TESTS)
 
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 
-                            "ManualTests/BackendTests"
+                            "Tests/ManualTests/BackendTests"
                             "ssGUI;ssGUI_Test_Resources")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" 
-                            "ManualTests/EventCallbackTests"
+                            "Tests/ManualTests/EventCallbackTests"
                             "ssGUI;ssGUI_Test_Resources")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/GUIObjectTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/GUIObjectTests/" 
-                            "ManualTests/GUIObjectTests"
+                            "Tests/ManualTests/GUIObjectTests"
                             "ssGUI;ssGUI_Test_Resources")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" 
-                            "AutoTests"
+                            "Tests/AutoTests"
                             "ssGUI;ssGUI_Test_Resources")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/" 
-                            "ManualTests"
+                            "Tests/ManualTests"
                             "ssGUI;ssGUI_Test_Resources")
 endif()
 
@@ -570,6 +571,7 @@ if(ssGUI_BUILD_EXAMPLES)
     
     add_library(ssGUI_Example_Resources "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/ExamplesResources.c")
     target_include_directories(ssGUI_Example_Resources PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Src/Examples")
+    set_target_properties(ssGUI_Example_Resources PROPERTIES FOLDER "Examples")
 
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Examples/" 
