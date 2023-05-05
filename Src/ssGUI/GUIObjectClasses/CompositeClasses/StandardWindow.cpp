@@ -676,6 +676,10 @@ namespace ssGUI
     
     void StandardWindow::CleanUpDefaultResources()
     {
+        auto* iconObj = GetWindowIconGUIObject();
+        if(iconObj != nullptr)
+            iconObj->SetImageData(nullptr);
+    
         if(DefaultIcon != nullptr)
         {
             ssGUI::Dispose(DefaultIcon);
