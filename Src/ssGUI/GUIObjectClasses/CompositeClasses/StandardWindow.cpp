@@ -1,6 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 
-#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/EmbeddedResources.h"
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/Image.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"
@@ -320,17 +320,28 @@ namespace ssGUI
         UpdateCloseButton();
 
         StandardWindowObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* standardWindow = static_cast<ssGUI::StandardWindow*>(info.Container);
+                
+                ssGUI::StandardWindow::StandardWindowObjectCount--;
+        
+                if(ssGUI::StandardWindow::StandardWindowObjectCount == 0)
+                    standardWindow->CleanUpDefaultResources();
+            }
+        );
+        
         ssLOG_FUNC_EXIT();
     }
 
     StandardWindow::~StandardWindow()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-
-        StandardWindowObjectCount--;
-        
-        if(StandardWindowObjectCount == 0)
-            CleanUpDefaultResources();
 
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
@@ -646,8 +657,8 @@ namespace ssGUI
         if(DefaultIcon == nullptr)
         {
             auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-            size_t fileSize = 0;
-            const char* fileContent = find_embedded_file("WindowIcon.png", &fileSize);
+            const uint8_t* fileContent = ::WindowIcon;
+            size_t fileSize = WindowIcon_size;
             
             if(fileContent == nullptr)
             {
@@ -665,6 +676,10 @@ namespace ssGUI
     
     void StandardWindow::CleanUpDefaultResources()
     {
+        auto* iconObj = GetWindowIconGUIObject();
+        if(iconObj != nullptr)
+            iconObj->SetImageData(nullptr);
+    
         if(DefaultIcon != nullptr)
         {
             ssGUI::Dispose(DefaultIcon);

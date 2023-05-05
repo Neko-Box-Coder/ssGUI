@@ -113,6 +113,21 @@ namespace ssGUI
         );
     
         DropdownObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* dropdown = static_cast<ssGUI::Dropdown*>(info.Container);
+                
+                ssGUI::Dropdown::DropdownObjectCount--;
+        
+                if(ssGUI::Dropdown::DropdownObjectCount == 0)
+                    dropdown->CleanUpDefaultResources();
+            }
+        );
     }
 
     int Dropdown::DropdownObjectCount = 0;

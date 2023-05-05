@@ -1,11 +1,8 @@
 #include "ssTest.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
+#include "TestsResources.h"
 
-#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\Resources\\";
-#else
-    std::string ResourcesFolderPath = "./Resources/";
-#endif
+#include <fstream>
 
 ssGUI::EventCallback* Callback = nullptr;
 ssGUI::Text* TextObj = nullptr;
@@ -14,6 +11,17 @@ int ListenerNum = 0;
 
 int main()
 {
+    std::fstream checkExistFs;
+    checkExistFs.open("./arial.ttf");
+    if(checkExistFs.fail())
+    {
+        std::ofstream ofs("./arial.ttf", std::ofstream::binary | std::ofstream::out);
+        ofs.write((char*)ssGUI_Test_arial, ssGUI_Test_arial_size);
+        ofs.close();
+    }
+    else
+        checkExistFs.close();
+
     ssTEST_INIT();
 
     ssTEST_SET_UP
@@ -22,7 +30,7 @@ int main()
         Callback->SetEventType(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE);
         TextObj = ssGUI::Factory::Create<ssGUI::Text>();
         CustomFont = ssGUI::Factory::Create<ssGUI::Font>();
-        CustomFont->GetBackendFontInterface()->LoadFromPath(ResourcesFolderPath+"arial.ttf");
+        CustomFont->GetBackendFontInterface()->LoadFromPath("./arial.ttf");
         
         
         //Timing is making sure the listener is triggered **before** the event
@@ -55,7 +63,7 @@ int main()
         TextObj->AddFont(CustomFont);
         ssTEST_OUTPUT_ASSERT("Text font", TextObj->GetFontsCount() == 1 && ListenerNum == 1);
         
-        ssGUI::Text::AddDefaultFont()->GetBackendFontInterface()->LoadFromPath(ResourcesFolderPath+"arial.ttf");
+        ssGUI::Text::AddDefaultFont()->GetBackendFontInterface()->LoadFromPath("./arial.ttf");
         ssTEST_OUTPUT_ASSERT("Default font not triggering event", TextObj->GetDefaultFontsCount() == 2 && ListenerNum == 1);
     }
 

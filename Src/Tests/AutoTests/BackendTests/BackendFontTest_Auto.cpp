@@ -5,6 +5,7 @@
 #include "ssTest.hpp"
 #include "ssLogger/ssLog.hpp"
 
+#include "TestsResources.h"
 #include <fstream>
 
 //TODO: Atm SFML backend seems to crash regarding about wgl context, need to look into it.
@@ -13,14 +14,30 @@
 
 ssGUI::Backend::BackendFontInterface* TestFont = nullptr;
 
-#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\Resources\\";
-#else
-    std::string ResourcesFolderPath = "./Resources/";
-#endif
-
 int main()
 {
+    std::fstream checkExistFs;
+    checkExistFs.open("./arial.ttf");
+    if(checkExistFs.fail())
+    {
+        std::ofstream ofs("./arial.ttf", std::ofstream::binary | std::ofstream::out);
+        ofs.write((char*)ssGUI_Test_arial, ssGUI_Test_arial_size);
+        ofs.close();
+    }
+    else
+        checkExistFs.close();
+    
+    checkExistFs.open("./NotoColorEmoji.ttf");
+    
+    if(checkExistFs.fail())
+    {
+        std::ofstream ofs("./NotoColorEmoji.ttf", std::ofstream::binary | std::ofstream::out);
+        ofs.write((char*)ssGUI_Test_NotoColorEmoji, ssGUI_Test_NotoColorEmoji_size);
+        ofs.close();
+    }
+    else
+        checkExistFs.close();
+    
     ssTEST_INIT();
 
     ssTEST_SET_UP
@@ -39,14 +56,14 @@ int main()
     {
         ssTEST_OUTPUT_ASSERT("Not loaded", !TestFont->IsValid());
 
-        TestFont->LoadFromPath(ResourcesFolderPath+"arial.ttf");
+        TestFont->LoadFromMemory((void*)ssGUI_Test_arial, ssGUI_Test_arial_size);
 
         ssTEST_OUTPUT_ASSERT("loaded", TestFont->IsValid());
     }
 
     ssTEST("GetCharacterRenderInfoTest")
     {
-        TestFont->LoadFromPath(ResourcesFolderPath+"arial.ttf");
+        TestFont->LoadFromMemory((void*)ssGUI_Test_arial, ssGUI_Test_arial_size);
         
         ssGUI::CharacterRenderInfo info = TestFont->GetCharacterRenderInfo(L'A', 20);
         
@@ -106,7 +123,8 @@ int main()
     {
         ssTEST_CALL_CLEAN_UP();
         ssTEST_CALL_SET_UP();
-        ssTEST_OUTPUT_ASSERT(__func__, TestFont->LoadFromPath(ResourcesFolderPath+"arial.ttf"));
+
+        ssTEST_OUTPUT_ASSERT(__func__, TestFont->LoadFromPath("./arial.ttf"));
         //TODO: Test absolute path
     }
 
@@ -116,7 +134,7 @@ int main()
         ssTEST_CALL_SET_UP();
         
         std::ifstream fs;
-        fs.open(ResourcesFolderPath+"arial.ttf", std::ios::binary | std::ios::ate);
+        fs.open("./arial.ttf", std::ios::binary | std::ios::ate);
         if(!fs.is_open())
         {
             ssTEST_OUTPUT_ASSERT(__func__, false);
@@ -137,7 +155,7 @@ int main()
             ssTEST_CALL_CLEAN_UP();
             ssTEST_CALL_SET_UP();
             
-            TestFont->LoadFromPath(ResourcesFolderPath+"NotoColorEmoji.ttf");
+            TestFont->LoadFromPath("./NotoColorEmoji.ttf");
             
             ssTEST_OUTPUT_ASSERT("Operation", TestFont->GetFixedAvailableFontSizes(fontSizes));
             ssTEST_OUTPUT_ASSERT("Length", fontSizes.size() == 1);
@@ -153,7 +171,7 @@ int main()
     {
         ssTEST_CALL_CLEAN_UP();
         ssTEST_CALL_SET_UP();
-        TestFont->LoadFromPath(ResourcesFolderPath+"arial.ttf");   
+        TestFont->LoadFromPath("./arial.ttf");   
 
         ssGUI::ImageData data;
         ssTEST_OUTPUT_ASSERT("Operation", TestFont->GetCharacterImage(L'A', 20, data));

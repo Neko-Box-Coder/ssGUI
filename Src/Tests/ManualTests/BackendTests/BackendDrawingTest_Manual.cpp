@@ -3,12 +3,7 @@
 #include "ssLogger/ssLog.hpp"
 
 #include <thread>
-
-#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\Resources\\";
-#else
-    std::string ResourcesFolderPath = "./Resources/";
-#endif
+#include "TestsResources.h"
 
 ssGUI::Backend::BackendDrawingInterface* DrawingBackend = nullptr;
 ssGUI::Backend::BackendMainWindowInterface* WindowBackend = nullptr;
@@ -93,12 +88,12 @@ void CreateCounts(std::vector<int>& counts)
 void SetUp()
 {
     ImgBackend = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
-    if(!ImgBackend->LoadFromPath(ResourcesFolderPath+"sd.png"))
+    if(!ImgBackend->LoadImgFileFromMemory(ssGUI_Test_sd, ssGUI_Test_sd_size))
     {
         ssLOG_LINE("Failed to load image");
     }
     FontBackend = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
-    if(!FontBackend->LoadFromPath(ResourcesFolderPath+"arial.ttf"))
+    if(!FontBackend->LoadFromMemory((void*)ssGUI_Test_arial, ssGUI_Test_arial_size))
     {
         ssLOG_LINE("Failed to load font");
     }

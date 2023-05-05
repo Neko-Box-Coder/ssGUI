@@ -3,7 +3,7 @@
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
-
+#include "ExamplesResources.h"
 
 //Mask test
 int main()
@@ -33,7 +33,7 @@ int main()
     sizeEx->SetHorizontalPercentage(1);
     sizeEx->SetVerticalPercentage(1);
     ssGUI::ImageData imgData;
-    imgData.LoadFromPath("Resources/sd.png");
+    imgData.LoadImgFileFromMemory(ssGUI_Example_sd, ssGUI_Example_sd_size);
     img.SetImageData(&imgData);
 
     //Setting parents

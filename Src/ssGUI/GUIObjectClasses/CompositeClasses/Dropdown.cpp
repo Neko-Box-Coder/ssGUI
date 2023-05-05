@@ -1,6 +1,6 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
 
-#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/EmbeddedResources.h"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
 #include "ssGUI/GUIObjectClasses/Image.hpp"
@@ -143,17 +143,27 @@ namespace ssGUI
         );
         
         DropdownObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* dropdown = static_cast<ssGUI::Dropdown*>(info.Container);
+                
+                ssGUI::Dropdown::DropdownObjectCount--;
+        
+                if(ssGUI::Dropdown::DropdownObjectCount == 0)
+                    dropdown->CleanUpDefaultResources();
+            }
+        );
     }
 
     Dropdown::~Dropdown()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-
-        DropdownObjectCount--;
         
-        if(DropdownObjectCount == 0)
-            CleanUpDefaultResources();
-
         //If the object deallocation is not handled by ssGUIManager
         if(!Internal_IsDeleted())
             Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{DropdownMenu});
@@ -348,8 +358,8 @@ namespace ssGUI
         ssGUI::ImageData* defaultImg;
 
         auto data = ssGUI::Factory::Create<ssGUI::ImageData>();
-        size_t fileSize = 0;
-        const char* fileContent = find_embedded_file("DownArrow.png", &fileSize);
+        const uint8_t* fileContent = DownArrow;
+        size_t fileSize = DownArrow_size;
         
         if(fileContent == nullptr)
         {

@@ -1,7 +1,7 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
-#include "ssGUI/EmbeddedResources.hpp"
+#include "ssGUI/EmbeddedResources.h"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "glm/gtx/norm.hpp"
@@ -1302,15 +1302,26 @@ namespace ssGUI
         );
         
         TextObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* text = static_cast<ssGUI::Text*>(info.Container);
+                
+                ssGUI::Text::TextObjectCount--;
+                
+                if(ssGUI::Text::TextObjectCount == 0)
+                    text->CleanUpDefaultResources();
+            }
+        );
     }
 
     Text::~Text()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        TextObjectCount--;
-        
-        if(TextObjectCount == 0)
-            CleanUpDefaultResources();
     }
     
     void Text::ComputeCharactersPositionAndSize()
@@ -1861,6 +1872,9 @@ namespace ssGUI
         //TODO: Add max search iterations
         while (true)
         {
+            if(endIndex < startIndex)
+                return -1;
+
             //Check start and end index are valid
             while (!CharactersRenderInfos[startIndex].Valid && startIndex < CharactersRenderInfos.size()) 
             {
@@ -1888,6 +1902,9 @@ namespace ssGUI
             {
                 return midIndex;
             }
+
+            if(endIndex <= startIndex)
+                return -1;
 
             ssGUI::CharacterRenderInfo& startInfo = CharactersRenderInfos[startIndex];
             ssGUI::CharacterRenderInfo& endInfo = CharactersRenderInfos[endIndex];
@@ -2162,20 +2179,20 @@ namespace ssGUI
             return;
         }
 
-        size_t fileSize = 0;
-        char* fileContent = const_cast<char*>(find_embedded_file("NotoSans-Regular.ttf", &fileSize));
+        const uint8_t* fileContent = NotoSans_Regular;
+        size_t fileSize = NotoSans_Regular_size;
 
         if(fileContent == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
+            ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
             ssLOG_FUNC_EXIT();
             return;
         }
 
         auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromMemory(fileContent, fileSize))
+        if(!font->GetBackendFontInterface()->LoadFromMemory(const_cast<uint8_t*>(fileContent), fileSize))
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
+            ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
             ssGUI::Factory::Dispose(font);
         }
         else
