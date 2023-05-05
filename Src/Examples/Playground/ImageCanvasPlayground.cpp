@@ -3,7 +3,7 @@
 #include "ssGUI/Extensions/Border.hpp"
 
 #include "ssLogger/ssLog.hpp"
-
+#include "ExamplesResources.h"
 
 //Image Test
 int main()
@@ -11,7 +11,7 @@ int main()
     ssGUI::MainWindow mainWindow;
 
     ssGUI::ImageData data;
-    data.LoadFromPath("Resources/sd.png");
+    data.LoadImgFileFromMemory(ssGUI_Example_sd, ssGUI_Example_sd_size);
     
     //Creating an image widget
     ssGUI::ImageCanvas imageCanvas;

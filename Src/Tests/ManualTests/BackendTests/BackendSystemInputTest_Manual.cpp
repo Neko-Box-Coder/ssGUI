@@ -3,6 +3,7 @@
 #include "ssGUI/Factory.hpp"
 #include "ssLogger/ssLog.hpp"
 #include "ssGUI/HelperClasses/GenericInputToString.hpp"
+#include "TestsResources.h"
 
 #include <iostream>
 #include <thread>
@@ -12,12 +13,6 @@ ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;
 ssGUI::Backend::BackendMainWindowInterface* TestWindow = nullptr;
 ssGUI::Backend::BackendSystemInputInterface* BackendInput = nullptr;
 bool ShowInfo = true;
-
-#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\Resources\\";
-#else
-    std::string ResourcesFolderPath = "./Resources/";
-#endif
 
 void SetUp()
 {
@@ -209,7 +204,7 @@ void CustomCursorTest()
 
         ssGUI::Backend::BackendImageInterface* img = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
         //if(!img->LoadFromPath(ResourcesFolderPath+"CustomCursor.png"))           //https://www.pngwing.com/en/free-png-zgwrc
-        if(!img->LoadFromPath(ResourcesFolderPath+"sd.png"))
+        if(!img->LoadImgFileFromMemory(ssGUI_Test_sd, ssGUI_Test_sd_size))
         // if(!img.LoadFromPath(ResourcesFolderPath+"BlueCursor.png"))          //https://www.subpng.com/png-ttdxzq/
         {
             ssLOG_SIMPLE("Failed to load");

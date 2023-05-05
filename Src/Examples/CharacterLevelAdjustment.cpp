@@ -1,6 +1,9 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "glm/geometric.hpp"
 
+#include "ExamplesResources.h"
+#include "ssGUI/EmbeddedResources.h"
+
 //Readme example
 int main()
 {
@@ -12,12 +15,12 @@ int main()
     
     ssGUI::Font boldFont;
     ssGUI::Font normalFont;
-    if(!boldFont.GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Bold.ttf"))
+    if(!boldFont.GetBackendFontInterface()->LoadFromMemory((void*)ssGUI_Example_NotoSans_Bold, ssGUI_Example_NotoSans_Bold_size))
     {
         std::cout<<"failed to import font\n";
         return 0;
     }
-    if(!normalFont.GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
+    if(!normalFont.GetBackendFontInterface()->LoadFromMemory((void*)NotoSans_Regular, NotoSans_Regular_size))
     {
         std::cout<<"failed to import font\n";
         return 0;

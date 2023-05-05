@@ -1,16 +1,11 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssLogger/ssLog.hpp"
+#include "TestsResources.h"
 
 ssGUI::MainWindow* MainWindow = nullptr;
 ssGUI::ssGUIManager* Manager = nullptr;
 ssGUI::Text* TestText = nullptr;
 ssGUI::Font* TestFont = nullptr;
-
-#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\Resources\\";
-#else
-    std::string ResourcesFolderPath = "./Resources/";
-#endif
 
 ssGUI::Enums::GenericButtonAndKeyInput TestMode = ssGUI::Enums::NO_INPUT;
 
@@ -28,7 +23,7 @@ void SetUp()
     "incididunt ut labore et dolore magna aliqua.\nJust\ta\tsentence\tfor\ttesting\ttabs.\na\ta\ta\ta\ta\ta\ta");
     
     TestFont = ssGUI::Create<ssGUI::Font>();
-    TestFont->LoadFromPath(ResourcesFolderPath+"NotoSans-Bold.ttf");
+    TestFont->LoadFromMemory((void*)ssGUI_Test_NotoSans_Bold, ssGUI_Test_NotoSans_Bold_size);
 }
 
 void CleanUp()

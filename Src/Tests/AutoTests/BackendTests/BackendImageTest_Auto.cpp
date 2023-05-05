@@ -1,19 +1,27 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssTest.hpp"
+#include "TestsResources.h"
+#include "ssGUI/EmbeddedResources.h"
 
 #include <fstream>
 #include <thread>
 
 ssGUI::Backend::BackendImageInterface* TestImage = nullptr;
-#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\Resources\\";
-#else
-    std::string ResourcesFolderPath = "./Resources/";
-#endif
 
 int main()
 {
+    std::fstream checkExistFs;
+    checkExistFs.open("./sd.png");
+    if(checkExistFs.fail())
+    {
+        std::ofstream ofs("./sd.png", std::ofstream::binary | std::ofstream::out);
+        ofs.write((char*)ssGUI_Test_sd, ssGUI_Test_sd_size);
+        ofs.close();
+    }
+    else
+        checkExistFs.close();
+
     ssTEST_INIT();
 
     ssTEST_SET_UP
@@ -35,7 +43,7 @@ int main()
             ssTEST_OUTPUT_SKIP("Image loaded");
         #else
             ssTEST_OUTPUT_ASSERT("No Image loaded", TestImage->GetRawHandle() == nullptr);
-            TestImage->LoadFromPath(ResourcesFolderPath+"sd.png");
+            TestImage->LoadFromPath("./sd.png");
             ssTEST_OUTPUT_ASSERT("Image loaded", TestImage->GetRawHandle() != nullptr);
         #endif
     }
@@ -46,30 +54,20 @@ int main()
         ssTEST_CALL_SET_UP();
 
         ssTEST_OUTPUT_ASSERT("No image loaded", !TestImage->IsValid());
-        TestImage->LoadFromPath(ResourcesFolderPath+"sd.png");
+        TestImage->LoadFromPath("./sd.png");
         ssTEST_OUTPUT_ASSERT("Image loaded", TestImage->IsValid());
     }
 
     ssTEST("LoadFromPathTest")
     {
-        ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadFromPath(ResourcesFolderPath+"sd.png"));
+        ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadFromPath("./sd.png"));
         ssTEST_OUTPUT_ASSERT("Validation", TestImage->GetSize().x == 293 && TestImage->GetSize().y == 293);
     }
 
     ssTEST("LoadImgFileFromMemoryTest")
     {
-        std::ifstream ifd(ResourcesFolderPath+"WindowIcon.png", std::ios::binary | std::ios::ate);
-        size_t size = ifd.tellg();
-        ifd.seekg(0, std::ios::beg);
-        
-        char* buffer = new char[size];
-        ifd.read(buffer, size);
-        ifd.close();
-        
-        ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadImgFileFromMemory(buffer, size));
+        ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadImgFileFromMemory(::WindowIcon, WindowIcon_size));
         ssTEST_OUTPUT_ASSERT("Validation", TestImage->GetSize().x == 48 && TestImage->GetSize().y == 48);
-        
-        delete[] buffer;
     };
 
     //This is retarded how MSVC not evaluating this as constant
