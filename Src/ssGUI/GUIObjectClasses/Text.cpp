@@ -1861,6 +1861,9 @@ namespace ssGUI
         //TODO: Add max search iterations
         while (true)
         {
+            if(endIndex < startIndex)
+                return -1;
+
             //Check start and end index are valid
             while (!CharactersRenderInfos[startIndex].Valid && startIndex < CharactersRenderInfos.size()) 
             {
@@ -1888,6 +1891,9 @@ namespace ssGUI
             {
                 return midIndex;
             }
+
+            if(endIndex <= startIndex)
+                return -1;
 
             ssGUI::CharacterRenderInfo& startInfo = CharactersRenderInfos[startIndex];
             ssGUI::CharacterRenderInfo& endInfo = CharactersRenderInfos[endIndex];
