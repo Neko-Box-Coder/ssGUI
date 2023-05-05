@@ -457,6 +457,7 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName targetsToL
 
         # Link targets
         foreach(linkTarget ${targetsToLink})
+            message("Linking: ${linkTarget}")
             target_link_libraries("${CUR_NAME}" PUBLIC ${linkTarget})
         endforeach()
 
@@ -516,7 +517,7 @@ if(ssGUI_BUILD_TESTS)
     if(WIN32)
         file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
         file(   COPY "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.bat"
-                DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.bat")
+                DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests")
         #execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.bat" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.bat")
     else()
         file(   CHMOD "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.sh"
