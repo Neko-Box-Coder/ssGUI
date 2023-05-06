@@ -66,13 +66,13 @@ namespace ssGUI
                     CharactersRenderInfos(),
                     ProcessedCharacterDetails(),
                     Overflow(false),
-                    FontSize(15),
+                    FontSize(17),
                     TextColor(0, 0, 0, 255),
                     TextUnderline(false),
                     MultilineAllowed(true),
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING),
-                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT),
-                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP),
+                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER),
+                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER),
                     CurrentFonts(),
                     HorizontalPadding(5),
                     VerticalPadding(5),
@@ -100,7 +100,7 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
-    
+        
         TextObjectCount++;
         
         AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
