@@ -201,7 +201,6 @@ namespace Extensions
             DockPreivewLeft->Delete();
             DockPreivewLeft = nullptr;
         }
-        Container->RedrawObject();
     }
 
     void Dockable::DiscardTopPreview()
@@ -211,7 +210,6 @@ namespace Extensions
             DockPreivewTop->Delete();
             DockPreivewTop = nullptr;
         }
-        Container->RedrawObject();
     }
 
     void Dockable::DiscardRightPreview()
@@ -221,7 +219,6 @@ namespace Extensions
             DockPreivewRight->Delete();
             DockPreivewRight = nullptr;
         }
-        Container->RedrawObject();
     }
 
     void Dockable::DiscardBottomPreview()
@@ -231,7 +228,6 @@ namespace Extensions
             DockPreivewBottom->Delete();
             DockPreivewBottom = nullptr;
         }
-        Container->RedrawObject();
     }
 
 
@@ -618,8 +614,6 @@ namespace Extensions
             DockTriggerLeft->Delete();
             DockTriggerLeft = nullptr;
         }
-
-        Container->RedrawObject();
     }
     
     const std::string Dockable::EXTENSION_NAME = "Dockable";
