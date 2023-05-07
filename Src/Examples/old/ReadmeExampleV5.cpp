@@ -12,7 +12,7 @@ int main()
     ssGUI::Text text;                                                           //Create a text widget and set the respective properties
     text.SetNewTextFontSize(17);
     text.SetText("Click on the button to show the message");
-    text.SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);  //We center the text right above the button we will be adding later
+    text.SetTextAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);  //We center the text right above the button we will be adding later
     text.SetParent(&mainWindow);                                                //Attach text to main window, the layout will control its size.
     
     ssGUI::StandardButton button;                                               //Create a standard button, just a fancier button.

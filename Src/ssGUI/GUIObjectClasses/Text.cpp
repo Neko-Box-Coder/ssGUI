@@ -27,11 +27,11 @@ namespace ssGUI
         TextUnderline = other.IsNewTextUnderlined();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
-        CurrentHorizontalAlignment = other.GetHorizontalAlignment();
-        CurrentVerticalAlignment = other.GetVerticalAlignment();
+        CurrentHorizontalAlignment = other.GetTextHorizontalAlignment();
+        CurrentVerticalAlignment = other.GetTextVerticalAlignment();
         CurrentFonts = other.CurrentFonts;
-        HorizontalPadding = other.GetHorizontalPadding();
-        VerticalPadding = other.GetVerticalPadding();
+        HorizontalPadding = other.GetTextHorizontalPadding();
+        VerticalPadding = other.GetTextVerticalPadding();
         CharacterSpace = other.GetCharacterSpace();
         LineSpace = other.GetLineSpace();
         TabSize = other.GetTabSize();
@@ -254,7 +254,7 @@ namespace ssGUI
         ssLOG_FUNC_ENTRY();
         
         int currentWordIndex = 0;
-        float currentLineLength = GetHorizontalPadding();
+        float currentLineLength = GetTextHorizontalPadding();
         float currentWordLength = 0;
         float drawXOffset = 0;
 
@@ -296,7 +296,7 @@ namespace ssGUI
             {
                 currentWordIndex = i;
                 currentWordLength = 0;
-                currentLineLength = GetHorizontalPadding();
+                currentLineLength = GetTextHorizontalPadding();
                 drawXOffset = 0;
             }
 
@@ -307,7 +307,7 @@ namespace ssGUI
             if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t') || i == lastValidIndex)
             {
                 //check if adding current word length to current line length exceeds widget width
-                if(currentWordLength - GetCharacterSpace() + currentLineLength + GetHorizontalPadding() > GetSize().x)
+                if(currentWordLength - GetCharacterSpace() + currentLineLength + GetTextHorizontalPadding() > GetSize().x)
                 {
                     //If the word is already at newline, set overflow
                     if(CharactersRenderInfos[currentWordIndex].CharacterAtNewline)
@@ -315,9 +315,9 @@ namespace ssGUI
                     //Otherwise, reposition the word to the newlne
                     else
                     {
-                        float curWordXOffset = GetHorizontalPadding() - CharactersRenderInfos[currentWordIndex].BaselinePosition.x;
+                        float curWordXOffset = GetTextHorizontalPadding() - CharactersRenderInfos[currentWordIndex].BaselinePosition.x;
                         CharactersRenderInfos[currentWordIndex].CharacterAtNewline = true;
-                        currentLineLength = GetHorizontalPadding();
+                        currentLineLength = GetTextHorizontalPadding();
 
                         for(int j = currentWordIndex; j < i; j++)
                             CharactersRenderInfos[j].BaselinePosition.x += curWordXOffset;
@@ -344,7 +344,7 @@ namespace ssGUI
     {
         ssLOG_FUNC_ENTRY();
 
-        float currentLineLength = GetHorizontalPadding();
+        float currentLineLength = GetTextHorizontalPadding();
         float drawXOffset = 0;
 
         //First pass, Construct render infos as no character wrapping
@@ -367,12 +367,12 @@ namespace ssGUI
             //Check for newline. If so, reset word and line settings
             if(curRenderInfo.CharacterAtNewline)
             {
-                currentLineLength = GetHorizontalPadding();
+                currentLineLength = GetTextHorizontalPadding();
                 drawXOffset = 0;
             }
 
             //If exceed widget width
-            if(currentLineLength + characterLength + GetHorizontalPadding() > GetSize().x)
+            if(currentLineLength + characterLength + GetTextHorizontalPadding() > GetSize().x)
             {
                 //If this character is already at newline, set overflow
                 if(curRenderInfo.CharacterAtNewline)
@@ -380,9 +380,9 @@ namespace ssGUI
                 //Otherwise, move character to newline
                 else
                 {
-                    drawXOffset = GetHorizontalPadding() - curRenderInfo.BaselinePosition.x;
+                    drawXOffset = GetTextHorizontalPadding() - curRenderInfo.BaselinePosition.x;
                     curRenderInfo.CharacterAtNewline = true;
-                    currentLineLength = GetHorizontalPadding();
+                    currentLineLength = GetTextHorizontalPadding();
                 }
             }
             currentLineLength += characterLength;
@@ -397,7 +397,7 @@ namespace ssGUI
     void Text::ConstructRenderInfosForNoWrapping(bool checkValid)
     {
         ssLOG_FUNC_ENTRY();
-        float drawXPos = GetHorizontalPadding();
+        float drawXPos = GetTextHorizontalPadding();
 
         wchar_t prevChar = 0;
         Overflow = false;
@@ -450,7 +450,7 @@ namespace ssGUI
                 //Check newline
                 if(nextCharIsAtNewline)
                 {
-                    drawXPos = GetHorizontalPadding();
+                    drawXPos = GetTextHorizontalPadding();
                     curRenderInfo.CharacterAtNewline = true;
                     nextCharIsAtNewline = false;
                 }
@@ -470,7 +470,7 @@ namespace ssGUI
                         break;
                     case L'\t': 
                     {
-                        float newPos = GetClosestTabSpace(GetHorizontalPadding(), whitespaceWidth * GetTabSize(), drawXPos);
+                        float newPos = GetClosestTabSpace(GetTextHorizontalPadding(), whitespaceWidth * GetTabSize(), drawXPos);
                         float actualTabSpace = newPos - drawXPos;
                         drawXPos += actualTabSpace;
                         CharactersRenderInfos[i].Advance = actualTabSpace;
@@ -486,7 +486,7 @@ namespace ssGUI
                         break;
                 }
 
-                if(drawXPos + GetHorizontalPadding() > GetSize().x)
+                if(drawXPos + GetTextHorizontalPadding() > GetSize().x)
                     Overflow = true;   
             }
             else 
@@ -505,7 +505,7 @@ namespace ssGUI
                 //Check newline
                 if(nextCharIsAtNewline)
                 {
-                    drawXPos = GetHorizontalPadding();
+                    drawXPos = GetTextHorizontalPadding();
                     curRenderInfo.CharacterAtNewline = true;
                     nextCharIsAtNewline = false;
                 }
@@ -514,7 +514,7 @@ namespace ssGUI
 
                 drawXPos += characterLength + GetCharacterSpace();
 
-                if(drawXPos + GetHorizontalPadding() > GetSize().x)
+                if(drawXPos + GetTextHorizontalPadding() > GetSize().x)
                     Overflow = true;                    
             }
         }
@@ -619,7 +619,7 @@ namespace ssGUI
                 }
 
                 //Update vertical overflow
-                if(!IsOverflow() && CharactersRenderInfos[currentIndex].BaselinePosition.y + GetVerticalPadding() * 2 > GetSize().y)
+                if(!IsOverflow() && CharactersRenderInfos[currentIndex].BaselinePosition.y + GetTextVerticalPadding() * 2 > GetSize().y)
                     Overflow = true;
 
                 break;
@@ -661,7 +661,7 @@ namespace ssGUI
                     lineEndPos =    CharactersRenderInfos[i-1].BaselinePosition.x + 
                                     CharactersRenderInfos[i-1].DrawOffset.x * CharactersRenderInfos[i-1].TargetSizeMultiplier +
                                     CharactersRenderInfos[i-1].Size.x * CharactersRenderInfos[i-1].TargetSizeMultiplier + 
-                                    GetHorizontalPadding();
+                                    GetTextHorizontalPadding();
                     float alignOffset = 0; 
 
                     switch(CurrentHorizontalAlignment)
@@ -694,7 +694,7 @@ namespace ssGUI
                 lineEndPos =    CharactersRenderInfos[i].BaselinePosition.x + 
                                 CharactersRenderInfos[i].DrawOffset.x * CharactersRenderInfos[i].TargetSizeMultiplier +
                                 CharactersRenderInfos[i].Size.x * CharactersRenderInfos[i].TargetSizeMultiplier + 
-                                GetHorizontalPadding();
+                                GetTextHorizontalPadding();
                 float alignOffset = 0; 
 
                 switch(CurrentHorizontalAlignment)
@@ -730,11 +730,11 @@ namespace ssGUI
             }
         }
 
-        lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetVerticalPadding();
+        lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetTextVerticalPadding();
         switch(CurrentVerticalAlignment)
         {
             case ssGUI::Enums::AlignmentVertical::TOP:
-                alignOffset = GetVerticalPadding();
+                alignOffset = GetTextVerticalPadding();
                 break;
         
             case ssGUI::Enums::AlignmentVertical::CENTER:
@@ -1633,31 +1633,31 @@ namespace ssGUI
         return WrappingMode;
     }
 
-    void Text::SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
+    void Text::SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
     {
         CurrentHorizontalAlignment = align;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    ssGUI::Enums::AlignmentHorizontal Text::GetHorizontalAlignment() const
+    ssGUI::Enums::AlignmentHorizontal Text::GetTextHorizontalAlignment() const
     {
         return CurrentHorizontalAlignment;
     }
 
-    void Text::SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
+    void Text::SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
     {
         CurrentVerticalAlignment = align;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    ssGUI::Enums::AlignmentVertical Text::GetVerticalAlignment() const
+    ssGUI::Enums::AlignmentVertical Text::GetTextVerticalAlignment() const
     {
         return CurrentVerticalAlignment;
     }
     
-    void Text::SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
+    void Text::SetTextAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
     {
         CurrentHorizontalAlignment = hori;
         CurrentVerticalAlignment = vert;
@@ -1730,26 +1730,26 @@ namespace ssGUI
         return CurrentFonts.size();
     }
 
-    void Text::SetHorizontalPadding(float padding)
+    void Text::SetTextHorizontalPadding(float padding)
     {
         HorizontalPadding = padding;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    float Text::GetHorizontalPadding() const
+    float Text::GetTextHorizontalPadding() const
     {
         return HorizontalPadding;
     }
 
-    void Text::SetVerticalPadding(float padding)
+    void Text::SetTextVerticalPadding(float padding)
     {
         VerticalPadding = padding;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    float Text::GetVerticalPadding() const
+    float Text::GetTextVerticalPadding() const
     {
         return VerticalPadding;
     }

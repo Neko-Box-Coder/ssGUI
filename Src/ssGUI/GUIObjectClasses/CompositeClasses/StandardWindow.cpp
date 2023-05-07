@@ -75,8 +75,8 @@ namespace ssGUI
             windowTitleObj->SetNewTextFontSize(textHeight * FontSizeMultiplier);
             windowTitleObj->ApplyNewTextSettingsToExistingText();
         }
-        windowTitleObj->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-        windowTitleObj->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+        windowTitleObj->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        windowTitleObj->SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
 
         if(!windowTitleObj->HasTag(ssGUI::Tags::FLOATING))
             windowTitleObj->AddTag(ssGUI::Tags::FLOATING);

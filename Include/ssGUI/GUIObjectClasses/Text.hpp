@@ -38,12 +38,12 @@ namespace ssGUI
         bool TextUnderline;                                                             //See <IsNewTextUnderlined>
         bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
         ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
-        ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
-        ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetVerticalAlignment>
+        ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetTextHorizontalAlignment>
+        ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetTextVerticalAlignment>
         std::vector<ssGUI::Font*> CurrentFonts;                                         //See <GetFont>
 
-        float HorizontalPadding;                                                        //See <GetHorizontalPadding>
-        float VerticalPadding;                                                          //See <GetVerticalPadding>
+        float HorizontalPadding;                                                        //See <GetTextHorizontalPadding>
+        float VerticalPadding;                                                          //See <GetTextVerticalPadding>
         float CharacterSpace;                                                           //See <GetCharacterSpace>
         float LineSpace;                                                                //See <GetLineSpace>
         float TabSize;                                                                  //See <GetTabSize>
@@ -143,12 +143,12 @@ namespace ssGUI
             bool TextUnderline;                                                             //See <IsNewTextUnderlined>
             bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
             ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
-            ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
-            ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetVerticalAlignment>
+            ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetTextHorizontalAlignment>
+            ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetTextVerticalAlignment>
             std::vector<ssGUI::Font*> CurrentFonts;                                         //See <GetFont>
 
-            float HorizontalPadding;                                                        //See <GetHorizontalPadding>
-            float VerticalPadding;                                                          //See <GetVerticalPadding>
+            float HorizontalPadding;                                                        //See <GetTextHorizontalPadding>
+            float VerticalPadding;                                                          //See <GetTextVerticalPadding>
             float CharacterSpace;                                                           //See <GetCharacterSpace>
             float LineSpace;                                                                //See <GetLineSpace>
             float TabSize;                                                                  //See <GetTabSize>
@@ -346,20 +346,20 @@ namespace ssGUI
             //Gets the wrapping mode of this text widget
             virtual ssGUI::Enums::TextWrapping GetWrappingMode() const;
 
-            //function: SetHorizontalAlignment
-            virtual void SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align);
+            //function: SetTextHorizontalAlignment
+            virtual void SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align);
 
-            //function: GetHorizontalAlignment
-            virtual ssGUI::Enums::AlignmentHorizontal GetHorizontalAlignment() const;
+            //function: GetTextHorizontalAlignment
+            virtual ssGUI::Enums::AlignmentHorizontal GetTextHorizontalAlignment() const;
 
-            //function: SetVerticalAlignment
-            virtual void SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align);
+            //function: SetTextVerticalAlignment
+            virtual void SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical align);
 
-            //function: GetVerticalAlignment
-            virtual ssGUI::Enums::AlignmentVertical GetVerticalAlignment() const;
+            //function: GetTextVerticalAlignment
+            virtual ssGUI::Enums::AlignmentVertical GetTextVerticalAlignment() const;
             
-            //function: SetAlignment
-            virtual void SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert);
+            //function: SetTextAlignment
+            virtual void SetTextAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert);
 
             //function: AddFont
             //Adds the font to the end for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
@@ -381,21 +381,21 @@ namespace ssGUI
             //function: GetFontsCount
             virtual int GetFontsCount() const;
 
-            //function: SetHorizontalPadding
+            //function: SetTextHorizontalPadding
             //Sets the horizontal padding for the beginning and the end of the text
-            virtual void SetHorizontalPadding(float padding);
+            virtual void SetTextHorizontalPadding(float padding);
 
-            //function: GetHorizontalPadding
+            //function: GetTextHorizontalPadding
             //Gets the horizontal padding for the beginning and the end of the text
-            virtual float GetHorizontalPadding() const;
+            virtual float GetTextHorizontalPadding() const;
 
-            //function: SetVerticalPadding
+            //function: SetTextVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual void SetVerticalPadding(float padding);
+            virtual void SetTextVerticalPadding(float padding);
 
-            //function: GetVerticalPadding
+            //function: GetTextVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual float GetVerticalPadding() const;
+            virtual float GetTextVerticalPadding() const;
             
             //function: SetCharacterSpace
             //Sets the additional space between each character

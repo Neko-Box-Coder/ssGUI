@@ -165,7 +165,7 @@ int main()
 
     auto* fpsText = mainWindow.AddChild<ssGUI::Text>();
     fpsText->SetNewTextColor(glm::u8vec4(0, 255, 0, 255));                          //Set the fps text color to green
-    fpsText->SetAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);      //Align content to top-right within itself
+    fpsText->SetTextAlignment(AlignmentHorizontal::RIGHT, AlignmentVertical::TOP);      //Align content to top-right within itself
     fpsText->SetAnchorType(ssGUI::Enums::AnchorType::TOP_RIGHT);                    //Anchor the text widget to the top-right of the window
 
     //NOTE: It is very important to do any GL calls *AFTER* the first MainWindow creation

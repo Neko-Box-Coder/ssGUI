@@ -18,8 +18,8 @@ int main()
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetText("Click on the button to change this text.");
-    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
+    text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
 
     //Create a button and set an event callback to change the text when it is clicked
     ssGUI::Button button;

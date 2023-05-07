@@ -12,7 +12,7 @@ int main()
     auto* text = mainWindow.AddChild<ssGUI::Text>();                            //Create a text widget and set the respective properties
     text->SetNewTextFontSize(17);
     text->SetText("Click on the button to show the message");
-    text->SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER); //We center the text right above the button we will be adding later
+    text->SetTextAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER); //We center the text right above the button we will be adding later
     
     auto* button = ssGUI::Create<ssGUI::StandardButton>();                      //Create a standard button, just a fancier button.
     button->SetSize(glm::vec2(50, 30));

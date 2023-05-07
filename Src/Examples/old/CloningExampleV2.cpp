@@ -16,7 +16,7 @@ int main()
     auto* text = window->AddChild<ssGUI::Text>();                                       //Create a text widget and set the respective properties
     text->SetNewTextFontSize(17);
     text->SetText("Click on the button to show the message");
-    text->SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);         //We center the text right above the button we will be adding later
+    text->SetTextAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);         //We center the text right above the button we will be adding later
     
     auto* button = ssGUI::Create<ssGUI::StandardButton>();                              //Create a standard button, just a fancier button.
     button->SetSize(glm::vec2(50, 30));
@@ -44,7 +44,7 @@ int main()
     auto* cloneButton = mainWindow.AddChild<ssGUI::StandardButton>();                   //A button for cloning the window
     cloneButton->GetButtonTextObject()->SetText("Clone!!");                             //Text for indication
     auto posExt = cloneButton->AddExtension<ssGUI::Extensions::AdvancedPosition>();     //We create an create an extension for positioning the button easily
-    posExt->SetVerticalAlignment(AlignmentVertical::BOTTOM);                            //By default, it centers the GUI Object relative to its parent, we are setting it bottom 
+    posExt->SetTextVerticalAlignment(AlignmentVertical::BOTTOM);                            //By default, it centers the GUI Object relative to its parent, we are setting it bottom 
     posExt->SetVerticalPixel(20);                                                       //Setting it to be 20 pixels from the bottom of the parent   
 
     ssGUI::ssGUIManager guiManager;                                                     //Create the GUIManager, which manages the flow of the program.

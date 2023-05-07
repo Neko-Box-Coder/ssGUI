@@ -13,8 +13,8 @@ int main()
     text.SetSize(glm::vec2(450, 45));
     text.SetNewTextFontSize(17);
     text.SetText("Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
+    text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
 
     //Create a button
     ssGUI::StandardButton button;

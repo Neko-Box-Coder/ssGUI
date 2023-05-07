@@ -25,8 +25,8 @@ int main()
     ssGUI::Text parentWidgetCaption;
     parentWidgetCaption.SetText("Parent widget GUI Object");
     parentWidgetCaption.SetSize(glm::vec2(350, 40));                                                //We set the text widget size same as the parent
-    parentWidgetCaption.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);      //So if we align the text to center
-    parentWidgetCaption.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);          //It will be the center of the widget
+    parentWidgetCaption.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);      //So if we align the text to center
+    parentWidgetCaption.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);          //It will be the center of the widget
     parentWidgetCaption.SetParent(&parentWidget);
 
     //Indicator line to visualize the position system
@@ -95,7 +95,7 @@ int main()
     ssGUI::Text positionText;
     positionText.SetPosition(glm::vec2(320, 10));
     positionText.SetSize(glm::vec2(200, 40));
-    positionText.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    positionText.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
     positionText.SetParent(&mainWindow);
 
     //Status to keep track of

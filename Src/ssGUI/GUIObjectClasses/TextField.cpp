@@ -256,7 +256,7 @@ namespace ssGUI
 
         //Find out current position from this line (Depending on alignment)
         //Right
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             curLineEnd = curLineEnd == GetLastValidCharacterIndex() ? curLineEnd + 1 : curLineEnd;
             curLinePosition = curLineEnd - curIndex;
@@ -270,7 +270,7 @@ namespace ssGUI
             return curLineStart;
 
         //Go to previous line if there's any
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             if(curLinePosition > prevLineEnd - prevLineStart)
                 return prevLineStart;
@@ -302,7 +302,7 @@ namespace ssGUI
 
         //Find out current position from this line (Depending on alignment)
         //Right
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
             curLinePosition = curLineEnd - curIndex;
         //Left and center
         else
@@ -318,7 +318,7 @@ namespace ssGUI
         }
         
         //Go to next line if there's any
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             if(curLinePosition > nextLineEnd - nextLineStart)
                 return nextLineStart;
@@ -698,10 +698,10 @@ namespace ssGUI
                     else
                         fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
                     
-                    auto horiAlignment = GetHorizontalAlignment(); 
+                    auto horiAlignment = GetTextHorizontalAlignment(); 
                     if(horiAlignment == ssGUI::Enums::AlignmentHorizontal::LEFT)
                     {
-                        drawPos.x += GetHorizontalPadding();
+                        drawPos.x += GetTextHorizontalPadding();
                     }
                     else if(horiAlignment == ssGUI::Enums::AlignmentHorizontal::CENTER)
                     {
@@ -709,7 +709,7 @@ namespace ssGUI
                     }
                     else
                     {
-                        drawPos.x += GetSize().x - GetHorizontalPadding();
+                        drawPos.x += GetSize().x - GetTextHorizontalPadding();
                     }
 
                     drawPos.y += CharactersRenderInfos[lastValidIndex].BaselinePosition.y + 
@@ -799,29 +799,29 @@ namespace ssGUI
 
             height = fontInterface->GetLineSpacing(GetNewTextFontSize()) + GetLineSpace();
             
-            switch(GetHorizontalAlignment()) 
+            switch(GetTextHorizontalAlignment()) 
             {
                 case ssGUI::Enums::AlignmentHorizontal::LEFT:
-                    drawPos.x += GetHorizontalPadding();
+                    drawPos.x += GetTextHorizontalPadding();
                     break;
                 case ssGUI::Enums::AlignmentHorizontal::CENTER:
                     drawPos.x += GetSize().x / 2;
                     break;
                 case ssGUI::Enums::AlignmentHorizontal::RIGHT:
-                    drawPos.x += GetSize().x - GetHorizontalPadding();
+                    drawPos.x += GetSize().x - GetTextHorizontalPadding();
                     break;
             }
 
-            switch(GetVerticalAlignment()) 
+            switch(GetTextVerticalAlignment()) 
             {
                 case ssGUI::Enums::AlignmentVertical::TOP:
-                    drawPos.y += GetVerticalPadding();
+                    drawPos.y += GetTextVerticalPadding();
                     break;
                 case ssGUI::Enums::AlignmentVertical::CENTER:
                     drawPos.y += GetSize().y / 2 - height / 2;
                     break;
                 case ssGUI::Enums::AlignmentVertical::BOTTOM:
-                    drawPos.y += GetSize().y - GetNewTextFontSize() - GetVerticalPadding();
+                    drawPos.y += GetSize().y - GetNewTextFontSize() - GetTextVerticalPadding();
                     break;
             }
 
@@ -923,6 +923,8 @@ namespace ssGUI
                                 ArrowNavInterval(20)
     {
         SetBlockInput(true);
+        SetTextAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT, ssGUI::Enums::AlignmentVertical::TOP);
+        
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 
         AddExtension<ssGUI::Extensions::RoundedCorners>();
