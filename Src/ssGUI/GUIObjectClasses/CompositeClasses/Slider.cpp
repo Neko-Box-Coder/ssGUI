@@ -390,12 +390,7 @@ namespace ssGUI
 
         //If there's any size or position change, we need to update the knob position
         if(GetSize() != LastSize || GetGlobalPosition() != LastGlobalPosition)
-        {
             UpdateKnobOffset();
-            auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
-            glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
-            glm::vec2 drawPosition = GetGlobalPosition();
-        }
 
         LastSliderDragging = SliderDragging;
         LastGlobalPosition = GetGlobalPosition();
