@@ -27,7 +27,7 @@ namespace ssGUI
         float KeyInputInterval;             //See <GetKeyInputMoveInterval>
         float EndPadding;                   //See <GetEndPadding>
 
-        glm::vec2 KnobGlobalPosition;       //(Internal variable) This is used for syncing the slider value and knob position
+        glm::vec2 KnobGlobalOffset;         //(Internal variable) This is used for syncing the slider value and knob position
         float CursorKnobOffset;             //(Internal variable) Offset between the cursor down position and the knob
         bool LastSliderDragging;            //(Internal variable) Used to see if the slider is being dragged last frame
         bool SliderDragging;                //(Internal variable) Flag if slider is being dragged right now
@@ -53,7 +53,7 @@ namespace ssGUI
                         ScrollInternal(0.05),
                         KeyInputInterval(0.05),
                         EndPadding(0),
-                        KnobGlobalPosition(),
+                        KnobGlobalOffset(),
                         CursorKnobOffset(0),
                         LastSliderDragging(false),
                         SliderDragging(false),
@@ -120,7 +120,7 @@ namespace ssGUI
         ); 
 
         KnobObject = CurrentObjectsReferences.GetObjectIndex(button);
-        UpdateKnobPosition(true);
+        UpdateKnobOffset();
     }
     =================================================================
     */
@@ -141,7 +141,7 @@ namespace ssGUI
             float KeyInputInterval;             //See <GetKeyInputMoveInterval>
             float EndPadding;                   //See <GetEndPadding>
 
-            glm::vec2 KnobGlobalPosition;       //(Internal variable) This is used for syncing the slider value and knob position
+            glm::vec2 KnobGlobalOffset;         //(Internal variable) This is used for syncing the slider value and knob position
             float CursorKnobOffset;             //(Internal variable) Offset between the cursor down position and the knob
             bool LastSliderDragging;            //(Internal variable) Used to see if the slider is being dragged last frame
             bool SliderDragging;                //(Internal variable) Flag if slider is being dragged right now
@@ -160,9 +160,9 @@ namespace ssGUI
 
             virtual void ApplySnapping();
 
-            virtual void UpdateKnobPosition(bool completeUpdate);
+            virtual void UpdateKnobOffset();
 
-            virtual void UpdateSliderValue();
+            virtual void UpdateSliderValueFromCursor(glm::vec2 cursorPos);
 
             virtual void ConstructRenderInfo() override;
 
