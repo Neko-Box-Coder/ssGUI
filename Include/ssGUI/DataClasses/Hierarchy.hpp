@@ -1,6 +1,8 @@
 #ifndef SSGUI_HIERARCHY_H
 #define SSGUI_HIERARCHY_H
 
+#include "ssGUI/Enums/AlignmentHorizontal.hpp"
+#include "ssGUI/Enums/AlignmentVertical.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include <vector>
@@ -120,6 +122,19 @@ namespace ssGUI
             Hierarchy(Hierarchy const& other);
 
             virtual void NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
+            
+            void AddChild(ssGUI::GUIObject* guiObject, bool compositeChild);
+            void AddChild(  ssGUI::GUIObject* guiObject,  
+                            ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                            ssGUI::Enums::AlignmentVertical verticalAlignment,
+                            bool compositeChild);
+            
+            void AddChildWithWrapper(ssGUI::GUIObject* guiObject, bool compositeChild);
+
+            void AddChildWithWrapper(   ssGUI::GUIObject* guiObject, 
+                                        ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                        ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                        bool compositeChild);
 
         public:
             Hierarchy();
@@ -147,7 +162,7 @@ namespace ssGUI
                 if(std::is_base_of<ssGUI::GUIObject, T>::value)
                 {
                     auto* guiObject = ssGUI::Factory::Create<T>();
-                    guiObject->SetParent(CurrentObject);
+                    AddChild(guiObject, compositeChild);
                     return guiObject;
                 }
                 else
@@ -157,6 +172,64 @@ namespace ssGUI
                 }
             }
 
+            //function: AddChild
+            //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
+            template<typename T>
+            T* AddChild(ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                        ssGUI::Enums::AlignmentVertical verticalAlignment, 
+                        bool compositeChild = false)
+            {
+                if(std::is_base_of<ssGUI::GUIObject, T>::value)
+                {
+                    auto* guiObject = ssGUI::Factory::Create<T>();
+                    AddChild(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
+                    return guiObject;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
+                    return nullptr;
+                }
+            }
+            
+            //function: AddChildWithWrapper
+            //Same as <AddChild> but with empty GUI object as a wrapper 
+            template<typename T>
+            T* AddChildWithWrapper(bool compositeChild = false)
+            {
+                if(std::is_base_of<ssGUI::GUIObject, T>::value)
+                {
+                    auto* guiObject = ssGUI::Factory::Create<T>();
+                    AddChildWithWrapper(guiObject, compositeChild);
+                    return guiObject;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
+                    return nullptr;
+                }
+            }
+            
+            //function: AddChildWithWrapper
+            //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
+            template<typename T>
+            T* AddChildWithWrapper( ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                    ssGUI::Enums::AlignmentVertical verticalAlignment, 
+                                    bool compositeChild = false)
+            {
+                if(std::is_base_of<ssGUI::GUIObject, T>::value)
+                {
+                    auto* guiObject = ssGUI::Factory::Create<T>();
+                    AddChildWithWrapper(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
+                    return guiObject;
+                }
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
+                    return nullptr;
+                }
+            }
+            
             //function: IsChildComposite
             //True if the current child (see <FindChild>) belongs to this composite object
             virtual bool IsChildComposite() const;

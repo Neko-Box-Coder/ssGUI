@@ -979,37 +979,6 @@ namespace Extensions
         }
     }
 
-    ssGUI::GUIObject* Layout::AddChildWithWrapper(ssGUI::GUIObject* child)
-    {
-        if(Container == nullptr)
-            return nullptr;
-
-        ssGUI::GUIObject* wrapper = ssGUI::Factory::Create<ssGUI::GUIObject>();
-        wrapper->SetParent(Container);
-        wrapper->SetUserCreated(false);
-
-        child->SetParent(wrapper);
-        return wrapper;
-    }
-
-    ssGUI::GUIObject* Layout::AddChildWithAlignment(ssGUI::GUIObject* child, ssGUI::Enums::AlignmentHorizontal horizontal, ssGUI::Enums::AlignmentVertical vertical)
-    {
-        ssGUI::GUIObject* wrapper = AddChildWithWrapper(child);
-        
-        if(wrapper != nullptr)
-        {
-            if(!child->IsAnyExtensionExist<ssGUI::Extensions::AdvancedPosition>())
-                child->AddExtension<ssGUI::Extensions::AdvancedPosition>();
-        
-            ssGUI::Extensions::AdvancedPosition* ap = child->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        
-            ap->SetHorizontalAlignment(horizontal);
-            ap->SetVerticalAlignment(vertical);
-        }
-        
-        return wrapper;
-    }
-
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
         ssLOG_FUNC_ENTRY();

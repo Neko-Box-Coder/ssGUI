@@ -1,5 +1,6 @@
 #include "ssGUI/DataClasses/Hierarchy.hpp"
 
+#include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 #include "ssGUI/DataClasses/EventCallbackManager.hpp"
 #include "ssGUI/DataClasses/Renderer.hpp"
@@ -46,6 +47,38 @@ namespace ssGUI
             CurrentEventCallbackManager->RemoveEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY);
         }
         ssLOG_FUNC_EXIT();
+    }
+    
+    void Hierarchy::AddChild(ssGUI::GUIObject* guiObject,bool compositeChild)
+    {
+        guiObject->SetParent(CurrentObject, compositeChild);
+    }
+    
+    void Hierarchy::AddChild(   ssGUI::GUIObject* guiObject,  
+                                ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                bool compositeChild)
+    {
+        AddChild(guiObject, compositeChild);
+        auto* ap = guiObject->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+        ap->SetAlignment(horizontalAlignment, verticalAlignment);
+    }
+    
+    void Hierarchy::AddChildWithWrapper(ssGUI::GUIObject* guiObject, bool compositeChild)
+    {
+        auto* wrapper = ssGUI::Create<ssGUI::GUIObject>();
+        AddChild(wrapper, compositeChild);
+        wrapper->AddChild(guiObject, compositeChild);
+    }
+    
+    void Hierarchy::AddChildWithWrapper(ssGUI::GUIObject* guiObject,  
+                                        ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                        ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                        bool compositeChild)
+    {
+        AddChildWithWrapper(guiObject, compositeChild);
+        auto* ap = guiObject->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+        ap->SetAlignment(horizontalAlignment, verticalAlignment);
     }
 
     Hierarchy::Hierarchy() :    Parent(-1),
