@@ -22,12 +22,12 @@ namespace ssGUI
         if(IsVertical())
         {
             GetKnobObject()->SetSize(glm::vec2(GetSize().x - SidePadding * 2, GetSize().y * GetScrollbarSize()));
-            UpdateKnobPosition(true);
+            UpdateKnobOffset();
         }
         else
         {
             GetKnobObject()->SetSize(glm::vec2(GetSize().x * GetScrollbarSize(), GetSize().y - SidePadding * 2));
-            UpdateKnobPosition(true);
+            UpdateKnobOffset();
         }
     }
 

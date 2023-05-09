@@ -454,7 +454,7 @@ namespace ssGUI
                                     PostGUIRenderEventListeners(), PostGUIRenderEventListenersValid(), 
                                     PostGUIRenderEventListenersNextFreeIndices(), OnCustomRenderEventListeners(),
                                     OnCustomRenderEventListenersValid(), OnCustomRenderEventListenersNextFreeIndices(), 
-                                    IsCustomRendering(false), ForceRendering(false), TargetFrameInterval(20),
+                                    IsCustomRendering(false), ForceRendering(false), TargetFrameInterval(10),
                                     FrameTimeIndex(0), FrameTimes()
     {
         BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();

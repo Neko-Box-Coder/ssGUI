@@ -1,1 +1,1 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.ImageUtil","ImageUtil");NDSummary.OnSummaryLoaded("CClass:ssGUI.ImageUtil",[["C/C++","C"]],[["Classes","Class"]],[[1678,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;ImageUtil"]]);
+﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.ImageUtil","ImageUtil");NDSummary.OnSummaryLoaded("CClass:ssGUI.ImageUtil",[["C/C++","C"]],[["Classes","Class"]],[[1679,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;ImageUtil"]]);

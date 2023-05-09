@@ -10,90 +10,90 @@
 
 <script type="text/javascript">var q = window.location.search;if (q.indexOf("?Theme=") == 0){var t = q.slice(7);var e = t.indexOf(";");if (e != -1){  t = t.slice(0, e);  }if (document.documentElement.className == undefined){ document.documentElement.className = t + "Theme"; }else{ document.documentElement.className += " " + t + "Theme"; }}</script>
 
-<a name="Topic448"></a><div class="CTopic TClass LC first">
+<a name="Topic463"></a><div class="CTopic TClass LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;ObjectsReferences</div>
- <div class="NDClassPrototype" id="NDClassPrototype448"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;ObjectsReferences</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype463"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;ObjectsReferences</div></div></div>
  <div class="CBody"><p>The purpose of this class is to track references between each GUI Objects.&nbsp; So when cloning happens, the cloned version of the GUI Objects will be referenced (if present) instead of the original GUI Objects.</p><pre class="CText">      A            A-copy<br />      │            │<br />      ├─►B         ├─►B-copy<br />      │            │<br />      ├─►C         ├─►C-copy<br />      │            │<br />      └─►D         └─►D-copy<br /><br />If B has a references to C and D.<br />Then B-copy will be referencing C-copy and D-copy instead<br />of C and D.</pre><p>This is a 2-way referencing system to prevent invalid referencing when one of the referencing GUI Objects is deleted.</p><div class="CHeading">Development Notes</div><p>If a GUI Object (Referencer) references another GUI Object (Referencee), then the GUI Object it is referencing (Referencee) will be stored in this class inside the GUI Object (Referencer)</p><p>Additionally, the GUI Object that is referencing the other object (Referencer) will be stored in ExternalObjectsDependencies in the GUI Object which is being referenced (Referencee).</p><div class="CHeading">Variables &amp; Constructor</div><pre class="CCode"><span class="SHKeyword">protected</span>:<br />    std::unordered_map&lt;ssGUIObjectIndex, ssGUI::GUIObject*&gt; ObjectsReferencesTable;         <span class="SHComment">//See &lt;GetObjectReference&gt;</span><br />    std::unordered_map&lt;ssGUI::GUIObject*, ssGUIObjectIndex&gt; ReverseObjectsReferencesTable;  <span class="SHComment">//(Internal variable) See &lt;Internal_AddExternalDependency&gt;</span><br /><br />    ssGUIObjectIndex NextFreeIndex;                                                         <span class="SHComment">//(Internal variable) Used to generate unique ssGUIObjectIndex</span><br />    std::unordered_map&lt;ObjectsReferences*, ssGUIObjectIndex&gt; ExternalObjectsDependencies;   <span class="SHComment">//(Internal variable) See &lt;Internal_AddExternalDependency&gt;</span><br />    <span class="SHKeyword">bool</span> CleanedUp;                                                                         <span class="SHComment">//(Internal variable) See &lt;CleanUp&gt;</span></pre><pre class="CCode">ObjectsReferences::ObjectsReferences() :    ObjectsReferencesTable(),<br />                                            ReverseObjectsReferencesTable(),<br />                                            NextFreeIndex(<span class="SHNumber">0</span>),<br />                                            ExternalObjectsDependencies(),<br />                                            CleanedUp(<span class="SHKeyword">false</span>)<br />{}</pre></div>
 </div>
 
-<a name="Functions"></a><a name="Topic449"></a><div class="CTopic TGroup LC">
+<a name="Functions"></a><a name="Topic464"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="GetObjectsReferencesCount"></a><a name="Topic450"></a><div class="CTopic TFunction LC">
+<a name="GetObjectsReferencesCount"></a><a name="Topic465"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetObjectsReferencesCount</div>
- <div id="NDPrototype450" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetObjectsReferencesCount() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype465" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> GetObjectsReferencesCount() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Returns the number of GUI Object this is referencing</p></div>
 </div>
 
-<a name="AddObjectReference"></a><a name="Topic451"></a><div class="CTopic TFunction LC">
+<a name="AddObjectReference"></a><a name="Topic466"></a><div class="CTopic TFunction LC">
  <div class="CTitle">AddObjectReference</div>
- <div id="NDPrototype451" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> ssGUIObjectIndex AddObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype466" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> ssGUIObjectIndex AddObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Adds the GUI Object to the referencing table. Returns the index of it.</p></div>
 </div>
 
-<a name="GetObjectReference"></a><a name="Topic452"></a><div class="CTopic TFunction LC">
+<a name="GetObjectReference"></a><a name="Topic467"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetObjectReference</div>
- <div id="NDPrototype452" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::GUIObject</a>* GetObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
+ <div id="NDPrototype467" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::GUIObject</a>* GetObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
  <div class="CBody"><p>Gets the referencing GUI Object of the referencing index. Nullptr is returned if invalid index.</p></div>
 </div>
 
-<a name="GetObjectReference(2)"></a><a name="Topic453"></a><div class="CTopic TFunction LC">
+<a name="GetObjectReference(2)"></a><a name="Topic468"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetObjectReference</div>
- <div id="NDPrototype453" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">template</span>&lt;typename T&gt; <span class="SHKeyword">inline</span> T* GetObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
+ <div id="NDPrototype468" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">template</span>&lt;typename T&gt; <span class="SHKeyword">inline</span> T* GetObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
 </div>
 
-<a name="SetObjectReference"></a><a name="Topic454"></a><div class="CTopic TFunction LC">
+<a name="SetObjectReference"></a><a name="Topic469"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetObjectReference</div>
- <div id="NDPrototype454" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType">ssGUIObjectIndex&nbsp;</td><td class="PName last">index,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype469" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="first"></td><td class="PType">ssGUIObjectIndex&nbsp;</td><td class="PName last">index,</td></tr><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the referencing GUI Object with the index</p></div>
 </div>
 
-<a name="RemoveObjectReference"></a><a name="Topic455"></a><div class="CTopic TFunction LC">
+<a name="RemoveObjectReference"></a><a name="Topic470"></a><div class="CTopic TFunction LC">
  <div class="CTitle">RemoveObjectReference</div>
- <div id="NDPrototype455" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> RemoveObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName">index,</td><td></td><td class="last"></td></tr><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName">internalCleanUp</td><td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td><td class="PDefaultValue last"><span class="SHKeyword">false</span></td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype470" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> RemoveObjectReference(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName">index,</td><td></td><td class="last"></td></tr><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName">internalCleanUp</td><td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td><td class="PDefaultValue last"><span class="SHKeyword">false</span></td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Removes the referencing GUI Object with the index</p></div>
 </div>
 
-<a name="Internal_AddExternalDependency"></a><a name="Topic456"></a><div class="CTopic TFunction LC">
+<a name="Internal_AddExternalDependency"></a><a name="Topic471"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_AddExternalDependency</div>
- <div id="NDPrototype456" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_AddExternalDependency(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><a href="../../../index.html#CClass:ssGUI.ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,448);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>*&nbsp;</td><td class="PName last">dependency,</td></tr><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype471" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_AddExternalDependency(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><a href="../../../index.html#CClass:ssGUI.ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,463);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>*&nbsp;</td><td class="PName last">dependency,</td></tr><tr><td class="PType first">ssGUIObjectIndex&nbsp;</td><td class="PName last">index</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>(Internal ssGUI function) Adds the external depending ObjectsReferences</p></div>
 </div>
 
-<a name="Internal_RemoveExternalDependency"></a><a name="Topic457"></a><div class="CTopic TFunction LC">
+<a name="Internal_RemoveExternalDependency"></a><a name="Topic472"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Internal_RemoveExternalDependency</div>
- <div id="NDPrototype457" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_RemoveExternalDependency(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><a href="../../../index.html#CClass:ssGUI.ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,448);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>*&nbsp;</td><td class="PName last">dependency</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype472" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> Internal_RemoveExternalDependency(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><a href="../../../index.html#CClass:ssGUI.ObjectsReferences" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,463);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ObjectsReferences</a>*&nbsp;</td><td class="PName last">dependency</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>(Internal ssGUI function) Removes the external depending ObjectsReferences</p></div>
 </div>
 
-<a name="GetObjectIndex"></a><a name="Topic458"></a><div class="CTopic TFunction LC">
+<a name="GetObjectIndex"></a><a name="Topic473"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetObjectIndex</div>
- <div id="NDPrototype458" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> ssGUIObjectIndex GetObjectIndex(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
+ <div id="NDPrototype473" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> ssGUIObjectIndex GetObjectIndex(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
  <div class="CBody"><p>Gets the referencing index by the address of the GUI Object. Returns -1 if not found</p></div>
 </div>
 
-<a name="IsObjectReferenceExist"></a><a name="Topic459"></a><div class="CTopic TFunction LC">
+<a name="IsObjectReferenceExist"></a><a name="Topic474"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsObjectReferenceExist</div>
- <div id="NDPrototype459" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsObjectReferenceExist(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
+ <div id="NDPrototype474" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsObjectReferenceExist(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::</a></td><td class="PType"><a href="../../../index.html#CClass:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >GUIObject</a>*&nbsp;</td><td class="PName last">obj</td></tr></table></td><td class="PAfterParameters">) <span class="SHKeyword">const</span></td></tr></table></div></div>
  <div class="CBody"><p>Returns true if the GUI Object is being referenced</p></div>
 </div>
 
-<a name="GetListOfObjectsIndices"></a><a name="Topic460"></a><div class="CTopic TFunction LC">
+<a name="GetListOfObjectsIndices"></a><a name="Topic475"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetListOfObjectsIndices</div>
- <div id="NDPrototype460" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;ssGUIObjectIndex&gt; GetListOfObjectsIndices()</div></div>
+ <div id="NDPrototype475" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;ssGUIObjectIndex&gt; GetListOfObjectsIndices()</div></div>
  <div class="CBody"><p>Gets all the valid referencing index</p></div>
 </div>
 
-<a name="CleanUp"></a><a name="Topic461"></a><div class="CTopic TFunction LC">
+<a name="CleanUp"></a><a name="Topic476"></a><div class="CTopic TFunction LC">
  <div class="CTitle">CleanUp</div>
- <div id="NDPrototype461" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> CleanUp()</div></div>
+ <div id="NDPrototype476" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> CleanUp()</div></div>
  <div class="CBody"><p>Removes all references to this object</p></div>
 </div>
 
-<a name="CheckObjectsReferencesValidity"></a><a name="Topic462"></a><div class="CTopic TFunction LC last">
+<a name="CheckObjectsReferencesValidity"></a><a name="Topic477"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">CheckObjectsReferencesValidity</div>
- <div id="NDPrototype462" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> CheckObjectsReferencesValidity()</div></div>
+ <div id="NDPrototype477" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> CheckObjectsReferencesValidity()</div></div>
  <div class="CBody"><p>Debug function to make sure all the references are valid</p></div>
 </div>
 
