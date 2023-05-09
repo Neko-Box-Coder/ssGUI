@@ -10,102 +10,102 @@
 
 <script type="text/javascript">var q = window.location.search;if (q.indexOf("?Theme=") == 0){var t = q.slice(7);var e = t.indexOf(";");if (e != -1){  t = t.slice(0, e);  }if (document.documentElement.className == undefined){ document.documentElement.className = t + "Theme"; }else{ document.documentElement.className += " " + t + "Theme"; }}</script>
 
-<a name="ssGUI"></a><a name="Topic430"></a><div class="CTopic TClass LC first">
+<a name="ssGUI"></a><a name="Topic445"></a><div class="CTopic TClass LC first">
  <div class="CTitle">ssGUI</div>
- <div class="NDClassPrototype" id="NDClassPrototype430"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName">ssGUI</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype445"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">namespace</span> </div><div class="CPName">ssGUI</div></div></div>
 </div>
 
-<a name="ssGUI.Renderer"></a><a name="Topic431"></a><div class="CTopic TClass LC">
+<a name="ssGUI.Renderer"></a><a name="Topic446"></a><div class="CTopic TClass LC">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;Renderer</div>
- <div class="NDClassPrototype HasChildren" id="NDClassPrototype431"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Renderer</div></div><a class="CPEntry Child TClass" href="../../../index.html#File:◀️_ssGUI_API_▶️/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1558);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;GUIObject</div></a></div>
+ <div class="NDClassPrototype HasChildren" id="NDClassPrototype446"><div class="CPEntry TClass Current"><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;Renderer</div></div><a class="CPEntry Child TClass" href="../../../index.html#File:◀️_ssGUI_API_▶️/GUIObjectClasses/GUIObject.hpp:ssGUI.GUIObject" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1640);" onmouseout="NDContentPage.OnLinkMouseOut(event);" ><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;GUIObject</div></a></div>
  <div class="CBody"><p>This manages all the rendering information for a GUI Object</p><div class="CHeading">Variables &amp; Constructor</div><pre class="CCode"><span class="SHKeyword">protected</span>:<br />    <span class="SHKeyword">bool</span> Enabled;                                                   <span class="SHComment">//See &lt;IsEnabled&gt;</span><br />    glm::u8vec4 BackgroundColour;                                   <span class="SHComment">//See &lt;GetBackgroundColor&gt;</span><br />    <span class="SHKeyword">bool</span> Redraw;                                                    <span class="SHComment">//See &lt;IsRedrawNeeded&gt;</span><br />    <span class="SHKeyword">bool</span> AcceptRedrawRequest;                                       <span class="SHComment">//(Internal variable) Used to disable self-calling when calling draw logic</span><br /><br />    <span class="SHComment">//Rendering</span><br />    std::vector&lt;glm::vec2&gt; DrawingVerticies;                        <span class="SHComment">//See &lt;Extension_GetDrawingVertices&gt;</span><br />    std::vector&lt;glm::vec2&gt; DrawingUVs;                              <span class="SHComment">//See &lt;Extension_GetDrawingUVs&gt;</span><br />    std::vector&lt;glm::u8vec4&gt; DrawingColours;                        <span class="SHComment">//See &lt;Extension_GetDrawingColours&gt;</span><br />    std::vector&lt;<span class="SHKeyword">int</span>&gt; DrawingCounts;                                 <span class="SHComment">//See &lt;Extension_GetDrawingCounts&gt;</span><br />    std::vector&lt;ssGUI::DrawingProperty&gt; DrawingProperties;          <span class="SHComment">//See &lt;Extension_GetDrawingProperties&gt;</span><br />    <span class="SHKeyword">int</span> GUIObjectShapeIndex;                                        <span class="SHComment">//See &lt;Extension_GetGUIObjectFirstShapeIndex&gt;</span><br />    <span class="SHKeyword">int</span> GUIObjectVertexIndex;                                       <span class="SHComment">//See &lt;Extension_GetGUIObjectFirstVertexIndex&gt;</span><br /><br />    <span class="SHComment">//Cache rendering</span><br />    std::vector&lt;glm::vec2&gt; LastDrawingVerticies;                    <span class="SHComment">//(Internal variable) Used to do cached rendering</span><br />    std::vector&lt;glm::vec2&gt; LastDrawingUVs;                          <span class="SHComment">//(Internal variable) Used to do cached rendering</span><br />    std::vector&lt;glm::u8vec4&gt; LastDrawingColours;                    <span class="SHComment">//(Internal variable) Used to do cached rendering</span><br />    std::vector&lt;<span class="SHKeyword">int</span>&gt; LastDrawingCounts;                             <span class="SHComment">//(Internal variable) Used to do cached rendering</span><br />    std::vector&lt;ssGUI::DrawingProperty&gt; LastDrawingProperties;      <span class="SHComment">//(Internal variable) Used to do cached rendering</span><br /><br />    ssGUI::Hierarchy* CurrentHierarchy;                             <span class="SHComment">//(Internal variable) Used to get parent when &lt;IsEnabled&gt; is called</span><br />    ssGUI::EventCallbackManager* CurrentEventCallbackManager;       <span class="SHComment">//(Internal variable) Used to call event callbacks listeners</span><br />    ssGUI::GUIObject* CurrentObject;                                <span class="SHComment">//(Internal variable) Used to register the container for event callbacks listeners</span></pre><pre class="CCode">Renderer::Renderer() :  Enabled(<span class="SHKeyword">true</span>),<br />                        BackgroundColour(<span class="SHNumber">255</span>, <span class="SHNumber">255</span>, <span class="SHNumber">255</span>, <span class="SHNumber">255</span>),<br />                        Redraw(<span class="SHKeyword">true</span>),<br />                        AcceptRedrawRequest(<span class="SHKeyword">true</span>),<br />                        DrawingVerticies(),<br />                        DrawingUVs(),<br />                        DrawingColours(),<br />                        DrawingCounts(),<br />                        DrawingProperties(),<br />                        GUIObjectShapeIndex(<span class="SHNumber">-1</span>),<br />                        GUIObjectVertexIndex(<span class="SHNumber">-1</span>),<br />                        LastDrawingVerticies(),<br />                        LastDrawingUVs(),<br />                        LastDrawingColours(),<br />                        LastDrawingCounts(),<br />                        LastDrawingProperties(),<br />                        CurrentHierarchy(nullptr),<br />                        CurrentEventCallbackManager(nullptr),<br />                        CurrentObject(nullptr)<br />{}</pre></div>
 </div>
 
-<a name="ssGUI.Renderer.Functions"></a><a name="Topic432"></a><div class="CTopic TGroup LC">
+<a name="ssGUI.Renderer.Functions"></a><a name="Topic447"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="ssGUI.Renderer.SetEnabled"></a><a name="Topic433"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.SetEnabled"></a><a name="Topic448"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetEnabled</div>
- <div id="NDPrototype433" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetEnabled(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">enabled</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype448" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetEnabled(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PType first"><span class="SHKeyword">bool</span>&nbsp;</td><td class="PName last">enabled</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets if this GUI Object is enabled. Note that the logic of this GUI Object will not be called if not enabled.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.IsEnabled"></a><a name="Topic434"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.IsEnabled"></a><a name="Topic449"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsEnabled</div>
- <div id="NDPrototype434" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsEnabled() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype449" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsEnabled() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Returns if this GUI Object is enabled. Note that the logic of this GUI Object will not be called if not enabled.&nbsp; Also Note that this can be affected by parent's enable status.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.IsSelfEnabled"></a><a name="Topic435"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.IsSelfEnabled"></a><a name="Topic450"></a><div class="CTopic TFunction LC">
  <div class="CTitle">IsSelfEnabled</div>
- <div id="NDPrototype435" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsSelfEnabled() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype450" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsSelfEnabled() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Returns if itself is enabled excluding the enable status of its parent.&nbsp; Meaning even if the parent with visibility is false, it will return true if this GUI Object's enable is not set to false.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.SetBackgroundColor"></a><a name="Topic436"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.SetBackgroundColor"></a><a name="Topic451"></a><div class="CTopic TFunction LC">
  <div class="CTitle">SetBackgroundColor</div>
- <div id="NDPrototype436" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetBackgroundColor(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">u8vec4&nbsp;</td><td class="PName last">color</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
+ <div id="NDPrototype451" class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table><tr><td class="PBeforeParameters"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> SetBackgroundColor(</td><td class="PParametersParentCell"><table class="PParameters"><tr><td class="PModifierQualifier first">glm::</td><td class="PType">u8vec4&nbsp;</td><td class="PName last">color</td></tr></table></td><td class="PAfterParameters">)</td></tr></table></div></div>
  <div class="CBody"><p>Sets the background color of this GUI Object</p></div>
 </div>
 
-<a name="ssGUI.Renderer.GetBackgroundColor"></a><a name="Topic437"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.GetBackgroundColor"></a><a name="Topic452"></a><div class="CTopic TFunction LC">
  <div class="CTitle">GetBackgroundColor</div>
- <div id="NDPrototype437" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::u8vec4 GetBackgroundColor() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype452" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> glm::u8vec4 GetBackgroundColor() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Gets the background color of this GUI Object</p></div>
 </div>
 
-<a name="ssGUI.Renderer.Extension_GetDrawingVertices"></a><a name="Topic438"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.Extension_GetDrawingVertices"></a><a name="Topic453"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Extension_GetDrawingVertices</div>
- <div id="NDPrototype438" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;glm::vec2&gt;&amp; Extension_GetDrawingVertices()</div></div>
- <div class="CBody"><p>This returns a list of vertices for all the shapes that will be drawn by this GUI object.&nbsp; A shape is formed by having the vertices drawn in clockwise direction. Undefined behaviour if they are listed in anti-clockwise direction.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1706);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
+ <div id="NDPrototype453" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;glm::vec2&gt;&amp; Extension_GetDrawingVertices()</div></div>
+ <div class="CBody"><p>This returns a list of vertices for all the shapes that will be drawn by this GUI object.&nbsp; A shape is formed by having the vertices drawn in clockwise direction. Undefined behaviour if they are listed in anti-clockwise direction.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1707);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.Extension_GetDrawingUVs"></a><a name="Topic439"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.Extension_GetDrawingUVs"></a><a name="Topic454"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Extension_GetDrawingUVs</div>
- <div id="NDPrototype439" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;glm::vec2&gt;&amp; Extension_GetDrawingUVs()</div></div>
- <div class="CBody"><p>This returns the UVs that are mapped to each vertex at the same index location.&nbsp; If no texture is used, you should still maintain the number of UVs same as the number of vertices.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1706);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
+ <div id="NDPrototype454" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;glm::vec2&gt;&amp; Extension_GetDrawingUVs()</div></div>
+ <div class="CBody"><p>This returns the UVs that are mapped to each vertex at the same index location.&nbsp; If no texture is used, you should still maintain the number of UVs same as the number of vertices.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1707);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.Extension_GetDrawingColours"></a><a name="Topic440"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.Extension_GetDrawingColours"></a><a name="Topic455"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Extension_GetDrawingColours</div>
- <div id="NDPrototype440" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;glm::u8vec4&gt;&amp; Extension_GetDrawingColours()</div></div>
- <div class="CBody"><p>This returns the colors that are mapped to each vertex at the same index location.&nbsp; If texture is used, this essentially affects the tint of the image, with white as no tinting at all.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1706);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
+ <div id="NDPrototype455" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;glm::u8vec4&gt;&amp; Extension_GetDrawingColours()</div></div>
+ <div class="CBody"><p>This returns the colors that are mapped to each vertex at the same index location.&nbsp; If texture is used, this essentially affects the tint of the image, with white as no tinting at all.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1707);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.Extension_GetDrawingCounts"></a><a name="Topic441"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.Extension_GetDrawingCounts"></a><a name="Topic456"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Extension_GetDrawingCounts</div>
- <div id="NDPrototype441" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;<span class="SHKeyword">int</span>&gt;&amp; Extension_GetDrawingCounts()</div></div>
- <div class="CBody"><p>This returns the number of vertices each shape has, with the order same as vertices and others.&nbsp; So for example if the first value is 4, then the first 4 vertices form a shape. So on and so forth...&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1706);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
+ <div id="NDPrototype456" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;<span class="SHKeyword">int</span>&gt;&amp; Extension_GetDrawingCounts()</div></div>
+ <div class="CBody"><p>This returns the number of vertices each shape has, with the order same as vertices and others.&nbsp; So for example if the first value is 4, then the first 4 vertices form a shape. So on and so forth...&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1707);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.Extension_GetDrawingProperties"></a><a name="Topic442"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.Extension_GetDrawingProperties"></a><a name="Topic457"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Extension_GetDrawingProperties</div>
- <div id="NDPrototype442" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;<a href="../../../index.html#File:◀️_ssGUI_API_▶️/DataClasses/DrawingProperties.hpp:ssGUI.DrawingProperty" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,590);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::DrawingProperty</a>&gt;&amp; Extension_GetDrawingProperties()</div></div>
- <div class="CBody"><p>This returns the property of each shape, mapped to the same index location as <a href="../../../index.html#File:◀️_ssGUI_API_▶️/DataClasses/Renderer.hpp:ssGUI.Renderer.Extension_GetDrawingCounts" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,441);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension_GetDrawingCounts</a>.&nbsp; This indicates if the shape is just a colored shape, an image or font.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1706);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
+ <div id="NDPrototype457" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> std::vector&lt;<a href="../../../index.html#File:◀️_ssGUI_API_▶️/DataClasses/DrawingProperties.hpp:ssGUI.DrawingProperty" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,611);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::DrawingProperty</a>&gt;&amp; Extension_GetDrawingProperties()</div></div>
+ <div class="CBody"><p>This returns the property of each shape, mapped to the same index location as <a href="../../../index.html#File:◀️_ssGUI_API_▶️/DataClasses/Renderer.hpp:ssGUI.Renderer.Extension_GetDrawingCounts" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,456);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension_GetDrawingCounts</a>.&nbsp; This indicates if the shape is just a colored shape, an image or font.&nbsp; This function is mainly be called by <a href="../../../index.html#File:◀️_ssGUI_API_▶️/Extensions/Extension.hpp:ssGUI.Extensions.Extension.Internal_Draw" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1707);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >ssGUI::Extensions::Extension::Internal_Draw</a>.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.Extension_GetGUIObjectFirstShapeIndex"></a><a name="Topic443"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.Extension_GetGUIObjectFirstShapeIndex"></a><a name="Topic458"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Extension_GetGUIObjectFirstShapeIndex</div>
- <div id="NDPrototype443" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> Extension_GetGUIObjectFirstShapeIndex() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype458" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> Extension_GetGUIObjectFirstShapeIndex() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>This returns the index of first shape created by the GUI Object.&nbsp; So for example,</p><pre class="CText">[Extension created Shape A] [Extension created Shape B] [GUI Object created Shape C] [Extension created Shape D]<br /> rendered first ────────────────────────────────────────────────────────────────────────────────────► rendered last</pre><p>This will return shape C as this is the first shape created by GUI object.&nbsp; So to get shape A, you will need to -2 from this index.&nbsp; Note that this doesn't check if the GUI Object creates any shapes, it just returns the index <b>if</b> the GUI object creates any shapes.&nbsp; So it will be invalid to use this index on any empty GUI objects that does not create any shapes.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.Extension_GetGUIObjectFirstVertexIndex"></a><a name="Topic444"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.Extension_GetGUIObjectFirstVertexIndex"></a><a name="Topic459"></a><div class="CTopic TFunction LC">
  <div class="CTitle">Extension_GetGUIObjectFirstVertexIndex</div>
- <div id="NDPrototype444" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> Extension_GetGUIObjectFirstVertexIndex() <span class="SHKeyword">const</span></div></div>
- <div class="CBody"><p>This returns the index of first vertex created by the GUI Object Again similar to <a href="../../../index.html#File:◀️_ssGUI_API_▶️/DataClasses/Renderer.hpp:ssGUI.Renderer.Extension_GetGUIObjectFirstShapeIndex" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,443);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension_GetGUIObjectFirstShapeIndex</a> but with vertex index instead</p></div>
+ <div id="NDPrototype459" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">int</span> Extension_GetGUIObjectFirstVertexIndex() <span class="SHKeyword">const</span></div></div>
+ <div class="CBody"><p>This returns the index of first vertex created by the GUI Object Again similar to <a href="../../../index.html#File:◀️_ssGUI_API_▶️/DataClasses/Renderer.hpp:ssGUI.Renderer.Extension_GetGUIObjectFirstShapeIndex" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,458);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Extension_GetGUIObjectFirstShapeIndex</a> but with vertex index instead</p></div>
 </div>
 
-<a name="ssGUI.Renderer.RedrawObject"></a><a name="Topic445"></a><div class="CTopic TFunction LC">
+<a name="ssGUI.Renderer.RedrawObject"></a><a name="Topic460"></a><div class="CTopic TFunction LC">
  <div class="CTitle">RedrawObject</div>
- <div id="NDPrototype445" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> RedrawObject()</div></div>
+ <div id="NDPrototype460" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> RedrawObject()</div></div>
  <div class="CBody"><p>Forces the GUI Object to be redrawn. <b>Do not</b> call this in &lt;Internal_Draw&gt;.</p></div>
 </div>
 
-<a name="ssGUI.Renderer.IsRedrawNeeded"></a><a name="Topic446"></a><div class="CTopic TFunction LC last">
+<a name="ssGUI.Renderer.IsRedrawNeeded"></a><a name="Topic461"></a><div class="CTopic TFunction LC last">
  <div class="CTitle">IsRedrawNeeded</div>
- <div id="NDPrototype446" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsRedrawNeeded() <span class="SHKeyword">const</span></div></div>
+ <div id="NDPrototype461" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> IsRedrawNeeded() <span class="SHKeyword">const</span></div></div>
  <div class="CBody"><p>Returns if the GUI Object needs to be redrawn</p></div>
 </div>
 

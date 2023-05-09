@@ -10,78 +10,78 @@
 
 <script type="text/javascript">var q = window.location.search;if (q.indexOf("?Theme=") == 0){var t = q.slice(7);var e = t.indexOf(";");if (e != -1){  t = t.slice(0, e);  }if (document.documentElement.className == undefined){ document.documentElement.className = t + "Theme"; }else{ document.documentElement.className += " " + t + "Theme"; }}</script>
 
-<a name="Topic464"></a><div class="CTopic TStruct LC first">
+<a name="Topic515"></a><div class="CTopic TStruct LC first">
  <div class="CTitle"><span class="Qualifier">ssGUI::</span>&#8203;CharacterRenderInfo</div>
- <div class="NDClassPrototype" id="NDClassPrototype464"><div class="CPEntry TStruct Current"><div class="CPModifiers"><span class="SHKeyword">struct</span></div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;CharacterRenderInfo</div></div></div>
+ <div class="NDClassPrototype" id="NDClassPrototype515"><div class="CPEntry TStruct Current"><div class="CPModifiers"><span class="SHKeyword">struct</span></div><div class="CPName"><span class="Qualifier">ssGUI::</span>&#8203;CharacterRenderInfo</div></div></div>
 </div>
 
-<a name="Variables"></a><a name="Topic465"></a><div class="CTopic TGroup LC">
+<a name="Variables"></a><a name="Topic516"></a><div class="CTopic TGroup LC">
  <div class="CTitle">Variables</div>
 </div>
 
-<a name="Advance"></a><a name="Topic466"></a><div class="CTopic TVariable LC">
+<a name="Advance"></a><a name="Topic517"></a><div class="CTopic TVariable LC">
  <div class="CTitle">Advance</div>
- <div id="NDPrototype466" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> Advance</div></div>
+ <div id="NDPrototype517" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> Advance</div></div>
  <div class="CBody"><p>How many pixels this character takes horizontally</p></div>
 </div>
 
-<a name="DrawOffset"></a><a name="Topic467"></a><div class="CTopic TVariable LC">
+<a name="DrawOffset"></a><a name="Topic518"></a><div class="CTopic TVariable LC">
  <div class="CTitle">DrawOffset</div>
- <div id="NDPrototype467" class="NDPrototype"><div class="PSection PPlainSection">glm::vec2 DrawOffset</div></div>
+ <div id="NDPrototype518" class="NDPrototype"><div class="PSection PPlainSection">glm::vec2 DrawOffset</div></div>
  <div class="CBody"><p>Offset for getting the top-left corner of the character from the baseline.&nbsp; In other words, this is the bearing but Y is flipped</p></div>
 </div>
 
-<a name="Size"></a><a name="Topic468"></a><div class="CTopic TVariable LC">
+<a name="Size"></a><a name="Topic519"></a><div class="CTopic TVariable LC">
  <div class="CTitle">Size</div>
- <div id="NDPrototype468" class="NDPrototype"><div class="PSection PPlainSection">glm::vec2 Size</div></div>
+ <div id="NDPrototype519" class="NDPrototype"><div class="PSection PPlainSection">glm::vec2 Size</div></div>
  <div class="CBody"><p>The character size corresponding to UVOrigin</p></div>
 </div>
 
-<a name="BaselinePosition"></a><a name="Topic469"></a><div class="CTopic TVariable LC">
+<a name="BaselinePosition"></a><a name="Topic520"></a><div class="CTopic TVariable LC">
  <div class="CTitle">BaselinePosition</div>
- <div id="NDPrototype469" class="NDPrototype"><div class="PSection PPlainSection">glm::vec2 BaselinePosition</div></div>
- <div class="CBody"><p>This is the character global position <b>on the baseline</b>.&nbsp; To get the top-left corner of the character, add <a href="../../../index.html#CClass:ssGUI.CharacterRenderInfo:DrawOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,467);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >DrawOffset</a> to this</p></div>
+ <div id="NDPrototype520" class="NDPrototype"><div class="PSection PPlainSection">glm::vec2 BaselinePosition</div></div>
+ <div class="CBody"><p>This is the character global position <b>on the baseline</b>.&nbsp; To get the top-left corner of the character, add <a href="../../../index.html#CClass:ssGUI.CharacterRenderInfo:DrawOffset" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,518);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >DrawOffset</a> to this</p></div>
 </div>
 
-<a name="CharacterAtNewline"></a><a name="Topic470"></a><div class="CTopic TVariable LC">
+<a name="CharacterAtNewline"></a><a name="Topic521"></a><div class="CTopic TVariable LC">
  <div class="CTitle">CharacterAtNewline</div>
- <div id="NDPrototype470" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> CharacterAtNewline</div></div>
+ <div id="NDPrototype521" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> CharacterAtNewline</div></div>
  <div class="CBody"><p>True if this character is on a newline</p></div>
 </div>
 
-<a name="Rendered"></a><a name="Topic471"></a><div class="CTopic TVariable LC">
+<a name="Rendered"></a><a name="Topic522"></a><div class="CTopic TVariable LC">
  <div class="CTitle">Rendered</div>
- <div id="NDPrototype471" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> Rendered</div></div>
+ <div id="NDPrototype522" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> Rendered</div></div>
  <div class="CBody"><p>When true, this means there's font assigned to this character and not space, tab, newline character or empty character.</p></div>
 </div>
 
-<a name="Valid"></a><a name="Topic472"></a><div class="CTopic TVariable LC">
+<a name="Valid"></a><a name="Topic523"></a><div class="CTopic TVariable LC">
  <div class="CTitle">Valid</div>
- <div id="NDPrototype472" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> Valid</div></div>
+ <div id="NDPrototype523" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">bool</span> Valid</div></div>
  <div class="CBody"><p>When false, this means there's no font assigned to this character or is null character</p></div>
 </div>
 
-<a name="LineMinY"></a><a name="Topic473"></a><div class="CTopic TVariable LC">
+<a name="LineMinY"></a><a name="Topic524"></a><div class="CTopic TVariable LC">
  <div class="CTitle">LineMinY</div>
- <div id="NDPrototype473" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> LineMinY</div></div>
+ <div id="NDPrototype524" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> LineMinY</div></div>
  <div class="CBody"><p>Minimum Y bound of the current line (Relative to BaselinePosition)</p></div>
 </div>
 
-<a name="LineMaxY"></a><a name="Topic474"></a><div class="CTopic TVariable LC">
+<a name="LineMaxY"></a><a name="Topic525"></a><div class="CTopic TVariable LC">
  <div class="CTitle">LineMaxY</div>
- <div id="NDPrototype474" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> LineMaxY</div></div>
+ <div id="NDPrototype525" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> LineMaxY</div></div>
  <div class="CBody"><p>Maximum Y bound of the current line (Relative to BaselinePosition)</p></div>
 </div>
 
-<a name="RenderFontSize"></a><a name="Topic475"></a><div class="CTopic TVariable LC">
+<a name="RenderFontSize"></a><a name="Topic526"></a><div class="CTopic TVariable LC">
  <div class="CTitle">RenderFontSize</div>
- <div id="NDPrototype475" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> RenderFontSize</div></div>
+ <div id="NDPrototype526" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> RenderFontSize</div></div>
  <div class="CBody"><p>This is the actual font size that gets displayed, since it is possible that the requested font size is not available.</p></div>
 </div>
 
-<a name="TargetSizeMultiplier"></a><a name="Topic476"></a><div class="CTopic TVariable LC last">
+<a name="TargetSizeMultiplier"></a><a name="Topic527"></a><div class="CTopic TVariable LC last">
  <div class="CTitle">TargetSizeMultiplier</div>
- <div id="NDPrototype476" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> TargetSizeMultiplier</div></div>
+ <div id="NDPrototype527" class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">float</span> TargetSizeMultiplier</div></div>
  <div class="CBody"><p>The multiplier to be applied to Advance, Size and DrawOffset in order to render the character at the target size</p></div>
 </div>
 
