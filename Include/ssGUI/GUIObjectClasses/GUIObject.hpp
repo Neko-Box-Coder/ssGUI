@@ -30,11 +30,13 @@ namespace ssGUI
         glm::vec2 LastGlobalPosition;                   //(Internal variable) Used for cache rendering
         std::unordered_set<std::string> CurrentTags;    //See <HasTag>
         ssGUI::ssGUIObjectIndex RightClickMenuId;       //See <RegisterRightClickMenu>
+        std::string CurrentName;                        //See <GetName>
     =================================================================
     ============================== C++ ==============================
     GUIObject::GUIObject() :    LastGlobalPosition(),
                                 CurrentTags(),
-                                RightClickMenuId(-1)
+                                RightClickMenuId(-1),
+                                CurrentName()
     {
         SetupComponents();
     }
@@ -49,6 +51,7 @@ namespace ssGUI
             glm::vec2 LastGlobalPosition;                   //(Internal variable) Used for cache rendering
             std::unordered_set<std::string> CurrentTags;    //See <HasTag>
             ssGUI::ssGUIObjectIndex RightClickMenuId;       //See <RegisterRightClickMenu>
+            std::string CurrentName;                        //See <GetName>
 
             GUIObject(GUIObject const& other);
 
@@ -82,6 +85,12 @@ namespace ssGUI
             //function: HasTag
             //Returns true if the tag exists on this GUI Object
             virtual bool HasTag(std::string tag) const;
+
+            //function: SetName
+            virtual void SetName(std::string name);
+            
+            //function: GetName
+            virtual std::string GetName() const;
 
             //function: RegisterRightClickMenu
             //Register this GUI Object to a menu that can be triggered by right click 

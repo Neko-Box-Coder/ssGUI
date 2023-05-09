@@ -16,6 +16,7 @@ namespace ssGUI
         LastGlobalPosition = other.LastGlobalPosition;
         CurrentTags = other.CurrentTags;// std::unordered_set<std::string>();
         RightClickMenuId = other.RightClickMenuId;
+        CurrentName = other.CurrentName;
 
         SetupComponents();
 
@@ -214,7 +215,8 @@ namespace ssGUI
 
     GUIObject::GUIObject() :    LastGlobalPosition(),
                                 CurrentTags(),
-                                RightClickMenuId(-1)
+                                RightClickMenuId(-1),
+                                CurrentName()
     {
         SetupComponents();
     }
@@ -259,6 +261,16 @@ namespace ssGUI
     bool GUIObject::HasTag(std::string tag) const
     {
         return CurrentTags.find(tag) != CurrentTags.end();
+    }
+    
+    void GUIObject::SetName(std::string name)
+    {
+        CurrentName = name;
+    }
+    
+    std::string GUIObject::GetName() const
+    {
+        return CurrentName;
     }
 
     void GUIObject::RegisterRightClickMenu(ssGUI::Menu* menu)

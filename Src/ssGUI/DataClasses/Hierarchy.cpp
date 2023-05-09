@@ -502,6 +502,84 @@ namespace ssGUI
         CurrentChildIteratorBackEnd = false;
         return found;
     }
+    
+    ssGUI::GUIObject* Hierarchy::GetChild(std::string childName, bool recursive) const
+    {
+        std::vector<ssGUI::GUIObject*> children = GetListOfChildren();
+        
+        int nonRecursiveChildrenCount = children.size();
+        for(int i = 0; i < nonRecursiveChildrenCount; i++)
+        {
+            if(children[i]->GetName() == childName)
+                return children[i];
+            
+            if(recursive)
+            {
+                std::vector<ssGUI::GUIObject*> recursiveChildren = children[i]->GetListOfChildren();
+                
+                for(int j = 0; j < recursiveChildren.size(); j++)
+                    children.push_back(recursiveChildren[j]);
+            }
+        }
+        
+        if(!recursive)
+            return nullptr;
+
+        int currentIndex = nonRecursiveChildrenCount;
+        while(currentIndex < children.size())
+        {
+            if(children[currentIndex]->GetName() == childName)
+                return children[currentIndex];
+            
+            std::vector<ssGUI::GUIObject*> recursiveChildren = children[currentIndex]->GetListOfChildren();
+            
+            for(int j = 0; j < recursiveChildren.size(); j++)
+                children.push_back(recursiveChildren[j]);
+            
+            currentIndex++;
+        }
+        
+        return nullptr;
+    }
+    
+    void Hierarchy::GetChildrenWithTag( std::string tag, 
+                                        std::vector<ssGUI::GUIObject*>& foundChildren, 
+                                        bool recursive) const
+    {
+        std::vector<ssGUI::GUIObject*> children = GetListOfChildren();
+        
+        int nonRecursiveChildrenCount = children.size();
+        for(int i = 0; i < nonRecursiveChildrenCount; i++)
+        {
+            if(children[i]->HasTag(tag))
+                foundChildren.push_back(children[i]);
+
+            if(recursive)
+            {
+                std::vector<ssGUI::GUIObject*> recursiveChildren = children[i]->GetListOfChildren();
+                
+                for(int j = 0; j < recursiveChildren.size(); j++)
+                    children.push_back(recursiveChildren[j]);
+            }
+        }
+        
+        if(!recursive)
+            return;
+
+        int currentIndex = nonRecursiveChildrenCount;
+        while(currentIndex < children.size())
+        {
+            if(children[currentIndex]->HasTag(tag))
+                foundChildren.push_back(children[currentIndex]);
+
+            std::vector<ssGUI::GUIObject*> recursiveChildren = children[currentIndex]->GetListOfChildren();
+            
+            for(int j = 0; j < recursiveChildren.size(); j++)
+                children.push_back(recursiveChildren[j]);
+            
+            currentIndex++;
+        }
+    }
 
     ssGUI::GUIObject* Hierarchy::GetCurrentChild()
     {

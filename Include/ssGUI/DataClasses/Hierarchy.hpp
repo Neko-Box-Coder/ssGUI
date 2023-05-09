@@ -301,6 +301,30 @@ namespace ssGUI
             //To preserve the current children iterator, use <StashChildrenIterator>.
             virtual bool FindChild(ssGUI::GUIObject* child);
 
+            //function: GetChild
+            //Gets the first child with specified name. Nullptr if not found.
+            virtual ssGUI::GUIObject* GetChild(std::string childName, bool recursive = false) const;
+            
+            //function: GetChild
+            //See above
+            template<typename T>
+            T* GetChild(std::string childName, bool recursive = false) const
+            {
+                if(std::is_base_of<ssGUI::GUIObject, T>::value)
+                    return static_cast<T*>(GetChild(childName, recursive));
+                else
+                {
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
+                    return nullptr;
+                }
+            }
+            
+            //function: GetChildrenWithTag
+            //Gets all the children that have the specified tag
+            virtual void GetChildrenWithTag(std::string tag, 
+                                            std::vector<ssGUI::GUIObject*>& foundChildren, 
+                                            bool recursive = false) const;
+
             //function: GetCurrentChild
             //Returns the object the children iterator is currently pointing to. This will remove nullptr if it is not pointing at any child.
             //To check if the current children iterator is valid, use <IsChildrenIteratorEnd>.
