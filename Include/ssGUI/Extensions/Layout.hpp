@@ -141,6 +141,8 @@ namespace Extensions
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
+            //NOTE: A little bit retarded but works well enough to shut the compiler up when "floats... sizeMultipliers" is empty
+            inline void AddPreferredSizeMultipliers(){}
 
         public:
             static const std::string EXTENSION_NAME;
@@ -158,13 +160,14 @@ namespace Extensions
             
             //function: AddPreferredSizeMultiplier
             template<typename... floats>
-            inline void AddPreferredSizeMultiplier(float sizeMultiplier, floats... sizeMultipliers)
+            inline void AddPreferredSizeMultipliers(float sizeMultiplier, floats... sizeMultipliers)
             {
                 AddPreferredSizeMultiplier(sizeMultiplier);
+                AddPreferredSizeMultipliers(sizeMultipliers...);
             }
 
             //function: AddPreferredSizeMultiplier
-            virtual void AddPreferredSizeMultiplier(float sizeMultipliers[], int count);
+            virtual void AddPreferredSizeMultipliers(float sizeMultipliers[], int count);
 
             //function: SetPreferredSizeMultiplier
             //Sets the child with the index to be the size of sizeMultiplier.

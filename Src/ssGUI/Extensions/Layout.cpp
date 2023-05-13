@@ -746,7 +746,7 @@ namespace Extensions
         PreferredSizeMultipliers.push_back(sizeMultiplier);
     }
 
-    void Layout::AddPreferredSizeMultiplier(float sizeMultipliers[], int count)
+    void Layout::AddPreferredSizeMultipliers(float sizeMultipliers[], int count)
     {
         for(int i = 0; i < count; i++)
             PreferredSizeMultipliers.push_back(sizeMultipliers[i]);
