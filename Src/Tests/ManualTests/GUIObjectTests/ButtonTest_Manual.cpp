@@ -52,7 +52,7 @@ void NotifyButtonEventCallbackManuallyTest()    //1
     }
     else
     {
-        ssLOG_SIMPLE("NotifyButtonEventCallbackManually failed")
+        ssLOG_SIMPLE("NotifyButtonEventCallbackManually failed");
     }
     
     TestButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->RemoveEventListener("Key");

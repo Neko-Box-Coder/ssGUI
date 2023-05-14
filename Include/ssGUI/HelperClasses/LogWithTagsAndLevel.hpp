@@ -22,43 +22,42 @@
 
 
 #if defined (ssGUI_LOG_TAG)
-    #define ssGUI_DEBUG(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("🐞 DEBUG: "););ssLOG_LINE(__VA_ARGS__); }
-    #define ssGUI_INFO(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("💬 INFO: "););ssLOG_LINE(__VA_ARGS__); }
-    #define ssGUI_WARNING(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("❗ WARNING: "););ssLOG_LINE(__VA_ARGS__); }
-    #define ssGUI_ERROR(tag, ...) if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⛔ ERROR: "););ssLOG_LINE(__VA_ARGS__); }
+    #define ssGUI_DEBUG(tag, ...) do{ if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("🐞 DEBUG: "););ssLOG_LINE(__VA_ARGS__); } } while(0)
+    #define ssGUI_INFO(tag, ...) do{ if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("💬 INFO: "););ssLOG_LINE(__VA_ARGS__); } } while(0)
+    #define ssGUI_WARNING(tag, ...) do{ if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("❗ WARNING: "););ssLOG_LINE(__VA_ARGS__); } } while(0)
+    #define ssGUI_ERROR(tag, ...) do{ if(tag == ssGUI_LOG_TAG){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⛔ ERROR: "););ssLOG_LINE(__VA_ARGS__); } } while(0)
 
 #elif defined (ssGUI_LOG_LEVEL)
 
     #if ssGUI_LOG_LEVEL >= ssGUI_LOG_LEVEL_DEBUG
-        #define ssGUI_DEBUG(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("🐞 DEBUG: "););ssLOG_LINE(__VA_ARGS__); }
+        #define ssGUI_DEBUG(tag, ...) do{ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("🐞 DEBUG: "););ssLOG_LINE(__VA_ARGS__); } while(0)
     #else
-        #define ssGUI_DEBUG(...) {}
+        #define ssGUI_DEBUG(...) do{} while(0)
     #endif
 
     #if ssGUI_LOG_LEVEL >= ssGUI_LOG_LEVEL_INFO
-        #define ssGUI_INFO(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("💬 INFO: "););ssLOG_LINE(__VA_ARGS__); }
+        #define ssGUI_INFO(tag, ...) do{ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("💬 INFO: "););ssLOG_LINE(__VA_ARGS__); } while(0)
     #else
-        #define ssGUI_INFO(...) {}
+        #define ssGUI_INFO(...) do{} while(0)
     #endif
 
     #if ssGUI_LOG_LEVEL >= ssGUI_LOG_LEVEL_WARNING
-        #define ssGUI_WARNING(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("❗ WARNING: "););ssLOG_LINE(__VA_ARGS__); }
+        #define ssGUI_WARNING(tag, ...) do{ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("❗ WARNING: "););ssLOG_LINE(__VA_ARGS__); } while(0)
     #else
-        #define ssGUI_WARNING(...) {}
+        #define ssGUI_WARNING(...) do{} while(0)
     #endif
 
     #if ssGUI_LOG_LEVEL >= ssGUI_LOG_LEVEL_ERROR
-        #define ssGUI_ERROR(tag, ...){ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⛔ ERROR: "););ssLOG_LINE(__VA_ARGS__); }
+        #define ssGUI_ERROR(tag, ...) do{ INTERNAL_ssLOG_THREAD_SAFE_OP(ssLOG_PREPEND("⛔ ERROR: "););ssLOG_LINE(__VA_ARGS__); } while(0)
     #else
-        #define ssGUI_ERROR(...) {}
+        #define ssGUI_ERROR(...) do{} while(0)
     #endif
 
 #else
-
-    #define ssGUI_DEBUG(...) {}
-    #define ssGUI_INFO(...) {}
-    #define ssGUI_WARNING(...) {}
-    #define ssGUI_ERROR(...) {}
+    #define ssGUI_DEBUG(...) do{} while(0)
+    #define ssGUI_INFO(...) do{} while(0)
+    #define ssGUI_WARNING(...) do{} while(0)
+    #define ssGUI_ERROR(...) do{} while(0)
 
 #endif
 

@@ -280,7 +280,7 @@ void TextSelectionTest(bool firstRun)   //7
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::E))
     {
         auto selectionColor = TestText->GetSelectionColor();
-        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)selectionColor.r<<", "<<(int)selectionColor.g<<", "<<(int)selectionColor.b<<", "<<(int)selectionColor.a)
+        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)selectionColor.r<<", "<<(int)selectionColor.g<<", "<<(int)selectionColor.b<<", "<<(int)selectionColor.a);
     }
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::R))
     {
@@ -290,7 +290,7 @@ void TextSelectionTest(bool firstRun)   //7
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::T))
     {
         auto testColor = TestText->GetTextSelectedColor();
-        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)testColor.r<<", "<<(int)testColor.g<<", "<<(int)testColor.b<<", "<<(int)testColor.a)
+        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)testColor.r<<", "<<(int)testColor.g<<", "<<(int)testColor.b<<", "<<(int)testColor.a);
     }
 }
 
