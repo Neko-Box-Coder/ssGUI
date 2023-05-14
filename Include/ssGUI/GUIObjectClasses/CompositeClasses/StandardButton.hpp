@@ -258,6 +258,14 @@ namespace ssGUI
             //function: SetButtonColor
             //See <Button::SetButtonColor>
             virtual void SetButtonColor(glm::u8vec4 color) override;
+    
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+            
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
             
             //function: GetType
             //See <Widget::GetType>

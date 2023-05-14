@@ -272,6 +272,14 @@ namespace ssGUI
             //This only limits to move in an interval so this is different from snapping.
             virtual float GetKeyInputMoveInterval() const;
 
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
+
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;

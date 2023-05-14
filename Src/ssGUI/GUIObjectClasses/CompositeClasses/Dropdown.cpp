@@ -314,6 +314,22 @@ namespace ssGUI
         for(int i = 0; i < itemsCopy.size(); i++)
             AddItem(itemsCopy[i].first);
     }
+    
+    void Dropdown::SetInteractable(bool interactable)
+    {
+        if(GetDropdownMenu() != nullptr)
+            GetDropdownMenu()->SetInteractable(interactable);
+    
+        StandardButton::SetInteractable(interactable);
+    }
+    
+    void Dropdown::SetBlockInput(bool blockInput)
+    {
+        if(GetDropdownMenu() != nullptr)
+            GetDropdownMenu()->SetBlockInput(blockInput);
+    
+        StandardButton::SetBlockInput(blockInput);
+    }
 
     ssGUI::Enums::GUIObjectType Dropdown::GetType() const
     {

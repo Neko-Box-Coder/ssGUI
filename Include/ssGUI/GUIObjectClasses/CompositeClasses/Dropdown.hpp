@@ -206,6 +206,14 @@ namespace ssGUI
             //Passing nullptr will unset the dropdown menu object.
             virtual void SetDropdownMenu(ssGUI::Menu* menu);
 
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+            
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
+            
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
@@ -213,7 +221,7 @@ namespace ssGUI
             //function: Clone
             //See <Widget::Clone>
             virtual Dropdown* Clone(bool cloneChildren) override;
-            
+
             //function: InitiateDefaultResources
             //See <GUIObject::InitiateDefaultResources>
             virtual void InitiateDefaultResources() override;

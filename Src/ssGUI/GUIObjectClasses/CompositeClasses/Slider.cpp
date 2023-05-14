@@ -664,6 +664,22 @@ namespace ssGUI
     {
         return KeyInputInterval;
     }
+    
+    void Slider::SetInteractable(bool interactable)
+    {
+        if(GetKnobObject() != nullptr)
+            GetKnobObject()->SetInteractable(interactable);
+    
+        Widget::SetInteractable(interactable);
+    }
+    
+    void Slider::SetBlockInput(bool blockInput)
+    {
+        if(GetKnobObject() != nullptr)
+            GetKnobObject()->SetBlockInput(blockInput);
+    
+        Widget::SetBlockInput(blockInput);
+    }
 
     ssGUI::Enums::GUIObjectType Slider::GetType() const
     {

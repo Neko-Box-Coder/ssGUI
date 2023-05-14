@@ -434,6 +434,25 @@ namespace ssGUI
         GetButtonTextObject()->SetNewTextColor(glm::u8vec4((uint8_t)textResult.r, (uint8_t)textResult.g, (uint8_t)textResult.b, (uint8_t)textResult.a));
         GetButtonTextObject()->ApplyNewTextSettingsToExistingText();
     }
+    
+    void StandardButton::SetInteractable(bool interactable)
+    {
+        if(GetButtonTextObject() != nullptr)
+            GetButtonTextObject()->SetInteractable(interactable);
+        
+        if(GetButtonIconObject() != nullptr)
+            GetButtonIconObject()->SetInteractable(interactable);
+        
+        Button::SetInteractable(interactable);
+    }
+
+    void StandardButton::SetBlockInput(bool blockInput)
+    {
+        if(GetButtonIconObject() != nullptr)
+            GetButtonIconObject()->SetBlockInput(blockInput);
+        
+        Button::SetBlockInput(blockInput);
+    }
 
     ssGUI::Enums::GUIObjectType StandardButton::GetType() const
     {

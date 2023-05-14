@@ -442,6 +442,14 @@ namespace ssGUI
             //For description of SetImageData, see <ssGUI::Image::SetImageData>
             virtual void SetImageData(ssGUI::ImageData* imageData) override;
 
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
+
             //function: GetType
             //See <ssGUI::Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;

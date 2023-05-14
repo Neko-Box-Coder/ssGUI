@@ -798,6 +798,28 @@ namespace ssGUI
         ssGUI::Image::SetImageData(imageData);
         CenterViewportToImage();
     }
+    
+    void ImageCanvas::SetInteractable(bool interactable)
+    {
+        if(GetHorizontalScrollbar() != nullptr)
+            GetHorizontalScrollbar()->SetInteractable(interactable);
+        
+        if(GetVerticalScrollbar() != nullptr)
+            GetVerticalScrollbar()->SetInteractable(interactable);
+        
+        Image::SetInteractable(interactable);
+    }
+
+    void ImageCanvas::SetBlockInput(bool blockInput)
+    {
+        if(GetHorizontalScrollbar() != nullptr)
+            GetHorizontalScrollbar()->SetBlockInput(blockInput);
+        
+        if(GetVerticalScrollbar() != nullptr)
+            GetVerticalScrollbar()->SetBlockInput(blockInput);
+        
+        Image::SetBlockInput(blockInput);
+    }
 
     ssGUI::Enums::GUIObjectType ImageCanvas::GetType() const
     {
