@@ -200,7 +200,10 @@ namespace ssGUI
             virtual ssGUI::Menu* GetDropdownMenu();
 
             //function: SetDropdownMenu
-            //Sets the dropdown menu GUI object
+            //Sets the dropdown menu GUI object.
+            //The menu items in the new menu will be cleared 
+            //and all the menu items from the old dropdown menu will moved to the new one.
+            //Passing nullptr will unset the dropdown menu object.
             virtual void SetDropdownMenu(ssGUI::Menu* menu);
 
             //function: GetType
