@@ -1011,7 +1011,7 @@ namespace Extensions
 
         //Rely on tag instead
         // Container->StashChildrenIterator();
-        // if(Container->FindChild(child) && Container->IsChildComposite())
+        // if(Container->MoveChildrenIteratorToChild(child) && Container->IsCurrentChildComposite())
         // {
         //     Container->PopChildrenIterator();
         //     ObjectsToExclude.insert(childIndex);

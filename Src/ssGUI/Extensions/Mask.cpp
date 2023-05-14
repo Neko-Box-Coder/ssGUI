@@ -678,7 +678,7 @@ namespace Extensions
 
             //Don't mask container's composite children
             Container->StashChildrenIterator();
-            if(Container->FindChild(child) && Container->IsChildComposite())
+            if(Container->MoveChildrenIteratorToChild(child) && Container->IsCurrentChildComposite())
             {
                 Container->PopChildrenIterator();
                 children.pop();

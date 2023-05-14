@@ -31,7 +31,8 @@ namespace ssGUI
 
                 bool operator==(ChildInfo const& other)
                 {
-                    return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
+                    //return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
+                    return ChildIndex == other.ChildIndex;
                 };
 
             private:
@@ -90,7 +91,8 @@ namespace ssGUI
 
                     bool operator==(ChildInfo const& other) const
                     {
-                        return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
+                        //return ChildIndex == other.ChildIndex && CompositeChild == other.CompositeChild;
+                        return ChildIndex == other.ChildIndex;
                     };
 
                 private:
@@ -152,6 +154,17 @@ namespace ssGUI
             //Consider using <ssGUI::ssGUIManager::AddGUIObjectAsChild> or <AddChild> instead if possible
             virtual void SetParent(ssGUI::GUIObject* newParent, bool compositeChild = false);
 
+            #define ssGUI_BASE_CHECK_RETURN_NULL()\
+            do\
+            {\
+                if(!std::is_base_of<ssGUI::GUIObject, T>::value)\
+                {\
+                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");\
+                    return nullptr;\
+                }\
+            }\
+            while(0)
+
             //function: AddChild
             //Adds a GUI Object as a child of this GUI Object. 
             //The lifetime of the child GUI object is managed by <ssGUIManager> if this GUI object is (recursively) added to <ssGUIManager>.
@@ -159,17 +172,11 @@ namespace ssGUI
             template<typename T>
             T* AddChild(bool compositeChild = false)
             {
-                if(std::is_base_of<ssGUI::GUIObject, T>::value)
-                {
-                    auto* guiObject = ssGUI::Factory::Create<T>();
-                    AddChild(guiObject, compositeChild);
-                    return guiObject;
-                }
-                else
-                {
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
-                    return nullptr;
-                }
+                ssGUI_BASE_CHECK_RETURN_NULL();
+
+                auto* guiObject = ssGUI::Factory::Create<T>();
+                AddChild(guiObject, compositeChild);
+                return guiObject;
             }
 
             //function: AddChild
@@ -179,17 +186,11 @@ namespace ssGUI
                         ssGUI::Enums::AlignmentVertical verticalAlignment, 
                         bool compositeChild = false)
             {
-                if(std::is_base_of<ssGUI::GUIObject, T>::value)
-                {
-                    auto* guiObject = ssGUI::Factory::Create<T>();
-                    AddChild(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
-                    return guiObject;
-                }
-                else
-                {
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
-                    return nullptr;
-                }
+                ssGUI_BASE_CHECK_RETURN_NULL();
+
+                auto* guiObject = ssGUI::Factory::Create<T>();
+                AddChild(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
+                return guiObject;
             }
             
             //function: AddChildWithWrapper
@@ -197,17 +198,11 @@ namespace ssGUI
             template<typename T>
             T* AddChildWithWrapper(bool compositeChild = false)
             {
-                if(std::is_base_of<ssGUI::GUIObject, T>::value)
-                {
-                    auto* guiObject = ssGUI::Factory::Create<T>();
-                    AddChildWithWrapper(guiObject, compositeChild);
-                    return guiObject;
-                }
-                else
-                {
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
-                    return nullptr;
-                }
+                ssGUI_BASE_CHECK_RETURN_NULL();
+                
+                auto* guiObject = ssGUI::Factory::Create<T>();
+                AddChildWithWrapper(guiObject, compositeChild);
+                return guiObject;
             }
             
             //function: AddChildWithWrapper
@@ -217,22 +212,148 @@ namespace ssGUI
                                     ssGUI::Enums::AlignmentVertical verticalAlignment, 
                                     bool compositeChild = false)
             {
-                if(std::is_base_of<ssGUI::GUIObject, T>::value)
-                {
-                    auto* guiObject = ssGUI::Factory::Create<T>();
-                    AddChildWithWrapper(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
-                    return guiObject;
-                }
-                else
-                {
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
-                    return nullptr;
-                }
+                ssGUI_BASE_CHECK_RETURN_NULL();
+                
+                auto* guiObject = ssGUI::Factory::Create<T>();
+                AddChildWithWrapper(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
+                return guiObject;
             }
             
-            //function: IsChildComposite
-            //True if the current child (see <FindChild>) belongs to this composite object
-            virtual bool IsChildComposite() const;
+            //function: AddChildBefore
+            //Same as <AddChild> but inserted before the target
+            template<typename T>
+            T* AddChildBefore(ssGUI::GUIObject* target, bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+            
+                if(!FindChild(target))
+                    return nullptr;
+                
+                T* child = AddChild<T>(compositeChild);
+                MoveChildBeforeTargetChild(child, target);
+                return child;
+            }
+
+            //function: AddChildBefore
+            //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
+            template<typename T>
+            T* AddChildBefore(  ssGUI::GUIObject* target, 
+                                ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+                
+                if(!FindChild(target))
+                    return nullptr;
+
+                T* child = AddChild<T>(horizontalAlignment, verticalAlignment, compositeChild);
+                MoveChildBeforeTargetChild(child, target);
+                return child;
+            }
+            
+            //function: AddChildBeforeWithWrapper
+            //Same as <AddChildBefore> but with empty GUI object as a wrapper 
+            template<typename T>
+            T* AddChildBeforeWithWrapper(ssGUI::GUIObject* target, bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+            
+                if(!FindChild(target))
+                    return nullptr;
+                
+                T* child = AddChildWithWrapper<T>(compositeChild);
+                MoveChildBeforeTargetChild(child->GetParent(), target);
+                return child;
+            }
+
+            //function: AddChildBeforeWithWrapper
+            //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
+            template<typename T>
+            T* AddChildBeforeWithWrapper(   ssGUI::GUIObject* target, 
+                                            ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                            ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                            bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+                
+                if(!FindChild(target))
+                    return nullptr;
+
+                T* child = AddChildWithWrapper<T>(horizontalAlignment, verticalAlignment, compositeChild);
+                MoveChildBeforeTargetChild(child->GetParent(), target);
+                return child;
+            }
+            
+            //function: AddChildAfter
+            //Same as <AddChild> but inserted after the target
+            template<typename T>
+            T* AddChildAfter(ssGUI::GUIObject* target, bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+            
+                if(!FindChild(target))
+                    return nullptr;
+                
+                T* child = AddChild<T>(compositeChild);
+                MoveChildAfterTargetChild(child, target);
+                return child;
+            }
+
+            //function: AddChildAfter
+            //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
+            template<typename T>
+            T* AddChildAfter(  ssGUI::GUIObject* target, 
+                                ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+                
+                if(!FindChild(target))
+                    return nullptr;
+
+                T* child = AddChild<T>(horizontalAlignment, verticalAlignment, compositeChild);
+                MoveChildAfterTargetChild(child, target);
+                return child;
+            }
+            
+            //function: AddChildAfterWithWrapper
+            //Same as <AddChildAfter> but with empty GUI object as a wrapper 
+            template<typename T>
+            T* AddChildAfterWithWrapper(ssGUI::GUIObject* target, bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+            
+                if(!FindChild(target))
+                    return nullptr;
+                
+                T* child = AddChildWithWrapper<T>(compositeChild);
+                MoveChildAfterTargetChild(child->GetParent(), target);
+                return child;
+            }
+
+            //function: AddChildAfterWithWrapper
+            //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
+            template<typename T>
+            T* AddChildAfterWithWrapper(   ssGUI::GUIObject* target, 
+                                            ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                            ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                            bool compositeChild = false)
+            {
+                ssGUI_BASE_CHECK_RETURN_NULL();
+                
+                if(!FindChild(target))
+                    return nullptr;
+
+                T* child = AddChildWithWrapper<T>(horizontalAlignment, verticalAlignment, compositeChild);
+                MoveChildAfterTargetChild(child->GetParent(), target);
+                return child;
+            }
+
+            //function: IsCurrentChildComposite
+            //Returns true if the current child the children iterator is on (see <MoveChildrenIteratorToChild>) is part of a composite GUI Object
+            virtual bool IsCurrentChildComposite() const;
 
             //function: GetChildrenCount
             //Returns the number of children parented to this GUI Object. (Non recursive)
@@ -269,6 +390,12 @@ namespace ssGUI
             //Please note that if the current children iterator points to a child that is removed 
             //then it will be invalid and <IsChildrenIteratorEnd> will return true.
             virtual void MoveChildrenIteratorPrevious();
+
+            //function: MoveChildrenIteratorToChild
+            //Moves the children iterator to the target child if it is directly parented to this GUI Object.
+            //Returns true if exists, false otherwise and children iterator is untouched.
+            //To preserve the current children iterator, use <StashChildrenIterator>.
+            virtual bool MoveChildrenIteratorToChild(ssGUI::GUIObject* child);
             
             //function: IsChildrenIteratorLast
             //Returns true if the iterator is on the last child
@@ -296,9 +423,8 @@ namespace ssGUI
             virtual void PopChildrenIterator();
 
             //function: FindChild
-            //If a child exists is parented to this GUI Object, this will move the children iterator to it and returns true.
-            //Otherwise, the children iterator is untouched and this will return false.
-            //To preserve the current children iterator, use <StashChildrenIterator>.
+            //Returns if a child exists and is directly parented to this GUI Object. 
+            //This doesn't modify the children iterator.
             virtual bool FindChild(ssGUI::GUIObject* child);
 
             //function: GetChild
@@ -334,14 +460,56 @@ namespace ssGUI
             //Returns the underlying childrenIterator used for this GUI Object
             virtual ssGUI::Hierarchy::ChildToken GetCurrentChildToken();
             
-            //function: ChangeChildOrderToBeforePosition
+            //function: MoveChildBeforeTargetChild
+            //Moves the child before the target. 
+            //Returns true if both the child and target are directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveChildBeforeTargetChild(ssGUI::GUIObject* child, ssGUI::GUIObject* target);
+            
+            //function: MoveChildAfterTargetChild
+            //Moves the child after the target. 
+            //Returns true if both the child and target are directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveChildAfterTargetChild(ssGUI::GUIObject* child, ssGUI::GUIObject* target);
+            
+            //function: MoveLastChildBeforeTargetChild
+            //Moves the last child before the target. 
+            //Returns true if the target is directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveLastChildBeforeTargetChild(ssGUI::GUIObject* target);
+            
+            //function: MoveLastChildAfterTargetChild
+            //Moves the last child after the target. 
+            //Returns true if the target is directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveLastChildAfterTargetChild(ssGUI::GUIObject* target);
+            
+            //function: MoveFirstChildBeforeTargetChild
+            //Moves the first child before the target. 
+            //Returns true if the target is directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveFirstChildBeforeTargetChild(ssGUI::GUIObject* target);
+            
+            //function: MoveFirstChildAfterTargetChild
+            //Moves the first child after the target. 
+            //Returns true if the target is directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveFirstChildAfterTargetChild(ssGUI::GUIObject* target);
+            
+            //function: MoveChildToFirst
+            //Moves the child to the beginning of the children. 
+            //Returns true if the target is directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveChildToFirst(ssGUI::GUIObject* child);
+            
+            //function: MoveChildToLast
+            //Moves the child to the end of the children. 
+            //Returns true if the target is directly parented and the move operation is successful, false otherwise.
+            virtual bool MoveChildToLast(ssGUI::GUIObject* child);
+
+            //function: ChangeChildOrderToBeforePosition (Obselete)
             //Changes the child's position to be in front of said position. Use <GetCurrentChildToken> to get the iterator.
-            virtual void ChangeChildOrderToBeforePosition(ssGUI::Hierarchy::ChildToken child, 
+            //Use <MoveChildBeforeTargetChild> instead.
+            virtual void ChangeChildOrderToBeforePosition(  ssGUI::Hierarchy::ChildToken child, 
                                                             ssGUI::Hierarchy::ChildToken position);
             
-            //function: ChangeChildOrderToAfterPosition
+            //function: ChangeChildOrderToAfterPosition (Obselete)
             //Changes the child's position to be in behind of said position. Use <GetCurrentChildToken> to get the iterator.
-            virtual void ChangeChildOrderToAfterPosition(ssGUI::Hierarchy::ChildToken child, 
+            //Use <MoveChildAfterTargetChild> instead.
+            virtual void ChangeChildOrderToAfterPosition(   ssGUI::Hierarchy::ChildToken child, 
                                                             ssGUI::Hierarchy::ChildToken position);
 
             //function: GetListOfChildren
@@ -396,6 +564,14 @@ namespace ssGUI
             //function: IsHeapAllocated
             //Gets the HeapAllocated flag of this GUI Object. If true, this object will be deleted from the heap automatically after the <Delete> function is called.
             virtual bool IsHeapAllocated() const;
+            
+            //function: Internal_PrintParentStack
+            //(Internal ssGUI function) Prints the parent stack in the log for debugging
+            virtual void Internal_PrintParentStack() const;
+            
+            //function: Internal_PrintChildrenStack
+            //(Internal ssGUI function) Prints the children stack in the log for debugging
+            virtual void Internal_PrintChildrenStack() const;
 
             //function: Internal_ChildrenManualDeletion
             //(Internal ssGUI function) Allow a composite GUI object to be able to deallocate itself with its generated GUI objects when the destructor is being called

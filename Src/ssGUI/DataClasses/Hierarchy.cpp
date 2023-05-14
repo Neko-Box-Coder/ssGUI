@@ -8,6 +8,8 @@
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
+#include <algorithm>
+
 
 namespace ssGUI
 {
@@ -131,8 +133,7 @@ namespace ssGUI
         if(Parent != -1 && newParent == CurrentObjectsReferences.GetObjectReference(Parent))
         {
             StashChildrenIterator();
-            auto result = newParent->FindChild(CurrentObject);
-            if(!result)
+            if(!newParent->MoveChildrenIteratorToChild(CurrentObject))
             {
                 PopChildrenIterator();
                 ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid parent detected");
@@ -330,7 +331,7 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
     }
 
-    bool Hierarchy::IsChildComposite() const
+    bool Hierarchy::IsCurrentChildComposite() const
     {
         if(CurrentChildIteratorFrontEnd || CurrentChildIteratorBackEnd)
             return false;
@@ -427,6 +428,27 @@ namespace ssGUI
             CurrentChild--;
         }
     }
+    
+    bool Hierarchy::MoveChildrenIteratorToChild(ssGUI::GUIObject* child)
+    {
+        if(child == nullptr)
+        {
+            ssGUI_WARNING(ssGUI_DATA_TAG, "MoveChildrenIteratorToChild is called on nullptr");
+            return false;
+        }
+        
+        ssGUIObjectIndex targetIndex = CurrentObjectsReferences.GetObjectIndex(child);
+
+        if(targetIndex < 0)
+            return false;
+        
+        ChildInfo targetInfo;
+        targetInfo.ChildIndex = targetIndex;
+        targetInfo.CompositeChild = false;
+        
+        CurrentChild = std::find(Children.begin(), Children.end(), targetInfo);
+        return CurrentChild != Children.end();
+    }
 
     bool Hierarchy::IsChildrenIteratorLast()
     {
@@ -479,28 +501,16 @@ namespace ssGUI
         if(child == nullptr)
             return false;
         
-        ChildToken it = Children.begin();
-        ChildToken endIt = Children.end();
-        bool found = false;
-
-        while (true)
-        {
-            if(it == endIt)
-                break;
-            
-            if(CurrentObjectsReferences.GetObjectReference(it->ChildIndex) == child)
-            {
-                found = true;
-                break;
-            }
-
-            it++;
-        }
-
-        CurrentChild = it;
-        CurrentChildIteratorFrontEnd = false;
-        CurrentChildIteratorBackEnd = false;
-        return found;
+        ssGUIObjectIndex targetIndex = CurrentObjectsReferences.GetObjectIndex(child);
+        
+        if(targetIndex < 0)
+            return false;
+        
+        ChildInfo targetInfo;
+        targetInfo.ChildIndex = targetIndex;
+        targetInfo.CompositeChild = child->IsCurrentChildComposite();
+        
+        return std::find(Children.begin(), Children.end(), targetInfo) != Children.end();
     }
     
     ssGUI::GUIObject* Hierarchy::GetChild(std::string childName, bool recursive) const
@@ -587,7 +597,7 @@ namespace ssGUI
         {
             if(CurrentObjectsReferences.GetObjectReference(CurrentChild->ChildIndex) == nullptr)
             {
-                ssGUI_ERROR(ssGUI_DATA_TAG, "invalid child found");
+                ssGUI_ERROR(ssGUI_DATA_TAG, "invalid child found: "<<CurrentChild->ChildIndex);
                 ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
@@ -601,6 +611,114 @@ namespace ssGUI
     ssGUI::Hierarchy::ChildToken Hierarchy::GetCurrentChildToken()
     {
         return CurrentChild;
+    }
+    
+    #define ssGUI_FIND_CHILD(targetChild)\
+    do\
+    {\
+        if(!MoveChildrenIteratorToChild(targetChild))\
+        {\
+            PopChildrenIterator();\
+            return false;\
+        }\
+    } while(0);
+    
+    #define ssGUI_STASH_AND_FIND_CHILD(targetChild)\
+    do\
+    {\
+        StashChildrenIterator();\
+        \
+        ssGUI_FIND_CHILD(targetChild);\
+    } while(0);
+    
+    bool Hierarchy::MoveChildBeforeTargetChild(ssGUI::GUIObject* child, ssGUI::GUIObject* target)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(target);
+
+        ChildToken targetToken = GetCurrentChildToken();
+        ssGUI_FIND_CHILD(child);
+        
+        ChangeChildOrderToBeforePosition(GetCurrentChildToken(), targetToken);
+        PopChildrenIterator();
+        return true;
+    }
+    
+    bool Hierarchy::MoveChildAfterTargetChild(ssGUI::GUIObject* child, ssGUI::GUIObject* target)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(target);
+
+        ChildToken targetToken = GetCurrentChildToken();
+        ssGUI_FIND_CHILD(child);
+        
+        ChangeChildOrderToAfterPosition(GetCurrentChildToken(), targetToken);
+        PopChildrenIterator();
+        return true;
+    }
+    
+    bool Hierarchy::MoveLastChildBeforeTargetChild(ssGUI::GUIObject* target)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(target);
+
+        ChildToken targetToken = GetCurrentChildToken();
+        MoveChildrenIteratorToLast();
+        ChangeChildOrderToBeforePosition(GetCurrentChildToken(), targetToken);
+        PopChildrenIterator();
+        return true;
+    }
+
+    bool Hierarchy::MoveLastChildAfterTargetChild(ssGUI::GUIObject* target)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(target);
+
+        ChildToken targetToken = GetCurrentChildToken();
+        MoveChildrenIteratorToLast();
+        ChangeChildOrderToAfterPosition(GetCurrentChildToken(), targetToken);
+        PopChildrenIterator();
+        return true;
+    }
+
+    bool Hierarchy::MoveFirstChildBeforeTargetChild(ssGUI::GUIObject* target)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(target);
+
+        ChildToken targetToken = GetCurrentChildToken();
+        MoveChildrenIteratorToFirst();
+        ChangeChildOrderToBeforePosition(GetCurrentChildToken(), targetToken);
+        PopChildrenIterator();
+        return true;
+    }
+
+    bool Hierarchy::MoveFirstChildAfterTargetChild(ssGUI::GUIObject* target)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(target);
+
+        ChildToken targetToken = GetCurrentChildToken();
+        MoveChildrenIteratorToFirst();
+        ChangeChildOrderToAfterPosition(GetCurrentChildToken(), targetToken);
+        PopChildrenIterator();
+        return true;
+    }
+    
+    bool Hierarchy::MoveChildToFirst(ssGUI::GUIObject* child)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(child);
+        
+        ChildToken childToken = GetCurrentChildToken();
+        MoveChildrenIteratorToFirst();
+        ChangeChildOrderToBeforePosition(childToken, GetCurrentChildToken());
+        PopChildrenIterator();
+        return true;
+    }
+
+    bool Hierarchy::MoveChildToLast(ssGUI::GUIObject* child)
+    {
+        ssGUI_STASH_AND_FIND_CHILD(child);
+        
+        ChildToken childToken = GetCurrentChildToken();
+        MoveChildrenIteratorToLast();
+        ChangeChildOrderToAfterPosition(childToken, GetCurrentChildToken());
+        PopChildrenIterator();
+        return true;
     }
 
     void Hierarchy::ChangeChildOrderToBeforePosition(ssGUI::Hierarchy::ChildToken child, 
@@ -647,7 +765,7 @@ namespace ssGUI
     {
         StashChildrenIterator();
         
-        if(FindChild(obj))
+        if(MoveChildrenIteratorToChild(obj))
         {
             PopChildrenIterator();
             return;
@@ -669,10 +787,11 @@ namespace ssGUI
         ssGUI_DEBUG(ssGUI_DATA_TAG, CurrentObject<<" removing child "<<obj);
         
         StashChildrenIterator();
-        if(!FindChild(obj))
+        if(!MoveChildrenIteratorToChild(obj))
         {
             PopChildrenIterator();
             ssGUI_ERROR(ssGUI_DATA_TAG, "Remove failed");
+            Internal_PrintChildrenStack();
             ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -861,6 +980,45 @@ namespace ssGUI
         return HeapAllocated;
     }
     
+    void Hierarchy::Internal_PrintParentStack() const
+    {
+        ssGUI::GUIObject* currentObj = CurrentObject;
+        do
+        {
+            ssLOG_LINE("GUI Object "<< currentObj);
+            if(currentObj->GetParent())
+                ssLOG_LINE("| is child of");
+        }
+        while(currentObj->GetParent());
+    }
+    
+    void Hierarchy::Internal_PrintChildrenStack() const
+    {
+        std::queue<ssGUI::GUIObject*> childrenToIterate;
+        childrenToIterate.push(CurrentObject);
+        do
+        {
+            ssLOG_LINE("GUI Object " << childrenToIterate.front());
+            
+            if(childrenToIterate.front()->GetChildrenCount() == 0)
+                ssLOG_LINE("  has no children");
+            else
+            {
+                ssLOG_LINE("| has children");
+                std::vector<ssGUI::GUIObject*> curChildren = childrenToIterate.front()->GetListOfChildren();
+                
+                for(int i = 0; i < curChildren.size(); i++)
+                {
+                    ssLOG_LINE(curChildren[i]);
+                    childrenToIterate.push(curChildren[i]);
+                }
+            }
+            ssLOG_LINE();
+            childrenToIterate.pop();
+        }
+        while(!childrenToIterate.empty());
+    }
+
     void Hierarchy::Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex> generatedObjs)
     {
         for(int i = 0; i < generatedObjs.size(); i++)
