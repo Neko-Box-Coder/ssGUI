@@ -35,7 +35,7 @@ namespace ssGUI
         StandardWindowObjectCount++;
     }
 
-    void StandardWindow::UpdateTitleText()
+    void StandardWindow::UpdateTitleText(bool init)
     {
         ssLOG_FUNC_ENTRY();
         auto windowTitleObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
@@ -44,6 +44,16 @@ namespace ssGUI
             ssLOG_FUNC_EXIT();
             return;
         }
+        
+        int textHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
+        if(AutoFontSize)
+        {
+            windowTitleObj->SetNewTextFontSize(textHeight * FontSizeMultiplier);
+            windowTitleObj->ApplyNewTextSettingsToExistingText();
+        }
+
+        if(!windowTitleObj->HasTag(ssGUI::Tags::FLOATING))
+            windowTitleObj->AddTag(ssGUI::Tags::FLOATING);
         
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
@@ -56,35 +66,34 @@ namespace ssGUI
 
         ap = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
         as = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
-
-        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-        ap->SetHorizontalPercentage(0);
-        ap->SetHorizontalPixel(0);
-        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
-        ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
-        ap->SetVerticalPercentage(0);
-
-        as->SetHorizontalPercentage(1);
-        as->SetHorizontalPixel(0);
-        int textHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
-        as->SetVerticalPixel(textHeight);
-        as->SetVerticalPercentage(0);
-
-        if(AutoFontSize)
-        {
-            windowTitleObj->SetNewTextFontSize(textHeight * FontSizeMultiplier);
-            windowTitleObj->ApplyNewTextSettingsToExistingText();
-        }
-        windowTitleObj->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-        windowTitleObj->SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
-
-        if(!windowTitleObj->HasTag(ssGUI::Tags::FLOATING))
-            windowTitleObj->AddTag(ssGUI::Tags::FLOATING);
         
+        if(init)
+        {
+            ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            ap->SetHorizontalPercentage(0);
+            ap->SetHorizontalPixel(0);
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+            ap->SetVerticalPercentage(0);
+
+            as->SetHorizontalPercentage(1);
+            as->SetHorizontalPixel(0);
+            as->SetVerticalPercentage(0);
+
+            windowTitleObj->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            windowTitleObj->SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+        }
+        
+        {
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+            ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
+        }
+        
+        as->SetVerticalPixel(textHeight);
+
         ssLOG_FUNC_EXIT();
     }
 
-    void StandardWindow::UpdateIconImage()
+    void StandardWindow::UpdateIconImage(bool init)
     {
         ssLOG_FUNC_ENTRY();
         auto windowIconObj = CurrentObjectsReferences.GetObjectReference(WindowIcon);
@@ -94,35 +103,7 @@ namespace ssGUI
             ssLOG_FUNC_EXIT();
             return;
         }
-
-        windowIconObj->SetBackgroundColor(glm::u8vec4(255, 255, 255, 0));
-        static_cast<ssGUI::Text*>(windowIconObj)->SetBlockInput(false);
-
-        ssGUI::Extensions::AdvancedPosition* ap;
-        ssGUI::Extensions::AdvancedSize* as;
         
-        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            windowIconObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
-        
-        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            windowIconObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
-
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
-
-        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
-        ap->SetHorizontalPixel(GetHorizontalPadding());
-        ap->SetHorizontalPercentage(0);
-        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
-        ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
-        ap->SetVerticalPercentage(0);
-        
-        int iconHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
-        as->SetHorizontalPixel(iconHeight);
-        as->SetHorizontalPercentage(0);
-        as->SetVerticalPixel(iconHeight);
-        as->SetVerticalPercentage(0);
-
         if(!windowIconObj->HasTag(ssGUI::Tags::FLOATING))
             windowIconObj->AddTag(ssGUI::Tags::FLOATING);
         
@@ -132,11 +113,50 @@ namespace ssGUI
             windowIconObj->SetEnabled(false);
         else
             windowIconObj->SetEnabled(true);
+
+        ssGUI::Extensions::AdvancedPosition* ap;
+        ssGUI::Extensions::AdvancedSize* as;
+        
+        static_cast<ssGUI::Text*>(windowIconObj)->SetBlockInput(false);
+        
+        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+            windowIconObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+        
+        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+            windowIconObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
+
+        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
+        as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        
+        if(init)
+        {
+            windowIconObj->SetBackgroundColor(glm::u8vec4(255, 255, 255, 0));
+
+            ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+            ap->SetHorizontalPercentage(0);
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+            ap->SetVerticalPercentage(0);
+            
+            as->SetHorizontalPercentage(0);
+            as->SetVerticalPercentage(0);
+        }
+        
+        {
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+            ap->SetHorizontalPixel(GetHorizontalPadding());
+            ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding());
+        }
+        
+        {
+            int iconHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
+            as->SetHorizontalPixel(iconHeight);
+            as->SetVerticalPixel(iconHeight);
+        }
         
         ssLOG_FUNC_EXIT();
     }
 
-    void StandardWindow::UpdateCloseButton()
+    void StandardWindow::UpdateCloseButton(bool init)
     {
         ssLOG_FUNC_ENTRY();
         auto closeButtonObj = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(CloseButton));
@@ -147,33 +167,44 @@ namespace ssGUI
             return;
         }
         
+        if(!closeButtonObj->HasTag(ssGUI::Tags::FLOATING))
+            closeButtonObj->AddTag(ssGUI::Tags::FLOATING);
+        
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
-        
+
         if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
             closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
         if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
             closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        
+        ap = closeButtonObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = closeButtonObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        if(init)
+        {
+            ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+            ap->SetHorizontalPercentage(0);
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+            ap->SetVerticalPercentage(0);
 
-        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
-        ap->SetHorizontalPixel(GetHorizontalPadding());
-        ap->SetHorizontalPercentage(0);
-        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
-        ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding() + 2);
-        ap->SetVerticalPercentage(0);
-
-        int buttonHeight = GetTitlebarHeight() - GetVerticalPadding() * 2 - 4;
-        as->SetHorizontalPixel(buttonHeight);
-        as->SetHorizontalPercentage(0);
-        as->SetVerticalPixel(buttonHeight);
-        as->SetVerticalPercentage(0);
-
-        if(!closeButtonObj->HasTag(ssGUI::Tags::FLOATING))
-            closeButtonObj->AddTag(ssGUI::Tags::FLOATING);
+            as->SetHorizontalPercentage(0);
+            as->SetVerticalPercentage(0);
+        }
+        
+        
+        {
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+            ap->SetHorizontalPixel(GetHorizontalPadding());
+            ap->SetVerticalPixel(-GetTitlebarHeight() + GetVerticalPadding() + 2);
+        }
+        
+        {
+            int buttonHeight = GetTitlebarHeight() - GetVerticalPadding() * 2 - 4;
+            as->SetHorizontalPixel(buttonHeight);
+            as->SetVerticalPixel(buttonHeight);
+        }
         
         ssLOG_FUNC_EXIT();
     }
@@ -315,9 +346,9 @@ namespace ssGUI
         shadowEx->SetSizeOffset(glm::vec2(10, 10));
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
-        UpdateTitleText();
-        UpdateIconImage();
-        UpdateCloseButton();
+        UpdateTitleText(true);
+        UpdateIconImage(true);
+        UpdateCloseButton(true);
 
         StandardWindowObjectCount++;
         
@@ -376,7 +407,7 @@ namespace ssGUI
         text->SetText(oldTitle);
 
         SetAdaptiveTitleColor(IsAdaptiveTitleColor());      //resetting it here so that eventcallback is added
-        UpdateTitleText();
+        UpdateTitleText(false);
     }
 
     ssGUI::Text* StandardWindow::GetWindowTitleObject() const
@@ -426,7 +457,7 @@ namespace ssGUI
         else
             WindowIcon = CurrentObjectsReferences.AddObjectReference(image);
 
-        UpdateIconImage();
+        UpdateIconImage(false);
     }
     
     ssGUI::Image* StandardWindow::GetWindowIconGUIObject() const
@@ -455,7 +486,7 @@ namespace ssGUI
         else
             CloseButton = CurrentObjectsReferences.AddObjectReference(button);
 
-        UpdateCloseButton();
+        UpdateCloseButton(false);
     }
     
     ssGUI::Button* StandardWindow::GetCloseButtonObject() const
@@ -466,9 +497,9 @@ namespace ssGUI
     void StandardWindow::SetHorizontalPadding(int padding)
     {
         HorizontalPadding = padding;
-        UpdateTitleText();
-        UpdateIconImage();
-        UpdateCloseButton();
+        UpdateTitleText(false);
+        UpdateIconImage(false);
+        UpdateCloseButton(false);
     }
 
     int StandardWindow::GetHorizontalPadding() const
@@ -479,9 +510,9 @@ namespace ssGUI
     void StandardWindow::SetVerticalPadding(int padding)
     {
         VerticalPadding = padding;
-        UpdateTitleText();
-        UpdateIconImage();
-        UpdateCloseButton();
+        UpdateTitleText(false);
+        UpdateIconImage(false);
+        UpdateCloseButton(false);
     }
 
     int StandardWindow::GetVerticalPadding() const
