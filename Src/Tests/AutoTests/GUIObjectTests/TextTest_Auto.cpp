@@ -15,6 +15,8 @@ int main()
     {
         TestText = ssGUI::Create<ssGUI::Text>();
         TestText->SetSize(glm::vec2(50, 50));
+        TestText->SetNewTextFontSize(15);
+        TestText->SetTextAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT, ssGUI::Enums::AlignmentVertical::TOP);
         TestText->SetText(TestString);
     }
 
