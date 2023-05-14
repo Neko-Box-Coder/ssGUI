@@ -37,7 +37,7 @@ namespace ssGUI
 
     void Slider::ApplySnapping()
     {
-        if(GetSnapInterval() == 0)
+        if(GetSnapInterval() <= 0)
             return;
         
         float snapValue = GetSliderValue() / GetSnapInterval();
@@ -536,7 +536,7 @@ namespace ssGUI
         return FillColor;
     }
 
-    void Slider::SetKnobObject(ssGUI::GUIObject* knob)
+    void Slider::SetKnobObject(ssGUI::Button* knob)
     {
         if(KnobObject != -1 && CurrentObjectsReferences.GetObjectReference(KnobObject) != nullptr)
         {
@@ -556,9 +556,9 @@ namespace ssGUI
         knob->SetGlobalPosition(globalPos);
     }
 
-    ssGUI::GUIObject* Slider::GetKnobObject() const
+    ssGUI::Button* Slider::GetKnobObject() const
     {
-        return CurrentObjectsReferences.GetObjectReference(KnobObject);
+        return CurrentObjectsReferences.GetObjectReference<ssGUI::Button>(KnobObject);
     }
 
     void Slider::SetKnobSize(float knobSize, bool updateKnobObject)

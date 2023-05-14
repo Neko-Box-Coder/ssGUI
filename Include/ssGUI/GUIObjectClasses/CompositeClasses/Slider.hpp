@@ -6,6 +6,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
+    class Button;
     /*class: ssGUI::Slider
     This class represents a slider GUI widget. A slider object can be either horizontal or vertical, 
     and can also start from either end of the slider using the <SetReverse> function.
@@ -197,11 +198,11 @@ namespace ssGUI
             //function: SetKnobObject
             //Sets knob object. This will automatically delete the previous assigned knob object.
             //Setting nullptr is possible for not using any knob object, useful for status bar or something like that.
-            virtual void SetKnobObject(ssGUI::GUIObject* knob);
+            virtual void SetKnobObject(ssGUI::Button* knob);
 
             //function: GetKnobObject
             //Gets knob object. Nullptr if no knob object is assigned.
-            virtual ssGUI::GUIObject* GetKnobObject() const;
+            virtual ssGUI::Button* GetKnobObject() const;
 
             //function: SetKnobSize
             //Helper function for setting the diameter of the knob.
@@ -241,13 +242,13 @@ namespace ssGUI
             virtual bool IsVertical() const;
 
             //function: SetSnapInterval
-            //Sets the interval of snapping. 0 to disable.
+            //Sets the interval of snapping. 0 or less to disable.
             //It is possible for <GetSliderValue> to have a slight offset depending on the interval, 
             //using rounding function is advised when using the value of it. 
             virtual void SetSnapInterval(float interval);
 
             //function: GetSnapInterval
-            //Gets the interval of snapping. 0 to disable.
+            //Gets the interval of snapping. 0 or less to disable.
             //It is possible for <GetSliderValue> to have a slight offset depending on the interval, 
             //using rounding function is advised when using the value of it. 
             virtual float GetSnapInterval() const;
