@@ -273,7 +273,7 @@ namespace Extensions
     {
         ssLOG_FUNC_ENTRY();
 
-        if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0 || !IsCoverFullLength())
+        if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0)
         {
             ssLOG_FUNC_EXIT();
             return;
@@ -374,8 +374,16 @@ namespace Extensions
                 maxMinY += GetPadding() * 2;
             }
 
-            Container->SetMinSize(glm::vec2(minSizeTotalX, maxMinY));
-            Container->SetMaxSize(glm::vec2(maxSizeTotalX, minMaxY));
+            if(IsCoverFullLength())
+            {
+                Container->SetMinSize(glm::vec2(minSizeTotalX, maxMinY));
+                Container->SetMaxSize(glm::vec2(maxSizeTotalX, minMaxY));
+            }
+            else
+            {
+                Container->SetMinSize(glm::vec2(Container->GetMinSize().x, maxMinY));
+                Container->SetMaxSize(glm::vec2(Container->GetMaxSize().x, minMaxY));
+            }
         }
         else
         {
@@ -442,8 +450,16 @@ namespace Extensions
                             minMaxX + GetPadding() * 2;
             maxMinX += GetPadding() * 2;
 
-            Container->SetMinSize(glm::vec2(maxMinX, minSizeTotalY));
-            Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
+            if(IsCoverFullLength())
+            {
+                Container->SetMinSize(glm::vec2(maxMinX, minSizeTotalY));
+                Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
+            }
+            else
+            {
+                Container->SetMinSize(glm::vec2(maxMinX, Container->GetMinSize().y));
+                Container->SetMaxSize(glm::vec2(minMaxX, Container->GetMaxSize().y));
+            }
         }
 
         ssLOG_FUNC_EXIT();
@@ -884,6 +900,7 @@ namespace Extensions
             }
             Container->PopChildrenIterator();
 
+            UpdateExcludedObjects();
             SyncContainerMinMaxSize();
         }
         else
