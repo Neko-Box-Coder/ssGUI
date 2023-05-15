@@ -64,18 +64,34 @@ namespace ssGUI
                                                                                     standardSlider->GetDisplayValue()));
             }
         );
+        
+        //Forward events from slider to this
+        slider->ForwardEvent(this, Enums::EventType::SLIDER_VALUE_CHANGED);
+        slider->ForwardEvent(this, Enums::EventType::SLIDER_VALUE_CHANGED_VIA_GUI);
+        slider->ForwardEvent(this, Enums::EventType::SLIDER_VALUE_FINISHED_CHANGING);
     }
     
-    void StandardSlider::RemoveDisplayValueEventCallback()
+    //void StandardSlider::RemoveDisplayValueEventCallback()
+    //{
+    //    ssGUI::Slider* slider = GetSliderObject();
+    //    if(slider == nullptr)
+    //        return;
+        
+    //    ssGUI::EventCallback* ecb = slider->GetEventCallback(ssGUI::Enums::EventType::SLIDER_VALUE_CHANGED);
+        
+    //    if(ecb != nullptr)
+    //        ecb->RemoveEventListener(ListenerKey, this);
+    //}
+    
+    void StandardSlider::UpdateDisplayTextContent()
     {
         ssGUI::Slider* slider = GetSliderObject();
         if(slider == nullptr)
             return;
         
         ssGUI::EventCallback* ecb = slider->GetEventCallback(ssGUI::Enums::EventType::SLIDER_VALUE_CHANGED);
-        
         if(ecb != nullptr)
-            ecb->RemoveEventListener(ListenerKey, this);
+            ecb->Notify(slider);
     }
     
     const std::string StandardSlider::ListenerKey = "Standard Slider";
@@ -88,14 +104,16 @@ namespace ssGUI
                                         DisplayInteger(false),
                                         DisplayDecimalPlaces(3)
     {
-        SetSize(glm::vec2(300, 10));
-
         //Add layout
         auto* layout = AddExtension<ssGUI::Extensions::Layout>();
+        layout->SetUpdateContainerMinMaxSize(false);
         layout->SetHorizontalLayout(true);
         
+        SetMinSize(glm::vec2(200, 10));
+        SetSize(glm::vec2(300, 10));
+
         //Set layout preferred sizes
-        layout->AddPreferredSizeMultipliers(0.3f, 0.5f, 0.1f);
+        layout->AddPreferredSizeMultipliers(0.25f, 0.5f, 0.15f);
         
         //Add components
         auto* sliderTitle = AddChild<ssGUI::Text>();
@@ -185,7 +203,8 @@ namespace ssGUI
             slider->SetParent(wrapper, true);
         }
 
-        SliderObject = CurrentObjectsReferences.AddObjectReference(slider);   
+        SliderObject = CurrentObjectsReferences.AddObjectReference(slider);
+        AddDisplayValueEventCallback();
     }
     
     ssGUI::Slider* StandardSlider::GetSliderObject() const
@@ -215,7 +234,8 @@ namespace ssGUI
             MoveChildToLast(text);
         }
 
-        SliderDisplayValueTextObject = CurrentObjectsReferences.AddObjectReference(text);   
+        SliderDisplayValueTextObject = CurrentObjectsReferences.AddObjectReference(text);
+        UpdateDisplayTextContent();
     }
     
     ssGUI::Text* StandardSlider::GetDisplayValueTextObject() const
@@ -229,6 +249,7 @@ namespace ssGUI
             return;
 
         MinDisplayValue = min;
+        UpdateDisplayTextContent();
     }
     
     float StandardSlider::GetMinDisplayValue() const
@@ -242,6 +263,7 @@ namespace ssGUI
             return;
             
         MaxDisplayValue = max;        
+        UpdateDisplayTextContent();
     }
     
     float StandardSlider::GetMaxDisplayValue() const
@@ -256,6 +278,7 @@ namespace ssGUI
 
         MinDisplayValue = min;
         MaxDisplayValue = max;
+        UpdateDisplayTextContent();
     }
 
     void StandardSlider::SetDisplayValue(float displayValue)

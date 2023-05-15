@@ -7,7 +7,6 @@
 //namespace: ssGUI
 namespace ssGUI
 {
-
     /*class: StandardSlider
     A standard slider that contains a title text, slider object and value text.
     
@@ -84,7 +83,8 @@ namespace ssGUI
             virtual void ConstructRenderInfo() override;
 
             virtual void AddDisplayValueEventCallback();
-            virtual void RemoveDisplayValueEventCallback();
+            //virtual void RemoveDisplayValueEventCallback();
+            virtual void UpdateDisplayTextContent();
 
         public:
             static const std::string ListenerKey;
