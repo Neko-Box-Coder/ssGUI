@@ -293,6 +293,7 @@ namespace ssGUI
         displayValue = displayValue < MinDisplayValue ? MinDisplayValue : displayValue;
         
         GetSliderObject()->SetSliderValue((displayValue - MinDisplayValue) / (MaxDisplayValue - MinDisplayValue));
+        UpdateDisplayTextContent();
     }
     
     float StandardSlider::GetDisplayValue() const
@@ -336,6 +337,7 @@ namespace ssGUI
     void StandardSlider::SetDisplayIntegerValue(bool displayInteger)
     {
         DisplayInteger = displayInteger;
+        UpdateDisplayTextContent();
     }
     
     bool StandardSlider::IsDisplayIntegerValue() const
@@ -346,6 +348,7 @@ namespace ssGUI
     void StandardSlider::SetDisplayDecimalPlaces(int decimalPlaces)
     {
         DisplayDecimalPlaces = decimalPlaces;
+        UpdateDisplayTextContent();
     }
     
     int StandardSlider::GetDisplayDecimalPlaces() const
@@ -399,8 +402,4 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
         return temp;
     }
-    
-
-    
-    
 }
