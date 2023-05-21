@@ -31,12 +31,14 @@ namespace ssGUI
                                         DisplayInteger(false),
                                         DisplayDecimalPlaces(3)
     {
-        SetSize(glm::vec2(300, 10));
-
         //Add layout
         auto* layout = AddExtension<ssGUI::Extensions::Layout>();
+        layout->SetUpdateContainerMinMaxSize(false);
         layout->SetHorizontalLayout(true);
         
+        SetMinSize(glm::vec2(200, 30));
+        SetSize(glm::vec2(300, 30));
+
         //Set layout preferred sizes
         layout->AddPreferredSizeMultipliers(0.3f, 0.5f, 0.1f);
         

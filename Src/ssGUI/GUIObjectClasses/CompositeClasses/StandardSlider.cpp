@@ -109,8 +109,8 @@ namespace ssGUI
         layout->SetUpdateContainerMinMaxSize(false);
         layout->SetHorizontalLayout(true);
         
-        SetMinSize(glm::vec2(200, 10));
-        SetSize(glm::vec2(300, 10));
+        SetMinSize(glm::vec2(200, 30));
+        SetSize(glm::vec2(300, 30));
 
         //Set layout preferred sizes
         layout->AddPreferredSizeMultipliers(0.25f, 0.5f, 0.15f);
