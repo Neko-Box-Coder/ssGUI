@@ -346,7 +346,8 @@ namespace ssGUI
 
     void TextField::TextInputUpdate(std::wstring& textInput, bool& refreshBlinkTimer, bool& wordMode)
     {
-        int insertIndex = (GetEndSelectionIndex() >= 0 && GetEndSelectionIndex() <= GetText().size()) ?  GetEndSelectionIndex() : 0;
+        int insertIndex = GetStartSelectionIndex() > GetEndSelectionIndex() ? GetStartSelectionIndex() : GetEndSelectionIndex();
+        insertIndex = (insertIndex >= 0 && insertIndex <= GetText().size()) ? insertIndex : 0;
 
         ssGUI::CharacterDetails baseCD;
         if(insertIndex - 1 >= 0)

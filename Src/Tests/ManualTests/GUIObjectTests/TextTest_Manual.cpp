@@ -22,6 +22,8 @@ void SetUp()
     TestText->SetText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "\
     "incididunt ut labore et dolore magna aliqua.\nJust\ta\tsentence\tfor\ttesting\ttabs.\na\ta\ta\ta\ta\ta\ta");
     
+    //TestText->SetText("Test Text");
+    
     TestFont = ssGUI::Create<ssGUI::Font>();
     TestFont->LoadFromMemory((void*)ssGUI_Test_NotoSans_Bold, ssGUI_Test_NotoSans_Bold_size);
 }
