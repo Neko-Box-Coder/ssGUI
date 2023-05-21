@@ -879,16 +879,7 @@ namespace ssGUI
                 objsToDisableFocus[i]->Internal_SetSelfFocus(false);
         };
         
-        bool originalFocus = Focused;
-        Focused = focus;
-
-        if(focus != originalFocus)
-        {
-            if(focus && CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::FOCUSED))
-                CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::FOCUSED)->Notify(CurrentObject);
-            else if(!focus && CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::FOCUS_LOST))
-                CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::FOCUS_LOST)->Notify(CurrentObject);
-        }
+        Internal_SetSelfFocus(focus);
 
         if(focus)
         {
