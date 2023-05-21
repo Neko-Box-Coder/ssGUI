@@ -48,12 +48,26 @@ int main()
                                             !Callback->IsEventListenerExist("key", TestObj));   
     }
 
-    ssTEST("ClearEventListenersTest")
+    ssTEST("SetEventListenerOrderTest")
     {
         Callback->AddEventListener("key", [](ssGUI::EventInfo info){});
-        Callback->AddEventListener("key1", [](ssGUI::EventInfo info){});
         Callback->AddEventListener("key2", [](ssGUI::EventInfo info){});
-        Callback->AddEventListener("key3", TestObj, [](ssGUI::EventInfo info){});
+        
+        ssTEST_OUTPUT_ASSERT("Without adder",   Callback->GetEventListenerOrder("key") == 0 && 
+                                                Callback->GetEventListenerOrder("key2") == 1);    
+
+        Callback->AddEventListener("key", TestObj, [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key2", TestObj, [](ssGUI::EventInfo info){});
+
+        ssTEST_OUTPUT_ASSERT("With adder",  Callback->GetEventListenerOrder("key", TestObj) == 2 && 
+                                            Callback->GetEventListenerOrder("key2", TestObj) == 3);    
+    }
+
+    ssTEST_SKIP("GetEventListenerOrder (Tested in SetEventListenerOrderTest)"){}
+
+    ssTEST("ClearEventListenersTest")
+    {
+        ssTEST_OUTPUT_ASSERT(Callback->GetEventListenerCount() == 4);
         
         Callback->ClearEventListeners();
         
