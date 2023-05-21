@@ -103,8 +103,9 @@ namespace Extensions
         //Do the rendering here....
         auto shadowPos = Container->GetGlobalPosition() + GetPositionOffset() + GetBlurRadius();
         auto shadowSize = Container->GetSize() + GetSizeOffset() - GetBlurRadius() * 2;
-        shadowSize.x = shadowSize.x < GetBlurRadius() ? GetBlurRadius() : shadowSize.x;
-        shadowSize.y = shadowSize.y < GetBlurRadius() ? GetBlurRadius() : shadowSize.y;
+
+        shadowSize.x = shadowSize.x < 0 ? 0 : shadowSize.x;
+        shadowSize.y = shadowSize.y < 0 ? 0 : shadowSize.y;
 
         newVertices.push_back(shadowPos);
         newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0));
