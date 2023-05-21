@@ -50,6 +50,7 @@ namespace ssGUI
         bool SelectionAllowed;                                                              //See <IsTextSelectionAllowed>
         int StartSelectionIndex;                                                            //See <GetStartSelectionIndex>
         int EndSelectionIndex;                                                              //See <GetEndSelectionIndex>
+        bool DeselectWhenFocusLost;                                                         //See <IsDeselectWhenFocusLost>
 
         glm::u8vec4 SelectionColor;                                                         //See <GetSelectionColor>
         glm::u8vec4 TextSelectedColor;                                                      //See <GetTextSelectedColor>
@@ -82,6 +83,7 @@ namespace ssGUI
                     SelectionAllowed(true),
                     StartSelectionIndex(-1),
                     EndSelectionIndex(-1),
+                    DeselectWhenFocusLost(true),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
                     LastDefaultFontsID(0)
@@ -155,6 +157,7 @@ namespace ssGUI
             bool SelectionAllowed;                                                              //See <IsTextSelectionAllowed>
             int StartSelectionIndex;                                                            //See <GetStartSelectionIndex>
             int EndSelectionIndex;                                                              //See <GetEndSelectionIndex>
+            bool DeselectWhenFocusLost;                                                         //See <IsDeselectWhenFocusLost>
 
             glm::u8vec4 SelectionColor;                                                         //See <GetSelectionColor>
             glm::u8vec4 TextSelectedColor;                                                      //See <GetTextSelectedColor>
@@ -485,6 +488,14 @@ namespace ssGUI
             //function: GetTextSelectedColor
             //Gets the text color when being selected
             virtual glm::u8vec4 GetTextSelectedColor() const;
+
+            //function: SetDeselectWhenFocusLost
+            //Sets the text to deselect when its focus is lost or not
+            virtual void SetDeselectWhenFocusLost(bool deselectWhenFocusLost);
+            
+            //function: IsDeselectWhenFocusLost
+            //Returns the text to deselect when its focus is lost or not
+            virtual bool IsDeselectWhenFocusLost() const;
 
             //function: GetContainedCharacterIndexFromPos
             //Gets the character index if the passed in position is contained inside a character

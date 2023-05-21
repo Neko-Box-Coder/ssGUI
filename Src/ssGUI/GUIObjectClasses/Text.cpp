@@ -38,6 +38,7 @@ namespace ssGUI
         SelectionAllowed = other.IsTextSelectionAllowed();
         StartSelectionIndex = other.GetStartSelectionIndex();
         EndSelectionIndex = other.GetEndSelectionIndex();
+        DeselectWhenFocusLost = other.IsDeselectWhenFocusLost();
         SelectionColor = other.GetSelectionColor();
         TextSelectedColor = other.GetTextSelectedColor();
         LastDefaultFontsID = other.LastDefaultFontsID;
@@ -1228,6 +1229,14 @@ namespace ssGUI
             }
         }
 
+        //Deselect when focus is lost
+        if( IsTextSelectionAllowed() && IsDeselectWhenFocusLost() && GetStartSelectionIndex() != GetEndSelectionIndex() && 
+            GetStartSelectionIndex() != -1 && !IsFocused())
+        {
+            SetStartSelectionIndex(GetStartSelectionIndex());
+            SetEndSelectionIndex(GetStartSelectionIndex());
+        }
+
         if(inputStatus.KeyInputBlockedObject == nullptr)
         {
             //Text copying when ctrl+c is pressed and there is something highlighted
@@ -1282,6 +1291,7 @@ namespace ssGUI
                     SelectionAllowed(true),
                     StartSelectionIndex(-1),
                     EndSelectionIndex(-1),
+                    DeselectWhenFocusLost(true),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
                     LastDefaultFontsID(0)
@@ -1863,6 +1873,16 @@ namespace ssGUI
     glm::u8vec4 Text::GetTextSelectedColor() const
     {
         return TextSelectedColor;
+    }
+    
+    void Text::SetDeselectWhenFocusLost(bool deselectWhenFocusLost)
+    {
+        DeselectWhenFocusLost = deselectWhenFocusLost;
+    }
+    
+    bool Text::IsDeselectWhenFocusLost() const
+    {
+        return DeselectWhenFocusLost;
     }
 
     int Text::GetContainedCharacterIndexFromPos(glm::vec2 pos)

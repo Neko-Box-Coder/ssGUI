@@ -249,6 +249,8 @@ void TextSelectionTest(bool firstRun)   //7
         ssLOG_SIMPLE("Press E to GetSelectionColor");
         ssLOG_SIMPLE("Press R to SetTextSelectedColor to Green");
         ssLOG_SIMPLE("Press T to GetTextSelectedColor");
+        ssLOG_SIMPLE("Press Y to Toggle SetDeselectWhenFocusLost");
+        ssLOG_SIMPLE("Press U to IsDeselectWhenFocusLost");
     }
     
     if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::EIGHT))
@@ -291,6 +293,15 @@ void TextSelectionTest(bool firstRun)   //7
     {
         auto testColor = TestText->GetTextSelectedColor();
         ssLOG_SIMPLE("GetSelectionColor called: "<<(int)testColor.r<<", "<<(int)testColor.g<<", "<<(int)testColor.b<<", "<<(int)testColor.a);
+    }
+    else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::Y))
+    {
+        TestText->SetDeselectWhenFocusLost(!TestText->IsDeselectWhenFocusLost());
+        ssLOG_SIMPLE("SetDeselectWhenFocusLost called: "<<TestText->IsDeselectWhenFocusLost());
+    }
+    else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::U))
+    {
+        ssLOG_SIMPLE("IsDeselectWhenFocusLost called: "<<TestText->IsDeselectWhenFocusLost());
     }
 }
 
