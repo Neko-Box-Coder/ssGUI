@@ -42,7 +42,7 @@ int main()
         std::string newString = " new text";
         TestText->AddText(newString);
         
-        ssTEST_OUTPUT_ASSERT(TestText->GetText() == converter.from_bytes(TestString + newString));
+        ssTEST_OUTPUT_ASSERT(TestText->GetText<std::string>() == TestString + newString);
         
         ssTEST_CALL_CLEAN_UP();
         ssTEST_CALL_SET_UP();

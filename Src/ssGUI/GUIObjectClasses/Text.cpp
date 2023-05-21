@@ -1437,8 +1437,22 @@ namespace ssGUI
         RemoveCharacterDetails(startIndex, exclusiveEndIndex);
         RedrawObject();
     }
-
-    std::wstring Text::GetText()
+    
+    void Text::GetText(std::wstring& retText) const
+    {
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
+            retText += CurrentCharactersDetails[i].Character;
+    }
+    
+    void Text::GetText(std::string& retText) const
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
+            retText += converter.to_bytes(CurrentCharactersDetails[i].Character);
+    }
+    
+    std::wstring Text::GetText() const
     {
         std::wstring currentText = L"";
         for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
