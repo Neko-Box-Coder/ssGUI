@@ -32,6 +32,7 @@ namespace ssGUI
                                 ArrowNavInterval(20)
     {
         SetBlockInput(true);
+        SetMinSize(glm::vec2(35, 35));
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 
         AddExtension<ssGUI::Extensions::RoundedCorners>();

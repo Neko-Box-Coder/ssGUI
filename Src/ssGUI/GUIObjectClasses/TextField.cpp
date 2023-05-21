@@ -923,6 +923,7 @@ namespace ssGUI
                                 ArrowNavInterval(20)
     {
         SetBlockInput(true);
+        SetMinSize(glm::vec2(35, 35));
         SetTextAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT, ssGUI::Enums::AlignmentVertical::TOP);
         
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));

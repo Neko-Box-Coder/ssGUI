@@ -16,7 +16,9 @@ void SetUp()
     TestTextField->SetSize(glm::vec2(200, 200));
 
     assert(TestTextField->GetType() == (ssGUI::Enums::GUIObjectType::WIDGET | ssGUI::Enums::GUIObjectType::TEXT | ssGUI::Enums::GUIObjectType::TEXT_FIELD));
-    TestTextField->Clone(true)->SetPosition(glm::vec2(250, 250));
+    auto* clone = TestTextField->Clone(true);
+    clone->SetPosition(glm::vec2(250, 250));
+    clone->SetSize(glm::vec2(200, 35));
 }
 
 void CleanUp()
