@@ -122,7 +122,7 @@ namespace Extensions
         bool invalidAngle = false;
         if(angleT1CirT2 < 0)
         {
-            ssGUI_WARNING("Container type: "<<(int)Container->GetType());
+            ssGUI_WARNING(ssGUI_EXT_TAG, "Container type: "<<(int)Container->GetType());
             ssGUI_WARNING(ssGUI_EXT_TAG, "anti-clockwise placements of vertices detected. Rounded corners failed.");
             invalidAngle = true;
         }
