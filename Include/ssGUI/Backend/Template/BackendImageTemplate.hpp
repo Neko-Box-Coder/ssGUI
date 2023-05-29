@@ -9,7 +9,7 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //class: ssGUI::Backend::BackendFontTemplate
+    //class: ssGUI::Backend::BackendImageTemplate
     class BackendImageTemplate : public BackendImageInterface
     {
         private:

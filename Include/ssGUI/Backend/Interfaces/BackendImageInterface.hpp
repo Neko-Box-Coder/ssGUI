@@ -50,14 +50,17 @@ namespace Backend
             virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const = 0;
             
             //function: UpdateCache
+            //Updates the drawing interfaces' cache with the current image
             virtual void UpdateCache() = 0;
             
             //function: Internal_AddBackendDrawingRecord
             //(Internal ssGUI function) Adds a linking record of indicating this image is stored in backend drawing.
+            //By default no linking record will be cloned when <Clone> is called.
             virtual void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
             
             //function: Internal_RemoveBackendDrawingRecord
             //(Internal ssGUI function) Removes a linking record of indicating this image is stored in backend drawing.
+            //By default no linking record will be cloned when <Clone> is called.
             virtual void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
 
             //function: Clone

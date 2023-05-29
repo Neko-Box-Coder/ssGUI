@@ -36,6 +36,7 @@ namespace Backend
         CurrentImageFormat = other.CurrentImageFormat;
         ImageWidth = other.ImageWidth;
         ImageHeight = other.ImageHeight;
+        LinkedBackendDrawing = std::vector<ssGUI::Backend::BackendDrawingInterface*>();
     }
 
     BackendImageStbImage::BackendImageStbImage() :  ImageBuffer(nullptr),
