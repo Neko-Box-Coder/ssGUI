@@ -145,7 +145,8 @@ int main()
         uint8_t* buffer = new uint8_t[size];
         fs.read((char*)buffer, size); 
         
-        ssTEST_OUTPUT_ASSERT(, TestFont->LoadFromMemory(buffer, size));delete[] buffer;
+        ssTEST_OUTPUT_ASSERT(TestFont->LoadFromMemory(buffer, size));
+        delete[] buffer;
     }
 
     #if !defined(SSGUI_FONT_BACKEND_SFML)

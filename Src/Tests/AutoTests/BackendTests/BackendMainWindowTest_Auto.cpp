@@ -40,8 +40,8 @@ int main()
         #ifdef SSGUI_MAIN_BACKEND_SFML
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         #endif 
-        //ssTEST_OUTPUT_ASSERT(TestWindow->GetWindowPosition() == pos);
-        ssLOG_LINE("TestWindow->GetWindowPosition(): "<<TestWindow->GetWindowPosition().x<<", "<<TestWindow->GetWindowPosition().y);
+        ssTEST_OUTPUT_ASSERT(TestWindow->GetWindowPosition() == pos);
+        //ssLOG_LINE("TestWindow->GetWindowPosition(): "<<TestWindow->GetWindowPosition().x<<", "<<TestWindow->GetWindowPosition().y);
     }
 
     ssTEST("GetPositionOffsetTest")
