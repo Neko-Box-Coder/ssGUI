@@ -18,7 +18,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Build Variables
 set(ssGUI_OUTPUT_STATIC     ON          CACHE BOOL      "Use and create static library instead")
-set(ssGUI_BUILD_TESTS       ON          CACHE BOOL      "Build tests")
+set(ssGUI_BUILD_TESTS       OFF         CACHE BOOL      "Build tests")
 set(ssGUI_BUILD_EXAMPLES    ON          CACHE BOOL      "Build examples")
 set(ssGUI_LOG_LEVEL         "Warning"   CACHE STRING    "Log level")
 set(ssGUI_LOG_TAG           "None"      CACHE STRING    "Log tag (overrides level)")
@@ -44,7 +44,7 @@ set(ssGUI_FONT_BACKEND_DESCRIPTION "The font backend that will be used by ssGUI"
 set(ssGUI_IMAGE_BACKEND_DESCRIPTION "The image backend that will be used by ssGUI")
 
 
-# Backend options variable
+# Default backend options variable
 if(WIN32)
     set(ssGUI_MAIN_BACKEND "Win32_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
     set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "Win32_OpenGL3_3" 
@@ -58,57 +58,75 @@ else()
                                                             "Template")
 endif()
 
-# Show / unshow SFML options depending if SFML backend is selected or not
-if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
-    set(ssGUI_USE_LOCAL_SFML ON CACHE BOOL "Use the SFML that comes with ssGUI")
-    set(ssGUI_USE_SFML_TIME OFF CACHE BOOL "Use SFML time instead of chrono time")
-    
-    set(ssGUI_FONT_BACKEND "SFML" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
-    set(ssGUI_IMAGE_BACKEND "SFML" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "SFML" 
-                                                            "FreeType" 
-                                                            "Template")
-    
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" 
-                                                            "stb_image" 
-                                                            "Template")
+# Use Mock Backend
+set(ssGUI_MOCK_OFF_OPTION_STRING "Off")
+set(ssGUI_MOCK_OPTION_STRING "Mock")
+set(ssGUI_MOCK_WITH_NATIVE_OPTION_STRING "Mock With Native Backend")
 
-    # This might not be needed 
-    set(ssGUI_SFML_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/External/sfml/include" CACHE PATH "Provide the directory of ")
-    set (CMAKE_CXX_STANDARD 17) #SFML needs C++17
-else()
+set(ssGUI_MOCK_BACKEND_MODE "Off" CACHE STRING "Mock backend mode")
+set_property(CACHE ssGUI_MOCK_BACKEND_MODE PROPERTY STRINGS "${ssGUI_MOCK_OFF_OPTION_STRING}" 
+                                                            "${ssGUI_MOCK_OPTION_STRING}" 
+                                                            "${ssGUI_MOCK_WITH_NATIVE_OPTION_STRING}")
+
+if(ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "Mock") 
+    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "Mock") 
+    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Mock")
     unset(ssGUI_USE_LOCAL_SFML CACHE)
     unset(ssGUI_USE_SFML_TIME CACHE)
-endif()
+else()
+    # Show / unshow SFML options depending if SFML backend is selected or not
+    if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
+        set(ssGUI_USE_LOCAL_SFML ON CACHE BOOL "Use the SFML that comes with ssGUI")
+        set(ssGUI_USE_SFML_TIME OFF CACHE BOOL "Use SFML time instead of chrono time")
+        
+        set(ssGUI_FONT_BACKEND "SFML" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+        set(ssGUI_IMAGE_BACKEND "SFML" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+        set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "SFML" 
+                                                                "FreeType" 
+                                                                "Template")
+        
+        set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "SFML" 
+                                                                "stb_image" 
+                                                                "Template")
 
-if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
-    set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
-    set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+        # This might not be needed 
+        set(ssGUI_SFML_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/External/sfml/include" CACHE PATH "Provide the directory of ")
+        set (CMAKE_CXX_STANDARD 17) #SFML needs C++17
+    else()
+        unset(ssGUI_USE_LOCAL_SFML CACHE)
+        unset(ssGUI_USE_SFML_TIME CACHE)
+    endif()
 
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "FreeType" 
-                                                            "Template")
-    
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" 
-                                                            "Template")
-endif()
+    if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+        set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+        set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
-if(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
-    set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
-    set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+        set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "FreeType" 
+                                                                "Template")
+        
+        set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" 
+                                                                "Template")
+    endif()
 
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "FreeType" 
-                                                            "Template")
-    
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" 
-                                                            "Template")
-endif()
+    if(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
+        set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+        set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
-if(ssGUI_MAIN_BACKEND STREQUAL "Template")
-    set(ssGUI_FONT_BACKEND "Template" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
-    set(ssGUI_IMAGE_BACKEND "Template" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+        set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "FreeType" 
+                                                                "Template")
+        
+        set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "stb_image" 
+                                                                "Template")
+    endif()
 
-    set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "Template")
-    set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")
+    if(ssGUI_MAIN_BACKEND STREQUAL "Template")
+        set(ssGUI_FONT_BACKEND "Template" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+        set(ssGUI_IMAGE_BACKEND "Template" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
+
+        set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS "Template")
+        set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Template")
+    endif()
 endif()
 
 # Debug Variables
@@ -131,51 +149,6 @@ SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,$ORIGIN")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -std=c++0x")  #For surpressing goto warning
 
 # ==========================================================
-# clip 
-# ==========================================================
-
-# Disable clip examples and tests
-set(CLIP_EXAMPLES OFF CACHE BOOL "Compile clip examples")
-set(CLIP_TESTS OFF CACHE BOOL "Compile clip tests")
-
-# In case that you have ${PNG_LIBRARY} set to support copy/paste images on Linux
-#set(CLIP_X11_PNG_LIBRARY "${PNG_LIBRARY}")
-
-# Add clip subdirectory to compile the library
-add_subdirectory("${PROJECT_SOURCE_DIR}/External/clip")
-
-target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/External/clip")
-
-set_target_properties(clip PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
-
-# ==========================================================
-# SFML 
-# ==========================================================
-
-if(ssGUI_USE_LOCAL_SFML AND ssGUI_MAIN_BACKEND STREQUAL "SFML")
-
-    set(SFML_DIR "${CMAKE_CURRENT_LIST_DIR}/External/sfml/lib/cmake/SFML")
-
-    # set(INCLUDE_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../include")
-    # message("${SFML_DIR}")
-
-    # target_link_options(ssGUI PRIVATE -mwindows) # uncomment to disabling console on Windows
-    if(ssGUI_OUTPUT_STATIC)
-        set(SFML_STATIC_LIBRARIES TRUE)
-    endif()
-
-    # Import SFML
-    find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
-
-    # TODO: Check if this works
-    set_target_properties(SFML::System PROPERTIES FOLDER External)      # Set folder name for IDEs such as Visual Studio
-    set_target_properties(SFML::Window PROPERTIES FOLDER External)      # Set folder name for IDEs such as Visual Studio
-    set_target_properties(SFML::Graphics PROPERTIES FOLDER External)    # Set folder name for IDEs such as Visual Studio
-    set_target_properties(SFML::Network PROPERTIES FOLDER External)     # Set folder name for IDEs such as Visual Studio
-    set_target_properties(SFML::Audio PROPERTIES FOLDER External)       # Set folder name for IDEs such as Visual Studio
-endif()
-
-# ==========================================================
 # ssLogger 
 # ==========================================================
 
@@ -191,30 +164,73 @@ set(ssTEST_BUILD_CHECK OFF)
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
 set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
-# ==========================================================
-# FreeType
-# ==========================================================
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+    # ==========================================================
+    # clip 
+    # ==========================================================
+    # Disable clip examples and tests
+    set(CLIP_EXAMPLES OFF CACHE BOOL "Compile clip examples")
+    set(CLIP_TESTS OFF CACHE BOOL "Compile clip tests")
 
-if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
-    unset(FT_DISABLE_HARFBUZZ CACHE)
-    set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
-    set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
-endif()
+    # In case that you have ${PNG_LIBRARY} set to support copy/paste images on Linux
+    #set(CLIP_X11_PNG_LIBRARY "${PNG_LIBRARY}")
 
-# ==========================================================
-# stb_image
-# ==========================================================
+    # Add clip subdirectory to compile the library
+    add_subdirectory("${PROJECT_SOURCE_DIR}/External/clip")
 
-if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
-    add_library(ssGUI_stb_image INTERFACE)
-    
-    #target_sources( stb_image INTERFACE 
-    #                FILE_SET HEADERS
-    #                BASE_DIRS "${CMAKE_CURRENT_LIST_DIR}/External/stb_image"
-    #                FILES "${CMAKE_CURRENT_LIST_DIR}/External/stb_image/stb_image.h")
-    target_include_directories(ssGUI_stb_image INTERFACE "${CMAKE_CURRENT_LIST_DIR}/External/stb_image")
-    set_target_properties(ssGUI_stb_image PROPERTIES FOLDER External)   # Set folder name for IDEs such as Visual Studio
+    target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/External/clip")
+
+    set_target_properties(clip PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+
+    # ==========================================================
+    # SFML 
+    # ==========================================================
+    if(ssGUI_USE_LOCAL_SFML AND ssGUI_MAIN_BACKEND STREQUAL "SFML")
+
+        set(SFML_DIR "${CMAKE_CURRENT_LIST_DIR}/External/sfml/lib/cmake/SFML")
+
+        # set(INCLUDE_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../include")
+        # message("${SFML_DIR}")
+
+        # target_link_options(ssGUI PRIVATE -mwindows) # uncomment to disabling console on Windows
+        if(ssGUI_OUTPUT_STATIC)
+            set(SFML_STATIC_LIBRARIES TRUE)
+        endif()
+
+        # Import SFML
+        find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
+
+        # TODO: Check if this works
+        set_target_properties(SFML::System PROPERTIES FOLDER External)      # Set folder name for IDEs such as Visual Studio
+        set_target_properties(SFML::Window PROPERTIES FOLDER External)      # Set folder name for IDEs such as Visual Studio
+        set_target_properties(SFML::Graphics PROPERTIES FOLDER External)    # Set folder name for IDEs such as Visual Studio
+        set_target_properties(SFML::Network PROPERTIES FOLDER External)     # Set folder name for IDEs such as Visual Studio
+        set_target_properties(SFML::Audio PROPERTIES FOLDER External)       # Set folder name for IDEs such as Visual Studio
+    endif()
+
+    # ==========================================================
+    # FreeType
+    # ==========================================================
+    if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
+        unset(FT_DISABLE_HARFBUZZ CACHE)
+        set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
+        set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+    endif()
+
+    # ==========================================================
+    # stb_image
+    # ==========================================================
+    if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
+        add_library(ssGUI_stb_image INTERFACE)
+        
+        #target_sources( stb_image INTERFACE 
+        #                FILE_SET HEADERS
+        #                BASE_DIRS "${CMAKE_CURRENT_LIST_DIR}/External/stb_image"
+        #                FILES "${CMAKE_CURRENT_LIST_DIR}/External/stb_image/stb_image.h")
+        target_include_directories(ssGUI_stb_image INTERFACE "${CMAKE_CURRENT_LIST_DIR}/External/stb_image")
+        set_target_properties(ssGUI_stb_image PROPERTIES FOLDER External)   # Set folder name for IDEs such as Visual Studio
+    endif()
 endif()
 
 # ==========================================================
@@ -249,27 +265,34 @@ endif()
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend")
 
-# Adding Main Backend
-if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/SFML")
-elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Win32_OpenGL3_3")
-elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Template")
-elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/X11_OpenGL3_3")
-else()
-    message(FATAL_ERROR "Invalid Backend")
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+    # Adding Main Backend
+    if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/SFML")
+    elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Win32_OpenGL3_3")
+    elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Template")
+    elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/X11_OpenGL3_3")
+    else()
+        message(FATAL_ERROR "Invalid Backend")
+    endif()
+
+    # Adding Font Backend
+    if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/FreeType")
+    endif()
+
+    # Adding Image Backend
+    if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/stb_image")
+    endif()
 endif()
 
-# Adding Font Backend
-if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/FreeType")
-endif()
-
-# Adding Image Backend
-if(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/stb_image")
+# Add Mock Backend
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Mocks")
 endif()
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/DataClasses")
@@ -293,7 +316,9 @@ target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Include"
 # message("${INCLUDE_COMPILER_STRING}")
 
 # Linking clip to ssGUI
-target_link_libraries(ssGUI PUBLIC clip)
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+    target_link_libraries(ssGUI PUBLIC clip)
+endif()
 
 # Linking ssLogger to ssGUI
 target_link_libraries(ssGUI PUBLIC ssLogger)
@@ -301,51 +326,57 @@ target_link_libraries(ssGUI PUBLIC ssLogger)
 target_link_libraries(ssGUI PUBLIC ssTest)
 
 # ==========================================================
-# Linking Backend to ssGUI and adding compiler definitions
+# Linking Backend to ssGUI and adding backend compiler definitions
 # ==========================================================
-if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
-    target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
-    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_SFML)
-elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
-    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_WIN32_OPENGL)
-    target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
-    find_package(OpenGL REQUIRED)
-    target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
-    set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
-elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
-    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_X11_OPENGL)
-    find_package(OpenGL REQUIRED)
-    find_package(X11 REQUIRED)
-    target_link_libraries(ssGUI PUBLIC OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
-    set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
-elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
-    message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
-else()
-    message(FATAL_ERROR "Invalid Main Backend")
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+    if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
+        target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
+        target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_SFML)
+    elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_WIN32_OPENGL)
+        target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
+        find_package(OpenGL REQUIRED)
+        target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
+        set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+    elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_X11_OPENGL)
+        find_package(OpenGL REQUIRED)
+        find_package(X11 REQUIRED)
+        target_link_libraries(ssGUI PUBLIC OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
+        set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+    elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
+        message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
+    else()
+        message(FATAL_ERROR "Invalid Main Backend")
+    endif()
+
+    if(ssGUI_FONT_BACKEND STREQUAL "SFML")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_SFML)
+    elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
+        target_link_libraries(ssGUI PUBLIC freetype)
+        target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_FREE_TYPE)
+    elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
+        message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
+    else()
+        message(FATAL_ERROR "Invalid Font Backend")
+    endif()
+
+    if(ssGUI_IMAGE_BACKEND STREQUAL "SFML")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_SFML)
+    elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_STB_IMAGE)
+        target_link_libraries(ssGUI PUBLIC ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+    elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
+        message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
+    else()
+        message(FATAL_ERROR "Invalid Image Backend")
+    endif()
 endif()
 
-if(ssGUI_FONT_BACKEND STREQUAL "SFML")
-    target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_SFML)
-elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-    target_link_libraries(ssGUI PUBLIC freetype)
-    target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_FREE_TYPE)
-elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
-    message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
-else()
-    message(FATAL_ERROR "Invalid Font Backend")
-endif()
-
-if(ssGUI_IMAGE_BACKEND STREQUAL "SFML")
-    target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_SFML)
-elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
-    target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_STB_IMAGE)
-    target_link_libraries(ssGUI PUBLIC ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
-elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
-    message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
-else()
-    message(FATAL_ERROR "Invalid Image Backend")
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
+    target_compile_definitions(ssGUI PUBLIC SSGUI_MOCK_BACKEND)
 endif()
 
 # ==========================================================
@@ -440,16 +471,17 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName targetsToL
         get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
 
         # Freetype test
-        if(CUR_NAME STREQUAL "FreetypeTest" AND NOT ssGUI_FONT_BACKEND STREQUAL "FreeType")
-            continue()
-        elseif(CUR_NAME STREQUAL "FreetypeTest" AND ssGUI_FONT_BACKEND STREQUAL "FreeType")
-            add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
-            target_link_libraries("${CUR_NAME}" PRIVATE freetype)
-            continue()
-        endif()
+        #if(CUR_NAME STREQUAL "FreetypeTest" AND NOT ssGUI_FONT_BACKEND STREQUAL "FreeType")
+        #    continue()
+        #elseif(CUR_NAME STREQUAL "FreetypeTest" AND ssGUI_FONT_BACKEND STREQUAL "FreeType")
+        #    add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
+        #    target_link_libraries("${CUR_NAME}" PRIVATE freetype)
+        #    continue()
+        #endif()
 
         # For now, skip custom graphics example if we are using SFML backend
-        if(CUR_NAME STREQUAL "CustomGraphicsExampleV2" AND ssGUI_MAIN_BACKEND STREQUAL "SFML")
+        STRING(TOLOWER ${ssGUI_MAIN_BACKEND} ssGUI_LOWER_MAIN_BACKEND)
+        if(CUR_NAME STREQUAL "CustomGraphicsExampleV2" AND NOT ssGUI_LOWER_MAIN_BACKEND MATCHES ".*opengl.*")
             continue()
         endif()
 
@@ -500,20 +532,33 @@ if(ssGUI_BUILD_TESTS)
     target_include_directories(ssGUI_Test_Resources PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Src/Tests")
     set_target_properties(ssGUI_Test_Resources PROPERTIES FOLDER "Tests")
 
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/BackendTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
-                            "Tests/AutoTests/BackendTests"
-                            "ssGUI;ssGUI_Test_Resources")
+    # ----------------------------------------------------------
+    # Auto Tests
+    # ----------------------------------------------------------
+    #if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/BackendTests/" 
+                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
+                                "Tests/AutoTests/BackendTests"
+                                "ssGUI;ssGUI_Test_Resources")
+    #else()
+    #    message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping backend tests")
+    #    message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce backend tests")
+    #endif()
     
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
-                            "Tests/AutoTests/EventCallbackTests"
-                            "ssGUI;ssGUI_Test_Resources")
     
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/GUIObjectTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/GUIObjectTests/" 
-                            "Tests/AutoTests/GUIObjectTests"
-                            "ssGUI;ssGUI_Test_Resources")    
+    if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
+        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
+                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
+                                "Tests/AutoTests/EventCallbackTests"
+                                "ssGUI;ssGUI_Test_Resources")
+        
+        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/GUIObjectTests/" 
+                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/GUIObjectTests/" 
+                                "Tests/AutoTests/GUIObjectTests"
+                                "ssGUI;ssGUI_Test_Resources")    
+    else()
+        message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OFF_OPTION_STRING}, skipping tests")
+    endif()
     
     if(WIN32)
         file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
@@ -527,11 +572,20 @@ if(ssGUI_BUILD_TESTS)
         execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.sh" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.sh")
     endif()
 
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 
-                            "Tests/ManualTests/BackendTests"
-                            "ssGUI;ssGUI_Test_Resources")
-    
+    # ----------------------------------------------------------
+    # Manual Tests
+    # ----------------------------------------------------------
+    if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
+                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 
+                                "Tests/ManualTests/BackendTests"
+                                "ssGUI;ssGUI_Test_Resources")
+    else()
+        message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping manual backend tests")
+        message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce manual backend tests")
+    endif()
+
+    # TODO: The aim is to replace these manual tests with auto tests, unless it is backend tests I guess
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" 
                             "Tests/ManualTests/EventCallbackTests"
@@ -542,6 +596,9 @@ if(ssGUI_BUILD_TESTS)
                             "Tests/ManualTests/GUIObjectTests"
                             "ssGUI;ssGUI_Test_Resources")
     
+    # ----------------------------------------------------------
+    # Tests Templates
+    # ----------------------------------------------------------
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" 
                             "Tests/AutoTests"
