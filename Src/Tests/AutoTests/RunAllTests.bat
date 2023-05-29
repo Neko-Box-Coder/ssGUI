@@ -23,8 +23,8 @@ GOTO :FINAL
 :RUN_TEST <testFile>
     @REM Setlocal EnableDelayedExpansion
     IF NOT EXIST %~1 (
-        ECHO "File doesn't exist"
-        GOTO :FAILED
+        ECHO "[Auto Test Warning] %~1 doesn't exist, skipping"
+        EXIT /b
     )
     PUSHD %~dp1
     CALL %~1

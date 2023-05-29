@@ -524,7 +524,7 @@ if(ssGUI_BUILD_TESTS)
         file(   CHMOD "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.sh"
                 PERMISSIONS  OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
         file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
-        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.bat" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.bat")
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.sh" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.sh")
     endif()
 
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
