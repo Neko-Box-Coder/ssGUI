@@ -13,3 +13,6 @@
 [submodule "External/Embed2C"]
 	path = External/Embed2C
 	url = https://github.com/Neko-Box-Coder/Embed2C.git
+[submodule "External/SimpleOverride"]
+	path = External/SimpleOverride
+	url = https://github.com/Neko-Box-Coder/SimpleOverride.git

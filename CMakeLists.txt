@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 # cmake_minimum_required(VERSION 3.24)
 
+if(TARGET ssGUI)
+    return()
+endif()
+
 set (CMAKE_CXX_STANDARD 11)
 
 # For Clang to do parsing
@@ -163,6 +167,16 @@ set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name fo
 set(ssTEST_BUILD_CHECK OFF)
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
 set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+
+
+# ==========================================================
+# SimpleOverride
+# ==========================================================
+
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/SimpleOverride" "${CMAKE_CURRENT_BINARY_DIR}/SimpleOverride")
+    set_target_properties(SimpleOverride PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+endif()
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     # ==========================================================
@@ -376,6 +390,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
 endif()
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
+    target_link_libraries(ssGUI PUBLIC SimpleOverride)
     target_compile_definitions(ssGUI PUBLIC SSGUI_MOCK_BACKEND)
 endif()
 
