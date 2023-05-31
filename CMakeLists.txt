@@ -49,17 +49,21 @@ set(ssGUI_IMAGE_BACKEND_DESCRIPTION "The image backend that will be used by ssGU
 
 
 # Default backend options variable
-if(WIN32)
-    set(ssGUI_MAIN_BACKEND "Win32_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "Win32_OpenGL3_3" 
-                                                            "SFML" 
-                                                            "Template")
-# Linux
-else()
-    set(ssGUI_MAIN_BACKEND "X11_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
-    set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "X11_OpenGL3_3" 
-                                                            "SFML" 
-                                                            "Template")
+if(NOT ssGUI_MAIN_BACKEND STREQUAL "SFML" AND NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+    if(WIN32)
+        unset(ssGUI_MAIN_BACKEND CACHE)
+        set(ssGUI_MAIN_BACKEND "Win32_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
+        set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "Win32_OpenGL3_3" 
+                                                                "SFML" 
+                                                                "Template")
+    # Linux
+    else()
+        unset(ssGUI_MAIN_BACKEND CACHE)
+        set(ssGUI_MAIN_BACKEND "X11_OpenGL3_3" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
+        set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "X11_OpenGL3_3" 
+                                                                "SFML" 
+                                                                "Template")
+    endif()
 endif()
 
 # Use Mock Backend
@@ -73,6 +77,12 @@ set_property(CACHE ssGUI_MOCK_BACKEND_MODE PROPERTY STRINGS "${ssGUI_MOCK_OFF_OP
                                                             "${ssGUI_MOCK_WITH_NATIVE_OPTION_STRING}")
 
 if(ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+    unset(ssGUI_MAIN_BACKEND CACHE)
+    unset(ssGUI_FONT_BACKEND CACHE)
+    unset(ssGUI_IMAGE_BACKEND CACHE)
+    set(ssGUI_MAIN_BACKEND "Mock" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
+    set(ssGUI_FONT_BACKEND "Mock" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
+    set(ssGUI_IMAGE_BACKEND "Mock" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
     set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "Mock") 
     set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "Mock") 
     set_property(CACHE ssGUI_IMAGE_BACKEND PROPERTY STRINGS "Mock")
@@ -84,6 +94,8 @@ else()
         set(ssGUI_USE_LOCAL_SFML ON CACHE BOOL "Use the SFML that comes with ssGUI")
         set(ssGUI_USE_SFML_TIME OFF CACHE BOOL "Use SFML time instead of chrono time")
         
+        unset(ssGUI_FONT_BACKEND CACHE)
+        unset(ssGUI_IMAGE_BACKEND CACHE)
         set(ssGUI_FONT_BACKEND "SFML" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
         set(ssGUI_IMAGE_BACKEND "SFML" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
         set_property(CACHE ssGUI_FONT_BACKEND PROPERTY STRINGS  "SFML" 
@@ -103,6 +115,8 @@ else()
     endif()
 
     if(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
+        unset(ssGUI_FONT_BACKEND CACHE)
+        unset(ssGUI_IMAGE_BACKEND CACHE)
         set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
         set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
@@ -114,6 +128,8 @@ else()
     endif()
 
     if(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
+        unset(ssGUI_FONT_BACKEND CACHE)
+        unset(ssGUI_IMAGE_BACKEND CACHE)
         set(ssGUI_FONT_BACKEND "FreeType" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
         set(ssGUI_IMAGE_BACKEND "stb_image" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
@@ -125,6 +141,8 @@ else()
     endif()
 
     if(ssGUI_MAIN_BACKEND STREQUAL "Template")
+        unset(ssGUI_FONT_BACKEND CACHE)
+        unset(ssGUI_IMAGE_BACKEND CACHE)
         set(ssGUI_FONT_BACKEND "Template" CACHE STRING "${ssGUI_FONT_BACKEND_DESCRIPTION}")
         set(ssGUI_IMAGE_BACKEND "Template" CACHE STRING "${ssGUI_IMAGE_BACKEND_DESCRIPTION}")
 
