@@ -1,6 +1,10 @@
 #ifndef SSGUI_BACKEND_MAIN_WINDOW_MOCK_H
 #define SSGUI_BACKEND_MAIN_WINDOW_MOCK_H
 
+//#define SSGUI_MOCK_ENABLE_LOG
+#include "ssGUI/Backend/Mocks/MockMacro.hpp"
+
+#include "FunctionOverrides.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
 namespace ssGUI
@@ -9,12 +13,32 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //TODO: Allow returning custom info
     //class: ssGUI::Backend::BackendMainWindowMock
     class BackendMainWindowMock : public BackendMainWindowInterface
     {
         private:
             ssGUI::Backend::BackendMainWindowInterface* UnderlyingInterface;
+            glm::ivec2 WindowPosition;
+            glm::ivec2 PositionOffset;
+            glm::ivec2 WindowSize;
+            glm::ivec2 RenderSize;
+            std::vector<std::pair<std::function<void()>, bool>> OnCloseListeners;
+            bool Closed;
+            bool ClosingAborted;
+            std::wstring Title;
+            ssGUI::Backend::BackendImageInterface* IconImage;
+            bool Visible;
+            bool VSync;
+            bool Focused;
+            bool FocusSetByExternal;
+            std::vector<std::pair<std::function<void(bool)>, bool>> FocusChangedListeners;
+            int MSAA;
+            bool Titlebar;
+            bool Resizable;
+            bool CloseButton;
+            ssGUI::Enums::WindowMode WindowMode;
+            
+            FO_DECLARE_INSTNACE(OverrideObject);
         
             BackendMainWindowMock& operator=(BackendMainWindowMock const& other);
 
@@ -24,6 +48,35 @@ namespace Backend
         public:
             BackendMainWindowMock(ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface);
             ~BackendMainWindowMock() override;
+
+            FO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+
+            void SetMockPositionOffset(glm::ivec2 offset);
+
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendMainWindowInterface*, UnderlyingInterface)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowPosition)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, PositionOffset)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowSize)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, RenderSize)
+            
+            using CloseListeners = std::vector<std::pair<std::function<void()>, bool>>;
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(CloseListeners, OnCloseListeners)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Closed)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, ClosingAborted)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::wstring, Title)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendImageInterface*, IconImage)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Visible)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, VSync)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Focused)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, FocusSetByExternal)
+            
+            using FocusListeners = std::vector<std::pair<std::function<void(bool)>, bool>>;
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(FocusListeners, FocusChangedListeners)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(int, MSAA)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Titlebar)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Resizable)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, CloseButton)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Enums::WindowMode, WindowMode)
 
             //function: SetWindowPosition
             //See <BackendMainWindowInterface::SetWindowPosition>

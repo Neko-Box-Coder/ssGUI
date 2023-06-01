@@ -48,6 +48,30 @@ namespace ssGUI
         
         //var: RowPaddingInBytes
         int RowPaddingInBytes = 0;
+        
+        inline bool operator== (const ImageFormat& other)
+        {
+            bool monoCheck = ImgType == ssGUI::Enums::ImageType::MONO && HasAlpha ? IndexMono == other.IndexMono : true;
+            bool rgbCheck = ImgType == ssGUI::Enums::ImageType::RGB ? 
+                            IndexR == other.IndexR && IndexG == other.IndexG && IndexB == other.IndexB :
+                            true;
+            bool alphaCheck = HasAlpha ? IndexA == other.IndexA && PreMultipliedAlpha == other.PreMultipliedAlpha : true;
+        
+            return  ImgType == other.ImgType && 
+                    BitDepthPerChannel == other.BitDepthPerChannel && 
+                    BitPerPixel == other.BitPerPixel &&
+                    HasAlpha == other.HasAlpha &&
+                    monoCheck &&
+                    rgbCheck &&
+                    alphaCheck &&
+                    RowPaddingInBytes == other.RowPaddingInBytes;
+        }
+        
+        inline bool operator!= (const ImageFormat& other)
+        {
+            return !operator==(other);
+        }
+        
     };
 }
 

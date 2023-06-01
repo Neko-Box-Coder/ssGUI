@@ -1,7 +1,11 @@
 #ifndef SSGUI_BACKEND_FONT_MOCK_H
 #define SSGUI_BACKEND_FONT_MOCK_H
 
+//#define SSGUI_MOCK_ENABLE_LOG
+#include "ssGUI/Backend/Mocks/MockMacro.hpp"
+
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "FunctionOverrides.hpp"
 
 namespace ssGUI
 {
@@ -9,13 +13,13 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //TODO: Allow returning custom info
     //class: ssGUI::Backend::BackendFontMock
     class BackendFontMock : public BackendFontInterface
     {   
         private:
+            FO_DECLARE_INSTNACE(OverrideObject);
+
             ssGUI::Backend::BackendFontInterface* UnderlyingInterface;
-            bool Valid;
 
             BackendFontMock& operator=(BackendFontMock const& other);
         
@@ -23,8 +27,12 @@ namespace Backend
             BackendFontMock(BackendFontMock const& other);
 
         public:
+            FO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+
             BackendFontMock(ssGUI::Backend::BackendFontInterface* fontInterface);
             ~BackendFontMock() override;
+
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendFontInterface*, UnderlyingInterface)
             
             //function: IsValid
             //See <BackendFontInterface::IsValid>

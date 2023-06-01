@@ -1,15 +1,6 @@
 #include "ssGUI/Backend/Mocks/BackendDrawingMock.hpp"
-#include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
-
-//#ifdef SSGUI_MAIN_BACKEND_SFML
-//    #include "ssGUI/Backend/SFML/BackendDrawingSFML.hpp"
-//#elif defined SSGUI_MAIN_BACKEND_WIN32_OPENGL
-//    #include "ssGUI/Backend/Win32_OpenGL3_3/BackendDrawingWin32_OpenGL3_3.hpp"
-//#elif defined SSGUI_MAIN_BACKEND_X11_OPENGL
-//    #include "ssGUI/Backend/X11_OpenGL3_3/BackendDrawingX11_OpenGL3_3.hpp"
-//#endif
 
 namespace ssGUI
 {
@@ -48,19 +39,85 @@ namespace Backend
     {
         if(UnderlyingInterface != nullptr)
             delete UnderlyingInterface;
+
+        for(auto it = CachedImage.begin(); it != CachedImage.end(); it++)
+            (*it)->Internal_RemoveBackendDrawingRecord(this);
+    }
+    
+    int BackendDrawingMock::GetStateCounter() const
+    {
+        return SavedStateCount;    
+    }
+    
+    const std::vector<glm::vec2>& BackendDrawingMock::GetDrawnVertices() const
+    {
+        return Vertices[CurrentDrawingBuffer];
+    }
+    
+    const std::vector<glm::vec2>& BackendDrawingMock::GetRenderedVertices() const
+    {
+        return Vertices[(CurrentDrawingBuffer + 1) % 2];
+    }
+    
+    const std::vector<glm::vec2>& BackendDrawingMock::GetDrawnTexCoords() const
+    {
+        return TexCoords[CurrentDrawingBuffer];
+    }
+    
+    const std::vector<glm::vec2>& BackendDrawingMock::GetRenderedTexCoords() const
+    {
+        return TexCoords[(CurrentDrawingBuffer + 1) % 2];
+    }
+    
+    const std::vector<glm::u8vec4>& BackendDrawingMock::GetDrawnColors() const
+    {
+        return Colors[CurrentDrawingBuffer];
+    }
+    
+    const std::vector<glm::u8vec4>& BackendDrawingMock::GetRenderedColors() const
+    {
+        return Colors[(CurrentDrawingBuffer + 1) % 2];
+    }
+    
+    const std::vector<int>& BackendDrawingMock::GetDrawnCounts() const
+    {
+        return Counts[CurrentDrawingBuffer];
+    }
+    
+    const std::vector<int>& BackendDrawingMock::GetRenderedCounts() const
+    {
+        return Counts[(CurrentDrawingBuffer + 1) % 2];
+    }
+    
+    const std::vector<ssGUI::DrawingProperty>& BackendDrawingMock::GetDrawnProperties() const
+    {
+        return Properties[CurrentDrawingBuffer];
+    }
+    
+    const std::vector<ssGUI::DrawingProperty>& BackendDrawingMock::GetRenderedProperties() const
+    {
+        return Properties[(CurrentDrawingBuffer + 1) % 2];
+    }
+    
+    const glm::u8vec3& BackendDrawingMock::GetDrawnClearedColor() const
+    {
+        return ClearedColor[CurrentDrawingBuffer];
+    }
+    
+    const glm::u8vec3& BackendDrawingMock::GetRenderedClearedColor() const
+    {
+        return ClearedColor[(CurrentDrawingBuffer + 1) % 2];
     }
     
     void BackendDrawingMock::SaveState()
     {
         SSGUI_MOCK_PASSTHROUGH(SaveState());
-
         SavedStateCount++;
     }
 
     void BackendDrawingMock::RestoreState()
     {
         SSGUI_MOCK_PASSTHROUGH(SaveState());
-        
         SavedStateCount--;
     }
 
@@ -115,39 +172,32 @@ namespace Backend
     
     void BackendDrawingMock::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
     {
+        //NOTE: The underlying interface will get an extra AddImageCache call
         SSGUI_MOCK_PASSTHROUGH(AddImageCache(backendImage));
 
         if(CachedImage.find(backendImage) == CachedImage.end())
         {
             CachedImage.insert(backendImage);
-            
-            //NOTE: backendImage->Internal_AddBackendDrawingRecord would be called by 
-            //      UnderlyingInterface if it exists, hence the check
-            if(UnderlyingInterface == nullptr)
-                backendImage->Internal_AddBackendDrawingRecord(this);
+            backendImage->Internal_AddBackendDrawingRecord(this);
         }
     }
     
     void BackendDrawingMock::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
     {
+        //NOTE: The underlying interface will get an extra RemoveImageCache call
         SSGUI_MOCK_PASSTHROUGH(RemoveImageCache(backendImage));
         
         if(CachedImage.find(backendImage) != CachedImage.end())
         {
             CachedImage.erase(backendImage);
-        
-            //NOTE: backendImage->Internal_AddBackendDrawingRecord would be called by 
-            //      UnderlyingInterface if it exists, hence the check
-            if(UnderlyingInterface == nullptr)
-                backendImage->Internal_RemoveBackendDrawingRecord(this);
+            backendImage->Internal_RemoveBackendDrawingRecord(this);
         }
     }
     
     void* BackendDrawingMock::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
     {
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN(GetRawImageCacheHandle(backendImage));
-        
-        return CachedImage.find(backendImage) != CachedImage.end() ?  backendImage : nullptr;
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawImageCacheHandle(backendImage));
+        return CachedImage.find(backendImage) != CachedImage.end() ? backendImage : nullptr;
     }
 
     bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 

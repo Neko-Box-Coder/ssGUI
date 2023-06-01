@@ -1,6 +1,9 @@
 #ifndef SSGUI_BACKEND_DRAWING_MOCK_H
 #define SSGUI_BACKEND_DRAWING_MOCK_H
 
+//#define SSGUI_MOCK_ENABLE_LOG
+#include "ssGUI/Backend/Mocks/MockMacro.hpp"
+
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include <unordered_set>
 
@@ -34,7 +37,50 @@ namespace Backend
         public:
             BackendDrawingMock(ssGUI::Backend::BackendDrawingInterface* drawingInterface);
             ~BackendDrawingMock() override;
+            
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendDrawingInterface*, UnderlyingInterface)
+            
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::unordered_set<ssGUI::Backend::BackendImageInterface*>, CachedImage);
+            
+            //function: GetStateCounter
+            int GetStateCounter() const;
+            
+            //function: GetDrawnVertices
+            const std::vector<glm::vec2>& GetDrawnVertices() const;
+            
+            //function: GetRenderedVertices
+            const std::vector<glm::vec2>& GetRenderedVertices() const;
 
+            //function: GetDrawnTexCoords
+            const std::vector<glm::vec2>& GetDrawnTexCoords() const;
+            
+            //function: GetRenderedTexCoords
+            const std::vector<glm::vec2>& GetRenderedTexCoords() const;
+
+            //function: GetDrawnColors
+            const std::vector<glm::u8vec4>& GetDrawnColors() const;
+            
+            //function: GetRenderedColors
+            const std::vector<glm::u8vec4>& GetRenderedColors() const;
+
+            //function: GetDrawnCounts
+            const std::vector<int>& GetDrawnCounts() const;
+            
+            //function: GetRenderedCounts
+            const std::vector<int>& GetRenderedCounts() const;
+
+            //function: GetDrawnProperties
+            const std::vector<ssGUI::DrawingProperty>& GetDrawnProperties() const;
+            
+            //function: GetRenderedProperties
+            const std::vector<ssGUI::DrawingProperty>& GetRenderedProperties() const;
+
+            //function: GetDrawnClearedColor
+            const glm::u8vec3& GetDrawnClearedColor() const;
+            
+            //function: GetRenderedClearedColor
+            const glm::u8vec3& GetRenderedClearedColor() const;
+            
             //function: SaveState
             //See <BackendDrawingInterface::SaveState>
             void SaveState() override;

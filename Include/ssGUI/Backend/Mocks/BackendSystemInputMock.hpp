@@ -1,8 +1,11 @@
 #ifndef SSGUI_BACKEND_SYSTEM_INPUT_MOCK_H
 #define SSGUI_BACKEND_SYSTEM_INPUT_MOCK_H
 
+#include "FunctionOverrides.hpp"
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 
+//#define SSGUI_MOCK_ENABLE_LOG
+#include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
 namespace ssGUI
 {
@@ -10,11 +13,50 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    struct MockCursorData
+    {
+        ssGUI::Backend::BackendImageInterface* CursorImage = nullptr; 
+        std::string CursorName = "";
+        glm::ivec2 CursorSize;
+        glm::ivec2 Hotspot;
+        
+        MockCursorData( ssGUI::Backend::BackendImageInterface* cursorImage,
+                        std::string cursorName,
+                        glm::ivec2 cursorSize,
+                        glm::ivec2 hotspot) :   CursorImage(cursorImage),
+                                                CursorName(cursorName),
+                                                CursorSize(cursorSize),
+                                                Hotspot(hotspot)
+        {}
+    };
+    
+
     //class: ssGUI::Backend::BackendSystemInputMock
     class BackendSystemInputMock : public BackendSystemInputInterface
     {   
         private:
             ssGUI::Backend::BackendSystemInputInterface* UnderlyingInterface;
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> LastKeyPresses;
+            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> CurrentKeyPresses;
+            
+            glm::ivec2 LastMousePosition;
+            glm::ivec2 CurrentMousePosition;
+            glm::vec2 ScrollDelta;
+            std::vector<ssGUI::RealtimeInputInfo> LastRealtimeInputs;
+            std::vector<ssGUI::RealtimeInputInfo> CurrentRealtimeInputs;
+            std::wstring CurrentTextInput;
+            ssGUI::Enums::CursorType CurrentCursorType;
+
+            std::vector<MockCursorData> CustomCursors;
+            int CurrentCursorIndex;
+            int RawEventHandleNextId;
+            
+            std::wstring ClipboardText;
+            BackendImageInterface* ClipboardImg;
+            std::chrono::high_resolution_clock::time_point StartTime;
+            
+
+            FO_DECLARE_INSTNACE(OverrideObject);
 
             BackendSystemInputMock& operator=(BackendSystemInputMock const& other);
 
@@ -25,6 +67,25 @@ namespace Backend
             BackendSystemInputMock(ssGUI::Backend::BackendSystemInputInterface* systemInputInterface);
             ~BackendSystemInputMock() override;
             
+            FO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+            
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendSystemInputInterface*, UnderlyingInterface)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::vector<ssGUI::Enums::GenericButtonAndKeyInput>, LastKeyPresses)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::vector<ssGUI::Enums::GenericButtonAndKeyInput>, CurrentKeyPresses)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, LastMousePosition)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, CurrentMousePosition)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::vec2, ScrollDelta)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::vector<ssGUI::RealtimeInputInfo>, LastRealtimeInputs)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::vector<ssGUI::RealtimeInputInfo>, CurrentRealtimeInputs)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::wstring, CurrentTextInput)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Enums::CursorType, CurrentCursorType)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::vector<MockCursorData>, CustomCursors)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(int, CurrentCursorIndex)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(int, RawEventHandleNextId)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::wstring, ClipboardText)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(BackendImageInterface*, ClipboardImg)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::chrono::high_resolution_clock::time_point, StartTime)
+
             //function: UpdateInput
             //See <BackendSystemInputInterface::UpdateInput>
             void UpdateInput() override;

@@ -1,6 +1,10 @@
 #ifndef SSGUI_BACKEND_IMAGE_MOCK_H
 #define SSGUI_BACKEND_IMAGE_MOCK_H
 
+//#define SSGUI_MOCK_ENABLE_LOG
+#include "ssGUI/Backend/Mocks/MockMacro.hpp"
+
+#include "FunctionOverrides.hpp"
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include <vector>
 
@@ -10,13 +14,13 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //TODO: Allow returning custom info
     //class: ssGUI::Backend::BackendImageMock
     class BackendImageMock : public BackendImageInterface
     {
         private:
             ssGUI::Backend::BackendImageInterface* UnderlyingInterface;
             std::vector<ssGUI::Backend::BackendDrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
+            FO_DECLARE_INSTNACE(OverrideObject);
             
             BackendImageMock& operator=(BackendImageMock const& other);
 
@@ -26,6 +30,10 @@ namespace Backend
         public:
             BackendImageMock(ssGUI::Backend::BackendImageInterface* imageInterface);
             ~BackendImageMock() override;
+
+            FO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendImageInterface*, UnderlyingInterface)
 
             //function: GetRawHandle
             //See <BackendImageInterface::GetRawHandle>
