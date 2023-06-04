@@ -20,8 +20,9 @@ namespace Backend
             ssGUI::Backend::BackendMainWindowInterface* UnderlyingInterface;
             glm::ivec2 WindowPosition;
             glm::ivec2 PositionOffset;
+            glm::ivec2 SizeOffset;
             glm::ivec2 WindowSize;
-            glm::ivec2 RenderSize;
+            //glm::ivec2 RenderSize;
             std::vector<std::pair<std::function<void()>, bool>> OnCloseListeners;
             bool Closed;
             bool ClosingAborted;
@@ -56,8 +57,9 @@ namespace Backend
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendMainWindowInterface*, UnderlyingInterface)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowPosition)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, PositionOffset)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, SizeOffset)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowSize)
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, RenderSize)
+            //SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, RenderSize)
             
             using CloseListeners = std::vector<std::pair<std::function<void()>, bool>>;
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(CloseListeners, OnCloseListeners)

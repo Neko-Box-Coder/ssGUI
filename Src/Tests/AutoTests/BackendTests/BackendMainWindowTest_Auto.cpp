@@ -7,6 +7,10 @@
     #include <thread>
 #endif 
 
+#ifdef SSGUI_MAIN_BACKEND_MOCK
+    #include "ssGUI/Backend/Mocks/BackendMainWindowMock.hpp"
+#endif
+
 ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;
 ssGUI::Backend::BackendMainWindowInterface* TestWindow = nullptr;
 ssGUI::Backend::BackendSystemInputInterface* BackendInputs = nullptr;
@@ -199,6 +203,12 @@ int main()
 
     ssTEST("GetRawHandleTest()")
     {
+        #ifdef SSGUI_MAIN_BACKEND_MOCK
+            (*static_cast<ssGUI::Backend::BackendMainWindowMock*>(TestWindow))
+                .OverrideReturns(GetRawHandle())
+                .Returns((void*)1);
+        #endif
+        
         ssTEST_OUTPUT_ASSERT(TestWindow->GetRawHandle() != nullptr);
     }
 

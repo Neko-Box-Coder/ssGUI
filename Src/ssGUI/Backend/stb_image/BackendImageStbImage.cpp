@@ -100,7 +100,7 @@ namespace Backend
         return result;
     }
 
-    bool BackendImageStbImage::LoadImgFileFromMemory(void const * dataPtr, std::size_t size)
+    bool BackendImageStbImage::LoadImgFileFromMemory(const void * dataPtr, std::size_t size)
     {
         if(ImageBuffer != nullptr)
         {
@@ -193,7 +193,7 @@ namespace Backend
         return false;
     }
 
-    bool BackendImageStbImage::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
+    bool BackendImageStbImage::LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
         if(ImageBuffer != nullptr)
         {

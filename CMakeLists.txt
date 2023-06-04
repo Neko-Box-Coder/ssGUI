@@ -174,7 +174,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -std=c++0x")  #For surpress
 # ssLogger 
 # ==========================================================
 
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/ssLogger")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/External/ssLogger")
 
 set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
@@ -183,7 +183,7 @@ set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name fo
 # ==========================================================
 
 set(ssTEST_BUILD_CHECK OFF)
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/ssTest")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssTest" "${CMAKE_CURRENT_BINARY_DIR}/External/ssTest")
 set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
 
@@ -192,7 +192,7 @@ set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for 
 # ==========================================================
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/SimpleOverride" "${CMAKE_CURRENT_BINARY_DIR}/SimpleOverride")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/SimpleOverride" "${CMAKE_CURRENT_BINARY_DIR}/External/SimpleOverride")
     set_target_properties(SimpleOverride PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 endif()
 
@@ -244,7 +244,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     # FreeType
     # ==========================================================
     if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/freetype")
+        add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/External/freetype")
         unset(FT_DISABLE_HARFBUZZ CACHE)
         set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
         set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
@@ -410,6 +410,19 @@ endif()
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
     target_link_libraries(ssGUI PUBLIC SimpleOverride)
     target_compile_definitions(ssGUI PUBLIC SSGUI_MOCK_BACKEND)
+    
+    if(ssGUI_MAIN_BACKEND STREQUAL "Mock")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_MOCK)
+    endif()
+    
+    if(ssGUI_FONT_BACKEND STREQUAL "Mock")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_MOCK)
+    endif()
+    
+    if(ssGUI_IMAGE_BACKEND STREQUAL "Mock")
+        target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_MOCK)
+    endif()
+    
 endif()
 
 # ==========================================================

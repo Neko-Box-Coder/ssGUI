@@ -35,11 +35,11 @@ namespace Backend
 
             //function: LoadImgFileFromMemory
             //Loads an image file from memory with specified size in bytes
-            virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size) = 0;
+            virtual bool LoadImgFileFromMemory(const void * dataPtr, std::size_t size) = 0;
 
             //function: LoadRawFromMemory
             //This loads an image with specified image format in memory 
-            virtual bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) = 0;
+            virtual bool LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) = 0;
 
             //function: GetSize
             //Returns the size of the image
