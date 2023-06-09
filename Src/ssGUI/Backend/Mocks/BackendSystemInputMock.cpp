@@ -1,7 +1,6 @@
 #include "ssGUI/Backend/Mocks/BackendSystemInputMock.hpp"
 
 #include "ssGUI/Backend/BackendFactory.hpp"
-#include "ssGUI/Backend/Mocks/MockMacro.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/Factory.hpp"
 

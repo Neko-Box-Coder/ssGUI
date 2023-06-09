@@ -1,7 +1,11 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssTest.hpp"
 
-//[Variables Declaration]
+
+#ifdef SSGUI_FONT_BACKEND_MOCK
+    #include "ssGUI/Backend/Mocks/BackendFontMock.hpp"
+    #include "ssGUI/Backend/Mocks/Data/MockFontData.hpp"
+#endif
 
 ssGUI::Text* TestText = nullptr; 
 std::string TestString = "This is some random text for testing";
@@ -14,6 +18,15 @@ int main()
     ssTEST_SET_UP
     {
         TestText = ssGUI::Create<ssGUI::Text>();
+        
+        #ifdef SSGUI_FONT_BACKEND_MOCK
+            assert(TestText->GetDefaultFontsCount() > 0);
+            auto* defaultBackendMockFont = 
+                static_cast<ssGUI::Backend::BackendFontMock*>(TestText->GetDefaultFont(0)->GetBackendFontInterface());
+            
+            ssGUI::SetMockBackendFontData(*defaultBackendMockFont);
+        #endif
+        
         TestText->SetSize(glm::vec2(50, 50));
         TestText->SetNewTextFontSize(15);
         TestText->SetTextAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT, ssGUI::Enums::AlignmentVertical::TOP);

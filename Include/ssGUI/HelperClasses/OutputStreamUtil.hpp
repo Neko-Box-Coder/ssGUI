@@ -9,9 +9,9 @@
 #include <vector>
 
 
-#define SSGUI_OUTPUT_CLASS_NAME(className) "(##className"
-#define SSGUI_OUTPUT_VAR(varName) "varName: " << other.varName<<", "
-#define SSGUI_OUTPUT_LAST_VAR(varName) "varName: " << other.varName << ")"
+#define SSGUI_OUTPUT_CLASS_NAME(className) "(" << #className <<": "
+#define SSGUI_OUTPUT_VAR(varName) #varName << ": " << other.varName<<", "
+#define SSGUI_OUTPUT_LAST_VAR(varName) #varName << ": " << other.varName << ")"
 
 
 inline std::ostream& operator<<(std::ostream& stream, const wchar_t& character)
@@ -43,13 +43,13 @@ inline std::ostream& operator<<(std::ostream& stream, const EnumType& enumVal)
 
 inline std::ostream& operator<<(std::ostream& stream, const glm::vec2& vec)
 {
-    stream << "(glm::vec2: " << vec.x << vec.y << ")";
+    stream << "(glm::vec2: " << vec.x << ", " << vec.y << ")";
     return stream;
 }
 
 inline std::ostream& operator<<(std::ostream& stream, const glm::ivec2& vec)
 {
-    stream << "(glm::ivec2: " << vec.x << vec.y << ")";
+    stream << "(glm::ivec2: " << vec.x << ", " << vec.y << ")";
     return stream;
 }
 

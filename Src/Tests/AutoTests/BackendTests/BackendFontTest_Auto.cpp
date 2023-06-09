@@ -325,12 +325,14 @@ int main()
         ssGUI::ImageData data;
         ssTEST_OUTPUT_ASSERT("Operation", TestFont->GetCharacterImage(L'A', 20, data));
         
-        if(calledCorrectly)
-        {
-            auto& imgBackendMock = (*static_cast<ssGUI::Backend::BackendImageMock*>(data.GetBackendImageInterface()));
-            imgBackendMock  .OverrideReturns(GetSize())
-                            .Returns(glm::ivec2(15, 15));
-        }
+        #ifdef SSGUI_FONT_BACKEND_MOCK
+            if(calledCorrectly)
+            {
+                auto& imgBackendMock = (*static_cast<ssGUI::Backend::BackendImageMock*>(data.GetBackendImageInterface()));
+                imgBackendMock  .OverrideReturns(GetSize())
+                                .Returns(glm::ivec2(15, 15));
+            }
+        #endif
         
         ssTEST_OUTPUT_ASSERT("Size", data.GetSize() ==  glm::ivec2(15, 15));
         

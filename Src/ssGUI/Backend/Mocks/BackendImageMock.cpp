@@ -52,7 +52,7 @@ namespace Backend
 
     bool BackendImageMock::LoadFromPath(std::string path)
     {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        SSGUI_MOCK_LOG_FUNCTION_CALL(path);
         FO_RETURN_IF_FOUND(OverrideObject, LoadFromPath(std::string), bool, path);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromPath(path));
         return true;
@@ -60,7 +60,7 @@ namespace Backend
 
     bool BackendImageMock::LoadImgFileFromMemory(const void * dataPtr, std::size_t size)
     {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, size);
         FO_RETURN_IF_FOUND(OverrideObject, LoadImgFileFromMemory(const void*, std::size_t), bool, dataPtr, size);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadImgFileFromMemory(dataPtr, size));
         return true;
@@ -68,7 +68,7 @@ namespace Backend
 
     bool BackendImageMock::LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, format, imageSize);
         FO_RETURN_IF_FOUND(OverrideObject, LoadRawFromMemory(const void*, ssGUI::ImageFormat, glm::ivec2), bool, dataPtr, format, imageSize);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadRawFromMemory(dataPtr, format, imageSize));
         return true;
@@ -84,7 +84,7 @@ namespace Backend
 
     void* BackendImageMock::GetPixelPtr(ssGUI::ImageFormat& format) const
     {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        SSGUI_MOCK_LOG_FUNCTION_CALL(format);
         FO_ARGUMENTS_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), format);
         FO_RETURN_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), void*, format);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetPixelPtr(format));
@@ -110,7 +110,7 @@ namespace Backend
         //NOTE: We don't want to pass the drawing backend to the underlying interface
         //      since the drawing backend holds a reference (pointer) to this instead
     
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        SSGUI_MOCK_LOG_FUNCTION_CALL(backendDrawing);
         for(int i = 0; i < LinkedBackendDrawing.size(); i++)
         {
             if(LinkedBackendDrawing[i] == backendDrawing)
@@ -125,7 +125,7 @@ namespace Backend
         //NOTE: We don't want to pass the drawing backend to the underlying interface
         //      since the drawing backend holds a reference (pointer) to this instead
     
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        SSGUI_MOCK_LOG_FUNCTION_CALL(backendDrawing);
         for(int i = 0; i < LinkedBackendDrawing.size(); i++)
         {
             if(LinkedBackendDrawing[i] == backendDrawing)

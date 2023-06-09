@@ -3,6 +3,8 @@
 
 #include "ssGUI/Enums/ImageType.hpp"
 #include <cstdint>
+#include <ostream>
+#include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
 namespace ssGUI
 {
@@ -72,6 +74,23 @@ namespace ssGUI
             return !operator==(other);
         }
         
+        inline friend std::ostream& operator<< (std::ostream& stream, const ImageFormat& other)
+        {
+            stream  << SSGUI_OUTPUT_CLASS_NAME(ImageFormat)
+                    << SSGUI_OUTPUT_VAR(ImgType)
+                    << SSGUI_OUTPUT_VAR(BitDepthPerChannel)
+                    << SSGUI_OUTPUT_VAR(BitPerPixel)
+                    << SSGUI_OUTPUT_VAR(HasAlpha)
+                    << SSGUI_OUTPUT_VAR(PreMultipliedAlpha)
+                    << SSGUI_OUTPUT_VAR(IndexR)
+                    << SSGUI_OUTPUT_VAR(IndexG)
+                    << SSGUI_OUTPUT_VAR(IndexB)
+                    << SSGUI_OUTPUT_VAR(IndexMono)
+                    << SSGUI_OUTPUT_VAR(IndexA)
+                    << SSGUI_OUTPUT_LAST_VAR(RowPaddingInBytes);
+                    
+            return stream;
+        }
     };
 }
 
