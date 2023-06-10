@@ -33,24 +33,30 @@ inline std::ostream& operator<<(std::ostream& stream, const std::wstring& str)
     return stream;
 }
 
-template<   typename EnumType,
-            typename = typename std::enable_if<std::is_enum<EnumType>::value>::type>
-inline std::ostream& operator<<(std::ostream& stream, const EnumType& enumVal)
+namespace ssGUI
 {
-    stream << typeid(EnumType).name() << ": " << reinterpret_cast<const int&>(enumVal);
-    return stream;
+    template<   typename EnumType,
+                typename = typename std::enable_if<std::is_enum<EnumType>::value>::type>
+    inline std::ostream& operator<<(std::ostream& stream, const EnumType& enumVal)
+    {
+        stream << typeid(EnumType).name() << ": " << reinterpret_cast<const int&>(enumVal);
+        return stream;
+    }
 }
 
-inline std::ostream& operator<<(std::ostream& stream, const glm::vec2& vec)
+namespace glm
 {
-    stream << "(glm::vec2: " << vec.x << ", " << vec.y << ")";
-    return stream;
-}
+    inline std::ostream& operator<<(std::ostream& stream, const glm::vec2& vec)
+    {
+        stream << "(glm::vec2: " << vec.x << ", " << vec.y << ")";
+        return stream;
+    }
 
-inline std::ostream& operator<<(std::ostream& stream, const glm::ivec2& vec)
-{
-    stream << "(glm::ivec2: " << vec.x << ", " << vec.y << ")";
-    return stream;
+    inline std::ostream& operator<<(std::ostream& stream, const glm::ivec2& vec)
+    {
+        stream << "(glm::ivec2: " << vec.x << ", " << vec.y << ")";
+        return stream;
+    }
 }
 
 template<typename VecType>

@@ -113,7 +113,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         SSGUI_MOCK_PASSTHROUGH(SetRenderSize(size));
-        SetWindowSize(size + SizeOffset);
+        WindowSize = size + SizeOffset;
         //RenderSize = size;
     }
     
@@ -123,7 +123,7 @@ namespace Backend
         FO_RETURN_IF_FOUND(OverrideObject, GetRenderSize(), glm::ivec2);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRenderSize());
         //return RenderSize;
-        return GetWindowSize() - SizeOffset;
+        return WindowSize - SizeOffset;
     }
 
     bool BackendMainWindowMock::IsClosed() const
