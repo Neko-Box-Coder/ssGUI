@@ -177,28 +177,29 @@ namespace ssGUI
         if(targetFont == nullptr)
             return;
         
-        DrawingVerticies.push_back(position                                                         + info.DrawOffset * info.TargetSizeMultiplier);
-        DrawingVerticies.push_back(position + glm::vec2(info.Size.x * info.TargetSizeMultiplier, 0) + info.DrawOffset * info.TargetSizeMultiplier);
-        DrawingVerticies.push_back(position + info.Size * info.TargetSizeMultiplier                 + info.DrawOffset * info.TargetSizeMultiplier);
-        DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y * info.TargetSizeMultiplier) + info.DrawOffset * info.TargetSizeMultiplier);
+        ssGUI::DrawingEntity characterEntity;
+        
+        characterEntity.Vertices.push_back(position                                                         + info.DrawOffset * info.TargetSizeMultiplier);
+        characterEntity.Vertices.push_back(position + glm::vec2(info.Size.x * info.TargetSizeMultiplier, 0) + info.DrawOffset * info.TargetSizeMultiplier);
+        characterEntity.Vertices.push_back(position + info.Size * info.TargetSizeMultiplier                 + info.DrawOffset * info.TargetSizeMultiplier);
+        characterEntity.Vertices.push_back(position + glm::vec2(0, info.Size.y * info.TargetSizeMultiplier) + info.DrawOffset * info.TargetSizeMultiplier);
 
-        DrawingColours.push_back(details.CharacterColor);
-        DrawingColours.push_back(details.CharacterColor);
-        DrawingColours.push_back(details.CharacterColor);
-        DrawingColours.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
 
-        DrawingUVs.push_back(glm::vec2());
-        DrawingUVs.push_back(glm::vec2(info.Size.x, 0));
-        DrawingUVs.push_back(info.Size);
-        DrawingUVs.push_back(glm::vec2(0, info.Size.y));
+        characterEntity.TexCoords.push_back(glm::vec2());
+        characterEntity.TexCoords.push_back(glm::vec2(info.Size.x, 0));
+        characterEntity.TexCoords.push_back(info.Size);
+        characterEntity.TexCoords.push_back(glm::vec2(0, info.Size.y));
 
-        DrawingCounts.push_back(4);
-        ssGUI::DrawingProperty currentProperty;
-        currentProperty.fontP = targetFont->GetBackendFontInterface();
-        currentProperty.characterSize = details.FontSize;
-        currentProperty.character = details.Character;
+        characterEntity.BackendFont = targetFont->GetBackendFontInterface();
+        characterEntity.CharacterSize = details.FontSize;
+        characterEntity.Character = details.Character;
+        characterEntity.EntityName = TEXT_CHARACTER_SHAPE_NAME;
 
-        DrawingProperties.push_back(currentProperty);
+        DrawingEntities.push_back(characterEntity);
     }
 
     void Text::FormatNewlinesCharacters()
@@ -772,31 +773,30 @@ namespace ssGUI
 
         auto drawHighlight = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 highlightColor)
         {
-            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
+            ssGUI::DrawingEntity highlightEntity;
+        
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    CharactersRenderInfos[inclusiveEndIndex].LineMinY));
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            CharactersRenderInfos[inclusiveEndIndex].LineMinY));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
+                                                glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
 
             for(int i = 0; i < 4; i++)
-            {
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(highlightColor);
-            }
+                highlightEntity.Colors.push_back(highlightColor);
 
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            highlightEntity.EntityName = TEXT_HIGHLIGHT_SHAPE_NAME;
+            DrawingEntities.push_back(highlightEntity);
         };
 
         int startIndex, endIndex;
@@ -837,32 +837,31 @@ namespace ssGUI
 
         auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
         {
-            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(0, underlineOffset));
+            ssGUI::DrawingEntity underlineEntity;
+        
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(0, underlineOffset));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() + 
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    underlineOffset));
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() + 
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            underlineOffset));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() + 
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    underlineOffset + thickness));
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() + 
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            underlineOffset + thickness));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
-                                        GetGlobalPosition() + 
-                                        glm::vec2(  0, underlineOffset + thickness));
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                                GetGlobalPosition() + 
+                                                glm::vec2(  0, underlineOffset + thickness));
 
             for(int i = 0; i < 4; i++)
-            {
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(underlineColor);
-            }
+                underlineEntity.Colors.push_back(underlineColor);
 
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            underlineEntity.EntityName = TEXT_UNDERLINE_SHAPE_NAME;
+            DrawingEntities.push_back(underlineEntity);
         };
 
         //This handles font size and color change
@@ -1119,24 +1118,21 @@ namespace ssGUI
         glm::vec2 drawPos = GetGlobalPosition();
 
         //Drawing background
-        DrawingVerticies.push_back(drawPos);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        ssGUI::DrawingEntity backgroundEntitiy;
+        
+        backgroundEntitiy.Vertices.push_back(drawPos);
+        backgroundEntitiy.Vertices.push_back(drawPos + glm::vec2(GetSize().x, 0));
+        backgroundEntitiy.Vertices.push_back(drawPos + glm::vec2(GetSize().x, GetSize().y));
+        backgroundEntitiy.Vertices.push_back(drawPos + glm::vec2(0, GetSize().y));
+        
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        
+        backgroundEntitiy.EntityName = GUI_OBJECT_BG_SHAPE_NAME;
+        
+        DrawingEntities.push_back(backgroundEntitiy);
 
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
@@ -1269,6 +1265,9 @@ namespace ssGUI
     }
     
     const std::string Text::ListenerKey = "Text";
+    const std::string Text::TEXT_CHARACTER_SHAPE_NAME = "Text Character";
+    const std::string Text::TEXT_HIGHLIGHT_SHAPE_NAME = "Text Highlight";
+    const std::string Text::TEXT_UNDERLINE_SHAPE_NAME = "Text Underline";
 
     Text::Text() :  RecalculateTextNeeded(false),
                     CurrentCharactersDetails(),

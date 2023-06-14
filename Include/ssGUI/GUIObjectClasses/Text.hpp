@@ -207,6 +207,9 @@ namespace ssGUI
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string TEXT_CHARACTER_SHAPE_NAME;
+            static const std::string TEXT_HIGHLIGHT_SHAPE_NAME;
+            static const std::string TEXT_UNDERLINE_SHAPE_NAME;
 
             Text();
             virtual ~Text() override;

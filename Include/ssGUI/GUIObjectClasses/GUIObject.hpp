@@ -64,6 +64,8 @@ namespace ssGUI
                                     ssGUI::GUIObject* mainWindow);
 
         public:
+            static const std::string GUI_OBJECT_BG_SHAPE_NAME;
+        
             //TODO : Maybe make this thread safe?
             static std::vector<ssGUI::GUIObject*> ObjsToDelete;
 

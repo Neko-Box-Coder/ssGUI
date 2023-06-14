@@ -89,6 +89,8 @@ namespace ssGUI
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:
+            static const std::string TEXTFIELD_CARET_SHAPE_NAME;
+        
             TextField();
             virtual ~TextField() override;
             

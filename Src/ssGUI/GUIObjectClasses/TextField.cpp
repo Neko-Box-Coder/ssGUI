@@ -737,45 +737,37 @@ namespace ssGUI
                 return;
             }
 
+            ssGUI::DrawingEntity caretEntity;
             if(GetEndSelectionIndex() > GetStartSelectionIndex())
             {
-                DrawingVerticies.push_back(drawPos);
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos);
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, 0));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, 0));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(0, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(0, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
             }
             else
             {
-                DrawingVerticies.push_back(drawPos + glm::vec2(-caretWidth, 0));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(-caretWidth, 0));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos);
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos);
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(0, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(0, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(-caretWidth, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(-caretWidth, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
             }
-
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            caretEntity.EntityName = TEXTFIELD_CARET_SHAPE_NAME;
+            DrawingEntities.push_back(caretEntity);
         }
         else
         {
@@ -826,24 +818,21 @@ namespace ssGUI
                     break;
             }
 
-            DrawingVerticies.push_back(drawPos);
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            ssGUI::DrawingEntity caretEntity;
 
-            DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, 0));
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.Vertices.push_back(drawPos);
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-            DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, height));
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, 0));
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-            DrawingVerticies.push_back(drawPos + glm::vec2(0, height));
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, height));
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            caretEntity.Vertices.push_back(drawPos + glm::vec2(0, height));
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.EntityName = TEXTFIELD_CARET_SHAPE_NAME;
+            DrawingEntities.push_back(caretEntity);
         }
 
         ssLOG_FUNC_EXIT();
@@ -914,6 +903,8 @@ namespace ssGUI
                 inputStatus.KeyInputBlockedObject = this;
         }
     }
+
+    const std::string TextField::TEXTFIELD_CARET_SHAPE_NAME = "Text Caret";
 
     TextField::TextField() :    LastBlinkTime(0),
                                 BlinkDuration(500),

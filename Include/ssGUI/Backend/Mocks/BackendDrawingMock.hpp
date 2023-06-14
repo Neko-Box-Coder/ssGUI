@@ -21,11 +21,7 @@ namespace Backend
             int SavedStateCount;
             int CurrentDrawingBuffer;
             
-            std::vector<glm::vec2> Vertices[2];
-            std::vector<glm::vec2> TexCoords[2];
-            std::vector<glm::u8vec4> Colors[2];
-            std::vector<int> Counts[2];
-            std::vector<ssGUI::DrawingProperty> Properties[2];
+            std::vector<ssGUI::DrawingEntity> Entities[2];
             glm::u8vec3 ClearedColor[2];
             std::unordered_set<ssGUI::Backend::BackendImageInterface*> CachedImage;
 
@@ -45,35 +41,11 @@ namespace Backend
             //function: GetStateCounter
             int GetStateCounter() const;
             
-            //function: GetDrawnVertices
-            const std::vector<glm::vec2>& GetDrawnVertices() const;
-            
-            //function: GetRenderedVertices
-            const std::vector<glm::vec2>& GetRenderedVertices() const;
-
-            //function: GetDrawnTexCoords
-            const std::vector<glm::vec2>& GetDrawnTexCoords() const;
-            
-            //function: GetRenderedTexCoords
-            const std::vector<glm::vec2>& GetRenderedTexCoords() const;
-
-            //function: GetDrawnColors
-            const std::vector<glm::u8vec4>& GetDrawnColors() const;
-            
-            //function: GetRenderedColors
-            const std::vector<glm::u8vec4>& GetRenderedColors() const;
-
-            //function: GetDrawnCounts
-            const std::vector<int>& GetDrawnCounts() const;
-            
-            //function: GetRenderedCounts
-            const std::vector<int>& GetRenderedCounts() const;
-
             //function: GetDrawnProperties
-            const std::vector<ssGUI::DrawingProperty>& GetDrawnProperties() const;
+            const std::vector<ssGUI::DrawingEntity>& GetDrawnEntities() const;
             
             //function: GetRenderedProperties
-            const std::vector<ssGUI::DrawingProperty>& GetRenderedProperties() const;
+            const std::vector<ssGUI::DrawingEntity>& GetRenderedEntities() const;
 
             //function: GetDrawnClearedColor
             const glm::u8vec3& GetDrawnClearedColor() const;
@@ -91,11 +63,7 @@ namespace Backend
 
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>
-            bool DrawEntities(  const std::vector<glm::vec2>& vertices, 
-                                const std::vector<glm::vec2>& texCoords,
-                                const std::vector<glm::u8vec4>& colors,
-                                const std::vector<int>& counts,
-                                const std::vector<ssGUI::DrawingProperty>& properties) override;
+            bool DrawEntities(  const std::vector<ssGUI::DrawingEntity>& entities) override;
 
             //function: Render
             //See <BackendDrawingInterface::Render>
@@ -134,27 +102,6 @@ namespace Backend
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::u8vec4>& colors) override;
-
-            //NOTE: End index is exclusive
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            const uint32_t character,
-                            int startIndex, int endIndex,
-                            const ssGUI::Backend::BackendFontInterface& font,
-                            int characterSize) override;
-
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            int startIndex, int endIndex,
-                            const ssGUI::Backend::BackendImageInterface& image) override;
-
-
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colors,
-                            int startIndex, int endIndex) override;
-
     };
 }
 

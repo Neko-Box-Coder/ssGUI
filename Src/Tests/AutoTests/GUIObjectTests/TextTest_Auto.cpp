@@ -1,7 +1,6 @@
 #include "ssGUI/GUIObjectClasses/Text.hpp"
 #include "ssTest.hpp"
 
-
 #ifdef SSGUI_FONT_BACKEND_MOCK
     #include "ssGUI/Backend/Mocks/BackendFontMock.hpp"
     #include "ssGUI/Backend/Mocks/Data/MockFontData.hpp"

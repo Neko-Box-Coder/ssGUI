@@ -1,7 +1,7 @@
 #ifndef SSGUI_MASK_H
 #define SSGUI_MASK_H
 
-
+#include "ssGUI/DataClasses/TargetShape.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
 #include "ssGUI/GUIObjectClasses/Window.hpp"
@@ -72,7 +72,7 @@ namespace Extensions
             glm::vec2 GlobalPosition;           //See <GetGlobalPosition>
             glm::vec2 Size;                     //See <GetSize>
 
-            virtual bool IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices, int startOffset, int shapeCount) const;
+            virtual bool IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices) const;
             virtual bool IsPointContainedInMask(glm::vec2 point, glm::vec2 min, glm::vec2 max) const;
             virtual bool LineToLineIntersection(glm::vec2 linePointA, glm::vec2 linePointB, 
                                                 glm::vec2 linePointC, glm::vec2 linePointD, glm::vec2& intersection);
@@ -80,24 +80,31 @@ namespace Extensions
 /*             bool LineToShapeIntersection(   glm::vec2 linePointA, glm::vec2 linePointB,
                                             std::vector<glm::vec2>& shape, int& shapeIntersectionIndex, glm::vec2& intersection);*/
             virtual bool CheckLinesOverlapping(float minA, float maxA, float minB, float maxB);
-            virtual bool IsAABBOverlap(std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, 
-                                        glm::vec2 maskMin, glm::vec2 maskMax, glm::vec2& shapeMin, glm::vec2& shapeMax);
+            virtual bool IsAABBOverlap( std::vector<glm::vec2>& shapeVerticies, 
+                                        glm::vec2 maskMin, 
+                                        glm::vec2 maskMax, 
+                                        glm::vec2& shapeMin, 
+                                        glm::vec2& shapeMax);
             
-            virtual void GetIntersections(std::vector<glm::vec2>& intersections, std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices,
-                                            std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, std::vector<glm::vec2>& maskVerticies);
+            virtual void GetIntersections(  std::vector<glm::vec2>& intersections, 
+                                            std::vector<int>& shapeIntersectIndices, 
+                                            std::vector<int>& maskIntersectIndices,
+                                            std::vector<glm::vec2>& shapeVerticies, 
+                                            std::vector<glm::vec2>& maskVerticies);
             
-            virtual void FromNewShapeWithIntersections(std::vector<glm::vec2>& currentShapeVertices, std::vector<glm::vec2>& currentShapeUVs, 
-                                                        std::vector<glm::u8vec4>& currentShapeColours, std::vector<bool>& currentVertexChanged,
-                                                        std::vector<glm::vec2>& originalVerticies, std::vector<glm::u8vec4>& originalColours,
-                                                        std::vector<glm::vec2>& originalUVs,
-                                                        glm::vec2 maskMin, glm::vec2 maskMax, int shapeOffset, int shapeVertexCount, 
-                                                        std::vector<glm::vec2>& maskVerticies, std::vector<glm::vec2>& intersections,
-                                                        std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices);
+            virtual void FormNewShapeWithIntersections( ssGUI::DrawingEntity& currentEntity,
+                                                        std::vector<bool>& currentVertexChanged,
+                                                        ssGUI::DrawingEntity& originalEntity,
+                                                        glm::vec2 maskMin, 
+                                                        glm::vec2 maskMax, 
+                                                        std::vector<glm::vec2>& maskVerticies, 
+                                                        std::vector<glm::vec2>& intersections,
+                                                        std::vector<int>& shapeIntersectIndices, 
+                                                        std::vector<int>& maskIntersectIndices);
 
-            virtual void SampleNewUVsAndColoursForShapes(std::vector<glm::vec2>& originalVerticies, std::vector<glm::vec2>& originalUVs, std::vector<glm::u8vec4>& originalColours,
-                                                        std::vector<int>& verticesCount, std::vector<glm::vec2>& newVertices, std::vector<glm::vec2>& newUVs, 
-                                                        std::vector<glm::u8vec4>& newColours, std::vector<bool>& changed, std::vector<int>& newVerticesCount);
-
+            virtual void SampleNewUVsAndColoursForShapes(   std::vector<DrawingEntity>& originalEntities, 
+                                                            std::vector<DrawingEntity>& newEntities, 
+                                                            std::vector<std::vector<bool>>& changed);
 
 //            int GetIndicesDistance(int count, int startIndex, int endIndex);
             virtual int GetNextIndex(int indexOffset, int count, int currentIndex);
@@ -194,11 +201,10 @@ namespace Extensions
             
             //function: MaskObject
             //Public function for masking a GUI object.
-            //Offset of the mask position can be set by passing renderOffset.
-            //Shapes can be specified to be masked by passing the index of the shapes.
-            //If no shape indices are passed, masking will be applied to all shapes.
-            //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
-            virtual void MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset, const std::vector<int>& applyShapeIndices);
+            //Offset of the mask position can be set by passing maskOffset.
+            //Shapes can be specified to be masked by passing a list of <ssGUI::TargetShape>s.
+            //If applyShapes is empty, masking will be applied to all shapes.
+            virtual void MaskObject(ssGUI::GUIObject* obj, glm::vec2 maskOffset, const std::vector<ssGUI::TargetShape>& applyShapes);
 
             //Override from Extension
             //function: SetEnabled

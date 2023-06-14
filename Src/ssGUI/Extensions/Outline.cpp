@@ -4,6 +4,7 @@
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <cmath>
+#include <memory>
 
 namespace ssGUI
 {
@@ -15,16 +16,25 @@ namespace Extensions
                             OutlineThickness(1.1),
                             SimpleOutline(false),
                             InnerOutline(true),
-                            OutlineColor(0, 0, 0, 255),
-                            TargetShapes{0},
-                            TargetVertices(),
-                            VerticesToOutline(),
-                            VerticesToOutlinePrevVertices(),
-                            VerticesToOutlineNextVertices(),
-                            VerticesToOutlineNextNextVertices(),
-                            VerticesToOutlineShapeIndex(),
-                            VerticesToOutlineShapeStartFlag()
-    {}
+                            OutlineColor(0, 0, 0, 255)
+                            //TargetShapes(),
+                            //TargetVertices(),
+                            //TargetShapesNameSet(),
+                            //TargetShapesIndexSet(),
+                            //TargetVerticesNameMap(),
+                            //TargetVerticesIndexMap()
+                            //VerticesToOutline(),
+                            //VerticesToOutlinePrevVertices(),
+                            //VerticesToOutlineNextVertices(),
+                            //VerticesToOutlineNextNextVertices(),
+                            //VerticesToOutlineShapeIndex(),
+                            //VerticesToOutlineShapeStartFlag()
+    {
+        ssGUI::TargetShape defaultShape;
+        defaultShape.ShapeIndex = 0;
+        ModifiedShapes.TargetShapes.push_back(defaultShape);
+        //TargetShapes.push_back(defaultShape);
+    }
 
     Outline::~Outline()
     {}
@@ -38,15 +48,21 @@ namespace Extensions
         SimpleOutline = other.IsSimpleOutline();
         InnerOutline = other.IsInnerOutline();
         OutlineColor = other.GetOutlineColor();
-        TargetShapes = other.TargetShapes;
-        TargetVertices = other.TargetVertices;
+        ModifiedShapes = other.ModifiedShapes;
+        //TargetShapes = other.TargetShapes;
+        //TargetVertices = other.TargetVertices;
 
-        VerticesToOutline = std::vector<int>();
-        VerticesToOutlinePrevVertices = std::vector<int>();
-        VerticesToOutlineNextVertices = std::vector<int>();
-        VerticesToOutlineNextNextVertices = std::vector<int>();
-        VerticesToOutlineShapeIndex = std::vector<int>();
-        VerticesToOutlineShapeStartFlag = std::vector<bool>();
+        //TargetShapesNameSet = {};
+        //TargetShapesIndexSet = {};
+        //TargetVerticesNameMap = {};
+        //TargetVerticesIndexMap = {};
+
+        //VerticesToOutline = std::vector<int>();
+        //VerticesToOutlinePrevVertices = std::vector<int>();
+        //VerticesToOutlineNextVertices = std::vector<int>();
+        //VerticesToOutlineNextNextVertices = std::vector<int>();
+        //VerticesToOutlineShapeIndex = std::vector<int>();
+        //VerticesToOutlineShapeStartFlag = std::vector<bool>();
     }
 
     void Outline::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex)
@@ -65,22 +81,63 @@ namespace Extensions
             startIndex += drawingCounts[i];
         }
     }
-
+    
+    #if 0
     void Outline::UpdateVerticesForOutline()
     {
         ssLOG_FUNC_ENTRY();
-        VerticesToOutline.clear();
-        VerticesToOutlinePrevVertices.clear();
-        VerticesToOutlineNextVertices.clear();
-        VerticesToOutlineNextNextVertices.clear();
-        VerticesToOutlineShapeIndex.clear();
-        VerticesToOutlineShapeStartFlag.clear();
+        
+        //VerticesToOutline.clear();
+        //VerticesToOutlinePrevVertices.clear();
+        //VerticesToOutlineNextVertices.clear();
+        //VerticesToOutlineNextNextVertices.clear();
+        //VerticesToOutlineShapeIndex.clear();
+        //VerticesToOutlineShapeStartFlag.clear();
 
-        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
+        //TargetShapesNameSet.clear();
+        //TargetShapesIndexSet.clear();
+        //TargetVerticesNameMap.clear();
+        //TargetVerticesIndexMap.clear();
 
-        int startIndex = 0;
-        int endIndex = drawingCounts[0];
+        //std::vector<ssGUI::DrawingEntity>& drawingEntities = Container->Extension_GetDrawingEntities();
+
+
+        //if(!TargetVertices.empty())
+        //{
+        //    for(int i = 0; i < TargetVertices.size(); i++)
+        //    {
+        //        if(TargetVertices[i].Shape.ShapeIndex != NO_SHAPE_INDEX)
+        //        {
+        //            std::vector<int>& verts = TargetVerticesIndexMap[TargetVertices[i].Shape.ShapeIndex - Container->Extension_GetGUIObjectFirstShapeIndex()];
+        //            verts.insert(verts.end(), TargetVertices[i].VerticesIndices.begin(), TargetVertices[i].VerticesIndices.end());
+        //        }
+        //        else if(!TargetVertices[i].Shape.ShapeName.empty())
+        //        {
+        //            std::vector<int>& verts = TargetVerticesNameMap[TargetVertices[i].Shape.ShapeName];
+        //            verts.insert(verts.end(), TargetVertices[i].VerticesIndices.begin(), TargetVertices[i].VerticesIndices.end());
+        //        }
+        //        else
+        //            ssGUI_WARNING(ssGUI_EXT_TAG, "TargetVertices' shape is not properly set!!");
+        //    }
+        //}
+        //else
+        //{
+        //    for(int i = 0; i < TargetShapes.size(); i++)
+        //    {
+        //        if(TargetShapes[i].ShapeIndex != NO_SHAPE_INDEX)
+        //            TargetShapesIndexSet.insert(TargetShapes[i].ShapeIndex - Container->Extension_GetGUIObjectFirstShapeIndex());
+        //        else if(!TargetShapes[i].ShapeName.empty())
+        //            TargetShapesNameSet.insert(TargetShapes[i].ShapeName);
+        //        else
+        //            ssGUI_WARNING(ssGUI_EXT_TAG, "TargetShape is not properly set!!");
+        //    }
+        //}
+
+
+
+        #if 0
+        //int startIndex = 0;
+        //int endIndex = drawingCounts[0];
         if(!TargetVertices.empty())
         {
             int shapeIndex = 0;
@@ -247,8 +304,11 @@ namespace Extensions
                 }
             }
         }
+        #endif
+        
         ssLOG_FUNC_EXIT();
     }
+    #endif
 
     double Outline::GetAngle(glm::vec2 a, glm::vec2 b)
     {
@@ -379,43 +439,422 @@ nextVertex (n)    (a)                   curVertex
     {        
         ssLOG_FUNC_ENTRY();
         //Getting all the rendering details from container
-        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
-        std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
-        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
-        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+        //std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
+        //std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        //std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
+        //std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
+        std::vector<ssGUI::DrawingEntity> newEntities;
 
         //Copy the original vertices infos
-        std::vector<glm::vec2> originalVertices = Container->Extension_GetDrawingVertices();
-        std::vector<glm::vec2> originalUVs = Container->Extension_GetDrawingUVs();
-        std::vector<glm::u8vec4> originalColors = Container->Extension_GetDrawingColours();
-        std::vector<int> originalCounts = Container->Extension_GetDrawingCounts();
-        std::vector<ssGUI::DrawingProperty> originalProperties = Container->Extension_GetDrawingProperties();
+        //std::vector<glm::vec2> originalVertices = Container->Extension_GetDrawingVertices();
+        //std::vector<glm::vec2> originalUVs = Container->Extension_GetDrawingUVs();
+        //std::vector<glm::u8vec4> originalColors = Container->Extension_GetDrawingColours();
+        //std::vector<int> originalCounts = Container->Extension_GetDrawingCounts();
+        std::vector<ssGUI::DrawingEntity>& originalEntities = Container->Extension_GetDrawingEntities();
 
         //Vertices infos of the outline
-        std::vector<glm::vec2> newVertices;                             //Lists of new vertices as arc
-        std::vector<int> newCounts;                                     //The number vertices per arc
-        std::unordered_map<int, std::vector<int>> outlinedShapesMap;    //(originalShapeIndex, (list of outline shapes index on newCounts))
+        //std::vector<glm::vec2> newVertices;                             //Lists of new vertices as arc
+        //std::vector<int> newCounts;                                     //The number vertices per arc
+        //std::unordered_map<int, std::vector<int>> outlinedShapesMap;    //(originalShapeIndex, (list of outline shapes index on newCounts))
 
-        if(drawingCounts.empty())
+        if(originalEntities.empty())
         {
             ssLOG_FUNC_EXIT();
             return;
         }
 
-        UpdateVerticesForOutline();
+        ModifiedShapes.UpdateShapesToBeModified(Container->Extension_GetGUIObjectFirstShapeIndex());
 
-        int lastShapeStartIndex = -1;
+        //int lastShapeStartIndex = -1;
+        
+        for(int i = 0; i < originalEntities.size(); i++)
+        {
+            typedef std::unique_ptr<std::vector<int>, std::function<void(std::vector<int>*)>> indexVec;
+            indexVec verticesToOutline = nullptr;
+
+            if(!ModifiedShapes.IsModifyWholeShape())
+            {
+                if(ModifiedShapes.GetVerticesToBeModified(originalEntities[i].EntityName) != nullptr)
+                    verticesToOutline = indexVec(ModifiedShapes.GetVerticesToBeModified(originalEntities[i].EntityName), [](...){});
+                else if(ModifiedShapes.GetVerticesToBeModified(i) != nullptr)
+                    verticesToOutline = indexVec(ModifiedShapes.GetVerticesToBeModified(i), [](...){});
+                else
+                    continue;
+            }
+            else
+            {
+                if(ModifiedShapes.IsShapeModified(originalEntities[i].EntityName) || ModifiedShapes.IsShapeModified(i))
+                {
+                    verticesToOutline = indexVec(new std::vector<int>(), [](std::vector<int>* vec){ delete vec; });
+                    for(int j = 0; j < originalEntities[i].Vertices.size(); j++)
+                        verticesToOutline->push_back(j);
+                }
+                else
+                    continue;
+            }
+            
+            for(int j = 0; j < verticesToOutline->size(); j++)
+            {
+                ssGUI::DrawingEntity outlineShape;
+                int curVertexIndexToOutline = verticesToOutline->at(j);
+                
+                int nextIndex = ModifiedShapes.GetNextIndex(curVertexIndexToOutline, originalEntities.at(i).Vertices);
+                int prevIndex = ModifiedShapes.GetPrevIndex(curVertexIndexToOutline, originalEntities.at(i).Vertices);
+                glm::vec2 curVertex = originalEntities.at(i).Vertices.at(curVertexIndexToOutline);
+                glm::vec2 prevVertex = originalEntities.at(i).Vertices.at(prevIndex);
+                glm::vec2 nextVertex = originalEntities.at(i).Vertices.at(nextIndex);
+                
+                //For each vertex to be outlined, create a outline shape and store it in the new vertices...
+                if(!isInner)
+                {
+                    glm::vec2 curLine = nextVertex - curVertex;
+                    glm::vec2 prevLine = prevVertex - curVertex;
+                    
+                    if(curLine != glm::vec2())
+                        curLine = glm::normalize(curLine);
+                    
+                    if(prevLine != glm::vec2())
+                        prevLine = glm::normalize(prevLine);
+
+                    glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
+                    
+                    //Draw first arc
+                    glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
+
+                    if(outlinePos1 != outlinePos2)
+                    {
+                        PlotArc(outlinePos1, outlinePos2, curVertex, outlineShape.Vertices);
+
+                        //Outline the corner
+                        outlineShape.Vertices.push_back(curVertex);
+                        
+                        for(int k = 0; k < outlineShape.Vertices.size(); k++)
+                            outlineShape.Colors.push_back(GetOutlineColor());
+                        
+                        outlineShape.EntityName = OUTLINE_SHAPES_NAME;
+                        newEntities.push_back(outlineShape);
+                    }
+
+                    //Link the outline to next vertex if it is present in the verticesToOutline list
+                    bool linkingPossible = false;
+
+                    if(!ModifiedShapes.IsModifyWholeShape())
+                    {
+                        for(int k = 0; k < verticesToOutline->size(); k++)
+                        {
+                            if(verticesToOutline->at(k) == nextIndex)
+                            {
+                                linkingPossible = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        linkingPossible = true;
+
+                    if(linkingPossible)
+                    {
+                        outlineShape = ssGUI::DrawingEntity();
+                    
+                        outlineShape.Vertices.push_back(outlinePos2);
+                        outlineShape.Vertices.push_back(outlinePos2 + (nextVertex - curVertex));
+                        outlineShape.Vertices.push_back(nextVertex);
+                        outlineShape.Vertices.push_back(curVertex);
+                        
+                        for(int k = 0; k < outlineShape.Vertices.size(); k++)
+                            outlineShape.Colors.push_back(GetOutlineColor());
+
+                        outlineShape.EntityName = OUTLINE_SHAPES_NAME;
+                        newEntities.push_back(outlineShape);
+                    }
+                }
+                else
+                {
+                    glm::vec2 nextNextVertex = originalEntities.at(i).Vertices.at(ModifiedShapes.GetNextIndex(nextIndex, originalEntities.at(i).Vertices));
+
+                    glm::vec2 outlinePos1;
+                    glm::vec2 outlinePos2;
+
+                    if(!FindInnerOutlinesIntersection(curVertex, prevVertex, nextVertex, GetOutlineThickness(), outlinePos1))
+                    {
+                        ssLOG_FUNC_EXIT();
+                        return;
+                    }
+                    
+                    if(!FindInnerOutlinesIntersection(nextVertex, curVertex, nextNextVertex, GetOutlineThickness(), outlinePos2))
+                    {
+                        ssLOG_FUNC_EXIT();
+                        return;
+                    }
+
+                    //Link the outline to next vertex if it is present in the verticesToOutline list
+                    bool linkingPossible = false;
+
+                    if(!ModifiedShapes.IsModifyWholeShape())
+                    {
+                        for(int k = 0; k < verticesToOutline->size(); k++)
+                        {
+                            if(verticesToOutline->at(k) == nextIndex)
+                            {
+                                linkingPossible = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        linkingPossible = true;
+
+                    if(linkingPossible)
+                    {
+                        outlineShape.Vertices.push_back(curVertex);
+                        outlineShape.Vertices.push_back(nextVertex);
+                        outlineShape.Vertices.push_back(outlinePos2);
+                        outlineShape.Vertices.push_back(outlinePos1);
+                        
+                        for(int k = 0; k < outlineShape.Vertices.size(); k++)
+                            outlineShape.Colors.push_back(GetOutlineColor());
+
+                        outlineShape.EntityName = OUTLINE_SHAPES_NAME;
+                        newEntities.push_back(outlineShape);
+                    }
+                }
+            }
+        }
         
         //For each vertex to be outlined, create a outline shape and store it in the new vertices...
-        if(!isInner)
-        {
-            for(int i = 0; i < VerticesToOutline.size(); i++)
-            {
-                glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
+        //if(!isInner)
+        //{
+        //    for(int i = 0; i < VerticesToOutline.size(); i++)
+        //    {
+        //        glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
 
-                glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
-                glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
+        //        glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
+        //        glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
+
+        //        glm::vec2 curLine = nextVertex - curVertex;
+        //        glm::vec2 prevLine = prevVertex - curVertex;
+
+        //        if(curLine != glm::vec2())
+        //            curLine = glm::normalize(curLine);
+                
+        //        if(prevLine != glm::vec2())
+        //            prevLine = glm::normalize(prevLine);
+
+        //        glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
+                
+        //        //Draw first arc
+        //        glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
+        //        int originalVerticesCount = newVertices.size();
+
+        //        if(outlinePos1 != outlinePos2)
+        //        {
+        //            PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
+
+        //            //Outline the corner
+        //            newVertices.push_back(curVertex);
+        //            newCounts.push_back(newVertices.size() - originalVerticesCount);
+        //            outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
+        //        }
+
+        //        //Link the outline to next outline vertex if possible
+        //        bool linkingPossible = false;
+
+        //        if(i < VerticesToOutline.size() - 1 && VerticesToOutline[i + 1] == VerticesToOutlineNextVertices[i])
+        //            linkingPossible = true;
+        //        else if(lastShapeStartIndex != -1 && VerticesToOutline[lastShapeStartIndex] == VerticesToOutlineNextVertices[i])
+        //            linkingPossible = true;
+
+        //        if(linkingPossible)
+        //        {
+        //            newVertices.push_back(outlinePos2);
+        //            newVertices.push_back(outlinePos2 + (nextVertex - curVertex));
+        //            newVertices.push_back(nextVertex);
+        //            newVertices.push_back(curVertex);
+                    
+        //            newCounts.push_back(4);
+        //            outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
+        //        }
+
+        //        lastShapeStartIndex = VerticesToOutlineShapeStartFlag[i] ? i : lastShapeStartIndex;
+        //    }
+        //}
+        //else
+        //{
+        //    for(int i = 0; i < VerticesToOutline.size(); i++)
+        //    {
+        //        glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
+
+        //        glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
+        //        glm::vec2 nextNextVertex = drawingVertices[VerticesToOutlineNextNextVertices[i]];
+        //        glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
+
+        //        glm::vec2 outlinePos1;
+        //        glm::vec2 outlinePos2;
+                
+        //        if(!FindInnerOutlinesIntersection(curVertex, prevVertex, nextVertex, GetOutlineThickness(), outlinePos1))
+        //        {
+        //            ssLOG_FUNC_EXIT();
+        //            return;
+        //        }
+                
+        //        if(!FindInnerOutlinesIntersection(nextVertex, curVertex, nextNextVertex, GetOutlineThickness(), outlinePos2))
+        //        {
+        //            ssLOG_FUNC_EXIT();
+        //            return;
+        //        }
+
+        //        //Link the outline to next outline vertex if possible
+        //        bool linkingPossible = false;
+
+        //        if(i < VerticesToOutline.size() - 1 && VerticesToOutline[i + 1] == VerticesToOutlineNextVertices[i])
+        //            linkingPossible = true;
+        //        else if(lastShapeStartIndex != -1 && VerticesToOutline[lastShapeStartIndex] == VerticesToOutlineNextVertices[i])
+        //            linkingPossible = true;
+
+        //        if(linkingPossible)
+        //        {
+        //            newVertices.push_back(curVertex);
+        //            newVertices.push_back(nextVertex);
+        //            newVertices.push_back(outlinePos2);
+        //            newVertices.push_back(outlinePos1);
+
+        //            newCounts.push_back(4);
+        //            outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
+        //        }
+
+        //        lastShapeStartIndex = VerticesToOutlineShapeStartFlag[i] ? i : lastShapeStartIndex;
+        //    }
+        //}
+
+        //drawingVertices.clear();
+        //drawingColors.clear();
+        //drawingCounts.clear();
+        //drawingUVs.clear();
+        //drawingProperties.clear();
+
+
+        originalEntities.insert(originalEntities.end(), newEntities.begin(), newEntities.end());
+
+
+
+        //int originalShapeIndex = 0;
+        //int currentDrawingCounts = 0;
+        ////Merge both original vertices and new ones together (If outline is not inner)
+        //for(int i = 0; i < originalVertices.size(); i++)
+        //{
+        //    drawingVertices.push_back(originalVertices[i]);
+        //    drawingColors.push_back(originalColors[i]);
+        //    drawingUVs.push_back(originalUVs[i]);
+
+        //    currentDrawingCounts++;
+        //    //Last vertex
+        //    if(currentDrawingCounts >= originalCounts[originalShapeIndex])
+        //    {
+        //        drawingCounts.push_back(originalCounts[originalShapeIndex]);
+        //        drawingProperties.push_back(originalProperties[originalShapeIndex]);
+
+        //        //Draw outline if needed
+        //        if(outlinedShapesMap.find(originalShapeIndex) != outlinedShapesMap.end() && !IsInnerOutline())
+        //        {
+        //            for(int newShapeIndex : outlinedShapesMap[originalShapeIndex])
+        //            {
+        //                int startIndex = 0;
+
+        //                for(int j = 0; j < newShapeIndex; j++)
+        //                    startIndex += newCounts[j];
+                        
+        //                int endIndex = startIndex + newCounts[newShapeIndex];
+
+        //                drawingVertices.insert(drawingVertices.end(), newVertices.begin() + startIndex, newVertices.begin() + endIndex);
+        //                drawingColors.insert(drawingColors.end(), newCounts[newShapeIndex], GetOutlineColor());
+        //                drawingUVs.insert(drawingUVs.end(), newCounts[newShapeIndex], glm::vec2());
+        //                drawingCounts.push_back(newCounts[newShapeIndex]);
+        //                drawingProperties.push_back(ssGUI::DrawingProperty());
+        //            }
+        //        }
+
+        //        originalShapeIndex++;
+        //        currentDrawingCounts = 0;
+        //    }
+        //}
+
+        //if(IsInnerOutline())
+        //{
+        //    drawingVertices.insert(drawingVertices.end(), newVertices.begin(), newVertices.end());
+
+        //    for(int i = 0; i < newCounts.size(); i++)
+        //    {
+        //        drawingColors.insert(drawingColors.end(), newCounts[i], GetOutlineColor());
+        //        drawingUVs.insert(drawingUVs.end(), newCounts[i], glm::vec2());
+        //        drawingCounts.push_back(newCounts[i]);
+        //        drawingProperties.push_back(ssGUI::DrawingProperty());
+        //    }
+        //}
+        ssLOG_FUNC_EXIT();
+    }
+
+    void Outline::ConstructSimpleOutline()
+    {        
+        ssLOG_FUNC_ENTRY();
+        //Getting all the rendering details from container
+        //std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
+        //std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        //std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
+        //std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
+        //std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+
+        //std::vector<glm::vec2> newVertices;     //Lists of new vertices as arc
+        //std::vector<int> newCounts;             //The number vertices per arc
+
+        std::vector<ssGUI::DrawingEntity> newEntities;
+        std::vector<ssGUI::DrawingEntity>& originalEntities = Container->Extension_GetDrawingEntities();
+
+
+        if(originalEntities.empty())
+        {
+            ssLOG_FUNC_EXIT();
+            return;
+        }
+
+        ModifiedShapes.UpdateShapesToBeModified(Container->Extension_GetGUIObjectFirstShapeIndex());
+        for(int i = 0; i < originalEntities.size(); i++)
+        {
+            typedef std::unique_ptr<std::vector<int>, std::function<void(std::vector<int>*)>> indexVec;
+            indexVec verticesToOutline = nullptr;
+
+            if(!ModifiedShapes.IsModifyWholeShape())
+            {
+                if(ModifiedShapes.GetVerticesToBeModified(originalEntities[i].EntityName) != nullptr)
+                {
+                    verticesToOutline = indexVec(ModifiedShapes.GetVerticesToBeModified(originalEntities[i].EntityName), [](...){});
+                }
+                else if(ModifiedShapes.GetVerticesToBeModified(i) != nullptr)
+                {
+                    verticesToOutline = indexVec(ModifiedShapes.GetVerticesToBeModified(i), [](...){});
+                }
+                else
+                    continue;
+            }
+            else
+            {
+                if(ModifiedShapes.IsShapeModified(originalEntities[i].EntityName) || ModifiedShapes.IsShapeModified(i))
+                {
+                    verticesToOutline = indexVec(new std::vector<int>(), [](std::vector<int>* vec){ delete vec; });
+                    for(int j = 0; j < originalEntities[i].Vertices.size(); j++)
+                        verticesToOutline->push_back(j);
+                }
+                else
+                    continue;
+            }
+        
+            ssGUI::DrawingEntity outlineShape;
+            
+            for(int j = 0; j < verticesToOutline->size(); j++)
+            {
+                int curVertexIndexToOutline = verticesToOutline->at(j);
+                glm::vec2 curVertex = originalEntities.at(i).Vertices.at(curVertexIndexToOutline);
+                glm::vec2 prevVertex = originalEntities.at(i).Vertices.at(ModifiedShapes.GetPrevIndex(curVertexIndexToOutline, originalEntities.at(i).Vertices));
+                glm::vec2 nextVertex = originalEntities.at(i).Vertices.at(ModifiedShapes.GetNextIndex(curVertexIndexToOutline, originalEntities.at(i).Vertices));
 
                 glm::vec2 curLine = nextVertex - curVertex;
                 glm::vec2 prevLine = prevVertex - curVertex;
@@ -427,208 +866,24 @@ nextVertex (n)    (a)                   curVertex
                     prevLine = glm::normalize(prevLine);
 
                 glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
-                
+                        
                 //Draw first arc
                 glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
-                int originalVerticesCount = newVertices.size();
 
-                if(outlinePos1 != outlinePos2)
-                {
-                    PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
-
-                    //Outline the corner
-                    newVertices.push_back(curVertex);
-                    newCounts.push_back(newVertices.size() - originalVerticesCount);
-                    outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
-                }
-
-                //Link the outline to next outline vertex if possible
-                bool linkingPossible = false;
-
-                if(i < VerticesToOutline.size() - 1 && VerticesToOutline[i + 1] == VerticesToOutlineNextVertices[i])
-                    linkingPossible = true;
-                else if(lastShapeStartIndex != -1 && VerticesToOutline[lastShapeStartIndex] == VerticesToOutlineNextVertices[i])
-                    linkingPossible = true;
-
-                if(linkingPossible)
-                {
-                    newVertices.push_back(outlinePos2);
-                    newVertices.push_back(outlinePos2 + (nextVertex - curVertex));
-                    newVertices.push_back(nextVertex);
-                    newVertices.push_back(curVertex);
-                    
-                    newCounts.push_back(4);
-                    outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
-                }
-
-                lastShapeStartIndex = VerticesToOutlineShapeStartFlag[i] ? i : lastShapeStartIndex;
+                if(glm::distance(outlinePos1, outlinePos2) > 3)
+                    PlotArc(outlinePos1, outlinePos2, curVertex, outlineShape.Vertices);
+                else
+                    outlineShape.Vertices.push_back(outlinePos1);
             }
-        }
-        else
-        {
-            for(int i = 0; i < VerticesToOutline.size(); i++)
-            {
-                glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
-
-                glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
-                glm::vec2 nextNextVertex = drawingVertices[VerticesToOutlineNextNextVertices[i]];
-                glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
-
-                glm::vec2 outlinePos1;
-                glm::vec2 outlinePos2;
-                
-                if(!FindInnerOutlinesIntersection(curVertex, prevVertex, nextVertex, GetOutlineThickness(), outlinePos1))
-                {
-                    ssLOG_FUNC_EXIT();
-                    return;
-                }
-                
-                if(!FindInnerOutlinesIntersection(nextVertex, curVertex, nextNextVertex, GetOutlineThickness(), outlinePos2))
-                {
-                    ssLOG_FUNC_EXIT();
-                    return;
-                }
-
-                //Link the outline to next outline vertex if possible
-                bool linkingPossible = false;
-
-                if(i < VerticesToOutline.size() - 1 && VerticesToOutline[i + 1] == VerticesToOutlineNextVertices[i])
-                    linkingPossible = true;
-                else if(lastShapeStartIndex != -1 && VerticesToOutline[lastShapeStartIndex] == VerticesToOutlineNextVertices[i])
-                    linkingPossible = true;
-
-                if(linkingPossible)
-                {
-                    newVertices.push_back(curVertex);
-                    newVertices.push_back(nextVertex);
-                    newVertices.push_back(outlinePos2);
-                    newVertices.push_back(outlinePos1);
-
-                    newCounts.push_back(4);
-                    outlinedShapesMap[VerticesToOutlineShapeIndex[i]].push_back(newCounts.size() - 1);
-                }
-
-                lastShapeStartIndex = VerticesToOutlineShapeStartFlag[i] ? i : lastShapeStartIndex;
-            }
-        }
-
-        drawingVertices.clear();
-        drawingColors.clear();
-        drawingCounts.clear();
-        drawingUVs.clear();
-        drawingProperties.clear();
-
-        int originalShapeIndex = 0;
-        int currentDrawingCounts = 0;
-        //Merge both original vertices and new ones together (If outline is not inner)
-        for(int i = 0; i < originalVertices.size(); i++)
-        {
-            drawingVertices.push_back(originalVertices[i]);
-            drawingColors.push_back(originalColors[i]);
-            drawingUVs.push_back(originalUVs[i]);
-
-            currentDrawingCounts++;
-            //Last vertex
-            if(currentDrawingCounts >= originalCounts[originalShapeIndex])
-            {
-                drawingCounts.push_back(originalCounts[originalShapeIndex]);
-                drawingProperties.push_back(originalProperties[originalShapeIndex]);
-
-                //Draw outline if needed
-                if(outlinedShapesMap.find(originalShapeIndex) != outlinedShapesMap.end() && !IsInnerOutline())
-                {
-                    for(int newShapeIndex : outlinedShapesMap[originalShapeIndex])
-                    {
-                        int startIndex = 0;
-
-                        for(int j = 0; j < newShapeIndex; j++)
-                            startIndex += newCounts[j];
-                        
-                        int endIndex = startIndex + newCounts[newShapeIndex];
-
-                        drawingVertices.insert(drawingVertices.end(), newVertices.begin() + startIndex, newVertices.begin() + endIndex);
-                        drawingColors.insert(drawingColors.end(), newCounts[newShapeIndex], GetOutlineColor());
-                        drawingUVs.insert(drawingUVs.end(), newCounts[newShapeIndex], glm::vec2());
-                        drawingCounts.push_back(newCounts[newShapeIndex]);
-                        drawingProperties.push_back(ssGUI::DrawingProperty());
-                    }
-                }
-
-                originalShapeIndex++;
-                currentDrawingCounts = 0;
-            }
-        }
-
-        if(IsInnerOutline())
-        {
-            drawingVertices.insert(drawingVertices.end(), newVertices.begin(), newVertices.end());
-
-            for(int i = 0; i < newCounts.size(); i++)
-            {
-                drawingColors.insert(drawingColors.end(), newCounts[i], GetOutlineColor());
-                drawingUVs.insert(drawingUVs.end(), newCounts[i], glm::vec2());
-                drawingCounts.push_back(newCounts[i]);
-                drawingProperties.push_back(ssGUI::DrawingProperty());
-            }
-        }
-        ssLOG_FUNC_EXIT();
-    }
-
-    void Outline::ConstructSimpleOutline()
-    {        
-        ssLOG_FUNC_ENTRY();
-        //Getting all the rendering details from container
-        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
-        std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
-        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
-        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
-
-        std::vector<glm::vec2> newVertices;     //Lists of new vertices as arc
-        std::vector<int> newCounts;             //The number vertices per arc
-
-        if(drawingCounts.empty())
-        {
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-
-        UpdateVerticesForOutline();
-        for(int i = 0; i < VerticesToOutline.size(); i++)
-        {
-            glm::vec2 curVertex = drawingVertices[VerticesToOutline[i]];
-            glm::vec2 prevVertex = drawingVertices[VerticesToOutlinePrevVertices[i]];
-            glm::vec2 nextVertex = drawingVertices[VerticesToOutlineNextVertices[i]];
-
-            glm::vec2 curLine = nextVertex - curVertex;
-            glm::vec2 prevLine = prevVertex - curVertex;
-
-            if(curLine != glm::vec2())
-                curLine = glm::normalize(curLine);
             
-            if(prevLine != glm::vec2())
-                prevLine = glm::normalize(prevLine);
-
-            glm::vec2 outlinePos1 = glm::normalize(glm::cross(glm::vec3(-prevLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
-                    
-            //Draw first arc
-            glm::vec2 outlinePos2 = glm::normalize(glm::cross(glm::vec3(curLine, 0), glm::vec3(0, 0, 1))) * OutlineThickness + glm::vec3(curVertex, 0);
-            int originalVerticesCount = newVertices.size();
-
-            if(outlinePos1 != outlinePos2)
-                PlotArc(outlinePos1, outlinePos2, curVertex, newVertices);
-            else
-                newVertices.push_back(outlinePos1);
+            for(int k = 0; k < outlineShape.Vertices.size(); k++)
+                outlineShape.Colors.push_back(GetOutlineColor());
+            
+            outlineShape.EntityName = OUTLINE_SHAPES_NAME;
+            newEntities.push_back(outlineShape);
         }
         
-        newCounts.push_back(newVertices.size());
-
-        drawingVertices.insert(drawingVertices.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), newVertices.begin(), newVertices.end());
-        drawingCounts.insert(drawingCounts.begin() + Container->Extension_GetGUIObjectFirstShapeIndex(), newCounts.begin(), newCounts.end());
-
-        drawingColors.insert(drawingColors.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), drawingVertices.size() - drawingColors.size(), GetOutlineColor());
-        drawingUVs.insert(drawingUVs.begin() + Container->Extension_GetGUIObjectFirstVertexIndex(), drawingVertices.size() - drawingUVs.size(), glm::vec2());
-        drawingProperties.insert(drawingProperties.begin() + Container->Extension_GetGUIObjectFirstShapeIndex(), drawingCounts.size() - drawingProperties.size(), ssGUI::DrawingProperty());
+        originalEntities.insert(originalEntities.begin() + Container->Extension_GetGUIObjectFirstShapeIndex(), newEntities.begin(), newEntities.end());
         ssLOG_FUNC_EXIT();
     }
 
@@ -642,7 +897,8 @@ nextVertex (n)    (a)                   curVertex
                 ConstructSimpleOutline();
             else
                 ConstructComplexOutline(false);
-        }   
+        }
+        
     }
 
     void Outline::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -655,6 +911,7 @@ nextVertex (n)    (a)                   curVertex
 
     //Defining the extension name
     const std::string Outline::EXTENSION_NAME = "Outline";
+    const std::string Outline::OUTLINE_SHAPES_NAME = "Outline";
 
     void Outline::SetOutlineThickness(float thickness)
     {
@@ -704,78 +961,103 @@ nextVertex (n)    (a)                   curVertex
         return OutlineColor;
     }
 
-    void Outline::AddTargetShape(int shapeIndex)
+    int Outline::AddTargetShape(ssGUI::TargetShape targetShape)
     {
-        TargetShapes.push_back(shapeIndex);
+        int index = ModifiedShapes.AddTargetShape(targetShape);
+        
         if(Container != nullptr)
             Container->RedrawObject();
+        
+        return index;
     }
 
-    int Outline::GetTargetShape(int location) const
+    ssGUI::TargetShape Outline::GetTargetShape(int location) const
     {
-        return TargetShapes[location];
+        return ModifiedShapes.TargetShapes[location];
     }
 
-    void Outline::SetTargetShape(int location, int shapeIndex)
+    void Outline::SetTargetShape(int location, ssGUI::TargetShape targetShape)
     {
-        TargetShapes[location] = shapeIndex;
+        ModifiedShapes.SetTargetShape(location, targetShape);
+
         if(Container != nullptr)
             Container->RedrawObject();
     }
 
     int Outline::GetTargetShapesCount() const
     {
-        return TargetShapes.size();
+        return ModifiedShapes.GetTargetShapesCount();
     }
 
     void Outline::RemoveTargetShape(int location)
     {
-        TargetShapes.erase(TargetShapes.begin() + location);
+        ModifiedShapes.RemoveTargetShape(location);
+
         if(Container != nullptr)
             Container->RedrawObject();
     }
 
     void Outline::ClearTargetShapes()
     {
-        TargetShapes.clear();
+        ModifiedShapes.ClearTargetShapes();
+
         if(Container != nullptr)
             Container->RedrawObject();
     }
 
-    void Outline::AddTargetVertex(int vertexIndex)
+    int Outline::AddTargetVertex(ssGUI::TargetShape targetShape, int vertexIndex)
     {
-        TargetVertices.push_back(vertexIndex);
+        int index = ModifiedShapes.AddTargetVertex(targetShape, vertexIndex);
+    
+        if(Container != nullptr)
+            Container->RedrawObject();
+        
+        return index;
+    }
+
+    VerticesIndicesForShape Outline::GetTargetVertices(int location) const
+    {
+        return ModifiedShapes.GetTargetVertices(location);
+    }
+    
+    VerticesIndicesForShape Outline::GetTargetVertices(ssGUI::TargetShape targetShape) const
+    {
+        return ModifiedShapes.GetTargetVertices(targetShape);
+    }
+    
+    void Outline::SetTargetVertices(ssGUI::TargetShape targetShape, const std::vector<int>& vertices)
+    {
+        ModifiedShapes.SetTargetVertices(targetShape, vertices);
+
         if(Container != nullptr)
             Container->RedrawObject();
     }
 
-    int Outline::GetTargetVertex(int location) const
+    void Outline::SetTargetVertices(int location, const std::vector<int>& vertices)
     {
-        return TargetVertices[location];
-    }
-
-    void Outline::SetTargetVertex(int location, int vertexIndex)
-    {
-        TargetVertices[location] = vertexIndex;
+        ModifiedShapes.SetTargetVertices(location, vertices);
+        
         if(Container != nullptr)
             Container->RedrawObject();
     }
 
     int Outline::GetTargetVerticesCount() const
     {
-        return TargetVertices.size();
+        return ModifiedShapes.GetTargetVerticesCount();
     }
 
     void Outline::RemoveTargetVertex(int location)
     {
-        TargetVertices.erase(TargetVertices.begin() + location);
+        ModifiedShapes.RemoveTargetVertex(location);
+    
         if(Container != nullptr)
             Container->RedrawObject();
     }
 
     void Outline::ClearTargetVertices()
     {
-        TargetVertices.clear();
+        ModifiedShapes.ClearTargetVertices();
+
         if(Container != nullptr)
             Container->RedrawObject();
     }
@@ -847,15 +1129,13 @@ nextVertex (n)    (a)                   curVertex
         SimpleOutline = outline->IsSimpleOutline();
         InnerOutline = outline->IsInnerOutline();
         OutlineColor = outline->GetOutlineColor();
-        TargetShapes = outline->TargetShapes;
-        TargetVertices = outline->TargetVertices;
-
-        VerticesToOutline = std::vector<int>();
-        VerticesToOutlinePrevVertices = std::vector<int>();
-        VerticesToOutlineNextVertices = std::vector<int>();
-        VerticesToOutlineNextNextVertices = std::vector<int>();
-        VerticesToOutlineShapeIndex = std::vector<int>();
-        VerticesToOutlineShapeStartFlag = std::vector<bool>();
+        ModifiedShapes = outline->ModifiedShapes;
+        //VerticesToOutline = std::vector<int>();
+        //VerticesToOutlinePrevVertices = std::vector<int>();
+        //VerticesToOutlineNextVertices = std::vector<int>();
+        //VerticesToOutlineNextNextVertices = std::vector<int>();
+        //VerticesToOutlineShapeIndex = std::vector<int>();
+        //VerticesToOutlineShapeStartFlag = std::vector<bool>();
     }
 
     ObjectsReferences* Outline::Internal_GetObjectsReferences()

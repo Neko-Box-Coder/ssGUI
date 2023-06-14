@@ -1,6 +1,7 @@
 #include "ssGUI/Backend/Mocks/BackendDrawingMock.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
+#include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
 namespace ssGUI
 {
@@ -23,11 +24,7 @@ namespace Backend
         UnderlyingInterface(drawingInterface),
         SavedStateCount(0),
         CurrentDrawingBuffer(0),
-        Vertices(),
-        TexCoords(),
-        Colors(),
-        Counts(),
-        Properties(),
+        Entities(),
         ClearedColor(),
         CachedImage()
     {
@@ -49,54 +46,15 @@ namespace Backend
         return SavedStateCount;    
     }
     
-    const std::vector<glm::vec2>& BackendDrawingMock::GetDrawnVertices() const
+    
+    const std::vector<ssGUI::DrawingEntity>& BackendDrawingMock::GetDrawnEntities() const
     {
-        return Vertices[CurrentDrawingBuffer];
+        return Entities[CurrentDrawingBuffer];
     }
     
-    const std::vector<glm::vec2>& BackendDrawingMock::GetRenderedVertices() const
+    const std::vector<ssGUI::DrawingEntity>& BackendDrawingMock::GetRenderedEntities() const
     {
-        return Vertices[(CurrentDrawingBuffer + 1) % 2];
-    }
-    
-    const std::vector<glm::vec2>& BackendDrawingMock::GetDrawnTexCoords() const
-    {
-        return TexCoords[CurrentDrawingBuffer];
-    }
-    
-    const std::vector<glm::vec2>& BackendDrawingMock::GetRenderedTexCoords() const
-    {
-        return TexCoords[(CurrentDrawingBuffer + 1) % 2];
-    }
-    
-    const std::vector<glm::u8vec4>& BackendDrawingMock::GetDrawnColors() const
-    {
-        return Colors[CurrentDrawingBuffer];
-    }
-    
-    const std::vector<glm::u8vec4>& BackendDrawingMock::GetRenderedColors() const
-    {
-        return Colors[(CurrentDrawingBuffer + 1) % 2];
-    }
-    
-    const std::vector<int>& BackendDrawingMock::GetDrawnCounts() const
-    {
-        return Counts[CurrentDrawingBuffer];
-    }
-    
-    const std::vector<int>& BackendDrawingMock::GetRenderedCounts() const
-    {
-        return Counts[(CurrentDrawingBuffer + 1) % 2];
-    }
-    
-    const std::vector<ssGUI::DrawingProperty>& BackendDrawingMock::GetDrawnProperties() const
-    {
-        return Properties[CurrentDrawingBuffer];
-    }
-    
-    const std::vector<ssGUI::DrawingProperty>& BackendDrawingMock::GetRenderedProperties() const
-    {
-        return Properties[(CurrentDrawingBuffer + 1) % 2];
+        return Entities[(CurrentDrawingBuffer + 1) % 2];
     }
     
     const glm::u8vec3& BackendDrawingMock::GetDrawnClearedColor() const
@@ -121,24 +79,16 @@ namespace Backend
         SavedStateCount--;
     }
 
-    bool BackendDrawingMock::DrawEntities(  const std::vector<glm::vec2>& vertices, 
-                                            const std::vector<glm::vec2>& texCoords,
-                                            const std::vector<glm::u8vec4>& colors,
-                                            const std::vector<int>& counts,
-                                            const std::vector<ssGUI::DrawingProperty>& properties)
+    bool BackendDrawingMock::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_IF_FALSE(DrawEntities(vertices, texCoords, colors, counts, properties));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_IF_FALSE(DrawEntities(entities));
 
-        Vertices[CurrentDrawingBuffer].insert(Vertices[CurrentDrawingBuffer].end(), vertices.begin(), vertices.end());
-        TexCoords[CurrentDrawingBuffer].insert(TexCoords[CurrentDrawingBuffer].end(), texCoords.begin(), texCoords.end());
-        Colors[CurrentDrawingBuffer].insert(Colors[CurrentDrawingBuffer].end(), colors.begin(), colors.end());
-        Counts[CurrentDrawingBuffer].insert(Counts[CurrentDrawingBuffer].end(), counts.begin(), counts.end());
-        Properties[CurrentDrawingBuffer].insert(Properties[CurrentDrawingBuffer].end(), properties.begin(), properties.end());
+        Entities[CurrentDrawingBuffer].insert(Entities[CurrentDrawingBuffer].end(), entities.begin(), entities.end());
 
-        for(int i = 0; i < properties.size(); i++)
+        for(int i = 0; i < entities.size(); i++)
         {
-            if(properties[i].imageP != nullptr)
-                AddImageCache(properties[i].imageP);
+            if(entities[i].BackendImage != nullptr)
+                AddImageCache(entities[i].BackendImage);
         }
 
         return true;
@@ -150,11 +100,7 @@ namespace Backend
 
         CurrentDrawingBuffer = (CurrentDrawingBuffer + 1) % 2;
 
-        Vertices[CurrentDrawingBuffer].clear();
-        TexCoords[CurrentDrawingBuffer].clear();
-        Colors[CurrentDrawingBuffer].clear();
-        Counts[CurrentDrawingBuffer].clear();
-        Properties[CurrentDrawingBuffer].clear();
+        Entities[CurrentDrawingBuffer].clear();
         ClearedColor[CurrentDrawingBuffer] = clearColor;
     }
 
@@ -162,11 +108,7 @@ namespace Backend
     {
         SSGUI_MOCK_PASSTHROUGH(ClearBackBuffer(clearColor));
         
-        Vertices[CurrentDrawingBuffer].clear();
-        TexCoords[CurrentDrawingBuffer].clear();
-        Colors[CurrentDrawingBuffer].clear();
-        Counts[CurrentDrawingBuffer].clear();
-        Properties[CurrentDrawingBuffer].clear();
+        Entities[CurrentDrawingBuffer].clear();
         ClearedColor[CurrentDrawingBuffer] = clearColor;
     }
     
@@ -223,38 +165,6 @@ namespace Backend
 
     bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::u8vec4>& colors)
-    {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "This function is not supposed to be called");
-        return true;        
-    }
-
-    //NOTE: End index is exclusive
-    bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colors,
-                                        const uint32_t character,
-                                        int startIndex, int endIndex,
-                                        const ssGUI::Backend::BackendFontInterface& font,
-                                        int characterSize)
-    {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "This function is not supposed to be called");
-        return true;        
-    }
-
-    bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colors,
-                                        int startIndex, int endIndex,
-                                        const ssGUI::Backend::BackendImageInterface& image)
-    {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "This function is not supposed to be called");
-        return true;        
-    }
-
-
-    bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colors,
-                                        int startIndex, int endIndex)
     {
         ssGUI_WARNING(ssGUI_BACKEND_TAG, "This function is not supposed to be called");
         return true;        

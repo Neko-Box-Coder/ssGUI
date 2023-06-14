@@ -1,6 +1,7 @@
 #ifndef SSGUI_MASK_ENFORCER_H
 #define SSGUI_MASK_ENFORCER_H
 
+#include "ssGUI/DataClasses/TargetShape.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
 #include "glm/vec2.hpp"
@@ -40,17 +41,18 @@ namespace Extensions
     {
         public:
             friend class ssGUI::Factory;
-        
+
         private:
             MaskEnforcer& operator=(MaskEnforcer const& other);
 
         protected:
-            ssGUI::GUIObject* Container;                                            //See <BindToObject>
-            bool Enabled;                                                           //See <IsEnabled>
-            std::unordered_map<ssGUIObjectIndex, std::vector<int>> TargetMasks;     //See <AddTargetMaskObject>
-            bool BlockingContainerInput;                                            //(Internal variable) Used to block inputs outside the mask area
+        
+            ssGUI::GUIObject* Container;                                                        //See <BindToObject>
+            bool Enabled;                                                                       //See <IsEnabled>
+            std::unordered_map<ssGUIObjectIndex, std::vector<ssGUI::TargetShape>> TargetMasks;  //See <AddTargetMaskObject>
+            bool BlockingContainerInput;                                                        //(Internal variable) Used to block inputs outside the mask area
 
-            ObjectsReferences CurrentObjectsReferences;                             //(Internal variable) Used to track the object that has the mask
+            ObjectsReferences CurrentObjectsReferences;                                         //(Internal variable) Used to track the object that has the mask
 
             MaskEnforcer();
             virtual ~MaskEnforcer() override;
@@ -74,8 +76,8 @@ namespace Extensions
             //Add a <Mask> extension to mask this object. targetMaskObj should have <Mask> attached.
             //Only shapes with specified indices will be masked.
             //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
-            virtual void AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, std::vector<int> targetShapeIndices);
-
+            virtual void AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, const std::vector<ssGUI::TargetShape>& targetShapes);
+            
             //function: HasTargetMaskObject
             //Returns true if targetMaskObj is added to this extension
             virtual bool HasTargetMaskObject(ssGUI::GUIObject* targetMaskObj);
@@ -87,13 +89,13 @@ namespace Extensions
             //function: ChangeTargetShapeForMask
             //Allows to change which shapes to be masked
             //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
-            virtual void ChangeTargetShapeForMask(ssGUI::GUIObject* targetMaskObj, std::vector<int> targetShapeIndices);
-
+            virtual void ChangeTargetShapeForMask(ssGUI::GUIObject* targetMaskObj, const std::vector<ssGUI::TargetShape>& targetShapes);
+            
             //function: GetTargetMaskObjects
             //Returns a list of target mask objects, and a list of shape indices to be masked.
             //If list of shape indices is empty, masking is applied to all shapes
             //GUI Object shape index can be obtained with <ssGUI::Renderer::Extension_GetGUIObjectFirstShapeIndex>.
-            virtual std::vector<std::pair<ssGUI::GUIObject*, std::vector<int>>> GetTargetMaskObjects();
+            virtual std::vector<std::pair<ssGUI::GUIObject*, std::vector<ssGUI::TargetShape>>> GetTargetMaskObjects();
 
             //Override from Extension
             //function: SetEnabled

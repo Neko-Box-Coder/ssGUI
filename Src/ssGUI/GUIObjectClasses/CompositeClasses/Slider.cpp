@@ -118,73 +118,70 @@ namespace ssGUI
         glm::vec2 drawPosition = GetGlobalPosition();
 
         //Slider Background
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        ssGUI::DrawingEntity backgroundEntitiy;
+        
+        backgroundEntitiy.Vertices.push_back(drawPosition);
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        
+        backgroundEntitiy.EntityName = GUI_OBJECT_BG_SHAPE_NAME;
+        
+        DrawingEntities.push_back(backgroundEntitiy);
 
         //Slider fill
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
         glm::vec2 knobPos = drawPosition + KnobGlobalOffset;
 
+        ssGUI::DrawingEntity sliderFillEntity;
+
         if(!IsVertical())
         {
             if(!IsReverse())
             {
-                DrawingVerticies.push_back(glm::vec2(drawPosition));
-                DrawingVerticies.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
             }
             else
             {
-                DrawingVerticies.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y + GetSize().y));
-                DrawingVerticies.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
             }
         }
         else
         {
             if(!IsReverse())
             {
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, knobPos.y + curKnobSize.y / 2));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, knobPos.y + curKnobSize.y / 2));
-                DrawingVerticies.push_back(glm::vec2(drawPosition + GetSize()));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, knobPos.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, knobPos.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition + GetSize()));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
                 
             }
             else
             {
-                DrawingVerticies.push_back(glm::vec2(drawPosition));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, knobPos.y + curKnobSize.y / 2));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, knobPos.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, knobPos.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, knobPos.y + curKnobSize.y / 2));
             }
         }
 
         for(int i = 0; i < 4; i++)
-        {
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(GetFillColor());
-        }
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+            sliderFillEntity.Colors.push_back(GetFillColor());
+    
+        sliderFillEntity.EntityName = SLIDER_FILL_SHAPE_NAME;
+        DrawingEntities.push_back(sliderFillEntity);
     }
 
     void Slider::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -426,6 +423,7 @@ namespace ssGUI
     }
 
     const std::string Slider::ListenerKey = "Slider";
+    const std::string Slider::SLIDER_FILL_SHAPE_NAME = "Slider Fill";
     
     Slider::Slider() :  Reverse(false),
                         FillColor(0, 0, 0, 0),

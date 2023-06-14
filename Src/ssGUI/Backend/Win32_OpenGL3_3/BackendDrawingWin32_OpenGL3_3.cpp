@@ -144,13 +144,7 @@ namespace Backend
         GL_CHECK_ERROR( glPopAttrib(); );
     }
 
-    //function: DrawEntities
-    //Draws the entity based on what is set in the _properties_. Returns true if drawn successfully. *Note that if you are not using <ssGUIManager>, you need to call <Render> at the end in order to render it*.
-    bool BackendDrawingWin32_OpenGL3_3::DrawEntities( const std::vector<glm::vec2>& vertices, 
-                                            const std::vector<glm::vec2>& texCoords,
-                                            const std::vector<glm::u8vec4>& colors,
-                                            const std::vector<int>& counts,
-                                            const std::vector<ssGUI::DrawingProperty>& properties)
+    bool BackendDrawingWin32_OpenGL3_3::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
         //Check if the main window is already closed
         if(GetMainWindow()->IsClosed())
@@ -159,28 +153,33 @@ namespace Backend
         UpdateViewPortAndModelViewIfNeeded();
 
         //Start drawing
-        int currentIndex = 0;
-        for(int i = 0; i < counts.size(); i++)
+        for(int i = 0; i < entities.size(); i++)
         {
             bool result = true;
             //Drawing text
-            if(properties[i].fontP != nullptr)
+            if(entities[i].BackendFont != nullptr)
             {
-                result = DrawShape(  vertices, texCoords, colors, properties[i].character, currentIndex, currentIndex + counts[i],
-                    *properties[i].fontP, properties[i].characterSize);
+                result = DrawShape( entities[i].Vertices, 
+                                    entities[i].TexCoords, 
+                                    entities[i].Colors, 
+                                    entities[i].Character, 
+                                    *entities[i].BackendFont, 
+                                    entities[i].CharacterSize);
             }
             //Drawing image
-            else if(properties[i].imageP != nullptr)
+            else if(entities[i].BackendImage != nullptr)
             {
-                result = DrawShape(  vertices, texCoords, colors, currentIndex, currentIndex + counts[i],
-                    *properties[i].imageP);
+                result = DrawShape( entities[i].Vertices, 
+                                    entities[i].TexCoords, 
+                                    entities[i].Colors,
+                                    *entities[i].BackendImage);
             }
             //Drawing shapes
             else 
             {
-                result = DrawShape(  vertices, colors, currentIndex, currentIndex + counts[i]);
+                result = DrawShape( entities[i].Vertices, 
+                                    entities[i].Colors);
             }
-            currentIndex += counts[i];
 
             if(!result)
                 return false;
@@ -284,38 +283,12 @@ namespace Backend
         return &ImageTextures[backendImage];
     }
     
-    bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            const uint32_t character,
-                            const ssGUI::Backend::BackendFontInterface& font,
-                            int characterSize)
-    {
-        return DrawShape(vertices, texCoords, colors, character, 0, vertices.size(), font, characterSize);
-    }
-
-    bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            const ssGUI::Backend::BackendImageInterface& image)
-    {
-        return DrawShape(vertices, texCoords, colors, 0, vertices.size(), image);
-    }
-
-    bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colors)
-    {
-        return DrawShape(vertices, colors, 0, vertices.size());        
-    }
-
-    //NOTE: End index is exclusive
-    bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            const uint32_t character,
-                            int startIndex, int endIndex,
-                            const ssGUI::Backend::BackendFontInterface& font,
-                            int characterSize)
+    bool BackendDrawingWin32_OpenGL3_3::DrawShape(  const std::vector<glm::vec2>& vertices, 
+                                                    const std::vector<glm::vec2>& texCoords,
+                                                    const std::vector<glm::u8vec4>& colors,
+                                                    const uint32_t character,
+                                                    const ssGUI::Backend::BackendFontInterface& font,
+                                                    int characterSize)
     {
         if(!font.IsValid())
             return false;
@@ -372,7 +345,7 @@ namespace Backend
 
         glBegin(GL_TRIANGLE_FAN);
 
-        for(int i = startIndex; i < endIndex; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
             glm::vec2 texCoord = texCoords[i];
 
@@ -389,14 +362,13 @@ namespace Backend
         GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
         GL_CHECK_ERROR( glFlush(); );
 
-        return true;    
+        return true;
     }
 
-    bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            int startIndex, int endIndex,
-                            const ssGUI::Backend::BackendImageInterface& image)
+    bool BackendDrawingWin32_OpenGL3_3::DrawShape(  const std::vector<glm::vec2>& vertices, 
+                                                    const std::vector<glm::vec2>& texCoords,
+                                                    const std::vector<glm::u8vec4>& colors,
+                                                    const ssGUI::Backend::BackendImageInterface& image)
     {
         GetMainWindow()->SetGLContext();
 
@@ -423,7 +395,7 @@ namespace Backend
 
         glBegin(GL_TRIANGLE_FAN);
 
-        for(int i = startIndex; i < endIndex; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
             glm::vec2 texCoord = texCoords[i];
 
@@ -442,14 +414,12 @@ namespace Backend
         GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D, 0); );
         GL_CHECK_ERROR( glFlush(); );
 
-        return true;        
+        return true;
     }
 
-
-    bool BackendDrawingWin32_OpenGL3_3::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colors,
-                            int startIndex, int endIndex)
-    {   
+    bool BackendDrawingWin32_OpenGL3_3::DrawShape(  const std::vector<glm::vec2>& vertices, 
+                                                    const std::vector<glm::u8vec4>& colors)
+    {
         GetMainWindow()->SetGLContext();
 
         GL_CHECK_ERROR( glEnable(GL_BLEND); );
@@ -457,7 +427,7 @@ namespace Backend
 
         glBegin(GL_TRIANGLE_FAN);
 
-        for(int i = startIndex; i < endIndex; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
             glColor4ub(colors[i].r, colors[i].g, colors[i].b, colors[i].a);   
             glVertex3f(vertices[i].x, vertices[i].y, 0);
@@ -466,7 +436,7 @@ namespace Backend
         GL_CHECK_ERROR( glEnd(); );
         GL_CHECK_ERROR( glFlush(); );
 
-        return true;        
+        return true;
     }
 }
 

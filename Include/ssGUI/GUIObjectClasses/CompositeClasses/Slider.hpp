@@ -172,6 +172,7 @@ namespace ssGUI
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string SLIDER_FILL_SHAPE_NAME;
 
             Slider();
             virtual ~Slider() override;

@@ -4,7 +4,7 @@
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/DataClasses/CharacterDetails.hpp"
 #include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
-#include "ssGUI/DataClasses/DrawingProperties.hpp"
+#include "ssGUI/DataClasses/DrawingEntity.hpp"
 #include "ssGUI/DataClasses/Font.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
 #include "ssGUI/GUIObjectClasses/Button.hpp"

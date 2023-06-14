@@ -137,6 +137,10 @@ namespace ssGUI
             //Starts the ssGUIManager.
             //This will block the thread until all <MainWindow>s are closed
             void StartRunning();
+            
+            void StartRunningAsync();
+            
+            bool StepFrame();
 
             //function: GetBackendInputInterface
             //Gets the <ssGUI::Backend::BackendSystemInputInterface> used by <ssGUIManager>

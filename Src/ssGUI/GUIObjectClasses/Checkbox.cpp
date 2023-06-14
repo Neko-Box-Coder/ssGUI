@@ -27,27 +27,27 @@ namespace ssGUI
             borderWidth = border->GetBorderWidth();
         float dist = borderWidth + GetInnerBoxSpace();
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(dist, dist));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
+        ssGUI::DrawingEntity innerFiller;
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x - dist, dist));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
+        innerFiller.Vertices.push_back(drawPosition + glm::vec2(dist, dist));
+        innerFiller.Colors.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x - dist, GetSize().y - dist));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
+        innerFiller.Vertices.push_back(drawPosition + glm::vec2(GetSize().x - dist, dist));
+        innerFiller.Colors.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(dist, GetSize().y - dist));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
+        innerFiller.Vertices.push_back(drawPosition + glm::vec2(GetSize().x - dist, GetSize().y - dist));
+        innerFiller.Colors.push_back(GetBackgroundColor());
 
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        innerFiller.Vertices.push_back(drawPosition + glm::vec2(dist, GetSize().y - dist));
+        innerFiller.Colors.push_back(GetBackgroundColor());
+    
+        innerFiller.EntityName = CHECKBOX_INNER_SHAPE_NAME;
+        DrawingEntities.push_back(innerFiller);
     }
     
     const std::string Checkbox::ListenerKey = "Checkbox";
+    const std::string Checkbox::CHECKBOX_INNER_SHAPE_NAME = "Checkbox Inner";
+
 
     Checkbox::Checkbox() :  InnerBoxSpace(2),
                             Checked(false)

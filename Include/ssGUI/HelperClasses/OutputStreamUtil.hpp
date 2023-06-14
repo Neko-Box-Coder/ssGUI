@@ -2,6 +2,7 @@
 #define SSGUI_OUTPUT_STREAM_UTIL_H
 
 #include "glm/vec2.hpp"
+#include "glm/vec4.hpp"
 #include "ssGUI/Enums/WindowMode.hpp"
 #include <codecvt>
 #include <locale>
@@ -42,6 +43,20 @@ namespace ssGUI
         stream << typeid(EnumType).name() << ": " << reinterpret_cast<const int&>(enumVal);
         return stream;
     }
+    
+    template<typename VecType>
+    inline std::ostream& operator<<(std::ostream& stream, const std::vector<VecType>& vec)
+    {
+        stream << "(Vector: ";
+        for(int i = 0; i < vec.size(); i++)
+        {
+            if(i != vec.size() - 1)
+                stream << vec[i] << ", ";
+            else
+                stream << vec[i] << ")" << std::endl;
+        }
+        return stream;
+    }
 }
 
 namespace glm
@@ -57,21 +72,12 @@ namespace glm
         stream << "(glm::ivec2: " << vec.x << ", " << vec.y << ")";
         return stream;
     }
-}
-
-template<typename VecType>
-inline std::ostream& operator<<(std::ostream& stream, const std::vector<VecType>& vec)
-{
-    stream << "(Vector: ";
-    for(int i = 0; i < vec.size(); i++)
+    
+    inline std::ostream& operator<<(std::ostream& stream, const glm::u8vec4& vec)
     {
-        if(i != vec.size() - 1)
-            stream << vec[i] << ", ";
-        else
-            stream << vec[i] << ")" << std::endl;
+        stream << "(glm::u8vec4: " << (int)vec.r << ", " << (int)vec.g << ", " << (int)vec.b << ", " << (int)vec.a << ")";
+        return stream;
     }
-    return stream;
 }
-
 
 #endif

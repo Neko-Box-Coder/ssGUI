@@ -212,6 +212,8 @@ namespace ssGUI
         ssGUI::GUIObject* mainWindow)
     {
     }
+    
+    const std::string GUIObject::GUI_OBJECT_BG_SHAPE_NAME = "GUI Background";
 
     GUIObject::GUIObject() :    LastGlobalPosition(),
                                 CurrentTags(),
@@ -312,7 +314,8 @@ namespace ssGUI
             if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
                 GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
 
-            drawingInterface->DrawEntities(DrawingVerticies, DrawingUVs, DrawingColours, DrawingCounts, DrawingProperties);
+            if(!drawingInterface->DrawEntities(DrawingEntities))
+                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "DrawEntities failed");
             
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
                 GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
@@ -320,11 +323,7 @@ namespace ssGUI
             EnableRedrawObjectRequest();
             
             CacheRendering();
-            DrawingVerticies.clear();
-            DrawingUVs.clear();
-            DrawingColours.clear();
-            DrawingCounts.clear();
-            DrawingProperties.clear();
+            DrawingEntities.clear();
             Redraw = false;
         }
         else
@@ -332,7 +331,8 @@ namespace ssGUI
             if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
                 GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
             
-            drawingInterface->DrawEntities(LastDrawingVerticies, LastDrawingUVs, LastDrawingColours, LastDrawingCounts, LastDrawingProperties);
+            if(!drawingInterface->DrawEntities(LastDrawingEntities))
+                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "DrawEntities failed");
         
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
                 GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);

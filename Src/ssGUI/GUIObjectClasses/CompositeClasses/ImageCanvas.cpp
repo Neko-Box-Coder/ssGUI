@@ -79,25 +79,22 @@ namespace ssGUI
         glm::vec2 drawPosition = GetGlobalPosition();
 
         //Background
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
-
+        ssGUI::DrawingEntity backgroundEntitiy;
+        
+        backgroundEntitiy.Vertices.push_back(drawPosition);
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        
+        backgroundEntitiy.EntityName = GUI_OBJECT_BG_SHAPE_NAME;
+        
+        DrawingEntities.push_back(backgroundEntitiy);
+        
         if(GetImageData() == nullptr)
         {
             if(GetHorizontalScrollbar() != nullptr)
@@ -110,24 +107,18 @@ namespace ssGUI
         }
 
         //TODO: The code below can be moved to its own function
+        ssGUI::DrawingEntity imageEntity;
+        imageEntity.EntityName = IMAGE_CANVAS_IMAGE_SHAPE_NAME;
+        imageEntity.Colors.push_back(ImageTint);
+        imageEntity.Colors.push_back(ImageTint);
+        imageEntity.Colors.push_back(ImageTint);
+        imageEntity.Colors.push_back(ImageTint);
+        
         //glm::vec2 imgDrawPosition = GetGlobalPosition();
         glm::vec2 imgSize = GetImageData()->GetSize();
 
-        DrawingColours.push_back(ImageTint);
-        DrawingColours.push_back(ImageTint);
-        DrawingColours.push_back(ImageTint);
-        DrawingColours.push_back(ImageTint);
-
         glm::vec2 imgVertices[4] { glm::vec2() };
         
-        float halfSizeX = imgSize.x * 0.5;
-        float halfSizeY = imgSize.y * 0.5;
-
-        //imgVertices[0] = glm::vec2(-halfSizeX, -halfSizeY);
-        //imgVertices[1] = glm::vec2(halfSizeX, -halfSizeY);
-        //imgVertices[2] = glm::vec2(halfSizeX, halfSizeY);
-        //imgVertices[3] = glm::vec2(-halfSizeX, halfSizeY);
-
         imgVertices[0] = glm::vec2(0, 0);
         imgVertices[1] = glm::vec2(imgSize.x, 0);
         imgVertices[2] = glm::vec2(imgSize.x, imgSize.y);
@@ -158,21 +149,14 @@ namespace ssGUI
         imgVertices[2] += drawPosition + canvasHalfSize;
         imgVertices[3] += drawPosition + canvasHalfSize;
 
-        DrawingVerticies.push_back(imgVertices[0]);
-        DrawingVerticies.push_back(imgVertices[1]);
-        DrawingVerticies.push_back(imgVertices[2]);
-        DrawingVerticies.push_back(imgVertices[3]);
+        imageEntity.Vertices.push_back(imgVertices[0]);
+        imageEntity.Vertices.push_back(imgVertices[1]);
+        imageEntity.Vertices.push_back(imgVertices[2]);
+        imageEntity.Vertices.push_back(imgVertices[3]);
 
-        DrawingUVs.push_back(glm::vec2(0, 0));
-        DrawingUVs.push_back(glm::vec2(GetImageData()->GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2(GetImageData()->GetSize()));
-        DrawingUVs.push_back(glm::vec2(0, GetImageData()->GetSize().y));
+        imageEntity.BackendImage = ImageData->GetBackendImageInterface();
 
-        DrawingCounts.push_back(4);
-
-        ssGUI::DrawingProperty currentProperty;
-        currentProperty.imageP = ImageData->GetBackendImageInterface();
-        DrawingProperties.push_back(currentProperty);
+        DrawingEntities.push_back(imageEntity);
 
         ImageVertices.clear();
         ImageVertices.push_back(imgVertices[0]);
@@ -246,6 +230,7 @@ namespace ssGUI
     }
 
     const std::string ImageCanvas::ListenerKey = "Image Canvas";
+    const std::string ImageCanvas::IMAGE_CANVAS_IMAGE_SHAPE_NAME = "Image Canvas Image";
 
     void ImageCanvas::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                                 ssGUI::GUIObject* mainWindow)
@@ -425,7 +410,9 @@ namespace ssGUI
                                     MousePressed(false),
                                     MouseButtonDownPosition()
     {
-        AddExtension<ssGUI::Extensions::MaskEnforcer>()->AddTargetMaskObject(this, {1, 2, 3, 4});
+        std::vector<ssGUI::TargetShape> maskShapes;
+        maskShapes.push_back(ssGUI::TargetShape(IMAGE_CANVAS_IMAGE_SHAPE_NAME));
+        AddExtension<ssGUI::Extensions::MaskEnforcer>()->AddTargetMaskObject(this, maskShapes);
         
         ssGUI::Extensions::Mask* mask = AddExtension<ssGUI::Extensions::Mask>();
         mask->SetMaskChildren(false);

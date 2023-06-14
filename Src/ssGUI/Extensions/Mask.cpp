@@ -12,11 +12,11 @@ namespace ssGUI
 
 namespace Extensions
 {
-    bool Mask::IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices, int startOffset, int shapeCount) const
+    bool Mask::IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices) const
     {
-        for(int i = startOffset; i < startOffset + shapeCount; i++)
+        for(int i = 0; i < shapeVertices.size(); i++)
         {
-            int nextIndex = i+1 >= startOffset + shapeCount ? startOffset : i+1;
+            int nextIndex = (i + 1) % shapeVertices.size();
             glm::vec3 curLine = glm::vec3(shapeVertices[i] - point, 0);
             glm::vec3 nextLine = glm::vec3(shapeVertices[nextIndex] - point, 0);
 
@@ -83,14 +83,14 @@ namespace Extensions
         return true;
     }
 
-    bool Mask::IsAABBOverlap(std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, glm::vec2 maskMin, glm::vec2 maskMax,
+    bool Mask::IsAABBOverlap(std::vector<glm::vec2>& shapeVerticies, glm::vec2 maskMin, glm::vec2 maskMax,
                             glm::vec2& shapeMin, glm::vec2& shapeMax)
     {
         ssLOG_FUNC_ENTRY();
         
-        shapeMin = shapeVerticies[shapeOffset];
-        shapeMax = shapeVerticies[shapeOffset];
-        for(int j = shapeOffset + 1; j < shapeOffset + shapeVertexCount; j++)
+        shapeMin = shapeVerticies[0];
+        shapeMax = shapeVerticies[0];
+        for(int j = 1; j < shapeVerticies.size(); j++)
         {
             if(shapeVerticies[j].x < shapeMin.x)
                 shapeMin.x = shapeVerticies[j].x;
@@ -118,50 +118,63 @@ namespace Extensions
         return true;
     }
 
-    void Mask::GetIntersections(std::vector<glm::vec2>& intersections, std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices,
-                                std::vector<glm::vec2>& shapeVerticies, int shapeOffset, int shapeVertexCount, std::vector<glm::vec2>& maskVerticies)
+    void Mask::GetIntersections(std::vector<glm::vec2>& intersections, 
+                                std::vector<int>& shapeIntersectIndices, 
+                                std::vector<int>& maskIntersectIndices,
+                                std::vector<glm::vec2>& shapeVerticies, 
+                                std::vector<glm::vec2>& maskVerticies)
     {
         ssLOG_FUNC_ENTRY();
         //For each vertices for this shape
-        for(int currentShapeVertexIndex = shapeOffset; currentShapeVertexIndex < shapeOffset + shapeVertexCount; currentShapeVertexIndex++)
+        for(int currentShapeVertexIndex = 0; currentShapeVertexIndex < shapeVerticies.size(); currentShapeVertexIndex++)
         {
-            int nextShapeVertexIndex = GetNextIndex(shapeOffset, shapeVertexCount, currentShapeVertexIndex);
+            int nextShapeVertexIndex = (currentShapeVertexIndex + 1) % shapeVerticies.size();
             //Iterate every line on the mask and see which intersects
             for(int currentMaskIndex = 0; currentMaskIndex < maskVerticies.size(); currentMaskIndex++)
             {
                 glm::vec2 intersection;
                 int nextMaskIndex = GetNextIndex(0, maskVerticies.size(), currentMaskIndex);
-                if(LineToLineIntersection(shapeVerticies[currentShapeVertexIndex], shapeVerticies[nextShapeVertexIndex], 
-                                            maskVerticies[currentMaskIndex], maskVerticies[nextMaskIndex], intersection))
+                if(LineToLineIntersection(  shapeVerticies[currentShapeVertexIndex], 
+                                            shapeVerticies[nextShapeVertexIndex], 
+                                            maskVerticies[currentMaskIndex], 
+                                            maskVerticies[nextMaskIndex], 
+                                            intersection))
                 {
                     intersections.push_back(intersection);
                     shapeIntersectIndices.push_back(currentShapeVertexIndex);
                     maskIntersectIndices.push_back(currentMaskIndex);
-
                 }
             }   
         }
         ssLOG_FUNC_EXIT();
     }
 
-    void Mask::FromNewShapeWithIntersections(std::vector<glm::vec2>& currentShapeVertices, std::vector<glm::vec2>& currentShapeUVs, 
-                                                std::vector<glm::u8vec4>& currentShapeColours, std::vector<bool>& currentVertexChanged,
-                                                std::vector<glm::vec2>& originalVerticies, std::vector<glm::u8vec4>& originalColours,
-                                                std::vector<glm::vec2>& originalUVs,
-                                                glm::vec2 maskMin, glm::vec2 maskMax, int shapeOffset, int shapeVertexCount, 
-                                                std::vector<glm::vec2>& maskVerticies, std::vector<glm::vec2>& intersections,
-                                                std::vector<int>& shapeIntersectIndices, std::vector<int>& maskIntersectIndices)
+    void Mask::FormNewShapeWithIntersections(   ssGUI::DrawingEntity& currentEntity,
+                                                std::vector<bool>& currentVertexChanged,
+                                                ssGUI::DrawingEntity& originalEntity,
+                                                glm::vec2 maskMin, 
+                                                glm::vec2 maskMax, 
+                                                std::vector<glm::vec2>& maskVerticies, 
+                                                std::vector<glm::vec2>& intersections,
+                                                std::vector<int>& shapeIntersectIndices, 
+                                                std::vector<int>& maskIntersectIndices)
     {
         ssLOG_FUNC_ENTRY();
         
         //Lambda function of adding new vertex infomation
-        auto addNewVertexInfo = [&currentShapeVertices, &currentShapeUVs, &currentShapeColours, &currentVertexChanged]
-        (glm::vec2 newVertex, glm::u8vec4 newColour, bool changed, glm::vec2 uv)
+        auto addNewVertexInfo = []( ssGUI::DrawingEntity& currentEntity, 
+                                    glm::vec2 newVertex, 
+                                    ssGUI::DrawingEntity& originalEntity,
+                                    std::vector<bool>& currentVertexChanged,
+                                    bool changed,
+                                    int originalEntityVertexIndex)
         {
             // ssGUI_DEBUG(ssGUI_EXT_TAG,"newVertex: "<<newVertex.x<<", "<<newVertex.y);
-            currentShapeVertices.push_back(newVertex);
-            currentShapeUVs.push_back(uv);
-            currentShapeColours.push_back(newColour);
+            currentEntity.Vertices.push_back(newVertex);
+            currentEntity.Colors.push_back(originalEntity.Colors[originalEntityVertexIndex]);
+            
+            if(!originalEntity.TexCoords.empty())
+                currentEntity.TexCoords.push_back(originalEntity.TexCoords[originalEntityVertexIndex]);
             currentVertexChanged.push_back(changed);
         };
 
@@ -169,17 +182,17 @@ namespace Extensions
         std::vector<int> containedMaskVertices;
         for(int i = 0; i < maskVerticies.size(); i++)
         {
-            if(IsPointContainedInShape(maskVerticies[i], originalVerticies, shapeOffset, shapeVertexCount))
+            if(IsPointContainedInShape(maskVerticies[i], originalEntity.Vertices))
                 containedMaskVertices.push_back(i);
         }
 
         // ssGUI_DEBUG(ssGUI_EXT_TAG,"start");
         //Iterating each vertex in the shape
-        for(int currentShapeVertexIndex = shapeOffset; currentShapeVertexIndex < shapeOffset + shapeVertexCount; currentShapeVertexIndex++)
+        for(int currentShapeVertexIndex = 0; currentShapeVertexIndex < originalEntity.Vertices.size(); currentShapeVertexIndex++)
         {
             // ssGUI_DEBUG(ssGUI_EXT_TAG,"currentShapeVertexIndex: "<<currentShapeVertexIndex);
 
-            bool isCurVertexContained = IsPointContainedInMask(originalVerticies[currentShapeVertexIndex], maskMin, maskMax);
+            bool isCurVertexContained = IsPointContainedInMask(originalEntity.Vertices[currentShapeVertexIndex], maskMin, maskMax);
             std::vector<int> curIntersectionIndices;
 
             //Get all the related intersections
@@ -193,20 +206,30 @@ namespace Extensions
             {
                 // ssGUI_DEBUG(ssGUI_EXT_TAG,"in");
                 //If current vertex is inside the mask, add it to new shape
-                addNewVertexInfo(originalVerticies[currentShapeVertexIndex], originalColours[currentShapeVertexIndex], false, originalUVs[currentShapeVertexIndex]);
+                addNewVertexInfo(   currentEntity, 
+                                    originalEntity.Vertices[currentShapeVertexIndex], 
+                                    originalEntity, 
+                                    currentVertexChanged, 
+                                    false,
+                                    currentShapeVertexIndex);
 
                 //If there's any intersection, add it
                 if(!curIntersectionIndices.empty())
                 {
-                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true, glm::ivec2());
-                    
+                    addNewVertexInfo(   currentEntity,
+                                        intersections[curIntersectionIndices[0]],
+                                        originalEntity,
+                                        currentVertexChanged,
+                                        true,
+                                        currentShapeVertexIndex);
+
                     //Find if there's any mask vertices contained in the shape, if so add them
                     if(!containedMaskVertices.empty())
                     {
                         int curMaskIndex = maskIntersectIndices[curIntersectionIndices[0]];
                         int maskVertexCounter = 0;
 
-                        while (true)
+                        for(int loopCounter = 0; loopCounter < 100; loopCounter++)
                         {
                             curMaskIndex = GetNextIndex(0, maskVerticies.size(), curMaskIndex);
                             bool found = false;
@@ -214,7 +237,12 @@ namespace Extensions
                             {
                                 if(containedMaskVertices[i] == curMaskIndex)
                                 {
-                                    addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true, glm::ivec2());
+                                    addNewVertexInfo(   currentEntity,
+                                                        maskVerticies[curMaskIndex],
+                                                        originalEntity,
+                                                        currentVertexChanged,
+                                                        true, 
+                                                        currentShapeVertexIndex);
                                     maskVertexCounter++;
                                     found = true;
                                     break;
@@ -223,6 +251,12 @@ namespace Extensions
 
                             if(!found || maskVertexCounter >= maskVerticies.size())
                                 break;
+                                
+                            if(loopCounter == 99)
+                            {
+                                ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find vertex");
+                                return;
+                            }
                         }
                     }
                 }
@@ -236,8 +270,8 @@ namespace Extensions
                     if(curIntersectionIndices.size() > 1)
                     {
                         //Find the closing intersection first
-                        if(glm::distance2(originalVerticies[currentShapeVertexIndex], intersections[curIntersectionIndices.at(0)]) > 
-                            glm::distance2(originalVerticies[currentShapeVertexIndex], intersections[curIntersectionIndices.at(1)]))
+                        if(glm::distance2(originalEntity.Vertices[currentShapeVertexIndex], intersections[curIntersectionIndices.at(0)]) > 
+                            glm::distance2(originalEntity.Vertices[currentShapeVertexIndex], intersections[curIntersectionIndices.at(1)]))
                         {
                             auto temp = curIntersectionIndices[0];
                             curIntersectionIndices[0] = curIntersectionIndices[1];
@@ -246,12 +280,22 @@ namespace Extensions
                     }
 
                     //Add closing intersection first
-                    addNewVertexInfo(intersections[curIntersectionIndices[0]], originalColours[shapeOffset], true, glm::ivec2());
+                    addNewVertexInfo(   currentEntity, 
+                                        intersections[curIntersectionIndices[0]],
+                                        originalEntity,
+                                        currentVertexChanged,
+                                        true,
+                                        currentShapeVertexIndex);
 
                     //Add opening intersection (if there's any)
                     if(curIntersectionIndices.size() > 1)
                     {
-                        addNewVertexInfo(intersections[curIntersectionIndices[1]], originalColours[shapeOffset], true, glm::ivec2());
+                        addNewVertexInfo(   currentEntity,
+                                            intersections[curIntersectionIndices[1]], 
+                                            originalEntity,
+                                            currentVertexChanged,
+                                            true,
+                                            currentShapeVertexIndex);
                         
                         //Find if there's any mask vertices contained in the shape, if so add them
                         if(!containedMaskVertices.empty())
@@ -267,7 +311,13 @@ namespace Extensions
                                 {
                                     if(containedMaskVertices[i] == curMaskIndex)
                                     {
-                                        addNewVertexInfo(maskVerticies[curMaskIndex], originalColours[shapeOffset], true, glm::ivec2());
+                                        addNewVertexInfo(   currentEntity,
+                                                            maskVerticies[curMaskIndex], 
+                                                            originalEntity,
+                                                            currentVertexChanged,
+                                                            true,
+                                                            currentShapeVertexIndex);
+                                        
                                         maskVertexCounter++;
                                         found = true;
                                         break;
@@ -286,28 +336,38 @@ namespace Extensions
         ssLOG_FUNC_EXIT();
     }
 
-    void Mask::SampleNewUVsAndColoursForShapes(std::vector<glm::vec2>& originalVerticies, std::vector<glm::vec2>& originalUVs, std::vector<glm::u8vec4>& originalColours,
-                                                std::vector<int>& verticesCount, std::vector<glm::vec2>& newVertices, std::vector<glm::vec2>& newUVs, 
-                                                std::vector<glm::u8vec4>& newColours, std::vector<bool>& changed, std::vector<int>& newVerticesCount)
+    void Mask::SampleNewUVsAndColoursForShapes( std::vector<DrawingEntity>& originalEntities, 
+                                                std::vector<DrawingEntity>& newEntities, 
+                                                std::vector<std::vector<bool>>& changed)
     {
         ssLOG_FUNC_ENTRY();
         
         //Sample the new UVs and colours
-        int currentOffset = 0;
-        int oldOffset = 0;
+        //int currentOffset = 0;
+        //int oldOffset = 0;
 
         // ssGUI_DEBUG(ssGUI_EXT_TAG,"Sampling....");
-        for(int shapeIndex = 0; shapeIndex < newVerticesCount.size(); shapeIndex++)
-        {
-            std::vector<glm::vec2> currentShapeVertices;
 
-            currentShapeVertices.assign(originalVerticies.begin() + oldOffset, originalVerticies.begin() + oldOffset + verticesCount[shapeIndex]);
+        assert(changed.size() == newEntities.size());
+
+        for(int shapeIndex = 0; shapeIndex < newEntities.size(); shapeIndex++)
+        {
+            //std::vector<glm::vec2> currentShapeVertices;
+
+            //currentShapeVertices.assign(originalVerticies.begin() + oldOffset, originalVerticies.begin() + oldOffset + verticesCount[shapeIndex]);
             
-            for(int vertexIndex = currentOffset; vertexIndex < currentOffset + newVerticesCount[shapeIndex]; vertexIndex++)
+            ssGUI::DrawingEntity& curOriginalShape = originalEntities[shapeIndex];
+            ssGUI::DrawingEntity& curNewShape = newEntities[shapeIndex];
+            
+            for(int vertexIndex = 0; vertexIndex < curNewShape.Vertices.size(); vertexIndex++)
             {
                 // ssGUI_DEBUG(ssGUI_EXT_TAG,"vertexIndex: "<<vertexIndex);
 
-                if(!changed[vertexIndex])
+                // ssGUI_DEBUG(ssGUI_EXT_TAG, "changed[shapeIndex].size(): "<<changed[shapeIndex].size());
+
+                assert(changed[shapeIndex].size() == curNewShape.Vertices.size());
+
+                if(!changed[shapeIndex][vertexIndex])
                     continue;
 
                 // ssGUI_DEBUG(ssGUI_EXT_TAG,"Changed");
@@ -315,57 +375,43 @@ namespace Extensions
                 int closestIndicies[] = {0, 0, 0};
 
 
-                if(!GetSampleIndicesFromShape(currentShapeVertices, closestIndicies, newVertices[vertexIndex]))
+                if(!GetSampleIndicesFromShape(curOriginalShape.Vertices, closestIndicies, curNewShape.Vertices[vertexIndex]))
                     break;
                 
                 // ssGUI_DEBUG(ssGUI_EXT_TAG,"closestIndicies[0]: "<<closestIndicies[0]);
                 // ssGUI_DEBUG(ssGUI_EXT_TAG,"closestIndicies[1]: "<<closestIndicies[1]);
                 // ssGUI_DEBUG(ssGUI_EXT_TAG,"closestIndicies[2]: "<<closestIndicies[2]);
 
-                glm::vec2 axis = currentShapeVertices[closestIndicies[1]] - currentShapeVertices[closestIndicies[0]];
-                glm::vec2 axis2 = currentShapeVertices[closestIndicies[2]] - currentShapeVertices[closestIndicies[0]];
+                glm::vec2 axis = curOriginalShape.Vertices[closestIndicies[1]] - curOriginalShape.Vertices[closestIndicies[0]];
+                glm::vec2 axis2 = curOriginalShape.Vertices[closestIndicies[2]] - curOriginalShape.Vertices[closestIndicies[0]];
                 float axisValue = 0;
                 float axis2Value = 0;
 
-                if(!GetAxesValues(axis, axis2, newVertices[vertexIndex] - currentShapeVertices[closestIndicies[0]], axisValue, axis2Value))  
+                if(!GetAxesValues(axis, axis2, curNewShape.Vertices[vertexIndex] - curOriginalShape.Vertices[closestIndicies[0]], axisValue, axis2Value))  
                     break;
 
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"axisValue: "<<axisValue);
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"axis2Value: "<<axis2Value);
+                if(!curOriginalShape.TexCoords.empty())
+                {
+                    glm::vec2 uvAxis = curOriginalShape.TexCoords[closestIndicies[1]] - curOriginalShape.TexCoords[closestIndicies[0]];
+                    glm::vec2 uvAxis2 = curOriginalShape.TexCoords[closestIndicies[2]] - curOriginalShape.TexCoords[closestIndicies[0]];
+                    
+                    curNewShape.TexCoords[vertexIndex] =    (curOriginalShape.TexCoords[closestIndicies[0]]) +
+                                                            (uvAxis) * axisValue +
+                                                            (uvAxis2) * axis2Value;
+                    // ssGUI_DEBUG(ssGUI_EXT_TAG, "New UV sampled");
+                }
+                
+                glm::vec4 colourAxis = (glm::vec4)curOriginalShape.Colors[closestIndicies[1]] - (glm::vec4)curOriginalShape.Colors[closestIndicies[0]];
+                glm::vec4 colourAxis2 = (glm::vec4)curOriginalShape.Colors[closestIndicies[2]] - (glm::vec4)curOriginalShape.Colors[closestIndicies[0]];
 
-                glm::vec2 uvAxis = originalUVs[oldOffset + closestIndicies[1]] - originalUVs[oldOffset + closestIndicies[0]];
-                glm::vec2 uvAxis2 = originalUVs[oldOffset + closestIndicies[2]] - originalUVs[oldOffset + closestIndicies[0]];
-                glm::vec4 colourAxis = (glm::vec4)originalColours[oldOffset + closestIndicies[1]] - (glm::vec4)originalColours[oldOffset + closestIndicies[0]];
-                glm::vec4 colourAxis2 = (glm::vec4)originalColours[oldOffset + closestIndicies[2]] - (glm::vec4)originalColours[oldOffset + closestIndicies[0]];
-
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"originalColours[oldOffset + closestIndicies[0]]: "<<(int)originalColours[oldOffset + closestIndicies[0]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].g<<", "
-                // <<(int)originalColours[oldOffset + closestIndicies[0]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[0]].a);
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"originalColours[oldOffset + closestIndicies[1]]: "<<(int)originalColours[oldOffset + closestIndicies[1]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[1]].g<<", "
-                // <<(int)originalColours[oldOffset + closestIndicies[1]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[1]].a);
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"originalColours[oldOffset + closestIndicies[2]]: "<<(int)originalColours[oldOffset + closestIndicies[2]].r<<", "<<(int)originalColours[oldOffset + closestIndicies[2]].g<<", "
-                // <<(int)originalColours[oldOffset + closestIndicies[2]].b<<", "<<(int)originalColours[oldOffset + closestIndicies[2]].a);
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"colourAxis: "<<(float)colourAxis.r<<", "<<(float)colourAxis.g<<", "<<(float)colourAxis.b<<", "<<(float)colourAxis.a);
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"colourAxis2: "<<(float)colourAxis2.r<<", "<<(float)colourAxis2.g<<", "<<(float)colourAxis2.b<<", "<<(float)colourAxis2.a);
-                // ssGUI_DEBUG(ssGUI_EXT_TAG);
-
-
-
-                newUVs[vertexIndex] = (originalUVs[oldOffset + closestIndicies[0]]) +
-                                        (uvAxis) * axisValue +
-                                        (uvAxis2) * axis2Value;
-
-                newColours[vertexIndex] = glm::vec4(originalColours[oldOffset + closestIndicies[0]]) +
-                                            glm::vec4(colourAxis) * axisValue +
-                                            glm::vec4(colourAxis2) * axis2Value;
+                curNewShape.Colors[vertexIndex] =   glm::vec4(curOriginalShape.Colors[closestIndicies[0]]) +
+                                                    glm::vec4(colourAxis) * axisValue +
+                                                    glm::vec4(colourAxis2) * axis2Value;
+                // ssGUI_DEBUG(ssGUI_EXT_TAG, "New Color sampled");
             }
-
-            currentOffset += newVerticesCount[shapeIndex];
-            oldOffset += verticesCount[shapeIndex];
         }
         ssLOG_FUNC_EXIT();
     }
-
-
 
     bool Mask::LineToLineIntersection(  glm::vec2 linePointA, glm::vec2 linePointB, 
                                         glm::vec2 linePointC, glm::vec2 linePointD, glm::vec2& intersection)
@@ -1053,28 +1099,17 @@ namespace Extensions
         ssLOG_FUNC_EXIT();
     }
 
-    void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 renderOffset, const std::vector<int>& applyShapeIndices)
+    void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 maskOffset, const std::vector<ssGUI::TargetShape>& applyShapes)
     {
         ssLOG_FUNC_ENTRY();
         
         std::vector<glm::vec2> maskShape;
-        std::vector<glm::vec2>& originalVerticies = obj->Extension_GetDrawingVertices();
-        std::vector<bool> isOriginalVerticesInside;
-        std::vector<glm::vec2> newVertices;
-
-        std::vector<glm::vec2>& originalUVs = obj->Extension_GetDrawingUVs();
-        std::vector<glm::vec2> newUVs;
-
-        std::vector<glm::u8vec4>& originalColours = obj->Extension_GetDrawingColours();
-        std::vector<glm::u8vec4> newColours;
-
-        std::vector<bool> changed;
-
-        std::vector<int>& verticesCount = obj->Extension_GetDrawingCounts();
-        std::vector<int> newVerticesCount;
         
-        int currentOffset = 0;
-        glm::vec2 maskMin = GetGlobalPosition() + renderOffset;
+        std::vector<ssGUI::DrawingEntity>& originalEntities = obj->Extension_GetDrawingEntities();
+        std::vector<ssGUI::DrawingEntity> newEntities;
+        std::vector<std::vector<bool>> changed;
+        
+        glm::vec2 maskMin = GetGlobalPosition() + maskOffset;
         glm::vec2 maskMax = maskMin + GetSize();
 
         maskShape.push_back(maskMin);
@@ -1082,31 +1117,22 @@ namespace Extensions
         maskShape.push_back(maskMax);
         maskShape.push_back(maskMin + glm::vec2(0, GetSize().y));
 
-        //DEBUG PRINTING SHAPES
-        // int debugVertexOffset = 0;
-        // ssGUI_DEBUG(ssGUI_EXT_TAG, "Before:");
-        // for(int i = 0; i < verticesCount.size(); i++)
-        // {
-        //     ssGUI_DEBUG(ssGUI_EXT_TAG, "Current shape: "<<i);
-        //     for(int j = debugVertexOffset; j < debugVertexOffset + verticesCount[i]; j++)
-        //     {
-        //         ssGUI_DEBUG(ssGUI_EXT_TAG, "originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
-        //         ssGUI_DEBUG(ssGUI_EXT_TAG, "originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
-        //     }
-
-        //     debugVertexOffset += verticesCount[i];
-        // }
-
         //Iterating each shape
-        for(int shapeIndex = 0; shapeIndex < verticesCount.size(); shapeIndex++)
+        for(int shapeIndex = 0; shapeIndex < originalEntities.size(); shapeIndex++)
         {
-            if(!applyShapeIndices.empty())
+            if(!applyShapes.empty())
             {
                 //Check if the current shape needs to be masked or not
                 bool applyMask = false;
-                for(int i = 0; i < applyShapeIndices.size(); i++)
+                for(int i = 0; i < applyShapes.size(); i++)
                 {
-                    if(applyShapeIndices[i] + obj->Extension_GetGUIObjectFirstShapeIndex() == shapeIndex)
+                    if( applyShapes[i].ShapeIndex != NO_SHAPE_INDEX && 
+                        applyShapes[i].ShapeIndex + obj->Extension_GetGUIObjectFirstShapeIndex() == shapeIndex)
+                    {
+                        applyMask = true;
+                        break;
+                    }
+                    else if(applyShapes[i].ShapeName == originalEntities[shapeIndex].EntityName)
                     {
                         applyMask = true;
                         break;
@@ -1116,23 +1142,20 @@ namespace Extensions
                 //If we don't need to apply any masks, just go to next shape
                 if(!applyMask)
                 {
-                    newVertices.insert(     newVertices.end(),      originalVerticies.begin() + currentOffset,  originalVerticies.begin() + currentOffset + verticesCount[shapeIndex]);
-                    newUVs.insert(          newUVs.end(),           originalUVs.begin() + currentOffset,        originalUVs.begin() + currentOffset + verticesCount[shapeIndex]);
-                    newColours.insert(      newColours.end(),       originalColours.begin() + currentOffset,    originalColours.begin() + currentOffset + verticesCount[shapeIndex]);
-                    changed.insert(         changed.end(),          verticesCount[shapeIndex],   false);
-                    newVerticesCount.insert(newVerticesCount.end(), verticesCount[shapeIndex]);
-                    goto nextShape;
+                    changed.push_back(std::vector<bool>(originalEntities[shapeIndex].Vertices.size(), false));
+                    newEntities.push_back(originalEntities[shapeIndex]);
+                    continue;
                 }
             }
-            
 
             //Do AABB test for the shape and the mask
             glm::vec2 shapeMin;
             glm::vec2 shapeMax;
-            if(!IsAABBOverlap(originalVerticies, currentOffset, verticesCount[shapeIndex], maskMin, maskMax, shapeMin, shapeMax))
+            if(!IsAABBOverlap(originalEntities[shapeIndex].Vertices, maskMin, maskMax, shapeMin, shapeMax))
             {
-                newVerticesCount.push_back(0);
-                goto nextShape;
+                changed.push_back(std::vector<bool>());
+                newEntities.push_back(ssGUI::DrawingEntity());
+                continue;
             }
                 
             { //Extra bracket to create scope for the vectors below
@@ -1142,93 +1165,82 @@ namespace Extensions
                 std::vector<int> shapeIntersectIndices;
                 std::vector<int> maskIntersectIndices;
 
-                GetIntersections(intersections, shapeIntersectIndices, maskIntersectIndices, originalVerticies, currentOffset, verticesCount[shapeIndex], maskShape);
+                GetIntersections(   intersections, 
+                                    shapeIntersectIndices, 
+                                    maskIntersectIndices, 
+                                    originalEntities[shapeIndex].Vertices, 
+                                    maskShape);
 
                 // ssGUI_DEBUG(ssGUI_EXT_TAG, "intersections count: "<<intersections.size());
 
-                std::vector<glm::vec2> currentShapeVertices;
-                std::vector<glm::vec2> currentShapeUVs;
-                std::vector<glm::u8vec4> currentShapeColours;
+                ssGUI::DrawingEntity curEntity;
                 std::vector<bool> currentVertexChanged;
 
                 //If there's no intersection, check if the mask is contained in the shape instead
                 if(intersections.empty() && shapeMin.x < maskMin.x && shapeMax.x > maskMax.x && shapeMin.y < maskMin.y && shapeMax.y > maskMax.y)
                 {
                     //Change the shape into mask
-                    currentShapeVertices.push_back(maskMin);
-                    currentShapeVertices.push_back(maskMin + glm::vec2(GetSize().x, 0));
-                    currentShapeVertices.push_back(maskMin + GetSize());
-                    currentShapeVertices.push_back(maskMin + glm::vec2(0, GetSize().y));
-                    currentShapeUVs.assign(4, glm::vec2());
-                    currentShapeColours.assign(4, originalColours[currentOffset]);
+                    curEntity.EntityName = originalEntities[shapeIndex].EntityName;
+                    curEntity.Vertices.push_back(maskMin);
+                    curEntity.Vertices.push_back(maskMin + glm::vec2(GetSize().x, 0));
+                    curEntity.Vertices.push_back(maskMin + GetSize());
+                    curEntity.Vertices.push_back(maskMin + glm::vec2(0, GetSize().y));
+                    curEntity.Vertices.assign(4, originalEntities[shapeIndex].Colors[0]);
+                    
+                    if(!originalEntities[shapeIndex].TexCoords.empty())
+                        curEntity.TexCoords.assign(4, glm::vec2());
+
                     currentVertexChanged.assign(4, true);
                 }
                 //If there's intersection, form a new shape with intersections
                 else if(!intersections.empty())
                 {
-                    FromNewShapeWithIntersections(currentShapeVertices, currentShapeUVs, currentShapeColours, currentVertexChanged,
-                                                    originalVerticies, originalColours, originalUVs, maskMin, maskMax, currentOffset, 
-                                                    verticesCount[shapeIndex], maskShape, intersections, shapeIntersectIndices,
+                    FormNewShapeWithIntersections(  curEntity, 
+                                                    currentVertexChanged, 
+                                                    originalEntities[shapeIndex], 
+                                                    maskMin,
+                                                    maskMax,
+                                                    maskShape,
+                                                    intersections,
+                                                    shapeIntersectIndices,
                                                     maskIntersectIndices);
+                    
+                    curEntity.EntityName = originalEntities[shapeIndex].EntityName;
                 }
                 //If the first vertex is outside of the mask, this means the shape is outside the mask
-                else if(!IsPointContainedInMask(originalVerticies[currentOffset], maskMin, maskMax))
+                else if(!IsPointContainedInMask(originalEntities[shapeIndex].Vertices.front(), maskMin, maskMax))
                 {
-                    newVerticesCount.push_back(0);
-                    goto nextShape;
+                    changed.push_back(std::vector<bool>());
+                    newEntities.push_back(ssGUI::DrawingEntity());
+                    continue;
                 }
                 //Otherwise there's no intersection and that means the shape is inside the mask
                 else
                 {
-                    newVertices.insert(     newVertices.end(),      originalVerticies.begin() + currentOffset,  originalVerticies.begin() + currentOffset + verticesCount[shapeIndex]);
-                    newUVs.insert(          newUVs.end(),           originalUVs.begin() + currentOffset,        originalUVs.begin() + currentOffset + verticesCount[shapeIndex]);
-                    newColours.insert(      newColours.end(),       originalColours.begin() + currentOffset,    originalColours.begin() + currentOffset + verticesCount[shapeIndex]);
-                    changed.insert(         changed.end(),          verticesCount[shapeIndex],   false);
-                    newVerticesCount.insert(newVerticesCount.end(), verticesCount[shapeIndex]);
-                    goto nextShape;
+                    newEntities.push_back(originalEntities[shapeIndex]);
+                    changed.push_back(std::vector<bool>(originalEntities[shapeIndex].Vertices.size(), false));
+                    continue;
                 }
 
                 //If there's intersection, append the newly formed shape
-                newVertices.insert(newVertices.end(), currentShapeVertices.begin(), currentShapeVertices.end());
-                newUVs.insert(newUVs.end(), currentShapeUVs.begin(), currentShapeUVs.end());
-                newColours.insert(newColours.end(), currentShapeColours.begin(), currentShapeColours.end());
-                changed.insert(changed.end(), currentVertexChanged.begin(), currentVertexChanged.end());
-                newVerticesCount.insert(newVerticesCount.end(), currentShapeVertices.size());
+                newEntities.push_back(curEntity);
+                changed.push_back(std::vector<bool>(curEntity.Vertices.size(), false));
             }   //Extra bracket to create scope to tell compiler the variables are not created if nextShape label is used
-
-            nextShape:;
-            //Advance to the next shape
-            currentOffset += verticesCount[shapeIndex];
         }
+        
+        assert(newEntities.size() == originalEntities.size());
 
         //Sample the new UVs and colours
-        SampleNewUVsAndColoursForShapes(originalVerticies, originalUVs, originalColours, verticesCount, newVertices, newUVs, newColours, changed, newVerticesCount);
+        SampleNewUVsAndColoursForShapes(originalEntities, newEntities, changed);
 
-        //Copy the new vectices to the original vertices
-        originalVerticies.assign(newVertices.begin(), newVertices.end());
-
-        //Copy the new UVs to the original UVs
-        originalUVs.assign(newUVs.begin(), newUVs.end());
-
-        //Copy the new colours to the original colours
-        originalColours.assign(newColours.begin(), newColours.end());
-
-        verticesCount.assign(newVerticesCount.begin(), newVerticesCount.end());
-
-        //DEBUG PRINTING SHAPES
-        // debugVertexOffset = 0;
-        // ssGUI_DEBUG(ssGUI_EXT_TAG, "After:");
-        // for(int i = 0; i < verticesCount.size(); i++)
-        // {
-        //     ssGUI_DEBUG(ssGUI_EXT_TAG, "Current shape: "<<i);
-        //     for(int j = debugVertexOffset; j < debugVertexOffset + verticesCount[i]; j++)
-        //     {
-        //         ssGUI_DEBUG(ssGUI_EXT_TAG, "originalVerticies["<<j<<"]: "<<originalVerticies[j].x<<", "<<originalVerticies[j].y);
-        //         ssGUI_DEBUG(ssGUI_EXT_TAG, "originalColours["<<j<<"]: "<<(int)originalColours[j].r<<", "<<(int)originalColours[j].g<<", "<<(int)originalColours[j].b<<", "<<(int)originalColours[j].a);
-        //     }
-
-        //     debugVertexOffset += verticesCount[i];
-        // }
+        //Copy the new entities to the original entities
+        for(int i = newEntities.size() - 1; i >= 0; i--)
+        {
+            if(newEntities[i].Vertices.empty())
+                newEntities.erase(newEntities.begin() + i);
+        }
+        
+        originalEntities = newEntities;
 
         ssLOG_FUNC_EXIT();
     }

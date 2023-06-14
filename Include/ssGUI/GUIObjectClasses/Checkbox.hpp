@@ -84,6 +84,7 @@ namespace ssGUI
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string CHECKBOX_INNER_SHAPE_NAME;
 
             Checkbox();
             virtual ~Checkbox() override;

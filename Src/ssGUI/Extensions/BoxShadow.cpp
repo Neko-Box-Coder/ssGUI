@@ -88,150 +88,134 @@ namespace Extensions
     {
         ssLOG_FUNC_ENTRY();
         //Getting all the rendering details from container
-        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
-        std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
-        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
-        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+        std::vector<ssGUI::DrawingEntity>& drawingEntities = Container->Extension_GetDrawingEntities();
 
-        std::vector<glm::vec2> newVertices;
-        std::vector<glm::vec2> newUVs;
-        std::vector<glm::u8vec4> newColors;
-        std::vector<int> newCounts;
-        std::vector<ssGUI::DrawingProperty> newProperties;
+        std::vector<ssGUI::DrawingEntity> newEntities;
 
-        //Do the rendering here....
         auto shadowPos = Container->GetGlobalPosition() + GetPositionOffset() + GetBlurRadius();
         auto shadowSize = Container->GetSize() + GetSizeOffset() - GetBlurRadius() * 2;
 
         shadowSize.x = shadowSize.x < 0 ? 0 : shadowSize.x;
         shadowSize.y = shadowSize.y < 0 ? 0 : shadowSize.y;
 
-        newVertices.push_back(shadowPos);
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0));
-        newVertices.push_back(shadowPos + shadowSize);
-        newVertices.push_back(shadowPos + glm::vec2(0, shadowSize.y));
+        {
+            ssGUI::DrawingEntity curEntity;
+            curEntity.EntityName = BOX_SHADOW_CENTER_SHAPE_NAME;
+            curEntity.Vertices.push_back(shadowPos);
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0));
+            curEntity.Vertices.push_back(shadowPos + shadowSize);
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, shadowSize.y));
 
-        newUVs.push_back(glm::vec2());
-        newUVs.push_back(glm::vec2());
-        newUVs.push_back(glm::vec2());
-        newUVs.push_back(glm::vec2());
+            curEntity.Colors.push_back(ShadowColor);
+            curEntity.Colors.push_back(ShadowColor);
+            curEntity.Colors.push_back(ShadowColor);
+            curEntity.Colors.push_back(ShadowColor);
 
-        newColors.push_back(ShadowColor);
-        newColors.push_back(ShadowColor);
-        newColors.push_back(ShadowColor);
-        newColors.push_back(ShadowColor);
-
-        newCounts.push_back(4);
-        newProperties.push_back(ssGUI::DrawingProperty());
+            newEntities.push_back(curEntity);
+        }
 
         auto outerShadowColor = GetShadowColor();
         outerShadowColor.a = 0;
 
-        auto constructCorner = [&](int verticesCount, glm::vec2 shadowVertexPos, glm::vec2 cornerStartOffset, glm::vec2 cornerEndOffset)
+        auto constructCorner = [&](std::string entityName, glm::vec2 shadowVertexPos, glm::vec2 cornerStartOffset, glm::vec2 cornerEndOffset)
         {
-            newVertices.push_back(shadowVertexPos);
+            ssGUI::DrawingEntity curEntity;
+            curEntity.EntityName = entityName;
+            curEntity.Vertices.push_back(shadowVertexPos);
             PlotArc(shadowVertexPos + cornerStartOffset, 
                     shadowVertexPos + cornerEndOffset, 
-                    shadowVertexPos, newVertices);
+                    shadowVertexPos, curEntity.Vertices);
 
-            newCounts.push_back(newVertices.size() - verticesCount);
-            newProperties.push_back(ssGUI::DrawingProperty());
-            for(int i = 0; i < newVertices.size() - verticesCount; i++)
-            {
-                newUVs.push_back(glm::vec2());
-                newColors.push_back(outerShadowColor);
-            }
-            newColors[verticesCount] = GetShadowColor();
+            for(int i = 0; i < curEntity.Vertices.size(); i++)
+                curEntity.Colors.push_back(outerShadowColor);
+            
+            curEntity.Colors[0] = GetShadowColor();
+            newEntities.push_back(curEntity);
         };
 
         //Corners
         //Top left corner
-        int originalCount = newVertices.size();
-        constructCorner(originalCount, shadowPos, glm::vec2(-GetBlurRadius(), 0), glm::vec2(0, -GetBlurRadius()));
+        constructCorner(BOX_SHADOW_TOP_LEFT_SHAPE_NAME, shadowPos, glm::vec2(-GetBlurRadius(), 0), glm::vec2(0, -GetBlurRadius()));
 
         //Top right corner
-        originalCount = newVertices.size();
-        constructCorner(originalCount, shadowPos + glm::vec2(shadowSize.x, 0), glm::vec2(0, -GetBlurRadius()), glm::vec2(GetBlurRadius(), 0));
+        constructCorner(BOX_SHADOW_TOP_RIGHT_SHAPE_NAME, shadowPos + glm::vec2(shadowSize.x, 0), glm::vec2(0, -GetBlurRadius()), glm::vec2(GetBlurRadius(), 0));
 
         //Bottom right corner
-        originalCount = newVertices.size();
-        constructCorner(originalCount, shadowPos + shadowSize, glm::vec2(GetBlurRadius(), 0), glm::vec2(0, GetBlurRadius()));
+        constructCorner(BOX_SHADOW_BOTTOM_RIGHT_SHAPE_NAME, shadowPos + shadowSize, glm::vec2(GetBlurRadius(), 0), glm::vec2(0, GetBlurRadius()));
 
         //Bottom left corner
-        originalCount = newVertices.size();
-        constructCorner(originalCount, shadowPos + glm::vec2(0, shadowSize.y), glm::vec2(0, GetBlurRadius()), glm::vec2(-GetBlurRadius(), 0));
+        constructCorner(BOX_SHADOW_BOTTOM_LEFT_SHAPE_NAME, shadowPos + glm::vec2(0, shadowSize.y), glm::vec2(0, GetBlurRadius()), glm::vec2(-GetBlurRadius(), 0));
         
-        auto constructSideInfos = [&]()
-        {
-            newUVs.push_back(glm::vec2());
-            newUVs.push_back(glm::vec2());
-            newUVs.push_back(glm::vec2());
-            newUVs.push_back(glm::vec2());
-
-            newCounts.push_back(4);
-            newProperties.push_back(ssGUI::DrawingProperty());
-        };
-
-
         //4 sides
         //Top side
-        newVertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(0, -GetBlurRadius()));
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(0, -GetBlurRadius()));
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(0, 0));
-        newVertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(0, 0));
+        {
+            ssGUI::DrawingEntity curEntity;
+            curEntity.EntityName = BOX_SHADOW_TOP_SHAPE_NAME;
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(0, -GetBlurRadius()));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(0, -GetBlurRadius()));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(0, 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(0, 0));
 
-        newColors.push_back(outerShadowColor);
-        newColors.push_back(outerShadowColor);
-        newColors.push_back(GetShadowColor());
-        newColors.push_back(GetShadowColor());
-
-        constructSideInfos();
+            curEntity.Colors.push_back(outerShadowColor);
+            curEntity.Colors.push_back(outerShadowColor);
+            curEntity.Colors.push_back(GetShadowColor());
+            curEntity.Colors.push_back(GetShadowColor());
+        
+            newEntities.push_back(curEntity);
+        }
 
         //Right side
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(0, 0));
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(GetBlurRadius(), 0));
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(GetBlurRadius(), 0));
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(0, 0));
+        {
+            ssGUI::DrawingEntity curEntity;
+            curEntity.EntityName = BOX_SHADOW_RIGHT_SHAPE_NAME;
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(0, 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, 0) + glm::vec2(GetBlurRadius(), 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(GetBlurRadius(), 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(0, 0));
 
-        newColors.push_back(GetShadowColor());
-        newColors.push_back(outerShadowColor);
-        newColors.push_back(outerShadowColor);
-        newColors.push_back(GetShadowColor());
-
-        constructSideInfos();
+            curEntity.Colors.push_back(GetShadowColor());
+            curEntity.Colors.push_back(outerShadowColor);
+            curEntity.Colors.push_back(outerShadowColor);
+            curEntity.Colors.push_back(GetShadowColor());
+        
+            newEntities.push_back(curEntity);
+        }
 
         //Bottom side
-        newVertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(0, 0));
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(0, 0));
-        newVertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(0, GetBlurRadius()));
-        newVertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(0, GetBlurRadius()));
+        {
+            ssGUI::DrawingEntity curEntity;
+            curEntity.EntityName = BOX_SHADOW_BOTTOM_SHAPE_NAME;
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(0, 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(0, 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(shadowSize.x, shadowSize.y) + glm::vec2(0, GetBlurRadius()));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(0, GetBlurRadius()));
 
-        newColors.push_back(GetShadowColor());
-        newColors.push_back(GetShadowColor());
-        newColors.push_back(outerShadowColor);
-        newColors.push_back(outerShadowColor);
+            curEntity.Colors.push_back(GetShadowColor());
+            curEntity.Colors.push_back(GetShadowColor());
+            curEntity.Colors.push_back(outerShadowColor);
+            curEntity.Colors.push_back(outerShadowColor);
+        
+            newEntities.push_back(curEntity);
+        }
 
-        constructSideInfos();
+        //Left side
+        {
+            ssGUI::DrawingEntity curEntity;
+            curEntity.EntityName = BOX_SHADOW_LEFT_SHAPE_NAME;
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(-GetBlurRadius(), 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(0, 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(0, 0));
+            curEntity.Vertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(-GetBlurRadius(), 0));
 
-        //Top side
-        newVertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(-GetBlurRadius(), 0));
-        newVertices.push_back(shadowPos + glm::vec2(0, 0) + glm::vec2(0, 0));
-        newVertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(0, 0));
-        newVertices.push_back(shadowPos + glm::vec2(0, shadowSize.y) + glm::vec2(-GetBlurRadius(), 0));
+            curEntity.Colors.push_back(outerShadowColor);
+            curEntity.Colors.push_back(GetShadowColor());
+            curEntity.Colors.push_back(GetShadowColor());
+            curEntity.Colors.push_back(outerShadowColor);
+        
+            newEntities.push_back(curEntity);
+        }
 
-        newColors.push_back(outerShadowColor);
-        newColors.push_back(GetShadowColor());
-        newColors.push_back(GetShadowColor());
-        newColors.push_back(outerShadowColor);
-
-        constructSideInfos();
-
-        drawingVertices.insert(drawingVertices.end(), newVertices.begin(), newVertices.end());
-        drawingColors.insert(drawingColors.end(), newColors.begin(), newColors.end());
-        drawingUVs.insert(drawingUVs.end(), newUVs.begin(), newUVs.end());
-        drawingCounts.insert(drawingCounts.end(), newCounts.begin(), newCounts.end());
-        drawingProperties.insert(drawingProperties.end(), newProperties.begin(), newProperties.end());
+        drawingEntities.insert(drawingEntities.end(), newEntities.begin(), newEntities.end());
         ssLOG_FUNC_EXIT();
     }
 

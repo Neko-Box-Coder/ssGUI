@@ -12,18 +12,9 @@ namespace ssGUI
         BackgroundColour = other.GetBackgroundColor();
         Redraw = other.Redraw;
         AcceptRedrawRequest = other.AcceptRedrawRequest;
-        DrawingVerticies = other.DrawingVerticies; 
-        DrawingUVs = other.DrawingUVs; 
-        DrawingColours = other.DrawingColours; 
-        DrawingCounts = other.DrawingCounts; 
-        DrawingProperties = other.DrawingProperties; 
+        DrawingEntities = other.DrawingEntities; 
         GUIObjectShapeIndex = other.GUIObjectShapeIndex; 
-        GUIObjectVertexIndex = other.GUIObjectVertexIndex; 
-        LastDrawingVerticies = other.LastDrawingVerticies; 
-        LastDrawingUVs = other.LastDrawingUVs; 
-        LastDrawingColours = other.LastDrawingColours; 
-        LastDrawingCounts = other.LastDrawingCounts; 
-        LastDrawingProperties = other.LastDrawingProperties;
+        LastDrawingEntities = other.LastDrawingEntities;
         CurrentHierarchy = nullptr;
         CurrentEventCallbackManager = nullptr;
         CurrentObject = nullptr;
@@ -42,11 +33,7 @@ namespace ssGUI
 
     void Renderer::CacheRendering()
     {
-        LastDrawingVerticies.assign(DrawingVerticies.begin(), DrawingVerticies.end());
-        LastDrawingUVs.assign(DrawingUVs.begin(), DrawingUVs.end());
-        LastDrawingColours.assign(DrawingColours.begin(), DrawingColours.end());
-        LastDrawingCounts.assign(DrawingCounts.begin(), DrawingCounts.end());
-        LastDrawingProperties.assign(DrawingProperties.begin(), DrawingProperties.end());
+        LastDrawingEntities.assign(DrawingEntities.begin(), DrawingEntities.end());
     }
 
     void Renderer::DisableRedrawObjectRequest()
@@ -61,26 +48,16 @@ namespace ssGUI
 
     void Renderer::UpdateGUIObjectVertexAndShapeIndex()
     {
-        GUIObjectShapeIndex = DrawingCounts.size();
-        GUIObjectVertexIndex = DrawingVerticies.size();
+        GUIObjectShapeIndex = DrawingEntities.size();
     }
     
     Renderer::Renderer() :  Enabled(true),
                             BackgroundColour(255, 255, 255, 255),
                             Redraw(true),
                             AcceptRedrawRequest(true),
-                            DrawingVerticies(),
-                            DrawingUVs(),
-                            DrawingColours(),
-                            DrawingCounts(),
-                            DrawingProperties(),
+                            DrawingEntities(),
                             GUIObjectShapeIndex(-1),
-                            GUIObjectVertexIndex(-1),
-                            LastDrawingVerticies(),
-                            LastDrawingUVs(),
-                            LastDrawingColours(),
-                            LastDrawingCounts(),
-                            LastDrawingProperties(),
+                            LastDrawingEntities(),
                             CurrentHierarchy(nullptr),
                             CurrentEventCallbackManager(nullptr),
                             CurrentObject(nullptr)
@@ -141,39 +118,14 @@ namespace ssGUI
         return BackgroundColour;
     }
 
-    std::vector<glm::vec2>& Renderer::Extension_GetDrawingVertices()
+    std::vector<ssGUI::DrawingEntity>& Renderer::Extension_GetDrawingEntities()
     {
-        return DrawingVerticies;
-    }
-
-    std::vector<glm::vec2>& Renderer::Extension_GetDrawingUVs()
-    {
-        return DrawingUVs;
-    }
-
-    std::vector<glm::u8vec4>& Renderer::Extension_GetDrawingColours()
-    {
-        return DrawingColours;
-    }
-
-    std::vector<int>& Renderer::Extension_GetDrawingCounts()
-    {
-        return DrawingCounts;
-    }
-
-    std::vector<ssGUI::DrawingProperty>& Renderer::Extension_GetDrawingProperties()
-    {
-        return DrawingProperties;
+        return DrawingEntities;
     }
 
     int Renderer::Extension_GetGUIObjectFirstShapeIndex() const
     {
         return GUIObjectShapeIndex;
-    }
-
-    int Renderer::Extension_GetGUIObjectFirstVertexIndex() const
-    {
-        return GUIObjectVertexIndex;
     }
 
     void Renderer::RedrawObject()

@@ -1,7 +1,7 @@
 #ifndef SSGUI_RENDERER_H
 #define SSGUI_RENDERER_H
 
-#include "ssGUI/DataClasses/DrawingProperties.hpp"
+#include "ssGUI/DataClasses/DrawingEntity.hpp"
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "glm/vec4.hpp"
 #include "glm/vec2.hpp"
@@ -77,20 +77,11 @@ namespace ssGUI
             bool AcceptRedrawRequest;                                       //(Internal variable) Used to disable self-calling when calling draw logic
 
             //Rendering
-            std::vector<glm::vec2> DrawingVerticies;                        //See <Extension_GetDrawingVertices>
-            std::vector<glm::vec2> DrawingUVs;                              //See <Extension_GetDrawingUVs>
-            std::vector<glm::u8vec4> DrawingColours;                        //See <Extension_GetDrawingColours>
-            std::vector<int> DrawingCounts;                                 //See <Extension_GetDrawingCounts>
-            std::vector<ssGUI::DrawingProperty> DrawingProperties;          //See <Extension_GetDrawingProperties>
+            std::vector<ssGUI::DrawingEntity> DrawingEntities;              //See <Extension_GetDrawingEntities>
             int GUIObjectShapeIndex;                                        //See <Extension_GetGUIObjectFirstShapeIndex>
-            int GUIObjectVertexIndex;                                       //See <Extension_GetGUIObjectFirstVertexIndex>
 
             //Cache rendering
-            std::vector<glm::vec2> LastDrawingVerticies;                    //(Internal variable) Used to do cached rendering
-            std::vector<glm::vec2> LastDrawingUVs;                          //(Internal variable) Used to do cached rendering
-            std::vector<glm::u8vec4> LastDrawingColours;                    //(Internal variable) Used to do cached rendering
-            std::vector<int> LastDrawingCounts;                             //(Internal variable) Used to do cached rendering
-            std::vector<ssGUI::DrawingProperty> LastDrawingProperties;      //(Internal variable) Used to do cached rendering
+            std::vector<ssGUI::DrawingEntity> LastDrawingEntities;          //(Internal variable) Used to do cached rendering
 
             ssGUI::Hierarchy* CurrentHierarchy;                             //(Internal variable) Used to get parent when <IsEnabled> is called
             ssGUI::EventCallbackManager* CurrentEventCallbackManager;       //(Internal variable) Used to call event callbacks listeners
@@ -132,35 +123,11 @@ namespace ssGUI
             //Gets the background color of this GUI Object
             virtual glm::u8vec4 GetBackgroundColor() const;
 
-            //function: Extension_GetDrawingVertices
-            //This returns a list of vertices for all the shapes that will be drawn by this GUI object.
-            //A shape is formed by having the vertices drawn in clockwise direction. Undefined behaviour if they are listed in anti-clockwise direction.
-            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
-            virtual std::vector<glm::vec2>& Extension_GetDrawingVertices();
-            
-            //function: Extension_GetDrawingUVs
-            //This returns the UVs that are mapped to each vertex at the same index location.
-            //If no texture is used, you should still maintain the number of UVs same as the number of vertices.
-            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
-            virtual std::vector<glm::vec2>& Extension_GetDrawingUVs();
-            
-            //function: Extension_GetDrawingColours
-            //This returns the colors that are mapped to each vertex at the same index location.
-            //If texture is used, this essentially affects the tint of the image, with white as no tinting at all.
-            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
-            virtual std::vector<glm::u8vec4>& Extension_GetDrawingColours();
-            
-            //function: Extension_GetDrawingCounts
-            //This returns the number of vertices each shape has, with the order same as vertices and others.
-            //So for example if the first value is 4, then the first 4 vertices form a shape. So on and so forth...
-            //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
-            virtual std::vector<int>& Extension_GetDrawingCounts();
-            
-            //function: Extension_GetDrawingProperties
+            //function: Extension_GetDrawingEntities
             //This returns the property of each shape, mapped to the same index location as <Extension_GetDrawingCounts>.
             //This indicates if the shape is just a colored shape, an image or font. 
             //This function is mainly be called by <ssGUI::Extensions::Extension::Internal_Draw>.
-            virtual std::vector<ssGUI::DrawingProperty>& Extension_GetDrawingProperties();
+            virtual std::vector<ssGUI::DrawingEntity>& Extension_GetDrawingEntities();
 
             /*function: Extension_GetGUIObjectFirstShapeIndex
             This returns the index of first shape created by the GUI Object.
@@ -175,11 +142,6 @@ namespace ssGUI
             it just returns the index *if* the GUI object creates any shapes.
             So it will be invalid to use this index on any empty GUI objects that does not create any shapes.*/
             virtual int Extension_GetGUIObjectFirstShapeIndex() const;
-
-            //function: Extension_GetGUIObjectFirstVertexIndex
-            //This returns the index of first vertex created by the GUI Object
-            //Again similar to <Extension_GetGUIObjectFirstShapeIndex> but with vertex index instead
-            virtual int Extension_GetGUIObjectFirstVertexIndex() const;
 
             //function: RedrawObject
             //Forces the GUI Object to be redrawn. *Do not* call this in <Internal_Draw>.
