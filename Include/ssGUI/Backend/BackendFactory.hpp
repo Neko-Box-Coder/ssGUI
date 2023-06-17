@@ -81,8 +81,11 @@ namespace Backend
                 #ifdef SSGUI_MOCK_BACKEND
                     returnInterface = static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingMock(returnInterface));
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
                 #endif
 
                 return returnInterface;
@@ -104,8 +107,11 @@ namespace Backend
                 #ifdef SSGUI_MOCK_BACKEND
                     returnInterface = static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontMock(returnInterface));
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
                 #endif
                 
                 return returnInterface;
@@ -127,8 +133,11 @@ namespace Backend
                 #ifdef SSGUI_MOCK_BACKEND
                     returnInterface = static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageMock(returnInterface));
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
                 #endif
                 
                 return returnInterface;
@@ -152,8 +161,11 @@ namespace Backend
                 #ifdef SSGUI_MOCK_BACKEND
                     returnInterface = static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputMock(returnInterface));
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
                 #endif
                 
                 return returnInterface;
@@ -177,8 +189,11 @@ namespace Backend
                 #ifdef SSGUI_MOCK_BACKEND
                     returnInterface = static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowMock(returnInterface));
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
                 #endif
                 
                 return returnInterface;
