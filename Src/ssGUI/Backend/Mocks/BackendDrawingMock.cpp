@@ -196,7 +196,7 @@ namespace Backend
     
     void* BackendDrawingMock::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
     {
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawImageCacheHandle(backendImage));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawImageCacheHandle(backendImage), void*);
         return CachedImage.find(backendImage) != CachedImage.end() ? backendImage : nullptr;
     }
 

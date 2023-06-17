@@ -30,13 +30,12 @@ while(0)
     #define SSGUI_MOCK_INTERNAL_LOG_RESULT(res)
 #endif
 
-
-#define SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(funcOp)\
+#define SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(funcOp, returnType)\
 do\
 {\
     if(UnderlyingInterface != nullptr)\
     {\
-        auto result = UnderlyingInterface->funcOp;\
+        returnType result = UnderlyingInterface->funcOp;\
         SSGUI_MOCK_INTERNAL_LOG_RESULT(result);\
         return result;\
     }\

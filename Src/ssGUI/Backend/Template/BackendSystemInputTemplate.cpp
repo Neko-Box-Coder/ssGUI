@@ -79,13 +79,13 @@ namespace Backend
         return glm::vec2();
     }
 
-    std::vector<ssGUI::RealtimeInputInfo> const & BackendSystemInputTemplate::GetLastRealtimeInputs() const
+    const std::vector<ssGUI::RealtimeInputInfo>& BackendSystemInputTemplate::GetLastRealtimeInputs() const
     {
         std::vector<ssGUI::RealtimeInputInfo> t;
         return t;
     }
 
-    std::vector<ssGUI::RealtimeInputInfo> const & BackendSystemInputTemplate::GetCurrentRealtimeInputs() const
+    const std::vector<ssGUI::RealtimeInputInfo>& BackendSystemInputTemplate::GetCurrentRealtimeInputs() const
     {
         std::vector<ssGUI::RealtimeInputInfo> t;
         return t;

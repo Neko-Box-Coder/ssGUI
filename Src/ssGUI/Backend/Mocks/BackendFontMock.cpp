@@ -31,7 +31,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         FO_RETURN_IF_FOUND(OverrideObject, IsValid(), bool);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsValid());
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsValid(), bool);
         return true;
     }
 
@@ -39,7 +39,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize);
         FO_RETURN_IF_FOUND(OverrideObject, GetCharacterRenderInfo(wchar_t, float), ssGUI::CharacterRenderInfo, charUnicode, charSize);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetCharacterRenderInfo(charUnicode, charSize));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetCharacterRenderInfo(charUnicode, charSize), ssGUI::CharacterRenderInfo);
         return ssGUI::CharacterRenderInfo();
     }
     
@@ -47,7 +47,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode);
         FO_RETURN_IF_FOUND(OverrideObject, IsCharacterSupported(wchar_t), bool, charUnicode);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsCharacterSupported(charUnicode));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsCharacterSupported(charUnicode), bool);
         return true;
     }
     
@@ -57,7 +57,7 @@ namespace Backend
         FO_RETURN_IF_FOUND(OverrideObject,
                             GetKerning(wchar_t, wchar_t, float), float,
                             charUnicode, secondCharUnicode, charSize);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetKerning(charUnicode, secondCharUnicode, charSize));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetKerning(charUnicode, secondCharUnicode, charSize), float);
         return 0;
     }
     
@@ -65,7 +65,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
         FO_RETURN_IF_FOUND(OverrideObject, GetLineSpacing(float), float, charSize);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetLineSpacing(charSize));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetLineSpacing(charSize), float);
         return 0;
     }
     
@@ -73,7 +73,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
         FO_RETURN_IF_FOUND(OverrideObject, GetUnderlineOffset(float), float, charSize);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetUnderlineOffset(charSize));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetUnderlineOffset(charSize), float);
         return 0;
     }
     
@@ -81,7 +81,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
         FO_RETURN_IF_FOUND(OverrideObject, GetUnderlineThickness(float), float, charSize);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetUnderlineThickness(charSize));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetUnderlineThickness(charSize), float);
         return 0;
     }
 
@@ -89,7 +89,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(path);
         FO_RETURN_IF_FOUND(OverrideObject, LoadFromPath(std::string), bool, path);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromPath(path));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromPath(path), bool);
         return true;
     }
 
@@ -97,7 +97,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, lengthInBytes);
         FO_RETURN_IF_FOUND(OverrideObject, LoadFromMemory(void*, int), bool, dataPtr, lengthInBytes);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromMemory(dataPtr, lengthInBytes));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromMemory(dataPtr, lengthInBytes), bool);
         return true;
     }
     
@@ -105,7 +105,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(fontSizes);
         FO_ARGUMENTS_AND_RETURN_IF_FOUND(true, OverrideObject, GetFixedAvailableFontSizes(std::vector<float>&), fontSizes);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetFixedAvailableFontSizes(fontSizes));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetFixedAvailableFontSizes(fontSizes), bool);
         return true;
     }
     
@@ -119,7 +119,7 @@ namespace Backend
                                             charSize, 
                                             (FO_NonComparableCopyable<ssGUI::ImageData>&)characterImage);
         
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetCharacterImage(charUnicode, charSize, characterImage));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetCharacterImage(charUnicode, charSize, characterImage), bool);
         return true;
     }
 
@@ -127,7 +127,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         FO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawHandle());
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawHandle(), void*);
         return nullptr;
     }
 

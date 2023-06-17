@@ -38,7 +38,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         FO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawHandle());
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawHandle(), void*);
         return nullptr;
     }
 
@@ -46,7 +46,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         FO_RETURN_IF_FOUND(OverrideObject, IsValid(), bool);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsValid());
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsValid(), bool);
         return true;
     }
 
@@ -54,7 +54,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(path);
         FO_RETURN_IF_FOUND(OverrideObject, LoadFromPath(std::string), bool, path);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromPath(path));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromPath(path), bool);
         return true;
     }
 
@@ -62,7 +62,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, size);
         FO_RETURN_IF_FOUND(OverrideObject, LoadImgFileFromMemory(const void*, std::size_t), bool, dataPtr, size);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadImgFileFromMemory(dataPtr, size));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadImgFileFromMemory(dataPtr, size), bool);
         return true;
     }
 
@@ -70,7 +70,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, format, imageSize);
         FO_RETURN_IF_FOUND(OverrideObject, LoadRawFromMemory(const void*, ssGUI::ImageFormat, glm::ivec2), bool, dataPtr, format, imageSize);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadRawFromMemory(dataPtr, format, imageSize));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadRawFromMemory(dataPtr, format, imageSize), bool);
         return true;
     }
     
@@ -78,7 +78,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         FO_RETURN_IF_FOUND(OverrideObject, GetSize(), glm::ivec2);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetSize());
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetSize(), glm::ivec2);
         return glm::ivec2();
     }
 
@@ -87,7 +87,7 @@ namespace Backend
         SSGUI_MOCK_LOG_FUNCTION_CALL(format);
         FO_ARGUMENTS_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), format);
         FO_RETURN_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), void*, format);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetPixelPtr(format));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetPixelPtr(format), void*);
         return nullptr;
     }
 

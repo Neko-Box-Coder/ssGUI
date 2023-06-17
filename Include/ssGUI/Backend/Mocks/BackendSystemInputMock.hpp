@@ -21,12 +21,10 @@ namespace Backend
         glm::ivec2 Hotspot;
         
         MockCursorData( ssGUI::Backend::BackendImageInterface* cursorImage,
-                        std::string cursorName,
-                        glm::ivec2 cursorSize,
-                        glm::ivec2 hotspot) :   CursorImage(cursorImage),
-                                                CursorName(cursorName),
-                                                CursorSize(cursorSize),
-                                                Hotspot(hotspot)
+                        std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot) :    CursorImage(cursorImage),
+                                                                                                CursorName(cursorName),
+                                                                                                CursorSize(cursorSize),
+                                                                                                Hotspot(hotspot)
         {}
     };
     
@@ -132,11 +130,11 @@ namespace Backend
 
             //function: GetLastRealtimeInputs
             //See <BackendSystemInputInterface::GetLastRealtimeInputs>
-            std::vector<ssGUI::RealtimeInputInfo> const & GetLastRealtimeInputs() const override;
+            const std::vector<ssGUI::RealtimeInputInfo>& GetLastRealtimeInputs() const override;
 
             //function: GetCurrentRealtimeInputs
             //See <BackendSystemInputInterface::GetCurrentRealtimeInputs>
-            std::vector<ssGUI::RealtimeInputInfo> const & GetCurrentRealtimeInputs() const override;
+            const std::vector<ssGUI::RealtimeInputInfo>& GetCurrentRealtimeInputs() const override;
 
             //function: GetTextInput
             //See <BackendSystemInputInterface::GetTextInput>
