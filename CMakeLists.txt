@@ -164,18 +164,19 @@ set(ssLOG_THREAD_SAFE   "FALSE" CACHE BOOL "Use std::thread and ensure thread sa
 set(ssGUI@_CMAKE_VARIABLES_START============================= "===========================================================" CACHE STRING "Divider") 
 set(ssGUI__CMAKE_VARIABLES_END=============================== "===========================================================" CACHE STRING "Divider") 
 
-#Find shared libraries in the same location as the executable
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,$ORIGIN")
+if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    #Find shared libraries in the same location as the executable
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,$ORIGIN")
 
-# target_include_directories(example PUBLIC "${INCLUDE_LOCATION}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -std=c++0x")  #For surpressing goto warning
+    # target_include_directories(example PUBLIC "${INCLUDE_LOCATION}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -std=c++0x")  #For surpressing goto warning
+endif()
 
 # ==========================================================
 # ssLogger 
 # ==========================================================
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/External/ssLogger")
-
 set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
 # ==========================================================
@@ -285,7 +286,8 @@ else()
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options(/utf-8)
+    #add_compile_options(/utf-8 /W2)
+    target_compile_options(ssGUI PRIVATE /utf-8 /W1)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(ssGUI PRIVATE -Wall -Wno-return-local-addr -Wno-sign-compare -Wno-unused-variable -Wno-unused-parameter -Wno-switch -Wextra -pedantic -Werror)
     #add_compile_options(-Wall -Wno-unused-variable -Wno-unused-parameter -Wextra -pedantic -Werror)
