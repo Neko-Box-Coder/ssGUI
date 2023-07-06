@@ -527,7 +527,7 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName targetsToL
 
         # For now, skip custom graphics example if we are using SFML backend
         STRING(TOLOWER ${ssGUI_MAIN_BACKEND} ssGUI_LOWER_MAIN_BACKEND)
-        if(CUR_NAME STREQUAL "CustomGraphicsExampleV2" AND NOT ssGUI_LOWER_MAIN_BACKEND MATCHES ".*opengl.*")
+        if((CUR_NAME STREQUAL "CustomGraphicsExampleV2" OR CUR_NAME STREQUAL "DynamicAtlasTest_Auto") AND NOT ssGUI_LOWER_MAIN_BACKEND MATCHES ".*opengl.*")
             continue()
         endif()
 
@@ -565,6 +565,8 @@ if(ssGUI_BUILD_TESTS)
                     "ssGUI_Test_NotoColorEmoji"
                     "${CMAKE_CURRENT_LIST_DIR}/Resources/sd.png"
                     "ssGUI_Test_sd"
+                    "${CMAKE_CURRENT_LIST_DIR}/Resources/sdTestEdge.png"
+                    "ssGUI_Test_sd_edge"
                     "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoSans-Bold.ttf"
                     "ssGUI_Test_NotoSans_Bold")
 

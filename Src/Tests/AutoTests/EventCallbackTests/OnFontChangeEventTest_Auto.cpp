@@ -45,14 +45,14 @@ int main()
                                     });
 
         TextObj->AddEventCallbackCopy(Callback, true);
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(Callback);
         ssGUI::Factory::Dispose(TextObj);
         ssGUI::Factory::Dispose(CustomFont);
-    }
+    };
 
     ssTEST("EventTest")
     {
@@ -65,7 +65,7 @@ int main()
         
         ssGUI::Text::AddDefaultFont()->GetBackendFontInterface()->LoadFromPath("./arial.ttf");
         ssTEST_OUTPUT_ASSERT("Default font not triggering event", TextObj->GetDefaultFontsCount() == 2 && ListenerNum == 1);
-    }
+    };
 
     ssTEST_END();
 }

@@ -2,6 +2,7 @@
 #define SSGUI_OUTPUT_STREAM_UTIL_H
 
 #include "glm/vec2.hpp"
+#include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
 #include "ssGUI/Enums/WindowMode.hpp"
 #include <codecvt>
@@ -53,7 +54,7 @@ namespace ssGUI
             if(i != vec.size() - 1)
                 stream << vec[i] << ", ";
             else
-                stream << vec[i] << ")" << std::endl;
+                stream << vec[i] << ")";
         }
         return stream;
     }
@@ -66,10 +67,28 @@ namespace glm
         stream << "(glm::vec2: " << vec.x << ", " << vec.y << ")";
         return stream;
     }
+    
+    inline std::ostream& operator<<(std::ostream& stream, const glm::vec3& vec)
+    {
+        stream << "(glm::vec3: " << vec.x << ", " << vec.y << ", " << vec.z << ")";
+        return stream;
+    }
 
     inline std::ostream& operator<<(std::ostream& stream, const glm::ivec2& vec)
     {
         stream << "(glm::ivec2: " << vec.x << ", " << vec.y << ")";
+        return stream;
+    }
+    
+    inline std::ostream& operator<<(std::ostream& stream, const glm::ivec3& vec)
+    {
+        stream << "(glm::ivec2: " << vec.x << ", " << vec.y << ", " << vec.z << ")";
+        return stream;
+    }
+    
+    inline std::ostream& operator<<(std::ostream& stream, const glm::vec4& vec)
+    {
+        stream << "(glm::vec4: " << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w << ")";
         return stream;
     }
     

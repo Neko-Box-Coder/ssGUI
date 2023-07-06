@@ -30,16 +30,16 @@ int main()
         TestText->SetNewTextFontSize(15);
         TestText->SetTextAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT, ssGUI::Enums::AlignmentVertical::TOP);
         TestText->SetText(TestString);
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Dispose(TestText);
-    }
+    };
 
     ssTEST_SKIP("ComputeCharactersPositionAndSizeTest")
     {
-    }
+    };
 
     ssTEST("SetTextTest")
     {
@@ -47,7 +47,7 @@ int main()
         
         TestText->SetText(L"≥⚠️☢️🧪🪡💰⚙️🎲❗⛔❕☣️\n💬🐞🎉🌍📄🔌😉✅🛳️⏬⏱️🕸️❌");
         ssTEST_OUTPUT_ASSERT("Wide", TestText->GetText() == L"≥⚠️☢️🧪🪡💰⚙️🎲❗⛔❕☣️\n💬🐞🎉🌍📄🔌😉✅🛳️⏬⏱️🕸️❌");
-    }
+    };
 
     ssTEST("AddTextTest")
     {
@@ -83,7 +83,7 @@ int main()
         wideTestCopy.insert(wideTestCopy.begin() + 12, wideNewString.begin(), wideNewString.end());
         
         ssTEST_OUTPUT_ASSERT("Wide Indexed", TestText->GetText() == wideTestCopy);
-    }
+    };
     
     ssTEST("RemoveTextTest")
     {
@@ -92,11 +92,11 @@ int main()
         testCopy.erase(testCopy.begin() + 7, testCopy.begin() + 15);
         
         ssTEST_OUTPUT_ASSERT(converter.to_bytes(TestText->GetText()) == testCopy);
-    }
+    };
 
     ssTEST_SKIP("GetTextTest")
     {
-    }
+    };
     
     ssTEST("GetCharacterCountTest")
     {
@@ -113,7 +113,7 @@ int main()
             //There's a VARIATION SELECTOR-16 character after ⚠️ and ☢️, therefore adding 2 characters
             ssTEST_OUTPUT_ASSERT(TestText->GetCharacterCount() == TestString.size() + 4 + 2);
         #endif
-    }
+    };
     
     #define FLOAT_EQ(a, b) (a + 0.0001f > b && a - 0.0001f < b)
     ssTEST("GetCharacterRenderInfoTest")
@@ -165,7 +165,7 @@ int main()
         //    ssLOG_LINE("currentRenderInfo["<<i<<"].TargetSizeMultiplier: "<<currentRenderInfo.TargetSizeMultiplier);
         //    ssLOG_LINE();
         //}
-    }
+    };
 
     ssTEST("SetCharacterDetailsTest")
     {
@@ -191,16 +191,16 @@ int main()
         //ssLOG_LINE("detail.FontSize: "<<detail.FontSize);
         //ssLOG_LINE("detail.CharacterColor: "<<(int)detail.CharacterColor.r<<", "<<(int)detail.CharacterColor.g<<", "<<(int)detail.CharacterColor.b<<", "<<(int)detail.CharacterColor.a);
         //ssLOG_LINE("detail.Underlined: "<<detail.Underlined);
-    }
+    };
     
     ssTEST_SKIP("GetCharacterDetails")
     {
-    }
+    };
     
     ssTEST("GetCharactersDetailsCountTest")
     {
         ssTEST_OUTPUT_ASSERT(TestText->GetCharactersDetailsCount() == TestText->GetCharacterCount());
-    }
+    };
     
     ssTEST("AddCharacterDetailsTest")
     {
@@ -239,7 +239,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("Multiple characters", TestText->GetCharacterDetails(appendIndex) == testDetailsList[0] &&
                                                     TestText->GetCharacterDetails(appendIndex + 1) == testDetailsList[1] &&
                                                     TestText->GetCharacterDetails(appendIndex + 2) == testDetailsList[2]);
-    }
+    };
 
     ssTEST("RemoveCharacterDetailsTest")
     {
@@ -256,14 +256,14 @@ int main()
         ssTEST_OUTPUT_ASSERT("Range",   details != TestText->GetCharacterDetails(5) &&
                                         details != TestText->GetCharacterDetails(6) &&
                                         details != TestText->GetCharacterDetails(7));
-    }
+    };
     
     ssTEST("ClearAllCharacterDetails")
     {
         ssTEST_OUTPUT_ASSERT("Initial", TestText->GetCharacterCount() > 0);
         TestText->ClearAllCharacterDetails();
         ssTEST_OUTPUT_ASSERT(TestText->GetCharacterCount() == 0);
-    }
+    };
     
     ssTEST("GetCharacterGlobalPositionTest")
     {
@@ -272,7 +272,7 @@ int main()
         
         //ssLOG_LINE("TestText->GetCharacterDetails(7).Character: "<<(char)TestText->GetCharacterDetails(9).Character);
         //ssLOG_LINE("TestText->GetCharacterGlobalPosition: "<<TestText->GetCharacterGlobalPosition(9, true).x<<", "<<TestText->GetCharacterGlobalPosition(9, true).y);
-    }
+    };
 
     ssTEST("IsOverflowTest")
     {
@@ -296,7 +296,7 @@ int main()
         //}
         
         //ssLOG_LINE("TestText->IsOverflow(): "<<TestText->IsOverflow());
-    }
+    };
 
     ssTEST("NewTextFontSizeTest")
     {
@@ -308,7 +308,7 @@ int main()
         TestText->AddText("New Text");
         
         ssTEST_OUTPUT_ASSERT("Character", TestText->GetCharacterDetails(TestText->GetCharacterCount() - 1).FontSize == 25);
-    }
+    };
 
     ssTEST("NewTextColorTest")
     {
@@ -320,7 +320,7 @@ int main()
         TestText->AddText("New Text");
         
         ssTEST_OUTPUT_ASSERT("Character", TestText->GetCharacterDetails(TestText->GetCharacterCount() - 1).CharacterColor == glm::u8vec4(255, 0, 0, 255));
-    }
+    };
     
     ssTEST("NewTextUnderlinedTest")
     {
@@ -332,7 +332,7 @@ int main()
         TestText->AddText("New Text");
         
         ssTEST_OUTPUT_ASSERT("Character", TestText->GetCharacterDetails(TestText->GetCharacterCount() - 1).Underlined);
-    }
+    };
 
     ssTEST("ApplyNewTextSettingsToExistingTextTest")
     {
@@ -345,7 +345,7 @@ int main()
         ssTEST_OUTPUT_ASSERT(   TestText->GetCharacterDetails(0).FontSize == 25 &&
                                 TestText->GetCharacterDetails(0).CharacterColor == glm::u8vec4(255, 0, 0, 255) &&
                                 TestText->GetCharacterDetails(0).Underlined);
-    }
+    };
     
     ssTEST("MultilineAllowedTest")
     {
@@ -359,39 +359,39 @@ int main()
         TestText->ComputeCharactersPositionAndSize();
         
         ssTEST_OUTPUT_ASSERT("Not Allowed", TestText->GetCharacterRenderInfo(0).BaselinePosition.y == TestText->GetCharacterRenderInfo(20).BaselinePosition.y);
-    }
+    };
 
     ssTEST_SKIP("WrappingModeTest")
     {
-    }
+    };
 
     ssTEST_SKIP("AlignmentTest")
     {
-    }
+    };
     
     ssTEST_SKIP("FontTest")
     {
-    }
+    };
     
     ssTEST_SKIP("PaddingTest")
     {
-    }
+    };
     
     ssTEST_SKIP("SpaceTest")
     {
-    }
+    };
     
     ssTEST_SKIP("TabSizeTest")
     {
-    }
+    };
     
     ssTEST_SKIP("TextSelectionTest")
     {
-    }
+    };
     
     ssTEST_SKIP("CharacterPosTest")
     {
-    }
+    };
 
     ssTEST_END();
 }

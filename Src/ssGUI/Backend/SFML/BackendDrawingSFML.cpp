@@ -153,6 +153,11 @@ namespace Backend
         return true;
     }
 
+    void BackendDrawingSFML::DrawToBackBuffer()
+    {
+        //NOTE: Doesn't need to do anything, SFML is handling for us
+    }
+
     void BackendDrawingSFML::Render(glm::u8vec3 clearColor)
     {
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>

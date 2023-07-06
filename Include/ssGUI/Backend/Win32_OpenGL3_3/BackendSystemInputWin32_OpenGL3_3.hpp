@@ -21,7 +21,7 @@ namespace ssGUI
     class GUIObject;
     class MainWindow;
     class ImageData;
-    class RealtimeInputInfo;
+    struct RealtimeInputInfo;
 }
 
 

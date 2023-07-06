@@ -93,6 +93,11 @@ namespace Backend
 
         return true;
     }
+    
+    void BackendDrawingMock::DrawToBackBuffer()
+    {
+        SSGUI_MOCK_PASSTHROUGH(DrawToBackBuffer());
+    }
 
     void BackendDrawingMock::Render(glm::u8vec3 clearColor)
     {
@@ -140,34 +145,6 @@ namespace Backend
     {
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawImageCacheHandle(backendImage), void*);
         return CachedImage.find(backendImage) != CachedImage.end() ? backendImage : nullptr;
-    }
-
-    bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colors,
-                                        const uint32_t character,
-                                        const ssGUI::Backend::BackendFontInterface& font,
-                                        int characterSize)
-    {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "This function is not supposed to be called");
-        return true;
-    }
-
-    bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colors,
-                                        const ssGUI::Backend::BackendImageInterface& image)
-    {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "This function is not supposed to be called");
-        return true;
-    }
-
-
-    bool BackendDrawingMock::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colors)
-    {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "This function is not supposed to be called");
-        return true;        
     }
 }
 

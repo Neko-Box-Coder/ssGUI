@@ -98,6 +98,10 @@ namespace Backend
             //See <BackendDrawingInterface::DrawEntities>
             bool DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities) override;
 
+            //function: DrawToBackBuffer
+            //See <BackendDrawingInterface::DrawToBackBuffer>
+            void DrawToBackBuffer() override;
+            
             //function: Render
             //See <BackendDrawingInterface::Render>
             void Render(glm::u8vec3 clearColor) override;
@@ -125,15 +129,15 @@ namespace Backend
                             const std::vector<glm::u8vec4>& colors,
                             const uint32_t character,
                             const ssGUI::Backend::BackendFontInterface& font,
-                            int characterSize) override;
+                            int characterSize);
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,
-                            const ssGUI::Backend::BackendImageInterface& image) override;
+                            const ssGUI::Backend::BackendImageInterface& image);
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colors) override;
+                            const std::vector<glm::u8vec4>& colors);
     };
 }
 

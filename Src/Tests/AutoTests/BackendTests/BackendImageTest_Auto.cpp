@@ -33,12 +33,12 @@ int main()
     ssTEST_SET_UP
     {
         TestImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(TestImage);
-    }
+    };
 
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
 
@@ -83,7 +83,7 @@ int main()
             TestImage->LoadFromPath("./sd.png");
             ssTEST_OUTPUT_ASSERT("Image loaded", TestImage->GetRawHandle() != nullptr);
         #endif
-    }
+    };
 
     ssTEST("IsValidTest")
     {
@@ -117,7 +117,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("No image loaded", !TestImage->IsValid());
         TestImage->LoadFromPath("./sd.png");
         ssTEST_OUTPUT_ASSERT("Image loaded", TestImage->IsValid());
-    }
+    };
 
     ssTEST("LoadFromPathTest")
     {
@@ -154,7 +154,7 @@ int main()
     
         ssTEST_OUTPUT_ASSERT("Loading", TestImage->LoadFromPath("./sd.png"));
         ssTEST_OUTPUT_ASSERT("Validation", TestImage->GetSize().x == 293 && TestImage->GetSize().y == 293);
-    }
+    };
 
     ssTEST("LoadImgFileFromMemoryTest")
     {
@@ -245,7 +245,7 @@ int main()
         TestImage->LoadRawFromMemory(dummyImg, ssGUI::ImageFormat(), glm::ivec2(64, 64));
         
         ssTEST_OUTPUT_ASSERT(TestImage->IsValid());
-    }
+    };
 
     ssTEST("GetSizeTest")
     {
@@ -256,7 +256,7 @@ int main()
         #endif
     
         ssTEST_OUTPUT_ASSERT(TestImage->GetSize().x == imgWidth && TestImage->GetSize().y == imgHeight);
-    }
+    };
 
     ssTEST("GetPixelPtrTest")
     {
@@ -330,15 +330,15 @@ int main()
                                 pixelPtr[columnWidth*3 * 4 + 1] == 0 &&
                                 pixelPtr[columnWidth*3 * 4 + 2] == 0 &&
                                 pixelPtr[columnWidth*3 * 4 + 3] == 127);
-    }
+    };
 
     ssTEST_SKIP("Internal_AddBackendDrawingRecordTest")
     {
-    }
+    };
 
     ssTEST_SKIP("Internal_RemoveBackendDrawingRecord")
     {
-    }
+    };
 
     ssTEST("CloneTest")
     {
@@ -356,7 +356,7 @@ int main()
                                 clonedImg->GetSize().y == TestImage->GetSize().y);
 
         ssGUI::Factory::Dispose(clonedImg);
-    }
+    };
 
     ssTEST_END();
 }

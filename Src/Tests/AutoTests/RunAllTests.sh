@@ -8,12 +8,14 @@ function runTest()
         $1
     else
         echo "[Auto Test Warning] $1 doesn't exist, skipping"
+        echo ""
     fi
 }
 
 runTest ./BackendTests/BackendFontTest_Auto
 runTest ./BackendTests/BackendImageTest_Auto
 runTest ./BackendTests/BackendMainWindowTest_Auto
+runTest ./BackendTests/DynamicAtlasTest_Auto
 runTest ./EventCallbackTests/BackgroundColorChangedEventTest_Auto
 runTest ./EventCallbackTests/BaseEventCallbackTest_Auto
 runTest ./EventCallbackTests/ChildAddedEventTest_Auto

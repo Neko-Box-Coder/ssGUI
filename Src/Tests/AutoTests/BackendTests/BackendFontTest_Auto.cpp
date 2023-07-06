@@ -49,12 +49,12 @@ int main()
     ssTEST_SET_UP
     {
         TestFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(TestFont);
-    }
+    };
     
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
 
@@ -96,7 +96,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST("GetCharacterRenderInfoTest")
     {
@@ -140,7 +140,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST("IsCharacterSupportedTest")
     {
@@ -162,7 +162,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST_SKIP("GetKerningTest")
     {
@@ -173,7 +173,7 @@ int main()
         //but right now it is disabled because it is causing issues on CMake
         //so I will leave this skipped for now.
         ssTEST_OUTPUT_ASSERT(false);
-    }
+    };
 
     #define FLOAT_EQUAL(a, b) (a > b - 0.1f && a < b + 0.1f)
 
@@ -191,7 +191,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST("GetUnderlineOffsetTest")
     {
@@ -207,7 +207,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST("GetUnderlineThicknessTest")
     {
@@ -223,7 +223,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST("LoadFromPathTest")
     {
@@ -243,7 +243,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST("LoadFromMemoryTest")
     {
@@ -275,7 +275,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     #if !defined(SSGUI_FONT_BACKEND_SFML)
         ssTEST("GetFixedAvailableFontSizesTest")
@@ -301,11 +301,11 @@ int main()
             #ifdef SSGUI_FONT_BACKEND_MOCK
                 SSGUI_MOCK_FONT.ClearAllOverrideArgs();
             #endif
-        }
+        };
     #else
         ssTEST_SKIP("GetFixedAvailableFontSizesTest")
         {
-        }
+        };
     #endif
 
     ssTEST("GetCharacterImageTest")
@@ -339,7 +339,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideArgs();
         #endif
-    }
+    };
 
     ssTEST("GetRawHandleTest")
     {
@@ -353,7 +353,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
         #endif
-    }
+    };
 
     ssTEST("CloneTest")
     {
@@ -372,7 +372,7 @@ int main()
         
         glm::vec2 fontSize = clonedFont->GetCharacterRenderInfo(L'A', 20).Size;
         ssTEST_OUTPUT_ASSERT("Size", FLOAT_EQUAL(fontSize.x, 15) && FLOAT_EQUAL(fontSize.y, 15));
-    }
+    };
 
     ssTEST_END();
 }
