@@ -620,6 +620,7 @@ namespace Backend
         //ssLOG_LINE("maxLayerSize: "<<maxLayerSize);
         
         //maxTextureSize = 1920;
+        maxTextureSize = maxTextureSize > 4096 ? 4096 : maxTextureSize;
         
         GLint success = GL_FALSE;
         char infoLog[512] { 0 };
