@@ -30,28 +30,20 @@ namespace Extensions
 
     Variables & Constructor:
     ============================== C++ ==============================
-    protected:
-        ssGUI::GUIObject* Container;                        //See <BindToObject>
-        bool Enabled;                                       //See <IsEnabled>
-
-        float RoundedCornersRadius;                         //See <GetRoundedCornersRadius>
-        std::vector<int> TargetShapes;                      //See <GetTargetShape>
-        std::vector<int> TargetVertices;                    //See <GetTargetVertex>
-
-        std::vector<int> VerticesToRound;                   //(Internal variable) Used to identify vertices indices to round
-        std::vector<int> VerticesToRoundPrevVertices;       //(Internal variable) Used to identify the previous vertex of vertices indices to round
-        std::vector<int> VerticesToRoundNextVertices;       //(Internal variable) Used to identify the next vertex of vertices indices to round
+    protected:        
+        ssGUI::GUIObject* Container;                            //See <BindToObject>
+        bool Enabled;                                           //See <IsEnabled>
+        float RoundedCornersRadius;                             //See <GetRoundedCornersRadius>
+        ssGUI::ShapeModifier ModifiedShapes;                    //(Internal variable) Used to store list of shapes to be modified
     =================================================================
     ============================== C++ ==============================
     RoundedCorners::RoundedCorners() :  Container(nullptr),
                                         Enabled(true),
                                         RoundedCornersRadius(10),
-                                        TargetShapes{0},
-                                        TargetVertices(),
-                                        VerticesToRound(),
-                                        VerticesToRoundPrevVertices(),
-                                        VerticesToRoundNextVertices()
-    {}
+                                        ModifiedShapes()
+    {
+        ModifiedShapes.AddTargetShape(ssGUI::TargetShape(0));
+    }
     =================================================================
     */
     class RoundedCorners : public Extension
@@ -65,13 +57,8 @@ namespace Extensions
         protected:        
             ssGUI::GUIObject* Container;                            //See <BindToObject>
             bool Enabled;                                           //See <IsEnabled>
-
             float RoundedCornersRadius;                             //See <GetRoundedCornersRadius>
-            
-            ssGUI::ShapeModifier ModifiedShapes;
-            
-            //std::vector<int> VerticesToRoundPrevVertices;       //(Internal variable) Used to identify the previous vertex of vertices indices to round
-            //std::vector<int> VerticesToRoundNextVertices;       //(Internal variable) Used to identify the next vertex of vertices indices to round
+            ssGUI::ShapeModifier ModifiedShapes;                    //(Internal variable) Used to store list of shapes to be modified
 
             RoundedCorners();
             virtual ~RoundedCorners() override;

@@ -15,8 +15,6 @@ namespace Extensions
                                         Enabled(true),
                                         RoundedCornersRadius(10),
                                         ModifiedShapes()
-                                        //VerticesToRoundPrevVertices(),
-                                        //VerticesToRoundNextVertices()
     {
         ModifiedShapes.AddTargetShape(ssGUI::TargetShape(0));
     }
@@ -30,11 +28,6 @@ namespace Extensions
         Enabled = other.IsEnabled();
         RoundedCornersRadius = other.GetRoundedCornersRadius();
         ModifiedShapes = other.ModifiedShapes;
-        //TargetShapes = other.TargetShapes;
-        //TargetVertices = other.TargetVertices;
-        //VerticesToRound = other.VerticesToRound;
-        //VerticesToRoundPrevVertices = other.VerticesToRoundPrevVertices;
-        //VerticesToRoundNextVertices = other.VerticesToRoundNextVertices;
     }
 
     double RoundedCorners::GetAngle(glm::vec2 a, glm::vec2 b)
@@ -191,164 +184,11 @@ namespace Extensions
         ssLOG_FUNC_EXIT();
     }
     
-    #if 0
-    void RoundedCorners::UpdateVerticesForRounding()
-    {
-        ssLOG_FUNC_ENTRY();
-        VerticesToRound.clear();
-
-        std::vector<ssGUI::DrawingEntity>& originalEntities = Container->Extension_GetDrawingEntities();
-
-        int startIndex = 0;
-        int endIndex = drawingCounts[0];
-        if(!TargetVertices.empty())
-        {
-            for(int i = 0; i < TargetVertices.size(); i++)
-            {
-                int currentVertexIndex = TargetVertices[i] + Container->Extension_GetGUIObjectFirstVertexIndex();
-
-                //Invlaid index check
-                if(currentVertexIndex >= drawingVertices.size())
-                {
-                    ssGUI_WARNING(ssGUI_EXT_TAG, "Invalid target vertex detected: "<<TargetVertices[i]);
-                    ssGUI_WARNING(ssGUI_EXT_TAG, "currentVertexIndex: "<<currentVertexIndex);
-                    ssGUI_WARNING(ssGUI_EXT_TAG, "drawingVertices.size(): "<<drawingVertices.size());
-                    continue;
-                }
-
-                if(currentVertexIndex < startIndex || currentVertexIndex >= endIndex)
-                    GetStartEndVertexIndex(currentVertexIndex, startIndex, endIndex, drawingCounts);
-
-                //Shape size check
-                if(endIndex - startIndex < 2)
-                    continue;
-
-                VerticesToRound.push_back(currentVertexIndex);
-                int prevIndex = currentVertexIndex;
-                int loopCount = 0;
-                do
-                {
-                    prevIndex = (prevIndex == startIndex ? endIndex - 1 : prevIndex - 1);
-                    loopCount++;
-                    if(loopCount > endIndex - startIndex + 1)
-                    {
-                        ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
-                        VerticesToRound.clear();
-                        VerticesToRoundPrevVertices.clear();
-                        VerticesToRoundNextVertices.clear();
-                        return;
-                    }
-                }
-                while(drawingVertices[prevIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
-                VerticesToRoundPrevVertices.push_back(prevIndex);
-
-                int nextIndex = currentVertexIndex;
-                loopCount = 0;
-                do
-                {
-                    nextIndex = (nextIndex == endIndex - 1 ? startIndex : nextIndex + 1);
-                    loopCount++;
-                    if(loopCount > endIndex - startIndex + 1)
-                    {
-                        ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
-                        VerticesToRound.clear();
-                        VerticesToRoundPrevVertices.clear();
-                        VerticesToRoundNextVertices.clear();
-                        return;
-                    }
-                }
-                while(drawingVertices[nextIndex] - drawingVertices[currentVertexIndex] == glm::vec2());
-                VerticesToRoundNextVertices.push_back(nextIndex);
-            }
-        }
-        else
-        {
-            for(int i = 0; i < TargetShapes.size(); i++)
-            {
-                //Invalid index check 
-                if(TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex() >= drawingCounts.size())
-                    continue;
-
-                int curShape = TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex();
-
-                //Shape size check
-                if(drawingCounts[curShape] < 3)
-                    continue;
-
-                int startIndex = 0;
-                for(int j = 0; j < TargetShapes[i] + Container->Extension_GetGUIObjectFirstShapeIndex(); j++)
-                {
-                    startIndex += drawingCounts[j];
-                }
-
-                if(drawingCounts[curShape] <= 2)
-                    continue;
-
-                for(int j = startIndex; j < startIndex + drawingCounts[curShape]; j++)
-                {
-                    VerticesToRound.push_back(j);
-
-                    int prevIndex = j;
-                    int loopCount = 0;
-                    do
-                    {
-                        prevIndex = (prevIndex == startIndex ? startIndex + drawingCounts[curShape] - 1 : prevIndex - 1);
-                        loopCount++;
-                        if(loopCount > drawingCounts[curShape])
-                        {
-                            ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
-                            VerticesToRound.clear();
-                            VerticesToRoundPrevVertices.clear();
-                            VerticesToRoundNextVertices.clear();
-                            return;
-                        }
-                    }
-                    while(drawingVertices[prevIndex] - drawingVertices[j] == glm::vec2());
-                    VerticesToRoundPrevVertices.push_back(prevIndex);
-
-                    int nextIndex = j;
-                    loopCount = 0;
-                    do
-                    {
-                        nextIndex = (nextIndex == startIndex + drawingCounts[curShape] - 1 ? startIndex : nextIndex + 1);
-                        loopCount++;
-                        if(loopCount > drawingCounts[curShape])
-                        {
-                            ssGUI_WARNING(ssGUI_EXT_TAG, "Failed to construct rounded corner due to multiple consecutive vertices having the same position");
-                            VerticesToRound.clear();
-                            VerticesToRoundPrevVertices.clear();
-                            VerticesToRoundNextVertices.clear();
-                            return;
-                        }
-                    }
-                    while(drawingVertices[nextIndex] - drawingVertices[j] == glm::vec2());
-                    VerticesToRoundNextVertices.push_back(nextIndex);
-                }
-            }
-        }
-        ssLOG_FUNC_EXIT();
-    }
-    #endif
-
     void RoundedCorners::ConstructRenderInfo()
     {
         ssLOG_FUNC_ENTRY();
-        //std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        //std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
-        //std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
-        //std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
         std::vector<ssGUI::DrawingEntity> drawingEntities;
-
-        //std::vector<glm::vec2> originalVertices = drawingVertices;
-        //std::vector<glm::vec2> originalUVs = drawingUVs;
-        //std::vector<glm::u8vec4> originalColors = drawingColors;
-        //std::vector<int> originalCounts = drawingCounts;
         std::vector<ssGUI::DrawingEntity>& originalEntities = Container->Extension_GetDrawingEntities();
-
-        //std::vector<glm::vec2> newVertices;    //Lists of new vertices as arc
-        //std::vector<glm::vec2> newUVs;         //Associated UVs
-        //std::vector<glm::u8vec4> newColors;     //Associated colors
-        //std::vector<int> newCounts;             //The number vertices per arc
 
         if(originalEntities.empty())
         {
@@ -362,9 +202,6 @@ namespace Extensions
         //Iterate via each vertices
         for(int i = 0; i < originalEntities.size(); i++)
         {
-            //typedef std::unique_ptr<std::vector<int>, std::function<void(std::vector<int>*)>> indexVec;
-            //indexVec verticesToRounded = nullptr;
-            
             std::unordered_set<int> verticesToBeRounded;
 
             if(!ModifiedShapes.IsModifyWholeShape())
@@ -424,9 +261,6 @@ namespace Extensions
                     int currentIndex = j;
                     int prevIndex = ModifiedShapes.GetPrevIndex(j, originalEntities[i].Vertices);
                     int nextIndex = ModifiedShapes.GetNextIndex(j, originalEntities[i].Vertices);
-                    //int prevIndex = j - 1 < 0 ? originalEntities[i].Vertices.size() - 1 : j - 1;
-                    //int nextIndex = (j + 1) % originalEntities[i].Vertices.size();
-
                     int originalNewVerticesCount = drawingEntities[i].Vertices.size();
                     PlotArcPoints(  originalEntities[i].Vertices[prevIndex], 
                                     originalEntities[i].Vertices[currentIndex], 
@@ -465,101 +299,6 @@ namespace Extensions
         }
         
         originalEntities = drawingEntities;
-
-        //for(int i = 0; i < VerticesToRound.size(); i++)
-        //{
-        //    //For each vertices, plot and save the arc to a list
-        //    int currentIndex = VerticesToRound[i];
-        //    int prevIndex = VerticesToRoundPrevVertices[i];
-        //    int nextIndex = VerticesToRoundNextVertices[i];
-
-        //    int prevNewVerticesCount = newVertices.size();
-        //    PlotArcPoints(drawingVertices[prevIndex], drawingVertices[currentIndex], drawingVertices[nextIndex], newVertices);
-        //    newCounts.push_back(newVertices.size() - prevNewVerticesCount);
-
-        //    //For each arc points, sample the UV and colors
-        //    for(int j = prevNewVerticesCount; j < newVertices.size(); j++)
-        //    {                
-        //        glm::vec3 coord = Barycentric(newVertices[j], drawingVertices[prevIndex], drawingVertices[currentIndex], drawingVertices[nextIndex]);
-
-        //        newUVs.push_back((drawingUVs[prevIndex]) * coord.x + 
-        //                        (drawingUVs[currentIndex]) * coord.y + 
-        //                        (drawingUVs[nextIndex]) * coord.z);
-
-        //        newColors.push_back(glm::vec4(drawingColors[prevIndex]) * coord.x + 
-        //                            glm::vec4(drawingColors[currentIndex]) * coord.y + 
-        //                            glm::vec4(drawingColors[nextIndex]) * coord.z +
-        //                            0.5001f);   //0.5 for the rounding
-
-        //        // ssGUI_DEBUG(ssGUI_EXT_TAG, "drawingColors[prevIndex]: "<<(int)drawingColors[prevIndex].r<<", "<<(int)drawingColors[prevIndex].g<<", "<<(int)drawingColors[prevIndex].b<<", "<<(int)drawingColors[prevIndex].a);
-        //        // ssGUI_DEBUG(ssGUI_EXT_TAG, "drawingColors[currentIndex]: "<<(int)drawingColors[currentIndex].r<<", "<<(int)drawingColors[currentIndex].g<<", "<<(int)drawingColors[currentIndex].b<<", "<<(int)drawingColors[currentIndex].a);
-        //        // ssGUI_DEBUG(ssGUI_EXT_TAG, "drawingColors[nextIndex]: "<<(int)drawingColors[nextIndex].r<<", "<<(int)drawingColors[nextIndex].g<<", "<<(int)drawingColors[nextIndex].b<<", "<<(int)drawingColors[prevIndex].a);
-        //        // ssGUI_DEBUG(ssGUI_EXT_TAG, "newColors.back(): "<<(int)newColors.back().r<<", "<<(int)newColors.back().g<<", "<<(int)newColors.back().b<<", "<<(int)newColors.back().a);
-        //    }
-        //}
-
-        //drawingVertices.clear();
-        //drawingUVs.clear();
-        //drawingColors.clear();
-        //drawingCounts.clear();
-        //drawingProperties.clear();
-        
-        ////Hashmap for holding the original vertex index as key and index in newVertices as value
-        //std::map<int, int> verticesToRoundMap;
-        //for(int i = 0; i < VerticesToRound.size(); i++)
-        //    verticesToRoundMap[VerticesToRound[i]] = i;
-        
-        ////Reconstruct vertices, uvs, etc.
-        //int shapeIndex = 0;
-        //int shapeStartIndex = 0;
-        //int shapeEndIndex = originalCounts[0];
-        //int currentDrawingCounts = 0;
-        //for(int i = 0; i < originalVertices.size(); i++)
-        //{
-        //    //Updates current shape index
-        //    if(i >= shapeEndIndex)
-        //    {
-        //        shapeStartIndex += originalCounts[shapeIndex];
-        //        shapeIndex++;
-        //        shapeEndIndex += originalCounts[shapeIndex];
-        //        currentDrawingCounts = 0;
-        //    }
-            
-        //    //If adding original vertices
-        //    if(verticesToRoundMap.find(i) == verticesToRoundMap.end())
-        //    {
-        //        drawingVertices.push_back(originalVertices[i]);
-        //        drawingUVs.push_back(originalUVs[i]);
-        //        drawingColors.push_back(originalColors[i]);
-        //        currentDrawingCounts++;      
-        //    }
-        //    //If adding arc vertices
-        //    else
-        //    {
-        //        int arcIndex = verticesToRoundMap[i];
-        //        int startIndex = 0;
-        //        for(int j = 0; j < arcIndex; j++)
-        //            startIndex += newCounts[j];
-                
-        //        int endIndex = startIndex + newCounts[arcIndex];
-
-        //        for(int j = startIndex; j < endIndex; j++)
-        //        {
-        //            drawingVertices.push_back(newVertices[j]);
-        //            drawingUVs.push_back(newUVs[j]);
-        //            drawingColors.push_back(newColors[j]);
-        //        }
-
-        //        currentDrawingCounts += newCounts[arcIndex];
-        //    }
-
-        //    //Updates drawing counts
-        //    if(i+1 >= shapeEndIndex)
-        //    {
-        //        drawingCounts.push_back(currentDrawingCounts);
-        //        drawingProperties.push_back(originalProperties[shapeIndex]);
-        //    }
-        //}
         ssLOG_FUNC_EXIT();
     }
 
