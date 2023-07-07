@@ -213,8 +213,9 @@ namespace Backend
         if(!CurrentImageAtlas->GetImageInfo(atlasId, returnInfo))
             return false;
 
-        Vertices.insert(Vertices.end(), vertices.begin(), vertices.end());
-        
+        for(int i = 0; i < vertices.size(); i++)
+            Vertices.push_back(glm::vec2(round(vertices.at(i).x), round(vertices.at(i).y)));
+
         for(int i = 0; i < colors.size(); i++)
             Colors.push_back(glm::vec4(colors.at(i).x, colors.at(i).y, colors.at(i).z, colors.at(i).w));
         
@@ -256,8 +257,9 @@ namespace Backend
         if(!CurrentImageAtlas->GetImageInfo(atlasId, returnInfo))
             return false;
         
-        Vertices.insert(Vertices.end(), vertices.begin(), vertices.end());
-        
+        for(int i = 0; i < vertices.size(); i++)
+            Vertices.push_back(glm::vec2(round(vertices.at(i).x), round(vertices.at(i).y)));
+
         for(int i = 0; i < colors.size(); i++)
             Colors.push_back(glm::vec4(colors.at(i).x, colors.at(i).y, colors.at(i).z, colors.at(i).w));
 

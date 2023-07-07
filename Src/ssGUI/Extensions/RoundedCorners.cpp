@@ -17,7 +17,9 @@ namespace Extensions
                                         ModifiedShapes()
                                         //VerticesToRoundPrevVertices(),
                                         //VerticesToRoundNextVertices()
-    {}
+    {
+        ModifiedShapes.AddTargetShape(ssGUI::TargetShape(0));
+    }
 
     RoundedCorners::~RoundedCorners()
     {}
