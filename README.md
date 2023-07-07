@@ -136,13 +136,18 @@ Which ssGUI has achieved most of them.
 ### 🧮 Quick Start
 
 #### 🔧 Using ssGUI in your project
-1. Add ssGUI to your project as submodule `git submodule add -b v0.94.01_release https://github.com/Neko-Box-Coder/ssGUI.git`
-2. Then initialize the submodules used by ssGUI `git submodule init`
-3. Add ssGUI to your `CMakeLists.txt` by doing `add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/directory/to/ssGUI")`
-4. And link it by doing `target_link_libraries(example PUBLIC ssGUI)`
+1. Add ssGUI to your project as submodule 
+    - `git submodule add -b v0.94.01_release https://github.com/Neko-Box-Coder/ssGUI.git <folder name>`
+2. Then initialize the submodules used by ssGUI 
+    - `git submodule update --init --recursive`
+3. Add ssGUI to your `CMakeLists.txt` by doing 
+    - `add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/directory/to/ssGUI")`
+4. And link it by doing 
+    - `target_link_libraries(example PUBLIC ssGUI)`
 
 #### 🏗️ Creating an simple GUI example
 ![](DocsGeneration/ND_Config/Images/IntroductionExample.gif) 
+
 (You can find this at `ssGUI/Example/ReadmeExampleV7`)
 
 ```C++
