@@ -72,7 +72,7 @@ namespace Extensions
             glm::vec2 GlobalPosition;           //See <GetGlobalPosition>
             glm::vec2 Size;                     //See <GetSize>
 
-            virtual bool IsPointContainedInShape(glm::vec2 point, std::vector<glm::vec2>& shapeVertices) const;
+            virtual bool IsPointContainedInShape(glm::vec2 point, const std::vector<glm::vec2>& shapeVertices) const;
             virtual bool IsPointContainedInMask(glm::vec2 point, glm::vec2 min, glm::vec2 max) const;
             virtual bool LineToLineIntersection(glm::vec2 linePointA, glm::vec2 linePointB, 
                                                 glm::vec2 linePointC, glm::vec2 linePointD, glm::vec2& intersection);
@@ -80,7 +80,7 @@ namespace Extensions
 /*             bool LineToShapeIntersection(   glm::vec2 linePointA, glm::vec2 linePointB,
                                             std::vector<glm::vec2>& shape, int& shapeIntersectionIndex, glm::vec2& intersection);*/
             virtual bool CheckLinesOverlapping(float minA, float maxA, float minB, float maxB);
-            virtual bool IsAABBOverlap( std::vector<glm::vec2>& shapeVerticies, 
+            virtual bool IsAABBOverlap( const std::vector<glm::vec2>& shapeVerticies, 
                                         glm::vec2 maskMin, 
                                         glm::vec2 maskMax, 
                                         glm::vec2& shapeMin, 
@@ -89,12 +89,12 @@ namespace Extensions
             virtual void GetIntersections(  std::vector<glm::vec2>& intersections, 
                                             std::vector<int>& shapeIntersectIndices, 
                                             std::vector<int>& maskIntersectIndices,
-                                            std::vector<glm::vec2>& shapeVerticies, 
+                                            const std::vector<glm::vec2>& shapeVerticies, 
                                             std::vector<glm::vec2>& maskVerticies);
             
             virtual void FormNewShapeWithIntersections( ssGUI::DrawingEntity& currentEntity,
                                                         std::vector<bool>& currentVertexChanged,
-                                                        ssGUI::DrawingEntity& originalEntity,
+                                                        const ssGUI::DrawingEntity& originalEntity,
                                                         glm::vec2 maskMin, 
                                                         glm::vec2 maskMax, 
                                                         std::vector<glm::vec2>& maskVerticies, 
@@ -102,14 +102,14 @@ namespace Extensions
                                                         std::vector<int>& shapeIntersectIndices, 
                                                         std::vector<int>& maskIntersectIndices);
 
-            virtual void SampleNewUVsAndColoursForShapes(   std::vector<DrawingEntity>& originalEntities, 
+            virtual void SampleNewUVsAndColoursForShapes(   const std::vector<DrawingEntity>& originalEntities, 
                                                             std::vector<DrawingEntity>& newEntities, 
                                                             std::vector<std::vector<bool>>& changed);
 
 //            int GetIndicesDistance(int count, int startIndex, int endIndex);
             virtual int GetNextIndex(int indexOffset, int count, int currentIndex);
             virtual int GetPreviousIndex(int indexOffset, int count, int currentIndex);
-            virtual bool GetSampleIndicesFromShape(std::vector<glm::vec2>& vertices, int closestIndices[], glm::vec2 samplePoint);
+            virtual bool GetSampleIndicesFromShape(const std::vector<glm::vec2>& vertices, int closestIndices[], glm::vec2 samplePoint);
 
             virtual void AddMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent);
             virtual void RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent);
