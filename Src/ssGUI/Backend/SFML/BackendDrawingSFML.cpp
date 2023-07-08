@@ -253,7 +253,16 @@ namespace Backend
                                         int characterSize)
     {
         if(!font.IsValid())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid font");
             return false;
+        }
+        
+        if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            return false;
+        }
 
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
@@ -358,7 +367,16 @@ namespace Backend
                                         const ssGUI::Backend::BackendImageInterface& image)
     {
         if(!image.IsValid())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid image");
             return false;
+        }
+
+        if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            return false;
+        }
 
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
@@ -398,13 +416,12 @@ namespace Backend
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::u8vec4>& colors)
     {
-        if(vertices.size() != colors.size() || vertices.empty())
+        if(vertices.size() != colors.size())
         {
-            // std::cout<<"vertices size: "<<vertices.size()<<"\n";
-            // std::cout<<"colors size: "<<colors.size()<<"\n";
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a color attribute");
             return false;
         }
-        
+
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
 

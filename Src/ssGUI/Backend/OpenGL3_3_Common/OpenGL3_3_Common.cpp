@@ -111,7 +111,19 @@ namespace Backend
                 mipmapLevel = mip_map_level(boundedTexCoord.xy);
             #endif
             
-            int roundedMipmapLevel = int(mipmapLevel);
+            int lowerDim = min(textureSize(ourTexture, 0).x, textureSize(ourTexture, 0).y);
+            const int MAX_LOOP = 99;
+            int counter = 1;
+            for(int i = 0; i < MAX_LOOP; i++)
+            {
+                lowerDim = lowerDim >> 1;
+                counter++;
+                
+                if(lowerDim == 0)
+                    break;
+            }
+            
+            int roundedMipmapLevel = int(clamp(mipmapLevel, 0, counter));
             //roundedMipmapLevel = 3;
             
             //If mipmap level is 0 (base), don't need to do anything
@@ -139,7 +151,6 @@ namespace Backend
             ivec2 mipmapSize = ivec2(imageSize);
             int mipmapYOffset = -mipmapSize.y; 
             
-            const int MAX_LOOP = 99;
             for(int i = 0; i < MAX_LOOP; i++)
             {
                 if(i == roundedMipmapLevel)
@@ -195,8 +206,17 @@ namespace Backend
                                         int characterSize)
     {
         if(!font.IsValid())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid font");
             return false;
-    
+        }
+        
+        if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            return false;
+        }
+
         auto& rawFont = const_cast<ssGUI::Backend::BackendFontInterface&>(font);
 
         CharTextureIdentifier curIdentifier = CharTextureIdentifier(&rawFont, characterSize, character);
@@ -243,7 +263,16 @@ namespace Backend
                                         const ssGUI::Backend::BackendImageInterface& image)
     {
         if(!image.IsValid())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid image");
             return false;
+        }
+        
+        if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            return false;
+        }
         
         if(MappedImgIds.find((ssGUI::Backend::BackendImageInterface*)&image) == MappedImgIds.end())
         {
@@ -285,6 +314,12 @@ namespace Backend
     bool OpenGL3_3_Common::DrawShape(   const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::u8vec4>& colors)
     {
+        if(vertices.size() != colors.size())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a color attribute");
+            return false;
+        }
+
         Vertices.insert(Vertices.end(), vertices.begin(), vertices.end());
         for(int i = 0; i < colors.size(); i++)
             Colors.push_back(glm::vec4(colors.at(i).x, colors.at(i).y, colors.at(i).z, colors.at(i).w));
