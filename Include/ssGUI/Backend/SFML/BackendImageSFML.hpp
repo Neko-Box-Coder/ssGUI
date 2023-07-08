@@ -65,11 +65,11 @@ namespace Backend
             //function: LoadImgFileFromMemory
             //See <BackendImageInterface::LoadImgFileFromMemory>
             //The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.
-            bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size) override;
+            bool LoadImgFileFromMemory(const void * dataPtr, std::size_t size) override;
             
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) override;
+            bool LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) override;
             
             //function: GetSize
             //See <BackendImageInterface::GetSize>

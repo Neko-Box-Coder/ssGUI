@@ -109,8 +109,8 @@ namespace Extensions
     {
         ssLOG_FUNC_ENTRY();
         
-        //This should be done in post update
-        if(isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
+        //This should be done in pre update
+        if(!isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
             ssLOG_FUNC_EXIT();
             return;

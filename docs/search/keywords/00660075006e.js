@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("fun",["Enumeration"],[["FunctionKey",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/FunctionKey.hpp:ssGUI.Enums.FunctionKey","CClass:ssGUI.Enums:FunctionKey"]]]]);

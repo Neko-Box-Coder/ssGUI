@@ -276,24 +276,20 @@ namespace ssGUI
         glm::vec2 drawPosition = GetGlobalPosition();
 
         //Base window
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
+        ssGUI::DrawingEntity baseWindowEntity;
+        baseWindowEntity.Vertices.push_back(drawPosition);
+        baseWindowEntity.Colors.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
+        baseWindowEntity.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        baseWindowEntity.Colors.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
+        baseWindowEntity.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        baseWindowEntity.Colors.push_back(GetBackgroundColor());
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        baseWindowEntity.Vertices.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        baseWindowEntity.Colors.push_back(GetBackgroundColor());
+        baseWindowEntity.EntityName = WINDOW_BASE_SHAPE_NAME;
+        DrawingEntities.push_back(baseWindowEntity);
 
         //Title bar
         if(!HasTitlebar())
@@ -316,24 +312,20 @@ namespace ssGUI
         rgbAdder(&titlebarColor.b, TitlebarColorDifference.b);
         rgbAdder(&titlebarColor.a, TitlebarColorDifference.a);
 
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(titlebarColor);
+        ssGUI::DrawingEntity titlebarEntity;
+        titlebarEntity.Vertices.push_back(drawPosition);
+        titlebarEntity.Colors.push_back(titlebarColor);
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(titlebarColor);
+        titlebarEntity.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        titlebarEntity.Colors.push_back(titlebarColor);
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, TitlebarHeight));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(titlebarColor);
+        titlebarEntity.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, TitlebarHeight));
+        titlebarEntity.Colors.push_back(titlebarColor);
 
-        DrawingVerticies.push_back(drawPosition + glm::vec2(0, TitlebarHeight));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(titlebarColor);
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        titlebarEntity.Vertices.push_back(drawPosition + glm::vec2(0, TitlebarHeight));
+        titlebarEntity.Colors.push_back(titlebarColor);
+        titlebarEntity.EntityName = WINDOW_TITLEBAR_SHAPE_NAME;
+        DrawingEntities.push_back(titlebarEntity);
         
         // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
     }
@@ -367,6 +359,9 @@ namespace ssGUI
             BlockMouseInputAndUpdateCursor(inputStatus, currentMousePos, inputInterface);
         }
     }
+        
+    const std::string Window::WINDOW_BASE_SHAPE_NAME = "Window Base";
+    const std::string Window::WINDOW_TITLEBAR_SHAPE_NAME = "Window Titlebar";
         
     Window::Window() :  Titlebar(true),
                         TitlebarHeight(20),
@@ -434,6 +429,8 @@ namespace ssGUI
 
         if(IsDeleteAfterClosed())
             Delete();
+        else
+            SetEnabled(false);
     }
     
     void Window::SetClosable(bool closable)

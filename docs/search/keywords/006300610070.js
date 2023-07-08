@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("cap",["Constant"],[["CAPS_LOCK",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/SystemKey.hpp:ssGUI.Enums.CAPS_LOCK","CClass:ssGUI.Enums:CAPS_LOCK"]]]]);

@@ -258,6 +258,7 @@ namespace ssGUI
             
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string IMAGE_CANVAS_IMAGE_SHAPE_NAME;
 
             ImageCanvas();
             virtual ~ImageCanvas() override;
@@ -441,6 +442,14 @@ namespace ssGUI
             //Setting image data will automatically call <CenterViewportToImage>.
             //For description of SetImageData, see <ssGUI::Image::SetImageData>
             virtual void SetImageData(ssGUI::ImageData* imageData) override;
+
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
 
             //function: GetType
             //See <ssGUI::Widget::GetType>

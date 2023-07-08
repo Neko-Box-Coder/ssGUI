@@ -125,7 +125,7 @@ namespace Extensions
                 float prevDiff = resizeFirst ? diff : resizedAmount;
                 //Reduce gui objects sizes before container
                 Container->GetParent()->StashChildrenIterator();
-                Container->GetParent()->FindChild(Container);
+                Container->GetParent()->MoveChildrenIteratorToChild(Container);
                 Container->GetParent()->MoveChildrenIteratorPrevious();
                 while(!Container->GetParent()->IsChildrenIteratorEnd() && prevDiff != 0)
                 {
@@ -154,7 +154,7 @@ namespace Extensions
                 //Increase gui objects sizes after container
                 float afterDiff = resizeFirst ? diff : resizedAmount;
                 Container->GetParent()->StashChildrenIterator();
-                Container->GetParent()->FindChild(Container);
+                Container->GetParent()->MoveChildrenIteratorToChild(Container);
                 Container->GetParent()->MoveChildrenIteratorNext();
                 while(!Container->GetParent()->IsChildrenIteratorEnd() && afterDiff != 0)
                 {

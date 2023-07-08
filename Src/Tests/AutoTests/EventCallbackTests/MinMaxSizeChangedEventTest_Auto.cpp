@@ -22,13 +22,13 @@ int main()
                                         ListenerNum += 1;
                                     });
         TestObj->AddEventCallbackCopy(Callback, true);
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(Callback);
         ssGUI::Factory::Dispose(TestObj);
-    }
+    };
 
     ssTEST("EventTest")
     {
@@ -43,7 +43,7 @@ int main()
         
         TestObj->SetMaxSize(glm::vec2(500, 500));
         ssTEST_OUTPUT_ASSERT(ListenerNum == 2);   
-    }
+    };
 
     ssTEST_END();
 }

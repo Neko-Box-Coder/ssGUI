@@ -1,0 +1,3 @@
+Src/Tests/TestsResources.c
+Src/Examples/ExamplesResources.c
+Src/ssGUI/EmbeddedResources.c

@@ -37,12 +37,12 @@ namespace Backend
         return true;
     }
 
-    bool BackendImageTemplate::LoadImgFileFromMemory(void const * dataPtr, std::size_t size)
+    bool BackendImageTemplate::LoadImgFileFromMemory(const void * dataPtr, std::size_t size)
     {
         return true;
     }
 
-    bool BackendImageTemplate::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
+    bool BackendImageTemplate::LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
         return true;
     }

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("beg",["Function"],[["Begin",,[["ssGUI::SegmentedVector",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/SegmentedVector.hpp:ssGUI.SegmentedVector.Begin","CClass:ssGUI.SegmentedVector:Begin"]]]]);

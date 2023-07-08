@@ -185,6 +185,7 @@ namespace Extensions
         
         public:
             static const std::string EXTENSION_NAME;
+            static const std::string SHAPE_SHAPES_NAME;
 
             /*function: AddAdditionalPolygon
             Adding additional polygon in addition to GUI Object. 

@@ -25,40 +25,41 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        bool RecalculateTextNeeded;                                                     //(Internal variable) Flag to recalculate all the cahracters locations
-                                                                                        //TODO: Maybe just use redraw flag?
-        ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;       //See <GetCharacterDetails>
+        bool RecalculateTextNeeded;                                                         //(Internal variable) Flag to recalculate all the cahracters locations
+                                                                                            //TODO: Maybe just use redraw flag?
+        mutable ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;   //See <GetCharacterDetails>
 
-        std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;                  //(Internal variable) Vertices for rendering characters
-        std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;     //(Internal variable) Valid characters for rendering
+        std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;                      //(Internal variable) Vertices for rendering characters
+        std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;         //(Internal variable) Valid characters for rendering
 
-        bool Overflow;                                                                  //See <IsOverflow>
-        float FontSize;                                                                 //See <GetNewTextFontSize>
-        glm::u8vec4 TextColor;                                                          //See <GetNewTextColor>
-        bool TextUnderline;                                                             //See <IsNewTextUnderlined>
-        bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
-        ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
-        ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
-        ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetVerticalAlignment>
-        std::vector<ssGUI::Font*> CurrentFonts;                                         //See <GetFont>
+        bool Overflow;                                                                      //See <IsOverflow>
+        float FontSize;                                                                     //See <GetNewTextFontSize>
+        glm::u8vec4 TextColor;                                                              //See <GetNewTextColor>
+        bool TextUnderline;                                                                 //See <IsNewTextUnderlined>
+        bool MultilineAllowed;                                                              //See <IsMultilineAllowed>
+        ssGUI::Enums::TextWrapping WrappingMode;                                            //See <GetWrappingMode>
+        ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                       //See <GetTextHorizontalAlignment>
+        ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                           //See <GetTextVerticalAlignment>
+        std::vector<ssGUI::Font*> CurrentFonts;                                             //See <GetFont>
 
-        float HorizontalPadding;                                                        //See <GetHorizontalPadding>
-        float VerticalPadding;                                                          //See <GetVerticalPadding>
-        float CharacterSpace;                                                           //See <GetCharacterSpace>
-        float LineSpace;                                                                //See <GetLineSpace>
-        float TabSize;                                                                  //See <GetTabSize>
-        bool SelectionAllowed;                                                          //See <IsTextSelectionAllowed>
-        int StartSelectionIndex;                                                        //See <GetStartSelectionIndex>
-        int EndSelectionIndex;                                                          //See <GetEndSelectionIndex>
+        float HorizontalPadding;                                                            //See <GetTextHorizontalPadding>
+        float VerticalPadding;                                                              //See <GetTextVerticalPadding>
+        float CharacterSpace;                                                               //See <GetCharacterSpace>
+        float LineSpace;                                                                    //See <GetLineSpace>
+        float TabSize;                                                                      //See <GetTabSize>
+        bool SelectionAllowed;                                                              //See <IsTextSelectionAllowed>
+        int StartSelectionIndex;                                                            //See <GetStartSelectionIndex>
+        int EndSelectionIndex;                                                              //See <GetEndSelectionIndex>
+        bool DeselectWhenFocusLost;                                                         //See <IsDeselectWhenFocusLost>
 
-        glm::u8vec4 SelectionColor;                                                     //See <GetSelectionColor>
-        glm::u8vec4 TextSelectedColor;                                                  //See <GetTextSelectedColor>
+        glm::u8vec4 SelectionColor;                                                         //See <GetSelectionColor>
+        glm::u8vec4 TextSelectedColor;                                                      //See <GetTextSelectedColor>
 
-        uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
+        uint32_t LastDefaultFontsID;                                                        //(Internal variable) Used to keep track if there's any changes to the default fonts
 
-        static int TextObjectCount;                                                     //(Internal variable) Used for deallocating default resources
-        static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
-        static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
+        static int TextObjectCount;                                                         //(Internal variable) Used for deallocating default resources
+        static std::vector<ssGUI::Font*> DefaultFonts;                                      //See <GetDefaultFont>
+        static uint32_t DefaultFontsChangeID;                                               //(Internal variable) Used to track default font changes
     =================================================================
     ============================== C++ ==============================
     Text::Text() :  RecalculateTextNeeded(false),
@@ -66,13 +67,13 @@ namespace ssGUI
                     CharactersRenderInfos(),
                     ProcessedCharacterDetails(),
                     Overflow(false),
-                    FontSize(15),
+                    FontSize(17),
                     TextColor(0, 0, 0, 255),
                     TextUnderline(false),
                     MultilineAllowed(true),
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING),
-                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT),
-                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP),
+                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER),
+                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER),
                     CurrentFonts(),
                     HorizontalPadding(5),
                     VerticalPadding(5),
@@ -82,6 +83,7 @@ namespace ssGUI
                     SelectionAllowed(true),
                     StartSelectionIndex(-1),
                     EndSelectionIndex(-1),
+                    DeselectWhenFocusLost(true),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
                     LastDefaultFontsID(0)
@@ -100,7 +102,7 @@ namespace ssGUI
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
         );
-    
+        
         TextObjectCount++;
         
         AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
@@ -130,40 +132,41 @@ namespace ssGUI
             Text& operator=(Text const& other);
 
         protected:
-            bool RecalculateTextNeeded;                                                     //(Internal variable) Flag to recalculate all the cahracters locations
-                                                                                            //TODO: Maybe just use redraw flag?
-            ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;       //See <GetCharacterDetails>
+            bool RecalculateTextNeeded;                                                         //(Internal variable) Flag to recalculate all the cahracters locations
+                                                                                                //TODO: Maybe just use redraw flag?
+            mutable ssGUI::SegmentedVector<ssGUI::CharacterDetails> CurrentCharactersDetails;   //See <GetCharacterDetails>
 
-            std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;                  //(Internal variable) Vertices for rendering characters
-            std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;     //(Internal variable) Valid characters for rendering
+            std::vector<ssGUI::CharacterRenderInfo> CharactersRenderInfos;                      //(Internal variable) Vertices for rendering characters
+            std::unordered_map<int, ssGUI::CharacterDetails> ProcessedCharacterDetails;         //(Internal variable) Valid characters for rendering
 
-            bool Overflow;                                                                  //See <IsOverflow>
-            float FontSize;                                                                 //See <GetNewTextFontSize>
-            glm::u8vec4 TextColor;                                                          //See <GetNewTextColor>
-            bool TextUnderline;                                                             //See <IsNewTextUnderlined>
-            bool MultilineAllowed;                                                          //See <IsMultilineAllowed>
-            ssGUI::Enums::TextWrapping WrappingMode;                                        //See <GetWrappingMode>
-            ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                   //See <GetHorizontalAlignment>
-            ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                       //See <GetVerticalAlignment>
-            std::vector<ssGUI::Font*> CurrentFonts;                                         //See <GetFont>
+            bool Overflow;                                                                      //See <IsOverflow>
+            float FontSize;                                                                     //See <GetNewTextFontSize>
+            glm::u8vec4 TextColor;                                                              //See <GetNewTextColor>
+            bool TextUnderline;                                                                 //See <IsNewTextUnderlined>
+            bool MultilineAllowed;                                                              //See <IsMultilineAllowed>
+            ssGUI::Enums::TextWrapping WrappingMode;                                            //See <GetWrappingMode>
+            ssGUI::Enums::AlignmentHorizontal CurrentHorizontalAlignment;                       //See <GetTextHorizontalAlignment>
+            ssGUI::Enums::AlignmentVertical CurrentVerticalAlignment;                           //See <GetTextVerticalAlignment>
+            std::vector<ssGUI::Font*> CurrentFonts;                                             //See <GetFont>
 
-            float HorizontalPadding;                                                        //See <GetHorizontalPadding>
-            float VerticalPadding;                                                          //See <GetVerticalPadding>
-            float CharacterSpace;                                                           //See <GetCharacterSpace>
-            float LineSpace;                                                                //See <GetLineSpace>
-            float TabSize;                                                                  //See <GetTabSize>
-            bool SelectionAllowed;                                                          //See <IsTextSelectionAllowed>
-            int StartSelectionIndex;                                                        //See <GetStartSelectionIndex>
-            int EndSelectionIndex;                                                          //See <GetEndSelectionIndex>
+            float HorizontalPadding;                                                            //See <GetTextHorizontalPadding>
+            float VerticalPadding;                                                              //See <GetTextVerticalPadding>
+            float CharacterSpace;                                                               //See <GetCharacterSpace>
+            float LineSpace;                                                                    //See <GetLineSpace>
+            float TabSize;                                                                      //See <GetTabSize>
+            bool SelectionAllowed;                                                              //See <IsTextSelectionAllowed>
+            int StartSelectionIndex;                                                            //See <GetStartSelectionIndex>
+            int EndSelectionIndex;                                                              //See <GetEndSelectionIndex>
+            bool DeselectWhenFocusLost;                                                         //See <IsDeselectWhenFocusLost>
 
-            glm::u8vec4 SelectionColor;                                                     //See <GetSelectionColor>
-            glm::u8vec4 TextSelectedColor;                                                  //See <GetTextSelectedColor>
+            glm::u8vec4 SelectionColor;                                                         //See <GetSelectionColor>
+            glm::u8vec4 TextSelectedColor;                                                      //See <GetTextSelectedColor>
 
-            uint32_t LastDefaultFontsID;                                                    //(Internal variable) Used to keep track if there's any changes to the default fonts
+            uint32_t LastDefaultFontsID;                                                        //(Internal variable) Used to keep track if there's any changes to the default fonts
 
-            static int TextObjectCount;                                                     //(Internal variable) Used for deallocating default resources
-            static std::vector<ssGUI::Font*> DefaultFonts;                                  //See <GetDefaultFont>
-            static uint32_t DefaultFontsChangeID;                                           //(Internal variable) Used to track default font changes
+            static int TextObjectCount;                                                         //(Internal variable) Used for deallocating default resources
+            static std::vector<ssGUI::Font*> DefaultFonts;                                      //See <GetDefaultFont>
+            static uint32_t DefaultFontsChangeID;                                               //(Internal variable) Used to track default font changes
 
 
             Text(Text const& other);
@@ -204,6 +207,9 @@ namespace ssGUI
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string TEXT_CHARACTER_SHAPE_NAME;
+            static const std::string TEXT_HIGHLIGHT_SHAPE_NAME;
+            static const std::string TEXT_UNDERLINE_SHAPE_NAME;
 
             Text();
             virtual ~Text() override;
@@ -239,10 +245,28 @@ namespace ssGUI
             //function: RemoveText
             //Remove text in range
             virtual void RemoveText(int startIndex, int exclusiveEndIndex);
+
+            //function: GetText
+            //Gets the text being shown
+            virtual void GetText(std::wstring& retText) const;
             
             //function: GetText
             //Gets the text being shown
-            virtual std::wstring GetText();
+            virtual void GetText(std::string& retText) const;
+            
+            //function: GetText
+            //Gets the text being shown
+            template<typename T>
+            T GetText() const
+            {
+                T retString;
+                GetText(retString);
+                return retString;
+            }
+
+            //function: GetText (deprecated)
+            //Gets the text being shown. This is deprecated, use the template version instead.
+            virtual std::wstring GetText() const;
             
             //function: GetCharacterCount
             //Gets the number of characters for the text being shown
@@ -346,20 +370,20 @@ namespace ssGUI
             //Gets the wrapping mode of this text widget
             virtual ssGUI::Enums::TextWrapping GetWrappingMode() const;
 
-            //function: SetHorizontalAlignment
-            virtual void SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align);
+            //function: SetTextHorizontalAlignment
+            virtual void SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align);
 
-            //function: GetHorizontalAlignment
-            virtual ssGUI::Enums::AlignmentHorizontal GetHorizontalAlignment() const;
+            //function: GetTextHorizontalAlignment
+            virtual ssGUI::Enums::AlignmentHorizontal GetTextHorizontalAlignment() const;
 
-            //function: SetVerticalAlignment
-            virtual void SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align);
+            //function: SetTextVerticalAlignment
+            virtual void SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical align);
 
-            //function: GetVerticalAlignment
-            virtual ssGUI::Enums::AlignmentVertical GetVerticalAlignment() const;
+            //function: GetTextVerticalAlignment
+            virtual ssGUI::Enums::AlignmentVertical GetTextVerticalAlignment() const;
             
-            //function: SetAlignment
-            virtual void SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert);
+            //function: SetTextAlignment
+            virtual void SetTextAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert);
 
             //function: AddFont
             //Adds the font to the end for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
@@ -381,21 +405,21 @@ namespace ssGUI
             //function: GetFontsCount
             virtual int GetFontsCount() const;
 
-            //function: SetHorizontalPadding
+            //function: SetTextHorizontalPadding
             //Sets the horizontal padding for the beginning and the end of the text
-            virtual void SetHorizontalPadding(float padding);
+            virtual void SetTextHorizontalPadding(float padding);
 
-            //function: GetHorizontalPadding
+            //function: GetTextHorizontalPadding
             //Gets the horizontal padding for the beginning and the end of the text
-            virtual float GetHorizontalPadding() const;
+            virtual float GetTextHorizontalPadding() const;
 
-            //function: SetVerticalPadding
+            //function: SetTextVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual void SetVerticalPadding(float padding);
+            virtual void SetTextVerticalPadding(float padding);
 
-            //function: GetVerticalPadding
+            //function: GetTextVerticalPadding
             //Sets the vertical padding for the beginning and the end of the text
-            virtual float GetVerticalPadding() const;
+            virtual float GetTextVerticalPadding() const;
             
             //function: SetCharacterSpace
             //Sets the additional space between each character
@@ -467,6 +491,14 @@ namespace ssGUI
             //function: GetTextSelectedColor
             //Gets the text color when being selected
             virtual glm::u8vec4 GetTextSelectedColor() const;
+
+            //function: SetDeselectWhenFocusLost
+            //Sets the text to deselect when its focus is lost or not
+            virtual void SetDeselectWhenFocusLost(bool deselectWhenFocusLost);
+            
+            //function: IsDeselectWhenFocusLost
+            //Returns the text to deselect when its focus is lost or not
+            virtual bool IsDeselectWhenFocusLost() const;
 
             //function: GetContainedCharacterIndexFromPos
             //Gets the character index if the passed in position is contained inside a character

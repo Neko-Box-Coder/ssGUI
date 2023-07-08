@@ -12,6 +12,8 @@ extern const uint8_t ssGUI_Test_NotoColorEmoji[];
 extern const size_t ssGUI_Test_NotoColorEmoji_size;
 extern const uint8_t ssGUI_Test_sd[];
 extern const size_t ssGUI_Test_sd_size;
+extern const uint8_t ssGUI_Test_sd_edge[];
+extern const size_t ssGUI_Test_sd_edge_size;
 extern const uint8_t ssGUI_Test_NotoSans_Bold[];
 extern const size_t ssGUI_Test_NotoSans_Bold_size;
 

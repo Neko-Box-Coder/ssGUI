@@ -35,11 +35,11 @@ namespace Backend
 
             //function: LoadImgFileFromMemory
             //Loads an image file from memory with specified size in bytes
-            virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size) = 0;
+            virtual bool LoadImgFileFromMemory(const void * dataPtr, std::size_t size) = 0;
 
             //function: LoadRawFromMemory
             //This loads an image with specified image format in memory 
-            virtual bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) = 0;
+            virtual bool LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) = 0;
 
             //function: GetSize
             //Returns the size of the image
@@ -50,14 +50,17 @@ namespace Backend
             virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const = 0;
             
             //function: UpdateCache
+            //Updates the drawing interfaces' cache with the current image
             virtual void UpdateCache() = 0;
             
             //function: Internal_AddBackendDrawingRecord
             //(Internal ssGUI function) Adds a linking record of indicating this image is stored in backend drawing.
+            //By default no linking record will be cloned when <Clone> is called.
             virtual void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
             
             //function: Internal_RemoveBackendDrawingRecord
             //(Internal ssGUI function) Removes a linking record of indicating this image is stored in backend drawing.
+            //By default no linking record will be cloned when <Clone> is called.
             virtual void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
 
             //function: Clone

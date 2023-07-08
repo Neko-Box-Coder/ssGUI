@@ -25,14 +25,14 @@ int main()
                                         ListenerNum = 1;
                                     });
         TestWindow->AddEventCallbackCopy(Callback, true);
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(Callback);
         ssGUI::Factory::Dispose(TestObj);
         ssGUI::Factory::Dispose(TestWindow);
-    }
+    };
 
     ssTEST("EventTest")
     {
@@ -40,7 +40,7 @@ int main()
         TestObj->SetParent(nullptr);
         
         ssTEST_OUTPUT_ASSERT(ListenerNum == 1);   
-    }
+    };
 
     ssTEST_END();
 }

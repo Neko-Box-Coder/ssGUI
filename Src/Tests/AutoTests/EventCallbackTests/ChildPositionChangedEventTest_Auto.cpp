@@ -28,7 +28,7 @@ int main()
                                         ListenerNum = 1;
                                     });
         TestWindow->AddEventCallbackCopy(Callback, true);
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
@@ -36,7 +36,7 @@ int main()
         ssGUI::Factory::Dispose(TestObj);
         ssGUI::Factory::Dispose(TestObj2);
         ssGUI::Factory::Dispose(TestWindow);
-    }
+    };
 
     ssTEST("EventTest")
     {
@@ -50,7 +50,7 @@ int main()
         
         TestWindow->ChangeChildOrderToAfterPosition(tokenFirst, tokenLast);
         ssTEST_OUTPUT_ASSERT(ListenerNum == 1);   
-    }
+    };
 
     ssTEST_END();
 }

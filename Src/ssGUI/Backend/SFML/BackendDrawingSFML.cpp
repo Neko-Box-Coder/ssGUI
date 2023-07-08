@@ -101,11 +101,7 @@ namespace Backend
         //targetWindow->popGLStates();
     }
 
-    bool BackendDrawingSFML::DrawEntities(  const std::vector<glm::vec2>& vertices, 
-                                            const std::vector<glm::vec2>& texCoords,
-                                            const std::vector<glm::u8vec4>& colors,
-                                            const std::vector<int>& counts,
-                                            const std::vector<ssGUI::DrawingProperty>& properties)
+    bool BackendDrawingSFML::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
         //Check correct backend index
         if(BackendIndex >= ssGUI::Backend::BackendManager::GetMainWindowCount())
@@ -122,34 +118,44 @@ namespace Backend
             return false;
 
         //Start drawing
-        int currentIndex = 0;
-        for(int i = 0; i < counts.size(); i++)
+        for(int i = 0; i < entities.size(); i++)
         {
             bool result = true;
             //Drawing text
-            if(properties[i].fontP != nullptr)
+            if(entities[i].BackendFont != nullptr)
             {
-                result = DrawShape( vertices, texCoords, colors, properties[i].character, currentIndex, 
-                                    currentIndex + counts[i], *properties[i].fontP, properties[i].characterSize);
+                result = DrawShape( entities[i].Vertices, 
+                                    entities[i].TexCoords, 
+                                    entities[i].Colors, 
+                                    entities[i].Character, 
+                                    *entities[i].BackendFont, 
+                                    entities[i].CharacterSize);
             }
             //Drawing image
-            else if(properties[i].imageP != nullptr)
+            else if(entities[i].BackendImage != nullptr)
             {
-                result = DrawShape(  vertices, texCoords, colors, currentIndex, currentIndex + counts[i],
-                                    *properties[i].imageP);
+                result = DrawShape( entities[i].Vertices, 
+                                    entities[i].TexCoords, 
+                                    entities[i].Colors,
+                                    *entities[i].BackendImage);
             }
             //Drawing shapes
             else 
             {
-                result = DrawShape(  vertices, colors, currentIndex, currentIndex + counts[i]);
+                result = DrawShape( entities[i].Vertices, 
+                                    entities[i].Colors);
             }
-            currentIndex += counts[i];
 
             if(!result)
                 return false;
         }
 
         return true;
+    }
+
+    void BackendDrawingSFML::DrawToBackBuffer()
+    {
+        //NOTE: Doesn't need to do anything, SFML is handling for us
     }
 
     void BackendDrawingSFML::Render(glm::u8vec3 clearColor)
@@ -246,53 +252,37 @@ namespace Backend
                                         const ssGUI::Backend::BackendFontInterface& font,
                                         int characterSize)
     {
-        return DrawShape(vertices, texCoords, colors, character, 0, vertices.size(), font, characterSize);
-    }
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colors,
-                                        const ssGUI::Backend::BackendImageInterface& image)
-    {
-        return DrawShape(vertices, texCoords, colors, 0, vertices.size(), image);
-    }
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colors)
-    {
-        return DrawShape(vertices, colors, 0, vertices.size());
-    }
-
-    bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::vec2>& texCoords,
-                                        const std::vector<glm::u8vec4>& colors,
-                                        const uint32_t character,
-                                        int startIndex, int endIndex,
-                                        const ssGUI::Backend::BackendFontInterface& font,
-                                        int characterSize)
-    {
         if(!font.IsValid())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid font");
             return false;
+        }
+        
+        if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            return false;
+        }
 
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
         // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, endIndex - startIndex);
+        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, vertices.size());
 
         #ifdef SSGUI_FONT_BACKEND_SFML
             sf::IntRect charUV = ((ssGUI::Backend::BackendFontSFML&)font).GetSFMLFont()->getGlyph(character, characterSize, false).textureRect;
         #endif
 
-        for(int i = startIndex; i < endIndex; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
             //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
-            outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));
-            outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
+            outputShape[i].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));
+            outputShape[i].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
+            outputShape[i].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
 
             #ifdef SSGUI_FONT_BACKEND_SFML
-            outputShape[i - startIndex].texCoords += sf::Vector2f(charUV.left, charUV.top);
+                outputShape[i].texCoords += sf::Vector2f(charUV.left, charUV.top);
             #endif            
         }
 
@@ -374,24 +364,32 @@ namespace Backend
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
-                                        int startIndex, int endIndex,
                                         const ssGUI::Backend::BackendImageInterface& image)
     {
         if(!image.IsValid())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid image");
             return false;
+        }
+
+        if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            return false;
+        }
 
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>(
                                         ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
         
         // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, endIndex - startIndex);
+        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, vertices.size());
 
-        for(int i = startIndex; i < endIndex; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
             //The reason for rounding the position is because it seems like the UV is shifting in floating points, at least for now
-            outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
-            outputShape[i - startIndex].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
-            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
+            outputShape[i].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            outputShape[i].texCoords = sf::Vector2f(texCoords[i].x, texCoords[i].y);
+            outputShape[i].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
         }
         
         //Using SFML image interface
@@ -412,32 +410,28 @@ namespace Backend
             targetWindow->draw(outputShape, &ImageTextures[imgPtr]);
         #endif
 
-
         return true;
     }
 
-
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
-                                        const std::vector<glm::u8vec4>& colors,
-                                        int startIndex, int endIndex)
-    {      
-        if(vertices.size() != colors.size() || vertices.empty())
+                                        const std::vector<glm::u8vec4>& colors)
+    {
+        if(vertices.size() != colors.size())
         {
-            // std::cout<<"vertices size: "<<vertices.size()<<"\n";
-            // std::cout<<"colors size: "<<colors.size()<<"\n";
+            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a color attribute");
             return false;
         }
-        
+
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
 
         // create an array of 3 vertices that define a triangle primitive
-        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, endIndex - startIndex);
+        sf::VertexArray outputShape(sf::PrimitiveType::TriangleFan, vertices.size());
 
-        for(int i = startIndex; i < endIndex; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {                        
-            outputShape[i - startIndex].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
-            outputShape[i - startIndex].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
+            outputShape[i].position = sf::Vector2f(round(vertices[i].x), round(vertices[i].y));//targetWindow->mapPixelToCoords(sf::Vector2i(round(vertices[i].x), round(vertices[i].y)));
+            outputShape[i].color = sf::Color(colors[i].r, colors[i].g, colors[i].b, colors[i].a);
         }
         
         targetWindow->draw(outputShape);

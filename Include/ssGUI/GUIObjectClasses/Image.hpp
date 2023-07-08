@@ -61,6 +61,7 @@ namespace ssGUI
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string IMAGE_SHAPE_NAME;
 
             Image();
             virtual ~Image() override;

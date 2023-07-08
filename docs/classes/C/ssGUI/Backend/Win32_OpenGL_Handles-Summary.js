@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.Backend.Win32_OpenGL_Handles","Win32_OpenGL_Handles");NDSummary.OnSummaryLoaded("CClass:ssGUI.Backend.Win32_OpenGL_Handles",[["C/C++","C"]],[["Structs","Struct"]],[[678,0,0,"<span class=\"Qualifier\">ssGUI::&#8203;Backend::</span>&#8203;Win32_OpenGL_Handles"]]);

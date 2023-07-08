@@ -27,17 +27,18 @@ namespace ssGUI
         TextUnderline = other.IsNewTextUnderlined();
         MultilineAllowed = other.IsMultilineAllowed();
         WrappingMode = other.GetWrappingMode();
-        CurrentHorizontalAlignment = other.GetHorizontalAlignment();
-        CurrentVerticalAlignment = other.GetVerticalAlignment();
+        CurrentHorizontalAlignment = other.GetTextHorizontalAlignment();
+        CurrentVerticalAlignment = other.GetTextVerticalAlignment();
         CurrentFonts = other.CurrentFonts;
-        HorizontalPadding = other.GetHorizontalPadding();
-        VerticalPadding = other.GetVerticalPadding();
+        HorizontalPadding = other.GetTextHorizontalPadding();
+        VerticalPadding = other.GetTextVerticalPadding();
         CharacterSpace = other.GetCharacterSpace();
         LineSpace = other.GetLineSpace();
         TabSize = other.GetTabSize();
         SelectionAllowed = other.IsTextSelectionAllowed();
         StartSelectionIndex = other.GetStartSelectionIndex();
         EndSelectionIndex = other.GetEndSelectionIndex();
+        DeselectWhenFocusLost = other.IsDeselectWhenFocusLost();
         SelectionColor = other.GetSelectionColor();
         TextSelectedColor = other.GetTextSelectedColor();
         LastDefaultFontsID = other.LastDefaultFontsID;
@@ -176,28 +177,29 @@ namespace ssGUI
         if(targetFont == nullptr)
             return;
         
-        DrawingVerticies.push_back(position                                                         + info.DrawOffset * info.TargetSizeMultiplier);
-        DrawingVerticies.push_back(position + glm::vec2(info.Size.x * info.TargetSizeMultiplier, 0) + info.DrawOffset * info.TargetSizeMultiplier);
-        DrawingVerticies.push_back(position + info.Size * info.TargetSizeMultiplier                 + info.DrawOffset * info.TargetSizeMultiplier);
-        DrawingVerticies.push_back(position + glm::vec2(0, info.Size.y * info.TargetSizeMultiplier) + info.DrawOffset * info.TargetSizeMultiplier);
+        ssGUI::DrawingEntity characterEntity;
+        
+        characterEntity.Vertices.push_back(position                                                         + info.DrawOffset * info.TargetSizeMultiplier);
+        characterEntity.Vertices.push_back(position + glm::vec2(info.Size.x * info.TargetSizeMultiplier, 0) + info.DrawOffset * info.TargetSizeMultiplier);
+        characterEntity.Vertices.push_back(position + info.Size * info.TargetSizeMultiplier                 + info.DrawOffset * info.TargetSizeMultiplier);
+        characterEntity.Vertices.push_back(position + glm::vec2(0, info.Size.y * info.TargetSizeMultiplier) + info.DrawOffset * info.TargetSizeMultiplier);
 
-        DrawingColours.push_back(details.CharacterColor);
-        DrawingColours.push_back(details.CharacterColor);
-        DrawingColours.push_back(details.CharacterColor);
-        DrawingColours.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
+        characterEntity.Colors.push_back(details.CharacterColor);
 
-        DrawingUVs.push_back(glm::vec2());
-        DrawingUVs.push_back(glm::vec2(info.Size.x, 0));
-        DrawingUVs.push_back(info.Size);
-        DrawingUVs.push_back(glm::vec2(0, info.Size.y));
+        characterEntity.TexCoords.push_back(glm::vec2());
+        characterEntity.TexCoords.push_back(glm::vec2(info.Size.x, 0));
+        characterEntity.TexCoords.push_back(info.Size);
+        characterEntity.TexCoords.push_back(glm::vec2(0, info.Size.y));
 
-        DrawingCounts.push_back(4);
-        ssGUI::DrawingProperty currentProperty;
-        currentProperty.fontP = targetFont->GetBackendFontInterface();
-        currentProperty.characterSize = details.FontSize;
-        currentProperty.character = details.Character;
+        characterEntity.BackendFont = targetFont->GetBackendFontInterface();
+        characterEntity.CharacterSize = details.FontSize;
+        characterEntity.Character = details.Character;
+        characterEntity.EntityName = TEXT_CHARACTER_SHAPE_NAME;
 
-        DrawingProperties.push_back(currentProperty);
+        DrawingEntities.push_back(characterEntity);
     }
 
     void Text::FormatNewlinesCharacters()
@@ -254,7 +256,7 @@ namespace ssGUI
         ssLOG_FUNC_ENTRY();
         
         int currentWordIndex = 0;
-        float currentLineLength = GetHorizontalPadding();
+        float currentLineLength = GetTextHorizontalPadding();
         float currentWordLength = 0;
         float drawXOffset = 0;
 
@@ -296,7 +298,7 @@ namespace ssGUI
             {
                 currentWordIndex = i;
                 currentWordLength = 0;
-                currentLineLength = GetHorizontalPadding();
+                currentLineLength = GetTextHorizontalPadding();
                 drawXOffset = 0;
             }
 
@@ -307,7 +309,7 @@ namespace ssGUI
             if ((curChar == L' ') || (curChar == L'\n') || (curChar == L'\t') || i == lastValidIndex)
             {
                 //check if adding current word length to current line length exceeds widget width
-                if(currentWordLength - GetCharacterSpace() + currentLineLength + GetHorizontalPadding() > GetSize().x)
+                if(currentWordLength - GetCharacterSpace() + currentLineLength + GetTextHorizontalPadding() > GetSize().x)
                 {
                     //If the word is already at newline, set overflow
                     if(CharactersRenderInfos[currentWordIndex].CharacterAtNewline)
@@ -315,9 +317,9 @@ namespace ssGUI
                     //Otherwise, reposition the word to the newlne
                     else
                     {
-                        float curWordXOffset = GetHorizontalPadding() - CharactersRenderInfos[currentWordIndex].BaselinePosition.x;
+                        float curWordXOffset = GetTextHorizontalPadding() - CharactersRenderInfos[currentWordIndex].BaselinePosition.x;
                         CharactersRenderInfos[currentWordIndex].CharacterAtNewline = true;
-                        currentLineLength = GetHorizontalPadding();
+                        currentLineLength = GetTextHorizontalPadding();
 
                         for(int j = currentWordIndex; j < i; j++)
                             CharactersRenderInfos[j].BaselinePosition.x += curWordXOffset;
@@ -344,7 +346,7 @@ namespace ssGUI
     {
         ssLOG_FUNC_ENTRY();
 
-        float currentLineLength = GetHorizontalPadding();
+        float currentLineLength = GetTextHorizontalPadding();
         float drawXOffset = 0;
 
         //First pass, Construct render infos as no character wrapping
@@ -367,12 +369,12 @@ namespace ssGUI
             //Check for newline. If so, reset word and line settings
             if(curRenderInfo.CharacterAtNewline)
             {
-                currentLineLength = GetHorizontalPadding();
+                currentLineLength = GetTextHorizontalPadding();
                 drawXOffset = 0;
             }
 
             //If exceed widget width
-            if(currentLineLength + characterLength + GetHorizontalPadding() > GetSize().x)
+            if(currentLineLength + characterLength + GetTextHorizontalPadding() > GetSize().x)
             {
                 //If this character is already at newline, set overflow
                 if(curRenderInfo.CharacterAtNewline)
@@ -380,9 +382,9 @@ namespace ssGUI
                 //Otherwise, move character to newline
                 else
                 {
-                    drawXOffset = GetHorizontalPadding() - curRenderInfo.BaselinePosition.x;
+                    drawXOffset = GetTextHorizontalPadding() - curRenderInfo.BaselinePosition.x;
                     curRenderInfo.CharacterAtNewline = true;
-                    currentLineLength = GetHorizontalPadding();
+                    currentLineLength = GetTextHorizontalPadding();
                 }
             }
             currentLineLength += characterLength;
@@ -397,7 +399,7 @@ namespace ssGUI
     void Text::ConstructRenderInfosForNoWrapping(bool checkValid)
     {
         ssLOG_FUNC_ENTRY();
-        float drawXPos = GetHorizontalPadding();
+        float drawXPos = GetTextHorizontalPadding();
 
         wchar_t prevChar = 0;
         Overflow = false;
@@ -450,7 +452,7 @@ namespace ssGUI
                 //Check newline
                 if(nextCharIsAtNewline)
                 {
-                    drawXPos = GetHorizontalPadding();
+                    drawXPos = GetTextHorizontalPadding();
                     curRenderInfo.CharacterAtNewline = true;
                     nextCharIsAtNewline = false;
                 }
@@ -470,7 +472,7 @@ namespace ssGUI
                         break;
                     case L'\t': 
                     {
-                        float newPos = GetClosestTabSpace(GetHorizontalPadding(), whitespaceWidth * GetTabSize(), drawXPos);
+                        float newPos = GetClosestTabSpace(GetTextHorizontalPadding(), whitespaceWidth * GetTabSize(), drawXPos);
                         float actualTabSpace = newPos - drawXPos;
                         drawXPos += actualTabSpace;
                         CharactersRenderInfos[i].Advance = actualTabSpace;
@@ -486,7 +488,7 @@ namespace ssGUI
                         break;
                 }
 
-                if(drawXPos + GetHorizontalPadding() > GetSize().x)
+                if(drawXPos + GetTextHorizontalPadding() > GetSize().x)
                     Overflow = true;   
             }
             else 
@@ -505,7 +507,7 @@ namespace ssGUI
                 //Check newline
                 if(nextCharIsAtNewline)
                 {
-                    drawXPos = GetHorizontalPadding();
+                    drawXPos = GetTextHorizontalPadding();
                     curRenderInfo.CharacterAtNewline = true;
                     nextCharIsAtNewline = false;
                 }
@@ -514,7 +516,7 @@ namespace ssGUI
 
                 drawXPos += characterLength + GetCharacterSpace();
 
-                if(drawXPos + GetHorizontalPadding() > GetSize().x)
+                if(drawXPos + GetTextHorizontalPadding() > GetSize().x)
                     Overflow = true;                    
             }
         }
@@ -619,7 +621,7 @@ namespace ssGUI
                 }
 
                 //Update vertical overflow
-                if(!IsOverflow() && CharactersRenderInfos[currentIndex].BaselinePosition.y + GetVerticalPadding() * 2 > GetSize().y)
+                if(!IsOverflow() && CharactersRenderInfos[currentIndex].BaselinePosition.y + GetTextVerticalPadding() * 2 > GetSize().y)
                     Overflow = true;
 
                 break;
@@ -661,7 +663,7 @@ namespace ssGUI
                     lineEndPos =    CharactersRenderInfos[i-1].BaselinePosition.x + 
                                     CharactersRenderInfos[i-1].DrawOffset.x * CharactersRenderInfos[i-1].TargetSizeMultiplier +
                                     CharactersRenderInfos[i-1].Size.x * CharactersRenderInfos[i-1].TargetSizeMultiplier + 
-                                    GetHorizontalPadding();
+                                    GetTextHorizontalPadding();
                     float alignOffset = 0; 
 
                     switch(CurrentHorizontalAlignment)
@@ -694,7 +696,7 @@ namespace ssGUI
                 lineEndPos =    CharactersRenderInfos[i].BaselinePosition.x + 
                                 CharactersRenderInfos[i].DrawOffset.x * CharactersRenderInfos[i].TargetSizeMultiplier +
                                 CharactersRenderInfos[i].Size.x * CharactersRenderInfos[i].TargetSizeMultiplier + 
-                                GetHorizontalPadding();
+                                GetTextHorizontalPadding();
                 float alignOffset = 0; 
 
                 switch(CurrentHorizontalAlignment)
@@ -730,11 +732,11 @@ namespace ssGUI
             }
         }
 
-        lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetVerticalPadding();
+        lineEndPos = CharactersRenderInfos[CharactersRenderInfos.size() - 1].BaselinePosition.y + GetTextVerticalPadding();
         switch(CurrentVerticalAlignment)
         {
             case ssGUI::Enums::AlignmentVertical::TOP:
-                alignOffset = GetVerticalPadding();
+                alignOffset = GetTextVerticalPadding();
                 break;
         
             case ssGUI::Enums::AlignmentVertical::CENTER:
@@ -771,31 +773,30 @@ namespace ssGUI
 
         auto drawHighlight = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 highlightColor)
         {
-            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
+            ssGUI::DrawingEntity highlightEntity;
+        
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(0, CharactersRenderInfos[startIndex].LineMinY));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    CharactersRenderInfos[inclusiveEndIndex].LineMinY));
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            CharactersRenderInfos[inclusiveEndIndex].LineMinY));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            CharactersRenderInfos[inclusiveEndIndex].LineMaxY));
 
-            DrawingVerticies.push_back(CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
-                glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
+            highlightEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + GetGlobalPosition() +
+                                                glm::vec2(0, CharactersRenderInfos[startIndex].LineMaxY));
 
             for(int i = 0; i < 4; i++)
-            {
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(highlightColor);
-            }
+                highlightEntity.Colors.push_back(highlightColor);
 
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            highlightEntity.EntityName = TEXT_HIGHLIGHT_SHAPE_NAME;
+            DrawingEntities.push_back(highlightEntity);
         };
 
         int startIndex, endIndex;
@@ -836,32 +837,31 @@ namespace ssGUI
 
         auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
         {
-            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
-                                        GetGlobalPosition() +
-                                        glm::vec2(0, underlineOffset));
+            ssGUI::DrawingEntity underlineEntity;
+        
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                                GetGlobalPosition() +
+                                                glm::vec2(0, underlineOffset));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() + 
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    underlineOffset));
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() + 
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            underlineOffset));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
-                                        GetGlobalPosition() + 
-                                        glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
-                                                    underlineOffset + thickness));
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[inclusiveEndIndex].BaselinePosition + 
+                                                GetGlobalPosition() + 
+                                                glm::vec2(  CharactersRenderInfos[inclusiveEndIndex].Advance * CharactersRenderInfos[inclusiveEndIndex].TargetSizeMultiplier, 
+                                                            underlineOffset + thickness));
 
-            DrawingVerticies.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
-                                        GetGlobalPosition() + 
-                                        glm::vec2(  0, underlineOffset + thickness));
+            underlineEntity.Vertices.push_back( CharactersRenderInfos[startIndex].BaselinePosition + 
+                                                GetGlobalPosition() + 
+                                                glm::vec2(  0, underlineOffset + thickness));
 
             for(int i = 0; i < 4; i++)
-            {
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(underlineColor);
-            }
+                underlineEntity.Colors.push_back(underlineColor);
 
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            underlineEntity.EntityName = TEXT_UNDERLINE_SHAPE_NAME;
+            DrawingEntities.push_back(underlineEntity);
         };
 
         //This handles font size and color change
@@ -1118,24 +1118,21 @@ namespace ssGUI
         glm::vec2 drawPos = GetGlobalPosition();
 
         //Drawing background
-        DrawingVerticies.push_back(drawPos);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPos + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        ssGUI::DrawingEntity backgroundEntitiy;
+        
+        backgroundEntitiy.Vertices.push_back(drawPos);
+        backgroundEntitiy.Vertices.push_back(drawPos + glm::vec2(GetSize().x, 0));
+        backgroundEntitiy.Vertices.push_back(drawPos + glm::vec2(GetSize().x, GetSize().y));
+        backgroundEntitiy.Vertices.push_back(drawPos + glm::vec2(0, GetSize().y));
+        
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        
+        backgroundEntitiy.EntityName = GUI_OBJECT_BG_SHAPE_NAME;
+        
+        DrawingEntities.push_back(backgroundEntitiy);
 
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
@@ -1228,6 +1225,14 @@ namespace ssGUI
             }
         }
 
+        //Deselect when focus is lost
+        if( IsTextSelectionAllowed() && IsDeselectWhenFocusLost() && GetStartSelectionIndex() != GetEndSelectionIndex() && 
+            GetStartSelectionIndex() != -1 && !IsFocused())
+        {
+            SetStartSelectionIndex(GetStartSelectionIndex());
+            SetEndSelectionIndex(GetStartSelectionIndex());
+        }
+
         if(inputStatus.KeyInputBlockedObject == nullptr)
         {
             //Text copying when ctrl+c is pressed and there is something highlighted
@@ -1260,19 +1265,22 @@ namespace ssGUI
     }
     
     const std::string Text::ListenerKey = "Text";
+    const std::string Text::TEXT_CHARACTER_SHAPE_NAME = "Text Character";
+    const std::string Text::TEXT_HIGHLIGHT_SHAPE_NAME = "Text Highlight";
+    const std::string Text::TEXT_UNDERLINE_SHAPE_NAME = "Text Underline";
 
     Text::Text() :  RecalculateTextNeeded(false),
                     CurrentCharactersDetails(),
                     CharactersRenderInfos(),
                     ProcessedCharacterDetails(),
                     Overflow(false),
-                    FontSize(15),
+                    FontSize(17),
                     TextColor(0, 0, 0, 255),
                     TextUnderline(false),
                     MultilineAllowed(true),
                     WrappingMode(ssGUI::Enums::TextWrapping::NO_WRAPPING),
-                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT),
-                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP),
+                    CurrentHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER),
+                    CurrentVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER),
                     CurrentFonts(),
                     HorizontalPadding(5),
                     VerticalPadding(5),
@@ -1282,6 +1290,7 @@ namespace ssGUI
                     SelectionAllowed(true),
                     StartSelectionIndex(-1),
                     EndSelectionIndex(-1),
+                    DeselectWhenFocusLost(true),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
                     LastDefaultFontsID(0)
@@ -1437,8 +1446,22 @@ namespace ssGUI
         RemoveCharacterDetails(startIndex, exclusiveEndIndex);
         RedrawObject();
     }
-
-    std::wstring Text::GetText()
+    
+    void Text::GetText(std::wstring& retText) const
+    {
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
+            retText += CurrentCharactersDetails[i].Character;
+    }
+    
+    void Text::GetText(std::string& retText) const
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
+            retText += converter.to_bytes(CurrentCharactersDetails[i].Character);
+    }
+    
+    std::wstring Text::GetText() const
     {
         std::wstring currentText = L"";
         for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
@@ -1633,31 +1656,31 @@ namespace ssGUI
         return WrappingMode;
     }
 
-    void Text::SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
+    void Text::SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
     {
         CurrentHorizontalAlignment = align;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    ssGUI::Enums::AlignmentHorizontal Text::GetHorizontalAlignment() const
+    ssGUI::Enums::AlignmentHorizontal Text::GetTextHorizontalAlignment() const
     {
         return CurrentHorizontalAlignment;
     }
 
-    void Text::SetVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
+    void Text::SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
     {
         CurrentVerticalAlignment = align;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    ssGUI::Enums::AlignmentVertical Text::GetVerticalAlignment() const
+    ssGUI::Enums::AlignmentVertical Text::GetTextVerticalAlignment() const
     {
         return CurrentVerticalAlignment;
     }
     
-    void Text::SetAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
+    void Text::SetTextAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
     {
         CurrentHorizontalAlignment = hori;
         CurrentVerticalAlignment = vert;
@@ -1730,26 +1753,26 @@ namespace ssGUI
         return CurrentFonts.size();
     }
 
-    void Text::SetHorizontalPadding(float padding)
+    void Text::SetTextHorizontalPadding(float padding)
     {
         HorizontalPadding = padding;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    float Text::GetHorizontalPadding() const
+    float Text::GetTextHorizontalPadding() const
     {
         return HorizontalPadding;
     }
 
-    void Text::SetVerticalPadding(float padding)
+    void Text::SetTextVerticalPadding(float padding)
     {
         VerticalPadding = padding;
         RecalculateTextNeeded = true;
         RedrawObject();
     }
 
-    float Text::GetVerticalPadding() const
+    float Text::GetTextVerticalPadding() const
     {
         return VerticalPadding;
     }
@@ -1849,6 +1872,16 @@ namespace ssGUI
     glm::u8vec4 Text::GetTextSelectedColor() const
     {
         return TextSelectedColor;
+    }
+    
+    void Text::SetDeselectWhenFocusLost(bool deselectWhenFocusLost)
+    {
+        DeselectWhenFocusLost = deselectWhenFocusLost;
+    }
+    
+    bool Text::IsDeselectWhenFocusLost() const
+    {
+        return DeselectWhenFocusLost;
     }
 
     int Text::GetContainedCharacterIndexFromPos(glm::vec2 pos)

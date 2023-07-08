@@ -256,7 +256,7 @@ namespace ssGUI
 
         //Find out current position from this line (Depending on alignment)
         //Right
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             curLineEnd = curLineEnd == GetLastValidCharacterIndex() ? curLineEnd + 1 : curLineEnd;
             curLinePosition = curLineEnd - curIndex;
@@ -270,7 +270,7 @@ namespace ssGUI
             return curLineStart;
 
         //Go to previous line if there's any
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             if(curLinePosition > prevLineEnd - prevLineStart)
                 return prevLineStart;
@@ -302,7 +302,7 @@ namespace ssGUI
 
         //Find out current position from this line (Depending on alignment)
         //Right
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
             curLinePosition = curLineEnd - curIndex;
         //Left and center
         else
@@ -318,7 +318,7 @@ namespace ssGUI
         }
         
         //Go to next line if there's any
-        if(GetHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
         {
             if(curLinePosition > nextLineEnd - nextLineStart)
                 return nextLineStart;
@@ -346,7 +346,8 @@ namespace ssGUI
 
     void TextField::TextInputUpdate(std::wstring& textInput, bool& refreshBlinkTimer, bool& wordMode)
     {
-        int insertIndex = (GetEndSelectionIndex() >= 0 && GetEndSelectionIndex() <= GetText().size()) ?  GetEndSelectionIndex() : 0;
+        int insertIndex = GetStartSelectionIndex() > GetEndSelectionIndex() ? GetStartSelectionIndex() : GetEndSelectionIndex();
+        insertIndex = (insertIndex >= 0 && insertIndex <= GetText().size()) ? insertIndex : 0;
 
         ssGUI::CharacterDetails baseCD;
         if(insertIndex - 1 >= 0)
@@ -698,10 +699,10 @@ namespace ssGUI
                     else
                         fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
                     
-                    auto horiAlignment = GetHorizontalAlignment(); 
+                    auto horiAlignment = GetTextHorizontalAlignment(); 
                     if(horiAlignment == ssGUI::Enums::AlignmentHorizontal::LEFT)
                     {
-                        drawPos.x += GetHorizontalPadding();
+                        drawPos.x += GetTextHorizontalPadding();
                     }
                     else if(horiAlignment == ssGUI::Enums::AlignmentHorizontal::CENTER)
                     {
@@ -709,7 +710,7 @@ namespace ssGUI
                     }
                     else
                     {
-                        drawPos.x += GetSize().x - GetHorizontalPadding();
+                        drawPos.x += GetSize().x - GetTextHorizontalPadding();
                     }
 
                     drawPos.y += CharactersRenderInfos[lastValidIndex].BaselinePosition.y + 
@@ -736,45 +737,37 @@ namespace ssGUI
                 return;
             }
 
+            ssGUI::DrawingEntity caretEntity;
             if(GetEndSelectionIndex() > GetStartSelectionIndex())
             {
-                DrawingVerticies.push_back(drawPos);
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos);
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, 0));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, 0));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(0, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(0, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
             }
             else
             {
-                DrawingVerticies.push_back(drawPos + glm::vec2(-caretWidth, 0));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(-caretWidth, 0));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos);
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos);
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(0, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(0, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-                DrawingVerticies.push_back(drawPos + glm::vec2(-caretWidth, height));
-                DrawingUVs.push_back(glm::vec2());
-                DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+                caretEntity.Vertices.push_back(drawPos + glm::vec2(-caretWidth, height));
+                caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
             }
-
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            caretEntity.EntityName = TEXTFIELD_CARET_SHAPE_NAME;
+            DrawingEntities.push_back(caretEntity);
         }
         else
         {
@@ -799,50 +792,47 @@ namespace ssGUI
 
             height = fontInterface->GetLineSpacing(GetNewTextFontSize()) + GetLineSpace();
             
-            switch(GetHorizontalAlignment()) 
+            switch(GetTextHorizontalAlignment()) 
             {
                 case ssGUI::Enums::AlignmentHorizontal::LEFT:
-                    drawPos.x += GetHorizontalPadding();
+                    drawPos.x += GetTextHorizontalPadding();
                     break;
                 case ssGUI::Enums::AlignmentHorizontal::CENTER:
                     drawPos.x += GetSize().x / 2;
                     break;
                 case ssGUI::Enums::AlignmentHorizontal::RIGHT:
-                    drawPos.x += GetSize().x - GetHorizontalPadding();
+                    drawPos.x += GetSize().x - GetTextHorizontalPadding();
                     break;
             }
 
-            switch(GetVerticalAlignment()) 
+            switch(GetTextVerticalAlignment()) 
             {
                 case ssGUI::Enums::AlignmentVertical::TOP:
-                    drawPos.y += GetVerticalPadding();
+                    drawPos.y += GetTextVerticalPadding();
                     break;
                 case ssGUI::Enums::AlignmentVertical::CENTER:
                     drawPos.y += GetSize().y / 2 - height / 2;
                     break;
                 case ssGUI::Enums::AlignmentVertical::BOTTOM:
-                    drawPos.y += GetSize().y - GetNewTextFontSize() - GetVerticalPadding();
+                    drawPos.y += GetSize().y - GetNewTextFontSize() - GetTextVerticalPadding();
                     break;
             }
 
-            DrawingVerticies.push_back(drawPos);
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            ssGUI::DrawingEntity caretEntity;
 
-            DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, 0));
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.Vertices.push_back(drawPos);
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-            DrawingVerticies.push_back(drawPos + glm::vec2(caretWidth, height));
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, 0));
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-            DrawingVerticies.push_back(drawPos + glm::vec2(0, height));
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.Vertices.push_back(drawPos + glm::vec2(caretWidth, height));
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
 
-            DrawingCounts.push_back(4);
-            DrawingProperties.push_back(ssGUI::DrawingProperty());
+            caretEntity.Vertices.push_back(drawPos + glm::vec2(0, height));
+            caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
+            caretEntity.EntityName = TEXTFIELD_CARET_SHAPE_NAME;
+            DrawingEntities.push_back(caretEntity);
         }
 
         ssLOG_FUNC_EXIT();
@@ -914,6 +904,8 @@ namespace ssGUI
         }
     }
 
+    const std::string TextField::TEXTFIELD_CARET_SHAPE_NAME = "Text Caret";
+
     TextField::TextField() :    LastBlinkTime(0),
                                 BlinkDuration(500),
                                 BlinkCaret(false),
@@ -923,6 +915,9 @@ namespace ssGUI
                                 ArrowNavInterval(20)
     {
         SetBlockInput(true);
+        SetMinSize(glm::vec2(35, 35));
+        SetTextAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT, ssGUI::Enums::AlignmentVertical::TOP);
+        
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 
         AddExtension<ssGUI::Extensions::RoundedCorners>();

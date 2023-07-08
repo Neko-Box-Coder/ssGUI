@@ -212,6 +212,17 @@ namespace ssGUI
             SetSize(glm::vec2(GetSize().x, GetSize().y - itemSize.y - layoutItemSpacing));
     }
     
+    void Menu::ClearMenuItems()
+    {
+        std::vector<ssGUI::GUIObject*> children = GetListOfChildren();
+        
+        for(int i = 0; i < children.size(); i++)
+        {
+            if(children[i]->GetType() == ssGUI::Enums::GUIObjectType::MENU_ITEM)
+                RemoveMenuItem(static_cast<ssGUI::MenuItem*>(children[i]));
+        }
+    }
+
     ssGUI::MenuItem* Menu::AddMenuItem()
     {
         ssGUI::MenuItem* menuItem = AddChild<ssGUI::MenuItem>();

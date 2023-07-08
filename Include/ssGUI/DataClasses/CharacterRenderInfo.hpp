@@ -2,6 +2,9 @@
 #define SSGUI_CHARACTER_RENDER_INFO_H
 
 #include "glm/vec2.hpp"
+#include <ostream>
+
+#include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -59,6 +62,24 @@ namespace ssGUI
             //The multiplier to be applied to Advance, Size and DrawOffset
             //in order to render the character at the target size
             float TargetSizeMultiplier = 1;
+            
+            inline friend std::ostream& operator<<(std::ostream& stream, const CharacterRenderInfo& other)
+            {
+                stream  << SSGUI_OUTPUT_CLASS_NAME(CharacterRenderInfo)
+                        << SSGUI_OUTPUT_VAR(Advance)
+                        << SSGUI_OUTPUT_VAR(DrawOffset)
+                        << SSGUI_OUTPUT_VAR(Size)
+                        << SSGUI_OUTPUT_VAR(BaselinePosition)
+                        << SSGUI_OUTPUT_VAR(CharacterAtNewline)
+                        << SSGUI_OUTPUT_VAR(Rendered)
+                        << SSGUI_OUTPUT_VAR(Valid)
+                        << SSGUI_OUTPUT_VAR(LineMinY)
+                        << SSGUI_OUTPUT_VAR(LineMaxY)
+                        << SSGUI_OUTPUT_VAR(RenderFontSize)
+                        << SSGUI_OUTPUT_LAST_VAR(TargetSizeMultiplier);
+                
+                return stream;
+            }
     };
 }
 

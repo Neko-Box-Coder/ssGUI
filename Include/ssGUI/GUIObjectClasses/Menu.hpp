@@ -98,6 +98,10 @@ namespace ssGUI
             //function: RemoveMenuItem
             //Deletes the menu item
             void RemoveMenuItem(ssGUI::MenuItem* menuItem);
+            
+            //function: ClearMenuItems
+            //Deletes all the menu items
+            void ClearMenuItems();
 
             //function: AddMenuItem
             //This is equivalent to

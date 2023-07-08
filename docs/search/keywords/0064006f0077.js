@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("dow",["Constant"],[["DOWN",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/SystemKey.hpp:ssGUI.Enums.DOWN","CClass:ssGUI.Enums:DOWN"]]]]);

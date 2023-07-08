@@ -1,4 +1,5 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
+#include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
 #include "ssGUI/Backend/BackendFactory.hpp"
 
@@ -80,7 +81,7 @@ namespace ssGUI
         return BackendImage->GetSize();
     }
 
-    void* ImageData::GetPixelPtr(ssGUI::ImageFormat& format)
+    void* ImageData::GetPixelPtr(ssGUI::ImageFormat& format) const
     {
         return BackendImage->GetPixelPtr(format);
     }
@@ -100,5 +101,23 @@ namespace ssGUI
         }
         
         return newImgData;
+    }
+
+    std::ostream& operator<<(std::ostream& stream, const ssGUI::ImageData& other)
+    {
+        stream  << SSGUI_OUTPUT_CLASS_NAME(ImageData)
+                << SSGUI_OUTPUT_VAR(GetBackendImageInterface());
+
+        if(other.IsValid())
+        {
+            ssGUI::ImageFormat dummyFormat;
+            stream  << SSGUI_OUTPUT_VAR(IsValid())
+                    << SSGUI_OUTPUT_VAR(GetBackendImageInterface())
+                    << SSGUI_OUTPUT_LAST_VAR(GetPixelPtr(dummyFormat));
+        }
+        else
+            stream  << SSGUI_OUTPUT_LAST_VAR(IsValid());
+
+        return stream;
     }
 }

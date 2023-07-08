@@ -275,17 +275,10 @@ namespace ssGUI
 
     void Dropdown::ClearItems()
     {
-        for(int i = 0; i < Items.size(); i++)
-        {
-            ssGUI::MenuItem* currentItem = static_cast<ssGUI::MenuItem*>(CurrentObjectsReferences.GetObjectReference(Items[i].second));
+        if(GetDropdownMenu() != nullptr)
+            GetDropdownMenu()->ClearMenuItems();
 
-            if(currentItem == nullptr)
-                continue;
-            
-            currentItem->Delete();
-        }
         Items.clear();
-
         SetSelectedItem(-1);
     }
 
@@ -314,11 +307,28 @@ namespace ssGUI
         glm::vec2 globalPos = menu->GetGlobalPosition();
         menu->SetParent(this, true);
         menu->SetGlobalPosition(globalPos);
+        menu->ClearMenuItems();
 
         auto itemsCopy = Items;
         Items.clear();
-        for(int i = 0; i < Items.size(); i++)
-            AddItem(Items[i].first);
+        for(int i = 0; i < itemsCopy.size(); i++)
+            AddItem(itemsCopy[i].first);
+    }
+    
+    void Dropdown::SetInteractable(bool interactable)
+    {
+        if(GetDropdownMenu() != nullptr)
+            GetDropdownMenu()->SetInteractable(interactable);
+    
+        StandardButton::SetInteractable(interactable);
+    }
+    
+    void Dropdown::SetBlockInput(bool blockInput)
+    {
+        if(GetDropdownMenu() != nullptr)
+            GetDropdownMenu()->SetBlockInput(blockInput);
+    
+        StandardButton::SetBlockInput(blockInput);
     }
 
     ssGUI::Enums::GUIObjectType Dropdown::GetType() const

@@ -20,7 +20,7 @@ namespace Backend
     {
         for(int i = 0; i < BackendDrawingInterfaces.size(); i++)
         {
-            if(BackendDrawingInterfaces[i] == backendDrawing)
+            if(BackendDrawingInterfaces.at(i) == backendDrawing)
             {
                 BackendDrawingInterfaces.erase(BackendDrawingInterfaces.begin() + i);
             }
@@ -29,14 +29,14 @@ namespace Backend
 
     ssGUI::Backend::BackendDrawingInterface* BackendManager::GetDrawingInterface(int index)
     {
-        return BackendDrawingInterfaces[index];
+        return BackendDrawingInterfaces.at(index);
     }
 
     int BackendManager::GetDrawingInterfaceIndex(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
     {
         for(int i = 0; i < BackendDrawingInterfaces.size(); i++)
         {
-            if(BackendDrawingInterfaces[i] == backendDrawing)
+            if(BackendDrawingInterfaces.at(i) == backendDrawing)
                 return i;
         }
 
@@ -67,7 +67,7 @@ namespace Backend
     {
         for(int i = 0; i < BackendMainWindowInterfaces.size(); i++)
         {
-            if(BackendMainWindowInterfaces[i] == backendMainWindow)
+            if(BackendMainWindowInterfaces.at(i) == backendMainWindow)
             {
                 BackendMainWindowInterfaces.erase(BackendMainWindowInterfaces.begin() + i);
             }
@@ -76,14 +76,15 @@ namespace Backend
 
     ssGUI::Backend::BackendMainWindowInterface* BackendManager::GetMainWindowInterface(int index)
     {
-        return BackendMainWindowInterfaces[index];
+        assert(index >= 0 && index < BackendMainWindowInterfaces.size());
+        return BackendMainWindowInterfaces.at(index);
     }
 
     int BackendManager::GetMainWindowInterfaceIndex(ssGUI::Backend::BackendMainWindowInterface* backendMainWindow)
     {
         for(int i = 0; i < BackendMainWindowInterfaces.size(); i++)
         {
-            if(BackendMainWindowInterfaces[i] == backendMainWindow)
+            if(BackendMainWindowInterfaces.at(i) == backendMainWindow)
                 return i;
         }
 

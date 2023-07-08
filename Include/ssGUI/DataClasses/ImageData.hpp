@@ -4,6 +4,7 @@
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include <functional>
 #include <vector>
+//#include <iostream>
 
 //namespace: ssGUI
 namespace ssGUI
@@ -86,7 +87,7 @@ namespace ssGUI
             //See <ssGUI::Backend::BackendImageInterface::GetPixelPtr>
             //If there's any modification to the pixels, you need to call <NotifyImageDataChange>
             //in order to notify any image data changes. 
-            virtual void* GetPixelPtr(ssGUI::ImageFormat& format);
+            virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const;
 
             //function: UpdateCache
             //See <ssGUI::Backend::BackendImageInterface::UpdateCache>
@@ -96,7 +97,10 @@ namespace ssGUI
             //Clones this ImageData object. Use this function instead of assignment operator or copy constructor.
             //If copyCallbacks is true, then all the image data changed callbacks will be copied.
             virtual ImageData* Clone(bool copyCallbacks);
+            
+            friend std::ostream& operator<<(std::ostream& stream, const ImageData& other);
     };
+    
 }
 
 

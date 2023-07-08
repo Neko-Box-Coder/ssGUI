@@ -5,6 +5,8 @@
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
+#include "ssGUI/Backend/OpenGL3_3_Common/OpenGL3_3_Common.hpp"
+
 #include <windows.h>            /* must include this before GL/gl.h */
 
 #include "glad/glad.h"
@@ -18,7 +20,7 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    /*class: ssGUI::Backend::BackendDrawingInterface
+    /*class: ssGUI::Backend::BackendDrawingWin32_OpenGL3_3
     For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
 
     Variables & Constructor:
@@ -28,12 +30,14 @@ namespace Backend
         glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
         std::unordered_map<CharTextureIdentifier, GLuint> CharTextures;                         //(Internal variable) This is used to keep track of all the character textures 
         std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
+        ssGUI::Backend::OpenGL3_3_Common* OpenGLCommon;                                         //(Internal variable) This is used to invoke common OpenGL and mipmap functions
     ====================================================
     ======================== C++ =======================
     BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3() :    BackendIndex(0),
                                                                         LastMainWindowSize(-1, -1),
                                                                         CharTextures(),
-                                                                        ImageTextures()
+                                                                        ImageTextures(),
+                                                                        OpenGLCommon(nullptr)
     {
         ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
@@ -42,18 +46,18 @@ namespace Backend
     class BackendDrawingWin32_OpenGL3_3 : public BackendDrawingInterface
     {
         private:
+            BackendDrawingWin32_OpenGL3_3& operator=(BackendDrawingWin32_OpenGL3_3 const& other) = delete;
+            
             int BackendIndex;                                                                       //(Internal variable) This is used to check if we are drawing on the correct MainWindow
             glm::ivec2 LastMainWindowSize;                                                          //(Internal variable) This is used to check if mainWindow size has changed to update viewport
             std::unordered_map<CharTextureIdentifier, GLuint> CharTextures;                         //(Internal variable) This is used to keep track of all the character textures 
             std::unordered_map<ssGUI::Backend::BackendImageInterface*, GLuint> ImageTextures;       //(Internal variable) This is used to keep track of all the image textures 
+            ssGUI::Backend::OpenGL3_3_Common* OpenGLCommon;                                         //(Internal variable) This is used to invoke common OpenGL and mipmap functions
 
             ssGUI::Backend::BackendMainWindowInterface* GetMainWindow();
+            void InitializeOpenGLCommonIfNeeded();
 
-            void UpdateViewPortAndModelViewIfNeeded();
-
-            BackendDrawingWin32_OpenGL3_3& operator=(BackendDrawingWin32_OpenGL3_3 const& other);
-
-        protected:
+            //void UpdateViewPortAndModelViewIfNeeded();
             BackendDrawingWin32_OpenGL3_3(BackendDrawingWin32_OpenGL3_3 const& other);
 
         public:
@@ -70,12 +74,12 @@ namespace Backend
 
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>
-            bool DrawEntities(  const std::vector<glm::vec2>& vertices, 
-                                const std::vector<glm::vec2>& texCoords,
-                                const std::vector<glm::u8vec4>& colors,
-                                const std::vector<int>& counts,
-                                const std::vector<ssGUI::DrawingProperty>& properties) override;
+            bool DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities) override;
 
+            //function: DrawToBackBuffer
+            //See <BackendDrawingInterface::DrawToBackBuffer>
+            void DrawToBackBuffer() override;
+            
             //function: Render
             //See <BackendDrawingInterface::Render>
             void Render(glm::u8vec3 clearColor) override;
@@ -99,44 +103,6 @@ namespace Backend
             //function: GetRawImageCacheHandle
             //See <BackendDrawingInterface::GetRawImageCacheHandle>
             void* GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage) override;
-
-        protected:
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                                    const std::vector<glm::vec2>& texCoords,
-                                    const std::vector<glm::u8vec4>& colors,
-                                    const uint32_t character,
-                                    const ssGUI::Backend::BackendFontInterface& font,
-                                    int characterSize) override;
-
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                                    const std::vector<glm::vec2>& texCoords,
-                                    const std::vector<glm::u8vec4>& colors,
-                                    const ssGUI::Backend::BackendImageInterface& image) override;
-
-
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                                    const std::vector<glm::u8vec4>& colors) override;
-
-            //NOTE: End index is exclusive
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                                    const std::vector<glm::vec2>& texCoords,
-                                    const std::vector<glm::u8vec4>& colors,
-                                    const uint32_t character,
-                                    int startIndex, int endIndex,
-                                    const ssGUI::Backend::BackendFontInterface& font,
-                                    int characterSize) override;
-
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                                    const std::vector<glm::vec2>& texCoords,
-                                    const std::vector<glm::u8vec4>& colors,
-                                    int startIndex, int endIndex,
-                                    const ssGUI::Backend::BackendImageInterface& image) override;
-
-
-            bool DrawShape( const std::vector<glm::vec2>& vertices, 
-                                    const std::vector<glm::u8vec4>& colors,
-                                    int startIndex, int endIndex) override;
-
     };
 } 
 

@@ -22,6 +22,8 @@ void SetUp()
     TestText->SetText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "\
     "incididunt ut labore et dolore magna aliqua.\nJust\ta\tsentence\tfor\ttesting\ttabs.\na\ta\ta\ta\ta\ta\ta");
     
+    //TestText->SetText("Test Text");
+    
     TestFont = ssGUI::Create<ssGUI::Font>();
     TestFont->LoadFromMemory((void*)ssGUI_Test_NotoSans_Bold, ssGUI_Test_NotoSans_Bold_size);
 }
@@ -74,30 +76,30 @@ void AlignmentTest(bool firstRun)   //2
     if(firstRun)
     {
         ssLOG_SIMPLE("Press 2 to go back");
-        ssLOG_SIMPLE("Press 3 to GetHorizontalAlignment & GetVerticalAlignment");
-        ssLOG_SIMPLE("Press 4 to cycle SetHorizontalAlignment");
-        ssLOG_SIMPLE("Press 5 to cycle SetVerticalAlignment");
+        ssLOG_SIMPLE("Press 3 to GetTextHorizontalAlignment & GetTextVerticalAlignment");
+        ssLOG_SIMPLE("Press 4 to cycle SetTextHorizontalAlignment");
+        ssLOG_SIMPLE("Press 5 to cycle SetTextVerticalAlignment");
     }
     
     if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::THREE))
     {
-        ssLOG_SIMPLE("Horizontal: "<<ssGUI::Enums::AlignmentHorizontalToString(TestText->GetHorizontalAlignment()));
-        ssLOG_SIMPLE("Vertical: "<<ssGUI::Enums::AlignmentVerticalToString(TestText->GetVerticalAlignment()));
+        ssLOG_SIMPLE("Horizontal: "<<ssGUI::Enums::AlignmentHorizontalToString(TestText->GetTextHorizontalAlignment()));
+        ssLOG_SIMPLE("Vertical: "<<ssGUI::Enums::AlignmentVerticalToString(TestText->GetTextVerticalAlignment()));
     }
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::FOUR))
     {
         auto newAlign = static_cast<ssGUI::Enums::AlignmentHorizontal>
-            (((int)TestText->GetHorizontalAlignment() + 1 ) % ((int)ssGUI::Enums::AlignmentHorizontal::COUNT));
+            (((int)TestText->GetTextHorizontalAlignment() + 1 ) % ((int)ssGUI::Enums::AlignmentHorizontal::COUNT));
         
-        TestText->SetHorizontalAlignment(newAlign);
+        TestText->SetTextHorizontalAlignment(newAlign);
         ssLOG_SIMPLE("New Horizontal: "<<ssGUI::Enums::AlignmentHorizontalToString(newAlign));
     }
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::FIVE))
     {
         auto newAlign = static_cast<ssGUI::Enums::AlignmentVertical>
-            (((int)TestText->GetVerticalAlignment() + 1 ) % ((int)ssGUI::Enums::AlignmentVertical::COUNT));
+            (((int)TestText->GetTextVerticalAlignment() + 1 ) % ((int)ssGUI::Enums::AlignmentVertical::COUNT));
         
-        TestText->SetVerticalAlignment(newAlign);
+        TestText->SetTextVerticalAlignment(newAlign);
         ssLOG_SIMPLE("New Vertical: "<<ssGUI::Enums::AlignmentVerticalToString(newAlign));
     }
 }
@@ -167,25 +169,25 @@ void PaddingTest(bool firstRun) //4
     if(firstRun)
     {
         ssLOG_SIMPLE("Press 4 to go back");
-        ssLOG_SIMPLE("Press 5 to GetHorizontalPadding & GetVerticalPadding");
-        ssLOG_SIMPLE("Press 6 to SetHorizontalPadding to 20");
-        ssLOG_SIMPLE("Press 7 to SetVerticalPadding to 20");
+        ssLOG_SIMPLE("Press 5 to GetTextHorizontalPadding & GetTextVerticalPadding");
+        ssLOG_SIMPLE("Press 6 to SetTextHorizontalPadding to 20");
+        ssLOG_SIMPLE("Press 7 to SetTextVerticalPadding to 20");
     }
     
     if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::FIVE))
     {
-        ssLOG_SIMPLE("GetHorizontalPadding: "<<TestText->GetHorizontalPadding());    
-        ssLOG_SIMPLE("GetVerticalPadding: "<<TestText->GetVerticalPadding());    
+        ssLOG_SIMPLE("GetTextHorizontalPadding: "<<TestText->GetTextHorizontalPadding());    
+        ssLOG_SIMPLE("GetTextVerticalPadding: "<<TestText->GetTextVerticalPadding());    
     }
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::SIX))
     {
-        TestText->SetHorizontalPadding(20);    
-        ssLOG_SIMPLE("SetHorizontalPadding called");
+        TestText->SetTextHorizontalPadding(20);    
+        ssLOG_SIMPLE("SetTextHorizontalPadding called");
     }
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::SEVEN))
     {
-        TestText->SetVerticalPadding(20);
-        ssLOG_SIMPLE("SetVerticalPadding called");
+        TestText->SetTextVerticalPadding(20);
+        ssLOG_SIMPLE("SetTextVerticalPadding called");
     }
 }
 
@@ -194,7 +196,7 @@ void SpaceTest(bool firstRun)   //5
     if(firstRun)
     {
         ssLOG_SIMPLE("Press 5 to go back");
-        ssLOG_SIMPLE("Press 6 to GetCharacterSpace & GetVerticalPadding");
+        ssLOG_SIMPLE("Press 6 to GetCharacterSpace & GetTextVerticalPadding");
         ssLOG_SIMPLE("Press 7 to SetCharacterSpace to 5");
         ssLOG_SIMPLE("Press 8 to SetLineSpace to 20");
     }
@@ -202,7 +204,7 @@ void SpaceTest(bool firstRun)   //5
     if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::SIX))
     {
         ssLOG_SIMPLE("GetCharacterSpace: "<<TestText->GetCharacterSpace());    
-        ssLOG_SIMPLE("GetVerticalPadding: "<<TestText->GetVerticalPadding());    
+        ssLOG_SIMPLE("GetTextVerticalPadding: "<<TestText->GetTextVerticalPadding());    
     }
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::SEVEN))
     {
@@ -249,6 +251,8 @@ void TextSelectionTest(bool firstRun)   //7
         ssLOG_SIMPLE("Press E to GetSelectionColor");
         ssLOG_SIMPLE("Press R to SetTextSelectedColor to Green");
         ssLOG_SIMPLE("Press T to GetTextSelectedColor");
+        ssLOG_SIMPLE("Press Y to Toggle SetDeselectWhenFocusLost");
+        ssLOG_SIMPLE("Press U to IsDeselectWhenFocusLost");
     }
     
     if(Manager->IsButtonOrKeyDown(ssGUI::Enums::NumberKey::EIGHT))
@@ -280,7 +284,7 @@ void TextSelectionTest(bool firstRun)   //7
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::E))
     {
         auto selectionColor = TestText->GetSelectionColor();
-        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)selectionColor.r<<", "<<(int)selectionColor.g<<", "<<(int)selectionColor.b<<", "<<(int)selectionColor.a)
+        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)selectionColor.r<<", "<<(int)selectionColor.g<<", "<<(int)selectionColor.b<<", "<<(int)selectionColor.a);
     }
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::R))
     {
@@ -290,7 +294,16 @@ void TextSelectionTest(bool firstRun)   //7
     else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::T))
     {
         auto testColor = TestText->GetTextSelectedColor();
-        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)testColor.r<<", "<<(int)testColor.g<<", "<<(int)testColor.b<<", "<<(int)testColor.a)
+        ssLOG_SIMPLE("GetSelectionColor called: "<<(int)testColor.r<<", "<<(int)testColor.g<<", "<<(int)testColor.b<<", "<<(int)testColor.a);
+    }
+    else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::Y))
+    {
+        TestText->SetDeselectWhenFocusLost(!TestText->IsDeselectWhenFocusLost());
+        ssLOG_SIMPLE("SetDeselectWhenFocusLost called: "<<TestText->IsDeselectWhenFocusLost());
+    }
+    else if(Manager->IsButtonOrKeyDown(ssGUI::Enums::LetterKey::U))
+    {
+        ssLOG_SIMPLE("IsDeselectWhenFocusLost called: "<<TestText->IsDeselectWhenFocusLost());
     }
 }
 

@@ -1,10 +1,13 @@
 #ifndef SSGUI_OUTLINE_H
 #define SSGUI_OUTLINE_H
 
+#include "ssGUI/DataClasses/ShapeModifier.hpp"
+#include "ssGUI/DataClasses/TargetShape.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 #include "glm/geometric.hpp"
+#include <unordered_set>
 
 namespace ssGUI 
 { 
@@ -24,22 +27,14 @@ namespace Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;                            //See <BindToObject>
-        bool Enabled;                                           //See <IsEnabled>
+            ssGUI::GUIObject* Container;                            //See <BindToObject>
+            bool Enabled;                                           //See <IsEnabled>
 
-        float OutlineThickness;                                 //See <GetOutlineThickness>
-        bool SimpleOutline;                                     //See <IsSimpleOutline>
-        bool InnerOutline;                                      //See <IsInnerOutline>
-        glm::u8vec4 OutlineColor;                               //See <GetOutlineColor>
-        std::vector<int> TargetShapes;                          //See <GetTargetShape>
-        std::vector<int> TargetVertices;                        //See <GetTargetVertex>
-
-        std::vector<int> VerticesToOutline;                     //(Internal variable) Used to identify vertices indices to outline
-        std::vector<int> VerticesToOutlinePrevVertices;         //(Internal variable) Used to identify the previous vertex of vertex index to outline
-        std::vector<int> VerticesToOutlineNextVertices;         //(Internal variable) Used to identify the next vertex of vertex index to outline
-        std::vector<int> VerticesToOutlineNextNextVertices;     //(Internal variable) Used to identify the one after next vertex of vertex index to outline
-        std::vector<int> VerticesToOutlineShapeIndex;           //(Internal variable) Used to identify the shapes index to outline
-        std::vector<bool> VerticesToOutlineShapeStartFlag;      //(Internal variable) Used to identify which vertex is the start vertex of the shapes
+            float OutlineThickness;                                 //See <GetOutlineThickness>
+            bool SimpleOutline;                                     //See <IsSimpleOutline>
+            bool InnerOutline;                                      //See <IsInnerOutline>
+            glm::u8vec4 OutlineColor;                               //See <GetOutlineColor>
+            ssGUI::ShapeModifier ModifiedShapes;                    //(Internal variable) Used to store list of shapes to be modified
     =================================================================
     ============================== C++ ==============================
     Outline::Outline() :    Container(nullptr),
@@ -48,15 +43,10 @@ namespace Extensions
                             SimpleOutline(false),
                             InnerOutline(true),
                             OutlineColor(0, 0, 0, 255),
-                            TargetShapes{0},
-                            TargetVertices(),
-                            VerticesToOutline(),
-                            VerticesToOutlinePrevVertices(),
-                            VerticesToOutlineNextVertices(),
-                            VerticesToOutlineNextNextVertices(),
-                            VerticesToOutlineShapeIndex(),
-                            VerticesToOutlineShapeStartFlag()
-    {}
+                            ModifiedShapes()
+    {
+        ModifiedShapes.TargetShapes.push_back(ssGUI::TargetShape(0));
+    }
     =================================================================
     */
     class Outline : public Extension
@@ -75,15 +65,7 @@ namespace Extensions
             bool SimpleOutline;                                     //See <IsSimpleOutline>
             bool InnerOutline;                                      //See <IsInnerOutline>
             glm::u8vec4 OutlineColor;                               //See <GetOutlineColor>
-            std::vector<int> TargetShapes;                          //See <GetTargetShape>
-            std::vector<int> TargetVertices;                        //See <GetTargetVertex>
-
-            std::vector<int> VerticesToOutline;                     //(Internal variable) Used to identify vertices indices to outline
-            std::vector<int> VerticesToOutlinePrevVertices;         //(Internal variable) Used to identify the previous vertex of vertex index to outline
-            std::vector<int> VerticesToOutlineNextVertices;         //(Internal variable) Used to identify the next vertex of vertex index to outline
-            std::vector<int> VerticesToOutlineNextNextVertices;     //(Internal variable) Used to identify the one after next vertex of vertex index to outline
-            std::vector<int> VerticesToOutlineShapeIndex;           //(Internal variable) Used to identify the shapes index to outline
-            std::vector<bool> VerticesToOutlineShapeStartFlag;      //(Internal variable) Used to identify which vertex is the start vertex of the shapes
+            ssGUI::ShapeModifier ModifiedShapes;                    //(Internal variable) Used to store list of shapes to be modified
 
             Outline();
             virtual ~Outline() override;
@@ -94,7 +76,7 @@ namespace Extensions
             static void operator delete[](void* p)      {free(p);};
 
             virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex);
-            virtual void UpdateVerticesForOutline();
+            //virtual void UpdateVerticesForOutline();
 
             //https://stackoverflow.com/questions/1727881/how-to-use-the-pi-constant-in-c
             double pi() const { return std::atan(1)*4; };
@@ -115,6 +97,7 @@ namespace Extensions
 
         public:
             static const std::string EXTENSION_NAME;
+            static const std::string OUTLINE_SHAPES_NAME;
 
             //function: SetOutlineThickness
             //Sets the thickness of the outline, in pixel
@@ -161,60 +144,59 @@ namespace Extensions
             virtual glm::u8vec4 GetOutlineColor() const;
 
             //function: AddTargetShape
-            //Adds the shapeIndex that indicates the index of the shape to be outlined in GUI object.
-            //Note that if you have added any target vertices (<AddTargetVertex>), this will be *ignored*.
-            virtual void AddTargetShape(int shapeIndex);
+            //See <ssGUI::ShapeModifier::AddTargetShape>
+            virtual int AddTargetShape(ssGUI::TargetShape targetShape);
 
             //function: GetTargetShape
-            //Returns the shapeIndex that indicates the index of the shape to be outlined in GUI object,
-            //by specifying the location shapedIndex that is stored in this extension.
-            virtual int GetTargetShape(int location) const;
+            //See <ssGUI::ShapeModifier::GetTargetShape>
+            virtual ssGUI::TargetShape GetTargetShape(int location) const;
 
             //function: SetTargetShape
-            //Sets the shapeIndex that indicates the index of the shape to be outlined in GUI object,
-            //by specifying the location shapedIndex that is stored in this extension.
-            virtual void SetTargetShape(int location, int shapeIndex);
+            //See <ssGUI::ShapeModifier::SetTargetShape>
+            virtual void SetTargetShape(int location, ssGUI::TargetShape targetShape);
 
             //function: GetTargetShapesCount
-            //Returns the number of shapes to be outlined (number of shapeIndex) that are stored in this extension. 
+            //See <ssGUI::ShapeModifier::GetTargetShapesCount>
             virtual int GetTargetShapesCount() const;
 
             //function: RemoveTargetShape
-            //Removes the shapeIndex that indicates the index of the shape to be outlined in GUI object,
-            //by specifying the location shapedIndex that is stored in this extension.
+            //See <ssGUI::ShapeModifier::RemoveTargetShape>
             virtual void RemoveTargetShape(int location);
 
             //function: ClearTargetShapes
-            //Clears all the shapeIndex entries in this extension 
+            //See <ssGUI::ShapeModifier::ClearTargetShapes>
             virtual void ClearTargetShapes();
 
             //function: AddTargetVertex
-            //Adds the target vertex that indicates the index of the vertex to be outlined in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
-            //Note that if you are adding any target vertices, any target shapes added (<AddTargetShape>) this will be ignored.
-            virtual void AddTargetVertex(int vertexIndex);
+            //See <ssGUI::ShapeModifier::AddTargetVertex>
+            virtual int AddTargetVertex(ssGUI::TargetShape targetShape, int vertexIndex);
 
             //function: GetTargetVertex
-            //Returns the vertexIndex that indicates the index of the vertex to be outlined in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
-            virtual int GetTargetVertex(int location) const;
+            //See <ssGUI::ShapeModifier::GetTargetVertex>
+            virtual VerticesIndicesForShape GetTargetVertices(int location) const;
+            
+            //function: GetTargetVertex
+            //See <ssGUI::ShapeModifier::GetTargetVertex>
+            virtual VerticesIndicesForShape GetTargetVertices(ssGUI::TargetShape targetShape) const;
 
             //function: SetTargetVertex
-            //Sets the vertexIndex that indicates the index of the vertex to be outlined in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
-            virtual void SetTargetVertex(int location, int vertexIndex);
+            //See <ssGUI::ShapeModifier::SetTargetVertex>
+            virtual void SetTargetVertices(ssGUI::TargetShape targetShape, const std::vector<int>& vertices);
+
+            //function: SetTargetVertex
+            //See <ssGUI::ShapeModifier::SetTargetVertex>
+            virtual void SetTargetVertices(int location, const std::vector<int>& vertices);
 
             //function: GetTargetVerticesCount
-            //Returns the number of indices to be outlined (number of vertexIndex) that are stored in this extension. 
+            //See <ssGUI::ShapeModifier::GetTargetVerticesCount>
             virtual int GetTargetVerticesCount() const;
 
             //function: RemoveTargetVertex
-            //Removes the vertexIndex that indicates the index of the vertex to be outlined in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
+            //See <ssGUI::ShapeModifier::RemoveTargetVertex>
             virtual void RemoveTargetVertex(int location);
 
             //function: ClearTargetVertices
-            //Clears all the vertexIndex entries in this extension
+            //See <ssGUI::ShapeModifier::ClearTargetVertices>
             virtual void ClearTargetVertices();
 
             //Override from Extension

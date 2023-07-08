@@ -2,17 +2,28 @@
 
 set -e
 
-./BackendTests/BackendFontTest_Auto
-./BackendTests/BackendImageTest_Auto
-./BackendTests/BackendMainWindowTest_Auto
-./EventCallbackTests/BackgroundColorChangedEventTest_Auto
-./EventCallbackTests/BaseEventCallbackTest_Auto
-./EventCallbackTests/ChildAddedEventTest_Auto
-./EventCallbackTests/ChildPositionChangedEventTest_Auto
-./EventCallbackTests/ChildRemovedEventTest_Auto
-./EventCallbackTests/MinMaxSizeChangedEventTest_Auto
-./EventCallbackTests/OnFontChangeEventTest_Auto
-./EventCallbackTests/OnObjectDestroyEventTest_Auto
-./GUIObjectTests/TextTest_Auto
-./GUIObjectTests/WidgetTest_Auto
-./GUIObjectTests/WindowTest_Auto
+function runTest()
+{
+    if [ -f $1 ]; then
+        $1
+    else
+        echo "[Auto Test Warning] $1 doesn't exist, skipping"
+        echo ""
+    fi
+}
+
+runTest ./BackendTests/BackendFontTest_Auto
+runTest ./BackendTests/BackendImageTest_Auto
+runTest ./BackendTests/BackendMainWindowTest_Auto
+runTest ./BackendTests/DynamicAtlasTest_Auto
+runTest ./EventCallbackTests/BackgroundColorChangedEventTest_Auto
+runTest ./EventCallbackTests/BaseEventCallbackTest_Auto
+runTest ./EventCallbackTests/ChildAddedEventTest_Auto
+runTest ./EventCallbackTests/ChildPositionChangedEventTest_Auto
+runTest ./EventCallbackTests/ChildRemovedEventTest_Auto
+runTest ./EventCallbackTests/MinMaxSizeChangedEventTest_Auto
+runTest ./EventCallbackTests/OnFontChangeEventTest_Auto
+runTest ./EventCallbackTests/OnObjectDestroyEventTest_Auto
+runTest ./GUIObjectTests/TextTest_Auto
+runTest ./GUIObjectTests/WidgetTest_Auto
+runTest ./GUIObjectTests/WindowTest_Auto

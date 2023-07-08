@@ -50,7 +50,7 @@ namespace Backend
             return false;
     }
 
-    bool BackendImageSFML::LoadImgFileFromMemory(void const * dataPtr, std::size_t size)
+    bool BackendImageSFML::LoadImgFileFromMemory(const void * dataPtr, std::size_t size)
     {
         if(GPUTexture.loadFromMemory(dataPtr, size))
         {
@@ -62,7 +62,7 @@ namespace Backend
             return false;
     }
 
-    bool BackendImageSFML::LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
+    bool BackendImageSFML::LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
     {
         bool conversionNeeded = !(format.HasAlpha && 
                                 format.BitDepthPerChannel == 8 && 

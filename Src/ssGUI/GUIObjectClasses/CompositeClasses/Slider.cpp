@@ -22,7 +22,7 @@ namespace ssGUI
         ScrollInternal = other.ScrollInternal;
         KeyInputInterval = other.KeyInputInterval;
 
-        KnobGlobalPosition = other.KnobGlobalPosition;
+        KnobGlobalOffset = other.KnobGlobalOffset;
         CursorKnobOffset = other.CursorKnobOffset;
         LastSliderDragging = false;
         SliderDragging = false;
@@ -37,14 +37,14 @@ namespace ssGUI
 
     void Slider::ApplySnapping()
     {
-        if(GetSnapInterval() == 0)
+        if(GetSnapInterval() <= 0)
             return;
         
         float snapValue = GetSliderValue() / GetSnapInterval();
         SliderValue = round(snapValue) * GetSnapInterval();
     }
 
-    void Slider::UpdateKnobPosition(bool completeUpdate)
+    void Slider::UpdateKnobOffset()
     {
         auto knob = static_cast<ssGUI::Button*>(GetKnobObject());
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
@@ -54,10 +54,10 @@ namespace ssGUI
             float leftX = GetGlobalPosition().x + GetEndPadding();
             float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x - GetEndPadding();
 
-            KnobGlobalPosition = glm::vec2
+            KnobGlobalOffset = glm::vec2
             (
-                leftX + (rightX - leftX) * (IsReverse() ? (1 - GetSliderValue()) : GetSliderValue()), 
-                completeUpdate ? GetGlobalPosition().y + (GetSize().y - curKnobSize.y) * 0.5 : KnobGlobalPosition.y
+                (rightX - leftX) * (IsReverse() ? (1 - GetSliderValue()) : GetSliderValue()), 
+                (GetSize().y - curKnobSize.y) * 0.5
             );
         }
         else
@@ -65,31 +65,35 @@ namespace ssGUI
             float topY = GetGlobalPosition().y + GetEndPadding();
             float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y - GetEndPadding();
             
-            KnobGlobalPosition = glm::vec2
+            KnobGlobalOffset = glm::vec2
             (
-                completeUpdate ? GetGlobalPosition().x + (GetSize().x - curKnobSize.x) * 0.5 : KnobGlobalPosition.x,
-                botY - (botY - topY) * (IsReverse() ? (1 - GetSliderValue()) : GetSliderValue())
+                (GetSize().x - curKnobSize.x) * 0.5,
+                (botY - topY) * (IsReverse() ? GetSliderValue() : (1 - GetSliderValue()))
             );
         }
 
         if(knob != nullptr)
-            knob->SetGlobalPosition(KnobGlobalPosition);
+            knob->SetGlobalPosition(GetGlobalPosition() + KnobGlobalOffset);
         
-        RedrawObject();
+        //RedrawObject();
     }
 
-    void Slider::UpdateSliderValue()
+    void Slider::UpdateSliderValueFromCursor(glm::vec2 cursorPos)
     {
         ssLOG_FUNC_ENTRY();
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
 
+        cursorPos -= CursorKnobOffset;
         if(!IsVertical())
         {
             float leftX = GetGlobalPosition().x + GetEndPadding();
             float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x - GetEndPadding();
+            
+            cursorPos.x = cursorPos.x < leftX ? leftX : cursorPos.x;
+            cursorPos.x = cursorPos.x > rightX ? rightX : cursorPos.x;
 
-            SetSliderValue((KnobGlobalPosition.x - leftX) / (rightX - leftX));
+            SetSliderValue((cursorPos.x - leftX) / (rightX - leftX));
             if(IsReverse())
                 SetSliderValue(1 - GetSliderValue());
         }
@@ -98,7 +102,10 @@ namespace ssGUI
             float topY = GetGlobalPosition().y + GetEndPadding();
             float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y - GetEndPadding();
 
-            SetSliderValue((botY - KnobGlobalPosition.y) / (botY - topY));
+            cursorPos.y = cursorPos.y < topY ? topY : cursorPos.y;
+            cursorPos.y = cursorPos.y > botY ? botY : cursorPos.y;
+
+            SetSliderValue((botY - cursorPos.y) / (botY - topY));
             if(IsReverse())
                 SetSliderValue(1 - GetSliderValue());
         }
@@ -111,72 +118,70 @@ namespace ssGUI
         glm::vec2 drawPosition = GetGlobalPosition();
 
         //Slider Background
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        ssGUI::DrawingEntity backgroundEntitiy;
+        
+        backgroundEntitiy.Vertices.push_back(drawPosition);
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        
+        backgroundEntitiy.EntityName = GUI_OBJECT_BG_SHAPE_NAME;
+        
+        DrawingEntities.push_back(backgroundEntitiy);
 
         //Slider fill
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
+        glm::vec2 knobPos = drawPosition + KnobGlobalOffset;
+
+        ssGUI::DrawingEntity sliderFillEntity;
 
         if(!IsVertical())
         {
             if(!IsReverse())
             {
-                DrawingVerticies.push_back(glm::vec2(drawPosition));
-                DrawingVerticies.push_back(glm::vec2(KnobGlobalPosition.x + curKnobSize.x / 2, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(KnobGlobalPosition.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
             }
             else
             {
-                DrawingVerticies.push_back(glm::vec2(KnobGlobalPosition.x + curKnobSize.x / 2, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y + GetSize().y));
-                DrawingVerticies.push_back(glm::vec2(KnobGlobalPosition.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(knobPos.x + curKnobSize.x / 2, drawPosition.y + GetSize().y));
             }
         }
         else
         {
             if(!IsReverse())
             {
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, KnobGlobalPosition.y + curKnobSize.y / 2));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, KnobGlobalPosition.y + curKnobSize.y / 2));
-                DrawingVerticies.push_back(glm::vec2(drawPosition + GetSize()));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, knobPos.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, knobPos.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition + GetSize()));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, drawPosition.y + GetSize().y));
                 
             }
             else
             {
-                DrawingVerticies.push_back(glm::vec2(drawPosition));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x + GetSize().x, KnobGlobalPosition.y + curKnobSize.y / 2));
-                DrawingVerticies.push_back(glm::vec2(drawPosition.x, KnobGlobalPosition.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, drawPosition.y));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x + GetSize().x, knobPos.y + curKnobSize.y / 2));
+                sliderFillEntity.Vertices.push_back(glm::vec2(drawPosition.x, knobPos.y + curKnobSize.y / 2));
             }
         }
 
         for(int i = 0; i < 4; i++)
-        {
-            DrawingUVs.push_back(glm::vec2());
-            DrawingColours.push_back(GetFillColor());
-        }
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+            sliderFillEntity.Colors.push_back(GetFillColor());
+    
+        sliderFillEntity.EntityName = SLIDER_FILL_SHAPE_NAME;
+        DrawingEntities.push_back(sliderFillEntity);
     }
 
     void Slider::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -198,55 +203,18 @@ namespace ssGUI
         {
             CursorKnobOffset = 
                 IsVertical() ?
-                mousePos.y - KnobGlobalPosition.y : 
-                mousePos.x - KnobGlobalPosition.x;
+                mousePos.y - knob->GetGlobalPosition().y : 
+                mousePos.x - knob->GetGlobalPosition().x;
         }
         //If the user is dragging the knob, update the position
         else if(knob != nullptr && ((knob->GetButtonState() == ssGUI::Enums::ButtonState::CLICKING && IsInteractable() && IsBlockInput()) || SliderDragging))
         {
-            if(IsVertical())
-            {
-                KnobGlobalPosition = glm::vec2
-                (
-                    GetGlobalPosition().x + (GetSize().x - curKnobSize.x) * 0.5,
-                    mousePos.y - CursorKnobOffset
-                );
-
-                float topY = GetGlobalPosition().y + GetEndPadding();
-                float botY = GetGlobalPosition().y + GetSize().y - curKnobSize.y - GetEndPadding();
-
-                //Do bound checks
-                if(KnobGlobalPosition.y < topY)
-                    KnobGlobalPosition = glm::vec2(KnobGlobalPosition.x, topY);
-                else if(KnobGlobalPosition.y > botY)
-                    KnobGlobalPosition = glm::vec2(KnobGlobalPosition.x, botY);
-            }
-            else
-            {
-                KnobGlobalPosition = glm::vec2
-                (
-                    mousePos.x - CursorKnobOffset,
-                    GetGlobalPosition().y + (GetSize().y - curKnobSize.y) * 0.5
-                );
-
-                float leftX = GetGlobalPosition().x + GetEndPadding();
-                float rightX = GetGlobalPosition().x + GetSize().x - curKnobSize.x - GetEndPadding();
-
-                //Do bound checks
-                if(KnobGlobalPosition.x < leftX)
-                    KnobGlobalPosition = glm::vec2(leftX, KnobGlobalPosition.y);
-                else if(KnobGlobalPosition.x > rightX)
-                    KnobGlobalPosition = glm::vec2(rightX, KnobGlobalPosition.y);
-            }
-
-            knob->SetGlobalPosition(KnobGlobalPosition);
-
             knob->SetFocus(true);
             
             float oriSliderValue = GetSliderValue();
 
             //Update the slider value according to the slider position
-            UpdateSliderValue();
+            UpdateSliderValueFromCursor(mousePos);
 
             //Record if slider value is changed via GUI
             guiInteracted = oriSliderValue == GetSliderValue() ? false : true;
@@ -255,7 +223,7 @@ namespace ssGUI
             ApplySnapping();
 
             //Reposition the knob
-            UpdateKnobPosition(false);
+            UpdateKnobOffset();
 
             inputStatus.MouseInputBlockedObject = this;
         }
@@ -419,7 +387,7 @@ namespace ssGUI
 
         //If there's any size or position change, we need to update the knob position
         if(GetSize() != LastSize || GetGlobalPosition() != LastGlobalPosition)
-            UpdateKnobPosition(true);
+            UpdateKnobOffset();
 
         LastSliderDragging = SliderDragging;
         LastGlobalPosition = GetGlobalPosition();
@@ -455,6 +423,7 @@ namespace ssGUI
     }
 
     const std::string Slider::ListenerKey = "Slider";
+    const std::string Slider::SLIDER_FILL_SHAPE_NAME = "Slider Fill";
     
     Slider::Slider() :  Reverse(false),
                         FillColor(0, 0, 0, 0),
@@ -466,7 +435,7 @@ namespace ssGUI
                         ScrollInternal(0.05),
                         KeyInputInterval(0.05),
                         EndPadding(0),
-                        KnobGlobalPosition(),
+                        KnobGlobalOffset(),
                         CursorKnobOffset(0),
                         LastSliderDragging(false),
                         SliderDragging(false),
@@ -533,7 +502,7 @@ namespace ssGUI
         ); 
 
         KnobObject = CurrentObjectsReferences.GetObjectIndex(button);
-        UpdateKnobPosition(true);
+        UpdateKnobOffset();
     }
 
     Slider::~Slider()
@@ -565,7 +534,7 @@ namespace ssGUI
         return FillColor;
     }
 
-    void Slider::SetKnobObject(ssGUI::GUIObject* knob)
+    void Slider::SetKnobObject(ssGUI::Button* knob)
     {
         if(KnobObject != -1 && CurrentObjectsReferences.GetObjectReference(KnobObject) != nullptr)
         {
@@ -585,9 +554,9 @@ namespace ssGUI
         knob->SetGlobalPosition(globalPos);
     }
 
-    ssGUI::GUIObject* Slider::GetKnobObject() const
+    ssGUI::Button* Slider::GetKnobObject() const
     {
-        return CurrentObjectsReferences.GetObjectReference(KnobObject);
+        return CurrentObjectsReferences.GetObjectReference<ssGUI::Button>(KnobObject);
     }
 
     void Slider::SetKnobSize(float knobSize, bool updateKnobObject)
@@ -627,7 +596,7 @@ namespace ssGUI
         SliderValue = SliderValue > 1 ? 1 : SliderValue;
 
         ApplySnapping();
-        UpdateKnobPosition(false);
+        UpdateKnobOffset();
 
         ssLOG_FUNC_EXIT();
     }
@@ -692,6 +661,22 @@ namespace ssGUI
     float Slider::GetKeyInputMoveInterval() const
     {
         return KeyInputInterval;
+    }
+    
+    void Slider::SetInteractable(bool interactable)
+    {
+        if(GetKnobObject() != nullptr)
+            GetKnobObject()->SetInteractable(interactable);
+    
+        Widget::SetInteractable(interactable);
+    }
+    
+    void Slider::SetBlockInput(bool blockInput)
+    {
+        if(GetKnobObject() != nullptr)
+            GetKnobObject()->SetBlockInput(blockInput);
+    
+        Widget::SetBlockInput(blockInput);
     }
 
     ssGUI::Enums::GUIObjectType Slider::GetType() const

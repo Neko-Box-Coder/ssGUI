@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("ent",["Constant"],[["ENTER",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/SystemKey.hpp:ssGUI.Enums.ENTER","CClass:ssGUI.Enums:ENTER"]]]]);

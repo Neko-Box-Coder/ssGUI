@@ -102,11 +102,11 @@ namespace Backend
 
             //function: GetLastRealtimeInputs
             //Return a list of inputs in order happened in last frame. The last input info should be the same as <GetLastKeyPresses>, <GetLastMousePosition>, etc...
-            virtual std::vector<ssGUI::RealtimeInputInfo> const & GetLastRealtimeInputs() const = 0;
+            virtual const std::vector<ssGUI::RealtimeInputInfo>& GetLastRealtimeInputs() const = 0;
 
             //function: GetCurrentRealtimeInputs
             //Return a list of inputs in order happened in current frame. The last input info should be the same as <GetCurrentKeyPresses>, <GetCurrentMouseButton>, etc...
-            virtual std::vector<ssGUI::RealtimeInputInfo> const & GetCurrentRealtimeInputs() const = 0;
+            virtual const std::vector<ssGUI::RealtimeInputInfo>& GetCurrentRealtimeInputs() const = 0;
 
             //function: GetTextInput
             //Returns all the text typed in current frame.

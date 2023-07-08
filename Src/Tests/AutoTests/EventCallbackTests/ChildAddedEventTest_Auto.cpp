@@ -25,20 +25,20 @@ int main()
                                     });
         TestObj->AddEventCallbackCopy(Callback, true);
         TestWindow->AddEventCallbackCopy(Callback, true);
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(Callback);
         ssGUI::Factory::Dispose(TestObj);
         ssGUI::Factory::Dispose(TestWindow);
-    }
+    };
 
     ssTEST("EventTest")
     {
         TestObj->SetParent(TestWindow);
         ssTEST_OUTPUT_ASSERT("GUIObject", ListenerNum == 1);   
-    }
+    };
 
     ssTEST_END();
 }

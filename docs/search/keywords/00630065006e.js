@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("cen",["Constant"],[["CENTER",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/AlignmentHorizontal.hpp:ssGUI.Enums.CENTER","CClass:ssGUI.Enums:CENTER"]]]]);

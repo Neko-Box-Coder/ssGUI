@@ -191,8 +191,8 @@ namespace ssGUI
 
             StandardButton(StandardButton const& other);
 
-            virtual void UpdateButtonText();
-            virtual void UpdateButtonImage();
+            virtual void UpdateButtonText(bool init);
+            virtual void UpdateButtonImage(bool init);
 
         public:
             //string: ListenerKey
@@ -202,19 +202,23 @@ namespace ssGUI
             virtual ~StandardButton() override;
 
             //function: SetButtonIconObject
-            //Sets the icon image object, by default it will be generated
+            //Sets the icon image object, by default it will be generated.
+            //The new image object will be automatically parent to a wrapper.
+            //Passing nullptr will unset the button icon object.
             virtual void SetButtonIconObject(ssGUI::Image* image);
             
             //function: GetButtonIconObject
-            //Gets the icon image object, by default it will be generated
+            //Gets the icon image object, by default it will be generated.
             virtual ssGUI::Image* GetButtonIconObject() const;
 
             //function: SetButtonTextObject
-            //Sets the text object, by default it will be generated
+            //Sets the text object, by default it will be generated.
+            //The text content from the old text will be transferred to the new text object.
+            //Passing nullptr will unset the button icon object.
             virtual void SetButtonTextObject(ssGUI::Text* text);
             
             //function: GetButtonTextObject
-            //Gets the text object, by default it will be generated
+            //Gets the text object, by default it will be generated.
             virtual ssGUI::Text* GetButtonTextObject() const;
 
             //function: SetAdaptiveButtonTextColor
@@ -254,6 +258,14 @@ namespace ssGUI
             //function: SetButtonColor
             //See <Button::SetButtonColor>
             virtual void SetButtonColor(glm::u8vec4 color) override;
+    
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+            
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
             
             //function: GetType
             //See <Widget::GetType>

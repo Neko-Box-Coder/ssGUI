@@ -273,7 +273,7 @@ namespace Extensions
     {
         ssLOG_FUNC_ENTRY();
 
-        if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0 || !IsCoverFullLength())
+        if(Container == nullptr || Container->GetChildrenCount() - ObjectsToExclude.size() == 0)
         {
             ssLOG_FUNC_EXIT();
             return;
@@ -374,8 +374,16 @@ namespace Extensions
                 maxMinY += GetPadding() * 2;
             }
 
-            Container->SetMinSize(glm::vec2(minSizeTotalX, maxMinY));
-            Container->SetMaxSize(glm::vec2(maxSizeTotalX, minMaxY));
+            if(IsCoverFullLength())
+            {
+                Container->SetMinSize(glm::vec2(minSizeTotalX, maxMinY));
+                Container->SetMaxSize(glm::vec2(maxSizeTotalX, minMaxY));
+            }
+            else
+            {
+                Container->SetMinSize(glm::vec2(Container->GetMinSize().x, maxMinY));
+                Container->SetMaxSize(glm::vec2(Container->GetMaxSize().x, minMaxY));
+            }
         }
         else
         {
@@ -442,8 +450,16 @@ namespace Extensions
                             minMaxX + GetPadding() * 2;
             maxMinX += GetPadding() * 2;
 
-            Container->SetMinSize(glm::vec2(maxMinX, minSizeTotalY));
-            Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
+            if(IsCoverFullLength())
+            {
+                Container->SetMinSize(glm::vec2(maxMinX, minSizeTotalY));
+                Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
+            }
+            else
+            {
+                Container->SetMinSize(glm::vec2(maxMinX, Container->GetMinSize().y));
+                Container->SetMaxSize(glm::vec2(minMaxX, Container->GetMaxSize().y));
+            }
         }
 
         ssLOG_FUNC_EXIT();
@@ -746,7 +762,7 @@ namespace Extensions
         PreferredSizeMultipliers.push_back(sizeMultiplier);
     }
 
-    void Layout::AddPreferredSizeMultiplier(float sizeMultipliers[], int count)
+    void Layout::AddPreferredSizeMultipliers(float sizeMultipliers[], int count)
     {
         for(int i = 0; i < count; i++)
             PreferredSizeMultipliers.push_back(sizeMultipliers[i]);
@@ -884,6 +900,7 @@ namespace Extensions
             }
             Container->PopChildrenIterator();
 
+            UpdateExcludedObjects();
             SyncContainerMinMaxSize();
         }
         else
@@ -979,37 +996,6 @@ namespace Extensions
         }
     }
 
-    ssGUI::GUIObject* Layout::AddChildWithWrapper(ssGUI::GUIObject* child)
-    {
-        if(Container == nullptr)
-            return nullptr;
-
-        ssGUI::GUIObject* wrapper = ssGUI::Factory::Create<ssGUI::GUIObject>();
-        wrapper->SetParent(Container);
-        wrapper->SetUserCreated(false);
-
-        child->SetParent(wrapper);
-        return wrapper;
-    }
-
-    ssGUI::GUIObject* Layout::AddChildWithAlignment(ssGUI::GUIObject* child, ssGUI::Enums::AlignmentHorizontal horizontal, ssGUI::Enums::AlignmentVertical vertical)
-    {
-        ssGUI::GUIObject* wrapper = AddChildWithWrapper(child);
-        
-        if(wrapper != nullptr)
-        {
-            if(!child->IsAnyExtensionExist<ssGUI::Extensions::AdvancedPosition>())
-                child->AddExtension<ssGUI::Extensions::AdvancedPosition>();
-        
-            ssGUI::Extensions::AdvancedPosition* ap = child->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        
-            ap->SetHorizontalAlignment(horizontal);
-            ap->SetVerticalAlignment(vertical);
-        }
-        
-        return wrapper;
-    }
-
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
     {
         ssLOG_FUNC_ENTRY();
@@ -1042,7 +1028,7 @@ namespace Extensions
 
         //Rely on tag instead
         // Container->StashChildrenIterator();
-        // if(Container->FindChild(child) && Container->IsChildComposite())
+        // if(Container->MoveChildrenIteratorToChild(child) && Container->IsCurrentChildComposite())
         // {
         //     Container->PopChildrenIterator();
         //     ObjectsToExclude.insert(childIndex);

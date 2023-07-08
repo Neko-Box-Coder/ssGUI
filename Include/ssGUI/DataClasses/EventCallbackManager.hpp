@@ -72,6 +72,10 @@ namespace ssGUI
             //function: GetListOfEventCallbacks
             //Returns all the event callbacks on the GUI Object
             virtual std::vector<ssGUI::EventCallback*> GetListOfEventCallbacks();
+            
+            //function: ForwardEvent
+            //Forwards the specified event we received to the specified GUI Object
+            virtual void ForwardEvent(ssGUI::GUIObject* objToForwardTo, ssGUI::Enums::EventType forwardEvent);
     };
 }
 

@@ -12,83 +12,56 @@ ssGUI::Backend::BackendSystemInputInterface* InputBackend = nullptr;
 ssGUI::Backend::BackendImageInterface* ImgBackend = nullptr;
 ssGUI::Backend::BackendFontInterface* FontBackend = nullptr;
 
+const std::string DrawingTestShapeName = "Backend Test Shape";
+
 //========================================================================================
 //Helper functions
 //========================================================================================
-void CreateShapes(std::vector<glm::vec2>& vertices, glm::vec2 baseSize)
+ssGUI::DrawingEntity CreateShapes(  glm::vec2 pos, 
+                                    glm::vec2 size, 
+                                    glm::u8vec4 color, 
+                                    bool isRainbow = false,
+                                    bool isTriangle = false)
 {
-    glm::vec2 startPos = glm::vec2(50, 50);
-
-    glm::vec2 offset = glm::vec2(300, 0);
-
-    vertices =
-    {
-        //Base Size
-        startPos + offset * 0.f, 
-        startPos + offset * 0.f + glm::vec2(baseSize.x, 0), 
-        startPos + offset * 0.f + baseSize, 
-        startPos + offset * 0.f + glm::vec2(0, baseSize.y),
-        
-        //Stretch X
-        startPos + offset * 1.f, 
-        startPos + offset * 1.f + glm::vec2(baseSize.x * 2, 0), 
-        startPos + offset * 1.f + baseSize + glm::vec2(baseSize.x, 0), 
-        startPos + offset * 1.f + glm::vec2(0, baseSize.y),
-
-        //Stretch Y
-        startPos + offset * 2.f, 
-        startPos + offset * 2.f + glm::vec2(baseSize.x, 0), 
-        startPos + offset * 2.f + baseSize + glm::vec2(0, baseSize.y), 
-        startPos + offset * 2.f + glm::vec2(0, baseSize.y * 2),
-
-        //Non-quad
-        startPos + offset * 3.f, 
-        startPos + offset * 3.f + glm::vec2(baseSize.x, 0), 
-        startPos + offset * 3.f + baseSize,   
-    };
-}
-
-void CreateColors(std::vector<glm::u8vec4>& colors, glm::u8vec4 baseColor)
-{
-    colors = 
-    {
-        //Plain grey
-        baseColor,
-        baseColor,
-        baseColor,
-        baseColor,
+    ssGUI::DrawingEntity entity;
     
-        //Sampling color
-        glm::u8vec4(255, 0, 0, 255),
-        glm::u8vec4(0, 255, 0, 255),
-        glm::u8vec4(0, 0, 255, 255),
-        baseColor,
-        
-        //Alpha
-        glm::u8vec4(127, 127, 127, 127),
-        glm::u8vec4(127, 127, 127, 127),
-        glm::u8vec4(127, 127, 127, 127),
-        glm::u8vec4(127, 127, 127, 127),
-
-        //Sampling with alpha
-        glm::u8vec4(255, 0, 0, 127),
-        glm::u8vec4(0, 255, 0, 127),
-        glm::u8vec4(0, 0, 255, 127),
-    };
-}
-
-void CreateCounts(std::vector<int>& counts)
-{
-    counts = 
+    //Base Size
+    //Plain grey
+    entity.Vertices.push_back(pos);
+    entity.Vertices.push_back(pos + glm::vec2(size.x, 0));
+    entity.Vertices.push_back(pos + size);
+    
+    if(!isTriangle)
+        entity.Vertices.push_back(pos + glm::vec2(0, size.y));
+    
+    if(!isRainbow)
     {
-        4, 4, 4, 3
-    };
+        entity.Colors.push_back(color);
+        entity.Colors.push_back(color);
+        entity.Colors.push_back(color);
+        
+        if(!isTriangle)
+            entity.Colors.push_back(color);
+    }
+    else
+    {
+        entity.Colors.push_back(glm::u8vec4(color.x, 0, 0, color.w));
+        entity.Colors.push_back(glm::u8vec4(0, color.y, 0, color.w));
+        entity.Colors.push_back(glm::u8vec4(0, 0, color.z, color.w));
+        
+        if(!isTriangle)
+            entity.Colors.push_back(glm::u8vec4(0, 0, 0, color.w));
+    }
+
+    entity.EntityName = DrawingTestShapeName;
+
+    return entity;
 }
 
 void SetUp()
 {
     ImgBackend = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
-    if(!ImgBackend->LoadImgFileFromMemory(ssGUI_Test_sd, ssGUI_Test_sd_size))
+    if(!ImgBackend->LoadImgFileFromMemory(ssGUI_Test_sd_edge, ssGUI_Test_sd_edge_size))
     {
         ssLOG_LINE("Failed to load image");
     }
@@ -131,34 +104,21 @@ void DrawColorShapesTest()
         InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
     {
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
-        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
-        std::vector<glm::vec2> vertices;
-        CreateShapes(vertices, glm::vec2(50, 50));
+        std::vector<ssGUI::DrawingEntity> drawingEntities;
         
-        std::vector<glm::u8vec4> colors;
-        CreateColors(colors, glm::u8vec4(127, 127, 127, 255));
+        drawingEntities.push_back(CreateShapes(glm::vec2(50, 50), glm::vec2(100, 100), glm::u8vec4(127, 127, 127, 255)));
+        drawingEntities.push_back(CreateShapes(glm::vec2(200, 50), glm::vec2(200, 100), glm::u8vec4(255, 255, 255, 255), true));
+        drawingEntities.push_back(CreateShapes(glm::vec2(500, 50), glm::vec2(100, 200), glm::u8vec4(127, 127, 127, 127)));
+        drawingEntities.push_back(CreateShapes(glm::vec2(700, 50), glm::vec2(100, 100), glm::u8vec4(255, 255, 255, 127), true, true));
         
-        std::vector<glm::vec2> texCoords = std::vector<glm::vec2>(15, glm::vec2());
-        
-        std::vector<int> counts;
-        CreateCounts(counts);
-        
-        std::vector<ssGUI::DrawingProperty> properties = 
-        {
-            ssGUI::DrawingProperty(), 
-            ssGUI::DrawingProperty(), 
-            ssGUI::DrawingProperty(),
-            ssGUI::DrawingProperty()
-        };
-    
-        DrawingBackend->DrawEntities(vertices, texCoords, colors, counts, properties);
+        DrawingBackend->DrawEntities(drawingEntities);
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         ssLOG_SIMPLE("Shapes drawn");
         ssLOG_SIMPLE("You should see a grey box");
         ssLOG_SIMPLE("Then a rainbow box streched horizontally");
-        ssLOG_SIMPLE("Then a semi-transparent box streched vertically");
+        ssLOG_SIMPLE("Then a semi-transparent grey box streched vertically");
         ssLOG_SIMPLE("Then a semi-transparent rainbow triangle");
     }
 }
@@ -168,40 +128,57 @@ void DrawTextureTest()
     if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
         InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
     {
-        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
-        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
+        //DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         glm::ivec2 imgSize = ImgBackend->GetSize();
         
-        std::vector<glm::vec2> vertices;
-        CreateShapes(vertices, imgSize);
+        std::vector<ssGUI::DrawingEntity> drawingEntities;
         
-        std::vector<glm::u8vec4> colors;
-        CreateColors(colors, glm::u8vec4(255, 255, 255, 255));
+        drawingEntities.push_back(CreateShapes(glm::vec2(50, 50), imgSize, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(CreateShapes(glm::vec2(450, 50), imgSize, glm::u8vec4(255, 255, 255, 255), true));
+        drawingEntities.push_back(CreateShapes(glm::vec2(850, 50), imgSize, glm::u8vec4(255, 255, 255, 127)));
+        drawingEntities.push_back(CreateShapes(glm::vec2(1050, 50), imgSize, glm::u8vec4(255, 255, 255, 127), true, true));
         
         std::vector<glm::vec2> texCoords = 
         {
-            glm::vec2(0, 0), glm::vec2(imgSize.x, 0), imgSize, glm::vec2(0, imgSize.y),
-            glm::vec2(0, 0), glm::vec2(imgSize.x, 0), imgSize, glm::vec2(0, imgSize.y),
-            glm::vec2(0, 0), glm::vec2(imgSize.x, 0), imgSize, glm::vec2(0, imgSize.y),
+            glm::vec2(0, 0), glm::vec2(imgSize.x, 0), glm::vec2(imgSize), glm::vec2(0, imgSize.y),
+        };
+        
+        for(int i = 0; i < 4; i++)
+            drawingEntities.at(i).BackendImage = ImgBackend;
+        
+        drawingEntities.at(0).TexCoords = texCoords;
+        drawingEntities.at(1).TexCoords = texCoords;
+        drawingEntities.at(2).TexCoords = texCoords;
+        
+        texCoords = 
+        {
             glm::vec2(0, 0), glm::vec2(imgSize.x, 0), imgSize
         };
+        drawingEntities.at(3).TexCoords = texCoords;
         
-        std::vector<int> counts;
-        CreateCounts(counts);
-
-        ssGUI::DrawingProperty prop;
-        prop.imageP = ImgBackend;
-        
-        std::vector<ssGUI::DrawingProperty> properties = 
+        texCoords = 
         {
-            prop,
-            prop,
-            prop,
-            prop
+            glm::vec2(0, 0), glm::vec2(imgSize.x, 0), glm::vec2(imgSize), glm::vec2(0, imgSize.y),
         };
+        
+        //Mipmap level 1
+        drawingEntities.push_back(CreateShapes(glm::vec2(50, 500), imgSize / 2, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.at(4).TexCoords = texCoords;
+        drawingEntities.at(4).BackendImage = ImgBackend;
     
-        DrawingBackend->DrawEntities(vertices, texCoords, colors, counts, properties);
+        //Mipmap level 2
+        drawingEntities.push_back(CreateShapes(glm::vec2(450, 500), imgSize / 4, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.at(5).TexCoords = texCoords;
+        drawingEntities.at(5).BackendImage = ImgBackend;
+        
+        //Mipmap level 3
+        drawingEntities.push_back(CreateShapes(glm::vec2(850, 500), imgSize / 8, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.at(6).TexCoords = texCoords;
+        drawingEntities.at(6).BackendImage = ImgBackend;
+    
+    
+        DrawingBackend->DrawEntities(drawingEntities);
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         ssLOG_SIMPLE("Texture drawn");
@@ -209,6 +186,11 @@ void DrawTextureTest()
         ssLOG_SIMPLE("Then a rainbow image streched horizontally");
         ssLOG_SIMPLE("Then a semi-transparent image streched vertically");
         ssLOG_SIMPLE("Then a semi-transparent rainbow image triangle");
+        ssLOG_SIMPLE("Then 3 images in quartered size below, which will trigger mipmap");
+        ssLOG_SIMPLE("If you have SSGUI_DEBUG_OPENGL_MIPMAP defined:");
+        ssLOG_SIMPLE("  - The first mipmap should have red square at the top left corner");
+        ssLOG_SIMPLE("  - The second mipmap should have green square at the top left corner");
+        ssLOG_SIMPLE("  - The third mipmap should have blue square at the top left corner");
     }
 }
 
@@ -220,46 +202,83 @@ void DrawFontTest()
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
-        ssGUI::CharacterRenderInfo info = FontBackend->GetCharacterRenderInfo(L'A', 40);
+        ssGUI::CharacterRenderInfo info = FontBackend->GetCharacterRenderInfo(L'A', 80);
         
-        std::vector<glm::vec2> vertices;
-        CreateShapes(vertices, info.Size);
+        std::vector<ssGUI::DrawingEntity> drawingEntities;
+        //std::vector<glm::vec2> vertices;
         
-        std::vector<glm::u8vec4> colors;
-        CreateColors(colors, glm::u8vec4(0, 0, 0, 255));
+        //CreateShapes(drawingEntities, info.Size, glm::u8vec4(0, 0, 0, 255));
+        
+        drawingEntities.push_back(CreateShapes(glm::vec2(50, 50), info.Size, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(CreateShapes(glm::vec2(200, 50), info.Size, glm::u8vec4(255, 255, 255, 255), true));
+        drawingEntities.push_back(CreateShapes(glm::vec2(500, 50), info.Size, glm::u8vec4(255, 255, 255, 127)));
+        drawingEntities.push_back(CreateShapes(glm::vec2(700, 50), info.Size, glm::u8vec4(255, 255, 255, 127), true, true));
+        
+        //std::vector<glm::u8vec4> colors;
+        //CreateColors(colors, glm::u8vec4(0, 0, 0, 255));
         
         std::vector<glm::vec2> texCoords = 
         {
             glm::vec2(0, 0), glm::vec2(info.Size.x, 0), info.Size, glm::vec2(0, info.Size.y),
-            glm::vec2(0, 0), glm::vec2(info.Size.x, 0), info.Size, glm::vec2(0, info.Size.y),
-            glm::vec2(0, 0), glm::vec2(info.Size.x, 0), info.Size, glm::vec2(0, info.Size.y),
+        };
+        
+        drawingEntities[0].TexCoords = texCoords;
+        drawingEntities[1].TexCoords = texCoords;
+        drawingEntities[2].TexCoords = texCoords;
+        
+        texCoords = 
+        {
             glm::vec2(0, 0), glm::vec2(info.Size.x, 0), info.Size
         };
+        drawingEntities[3].TexCoords = texCoords;
         
-        std::vector<int> counts;
-        CreateCounts(counts);
-
-        ssGUI::DrawingProperty prop;
-        prop.fontP = FontBackend;
-        prop.character = L'A';
-        prop.characterSize = 40;
-        
-        std::vector<ssGUI::DrawingProperty> properties = 
+        for(int i = 0; i < 4; i++)
         {
-            prop,
-            prop,
-            prop,
-            prop
+            drawingEntities[i].BackendFont = FontBackend;
+            drawingEntities[i].Character = L'A';
+            drawingEntities[i].CharacterSize = 80;
+        }
+        
+        texCoords = 
+        {
+            glm::vec2(0, 0), glm::vec2(info.Size.x, 0), info.Size, glm::vec2(0, info.Size.y),
         };
+        
+        //Mipmap level 1
+        drawingEntities.push_back(CreateShapes(glm::vec2(50, 500), glm::ivec2(info.Size) / 2, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.at(4).TexCoords = texCoords;
+        drawingEntities.at(4).BackendFont = FontBackend;
+        drawingEntities.at(4).Character = L'A';
+        drawingEntities.at(4).CharacterSize = 80;
+
     
-        DrawingBackend->DrawEntities(vertices, texCoords, colors, counts, properties);
-        DrawingBackend->Render(glm::u8vec3(255, 255, 255));
+        //Mipmap level 2
+        drawingEntities.push_back(CreateShapes(glm::vec2(450, 500), glm::ivec2(info.Size) / 4, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.at(5).TexCoords = texCoords;
+        drawingEntities.at(5).BackendFont = FontBackend;
+        drawingEntities.at(5).Character = L'A';
+        drawingEntities.at(5).CharacterSize = 80;
+        
+        //Mipmap level 3
+        drawingEntities.push_back(CreateShapes(glm::vec2(850, 500), glm::ivec2(info.Size) / 8, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.at(6).TexCoords = texCoords;
+        drawingEntities.at(6).BackendFont = FontBackend;
+        drawingEntities.at(6).Character = L'A';
+        drawingEntities.at(6).CharacterSize = 80;
+    
+        DrawingBackend->DrawEntities(drawingEntities);
+        DrawingBackend->Render(glm::u8vec3(0, 0, 0));
         
         ssLOG_SIMPLE("Character drawn");
         ssLOG_SIMPLE("You should see the letter A");
         ssLOG_SIMPLE("Then a rainbow letter A streched horizontally");
         ssLOG_SIMPLE("Then a semi-transparent letter A streched vertically");
         ssLOG_SIMPLE("Then a semi-transparent rainbow letter A but cut out from the bottom right");
+        ssLOG_SIMPLE("Then 3 letters in quartered size below, which will trigger mipmap");
+        ssLOG_SIMPLE("If you have SSGUI_DEBUG_OPENGL_MIPMAP defined:");
+        ssLOG_SIMPLE("  - The first mipmap should have red square at the top left corner");
+        ssLOG_SIMPLE("  - The second mipmap should have green square at the top left corner");
+        ssLOG_SIMPLE("  - The third mipmap should have blue square at the top left corner");
     }
 }
 

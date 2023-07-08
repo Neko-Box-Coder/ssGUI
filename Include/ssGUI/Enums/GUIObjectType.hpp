@@ -45,7 +45,8 @@ namespace Enums
     TEXT_FIELD      - Text field object type
     SLIDER          - Slider object type
     SCROLLBAR       - Scrollbar object type
-    IMAGE_CANVAS    - ImageCanvas object type
+    IMAGE_CANVAS    - Image canvas object type
+    STANDARD_SLIDER - Standard slider object type
     */
     enum class GUIObjectType : uint64_t
     {
@@ -64,7 +65,8 @@ namespace Enums
         TEXT_FIELD =        1 << 12,
         SLIDER =            1 << 13,
         SCROLLBAR =         1 << 14,
-        IMAGE_CANVAS =      1 << 15
+        IMAGE_CANVAS =      1 << 15,
+        STANDARD_SLIDER =   1 << 16
     };
 
     inline ssGUI::Enums::GUIObjectType operator|(ssGUI::Enums::GUIObjectType a, ssGUI::Enums::GUIObjectType b)

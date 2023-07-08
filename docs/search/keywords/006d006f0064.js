@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("mod",["Enumeration"],[["Mode",,[["ssGUI::StandardButton::ssGUI::StandardButton",,,,0,"File:◀️_ssGUI_API_▶️/GUIObjectClasses/CompositeClasses/StandardButton.hpp:ssGUI.StandardButton.ssGUI.StandardButton.Mode","CClass:ssGUI.StandardButton:ssGUI.StandardButton.Mode"]]]]);

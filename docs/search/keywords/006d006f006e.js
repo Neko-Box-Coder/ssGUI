@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("mon",["Constant"],[["MONO",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/ImageType.hpp:ssGUI.Enums.MONO","CClass:ssGUI.Enums:MONO"]]]]);

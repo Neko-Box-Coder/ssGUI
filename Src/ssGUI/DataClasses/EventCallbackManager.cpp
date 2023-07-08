@@ -2,6 +2,7 @@
 
 #include "ssGUI/DataClasses/Renderer.hpp"
 #include "ssGUI/Factory.hpp"
+#include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 
 namespace ssGUI
 {
@@ -85,5 +86,31 @@ namespace ssGUI
             returnVector.push_back(eventCallback.second);
         
         return returnVector;
+    }
+    
+    void EventCallbackManager::ForwardEvent(ssGUI::GUIObject* objToForwardTo, ssGUI::Enums::EventType forwardEvent)
+    {
+        if(objToForwardTo == nullptr)
+        {
+            ssGUI_WARNING(ssGUI_DATA_TAG, "Can't forward event to nullptr GUI Object");
+            return;
+        }
+    
+        auto* ecb = AddEventCallback(forwardEvent);
+        ssGUI::ssGUIObjectIndex forwardObjId = ecb->AddObjectReference(objToForwardTo);
+        ecb->AddEventListener
+        (
+            "Event Callback Manager",
+            CurrentObject,
+            [forwardObjId, forwardEvent](ssGUI::EventInfo info)
+            {
+                ssGUI::GUIObject* forwardToObj = info.References->GetObjectReference(forwardObjId);
+                if(forwardToObj == nullptr)
+                    return;
+
+                if(forwardToObj->IsEventCallbackExist(forwardEvent))
+                    forwardToObj->GetEventCallback(forwardEvent)->Notify(info.EventSource, info.CustomInfo);        
+            }
+        );
     }
 }

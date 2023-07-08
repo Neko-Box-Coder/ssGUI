@@ -6,6 +6,7 @@
 //namespace: ssGUI
 namespace ssGUI
 {
+    class Button;
     /*class: ssGUI::Slider
     This class represents a slider GUI widget. A slider object can be either horizontal or vertical, 
     and can also start from either end of the slider using the <SetReverse> function.
@@ -27,7 +28,7 @@ namespace ssGUI
         float KeyInputInterval;             //See <GetKeyInputMoveInterval>
         float EndPadding;                   //See <GetEndPadding>
 
-        glm::vec2 KnobGlobalPosition;       //(Internal variable) This is used for syncing the slider value and knob position
+        glm::vec2 KnobGlobalOffset;         //(Internal variable) This is used for syncing the slider value and knob position
         float CursorKnobOffset;             //(Internal variable) Offset between the cursor down position and the knob
         bool LastSliderDragging;            //(Internal variable) Used to see if the slider is being dragged last frame
         bool SliderDragging;                //(Internal variable) Flag if slider is being dragged right now
@@ -53,7 +54,7 @@ namespace ssGUI
                         ScrollInternal(0.05),
                         KeyInputInterval(0.05),
                         EndPadding(0),
-                        KnobGlobalPosition(),
+                        KnobGlobalOffset(),
                         CursorKnobOffset(0),
                         LastSliderDragging(false),
                         SliderDragging(false),
@@ -120,7 +121,7 @@ namespace ssGUI
         ); 
 
         KnobObject = CurrentObjectsReferences.GetObjectIndex(button);
-        UpdateKnobPosition(true);
+        UpdateKnobOffset();
     }
     =================================================================
     */
@@ -141,7 +142,7 @@ namespace ssGUI
             float KeyInputInterval;             //See <GetKeyInputMoveInterval>
             float EndPadding;                   //See <GetEndPadding>
 
-            glm::vec2 KnobGlobalPosition;       //(Internal variable) This is used for syncing the slider value and knob position
+            glm::vec2 KnobGlobalOffset;         //(Internal variable) This is used for syncing the slider value and knob position
             float CursorKnobOffset;             //(Internal variable) Offset between the cursor down position and the knob
             bool LastSliderDragging;            //(Internal variable) Used to see if the slider is being dragged last frame
             bool SliderDragging;                //(Internal variable) Flag if slider is being dragged right now
@@ -160,9 +161,9 @@ namespace ssGUI
 
             virtual void ApplySnapping();
 
-            virtual void UpdateKnobPosition(bool completeUpdate);
+            virtual void UpdateKnobOffset();
 
-            virtual void UpdateSliderValue();
+            virtual void UpdateSliderValueFromCursor(glm::vec2 cursorPos);
 
             virtual void ConstructRenderInfo() override;
 
@@ -171,6 +172,7 @@ namespace ssGUI
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string SLIDER_FILL_SHAPE_NAME;
 
             Slider();
             virtual ~Slider() override;
@@ -197,11 +199,11 @@ namespace ssGUI
             //function: SetKnobObject
             //Sets knob object. This will automatically delete the previous assigned knob object.
             //Setting nullptr is possible for not using any knob object, useful for status bar or something like that.
-            virtual void SetKnobObject(ssGUI::GUIObject* knob);
+            virtual void SetKnobObject(ssGUI::Button* knob);
 
             //function: GetKnobObject
             //Gets knob object. Nullptr if no knob object is assigned.
-            virtual ssGUI::GUIObject* GetKnobObject() const;
+            virtual ssGUI::Button* GetKnobObject() const;
 
             //function: SetKnobSize
             //Helper function for setting the diameter of the knob.
@@ -241,13 +243,13 @@ namespace ssGUI
             virtual bool IsVertical() const;
 
             //function: SetSnapInterval
-            //Sets the interval of snapping. 0 to disable.
+            //Sets the interval of snapping. 0 or less to disable.
             //It is possible for <GetSliderValue> to have a slight offset depending on the interval, 
             //using rounding function is advised when using the value of it. 
             virtual void SetSnapInterval(float interval);
 
             //function: GetSnapInterval
-            //Gets the interval of snapping. 0 to disable.
+            //Gets the interval of snapping. 0 or less to disable.
             //It is possible for <GetSliderValue> to have a slight offset depending on the interval, 
             //using rounding function is advised when using the value of it. 
             virtual float GetSnapInterval() const;
@@ -268,9 +270,17 @@ namespace ssGUI
             virtual void SetKeyInputMoveInterval(float interval);
 
             //function: GetKeyInputMoveInterval
-            //Sets the interval for each arrow or wasd key input. 
+            //Gets the interval for each arrow or wasd key input. 
             //This only limits to move in an interval so this is different from snapping.
             virtual float GetKeyInputMoveInterval() const;
+
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
 
             //function: GetType
             //See <Widget::GetType>
