@@ -270,7 +270,7 @@ namespace ssGUI
             virtual void SetKeyInputMoveInterval(float interval);
 
             //function: GetKeyInputMoveInterval
-            //Sets the interval for each arrow or wasd key input. 
+            //Gets the interval for each arrow or wasd key input. 
             //This only limits to move in an interval so this is different from snapping.
             virtual float GetKeyInputMoveInterval() const;
 

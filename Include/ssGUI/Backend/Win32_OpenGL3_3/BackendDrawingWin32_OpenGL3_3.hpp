@@ -20,7 +20,7 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    /*class: ssGUI::Backend::BackendDrawingInterface
+    /*class: ssGUI::Backend::BackendDrawingWin32_OpenGL3_3
     For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
 
     Variables & Constructor:

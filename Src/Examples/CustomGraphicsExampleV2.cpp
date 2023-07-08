@@ -114,6 +114,10 @@ void InitiateRendering( GLuint& vertexArrayID, GLuint& programID, GLuint& vertex
 
 void RenderGraphics(GLuint programID, GLuint vertexbuffer, ssGUI::MainWindow& mainWindow)
 {
+    //If we want to draw graphics on top of ssGUI, we need to call this 
+    //  so that GUI is drawn to backbuffer before we draw anything to the back buffer
+    //mainWindow.GetBackendDrawingInterface()->DrawToBackBuffer();
+
     mainWindow.SaveState();                   //Saves the state ssGUI was using
     mainWindow.SetRenderContext();            //Set the mainWindow to be the current context for OpenGL calls
 
