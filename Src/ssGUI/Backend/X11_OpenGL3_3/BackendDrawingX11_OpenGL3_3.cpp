@@ -110,7 +110,6 @@ namespace Backend
     {
         ssGUI::Backend::BackendMainWindowInterface* mainWindow = GetMainWindow();
         InitializeOpenGLCommonIfNeeded();
-        ClearBackBuffer(clearColor);
         DrawToBackBuffer();
         
         if(mainWindow == nullptr)
@@ -123,6 +122,7 @@ namespace Backend
                             ssGUI::Backend::BackendManager::GetMainWindowInterface(0)->GetRawHandle());
                 
         glXSwapBuffers(rawHandle->WindowDisplay, rawHandle->WindowId);
+        ClearBackBuffer(clearColor);
     }
 
     void BackendDrawingX11_OpenGL3_3::ClearBackBuffer(glm::u8vec3 clearColor)

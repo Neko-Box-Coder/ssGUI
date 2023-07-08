@@ -134,14 +134,8 @@ namespace Backend
         ssGUI::Backend::BackendMainWindowInterface* mainWindow = GetMainWindow();
         InitializeOpenGLCommonIfNeeded();
         //ClearBackBuffer(clearColor);
-        GL_CHECK_ERROR( glClearColor(   static_cast<float>(clearColor.r) / 255.f, 
-                                        static_cast<float>(clearColor.g) / 255.f, 
-                                        static_cast<float>(clearColor.b) / 255.f, 
-                                        255.f); );
-
-        GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );
-        
         DrawToBackBuffer();
+        
         if(mainWindow == nullptr)
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
@@ -156,6 +150,13 @@ namespace Backend
             ssLOG_EXIT_PROGRAM();
         }
         SwapBuffers(hDC);
+    
+        GL_CHECK_ERROR( glClearColor(   static_cast<float>(clearColor.r) / 255.f, 
+                                        static_cast<float>(clearColor.g) / 255.f, 
+                                        static_cast<float>(clearColor.b) / 255.f, 
+                                        255.f); );
+
+        GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );
     }
 
     void BackendDrawingWin32_OpenGL3_3::ClearBackBuffer(glm::u8vec3 clearColor) 
