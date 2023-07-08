@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("ver",["Struct"],[["VerticesIndicesForShape",,[["ssGUI",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/ShapeModifier.hpp:ssGUI.VerticesIndicesForShape","CClass:ssGUI.VerticesIndicesForShape"]]]]);

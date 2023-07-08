@@ -8,17 +8,17 @@ To get started, first either add ssGUI as submodule (recursively) or clone it (r
 
 Group: For stable branch:
 
-> git clone -b v0.94.00_release --recursive https://github.com/Neko-Box-Coder/ssGUI.git
+> git clone -b v0.94.01_release --recursive https://github.com/Neko-Box-Coder/ssGUI.git
 or
-> git submodule add -b v0.94.00_release https://github.com/Neko-Box-Coder/ssGUI.git
-> git submodule init
+> git submodule add -b v0.94.01_release https://github.com/Neko-Box-Coder/ssGUI.git <folder name>
+> git submodule update --init --recursive
 
-Group: For main branch (don't recommend), you will have to build EmbeddedResources
+Group: For main branch (**don't recommend**), you will have to build EmbeddedResources
 
 > git clone --recursive https://github.com/Neko-Box-Coder/ssGUI.git
 or
-> git submodule add https://github.com/Neko-Box-Coder/ssGUI.git
-> git submodule init
+> git submodule add https://github.com/Neko-Box-Coder/ssGUI.git <folder name>
+> git submodule init --init --recursive
 
 Title: 🗄️ Backends
 
@@ -45,12 +45,9 @@ Group: Font
 More backends will be added soon.
 
 Native Main backend is the default option for CMake as it doesn't need SFML dependencies.
-
 By default, ssGUI **doesn't** come with the SFML binaries.
-
 If you want to use SFML, you will first need to head to our <release: https://github.com/Neko-Box-Coder/ssGUI/releases>
 page and get the SFML binaries as we are using the Master branch of SFML instead of their last stable release.
-
 After getting the SFML binaries, you will have to place it under 
 > External/sfml
 
@@ -75,11 +72,9 @@ Group: Adding ssGUI to your project
 
 If you just just want to build ssGUI by itself, you can skip this step and go to the <Configuring ssGUI in CMake GUI>
 
-If you are using SFML as any of the backends, you first need to do
-
+> ⚠️ If you are using SFML as any of the backends, you first need to do
 > find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)
-
-as ssGUI is dependent on SFML if you are using it as the backend.
+> as ssGUI is dependent on SFML if you are using it as the backend.
 
 Then to use ssGUI in your project, simply do
 
@@ -103,9 +98,6 @@ You can see the ssGUI options are separated by the separator:
 
 1. You need to set the *ssGUI_MAIN_BACKEND* variable to the one you want, then click configure
 
-2. Then you need to click on the *ssGUI_IMAGE_BACKEND* and *ssGUI_FONT_BACKEND* options in order for 
-    the CMake GUI to reflect the correct dropdown options.
-
-3. Now you can choose the correct CMake options and click configure --> generate to generate the build files.
+2. Now you can choose the CMake options you want and click configure --> generate to generate the build files.
 
 Then finally you can try to run any of the examples to make sure it is working

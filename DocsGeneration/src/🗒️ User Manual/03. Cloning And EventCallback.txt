@@ -5,7 +5,7 @@ Group: 🔽 Readme Example
 Hopefully by now, you are able to get ssGUI compiling and building. 
 
 To test it, we can try running the readme example 
-(If you have *ssGUI_BUILD_EXAMPLES* option on in CMake, you should be able to find it under *ssGUI/Examples/ReadmeExampleV6* in you binary folder)
+(If you have *ssGUI_BUILD_EXAMPLES* option on in CMake, you should be able to find it under *ssGUI/Examples/ReadmeExampleV7* in you binary folder)
 
 ================================== C++ ==================================
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
@@ -15,31 +15,27 @@ To test it, we can try running the readme example
 using namespace ssGUI::Enums;
 int main()
 {
-    ssGUI::MainWindow mainWindow;                                               //Create the main window for showing content
+    ssGUI::MainWindow mainWindow;
     mainWindow.SetRenderSize(glm::vec2(450, 80));
-    auto* layout = mainWindow.AddExtension<ssGUI::Extensions::Layout>();        //Add layout for auto sizing child GUI objects
+    mainWindow.AddExtension<ssGUI::Extensions::Layout>();
 
-    auto* text = mainWindow.AddChild<ssGUI::Text>();                            //Create a text widget and set the respective properties
-    text->SetNewTextFontSize(17);
+    auto* text = mainWindow.AddChild<ssGUI::Text>();
     text->SetText("Click on the button to show the message");
-    text->SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER); //We center the text right above the button we will be adding later
     
-    auto* button = ssGUI::Create<ssGUI::StandardButton>();                      //Create a standard button, just a fancier button.
+    auto* button = mainWindow.AddChildWithWrapper<ssGUI::StandardButton>(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);
     button->SetSize(glm::vec2(50, 30));
-    layout->AddChildWithAlignment(button,   AlignmentHorizontal::CENTER,        //Attach button to main window with alignment, so that the size
-                                            AlignmentVertical::CENTER);         //      stays the same and won't be changed by layout
                                                                                 
-    ssGUI::ssGUIManager guiManager;                                             //Create the GUIManager, which manages the flow of the program.
-    guiManager.AddRootGUIObject(&mainWindow);                                   //Add the main window (which has both text and button parented to it)
+    ssGUI::ssGUIManager guiManager;
+    guiManager.AddRootGUIObject(&mainWindow);
     guiManager.AddPostGUIUpdateEventListener                                    
     (
         [&]()
         {
-            if(button->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)  //Then we want to check if the button is pressed every frame
-                text->SetText(L"(`oωo´)");                                      //If it is, we change the text to a cute little face :)
+            if(button->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+                text->SetText(L"(`oωo´)");
         }
     );
-    guiManager.StartRunning();                                                  //Finally we start running the program
+    guiManager.StartRunning();
     return 0;
 }
 =========================================================================
@@ -52,14 +48,12 @@ _
 
 We were adding the button to the mainWindow slightly differently compare to text:
 ================================== C++ ==================================
-//layout is the extension we attached to mainWindow, we are parenting *button* using it
-layout->AddChildWithAlignment(&button,  AlignmentHorizontal::CENTER, 
-                                        AlignmentVertical::CENTER);
+mainWindow.AddChildWithWrapper<ssGUI::StandardButton>(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);
 =========================================================================
 
 _
 
-Let's add the button without using <AddChildWithAlignment: ssGUI::Extensions::Layout::AddChildWithAlignment> and see what it will look like
+Let's add the button without using <AddChildWithWrapper: ssGUI::Hierarchy::AddChildWithWrapper> and see what it will look like
 
 >  mainWindow.AddChild<ssGUI::StandardButton>();
 
@@ -69,7 +63,7 @@ Oof, seems like the button got resized to half of the window by layout.
 
 <ssGUI::Extensions::Layout> controls the position and size of the child GUI objects automatically.
 
-And what <AddChildWithAlignment: ssGUI::Extensions::Layout::AddChildWithAlignment> basically does is first creating an 
+And what <AddChildWithWrapper: ssGUI::Hierarchy::AddChildWithWrapper> basically does is first creating an 
 empty GUI Object as the child and then parent the "actual" child to the empty GUI Object so the 
 layout extension won't affect the size of it. So something like this:
 
@@ -92,11 +86,10 @@ It is affecting the text GUI Object actually, it's just that the "text" size is 
 This becomes obvious when we add a border extension to the text to see what it looks like.
 
 ================================== C++ ==================================
+mainWindow.AddExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.5, 0.5);
 //...
-layout->AddPreferredSizeMultiplier(0.5, 0.5);                               //By default the text takes very little space, 
-//...                                                                       //we can set both text and the button(wrapper) to take the same amount of space
-text->AddExtension<ssGUI::Extensions::Border>()->                           //Set the border color to red to make it more obvious
-    SetBorderColor(glm::u8vec4(255, 0, 0, 255));
+text->AddExtension<ssGUI::Extensions::Border>()->SetBorderColor(glm::u8vec4(255, 0, 0, 255));
+//...
 =========================================================================
 
 When you run it (and resize the window to be bigger), you can see it is actually being affected but it doesn't affect the "font size".
@@ -107,29 +100,29 @@ Group: ⏬ Infinite Readme Example
 
 Let's try something more exciting (and somewhat practical).
 
-Often times, we need a window inside the "actual" window. Let's do that. 
+Often times, we need a window or panel inside the "actual" window. Let's do that. 
 
 Most of the code is the same, except we are adding and using <ssGUI::StandardWindow> to hold the text and button.
 
 ================================== C++ ==================================
 //...
-#include "ssGUI/Extensions/Dockable.hpp"
-
-//Readme example
-using namespace ssGUI::Enums;
 int main()
 {
     ssGUI::MainWindow mainWindow;
 
-    auto* window = mainWindow.AddChild<ssGUI::StandardWindow>();                        //Create a standard window, just a fancier window
-    window->RemoveAnyExtension<ssGUI::Extensions::Dockable>();                          //We don't need docking
-    window->SetRenderSize(glm::ivec2(450, 80));                                         //Render size same as before
-    auto layout = window->AddExtension<ssGUI::Extensions::Layout>();                    //Add layout for auto sizing child GUI objects
+    //Create a standard window, just a fancier window
+    auto* window = mainWindow.AddChild<ssGUI::StandardWindow>();
     
-    auto* text = window->AddChild<ssGUI::Text>();                                       //Create a text widget and set the respective properties
+    //We don't need docking
+    window->RemoveAnyExtension<ssGUI::Extensions::Dockable>();                          
+    window->SetRenderSize(glm::ivec2(450, 80));
+    window->AddExtension<ssGUI::Extensions::Layout>();
     //...
-    
-    auto* button = ssGUI::Create<ssGUI::StandardButton>();                              //Create a standard button, just a fancier button.
+    //- auto* text = mainWindow.AddChild<ssGUI::Text>();
+    auto* text = window->AddChild<ssGUI::Text>();
+    //...
+    //- auto* button = mainWindow.AddChildWithWrapper<ssGUI::StandardButton>(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);
+    auto* button = window->AddChildWithWrapper<ssGUI::StandardButton>(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);
     //...
 }
 =========================================================================
@@ -146,26 +139,31 @@ Let's add a button to clone our window.
 //...
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
-using namespace ssGUI::Enums;
 int main()
 {
     //...
 
-    auto* cloneButton = mainWindow.AddChild<ssGUI::StandardButton>();                   //A button for cloning the window
-    cloneButton->GetButtonTextObject()->SetText("Clone!!");                             //Text for indication
-    auto posExt = cloneButton->AddExtension<ssGUI::Extensions::AdvancedPosition>();     //We create an create an extension for positioning the button easily
-    posExt->SetVerticalAlignment(AlignmentVertical::BOTTOM);                            //By default, it centers the GUI Object relative to its parent, we are setting it bottom 
-    posExt->SetVerticalPixel(20);                                                       //Setting it to be 20 pixels from the bottom of the parent   
+    //A button for cloning the window
+    auto* cloneButton = mainWindow.AddChild<ssGUI::StandardButton>();
+    cloneButton->GetButtonTextObject()->SetText("Clone!!");
+
+    //We create an create an extension for positioning the button easily
+    auto posExt = cloneButton->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+    
+    //Setting it to be 20 pixels from the bottom of the parent   
+    posExt->SetVerticalAlignment(AlignmentVertical::BOTTOM);
+    posExt->SetVerticalPixel(20);
     
     //...                                 
-    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);                        //Add the main window (which has both text and button parented to it)
+    guiManager.AddPostGUIUpdateEventListener                                    
     (
         [&]()
         {
-            if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)           //Then we want to check if the button is pressed every frame
-                text.SetText(L"(`oωo´)");                                               //If it is, we change the text to a cute little face :)
+            if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+                text.SetText(L"(`oωo´)");
             
-            if(cloneButton.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)      //If the button is clicked, we want to clone the window
+            //If the button is clicked, we want to clone the window
+            if(cloneButton.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
                 window.Clone(true);
         }
     );
@@ -189,26 +187,22 @@ The problem is in this section of the code
     (
         [&]()
         {
-            if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)       //Then we want to check if the button is pressed every frame
-                text.SetText(L"(`oωo´)");                                           //If it is, we change the text to a cute little face :)
+            if(button.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+                text.SetText(L"(`oωo´)");
             
             //...
 =========================================================================
 
 We are checking only the button from the original window, not the ones that we cloned.
-It will be quite messy if we have quite a few windows and need the button to change the 
-corresponding "cloned text".
 
-Checking each and all buttons every frame not only is not efficient but also difficult to pass into the listener.
+And we are modifying the text of the original window.
 
-Even worse, what happens if one the window is closed and the button object got deallocated?
-Now you are accessing random memory and very likely to lead to segfault.
+Checking each and all buttons every frame will be quite painful.
 
 Remember *EventCallbacks* I mentioned earlier in <👟 Getting Started>? Here's where we need to use it.
 
 ================================== C++ ==================================
 //...
-using namespace ssGUI::Enums;
 int main()
 {
     //...
@@ -217,7 +211,7 @@ int main()
     auto* buttonEventCallback =  button->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
     
     //Then we add the text GUI Object to be referenced in the listener, 
-    //and pass the reference ID to the listener lambda
+    //  and pass the reference ID to the listener lambda
     ssGUI::ssGUIObjectIndex textId = buttonEventCallback->AddObjectReference(text);
     buttonEventCallback->AddEventListener
     (
@@ -237,8 +231,11 @@ int main()
         [&]()
         {
             //We don't need to check the button for changing text anymore...
-            
-            if(cloneButton.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)      //If the button is clicked, we want to clone the window
+            //- if(button->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
+            //-     text->SetText(L"(`oωo´)");
+
+            //If the button is clicked, we want to clone the window
+            if(cloneButton.GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
                 window.Clone(true);
         }
     );
@@ -256,70 +253,4 @@ Now the cloned button will still work even if you parent the text to something e
 
 If it is, <ssGUI::ObjectsReferences::GetObjectReference> will return nullptr which you can check against.
 
-Group: Source Code
-
-The final code looks like this
-================================== C++ ==================================
-#include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssGUI/Extensions/Layout.hpp"
-#include "ssGUI/Extensions/Dockable.hpp"
-#include "ssGUI/Extensions/AdvancedPosition.hpp"
-
-using namespace ssGUI::Enums;
-int main()
-{
-    ssGUI::MainWindow mainWindow;
-    
-    auto* window = mainWindow.AddChild<ssGUI::StandardWindow>();                        //Create a standard window, just a fancier window
-    window->RemoveAnyExtension<ssGUI::Extensions::Dockable>();                          //We don't need docking
-    window->SetRenderSize(glm::ivec2(450, 80));                                         //Render size same as before
-    auto layout = window->AddExtension<ssGUI::Extensions::Layout>();                    //Add layout for auto sizing child GUI objects
-    
-    auto* text = window->AddChild<ssGUI::Text>();                                       //Create a text widget and set the respective properties
-    text->SetNewTextFontSize(17);
-    text->SetText("Click on the button to show the message");
-    text->SetAlignment(AlignmentHorizontal::CENTER, AlignmentVertical::CENTER);         //We center the text right above the button we will be adding later
-    
-    auto* button = ssGUI::Create<ssGUI::StandardButton>();                              //Create a standard button, just a fancier button.
-    button->SetSize(glm::vec2(50, 30));
-    layout->AddChildWithAlignment(button,   AlignmentHorizontal::CENTER,                //Attach button to main window with alignment, so that the size
-                                            AlignmentVertical::CENTER);                 //      stays the same and won't be changed by layout
-    
-    //First we get the event callback for button state changed, it is attached to buttons by default.
-    auto* buttonEventCallback =  button->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
-    
-    //Then we add the text GUI Object to be referenced in the listener, 
-    //and pass the reference ID to the listener lambda
-    ssGUI::ssGUIObjectIndex textId = buttonEventCallback->AddObjectReference(text);
-    buttonEventCallback->AddEventListener
-    (
-        "listenerKey",
-        [textId](ssGUI::EventInfo info)
-        {
-            auto* textToChange = info.References->GetObjectReference<ssGUI::Text>(textId);
-            auto* currentButton = static_cast<ssGUI::StandardButton*>(info.Container);
-            if(currentButton->GetButtonState() == ButtonState::CLICKED)
-                textToChange->SetText(L"(`oωo´)");
-        }
-    );
-
-    auto* cloneButton = mainWindow.AddChild<ssGUI::StandardButton>();                   //A button for cloning the window
-    cloneButton->GetButtonTextObject()->SetText("Clone!!");                             //Text for indication
-    auto posExt = cloneButton->AddExtension<ssGUI::Extensions::AdvancedPosition>();     //We create an create an extension for positioning the button easily
-    posExt->SetVerticalAlignment(AlignmentVertical::BOTTOM);                            //By default, it centers the GUI Object relative to its parent, we are setting it bottom 
-    posExt->SetVerticalPixel(20);                                                       //Setting it to be 20 pixels from the bottom of the parent   
-
-    ssGUI::ssGUIManager guiManager;                                                     //Create the GUIManager, which manages the flow of the program.
-    guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);                        //Add the main window (which has both text and button parented to it)
-    guiManager.AddPostGUIUpdateEventListener                                    
-    (
-        [&]()
-        {
-            if(cloneButton->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)     //If the button is clicked, we want to clone the window
-                window->Clone(true);
-        }
-    );
-    guiManager.StartRunning();                                                          //Finally we start running the program
-    return 0;
-}
-=========================================================================
+> You can find source code under ssGUI/Src/Examples/CloningExampleV3

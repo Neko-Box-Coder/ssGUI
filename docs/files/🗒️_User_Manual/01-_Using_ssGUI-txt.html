@@ -15,14 +15,14 @@
  <div class="CBody"><p>This page goes through all the necessary steps to setup ssGUI.</p><p>We currently support Linux and Windows, with MacOS support coming at some point.</p><p>To get started, first either add ssGUI as submodule (recursively) or clone it (recursively)</p></div>
 </div>
 
-<a name="For_stable_branch_"></a><a name="Topic38"></a><div class="CTopic TGroup LTextFile">
+<a name="For_stable_branch_"></a><a name="Topic1438"></a><div class="CTopic TGroup LTextFile">
  <div class="CTitle">For stable branch:</div>
- <div class="CBody"><pre class="CText">git clone -b v0.94.00_release --recursive https://github.com/Neko-Box-Coder/ssGUI.git</pre><p>or</p><pre class="CText">git submodule add -b v0.94.00_release https://github.com/Neko-Box-Coder/ssGUI.git<br />git submodule init</pre></div>
+ <div class="CBody"><pre class="CText">git clone -b v0.94.01_release --recursive https://github.com/Neko-Box-Coder/ssGUI.git</pre><p>or</p><pre class="CText">git submodule add -b v0.94.01_release https://github.com/Neko-Box-Coder/ssGUI.git &lt;folder name&gt;<br />git submodule update --init --recursive</pre></div>
 </div>
 
-<a name="For_main_branch(don't_recommend),you_will_have_to_build_EmbeddedResources"></a><a name="Topic39"></a><div class="CTopic TGroup LTextFile">
- <div class="CTitle">For main branch (don't recommend), you will have to build EmbeddedResources</div>
- <div class="CBody"><pre class="CText">git clone --recursive https://github.com/Neko-Box-Coder/ssGUI.git</pre><p>or</p><pre class="CText">git submodule add https://github.com/Neko-Box-Coder/ssGUI.git<br />git submodule init</pre></div>
+<a name="For_main_branch(**don't_recommend**),you_will_have_to_build_EmbeddedResources"></a><a name="Topic1987"></a><div class="CTopic TGroup LTextFile">
+ <div class="CTitle">For main branch (**don't recommend**), you will have to build EmbeddedResources</div>
+ <div class="CBody"><pre class="CText">git clone --recursive https://github.com/Neko-Box-Coder/ssGUI.git</pre><p>or</p><pre class="CText">git submodule add https://github.com/Neko-Box-Coder/ssGUI.git &lt;folder name&gt;<br />git submodule init --init --recursive</pre></div>
 </div>
 
 <a name="🗄️_Backends"></a><a name="Topic40"></a><div class="CTopic TSection LTextFile">
@@ -40,9 +40,9 @@
  <div class="CBody"><ul><li><p>SFML (Require SFML as main backend)</p></li><li><p>stb_image</p></li></ul></div>
 </div>
 
-<a name="Font"></a><a name="Topic55"></a><div class="CTopic TGroup LTextFile">
+<a name="Font"></a><a name="Topic1988"></a><div class="CTopic TGroup LTextFile">
  <div class="CTitle">Font</div>
- <div class="CBody"><ul><li><p>SFML (Require SFML as main backend)</p></li><li><p>FreeType</p></li></ul><p>More backends will be added soon.</p><p>Native Main backend is the default option for CMake as it doesn't need SFML dependencies.</p><p>By default, ssGUI **doesn't** come with the SFML binaries.</p><p>If you want to use SFML, you will first need to head to our <a href="https://github.com/Neko-Box-Coder/ssGUI/releases" target="_top">release</a> page and get the SFML binaries as we are using the Master branch of SFML instead of their last stable release.</p><p>After getting the SFML binaries, you will have to place it under</p><pre class="CText">External/sfml</pre><p>Alternatively, you can set the SFML include path in CMake options, though you would still need to use the binaries mentioned above.</p></div>
+ <div class="CBody"><ul><li><p>SFML (Require SFML as main backend)</p></li><li><p>FreeType</p></li></ul><p>More backends will be added soon.</p><p>Native Main backend is the default option for CMake as it doesn't need SFML dependencies.&nbsp; By default, ssGUI **doesn't** come with the SFML binaries.&nbsp; If you want to use SFML, you will first need to head to our <a href="https://github.com/Neko-Box-Coder/ssGUI/releases" target="_top">release</a> page and get the SFML binaries as we are using the Master branch of SFML instead of their last stable release.&nbsp; After getting the SFML binaries, you will have to place it under</p><pre class="CText">External/sfml</pre><p>Alternatively, you can set the SFML include path in CMake options, though you would still need to use the binaries mentioned above.</p></div>
 </div>
 
 <a name="🟦_CMake_"></a><a name="Topic43"></a><div class="CTopic TSection LTextFile">
@@ -50,14 +50,14 @@
  <div class="CBody"><div class="CImage"><a href="../../images/CMake_Resized.png" target="_blank" class="ZoomLink"><img src="../../images/CMake_Resized.png" loading="lazy" class="KnownDimensions" width="240" height="120" style="max-width: 240px" alt="CMake_Resized" /></a></div><p>We only provide support to CMake, as it greatly reduce the effort sorting out compiling and linking and also unifies how to generate make files cross platform.</p><p>You can still use Visual Studio by generating a solution file.</p><pre class="CText">⚠️ If you using Visual Studio and using VC16 or below, you will have to specify<br />the toolset version number, v142 for example for VC16 (Visual Studio 2019)</pre><div class="CImage"><a href="../../images/CMakeToolset.png" target="_blank" class="ZoomLink"><img src="../../images/CMakeToolset.png" loading="lazy" class="KnownDimensions" width="539" height="395" style="max-width: 539px" alt="CMakeToolset" /></a></div></div>
 </div>
 
-<a name="Adding_ssGUI_to_your_project"></a><a name="Topic45"></a><div class="CTopic TGroup LTextFile">
+<a name="Adding_ssGUI_to_your_project"></a><a name="Topic1989"></a><div class="CTopic TGroup LTextFile">
  <div class="CTitle">Adding ssGUI to your project</div>
- <div class="CBody"><p>If you just just want to build ssGUI by itself, you can skip this step and go to the <a href="../../index.html#File:🗒️_User_Manual/01._Using_ssGUI.txt:Configuring_ssGUI_in_CMake_GUI" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,2122);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Configuring ssGUI in CMake GUI</a></p><p>If you are using SFML as any of the backends, you first need to do</p><pre class="CText">find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)</pre><p>as ssGUI is dependent on SFML if you are using it as the backend.</p><p>Then to use ssGUI in your project, simply do</p><pre class="CText">add_subdirectory(&quot;${CMAKE_CURRENT_LIST_DIR}/directory/to/ssGUI&quot;)</pre><p>and link it to your target with</p><pre class="CText">target_link_libraries(example PUBLIC ssGUI)</pre></div>
+ <div class="CBody"><p>If you just just want to build ssGUI by itself, you can skip this step and go to the <a href="../../index.html#File:🗒️_User_Manual/01._Using_ssGUI.txt:Configuring_ssGUI_in_CMake_GUI" target="_top" onmouseover="NDContentPage.OnLinkMouseOver(event,1990);" onmouseout="NDContentPage.OnLinkMouseOut(event);" >Configuring ssGUI in CMake GUI</a></p><pre class="CText">⚠️ If you are using SFML as any of the backends, you first need to do<br />find_package(SFML 3 COMPONENTS System Window Graphics Network Audio REQUIRED)<br />as ssGUI is dependent on SFML if you are using it as the backend.</pre><p>Then to use ssGUI in your project, simply do</p><pre class="CText">add_subdirectory(&quot;${CMAKE_CURRENT_LIST_DIR}/directory/to/ssGUI&quot;)</pre><p>and link it to your target with</p><pre class="CText">target_link_libraries(example PUBLIC ssGUI)</pre></div>
 </div>
 
-<a name="Configuring_ssGUI_in_CMake_GUI"></a><a name="Topic2122"></a><div class="CTopic TGroup LTextFile last">
+<a name="Configuring_ssGUI_in_CMake_GUI"></a><a name="Topic1990"></a><div class="CTopic TGroup LTextFile last">
  <div class="CTitle">Configuring ssGUI in CMake GUI</div>
- <div class="CBody"><pre class="CText">⚠️ On Windows, if you are building tests or embedded resources (Non release branch)<br />you will need to launch CMake GUI in administrator mode as it needs to create symlink.</pre><p>To get started, either using ssGUI itself or using it in a project, click on configure multiple times until all the CMake options are configured (not red).</p><p>You can see the ssGUI options are separated by the separator:</p><div class="CImage"><a href="../../images/CMakeGUI_new.png" target="_blank" class="ZoomLink"><img src="../../images/CMakeGUI_new.png" loading="lazy" class="KnownDimensions" width="974" height="807" style="max-width: 974px" alt="CMakeGUI_new" /></a></div><p>1. You need to set the <b>ssGUI_MAIN_BACKEND</b> variable to the one you want, then click configure</p><p>2. Then you need to click on the <b>ssGUI_IMAGE_BACKEND</b> and <b>ssGUI_FONT_BACKEND</b> options in order for the CMake GUI to reflect the correct dropdown options.</p><p>3. Now you can choose the correct CMake options and click configure --&gt; generate to generate the build files.</p><p>Then finally you can try to run any of the examples to make sure it is working</p></div>
+ <div class="CBody"><pre class="CText">⚠️ On Windows, if you are building tests or embedded resources (Non release branch)<br />you will need to launch CMake GUI in administrator mode as it needs to create symlink.</pre><p>To get started, either using ssGUI itself or using it in a project, click on configure multiple times until all the CMake options are configured (not red).</p><p>You can see the ssGUI options are separated by the separator:</p><div class="CImage"><a href="../../images/CMakeGUI_new.png" target="_blank" class="ZoomLink"><img src="../../images/CMakeGUI_new.png" loading="lazy" class="KnownDimensions" width="974" height="807" style="max-width: 974px" alt="CMakeGUI_new" /></a></div><p>1. You need to set the <b>ssGUI_MAIN_BACKEND</b> variable to the one you want, then click configure</p><p>2. Now you can choose the CMake options you want and click configure --&gt; generate to generate the build files.</p><p>Then finally you can try to run any of the examples to make sure it is working</p></div>
 </div>
 
 </body></html>
