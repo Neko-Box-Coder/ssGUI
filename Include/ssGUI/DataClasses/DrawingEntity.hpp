@@ -18,12 +18,16 @@ namespace ssGUI
     struct DrawingEntity
     {
         public:
+            //var: EntityName
             std::string EntityName;
         
+            //var: Vertices
             std::vector<glm::vec2> Vertices;
             
+            //var: TexCoords
             std::vector<glm::vec2> TexCoords;
             
+            //var: Colors
             std::vector<glm::u8vec4> Colors;
 
             //var: Character

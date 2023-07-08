@@ -631,7 +631,6 @@ namespace Backend
                                                                                     TextureBotRightCoords(),
                                                                                     Idx(),
                                                                                     CurrentMainWindow(nullptr),
-                                                                                    LastMainWindowSize(),
                                                                                     CurrentImageAtlas(nullptr),
                                                                                     MappedImgIds(),
                                                                                     MappedFontIds(),

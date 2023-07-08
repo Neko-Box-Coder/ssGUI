@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("dyn",["Class"],[["DynamicImageAtlas",,[["ssGUI::Backend",,,,0,"File:◀️_ssGUI_API_▶️/Backend/DynamicImageAtlas.hpp:ssGUI.Backend.DynamicImageAtlas","CClass:ssGUI.Backend.DynamicImageAtlas"]]]]);
