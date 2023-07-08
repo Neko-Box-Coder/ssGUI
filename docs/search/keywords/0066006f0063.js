@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("foc",["Constant"],[["FOCUS_LOST",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/EventType.hpp:ssGUI.Enums.FOCUS_LOST","CClass:ssGUI.Enums:FOCUS_LOST"]]],["FOCUSED",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/EventType.hpp:ssGUI.Enums.FOCUSED","CClass:ssGUI.Enums:FOCUSED"]]]]);

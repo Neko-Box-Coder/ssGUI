@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("f8",["Constant"],[["F8",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/FunctionKey.hpp:ssGUI.Enums.F8","CClass:ssGUI.Enums:F8"]]]]);

@@ -347,7 +347,7 @@ namespace Extensions
         // if(containerParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && containerParent->GetChildrenCount() > 1)
         // {
         //     containerParent->StashChildrenIterator();
-        //     containerParent->FindChild(Container);
+        //     containerParent->MoveChildrenIteratorToChild(Container);
         //     if(!containerParent->IsChildrenIteratorLast())
         //     {
         //         containerParent->MoveChildrenIteratorNext();
@@ -476,7 +476,7 @@ namespace Extensions
 
         //Restore order
         ObjectToDockNextTo->GetParent()->StashChildrenIterator();
-        ObjectToDockNextTo->GetParent()->FindChild(ObjectToDockNextTo);
+        ObjectToDockNextTo->GetParent()->MoveChildrenIteratorToChild(ObjectToDockNextTo);
         ssGUI::Hierarchy::ChildToken dockObjectIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
         ObjectToDockNextTo->GetParent()->MoveChildrenIteratorToLast();
         ssGUI::Hierarchy::ChildToken lastIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
@@ -543,7 +543,7 @@ namespace Extensions
 
             //Insert the Container after/before it
             ObjectToDockNextTo->GetParent()->StashChildrenIterator();
-            ObjectToDockNextTo->GetParent()->FindChild(ObjectToDockNextTo);
+            ObjectToDockNextTo->GetParent()->MoveChildrenIteratorToChild(ObjectToDockNextTo);
             ssGUI::Hierarchy::ChildToken dockObjectIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();
             ObjectToDockNextTo->GetParent()->MoveChildrenIteratorToLast();
             ssGUI::Hierarchy::ChildToken lastIt = ObjectToDockNextTo->GetParent()->GetCurrentChildToken();

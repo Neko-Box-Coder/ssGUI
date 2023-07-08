@@ -1,11 +1,13 @@
 #include "ssGUI/EventCallback.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
+#include <cassert>
 
 namespace ssGUI
 {
 
     EventCallback::EventCallback() :    EventListeners(),
+                                        EventListenersOrder(),
                                         Container(nullptr),
                                         CurrentObjectsReferences(),
                                         CurrentEventType(ssGUI::Enums::EventType::NONE)
@@ -21,10 +23,21 @@ namespace ssGUI
         if(adder != nullptr)
         {
             int adderIndex = CurrentObjectsReferences.AddObjectReference(adder);
-            EventListeners[key+"-adder-"+std::to_string(adderIndex)] = callback;
+            std::string listenerKey = key+"-adder-"+std::to_string(adderIndex);
+            if(EventListeners.find(listenerKey) == EventListeners.end())
+                EventListenersOrder.push_back(listenerKey);
+
+            EventListeners[listenerKey] = callback;
         }
         else
+        {
+            if(EventListeners.find(key) == EventListeners.end())
+                EventListenersOrder.push_back(key);
+            
             EventListeners[key] = callback;
+        }
+        
+        assert(EventListeners.size() == EventListenersOrder.size());
     }
 
     void EventCallback::AddEventListener(std::string key, std::function<void(EventInfo)> callback)
@@ -60,10 +73,31 @@ namespace ssGUI
         if(adder != nullptr)
         {
             int adderIndex = CurrentObjectsReferences.GetObjectIndex(adder);
-            EventListeners.erase(key+"-adder-"+std::to_string(adderIndex));
+            std::string listenerKey = key+"-adder-"+std::to_string(adderIndex);
+            EventListeners.erase(listenerKey);
+            
+            for(int i = 0; i < EventListenersOrder.size(); i++)
+            {
+                if(EventListenersOrder[i] == listenerKey)
+                {
+                    EventListenersOrder.erase(EventListenersOrder.begin() + i);
+                    break;
+                }
+            }
         }
         else
+        {
             EventListeners.erase(key);
+            
+            for(int i = 0; i < EventListenersOrder.size(); i++)
+            {
+                if(EventListenersOrder[i] == key)
+                {
+                    EventListenersOrder.erase(EventListenersOrder.begin() + i);
+                    break;
+                }
+            }
+        }
     }
 
     void EventCallback::RemoveEventListener(std::string key)
@@ -71,9 +105,72 @@ namespace ssGUI
         RemoveEventListener(key, nullptr);
     }
 
+    void EventCallback::SetEventListenerOrder(std::string key, ssGUI::GUIObject* adder, int order)
+    {
+        if(order < 0 || order >= EventListenersOrder.size())
+        {
+            ssGUI_WARNING(0, "Invalid order index: "<<order);
+            return;
+        }
+    
+        std::string listenerKey = key;
+    
+        if(adder != nullptr)
+        {
+            int adderIndex = CurrentObjectsReferences.GetObjectIndex(adder);
+            listenerKey += "-adder-"+std::to_string(adderIndex);
+        }
+
+        for(int i = 0; i < EventListenersOrder.size(); i++)
+        {
+            if(EventListenersOrder[i] == listenerKey)
+            {
+                std::string temp = EventListenersOrder[i];
+                EventListenersOrder[i] = EventListenersOrder[order];
+                EventListenersOrder[order] = temp;
+                return;
+            }
+        }
+        
+        ssGUI_WARNING(0, "Failed to find event listener with key: "<<key);
+    }
+
+    void EventCallback::SetEventListenerOrder(std::string key, int order)
+    {
+        SetEventListenerOrder(key, nullptr, order);
+    }
+
+    int EventCallback::GetEventListenerOrder(std::string key, ssGUI::GUIObject* adder) const
+    {
+        std::string listenerKey = key;
+    
+        if(adder != nullptr)
+        {
+            int adderIndex = CurrentObjectsReferences.GetObjectIndex(adder);
+            listenerKey += "-adder-"+std::to_string(adderIndex);
+        }
+        
+        for(int i = 0; i < EventListenersOrder.size(); i++)
+        {
+            if(EventListenersOrder[i] == listenerKey)
+            {
+                return i;
+            }
+        }
+        
+        ssGUI_WARNING(0, "Failed to find event listener with key: "<<key);
+        return -1;
+    }
+
+    int EventCallback::GetEventListenerOrder(std::string key) const
+    {
+        return GetEventListenerOrder(key, nullptr);
+    }
+
     void EventCallback::ClearEventListeners()
     {
         EventListeners.clear();
+        EventListenersOrder.clear();
     }
 
     int EventCallback::GetEventListenerCount() const
@@ -84,14 +181,16 @@ namespace ssGUI
     void EventCallback::Notify(ssGUI::GUIObject* source, void* customInfo)
     {
         ssLOG_FUNC_ENTRY();
-        for(auto it = EventListeners.begin(); it != EventListeners.end(); it++)
+        assert(EventListeners.size() == EventListenersOrder.size());
+        
+        for(int i = 0; i < EventListenersOrder.size(); i++)
         {
             ssGUI::EventInfo info;
             info.EventSource = source;
             info.Container = Container;
             info.References = &CurrentObjectsReferences;
             info.CustomInfo = customInfo;
-            it->second(info);
+            EventListeners.at(EventListenersOrder[i])(info);
         }
         ssLOG_FUNC_EXIT();
     }

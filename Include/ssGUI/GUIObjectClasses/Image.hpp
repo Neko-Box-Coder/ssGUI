@@ -28,7 +28,18 @@ namespace ssGUI
                         ImageTint(255, 255, 255, 255),
                         ImageDataChangedId(-1)
     {
-        // AddExtension(new ssGUI::Extensions::Border());
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* image = static_cast<ssGUI::Image*>(info.Container);
+                
+                if(image->ImageData != nullptr)
+                    image->ImageData->RemoveDataChangedCallback(image->ImageDataChangedId);
+            }
+        );
     }
     =================================================================
     */
@@ -48,6 +59,10 @@ namespace ssGUI
             virtual void ConstructRenderInfo() override;
             
         public:
+            //string: ListenerKey
+            static const std::string ListenerKey;
+            static const std::string IMAGE_SHAPE_NAME;
+
             Image();
             virtual ~Image() override;
 

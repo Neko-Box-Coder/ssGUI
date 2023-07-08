@@ -16,24 +16,21 @@ namespace ssGUI
         glm::vec2 drawPosition = GetGlobalPosition();
 
         //Background
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        ssGUI::DrawingEntity backgroundEntitiy;
+        
+        backgroundEntitiy.Vertices.push_back(drawPosition);
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        
+        backgroundEntitiy.EntityName = GUI_OBJECT_BG_SHAPE_NAME;
+        
+        DrawingEntities.push_back(backgroundEntitiy);
         
         if(GetImageData() == nullptr)
             return;
@@ -42,10 +39,12 @@ namespace ssGUI
         glm::vec2 imgDrawPosition = GetGlobalPosition();
         glm::vec2 imgSize = GetImageData()->GetSize();
 
-        DrawingColours.push_back(ImageTint);
-        DrawingColours.push_back(ImageTint);
-        DrawingColours.push_back(ImageTint);
-        DrawingColours.push_back(ImageTint);
+        ssGUI::DrawingEntity imageEntity;
+
+        imageEntity.Colors.push_back(ImageTint);
+        imageEntity.Colors.push_back(ImageTint);
+        imageEntity.Colors.push_back(ImageTint);
+        imageEntity.Colors.push_back(ImageTint);
 
         float widgetLandscapeRatio = (float)GetSize().x / (float)GetSize().y;
         float imageLandscapeRatio = (float)imgSize.x / (float)imgSize.y;
@@ -90,10 +89,10 @@ namespace ssGUI
 
                 imgDrawPosition.y = showWholeImg ? imgDrawPosition.y + (GetSize().y - (float)GetSize().x / showLandscapeRatio) / 2 : imgDrawPosition.y;
 
-                DrawingVerticies.push_back(imgDrawPosition);
-                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().x, 0));
-                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().x, GetSize().x / showLandscapeRatio));
-                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(0, GetSize().x / showLandscapeRatio));
+                imageEntity.Vertices.push_back(imgDrawPosition);
+                imageEntity.Vertices.push_back(imgDrawPosition + glm::vec2(GetSize().x, 0));
+                imageEntity.Vertices.push_back(imgDrawPosition + glm::vec2(GetSize().x, GetSize().x / showLandscapeRatio));
+                imageEntity.Vertices.push_back(imgDrawPosition + glm::vec2(0, GetSize().x / showLandscapeRatio));
 
                 break;
             case ssGUI::Enums::ImageFitting::FIT_VERTICAL:
@@ -109,40 +108,50 @@ namespace ssGUI
 
                 imgDrawPosition.x = showWholeImg ? imgDrawPosition.x + (GetSize().x - (float)GetSize().y * showLandscapeRatio) / 2 : imgDrawPosition.x;
 
-                DrawingVerticies.push_back(imgDrawPosition);
-                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().y * showLandscapeRatio, 0));
-                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(GetSize().y * showLandscapeRatio, GetSize().y));
-                DrawingVerticies.push_back(imgDrawPosition + glm::vec2(0, GetSize().y));
+                imageEntity.Vertices.push_back(imgDrawPosition);
+                imageEntity.Vertices.push_back(imgDrawPosition + glm::vec2(GetSize().y * showLandscapeRatio, 0));
+                imageEntity.Vertices.push_back(imgDrawPosition + glm::vec2(GetSize().y * showLandscapeRatio, GetSize().y));
+                imageEntity.Vertices.push_back(imgDrawPosition + glm::vec2(0, GetSize().y));
                 break;
             default:
                 ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Invalid ssGUI::Enums::ImageFitting: " << (int)imgFitting);
                 ssLOG_EXIT_PROGRAM();
         }
 
-        DrawingUVs.push_back(showUVOrigin);
-        DrawingUVs.push_back(showUVOrigin + glm::vec2(showWidth, 0));
-        DrawingUVs.push_back(showUVOrigin + glm::vec2(showWidth, showHeight));
-        DrawingUVs.push_back(showUVOrigin + glm::vec2(0, showHeight));
+        imageEntity.TexCoords.push_back(showUVOrigin);
+        imageEntity.TexCoords.push_back(showUVOrigin + glm::vec2(showWidth, 0));
+        imageEntity.TexCoords.push_back(showUVOrigin + glm::vec2(showWidth, showHeight));
+        imageEntity.TexCoords.push_back(showUVOrigin + glm::vec2(0, showHeight));
 
-        DrawingCounts.push_back(4);
-        ssGUI::DrawingProperty currentProperty;
-        currentProperty.imageP = ImageData->GetBackendImageInterface();
-        DrawingProperties.push_back(currentProperty);
+        imageEntity.EntityName = IMAGE_SHAPE_NAME;
+        imageEntity.BackendImage = ImageData->GetBackendImageInterface();
+        DrawingEntities.push_back(imageEntity);
     }
+    
+    const std::string Image::ListenerKey = "Slider";
+    const std::string Image::IMAGE_SHAPE_NAME = "Image Image";
     
     Image::Image() :    ImageData(nullptr),
                         Fitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE),
                         ImageTint(255, 255, 255, 255),
                         ImageDataChangedId(-1)
     {
-        // AddExtension(new ssGUI::Extensions::Border());
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* image = static_cast<ssGUI::Image*>(info.Container);
+                
+                if(image->ImageData != nullptr)
+                    image->ImageData->RemoveDataChangedCallback(image->ImageDataChangedId);
+            }
+        );
     }
 
     Image::~Image()
     {
-        if(ImageData != nullptr)
-            ImageData->RemoveDataChangedCallback(ImageDataChangedId);
-
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
     }
 

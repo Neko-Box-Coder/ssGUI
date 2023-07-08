@@ -7,6 +7,10 @@
     #include <thread>
 #endif 
 
+#ifdef SSGUI_MAIN_BACKEND_MOCK
+    #include "ssGUI/Backend/Mocks/BackendMainWindowMock.hpp"
+#endif
+
 ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;
 ssGUI::Backend::BackendMainWindowInterface* TestWindow = nullptr;
 ssGUI::Backend::BackendSystemInputInterface* BackendInputs = nullptr;
@@ -21,14 +25,14 @@ int main()
         TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendInputs = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
         BackendInputs->UpdateInput();
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(BackendDrawing);
         ssGUI::Factory::Dispose(TestWindow);
         ssGUI::Factory::Dispose(BackendInputs);
-    }
+    };
 
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
 
@@ -40,16 +44,16 @@ int main()
         #ifdef SSGUI_MAIN_BACKEND_SFML
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         #endif 
-        //ssTEST_OUTPUT_ASSERT(TestWindow->GetWindowPosition() == pos);
-        ssLOG_LINE("TestWindow->GetWindowPosition(): "<<TestWindow->GetWindowPosition().x<<", "<<TestWindow->GetWindowPosition().y);
-    }
+        ssTEST_OUTPUT_ASSERT(TestWindow->GetWindowPosition() == pos);
+        //ssLOG_LINE("TestWindow->GetWindowPosition(): "<<TestWindow->GetWindowPosition().x<<", "<<TestWindow->GetWindowPosition().y);
+    };
 
     ssTEST("GetPositionOffsetTest")
     {
         ssTEST_OUTPUT_ASSERT(TestWindow->GetPositionOffset().x >= 0 && TestWindow->GetPositionOffset().y >= 0);
         
         //ssLOG_LINE("TestWindow->GetPositionOffset(): "<<TestWindow->GetPositionOffset().x<<", "<<TestWindow->GetPositionOffset().y);
-    }
+    };
 
     ssTEST("WindowSizeTest")
     {
@@ -59,7 +63,7 @@ int main()
         glm::ivec2 windowSize = TestWindow->GetWindowSize();
         //ssLOG_LINE("windowSize: "<<windowSize.x<<", "<<windowSize.y);
         ssTEST_OUTPUT_ASSERT(TestWindow->GetWindowSize() == size);
-    }
+    };
 
     ssTEST("RenderSizeTest")
     {
@@ -74,7 +78,7 @@ int main()
         #else
             ssTEST_OUTPUT_SKIP("Against Window Size");
         #endif
-    }
+    };
 
     ssTEST("ValidateBothSizesTest")
     {
@@ -87,7 +91,7 @@ int main()
         glm::ivec2 renderSize = TestWindow->GetRenderSize();
         TestWindow->SetRenderSize(renderSize);
         ssTEST_OUTPUT_ASSERT("2", TestWindow->GetWindowSize() == glm::ivec2(600, 400));
-    }
+    };
 
     ssTEST("CloseTest")
     {
@@ -96,7 +100,7 @@ int main()
         ssTEST_OUTPUT_ASSERT(TestWindow->IsClosed());   
         ssTEST_CALL_CLEAN_UP();
         ssTEST_CALL_SET_UP();
-    }
+    };
 
     ssTEST("CloseEventTest")
     {
@@ -121,14 +125,14 @@ int main()
         
         ssTEST_CALL_CLEAN_UP();
         ssTEST_CALL_SET_UP();
-    }
+    };
 
     ssTEST("TitleTest")
     {
         std::wstring someTitle = L"someTitle";
         TestWindow->SetTitle(someTitle);
         ssTEST_OUTPUT_ASSERT(TestWindow->GetTitle() == someTitle);
-    }
+    };
 
     ssTEST("VisibleTest")
     {
@@ -136,7 +140,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("False", !TestWindow->IsVisible());
         TestWindow->SetVisible(true);
         ssTEST_OUTPUT_ASSERT("True", TestWindow->IsVisible());
-    }
+    };
 
     ssTEST("VsyncTest()")
     {
@@ -144,13 +148,13 @@ int main()
         ssTEST_OUTPUT_ASSERT("False", !TestWindow->IsVSync());
         TestWindow->SetVSync(true);
         ssTEST_OUTPUT_ASSERT("True", TestWindow->IsVSync());
-    }
+    };
 
     ssTEST("MSAATest()")
     {
         TestWindow->SetMSAA(4);
         ssTEST_OUTPUT_ASSERT(TestWindow->GetMSAA() == 4);
-    }
+    };
 
     ssTEST("TitlebarTest()")
     {
@@ -158,7 +162,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("False", !TestWindow->HasTitlebar());
         TestWindow->SetTitlebar(true);
         ssTEST_OUTPUT_ASSERT("True", TestWindow->HasTitlebar());
-    }
+    };
 
     ssTEST("ResizableTest()")
     {
@@ -166,7 +170,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("False", !TestWindow->IsResizable());
         TestWindow->SetResizable(true);
         ssTEST_OUTPUT_ASSERT("True", TestWindow->IsResizable());
-    }
+    };
 
     ssTEST("CloseButtonTest()")
     {
@@ -174,7 +178,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("False", !TestWindow->HasCloseButton());
         TestWindow->SetCloseButton(true);
         ssTEST_OUTPUT_ASSERT("True", TestWindow->HasCloseButton());
-    }
+    };
 
     ssTEST("WindowModeTest()")
     {
@@ -188,19 +192,25 @@ int main()
         ssTEST_OUTPUT_ASSERT("FULLSCREEN", TestWindow->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN);
         
         TestWindow->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
-    }
+    };
 
     ssTEST("CloneTest()")
     {
         auto* windowClone = TestWindow->Clone();
         ssTEST_OUTPUT_ASSERT(windowClone != nullptr);
         ssGUI::Factory::Dispose(windowClone);
-    }
+    };
 
     ssTEST("GetRawHandleTest()")
     {
+        #ifdef SSGUI_MAIN_BACKEND_MOCK
+            (*static_cast<ssGUI::Backend::BackendMainWindowMock*>(TestWindow))
+                .OverrideReturns(GetRawHandle())
+                .Returns((void*)1);
+        #endif
+        
         ssTEST_OUTPUT_ASSERT(TestWindow->GetRawHandle() != nullptr);
-    }
+    };
 
     ssTEST_END();
 }

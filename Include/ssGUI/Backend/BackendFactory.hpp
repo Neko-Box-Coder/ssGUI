@@ -43,6 +43,14 @@
     #include "ssGUI/Backend/stb_image/BackendImageStbImage.hpp"
 #endif
 
+#ifdef SSGUI_MOCK_BACKEND
+    #include "ssGUI/Backend/Mocks/BackendDrawingMock.hpp"
+    #include "ssGUI/Backend/Mocks/BackendFontMock.hpp"
+    #include "ssGUI/Backend/Mocks/BackendImageMock.hpp"
+    #include "ssGUI/Backend/Mocks/BackendSystemInputMock.hpp"
+    #include "ssGUI/Backend/Mocks/BackendMainWindowMock.hpp"
+#endif
+
 namespace ssGUI 
 { 
     
@@ -58,79 +66,137 @@ namespace Backend
             //function: CreateBackendDrawingInterface
             static ssGUI::Backend::BackendDrawingInterface* CreateBackendDrawingInterface()
             {
+                ssGUI::Backend::BackendDrawingInterface* returnInterface = nullptr;
+                
                 #ifdef SSGUI_MAIN_BACKEND_SFML
-                    return static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingSFML());
+                    returnInterface = static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingSFML());
                 #elif defined SSGUI_MAIN_BACKEND_WIN32_OPENGL
-                    return static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingWin32_OpenGL3_3());
+                    returnInterface = static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingWin32_OpenGL3_3());
                 #elif defined SSGUI_MAIN_BACKEND_X11_OPENGL
-                    return static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingX11_OpenGL3_3());
+                    returnInterface =  static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingX11_OpenGL3_3());
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    returnInterface = nullptr;
                 #endif
 
-                return nullptr;
+                #ifdef SSGUI_MOCK_BACKEND
+                    returnInterface = static_cast<ssGUI::Backend::BackendDrawingInterface*>(new ssGUI::Backend::BackendDrawingMock(returnInterface));
+                #else
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
+                #endif
+
+                return returnInterface;
             }
 
             //function: CreateBackendFontInterface
             static ssGUI::Backend::BackendFontInterface* CreateBackendFontInterface()
             {
+                ssGUI::Backend::BackendFontInterface* returnInterface = nullptr;
+                
                 #ifdef SSGUI_FONT_BACKEND_SFML
-                    return static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontSFML());
+                    returnInterface = static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontSFML());
                 #elif defined SSGUI_FONT_BACKEND_FREE_TYPE
-                    return static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontFreeType());
+                    returnInterface = static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontFreeType());
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    returnInterface = nullptr;
                 #endif
                 
-                return nullptr;
+                #ifdef SSGUI_MOCK_BACKEND
+                    returnInterface = static_cast<ssGUI::Backend::BackendFontInterface*>(new ssGUI::Backend::BackendFontMock(returnInterface));
+                #else
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
+                #endif
+                
+                return returnInterface;
             }
 
             //function: CreateBackendImageInterface
             static ssGUI::Backend::BackendImageInterface* CreateBackendImageInterface()
             {
+                ssGUI::Backend::BackendImageInterface* returnInterface = nullptr;
+
                 #ifdef SSGUI_IMAGE_BACKEND_SFML
-                    return static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageSFML());
+                    returnInterface = static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageSFML());
                 #elif defined SSGUI_IMAGE_BACKEND_STB_IMAGE
-                    return static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageStbImage());
+                    returnInterface = static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageStbImage());
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    returnInterface = nullptr;
                 #endif
-                return nullptr;
+                
+                #ifdef SSGUI_MOCK_BACKEND
+                    returnInterface = static_cast<ssGUI::Backend::BackendImageInterface*>(new ssGUI::Backend::BackendImageMock(returnInterface));
+                #else
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
+                #endif
+                
+                return returnInterface;
             }
 
             //function: CreateBackendInputInterface
             static ssGUI::Backend::BackendSystemInputInterface* CreateBackendInputInterface()
             {
+                ssGUI::Backend::BackendSystemInputInterface* returnInterface = nullptr;
+                
                 #ifdef SSGUI_MAIN_BACKEND_SFML
-                    return static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputSFML());
+                    returnInterface = static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputSFML());
                 #elif defined SSGUI_MAIN_BACKEND_WIN32_OPENGL
-                    return static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputWin32_OpenGL3_3());
+                    returnInterface = static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputWin32_OpenGL3_3());
                 #elif defined SSGUI_MAIN_BACKEND_X11_OPENGL
-                    return static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputX11_OpenGL3_3());
+                    returnInterface = static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputX11_OpenGL3_3());
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    returnInterface = nullptr;
                 #endif
-                return nullptr;
+                
+                #ifdef SSGUI_MOCK_BACKEND
+                    returnInterface = static_cast<ssGUI::Backend::BackendSystemInputInterface*>(new ssGUI::Backend::BackendSystemInputMock(returnInterface));
+                #else
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
+                #endif
+                
+                return returnInterface;
             }
             
             //function: CreateBackendMainWindowInterface
             static ssGUI::Backend::BackendMainWindowInterface* CreateBackendMainWindowInterface()
             {
+                ssGUI::Backend::BackendMainWindowInterface* returnInterface = nullptr;
+
                 #ifdef SSGUI_MAIN_BACKEND_SFML
-                    return static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowSFML());
+                    returnInterface = static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowSFML());
                 #elif defined SSGUI_MAIN_BACKEND_WIN32_OPENGL
-                    return static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowWin32_OpenGL3_3());
+                    returnInterface = static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowWin32_OpenGL3_3());
                 #elif defined SSGUI_MAIN_BACKEND_X11_OPENGL
-                    return static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowX11_OpenGL3_3());
+                    returnInterface = static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowX11_OpenGL3_3());
                 #else
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
-                    ssLOG_EXIT_PROGRAM();
+                    returnInterface = nullptr;
                 #endif
-                return nullptr;
+                
+                #ifdef SSGUI_MOCK_BACKEND
+                    returnInterface = static_cast<ssGUI::Backend::BackendMainWindowInterface*>(new ssGUI::Backend::BackendMainWindowMock(returnInterface));
+                #else
+                    if(returnInterface == nullptr)
+                    {
+                        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+                        ssLOG_EXIT_PROGRAM();
+                    }
+                #endif
+                
+                return returnInterface;
             }
     };
 }

@@ -34,98 +34,78 @@ namespace Extensions
         int width = GetBorderWidth();
         glm::u8vec4 colour = GetBorderColor();
 
-        std::vector<glm::vec2>& drawingVerticies = Container->Extension_GetDrawingVertices();
-        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
-        std::vector<glm::u8vec4>& drawingColours = Container->Extension_GetDrawingColours();
-        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
-        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+        std::vector<ssGUI::DrawingEntity>& drawingEntities = Container->Extension_GetDrawingEntities();
 
         //Top
         if(IsBorderTopShowing())
         {
-            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      0));
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, 0));
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, width));
-            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      width));
+            ssGUI::DrawingEntity entity;
+            entity.EntityName = BORDER_TOP_SHAPE_NAME;
+            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      0));
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, 0));
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, width));
+            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      width));
+        
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
 
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-
-            drawingCounts.push_back(4);
-            drawingProperties.push_back(ssGUI::DrawingProperty());
+            drawingEntities.push_back(entity);
         }
 
         //Right
         if(IsBorderRightShowing())
         {
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, (IsBorderTopShowing() ? width : 0)));
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x,         (IsBorderTopShowing() ? width : 0)));
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x,         Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            ssGUI::DrawingEntity entity;
+            entity.EntityName = BORDER_RIGHT_SHAPE_NAME;
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, (IsBorderTopShowing() ? width : 0)));
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x,         (IsBorderTopShowing() ? width : 0)));
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x,         Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
 
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
 
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-
-            drawingCounts.push_back(4);
-            drawingProperties.push_back(ssGUI::DrawingProperty());
+            drawingEntities.push_back(entity);
         }
 
         //Bottom
         if(IsBorderBottomShowing())
         {
-            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y - width));
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y - width));
-            drawingVerticies.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y));
-            drawingVerticies.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y));
+            ssGUI::DrawingEntity entity;
+            entity.EntityName = BORDER_BOTTOM_SHAPE_NAME;
+            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y - width));
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y - width));
+            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y));
+            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y));
 
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
 
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-
-            drawingCounts.push_back(4);
-            drawingProperties.push_back(ssGUI::DrawingProperty());
+            drawingEntities.push_back(entity);
         }
 
         //Left
         if(IsBorderLeftShowing())
         {
-            drawingVerticies.push_back(drawPosition + glm::vec2(0,      IsBorderTopShowing() ? width : 0));
-            drawingVerticies.push_back(drawPosition + glm::vec2(width,  IsBorderTopShowing() ? width : 0));
-            drawingVerticies.push_back(drawPosition + glm::vec2(width,  Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
-            drawingVerticies.push_back(drawPosition + glm::vec2(0,      Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            ssGUI::DrawingEntity entity;
+            entity.EntityName = BORDER_LEFT_SHAPE_NAME;
+            entity.Vertices.push_back(drawPosition + glm::vec2(0,      IsBorderTopShowing() ? width : 0));
+            entity.Vertices.push_back(drawPosition + glm::vec2(width,  IsBorderTopShowing() ? width : 0));
+            entity.Vertices.push_back(drawPosition + glm::vec2(width,  Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            entity.Vertices.push_back(drawPosition + glm::vec2(0,      Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
 
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
-            drawingColours.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
+            entity.Colors.push_back(colour);
 
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-            drawingUVs.push_back(glm::vec2());
-
-            drawingCounts.push_back(4);
-            drawingProperties.push_back(ssGUI::DrawingProperty()); 
+            drawingEntities.push_back(entity); 
         }
 
         ssLOG_FUNC_EXIT();

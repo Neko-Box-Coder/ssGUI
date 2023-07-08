@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("ref",["Variable"],[["References",,[["ssGUI::EventInfo",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/EventInfo.hpp:ssGUI.EventInfo.References","CClass:ssGUI.EventInfo:References"]]]]);

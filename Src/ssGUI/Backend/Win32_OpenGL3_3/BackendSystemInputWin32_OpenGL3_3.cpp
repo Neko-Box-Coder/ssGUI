@@ -426,12 +426,12 @@ namespace Backend
         return MouseScrollDelta;
     }
     
-    std::vector<ssGUI::RealtimeInputInfo> const & BackendSystemInputWin32_OpenGL3_3::GetLastRealtimeInputs() const
+    const std::vector<ssGUI::RealtimeInputInfo>& BackendSystemInputWin32_OpenGL3_3::GetLastRealtimeInputs() const
     {
         return LastInputInfos;
     }
             
-    std::vector<ssGUI::RealtimeInputInfo> const & BackendSystemInputWin32_OpenGL3_3::GetCurrentRealtimeInputs() const
+    const std::vector<ssGUI::RealtimeInputInfo>& BackendSystemInputWin32_OpenGL3_3::GetCurrentRealtimeInputs() const
     {
         return CurrentInputInfos;
     }

@@ -264,7 +264,7 @@ namespace Extensions
                 if(containerParent != nullptr)
                 {
                     containerParent->StashChildrenIterator();
-                    containerParent->FindChild(Container);
+                    containerParent->MoveChildrenIteratorToChild(Container);
                     ssGUI::Hierarchy::ChildToken posIt = containerParent->GetCurrentChildToken();
                     // posIt++;
 

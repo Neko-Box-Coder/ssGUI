@@ -30,13 +30,14 @@ namespace Backend
         
     }
 
-    bool BackendDrawingTemplate::DrawEntities(  const std::vector<glm::vec2>& vertices, 
-                                const std::vector<glm::vec2>& texCoords,
-                                const std::vector<glm::u8vec4>& colors,
-                                const std::vector<int>& counts,
-                                const std::vector<ssGUI::DrawingProperty>& properties)
+    bool BackendDrawingTemplate::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
         return true;
+    }
+    
+    void BackendDrawingTemplate::DrawToBackBuffer()
+    {
+        
     }
 
     void BackendDrawingTemplate::Render(glm::u8vec3 clearColor)
@@ -62,60 +63,6 @@ namespace Backend
     void* BackendDrawingTemplate::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
     {
         return nullptr;
-    }
-
-    bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            const uint32_t character,
-                            const ssGUI::Backend::BackendFontInterface& font,
-                            int characterSize)
-    {
-        return true;        
-    }
-
-    bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            const ssGUI::Backend::BackendImageInterface& image)
-    {
-        return true;        
-    }
-
-
-    bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colors)
-    {
-        return true;        
-    }
-
-    //NOTE: End index is exclusive
-    bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            const uint32_t character,
-                            int startIndex, int endIndex,
-                            const ssGUI::Backend::BackendFontInterface& font,
-                            int characterSize)
-    {
-        return true;        
-    }
-
-    bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::vec2>& texCoords,
-                            const std::vector<glm::u8vec4>& colors,
-                            int startIndex, int endIndex,
-                            const ssGUI::Backend::BackendImageInterface& image)
-    {
-        return true;        
-    }
-
-
-    bool BackendDrawingTemplate::DrawShape( const std::vector<glm::vec2>& vertices, 
-                            const std::vector<glm::u8vec4>& colors,
-                            int startIndex, int endIndex)
-    {
-        return true;        
     }
 }
 

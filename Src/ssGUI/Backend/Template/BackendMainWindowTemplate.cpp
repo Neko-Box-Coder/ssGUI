@@ -177,7 +177,7 @@ namespace Backend
         return true;
     }
 
-    void BackendMainWindowTemplate::SetWindowMode(ssGUI::Enums::WindowMode WindowMode)
+    void BackendMainWindowTemplate::SetWindowMode(ssGUI::Enums::WindowMode windowMode)
     {
 
     }

@@ -133,7 +133,7 @@ namespace Extensions
         ssLOG_FUNC_ENTRY();        
         //TODO : Cache if parent's global position and size hasn't changed
         
-        //This should be done in post update
+        //This should be done in pre update
         if(!isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
         {
             ssLOG_FUNC_EXIT();
@@ -268,4 +268,3 @@ namespace Extensions
     }   
 }
 
-}

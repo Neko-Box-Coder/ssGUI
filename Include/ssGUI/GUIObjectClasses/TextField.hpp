@@ -32,6 +32,7 @@ namespace ssGUI
                                 ArrowNavInterval(20)
     {
         SetBlockInput(true);
+        SetMinSize(glm::vec2(35, 35));
         SetBackgroundColor(glm::ivec4(127, 127, 127, 255));
 
         AddExtension<ssGUI::Extensions::RoundedCorners>();
@@ -88,6 +89,8 @@ namespace ssGUI
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:
+            static const std::string TEXTFIELD_CARET_SHAPE_NAME;
+        
             TextField();
             virtual ~TextField() override;
             

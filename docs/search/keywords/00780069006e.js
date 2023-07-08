@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("xin",["Variable"],[["XInputContext",,[["ssGUI::Backend",,,,0,"File:◀️_ssGUI_API_▶️/Backend/X11_OpenGL3_3/BackendMainWindowX11_OpenGL3_3.hpp:ssGUI.Backend.XInputContext","CClass:ssGUI.Backend:XInputContext"]]]]);

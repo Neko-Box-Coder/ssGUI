@@ -16,24 +16,21 @@ namespace ssGUI
         glm::vec2 drawPosition = GetGlobalPosition();
 
         //Background
-        DrawingVerticies.push_back(drawPosition);
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, 0));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingVerticies.push_back(drawPosition + glm::vec2(0, GetSize().y));
-        DrawingUVs.push_back(glm::vec2());
-        DrawingColours.push_back(GetBackgroundColor());
-
-        DrawingCounts.push_back(4);
-        DrawingProperties.push_back(ssGUI::DrawingProperty());
+        ssGUI::DrawingEntity backgroundEntitiy;
+        
+        backgroundEntitiy.Vertices.push_back(drawPosition);
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, 0));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(GetSize().x, GetSize().y));
+        backgroundEntitiy.Vertices.push_back(drawPosition + glm::vec2(0, GetSize().y));
+        
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        backgroundEntitiy.Colors.push_back(GetBackgroundColor());
+        
+        backgroundEntitiy.EntityName = GUI_OBJECT_BG_SHAPE_NAME;
+        
+        DrawingEntities.push_back(backgroundEntitiy);
     }
 
     void Button::SetButtonState(ssGUI::Enums::ButtonState state)

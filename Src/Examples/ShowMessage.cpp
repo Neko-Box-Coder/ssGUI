@@ -11,8 +11,8 @@ int main()
     //Create a text widget and set the respective properties
     ssGUI::Text text;
     text.SetText(L"Click on the button to show the message");
-    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
+    text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
     
     //AdvancedPosition extension allows more option to position a GUI Object. By default it will center the GUI object.
     text.AddExtension<ssGUI::Extensions::AdvancedPosition>()->SetVerticalPixel(-30);

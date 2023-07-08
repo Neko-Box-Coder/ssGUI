@@ -81,7 +81,7 @@ namespace ssGUI
             virtual ~ssGUIManager();
 
             //function: AddRootGUIObject (Obselete)
-            //This is only used internally, used the template version instead.
+            //This is only used internally, use the template version (below) instead.
             //Only main window should be added, the reason why it is accepting <ssGUI::GUIObject> is for future compatibility.
             void AddRootGUIObject(ssGUI::GUIObject* obj);
             
@@ -137,6 +137,10 @@ namespace ssGUI
             //Starts the ssGUIManager.
             //This will block the thread until all <MainWindow>s are closed
             void StartRunning();
+            
+            void StartRunningAsync();
+            
+            bool StepFrame();
 
             //function: GetBackendInputInterface
             //Gets the <ssGUI::Backend::BackendSystemInputInterface> used by <ssGUIManager>

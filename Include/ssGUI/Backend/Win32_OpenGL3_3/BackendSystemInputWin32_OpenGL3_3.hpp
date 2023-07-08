@@ -21,7 +21,7 @@ namespace ssGUI
     class GUIObject;
     class MainWindow;
     class ImageData;
-    class RealtimeInputInfo;
+    struct RealtimeInputInfo;
 }
 
 
@@ -191,11 +191,11 @@ namespace Backend
 
             //function: GetLastRealtimeInputs
             //See <BackendSystemInputInterface::GetLastRealtimeInputs>
-            std::vector<ssGUI::RealtimeInputInfo> const & GetLastRealtimeInputs() const override;
+            const std::vector<ssGUI::RealtimeInputInfo>& GetLastRealtimeInputs() const override;
 
             //function: GetCurrentRealtimeInputs
             //See <BackendSystemInputInterface::GetCurrentRealtimeInputs>
-            std::vector<ssGUI::RealtimeInputInfo> const & GetCurrentRealtimeInputs() const override;
+            const std::vector<ssGUI::RealtimeInputInfo>& GetCurrentRealtimeInputs() const override;
 
             //function: GetTextInput
             //See <BackendSystemInputInterface::GetTextInput>

@@ -5,6 +5,7 @@
 #include "glm/vec2.hpp"
 #include <vector>
 #include <codecvt>
+#include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
 namespace ssGUI 
 { 
@@ -42,7 +43,22 @@ namespace ssGUI
       
         //var: CharacterEntered
         bool CharacterEntered = false;
+        
+        inline friend std::ostream& operator<<(std::ostream& stream, const RealtimeInputInfo& other)
+        {
+            stream  << SSGUI_OUTPUT_CLASS_NAME(RealtimeInputInfo)
+                    << SSGUI_OUTPUT_VAR(CurrentButtonAndKeyChanged)
+                    << SSGUI_OUTPUT_VAR(MouseMoved)
+                    << SSGUI_OUTPUT_VAR(CurrentMousePosition)
+                    << SSGUI_OUTPUT_VAR(CurrentCharacterEntered)
+                    << SSGUI_OUTPUT_LAST_VAR(CharacterEntered);
+            
+            return stream;
+        }
     };
+    
+    
+    
 }
 
 #endif

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("bor",["Class","Constant"],[["Border",,[["ssGUI::Extensions",,,,0,"File:◀️_ssGUI_API_▶️/Extensions/Border.hpp:ssGUI.Extensions.Border","CClass:ssGUI.Extensions.Border"]]],["BORDERLESS",,[["ssGUI::Enums",,,,1,"File:◀️_ssGUI_API_▶️/Enums/WindowMode.hpp:ssGUI.Enums.BORDERLESS","CClass:ssGUI.Enums:BORDERLESS"]]]]);

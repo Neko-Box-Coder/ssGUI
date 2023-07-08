@@ -117,6 +117,9 @@ namespace ssGUI
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:
+            static const std::string WINDOW_BASE_SHAPE_NAME;
+            static const std::string WINDOW_TITLEBAR_SHAPE_NAME;
+            
             Window();
             virtual ~Window() override;
             

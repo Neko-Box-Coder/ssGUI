@@ -39,8 +39,8 @@ namespace ssGUI
         RemoveAnyExtension<ssGUI::Extensions::Outline>();
 
         GetButtonTextObject()->SetNewTextFontSize(15);
-        GetButtonTextObject()->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
-        GetButtonTextObject()->SetHorizontalPadding(15);
+        GetButtonTextObject()->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+        GetButtonTextObject()->SetTextHorizontalPadding(15);
 
         auto buttonEventCallback = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEventCallback->ClearEventListeners();
@@ -97,11 +97,7 @@ namespace ssGUI
     MenuItem::~MenuItem()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-        
-        //NOTE: Handled in Slider
-        //If the object deallocation is not handled by ssGUIManager
-        //if(!Internal_IsDeleted())
-        //    Internal_ChildrenManualDeletion(std::vector<ssGUI::ssGUIObjectIndex>{KnobObject});
+        //NOTE: Children resources deallocation is Handled in Slider
     }
 
     ssGUI::Enums::GUIObjectType MenuItem::GetType() const

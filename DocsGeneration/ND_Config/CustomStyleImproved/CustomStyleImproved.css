@@ -129,7 +129,8 @@
     font-size: 2rem;
 }
 
-.CTopic .CTitle {
+.CTopic .CTitle,
+.CTopic > .CTitle > .Qualifier {
     font-family: 'NotoSans', 'NotoColorEmoji', 'Segoe UI Emoji';
     font-size: 1.5rem;
     text-transform: none;
@@ -139,8 +140,9 @@
     font-size: 1.3rem;
 }
 
-.TFunction .CTitle {
-    font-size: 1.5rem;
+.TFunction > .CTitle {
+    font-size: 1.25rem;
+    /*font-weight: bold;*/
 }
 
 .TConstant .CTitle{
@@ -162,10 +164,10 @@
     margin: 0 0 0 3rem;
 }
 
-.CTopic.TVariable.LC > .CTitle,
+/*.CTopic.TVariable.LC > .CTitle,
 .CTopic.TFunction.LC > .CTitle {
     font-weight: normal;
-}
+}*/
 
 /* Inheritance graph */
 
@@ -416,7 +418,8 @@ body.NDContentPage {
 /* Paragraph fomatting */
 .CTopic p {
     margin: 0 0 1rem 0;
-    padding-left: 2.5rem;
+    /*padding-left: 2.5rem;*/
+    padding-left: 1.5rem;
     text-indent: 0rem;
 }
 
@@ -443,4 +446,3 @@ body.NDContentPage {
     overflow: hidden;
     border-radius: 0.5rem;
     box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.3);
-}

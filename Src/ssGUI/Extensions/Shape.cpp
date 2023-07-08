@@ -169,12 +169,14 @@ namespace Extensions
     void Shape::ConstructRenderInfo()
     {
         ssLOG_FUNC_ENTRY();
+        
         //Getting all the rendering details from container
-        std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
-        std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
-        std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
-        std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
-        std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+        //std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
+        //std::vector<glm::vec2>& drawingUVs = Container->Extension_GetDrawingUVs();
+        //std::vector<glm::u8vec4>& drawingColors = Container->Extension_GetDrawingColours();
+        //std::vector<int>& drawingCounts = Container->Extension_GetDrawingCounts();
+        //std::vector<ssGUI::DrawingProperty>& drawingProperties = Container->Extension_GetDrawingProperties();
+        std::vector<ssGUI::DrawingEntity>& drawingEntities = Container->Extension_GetDrawingEntities();
 
         using GUIType = ssGUI::Enums::GUIObjectType;
         glm::vec2 curPos = Container->GetType() == GUIType::WINDOW && Container->GetType() != GUIType::MAIN_WINDOW ? 
@@ -183,45 +185,31 @@ namespace Extensions
 
         for(int i = 0; i < AdditionalShapes.size(); i++)
         {
+            ssGUI::DrawingEntity newEntity;
+        
             if(AdditionalShapes[i].BehindGUI != ExtensionPreRender)
                 continue;
 
             for(int j = 0; j < AdditionalShapes[i].Vertices.size(); j++)
-                drawingVertices.push_back(AdditionalShapes[i].Vertices[j] + curPos);
+            {
+                newEntity.Vertices.push_back(AdditionalShapes[i].Vertices[j] + curPos);
+                newEntity.Colors.push_back(AdditionalShapes[i].Colors[j]);
+            }
             
-            drawingUVs.insert(drawingUVs.end(), AdditionalShapes[i].Vertices.size(), glm::vec2());
-            drawingColors.insert(drawingColors.end(), AdditionalShapes[i].Colors.begin(), AdditionalShapes[i].Colors.end());
-            drawingCounts.push_back(AdditionalShapes[i].Vertices.size());
-            drawingProperties.push_back(ssGUI::DrawingProperty());
+            newEntity.EntityName = SHAPE_SHAPES_NAME;
+            drawingEntities.push_back(newEntity);
         }
 
         if(!ExtensionPreRender && !GUIObjectShapesToRemove.empty())
         {
-            int originalIndex = 0;
-            for(int i = 0; i < drawingCounts.size(); i++)
+            for(int i = drawingEntities.size() - 1; i >= 0; i--)
             {
                 //For each shape, check if this shape needs to be removed
-                if(GUIObjectShapesToRemove.find(originalIndex - Container->Extension_GetGUIObjectFirstShapeIndex()) 
+                if(GUIObjectShapesToRemove.find(i - Container->Extension_GetGUIObjectFirstShapeIndex()) 
                     != GUIObjectShapesToRemove.end())
                 {
-                    int startIndex = 0;
-
-                    for(int j = 0; j < i; j++)
-                        startIndex += drawingCounts[j];
-                    
-                    int endIndex = startIndex + drawingCounts[i];
-
-                    drawingVertices.erase(drawingVertices.begin() + startIndex, drawingVertices.begin() + endIndex);
-                    drawingUVs.erase(drawingUVs.begin() + startIndex, drawingUVs.begin() + endIndex);
-                    drawingColors.erase(drawingColors.begin() + startIndex, drawingColors.begin() + endIndex);
-                    drawingCounts.erase(drawingCounts.begin() + i);
-                    drawingProperties.erase(drawingProperties.begin() + i);
-
-                    i--;
+                    drawingEntities.erase(drawingEntities.begin() + i);
                 }
-
-                //This keeps track of the original index of the shapes even when the shapes are removed
-                originalIndex++;
             }
         }
 
@@ -236,6 +224,7 @@ namespace Extensions
     
     //Defining the extension name
     const std::string Shape::EXTENSION_NAME = "Shape";
+    const std::string Shape::SHAPE_SHAPES_NAME = "Shape Shape";
     
     int Shape::AddAdditionalPolygon()
     {

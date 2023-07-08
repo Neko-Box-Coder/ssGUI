@@ -141,6 +141,8 @@ namespace Extensions
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
+            //NOTE: A little bit retarded but works well enough to shut the compiler up when "floats... sizeMultipliers" is empty
+            inline void AddPreferredSizeMultipliers(){}
 
         public:
             static const std::string EXTENSION_NAME;
@@ -158,13 +160,14 @@ namespace Extensions
             
             //function: AddPreferredSizeMultiplier
             template<typename... floats>
-            inline void AddPreferredSizeMultiplier(float sizeMultiplier, floats... sizeMultipliers)
+            inline void AddPreferredSizeMultipliers(float sizeMultiplier, floats... sizeMultipliers)
             {
                 AddPreferredSizeMultiplier(sizeMultiplier);
+                AddPreferredSizeMultipliers(sizeMultipliers...);
             }
 
             //function: AddPreferredSizeMultiplier
-            virtual void AddPreferredSizeMultiplier(float sizeMultipliers[], int count);
+            virtual void AddPreferredSizeMultipliers(float sizeMultipliers[], int count);
 
             //function: SetPreferredSizeMultiplier
             //Sets the child with the index to be the size of sizeMultiplier.
@@ -272,38 +275,6 @@ namespace Extensions
             //function: UnexcludeObject
             //If a GUI Object is excluded, it will be ignored
             virtual void UnexcludeObject(ssGUI::GUIObject* obj);
-
-            //function: AddChildWithWrapper
-            //Add a child to container with wrapper 
-            //
-            //parameters:
-            //child - The child <GUIObject> that you wish to parent to the <GUIObject> this extension has attached to 
-            //
-            //returns:
-            //The wrapper <GUIObject> that contains the *child*.
-            //This will be nullptr if this extension is not attached to a GUI object.
-            virtual ssGUI::GUIObject* AddChildWithWrapper(ssGUI::GUIObject* child);
-            
-            /*function: AddChildWithAlignment
-            This is equivilent to:
-            ========================= c++ =========================
-            ssGUI::GUIObject* wrapper = AddChildWithWrapper(child);
-        
-            if(wrapper != nullptr)
-            {
-                if(!child->IsAnyExtensionExist<ssGUI::Extensions::AdvancedPosition>())
-                    child->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
-            
-                ssGUI::Extensions::AdvancedPosition* ap = child->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-            
-                ap->SetHorizontalAlignment(horizontal);
-                ap->SetVerticalAlignment(vertical);
-            }
-            
-            return wrapper;
-            =======================================================
-            */
-            virtual ssGUI::GUIObject* AddChildWithAlignment(ssGUI::GUIObject* child, ssGUI::Enums::AlignmentHorizontal horizontal, ssGUI::Enums::AlignmentVertical vertical);
 
             //function: Internal_OnRecursiveChildAdded
             //(Internal ssGUI function) Listener function when a child is being added

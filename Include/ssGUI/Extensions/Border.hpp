@@ -69,6 +69,11 @@ namespace Extensions
         public:
             static const std::string EXTENSION_NAME;
             
+            const std::string BORDER_TOP_SHAPE_NAME = "Border Top";
+            const std::string BORDER_RIGHT_SHAPE_NAME = "Border Right";
+            const std::string BORDER_BOTTOM_SHAPE_NAME = "Border Bottom";
+            const std::string BORDER_LEFT_SHAPE_NAME = "Border Left";
+            
             //function: GetBorderColor
             virtual glm::u8vec4 GetBorderColor() const;
             

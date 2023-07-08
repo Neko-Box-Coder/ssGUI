@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("ite",["Constant","Class"],[["ITEM_SELECTED",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/EventType.hpp:ssGUI.Enums.ITEM_SELECTED","CClass:ssGUI.Enums:ITEM_SELECTED"]]],["Iterator",,[["ssGUI::SegmentedVector",,,,1,"File:◀️_ssGUI_API_▶️/DataClasses/SegmentedVector.hpp:ssGUI.SegmentedVector.Iterator","CClass:ssGUI.SegmentedVector.Iterator"]]]]);

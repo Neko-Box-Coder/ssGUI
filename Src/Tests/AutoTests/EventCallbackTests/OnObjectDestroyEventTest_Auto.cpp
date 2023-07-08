@@ -22,13 +22,13 @@ int main()
                                         ListenerNum += 1;
                                     });
         TestObj->AddEventCallbackCopy(Callback, true);
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(Callback);
         ssGUI::Factory::Dispose(TestObj);
-    }
+    };
 
     ssTEST("EventTest")
     {
@@ -36,7 +36,7 @@ int main()
 
         ssTEST_OUTPUT_ASSERT("Event listener", ListenerNum == 1);   
         ssTEST_OUTPUT_ASSERT(TestObj->Internal_IsDeleted());
-    }
+    };
 
     ssTEST_END();
 }

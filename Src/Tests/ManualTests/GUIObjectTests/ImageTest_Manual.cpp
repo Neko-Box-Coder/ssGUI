@@ -1,17 +1,13 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssLogger/ssLog.hpp"
 
+#include "TestsResources.h"
+
 ssGUI::MainWindow* MainWindow = nullptr;
 ssGUI::ssGUIManager* Manager = nullptr;
 ssGUI::Image* TestImage = nullptr;
 ssGUI::Image* ClonedImage = nullptr;
 ssGUI::ImageData TestImgData;
-
-#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-    std::string ResourcesFolderPath = "..\\Resources\\";
-#else
-    std::string ResourcesFolderPath = "./Resources/";
-#endif
 
 ssGUI::Enums::GenericButtonAndKeyInput TestMode = ssGUI::Enums::NO_INPUT;
 
@@ -19,7 +15,7 @@ void SetUp()
 {
     MainWindow = ssGUI::Create<ssGUI::MainWindow>();
     Manager = ssGUI::Create<ssGUI::ssGUIManager>();
-    TestImgData.LoadFromPath(ResourcesFolderPath+"sd.png");
+    TestImgData.LoadImgFileFromMemory(ssGUI_Test_sd, ssGUI_Test_sd_size);
     TestImage = MainWindow->AddChild<ssGUI::Image>();
     TestImage->SetSize(glm::vec2(400, 250));
     TestImage->AddExtension<ssGUI::Extensions::Border>();

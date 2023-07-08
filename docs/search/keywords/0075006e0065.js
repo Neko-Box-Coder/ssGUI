@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("une",["Function"],[["UnexcludeObject",,[["ssGUI::Extensions::Layout",,,,0,"File:◀️_ssGUI_API_▶️/Extensions/Layout.hpp:ssGUI.Extensions.Layout.UnexcludeObject","CClass:ssGUI.Extensions.Layout:UnexcludeObject"]]]]);

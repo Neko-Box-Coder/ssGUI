@@ -94,22 +94,22 @@ namespace Extensions
         
     void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
     {        
-        AddTargetMaskObject(targetMaskObj, std::vector<int>());
+        AddTargetMaskObject(targetMaskObj, std::vector<ssGUI::TargetShape>());
     }
 
-    void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, std::vector<int> targetShapeIndices)
+    void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, const std::vector<ssGUI::TargetShape>& targetShapes)
     {
         ssLOG_FUNC_ENTRY();
         if(CurrentObjectsReferences.IsObjectReferenceExist(targetMaskObj))
         {
             ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.GetObjectIndex(targetMaskObj);
             if(TargetMasks.find(maskObjIndex) == TargetMasks.end())
-                TargetMasks.insert({maskObjIndex, targetShapeIndices});
+                TargetMasks.insert({maskObjIndex, targetShapes});
         }
         else
         {
             ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.AddObjectReference(targetMaskObj);
-            TargetMasks.insert({maskObjIndex, targetShapeIndices});
+            TargetMasks.insert({maskObjIndex, targetShapes});
         }
 
         if(Container != nullptr)
@@ -143,7 +143,7 @@ namespace Extensions
             Container->RedrawObject();
     }
 
-    void MaskEnforcer::ChangeTargetShapeForMask(ssGUI::GUIObject* targetMaskObj, std::vector<int> targetShapeIndices)
+    void MaskEnforcer::ChangeTargetShapeForMask(ssGUI::GUIObject* targetMaskObj, const std::vector<ssGUI::TargetShape>& targetShapes)
     {
         if(!CurrentObjectsReferences.IsObjectReferenceExist(targetMaskObj))
             return;
@@ -152,12 +152,12 @@ namespace Extensions
         if(TargetMasks.find(maskObjIndex) == TargetMasks.end())
             return;
         
-        TargetMasks[maskObjIndex] = targetShapeIndices;
+        TargetMasks[maskObjIndex] = targetShapes;
     }
 
-    std::vector<std::pair<ssGUI::GUIObject*, std::vector<int>>> MaskEnforcer::GetTargetMaskObjects()
+    std::vector<std::pair<ssGUI::GUIObject*, std::vector<ssGUI::TargetShape>>> MaskEnforcer::GetTargetMaskObjects()
     {
-        auto returnVec = std::vector<std::pair<ssGUI::GUIObject*, std::vector<int>>>();
+        auto returnVec = std::vector<std::pair<ssGUI::GUIObject*, std::vector<ssGUI::TargetShape>>>();
 
         for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
         {

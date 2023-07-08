@@ -56,12 +56,6 @@ namespace ssGUI
             //Sets if this widget blocks input. If true, the GUI Object behind this widget will not receive the input.
             virtual void SetBlockInput(bool blockInput);
 
-            //virtual int GetBorderWidth();
-            //virtual void SetBorderWidth(int width);
-
-            //virtual glm::u8vec4 GetBorderColor();
-            //virtual void SetBorderColor(glm::u8vec4 color);
-            
             //function: GetType
             //See <GUIObject::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;

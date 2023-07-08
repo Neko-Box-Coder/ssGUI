@@ -10,17 +10,17 @@ int main()
     ssTEST_SET_UP
     {
         TestWindow = ssGUI::Create<ssGUI::Window>();
-    }
+    };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Dispose(TestWindow);
-    }
+    };
 
     ssTEST("CloseTest")
     {
         TestWindow->SetDeleteAfterClosed(true);
-        ssTEST_OUTPUT_ASSERT("IsDeleteAfterClosed (True)", TestWindow->IsDeleteAfterClosed())
+        ssTEST_OUTPUT_ASSERT("IsDeleteAfterClosed (True)", TestWindow->IsDeleteAfterClosed());
         TestWindow->Close();
         ssTEST_OUTPUT_ASSERT("Closed/Deleted", TestWindow->IsClosed() && TestWindow->Internal_IsDeleted());
         
@@ -28,7 +28,7 @@ int main()
         ssTEST_CALL_SET_UP();
         
         TestWindow->SetDeleteAfterClosed(false);
-        ssTEST_OUTPUT_ASSERT("IsDeleteAfterClosed (False)", !TestWindow->IsDeleteAfterClosed())
+        ssTEST_OUTPUT_ASSERT("IsDeleteAfterClosed (False)", !TestWindow->IsDeleteAfterClosed());
         TestWindow->Close();
         ssTEST_OUTPUT_ASSERT("SetDeleteAfterClosed (False)", TestWindow->IsClosed() && !TestWindow->Internal_IsDeleted());
         
@@ -47,7 +47,7 @@ int main()
         
         ssTEST_OUTPUT_ASSERT("Abort closing", !TestWindow->IsClosed() && !TestWindow->Internal_IsDeleted());
         ssTEST_OUTPUT_SKIP("Internal_OnClose");
-    }
+    };
     
     ssTEST("ClosableTest")
     {
@@ -55,7 +55,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("True", TestWindow->IsClosable());
         TestWindow->SetClosable(false);
         ssTEST_OUTPUT_ASSERT("False", !TestWindow->IsClosable());
-    }
+    };
     
     ssTEST("TitlebarTest")
     {
@@ -72,41 +72,41 @@ int main()
         TestWindow->SetAdaptiveTitlebarColor(true);
         TestWindow->SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
         ssTEST_OUTPUT_ASSERT("Adaptive", TestWindow->GetTitlebarColor() == glm::u8vec4(228, 100, 100, 255));
-    }
+    };
 
     ssTEST_SKIP("ResizeTest")
     {
-    }
+    };
     
     ssTEST_SKIP("DragTest")
     {
-    }
+    };
     
     ssTEST_SKIP("OnTopWhenFocusedTest")
     {
-    }
+    };
     
     ssTEST("RenderSizeTest")
     {
         TestWindow->SetRenderSize(glm::ivec2(70, 70));
         ssTEST_OUTPUT_ASSERT(   TestWindow->GetRenderSize() == glm::ivec2(70, 70) && 
                                 TestWindow->GetSize() - glm::vec2(0, TestWindow->GetTitlebarHeight()) == glm::vec2(70, 70));
-    }
+    };
     
     ssTEST("BackgroundColorTest")
     {
         TestWindow->SetBackgroundColor(glm::u8vec4(255, 127, 127, 255));
         ssTEST_OUTPUT_ASSERT(TestWindow->GetBackgroundColor() == glm::u8vec4(255, 127, 127, 255));
-    }
+    };
     
     ssTEST("GetTypeTest")
     {
         ssTEST_OUTPUT_ASSERT(TestWindow->GetType() == ssGUI::Enums::GUIObjectType::WINDOW);
-    }
+    };
     
     ssTEST_SKIP("CloneTest")
     {
-    }
+    };
 
     ssTEST_END();
 }

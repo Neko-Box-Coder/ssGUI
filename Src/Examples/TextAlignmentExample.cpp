@@ -19,8 +19,8 @@ int main()
     text.SetPosition(glm::vec2(20, 20));
     text.SetSize(glm::vec2(300, 300));
     text.SetText("Align me!!");
-    text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-    text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+    text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
     text.AddExtension<ssGUI::Extensions::Border>();
 
     //Create buttons for aligning text
@@ -95,40 +95,40 @@ int main()
                 switch (i)
                 {
                     case 0:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
                         break;
                     case 1:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
                         break;
                     case 2:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
                         break;
                     case 3:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
                         break;
                     case 4:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
                         break;
                     case 5:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);               
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);               
                         break;
                     case 6:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
                         break;
                     case 7:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
                         break;
                     case 8:
-                        text.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
-                        text.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
+                        text.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
+                        text.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
                         break;
                 }
             }

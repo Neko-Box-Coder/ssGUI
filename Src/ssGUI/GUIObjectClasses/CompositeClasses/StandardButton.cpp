@@ -24,7 +24,7 @@ namespace ssGUI
         ButtonImageWrapper = other.ButtonImageWrapper;
     }
     
-    void StandardButton::UpdateButtonText()
+    void StandardButton::UpdateButtonText(bool init)
     {
         ssLOG_FUNC_ENTRY();
         auto buttonTextObj = CurrentObjectsReferences.GetObjectReference(ButtonText);
@@ -49,13 +49,17 @@ namespace ssGUI
         
         // if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
         //     buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
+        
+        if(init)
+        {
+            static_cast<ssGUI::Text*>(buttonTextObj)->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            static_cast<ssGUI::Text*>(buttonTextObj)->SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+        }
 
-        static_cast<ssGUI::Text*>(buttonTextObj)->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-        static_cast<ssGUI::Text*>(buttonTextObj)->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
         ssLOG_FUNC_EXIT();
     }
 
-    void StandardButton::UpdateButtonImage()
+    void StandardButton::UpdateButtonImage(bool init)
     {
         ssLOG_FUNC_ENTRY();
         auto buttonImgObj = CurrentObjectsReferences.GetObjectReference(ButtonImage);
@@ -83,25 +87,28 @@ namespace ssGUI
         // if(!buttonImgWrapper->HasTag(ssGUI::Tags::FLOATING))
             // buttonImgWrapper->AddTag(ssGUI::Tags::FLOATING);
         
-        ssGUI::Extensions::AdvancedSize* as;
-        ssGUI::Extensions::AdvancedPosition* ap;
-        
-        if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-            buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
+        if(init)
+        {
+            ssGUI::Extensions::AdvancedSize* as;
+            ssGUI::Extensions::AdvancedPosition* ap;
+            
+            if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+                buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
-        as = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
+            as = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
 
-        as->SetHorizontalPercentage(0.55);
-        as->SetHorizontalPixel(0);
-        as->SetVerticalPercentage(0.55);
-        as->SetVerticalPixel(0);
+            as->SetHorizontalPercentage(0.55);
+            as->SetHorizontalPixel(0);
+            as->SetVerticalPercentage(0.55);
+            as->SetVerticalPixel(0);
 
-        if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-            buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+            if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+                buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
 
-        ap = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+            ap = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
+            ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+        }
 
         ssLOG_FUNC_EXIT();
     }
@@ -241,8 +248,8 @@ namespace ssGUI
             }
         ); 
 
-        UpdateButtonText();
-        UpdateButtonImage();
+        UpdateButtonText(true);
+        UpdateButtonImage(true);
         NotifyButtonEventCallbackManually();
 
         ssLOG_FUNC_EXIT();
@@ -278,7 +285,7 @@ namespace ssGUI
         }
 
         glm::vec2 globalPos = image->GetGlobalPosition();
-        image->SetParent(buttonImgWrapper);
+        image->SetParent(buttonImgWrapper, true);
         image->SetGlobalPosition(globalPos);
 
         ssGUIObjectIndex newImageIndex = CurrentObjectsReferences.GetObjectIndex(image);
@@ -288,7 +295,7 @@ namespace ssGUI
         else
             ButtonImage = CurrentObjectsReferences.AddObjectReference(image);
 
-        UpdateButtonImage();
+        UpdateButtonImage(false);
     }
 
     ssGUI::Image* StandardButton::GetButtonIconObject() const
@@ -328,7 +335,7 @@ namespace ssGUI
 
         text->SetText(oldText);
 
-        UpdateButtonText();
+        UpdateButtonText(false);
     }
 
     ssGUI::Text* StandardButton::GetButtonTextObject() const
@@ -381,8 +388,8 @@ namespace ssGUI
     void StandardButton::SetButtonMode(Mode buttonMode)
     {
         ButtonMode = buttonMode;
-        UpdateButtonText();
-        UpdateButtonImage();
+        UpdateButtonText(false);
+        UpdateButtonImage(false);
     }
 
     StandardButton::Mode StandardButton::GetButtonMode() const
@@ -426,6 +433,25 @@ namespace ssGUI
 
         GetButtonTextObject()->SetNewTextColor(glm::u8vec4((uint8_t)textResult.r, (uint8_t)textResult.g, (uint8_t)textResult.b, (uint8_t)textResult.a));
         GetButtonTextObject()->ApplyNewTextSettingsToExistingText();
+    }
+    
+    void StandardButton::SetInteractable(bool interactable)
+    {
+        if(GetButtonTextObject() != nullptr)
+            GetButtonTextObject()->SetInteractable(interactable);
+        
+        if(GetButtonIconObject() != nullptr)
+            GetButtonIconObject()->SetInteractable(interactable);
+        
+        Button::SetInteractable(interactable);
+    }
+
+    void StandardButton::SetBlockInput(bool blockInput)
+    {
+        if(GetButtonIconObject() != nullptr)
+            GetButtonIconObject()->SetBlockInput(blockInput);
+        
+        Button::SetBlockInput(blockInput);
     }
 
     ssGUI::Enums::GUIObjectType StandardButton::GetType() const

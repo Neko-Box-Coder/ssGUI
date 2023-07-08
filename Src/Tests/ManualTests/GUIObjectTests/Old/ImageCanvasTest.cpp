@@ -15,9 +15,9 @@ int main()
     imageCanvas.SetSize(glm::vec2(400, 200));
     imageCanvas.SetPosition(glm::vec2(200, 200));
     imageCanvas.SetBackgroundColor(glm::u8vec4(128, 128, 128, 255));
-    imageCanvas.SetImageRotation(20);
-    imageCanvas.SetImageScale(0.5);
-    imageCanvas.SetImagePosition(glm::vec2(0, 1));
+    imageCanvas.SetViewportRotation(20);
+    imageCanvas.SetViewportZoom(0.5);
+    imageCanvas.SetViewportCenterPosition(glm::vec2(0, 1));
 
     // imageCanvas.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Border>());
     // image.SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);

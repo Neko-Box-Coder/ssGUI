@@ -1,6 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-
-
+#include "ExamplesResources.h"
 
 //Image example
 int main()
@@ -13,7 +12,7 @@ int main()
     image.SetFitting(ssGUI::Enums::ImageFitting::FIT_WHOLE_IMAGE);
 
     ssGUI::ImageData data;
-    data.LoadFromPath("Resources/sd.png");
+    data.LoadImgFileFromMemory(ssGUI_Example_sd, ssGUI_Example_sd_size);
     image.SetImageData(&data);
     image.SetParent(&mainWindow);
 

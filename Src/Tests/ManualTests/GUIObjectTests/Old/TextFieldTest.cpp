@@ -18,8 +18,8 @@ int main()
     text.SetNewTextUnderlined(true);
     // text.SetTextColor(glm::u8vec4(255, 0, 0, 255));
     text.SetWrappingMode(ssGUI::Enums::TextWrapping::WORD_WRAPPING);
-    // text.SetHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::RIGHT);
-    // text.SetVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
+    // text.SetTextHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::RIGHT);
+    // text.SetTextVerticalAlignment(ssGUI::Enums::TextAlignmentVertical::BOTTOM);
     text.SetText(L"Just some text for testing selection.\nHere is a newline for you to test :D");
 
     text.SetBlockInput(true);

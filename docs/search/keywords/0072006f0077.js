@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("row",["Variable"],[["RowPaddingInBytes",,[["ssGUI::ImageFormat",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/ImageFormat.hpp:ssGUI.ImageFormat.RowPaddingInBytes","CClass:ssGUI.ImageFormat:RowPaddingInBytes"]]]]);

@@ -18,7 +18,7 @@ namespace ssGUI
     =================================================================
     ============================== C++ ==============================
     Checkbox::Checkbox() :  InnerBoxSpace(2),
-                            Checked(true)
+                            Checked(false)
     {
         SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
         auto border = GetAnyExtension<ssGUI::Extensions::Border>();
@@ -84,6 +84,7 @@ namespace ssGUI
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            static const std::string CHECKBOX_INNER_SHAPE_NAME;
 
             Checkbox();
             virtual ~Checkbox() override;

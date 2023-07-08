@@ -177,8 +177,8 @@ int main()
     //Pyramid Rotation Speed Text
     ssGUI::Text pyramidText;
     pyramidText.SetText("Pyramid Rotation Speed:");
-    pyramidText.SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-    pyramidText.SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
+    pyramidText.SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+    pyramidText.SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
     pyramidText.SetParent(&window);
 
     //Pyramid Rotation Slider Slider

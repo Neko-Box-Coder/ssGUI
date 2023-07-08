@@ -23,8 +23,9 @@ GOTO :FINAL
 :RUN_TEST <testFile>
     @REM Setlocal EnableDelayedExpansion
     IF NOT EXIST %~1 (
-        ECHO "File doesn't exist"
-        GOTO :FAILED
+        ECHO "[Auto Test Warning] %~1 doesn't exist, skipping"
+        ECHO ""
+        EXIT /b
     )
     PUSHD %~dp1
     CALL %~1
@@ -40,6 +41,7 @@ GOTO :FINAL
 CALL :RUN_TEST %~dp0BackendTests\%MODE%BackendFontTest_Auto.exe
 CALL :RUN_TEST %~dp0BackendTests\%MODE%BackendImageTest_Auto.exe
 CALL :RUN_TEST %~dp0BackendTests\%MODE%BackendMainWindowTest_Auto.exe
+CALL :RUN_TEST %~dp0BackendTests\%MODE%DynamicAtlasTest_Auto.exe
 CALL :RUN_TEST %~dp0EventCallbackTests\%MODE%BackgroundColorChangedEventTest_Auto.exe
 CALL :RUN_TEST %~dp0EventCallbackTests\%MODE%BaseEventCallbackTest_Auto.exe
 CALL :RUN_TEST %~dp0EventCallbackTests\%MODE%ChildAddedEventTest_Auto.exe

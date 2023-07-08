@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("del",["Function","Constant"],[["Delete",,[["ssGUI::Hierarchy",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/Hierarchy.hpp:ssGUI.Hierarchy.Delete","CClass:ssGUI.Hierarchy:Delete"],["ssGUI::Enums","DELETE",,,1,"File:◀️_ssGUI_API_▶️/Enums/SystemKey.hpp:ssGUI.Enums.DELETE","CClass:ssGUI.Enums:DELETE"]]]]);

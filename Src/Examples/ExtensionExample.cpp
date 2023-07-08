@@ -3,6 +3,8 @@
 #include "ssGUI/Extensions/BoxShadow.hpp"
 #include "ssGUI/Extensions/RoundedCorners.hpp"
 #include "ssGUI/Extensions/Outline.hpp"
+#include "ssGUI/GUIObjectClasses/Window.hpp"
+
 
 int main()
 {
@@ -87,12 +89,16 @@ int main()
                     auto rc = window.AddExtension<ssGUI::Extensions::RoundedCorners>();
                     rc->SetRoundedCornersRadius(15);
                     rc->ClearTargetShapes();
-                    rc->AddTargetVertex(0);
-                    rc->AddTargetVertex(1);
-                    rc->AddTargetVertex(2);
-                    rc->AddTargetVertex(3);
-                    rc->AddTargetVertex(4);
-                    rc->AddTargetVertex(5);
+                    ssGUI::TargetShape titlebarShape(ssGUI::Window::WINDOW_TITLEBAR_SHAPE_NAME);
+                    ssGUI::TargetShape baseShape(ssGUI::Window::WINDOW_BASE_SHAPE_NAME);
+
+                    rc->AddTargetVertex(titlebarShape, 0);
+                    rc->AddTargetVertex(titlebarShape, 1);
+                    rc->AddTargetVertex(baseShape, 0);
+                    rc->AddTargetVertex(baseShape, 1);
+                    rc->AddTargetVertex(baseShape, 2);
+                    rc->AddTargetVertex(baseShape, 3);
+                    
                     window.ChangeAnyExtensionDrawOrder<ssGUI::Extensions::RoundedCorners>(0);
                 }
             }

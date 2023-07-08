@@ -113,6 +113,21 @@ namespace ssGUI
         );
     
         DropdownObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* dropdown = static_cast<ssGUI::Dropdown*>(info.Container);
+                
+                ssGUI::Dropdown::DropdownObjectCount--;
+        
+                if(ssGUI::Dropdown::DropdownObjectCount == 0)
+                    dropdown->CleanUpDefaultResources();
+            }
+        );
     }
 
     int Dropdown::DropdownObjectCount = 0;
@@ -185,9 +200,20 @@ namespace ssGUI
             virtual ssGUI::Menu* GetDropdownMenu();
 
             //function: SetDropdownMenu
-            //Sets the dropdown menu GUI object
+            //Sets the dropdown menu GUI object.
+            //The menu items in the new menu will be cleared 
+            //and all the menu items from the old dropdown menu will moved to the new one.
+            //Passing nullptr will unset the dropdown menu object.
             virtual void SetDropdownMenu(ssGUI::Menu* menu);
 
+            //function: SetInteractable
+            //See <Widget::SetInteractable>
+            virtual void SetInteractable(bool interactable) override;
+            
+            //function: SetBlockInput
+            //See <Widget::SetBlockInput>
+            virtual void SetBlockInput(bool blockInput) override;
+            
             //function: GetType
             //See <Widget::GetType>
             virtual ssGUI::Enums::GUIObjectType GetType() const override;
@@ -195,7 +221,7 @@ namespace ssGUI
             //function: Clone
             //See <Widget::Clone>
             virtual Dropdown* Clone(bool cloneChildren) override;
-            
+
             //function: InitiateDefaultResources
             //See <GUIObject::InitiateDefaultResources>
             virtual void InitiateDefaultResources() override;

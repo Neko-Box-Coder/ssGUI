@@ -4,6 +4,8 @@
 #include <map>
 #include "glm/trigonometric.hpp"
 #include "glm/geometric.hpp"
+#include "ssGUI/DataClasses/ShapeModifier.hpp"
+#include "ssGUI/DataClasses/TargetShape.hpp"
 #include "ssGUI/Extensions/Extension.hpp"
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"  //This is needed as Extension is only forward declaring ssGUI::GUIObject
 
@@ -28,28 +30,20 @@ namespace Extensions
 
     Variables & Constructor:
     ============================== C++ ==============================
-    protected:
-        ssGUI::GUIObject* Container;                        //See <BindToObject>
-        bool Enabled;                                       //See <IsEnabled>
-
-        float RoundedCornersRadius;                         //See <GetRoundedCornersRadius>
-        std::vector<int> TargetShapes;                      //See <GetTargetShape>
-        std::vector<int> TargetVertices;                    //See <GetTargetVertex>
-
-        std::vector<int> VerticesToRound;                   //(Internal variable) Used to identify vertices indices to round
-        std::vector<int> VerticesToRoundPrevVertices;       //(Internal variable) Used to identify the previous vertex of vertices indices to round
-        std::vector<int> VerticesToRoundNextVertices;       //(Internal variable) Used to identify the next vertex of vertices indices to round
+    protected:        
+        ssGUI::GUIObject* Container;                            //See <BindToObject>
+        bool Enabled;                                           //See <IsEnabled>
+        float RoundedCornersRadius;                             //See <GetRoundedCornersRadius>
+        ssGUI::ShapeModifier ModifiedShapes;                    //(Internal variable) Used to store list of shapes to be modified
     =================================================================
     ============================== C++ ==============================
     RoundedCorners::RoundedCorners() :  Container(nullptr),
                                         Enabled(true),
                                         RoundedCornersRadius(10),
-                                        TargetShapes{0},
-                                        TargetVertices(),
-                                        VerticesToRound(),
-                                        VerticesToRoundPrevVertices(),
-                                        VerticesToRoundNextVertices()
-    {}
+                                        ModifiedShapes()
+    {
+        ModifiedShapes.AddTargetShape(ssGUI::TargetShape(0));
+    }
     =================================================================
     */
     class RoundedCorners : public Extension
@@ -60,17 +54,11 @@ namespace Extensions
         private:
             RoundedCorners& operator=(RoundedCorners const& other);
 
-        protected:
-            ssGUI::GUIObject* Container;                        //See <BindToObject>
-            bool Enabled;                                       //See <IsEnabled>
-
-            float RoundedCornersRadius;                         //See <GetRoundedCornersRadius>
-            std::vector<int> TargetShapes;                      //See <GetTargetShape>
-            std::vector<int> TargetVertices;                    //See <GetTargetVertex>
-
-            std::vector<int> VerticesToRound;                   //(Internal variable) Used to identify vertices indices to round
-            std::vector<int> VerticesToRoundPrevVertices;       //(Internal variable) Used to identify the previous vertex of vertices indices to round
-            std::vector<int> VerticesToRoundNextVertices;       //(Internal variable) Used to identify the next vertex of vertices indices to round
+        protected:        
+            ssGUI::GUIObject* Container;                            //See <BindToObject>
+            bool Enabled;                                           //See <IsEnabled>
+            float RoundedCornersRadius;                             //See <GetRoundedCornersRadius>
+            ssGUI::ShapeModifier ModifiedShapes;                    //(Internal variable) Used to store list of shapes to be modified
 
             RoundedCorners();
             virtual ~RoundedCorners() override;
@@ -92,7 +80,6 @@ namespace Extensions
             virtual void PlotArcPoints(glm::vec2 a, glm::vec2 b, glm::vec2 c, std::vector<glm::vec2>& plottedPoints);
             
             virtual void GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts);
-            virtual void UpdateVerticesForRounding();
 
             virtual void ConstructRenderInfo() override;
             virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
@@ -109,60 +96,59 @@ namespace Extensions
             virtual float GetRoundedCornersRadius() const;
 
             //function: AddTargetShape
-            //Adds the shapeIndex that indicates the index of the shape to be rounded drawn in GUI object.
-            //Note that if you have added any target vertices (<AddTargetVertex>), this will be *ignored*.
-            virtual void AddTargetShape(int shapeIndex);
+            //See <ssGUI::ShapeModifier::AddTargetShape>
+            virtual int AddTargetShape(ssGUI::TargetShape targetShape);
 
             //function: GetTargetShape
-            //Returns the shapeIndex that indicates the index of the shape to be rounded drawn in GUI object,
-            //by specifying the location shapedIndex that is stored in this extension.
-            virtual int GetTargetShape(int location) const;
+            //See <ssGUI::ShapeModifier::GetTargetShape>
+            virtual ssGUI::TargetShape GetTargetShape(int location) const;
 
             //function: SetTargetShape
-            //Sets the shapeIndex that indicates the index of the shape to be rounded drawn in GUI object,
-            //by specifying the location shapedIndex that is stored in this extension.
-            virtual void SetTargetShape(int location, int shapeIndex);
+            //See <ssGUI::ShapeModifier::SetTargetShape>
+            virtual void SetTargetShape(int location, ssGUI::TargetShape targetShape);
 
             //function: GetTargetShapesCount
-            //Returns the number of shapes to be rounded (number of shapeIndex) that are stored in this extension. 
+            //See <ssGUI::ShapeModifier::GetTargetShapesCount>
             virtual int GetTargetShapesCount() const;
 
             //function: RemoveTargetShape
-            //Removes the shapeIndex that indicates the index of the shape to be rounded drawn in GUI object,
-            //by specifying the location shapedIndex that is stored in this extension.
+            //See <ssGUI::ShapeModifier::RemoveTargetShape>
             virtual void RemoveTargetShape(int location);
 
             //function: ClearTargetShapes
-            //Clears all the shapeIndex entries in this extension 
+            //See <ssGUI::ShapeModifier::ClearTargetShapes>
             virtual void ClearTargetShapes();
 
             //function: AddTargetVertex
-            //Adds the target vertex that indicates the index of the vertex to be rounded drawn in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
-            //Note that if you are adding any target vertices, any target shapes added (<AddTargetShape>) this will be ignored.
-            virtual void AddTargetVertex(int vertexIndex);
+            //See <ssGUI::ShapeModifier::AddTargetVertex>
+            virtual int AddTargetVertex(ssGUI::TargetShape targetShape, int vertexIndex);
 
             //function: GetTargetVertex
-            //Returns the vertexIndex that indicates the index of the vertex to be rounded drawn in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
-            virtual int GetTargetVertex(int location) const;
+            //See <ssGUI::ShapeModifier::GetTargetVertex>
+            virtual VerticesIndicesForShape GetTargetVertices(int location) const;
+            
+            //function: GetTargetVertex
+            //See <ssGUI::ShapeModifier::GetTargetVertex>
+            virtual VerticesIndicesForShape GetTargetVertices(ssGUI::TargetShape targetShape) const;
 
             //function: SetTargetVertex
-            //Sets the vertexIndex that indicates the index of the vertex to be rounded drawn in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
-            virtual void SetTargetVertex(int location, int vertexIndex);
+            //See <ssGUI::ShapeModifier::SetTargetVertex>
+            virtual void SetTargetVertices(ssGUI::TargetShape targetShape, const std::vector<int>& vertices);
+
+            //function: SetTargetVertex
+            //See <ssGUI::ShapeModifier::SetTargetVertex>
+            virtual void SetTargetVertices(int location, const std::vector<int>& vertices);
 
             //function: GetTargetVerticesCount
-            //Returns the number of indices to be rounded (number of vertexIndex) that are stored in this extension. 
+            //See <ssGUI::ShapeModifier::GetTargetVerticesCount>
             virtual int GetTargetVerticesCount() const;
 
             //function: RemoveTargetVertex
-            //Removes the vertexIndex that indicates the index of the vertex to be rounded drawn in GUI object,
-            //by specifying the location vertexIndex that is stored in this extension.
+            //See <ssGUI::ShapeModifier::RemoveTargetVertex>
             virtual void RemoveTargetVertex(int location);
 
             //function: ClearTargetVertices
-            //Clears all the vertexIndex entries in this extension
+            //See <ssGUI::ShapeModifier::ClearTargetVertices>
             virtual void ClearTargetVertices();
 
             //Override from Extension

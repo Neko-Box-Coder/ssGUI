@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:🗒️_User_Manual/old/Intermediate/5._Porting_ssGUI_To_Other_Backends.txt",{});

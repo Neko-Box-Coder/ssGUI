@@ -174,6 +174,22 @@ namespace ssGUI
         UpdateCloseButton();
 
         StandardWindowObjectCount++;
+        
+        AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [](ssGUI::EventInfo info)
+            {
+                auto* standardWindow = static_cast<ssGUI::StandardWindow*>(info.Container);
+                
+                ssGUI::StandardWindow::StandardWindowObjectCount--;
+        
+                if(ssGUI::StandardWindow::StandardWindowObjectCount == 0)
+                    standardWindow->CleanUpDefaultResources();
+            }
+        );
+        
         ssLOG_FUNC_EXIT();
     }
     
@@ -204,9 +220,9 @@ namespace ssGUI
 
             StandardWindow(StandardWindow const& other);
 
-            virtual void UpdateTitleText();
-            virtual void UpdateIconImage();
-            virtual void UpdateCloseButton();
+            virtual void UpdateTitleText(bool init);
+            virtual void UpdateIconImage(bool init);
+            virtual void UpdateCloseButton(bool init);
 
         public:
             //string: ListenerKey
@@ -215,10 +231,13 @@ namespace ssGUI
             StandardWindow();
             virtual ~StandardWindow() override;
 
-            /*function: SetWindowTitleObject
-            Sets the window title text object.
-            You can use <GUIObject::SetUserCreated> and <GUIObject::SetHeapAllocated> to allow 
-            Standard Window to manage the lifetime of the text object instead.*/ 
+            //function: SetWindowTitleObject
+            //Sets the window title text object.
+            //The title content from the old text will be transferred to the new one.
+            //The Y position, height and the color of the new text is directly controlled by <StandardWindow>
+            //using <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> and <AdvancedSize: ssGUI::Extensions::AdvancedPosition>.
+            //The font size is also directly controlled by <StandardWindow> if <IsAutoFontSize> is true.
+            //Passing nullptr will unset the window title object.
             virtual void SetWindowTitleObject(ssGUI::Text* text);
 
             //function: GetWindowTitleObject
@@ -241,10 +260,11 @@ namespace ssGUI
             //Gets the font size multiplier to have a finer adjustment over it
             virtual float GetAutoFontSizeMultiplier() const;
 
-            /*function: SetWindowIconGUIObject
-            Sets the window icon image object.
-            You can use <GUIObject::SetUserCreated> and <GUIObject::SetHeapAllocated> to allow 
-            Standard Window to manage the lifetime of the text object instead.*/
+            //function: SetWindowIconGUIObject
+            //Sets the window icon image object.
+            //The X offset, Y position and size of the new icon object is directly controlled by <StandardWindow> 
+            //using <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> and <AdvancedSize: ssGUI::Extensions::AdvancedPosition>.
+            //Passing nullptr will unset the window icon object.
             virtual void SetWindowIconGUIObject(ssGUI::Image* image);
 
             //function: GetWindowIconGUIObject
@@ -253,18 +273,17 @@ namespace ssGUI
             
             //TODO: Add a way to set default window icon
 
-            /*function: SetCloseButtonObject
-            Sets the close button object.
-            You can use <GUIObject::SetUserCreated> and <GUIObject::SetHeapAllocated> to allow 
-            Standard Window to manage the lifetime of the text object instead.*/
+            //function: SetCloseButtonObject
+            //Sets the close button object.
+            //The X offset, Y position and size of the new close button object is directly controlled by <StandardWindow> 
+            //using <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> and <AdvancedSize: ssGUI::Extensions::AdvancedPosition>.
+            //Passing nullptr will unset the close button object.
             virtual void SetCloseButtonObject(ssGUI::Button* button);
 
             //function: GetCloseButtonObject
             //Returns the pointer to the close button object. Nullptr if it doesn't exist
             virtual ssGUI::Button* GetCloseButtonObject() const;
             
-            //TODO: Rename to titlebar padding instead
-
             //function: SetHorizontalPadding
             //Sets the horizontal padding for the icon, title and close button objects, in pixels
             virtual void SetHorizontalPadding(int padding);

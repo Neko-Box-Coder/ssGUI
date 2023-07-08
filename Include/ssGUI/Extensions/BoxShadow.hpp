@@ -78,6 +78,15 @@ namespace Extensions
         public:
             static const std::string EXTENSION_NAME;
 
+            const std::string BOX_SHADOW_CENTER_SHAPE_NAME = "BoxShadow Center";
+            const std::string BOX_SHADOW_TOP_LEFT_SHAPE_NAME = "BoxShadow Top Left";
+            const std::string BOX_SHADOW_TOP_RIGHT_SHAPE_NAME = "BoxShadow Top Right";
+            const std::string BOX_SHADOW_BOTTOM_RIGHT_SHAPE_NAME = "BoxShadow Bottom Right";
+            const std::string BOX_SHADOW_BOTTOM_LEFT_SHAPE_NAME = "BoxShadow Bottom Left";
+            const std::string BOX_SHADOW_TOP_SHAPE_NAME = "BoxShadow Top";
+            const std::string BOX_SHADOW_RIGHT_SHAPE_NAME = "BoxShadow Right";
+            const std::string BOX_SHADOW_BOTTOM_SHAPE_NAME = "BoxShadow Bottom";
+            const std::string BOX_SHADOW_LEFT_SHAPE_NAME = "BoxShadow Left";
 
             //function: SetPositionOffset
             //Sets the position offset of the box shadow from the GUI Object position

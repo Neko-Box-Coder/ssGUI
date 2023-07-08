@@ -3,6 +3,8 @@
 
 #include "ssGUI/Enums/ImageType.hpp"
 #include <cstdint>
+#include <ostream>
+#include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
 namespace ssGUI
 {
@@ -48,6 +50,47 @@ namespace ssGUI
         
         //var: RowPaddingInBytes
         int RowPaddingInBytes = 0;
+        
+        inline bool operator== (const ImageFormat& other)
+        {
+            bool monoCheck = ImgType == ssGUI::Enums::ImageType::MONO && HasAlpha ? IndexMono == other.IndexMono : true;
+            bool rgbCheck = ImgType == ssGUI::Enums::ImageType::RGB ? 
+                            IndexR == other.IndexR && IndexG == other.IndexG && IndexB == other.IndexB :
+                            true;
+            bool alphaCheck = HasAlpha ? IndexA == other.IndexA && PreMultipliedAlpha == other.PreMultipliedAlpha : true;
+        
+            return  ImgType == other.ImgType && 
+                    BitDepthPerChannel == other.BitDepthPerChannel && 
+                    BitPerPixel == other.BitPerPixel &&
+                    HasAlpha == other.HasAlpha &&
+                    monoCheck &&
+                    rgbCheck &&
+                    alphaCheck &&
+                    RowPaddingInBytes == other.RowPaddingInBytes;
+        }
+        
+        inline bool operator!= (const ImageFormat& other)
+        {
+            return !operator==(other);
+        }
+        
+        inline friend std::ostream& operator<< (std::ostream& stream, const ImageFormat& other)
+        {
+            stream  << SSGUI_OUTPUT_CLASS_NAME(ImageFormat)
+                    << SSGUI_OUTPUT_VAR(ImgType)
+                    << SSGUI_OUTPUT_VAR(BitDepthPerChannel)
+                    << SSGUI_OUTPUT_VAR(BitPerPixel)
+                    << SSGUI_OUTPUT_VAR(HasAlpha)
+                    << SSGUI_OUTPUT_VAR(PreMultipliedAlpha)
+                    << SSGUI_OUTPUT_VAR(IndexR)
+                    << SSGUI_OUTPUT_VAR(IndexG)
+                    << SSGUI_OUTPUT_VAR(IndexB)
+                    << SSGUI_OUTPUT_VAR(IndexMono)
+                    << SSGUI_OUTPUT_VAR(IndexA)
+                    << SSGUI_OUTPUT_LAST_VAR(RowPaddingInBytes);
+                    
+            return stream;
+        }
     };
 }
 
