@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.TextField","TextField");NDSummary.OnSummaryLoaded("CClass:ssGUI.TextField",[["C/C++","C"]],[["Classes","Class"],["Functions","Function"],["Groups","Group"]],[[1419,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;TextField"],[1420,0,2,"Functions","Functions"],[1421,0,1,"GetType","GetType"],[1422,0,1,"Clone","Clone"]]);

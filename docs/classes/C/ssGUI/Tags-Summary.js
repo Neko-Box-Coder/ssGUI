@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.Tags","Tags");NDSummary.OnSummaryLoaded("CClass:ssGUI.Tags",[["C/C++","C"]],[["Classes","Class"],["Groups","Group"],["Variables","Variable"]],[[1952,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;Tags"],[1953,0,1,"Variables","Variables"],[1954,0,2,"OVERLAY","OVERLAY"],[1955,0,2,"FLOATING","FLOATING"]]);

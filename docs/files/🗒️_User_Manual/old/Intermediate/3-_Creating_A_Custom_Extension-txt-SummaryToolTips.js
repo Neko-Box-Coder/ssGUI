@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:🗒️_User_Manual/old/Intermediate/3._Creating_A_Custom_Extension.txt",{16:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">(Remove the &quot;//&quot; for the C++ divider for Natural Docs to work properly when parsing)</div></div>"});

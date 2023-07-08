@@ -1,1 +1,0 @@
-﻿NDContentPage.OnToolTipsLoaded({546:"<div class=\"NDToolTip TVariable LC\"><div id=\"NDPrototype546\" class=\"NDPrototype\"><div class=\"PSection PPlainSection\"><span class=\"SHKeyword\">using</span> GenericButtonAndKeyInput</div></div></div>"});

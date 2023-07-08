@@ -100,3 +100,4 @@ You can see the ssGUI options are separated by the separator:
 
 2. Now you can choose the CMake options you want and click configure --> generate to generate the build files.
 
+Then finally you can try to run any of the examples to make sure it is working
