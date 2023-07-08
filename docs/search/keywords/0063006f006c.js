@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("col",["Variable"],[["Colors",,[["ssGUI::DrawingEntity",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/DrawingEntity.hpp:ssGUI.DrawingEntity.Colors","CClass:ssGUI.DrawingEntity:Colors"]]]]);

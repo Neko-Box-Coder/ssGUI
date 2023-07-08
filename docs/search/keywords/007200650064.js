@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("red",["Function"],[["RedrawObject",,[["ssGUI::Renderer",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/Renderer.hpp:ssGUI.Renderer.RedrawObject","CClass:ssGUI.Renderer:RedrawObject"]]]]);

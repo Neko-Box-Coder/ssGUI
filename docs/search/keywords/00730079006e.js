@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("syn",["Function"],[["SyncPositionOffset",,[["ssGUI::Backend::BackendMainWindowSFML",,,,0,"File:◀️_ssGUI_API_▶️/Backend/SFML/BackendMainWindowSFML.hpp:ssGUI.Backend.BackendMainWindowSFML.SyncPositionOffset","CClass:ssGUI.Backend.BackendMainWindowSFML:SyncPositionOffset"]]]]);

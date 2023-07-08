@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("or",["Section"],[["Or",,[[,"Creating A Custom Widget Or Window",,,0,"File:🗒️_User_Manual/old/Intermediate/4._Creating_A_Custom_Widget_Or_Window.txt:Creating_A_Custom_Widget_Or_Window"]]]]);

@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("CClass:ssGUI.VerticesIndicesForShape","VerticesIndicesForShape");NDSummary.OnSummaryLoaded("CClass:ssGUI.VerticesIndicesForShape",[["C/C++","C"]],[["Structs","Struct"]],[[1442,0,0,"<span class=\"Qualifier\">ssGUI::</span>&#8203;VerticesIndicesForShape"]]);

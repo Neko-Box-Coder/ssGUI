@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:🗒️_User_Manual/old/08._Using_Composite_GUI_Object.txt",{});

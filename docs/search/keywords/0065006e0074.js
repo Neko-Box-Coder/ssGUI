@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("ent",["Constant","Variable"],[["ENTER",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/SystemKey.hpp:ssGUI.Enums.ENTER","CClass:ssGUI.Enums:ENTER"]]],["EntityName",,[["ssGUI::DrawingEntity",,,,1,"File:◀️_ssGUI_API_▶️/DataClasses/DrawingEntity.hpp:ssGUI.DrawingEntity.EntityName","CClass:ssGUI.DrawingEntity:EntityName"]]]]);

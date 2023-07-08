@@ -1,1 +1,0 @@
-﻿NDSummary.OnToolTipsLoaded("File:🗒️_User_Manual/02._Getting_Started.txt",{32:"<div class=\"NDToolTip TSection LTextFile\"><div class=\"TTSummary\">In ssGUI, you will often see the following objects:</div></div>"});

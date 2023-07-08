@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("zer",["Constant"],[["ZERO",,[["ssGUI::Enums",,,,0,"File:◀️_ssGUI_API_▶️/Enums/NumberKey.hpp:ssGUI.Enums.ZERO","CClass:ssGUI.Enums:ZERO"]]]]);

@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("wha",["Section"],[["What",,[[,"🗄️ What makes up ssGUI:",,"🗄️what makes up ssgui:",0,"File:🗒️_User_Manual/02._Getting_Started.txt:🗄️_What_makes_up_ssGUI_"],[,"❓ What is Event Callback",,"❓what is event callback",0,"File:🗒️_User_Manual/old/05._Using_Event_Callback.txt:❓_What_is_Event_Callback"]]]]);

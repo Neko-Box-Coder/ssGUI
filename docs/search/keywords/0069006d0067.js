@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("img",["Variable"],[["ImgType",,[["ssGUI::ImageFormat",,,,0,"File:◀️_ssGUI_API_▶️/DataClasses/ImageFormat.hpp:ssGUI.ImageFormat.ImgType","CClass:ssGUI.ImageFormat:ImgType"]]]]);

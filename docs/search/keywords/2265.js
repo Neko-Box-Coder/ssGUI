@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("≥",["Section"],[["≥",,[[,"≥ Cloning And EventCallback",,"≥cloning and eventcallback",0,"File:🗒️_User_Manual/03._Cloning_And_EventCallback.txt:≥_Cloning_And_EventCallback"]]]]);

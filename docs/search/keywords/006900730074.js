@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("ist",["Function"],[["IsTextSelectionAllowed",,[["ssGUI::Text",,,,0,"File:◀️_ssGUI_API_▶️/GUIObjectClasses/Text.hpp:ssGUI.Text.IsTextSelectionAllowed","CClass:ssGUI.Text:IsTextSelectionAllowed"]]]]);

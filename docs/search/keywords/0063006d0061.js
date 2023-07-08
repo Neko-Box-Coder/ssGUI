@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("cma",["Section"],[["CMake:",,[[,"🟦 CMake:",,"🟦cmake:",0,"File:🗒️_User_Manual/01._Using_ssGUI.txt:🟦_CMake_"]]]]);
