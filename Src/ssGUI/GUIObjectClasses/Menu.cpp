@@ -173,7 +173,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [menuIndex](ssGUI::EventInfo info)
+            [menuIndex](ssGUI::EventInfo& info)
             {
                 auto btn = static_cast<ssGUI::Button*>(info.EventSource);
                 if(btn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
@@ -248,7 +248,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [subMenuIndex, menuIndex](ssGUI::EventInfo info)
+            [subMenuIndex, menuIndex](ssGUI::EventInfo& info)
             {
                 auto btn = static_cast<ssGUI::Button*>(info.EventSource);
                 if(btn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)

@@ -2,6 +2,7 @@
 #define SSGUI_EVENT_TYPE_H
 
 #include "ssGUI/HelperClasses/EnumToStringMacro.hpp"
+#include <cstdint>
 #include <string>
 
 //namespace: ssGUI

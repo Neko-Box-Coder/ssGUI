@@ -16,7 +16,7 @@ int main()
         TestObj = ssGUI::Factory::Create<ssGUI::GUIObject>();
         
         //Timing is making sure the listener is triggered **before** the event
-        Callback->AddEventListener( "key", [&](ssGUI::EventInfo info)
+        Callback->AddEventListener( "key", [&](ssGUI::EventInfo& info)
                                     {
                                         ssTEST_OUTPUT_ASSERT("Timing", !TestObj->Internal_IsDeleted());
                                         ListenerNum += 1;

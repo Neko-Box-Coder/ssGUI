@@ -892,7 +892,7 @@ namespace Extensions
                 Container->GetCurrentChild()->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_OnChildMinMaxSizeChanged(info.EventSource);}     //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_OnChildMinMaxSizeChanged(info.EventSource);}     //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1)
                 );
 
@@ -1055,7 +1055,7 @@ namespace Extensions
             child->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->AddEventListener
             (
                 EXTENSION_NAME,
-                [this](ssGUI::EventInfo info){Internal_OnChildMinMaxSizeChanged(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                [this](ssGUI::EventInfo& info){Internal_OnChildMinMaxSizeChanged(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                 // std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1)
             );
         }
@@ -1282,7 +1282,7 @@ namespace Extensions
         Container->GetEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD)->AddEventListener
         (
             EXTENSION_NAME,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssLOG_FUNC_ENTRY("OnRecursiveChildAddEventCallback");
                 if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
@@ -1324,21 +1324,21 @@ namespace Extensions
         Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->AddEventListener
         (
             EXTENSION_NAME,
-            [this](ssGUI::EventInfo info){Internal_OnRecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+            [this](ssGUI::EventInfo& info){Internal_OnRecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
             // std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1)
         );
         
         Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->AddEventListener
         (
             EXTENSION_NAME,
-            [this](ssGUI::EventInfo info){Internal_OnRecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+            [this](ssGUI::EventInfo& info){Internal_OnRecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
             // std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1)
         );
 
         Container->GetEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED)->AddEventListener
         (
             EXTENSION_NAME,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {                    
                 ssLOG_FUNC_ENTRY("ChildPositionChangedEventCallback");
                 if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))

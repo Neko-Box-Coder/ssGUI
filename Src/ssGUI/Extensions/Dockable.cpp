@@ -938,7 +938,7 @@ namespace Extensions
             event->AddEventListener
             (
                 EXTENSION_NAME,
-                [](ssGUI::EventInfo info)
+                [](ssGUI::EventInfo& info)
                 {
                     if(!info.Container->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
                     {

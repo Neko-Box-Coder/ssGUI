@@ -32,7 +32,7 @@ int main()
     buttonEventCallback->AddEventListener
     (
         "listenerKey",
-        [textId](ssGUI::EventInfo info)
+        [textId](ssGUI::EventInfo& info)
         {
             auto* textToChange = info.References->GetObjectReference<ssGUI::Text>(textId);
             auto* currentButton = static_cast<ssGUI::StandardButton*>(info.Container);

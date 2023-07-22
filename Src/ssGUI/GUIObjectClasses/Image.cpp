@@ -140,7 +140,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* image = static_cast<ssGUI::Image*>(info.Container);
                 

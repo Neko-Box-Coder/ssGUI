@@ -275,7 +275,7 @@ namespace ssGUI
         buttonEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::EventInfo info)
+            [circleId](ssGUI::EventInfo& info)
             {
                 auto closeButtonObj = static_cast<ssGUI::Button*>(info.EventSource);
                 auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
@@ -315,7 +315,7 @@ namespace ssGUI
         shapeEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::EventInfo info)
+            [circleId](ssGUI::EventInfo& info)
             {
                 auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
                 shape->SetAdditionalCircle(circleId, glm::vec2(), info.EventSource->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
@@ -359,7 +359,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* standardWindow = static_cast<ssGUI::StandardWindow*>(info.Container);
                 

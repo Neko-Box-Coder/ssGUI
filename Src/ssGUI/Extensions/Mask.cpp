@@ -897,7 +897,7 @@ namespace Extensions
                 Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildAdded, this, std::placeholders::_1)
                 );
             }
@@ -908,7 +908,7 @@ namespace Extensions
                 event->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildAdded, this, std::placeholders::_1)
                 );
             }
@@ -918,7 +918,7 @@ namespace Extensions
                 Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildRemoved, this, std::placeholders::_1)
                 );
             }
@@ -929,7 +929,7 @@ namespace Extensions
                 event->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildRemoved, this, std::placeholders::_1)
                 );
             }

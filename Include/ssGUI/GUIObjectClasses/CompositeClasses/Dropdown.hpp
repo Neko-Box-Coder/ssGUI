@@ -72,7 +72,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.Container);
                 
@@ -118,7 +118,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* dropdown = static_cast<ssGUI::Dropdown*>(info.Container);
                 
