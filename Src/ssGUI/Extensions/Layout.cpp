@@ -1052,10 +1052,25 @@ namespace Extensions
             if(!child->IsEventCallbackExist(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED))
                 child->AddEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED);
 
+            ssGUIObjectIndex containerId = child->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->AddObjectReference(Container);
             child->GetEventCallback(ssGUI::Enums::EventType::MIN_MAX_SIZE_CHANGED)->AddEventListener
             (
                 EXTENSION_NAME,
-                [this](ssGUI::EventInfo& info){Internal_OnChildMinMaxSizeChanged(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                Container,
+                [containerId](ssGUI::EventInfo& info)
+                {
+                    ssGUI::GUIObject* layoutContainer = info.References->GetObjectReference(containerId);
+                    
+                    if(layoutContainer == nullptr)
+                    {
+                        info.DeleteCurrentListener = true;
+                        return;
+                    }
+                    
+                    if(layoutContainer->IsAnyExtensionExist<ssGUI::Extensions::Layout>())
+                        layoutContainer ->GetAnyExtension<ssGUI::Extensions::Layout>()
+                                        ->Internal_OnChildMinMaxSizeChanged(info.EventSource);
+                }
                 // std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1)
             );
         }
