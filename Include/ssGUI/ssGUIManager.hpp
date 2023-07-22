@@ -344,6 +344,8 @@ namespace ssGUI
             //function: GetElapsedTimeInMillisecond
             //See <ssGUI::Backend::BackendSystemInputInterface::GetElapsedTime>            
             uint64_t GetElapsedTimeInMillisecond() const;
+            
+            void PrintGUIObjectTree() const;
 
             //function: Clear
             //Clears the console

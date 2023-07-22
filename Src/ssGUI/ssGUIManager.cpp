@@ -915,5 +915,40 @@ namespace ssGUI
         return BackendInput->GetElapsedTime();
     }
     
+    void ssGUIManager::PrintGUIObjectTree() const
+    {
+        using depth = int;
+        using lastSpaces = std::string;
 
+        std::list<std::tuple<ssGUI::GUIObject*, depth, lastSpaces>> childrenToPrint;
+        
+        for(auto it = MainWindowPList.begin(); it != MainWindowPList.end(); --it)
+            childrenToPrint.push_back(std::make_tuple(*it, 0, ""));
+
+        while(!childrenToPrint.empty()) 
+        {
+            ssGUI::GUIObject* curObj = std::get<0>(childrenToPrint.front());
+            int curDepth = std::get<1>(childrenToPrint.front());
+            std::string lastSpaces = std::get<2>(childrenToPrint.front());
+            childrenToPrint.pop_front();
+            
+            bool hasNextWithSameDepth = childrenToPrint.empty() ? false : (std::get<1>(childrenToPrint.front()) == curDepth);
+            
+            ssLOG_LINE(lastSpaces << "|   ");
+            ssLOG_LINE(lastSpaces << "|---" << "GUI Object: " << curObj);
+            ssLOG_LINE(lastSpaces << (hasNextWithSameDepth ? "|   " : "    " ) << "Type: " << ssGUI::Enums::GUIObjectTypeToString(curObj->GetType())); 
+            
+            //Add the children to the list
+            std::vector<ssGUI::GUIObject*> curChildren = curObj->GetListOfChildren();
+            
+            std::string nextSpaces = lastSpaces;
+            if(hasNextWithSameDepth)
+                nextSpaces += "|   ";
+            else
+                nextSpaces += "    ";
+            
+            for(int i = curChildren.size() - 1; i >= 0; --i)
+                childrenToPrint.push_front(std::make_tuple(curChildren.at(i), curDepth + 1, nextSpaces)); 
+        }
+    }
 }
