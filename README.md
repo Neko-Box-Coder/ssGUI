@@ -3,12 +3,12 @@
 <!-- ⚠️ Documentation is for the current stable version (v0.93.00.b), not for this version. Some info may not up-to-date.-->
 ### 🔌 Status of ssGUI (v0.94.02)
 - #### 🔀 Branches
-    <!--- ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)-->
-    - ![](https://img.shields.io/badge/Current_Development-v0.94.02-E5FF3C?style=for-the-badge&logo=GitHub)
-        <!--- ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434)-->
-    <!--- ![](https://img.shields.io/badge/Development_Release-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)-->
-    - ![](https://img.shields.io/badge/Stable_Release-v0.94.01.a-D53434?style=for-the-badge&logo=GitHub)
-    - ![](https://img.shields.io/badge/Main-v0.94.02-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Stable_Release-v0.94.00.a-D53434?style=for-the-badge&logo=GitHub)
+        - ![](https://img.shields.io/badge/Status_📋:-Heavy_stutter_on_Windows._Use_v0.94.01_instead-2E2E2E?style=flat-square&labelColor=D53434)
+    - ![](https://img.shields.io/badge/Development_Release-v0.94.01-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Current_Development-v0.94.02-darkgray?style=for-the-badge&logo=GitHub)
+    
+    - ![](https://img.shields.io/badge/Main-v0.94.02-darkgray?style=for-the-badge&logo=GitHub)
 
 - #### 🖥️ OS support
     - ![](https://img.shields.io/badge/Linux-Working-brightgreen?style=for-the-badge&logo=linux&logoColor=white)
@@ -42,7 +42,7 @@
     
     API is clearly documented with (**WIP**) ~~images to describe each properties.~~
     
-    [See documentation here](https://neko-box-coder.github.io/ssGUI_Doc/)
+    #### [See Documentation Here](https://neko-box-coder.github.io/ssGUI_Doc/)
 
 - ### 🦾 Easily Extensible
     ssGUI uses the extensions and (Optional) event callbacks model. Only add the functionalities you need and you are good to go.

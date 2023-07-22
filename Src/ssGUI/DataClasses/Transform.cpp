@@ -228,6 +228,8 @@ namespace ssGUI
 
     void Transform::SetMinSize(glm::vec2 minSize)
     {
+        ssLOG_FUNC();
+    
         if(MinSize == minSize)
             return;
             
