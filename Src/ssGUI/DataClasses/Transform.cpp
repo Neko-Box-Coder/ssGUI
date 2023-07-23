@@ -26,7 +26,7 @@ namespace ssGUI
                                 GlobalPosition(0, 0),
                                 Size(25, 25),
                                 MinSize(25, 25),
-                                MaxSize(std::numeric_limits<float>::max(), std::numeric_limits<float>::max()),
+                                MaxSize(9999, 9999),
                                 Anchor(ssGUI::Enums::AnchorType::TOP_LEFT),
                                 CurrentHierarchy(nullptr),
                                 CurrentRenderer(nullptr),
