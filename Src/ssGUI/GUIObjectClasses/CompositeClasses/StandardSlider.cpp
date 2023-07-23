@@ -20,7 +20,8 @@ namespace
 
 namespace ssGUI
 {
-    StandardSlider::StandardSlider(StandardSlider const& other) :   SliderTitleTextObject(other.SliderTitleTextObject),
+    StandardSlider::StandardSlider(StandardSlider const& other) :   Widget(other),
+                                                                    SliderTitleTextObject(other.SliderTitleTextObject),
                                                                     SliderObject(other.SliderObject),
                                                                     SliderDisplayValueTextObject(other.SliderDisplayValueTextObject),
                                                                     MinDisplayValue(other.MinDisplayValue),
