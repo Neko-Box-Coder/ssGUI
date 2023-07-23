@@ -374,8 +374,15 @@ namespace Extensions
                 maxMinY += GetPadding() * 2;
             }
 
+            //Check if we want to use container's min max or children's min max
+            maxMinY = maxMinY > Container->GetMinSize().y ? maxMinY : Container->GetMinSize().y;
+            minMaxY = minMaxY < Container->GetMaxSize().y ? minMaxY : Container->GetMaxSize().y;
+
             if(IsCoverFullLength())
             {
+                minSizeTotalX = minSizeTotalX > Container->GetMinSize().x ? minSizeTotalX : Container->GetMinSize().x;
+                maxSizeTotalX = maxSizeTotalX < Container->GetMaxSize().x ? maxSizeTotalX : Container->GetMaxSize().x;
+
                 Container->SetMinSize(glm::vec2(minSizeTotalX, maxMinY));
                 Container->SetMaxSize(glm::vec2(maxSizeTotalX, minMaxY));
             }
@@ -450,8 +457,16 @@ namespace Extensions
                             minMaxX + GetPadding() * 2;
             maxMinX += GetPadding() * 2;
 
+            
+            //Check if we want to use container's min max or children's min max
+            maxMinX = maxMinX > Container->GetMinSize().x ? maxMinX : Container->GetMinSize().x;
+            minMaxX = minMaxX < Container->GetMaxSize().x ? minMaxX : Container->GetMaxSize().x;
+            
             if(IsCoverFullLength())
             {
+                minSizeTotalY = minSizeTotalY > Container->GetMinSize().y ? minSizeTotalY : Container->GetMinSize().y;
+                maxSizeTotalY = maxSizeTotalY < Container->GetMaxSize().y ? maxSizeTotalY : Container->GetMaxSize().y;
+
                 Container->SetMinSize(glm::vec2(maxMinX, minSizeTotalY));
                 Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
             }
