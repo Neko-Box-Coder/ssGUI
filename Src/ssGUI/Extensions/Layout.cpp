@@ -308,7 +308,7 @@ namespace Extensions
         {
             float minSizeTotalX = 0;
             float maxSizeTotalX = 0;
-            float minMaxY = std::numeric_limits<float>::max();
+            float minMaxY = 9999;
             float maxMinY = -1;
             
             Container->StashChildrenIterator();
@@ -330,15 +330,8 @@ namespace Extensions
                 if(!Container->IsChildrenIteratorLast())
                     minSizeTotalX += GetSpacing();
 
-                //Don't need to do anything if maxSizeTotalX is max
-                if(maxSizeTotalX != std::numeric_limits<float>::max())
-                {
-                    if(Container->GetCurrentChild()->GetMaxSize().x == std::numeric_limits<float>::max())
-                        maxSizeTotalX = std::numeric_limits<float>::max();
-                    else
-                        maxSizeTotalX += Container->GetCurrentChild()->GetMaxSize().x;
-                }
-                
+                maxSizeTotalX += Container->GetCurrentChild()->GetMaxSize().x;
+
                 if(Container->GetCurrentChild()->GetMaxSize().y < minMaxY)
                     minMaxY = Container->GetCurrentChild()->GetMaxSize().y;
 
@@ -356,21 +349,18 @@ namespace Extensions
             float spacingTotalX = (Container->GetChildrenCount() - ObjectsToExclude.size() - 1) * GetSpacing();
 
             minSizeTotalX += paddingTotalX + spacingTotalX;
-            maxSizeTotalX = maxSizeTotalX == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() : 
-                            maxSizeTotalX + paddingTotalX + spacingTotalX;
+            maxSizeTotalX += paddingTotalX + spacingTotalX;
 
             if( Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW && 
                 Container->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW && 
                 dynamic_cast<ssGUI::Window*>(Container)->HasTitlebar())
             {
-                minMaxY = minMaxY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
-                            minMaxY + dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() + GetPadding();
+                minMaxY += dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() + GetPadding();
                 maxMinY += dynamic_cast<ssGUI::Window*>(Container)->GetTitlebarHeight() + GetPadding();
             }
             else
             {
-                minMaxY = minMaxY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
-                            minMaxY + GetPadding() * 2;
+                minMaxY += GetPadding() * 2;
                 maxMinY += GetPadding() * 2;
             }
 
@@ -396,7 +386,7 @@ namespace Extensions
         {
             float minSizeTotalY = 0;
             float maxSizeTotalY = 0;
-            float minMaxX = std::numeric_limits<float>::max();
+            float minMaxX = 9999;
             float maxMinX = -1;
             
             Container->StashChildrenIterator();
@@ -418,15 +408,8 @@ namespace Extensions
                 if(!Container->IsChildrenIteratorLast())
                     minSizeTotalY += GetSpacing();
 
-                //Don't need to do anything if maxSizeTotalY is max
-                if(maxSizeTotalY != std::numeric_limits<float>::max())
-                {
-                    if(Container->GetCurrentChild()->GetMaxSize().y == std::numeric_limits<float>::max())
-                        maxSizeTotalY = std::numeric_limits<float>::max();
-                    else
-                        maxSizeTotalY += Container->GetCurrentChild()->GetMaxSize().y;
-                }
-                
+                maxSizeTotalY += Container->GetCurrentChild()->GetMaxSize().y;
+
                 if(Container->GetCurrentChild()->GetMaxSize().x < minMaxX)
                     minMaxX = Container->GetCurrentChild()->GetMaxSize().x;
 
@@ -450,13 +433,10 @@ namespace Extensions
             float spacingTotalY = (Container->GetChildrenCount() - ObjectsToExclude.size() - 1) * GetSpacing();
 
             minSizeTotalY += paddingTotalY + spacingTotalY;
-            maxSizeTotalY = maxSizeTotalY == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() : 
-                            maxSizeTotalY + paddingTotalY + spacingTotalY;
+            maxSizeTotalY += paddingTotalY + spacingTotalY;
 
-            minMaxX = minMaxX == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() :
-                            minMaxX + GetPadding() * 2;
+            minMaxX += GetPadding() * 2;
             maxMinX += GetPadding() * 2;
-
             
             //Check if we want to use container's min max or children's min max
             maxMinX = maxMinX > Container->GetMinSize().x ? maxMinX : Container->GetMinSize().x;

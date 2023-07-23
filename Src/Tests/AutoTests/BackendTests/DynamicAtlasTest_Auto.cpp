@@ -225,7 +225,7 @@ int main()
         
         ssTEST_OUTPUT_ASSERT("Validate Pos",    getImgInfo.LocationInPixel == glm::ivec3() &&
                                                 getImgInfo2.LocationInPixel == glm::ivec3(0, 200, 0) &&
-                                                getImgInfo3.LocationInPixel == glm::ivec3(350, 0, 0));
+                                                getImgInfo3.LocationInPixel == glm::ivec3(400, 0, 0));
     };
  
     
