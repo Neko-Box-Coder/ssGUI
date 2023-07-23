@@ -271,6 +271,31 @@ namespace ssGUI
         ssLOG_FUNC_EXIT();
     }
 
+    Window::Window(Window const& other) :   GUIObject(other),
+                                            Titlebar(other.Titlebar),
+                                            TitlebarHeight(other.TitlebarHeight),
+                                            ResizeType(other.ResizeType),
+                                            Draggable(other.Draggable),
+                                            Closable(other.Closable),
+                                            Closed(other.Closed),
+                                            IsClosingAborted(other.IsClosingAborted),
+                                            TitlebarColorDifference(other.TitlebarColorDifference),
+                                            AdaptiveTitlebarColor(other.AdaptiveTitlebarColor),
+                                            DeleteAfterClosed(other.DeleteAfterClosed),
+                                            OnTopWhenFocused(other.OnTopWhenFocused),
+                                            CurrentDragState(ssGUI::Enums::WindowDragState::NONE),
+                                            ResizeHitbox(other.ResizeHitbox),
+                                            ResizingTop(false),
+                                            ResizingBot(false),
+                                            ResizingLeft(false),
+                                            ResizingRight(false),
+                                            Dragging(false),
+                                            TransformTotalMovedDistance(),
+                                            OnTransformBeginSize(),
+                                            MouseDownPosition()                                            
+    {
+    }
+
     void Window::ConstructRenderInfo()
     {
         glm::vec2 drawPosition = GetGlobalPosition();

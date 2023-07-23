@@ -6,6 +6,12 @@
 
 namespace ssGUI
 {
+    Widget::Widget(Widget const& other) :   GUIObject(other),
+                                            Interactable(other.Interactable),
+                                            BlockInput(other.BlockInput)
+    {
+    }
+
     void Widget::ConstructRenderInfo()
     {
         //Internal_Draw background by default
