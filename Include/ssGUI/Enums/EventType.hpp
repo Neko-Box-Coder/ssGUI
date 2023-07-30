@@ -61,7 +61,8 @@ namespace ssGUI
         WINDOW_DRAG_STATE_CHANGED           - Triggered *after* this GUI object (window) drag state is changed. Window(Container) will be the source for triggering this event callback.
         OBJECT_UPDATED                      - Triggered *after* this GUI object is being updated. Container will be the source for triggering this event callback.
                                                 <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::ObjectUpdateInfo> struct.
-        
+        TEXT_CONTENT_CHANGED                - Triggered *shortly after* there's a text content change (Not visual change such as underline or bold). 
+                                                The text GUI object that has the text being changed will be the source for triggering this event callback.
         COUNT                               - Count
         
         SCROLLBAR_VALUE_CHANGED             - Same as <SLIDER_VALUE_CHANGED>
@@ -90,6 +91,7 @@ namespace ssGUI
             ITEM_SELECTED,
             MIN_MAX_SIZE_CHANGED,
             OBJECT_RENDERED,
+            TEXT_CONTENT_CHANGED,
             RECURSIVE_CHILD_ADDED,
             RECURSIVE_CHILD_REMOVED,
             SIZE_CHANGED,
@@ -109,7 +111,7 @@ namespace ssGUI
         //function: EventTypeToString
         inline std::string EventTypeToString(EventType event)
         {
-            static_assert((int)EventType::COUNT == 26, "ToString");
+            static_assert((int)EventType::COUNT == 27, "ToString");
             switch(event)
             {
                 RETURN_ENUM_STRING(EventType::NONE);
@@ -132,6 +134,7 @@ namespace ssGUI
                 RETURN_ENUM_STRING(EventType::ITEM_SELECTED);
                 RETURN_ENUM_STRING(EventType::MIN_MAX_SIZE_CHANGED);
                 RETURN_ENUM_STRING(EventType::OBJECT_RENDERED);
+                RETURN_ENUM_STRING(EventType::TEXT_CONTENT_CHANGED);
                 RETURN_ENUM_STRING(EventType::RECURSIVE_CHILD_ADDED);
                 RETURN_ENUM_STRING(EventType::RECURSIVE_CHILD_REMOVED);
                 RETURN_ENUM_STRING(EventType::SIZE_CHANGED);

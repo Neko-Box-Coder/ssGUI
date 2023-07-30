@@ -30,7 +30,7 @@ namespace ssGUI
         int validCharBeforeIndex = -1;
         for(int i = curIndex - 1; i >= 0; i--)
         {
-            if(CharactersRenderInfos[i].Valid)
+            if(GetCharacterRenderInfo(i).Valid)
             {
                 validCharBeforeIndex = i;
                 break;
@@ -71,7 +71,7 @@ namespace ssGUI
         int lastValidIndex = validCharBeforeIndex;
         for(int i = validCharBeforeIndex; i >= 0; i--)
         {
-            if(!CharactersRenderInfos[i].Valid)
+            if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
             characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
@@ -127,7 +127,7 @@ namespace ssGUI
             if(i == CharactersRenderInfos.size())
                 return i;
             
-            if(!CharactersRenderInfos[i].Valid)
+            if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
             characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
@@ -148,10 +148,10 @@ namespace ssGUI
         curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
         for(int i = curIndex; i >= 0; i--)
         {
-            if(!CharactersRenderInfos[i].Valid)
+            if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
-            if(CharactersRenderInfos[i].CharacterAtNewline)
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
             {
                 startIndex = i;
                 break;
@@ -161,10 +161,10 @@ namespace ssGUI
         int lastValidIndex = curIndex;
         for(int i = curIndex+1; i < CharactersRenderInfos.size(); i++)
         {
-            if(!CharactersRenderInfos[i].Valid)
+            if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
-            if(CharactersRenderInfos[i].CharacterAtNewline)
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
                 break;
             
             lastValidIndex = i;
@@ -179,7 +179,7 @@ namespace ssGUI
         curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
         for(int i = curIndex; i >= 0; i--)
         {
-            if(!CharactersRenderInfos[i].Valid)
+            if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
             if(passedCurLine && !endIndexSet)
@@ -188,7 +188,7 @@ namespace ssGUI
                 endIndexInclusive = i;
             }
 
-            if(CharactersRenderInfos[i].CharacterAtNewline)
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
             {
                 if(!passedCurLine)
                 {
@@ -213,10 +213,10 @@ namespace ssGUI
         curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
         for(int i = curIndex+1; i < CharactersRenderInfos.size(); i++)
         {
-            if(!CharactersRenderInfos[i].Valid)
+            if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
-            if(CharactersRenderInfos[i].CharacterAtNewline)
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
             {
                 if(!startIndexSet)
                 {
@@ -351,9 +351,9 @@ namespace ssGUI
 
         ssGUI::CharacterDetails baseCD;
         if(insertIndex - 1 >= 0)
-            baseCD = CurrentCharactersDetails[insertIndex - 1];
-        else if(insertIndex + 1 < CurrentCharactersDetails.Size())
-            baseCD = CurrentCharactersDetails[insertIndex + 1];
+            baseCD = GetCharacterDetails(insertIndex - 1);
+        else if(insertIndex + 1 < GetCharactersDetailsCount())
+            baseCD = GetCharacterDetails(insertIndex + 1);
         else
         {
             baseCD.CharacterColor = GetNewTextColor();
@@ -371,17 +371,18 @@ namespace ssGUI
         {
             auto curChar = (int32_t)textInput.at(i);
 
-            //Exclude control characters
+            //Non control characters
             if((curChar > 31 && curChar < 127) || curChar > 159)
             {
                 ssGUI::CharacterDetails cd = baseCD;
                 cd.Character = textInput.at(i);
 
-                CurrentCharactersDetails.Add(cd, insertIndex);
+                AddCharacterDetails(insertIndex, cd);
                 insertIndex++;
                 charCount++;
                 alterText = true;
             }
+            //Control characters
             else
             {
                 switch(curChar) 
@@ -448,7 +449,7 @@ namespace ssGUI
                         SetStartSelectionIndex(GetEndSelectionIndex());
                         break;
                     case 127:   //Delete
-                        if(insertIndex < CurrentCharactersDetails.Size() && GetStartSelectionIndex() == GetEndSelectionIndex() && 
+                        if(insertIndex < GetCharactersDetailsCount() && GetStartSelectionIndex() == GetEndSelectionIndex() && 
                             GetStartSelectionIndex() >= 0)
                         {
                             if(wordMode)
@@ -524,7 +525,7 @@ namespace ssGUI
                             {
                                 SetEndSelectionIndex(GetEndSelectionIndex() - 1);
                             }
-                            while(!CharactersRenderInfos[GetEndSelectionIndex()].Valid);
+                            while(!GetCharacterRenderInfo(GetEndSelectionIndex()).Valid);
                         }
                         else
                             SetEndSelectionIndex(GetEndOfPreviousWord(GetEndSelectionIndex()));
@@ -555,7 +556,7 @@ namespace ssGUI
             {
                 auto moveRight = [&]()
                 {
-                    if(GetEndSelectionIndex() + 1 <= CurrentCharactersDetails.Size())
+                    if(GetEndSelectionIndex() + 1 <= GetCharactersDetailsCount())
                     {
                         if(!wordMode)
                         {
@@ -563,10 +564,10 @@ namespace ssGUI
                             {
                                 SetEndSelectionIndex(GetEndSelectionIndex() + 1);
 
-                                if(GetEndSelectionIndex() >= CurrentCharactersDetails.Size())
+                                if(GetEndSelectionIndex() >= GetCharactersDetailsCount())
                                     break;
                             }
-                            while(!CharactersRenderInfos[GetEndSelectionIndex()].Valid);
+                            while(!GetCharacterRenderInfo(GetEndSelectionIndex()).Valid);
                         }
                         else
                             SetEndSelectionIndex(GetEndOfNextWord(GetEndSelectionIndex()));
@@ -670,26 +671,26 @@ namespace ssGUI
         int lastValidIndex = GetLastValidCharacterIndex();
         glm::vec2 drawPos = GetGlobalPosition();
         float height = 0;
-        float caretWidth = GetEndSelectionIndex() < 0 || GetEndSelectionIndex() >= CurrentCharactersDetails.Size() ? 
+        float caretWidth = GetEndSelectionIndex() < 0 || GetEndSelectionIndex() >= GetCharactersDetailsCount() ? 
             GetNewTextFontSize() / 15.f : 
-            CurrentCharactersDetails[GetEndSelectionIndex()].FontSize / 15.f;
+            GetCharacterDetails(GetEndSelectionIndex()).FontSize / 15.f;
 
         if(GetEndSelectionIndex() >= 0 && lastValidIndex >= 0)
         {
             if(GetEndSelectionIndex() > lastValidIndex)
             {
                 //Last character
-                if(CurrentCharactersDetails[lastValidIndex].Character != '\n')
+                if(GetCharacterDetails(lastValidIndex).Character != '\n')
                 {
-                    drawPos += CharactersRenderInfos[lastValidIndex].BaselinePosition + 
-                        glm::vec2(CharactersRenderInfos[lastValidIndex].Advance, 
-                        CharactersRenderInfos[lastValidIndex].LineMinY);
+                    drawPos += GetCharacterRenderInfo(lastValidIndex).BaselinePosition + 
+                        glm::vec2(GetCharacterRenderInfo(lastValidIndex).Advance, 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY);
                     
-                    height = CharactersRenderInfos[lastValidIndex].LineMaxY - 
-                        CharactersRenderInfos[lastValidIndex].LineMinY;
+                    height = GetCharacterRenderInfo(lastValidIndex).LineMaxY - 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY;
                 }
                 //If caret is pointing Newline, go to next line
-                if(CurrentCharactersDetails[lastValidIndex].Character == '\n')
+                if(GetCharacterDetails(lastValidIndex).Character == '\n')
                 {
                     const ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(lastValidIndex);
                     ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
@@ -713,21 +714,21 @@ namespace ssGUI
                         drawPos.x += GetSize().x - GetTextHorizontalPadding();
                     }
 
-                    drawPos.y += CharactersRenderInfos[lastValidIndex].BaselinePosition.y + 
-                        CharactersRenderInfos[lastValidIndex].LineMinY +
+                    drawPos.y += GetCharacterRenderInfo(lastValidIndex).BaselinePosition.y + 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY +
                         fontInterface->GetLineSpacing(curDetail.FontSize) + GetLineSpace();
                     
-                    height = CharactersRenderInfos[lastValidIndex].LineMaxY - 
-                        CharactersRenderInfos[lastValidIndex].LineMinY;
+                    height = GetCharacterRenderInfo(lastValidIndex).LineMaxY - 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY;
                 }
             }
             else
             {
-                drawPos += CharactersRenderInfos[GetEndSelectionIndex()].BaselinePosition + 
-                    glm::vec2(0, CharactersRenderInfos[GetEndSelectionIndex()].LineMinY);
+                drawPos += GetCharacterRenderInfo(GetEndSelectionIndex()).BaselinePosition + 
+                    glm::vec2(0, GetCharacterRenderInfo(GetEndSelectionIndex()).LineMinY);
                 
-                height = CharactersRenderInfos[GetEndSelectionIndex()].LineMaxY - 
-                    CharactersRenderInfos[GetEndSelectionIndex()].LineMinY;
+                height = GetCharacterRenderInfo(GetEndSelectionIndex()).LineMaxY - 
+                    GetCharacterRenderInfo(GetEndSelectionIndex()).LineMinY;
             }
 
             //Draw caret
