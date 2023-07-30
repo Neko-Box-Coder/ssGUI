@@ -155,6 +155,11 @@ namespace ssGUI
         imageEntity.Vertices.push_back(imgVertices[3]);
 
         imageEntity.BackendImage = ImageData->GetBackendImageInterface();
+        
+        imageEntity.TexCoords.push_back(glm::vec2(0, 0));
+        imageEntity.TexCoords.push_back(glm::vec2(GetImageData()->GetSize().x, 0));
+        imageEntity.TexCoords.push_back(glm::vec2(GetImageData()->GetSize()));
+        imageEntity.TexCoords.push_back(glm::vec2(0, GetImageData()->GetSize().y));
 
         DrawingEntities.push_back(imageEntity);
 
