@@ -11,7 +11,8 @@ int main()
     ssGUI::MainWindow mainWindow;
 
     ssGUI::ImageData data;
-    data.LoadImgFileFromMemory(ssGUI_Example_sd, ssGUI_Example_sd_size);
+    if(!data.LoadImgFileFromMemory(ssGUI_Example_sd, ssGUI_Example_sd_size))
+        ssGUI_ERROR(0, "Failed to load example image");
     
     //Creating an image widget
     ssGUI::ImageCanvas imageCanvas;
