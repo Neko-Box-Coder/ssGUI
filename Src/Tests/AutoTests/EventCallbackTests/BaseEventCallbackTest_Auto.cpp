@@ -25,11 +25,11 @@ int main()
 
     ssTEST("AddEventListenerTest")
     {
-        Callback->AddEventListener("key", [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key", [](ssGUI::EventInfo& info){});
         ssTEST_OUTPUT_ASSERT("Without adder",   Callback->GetEventListenerCount() == 1 && 
                                                 Callback->IsEventListenerExist("key"));
         
-        Callback->AddEventListener("key", TestObj, [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key", TestObj, [](ssGUI::EventInfo& info){});
         ssTEST_OUTPUT_ASSERT("With adder",  Callback->GetEventListenerCount() == 2 &&
                                             Callback->IsEventListenerExist("key", TestObj));   
     };
@@ -50,14 +50,14 @@ int main()
 
     ssTEST("SetEventListenerOrderTest")
     {
-        Callback->AddEventListener("key", [](ssGUI::EventInfo info){});
-        Callback->AddEventListener("key2", [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key", [](ssGUI::EventInfo& info){});
+        Callback->AddEventListener("key2", [](ssGUI::EventInfo& info){});
         
         ssTEST_OUTPUT_ASSERT("Without adder",   Callback->GetEventListenerOrder("key") == 0 && 
                                                 Callback->GetEventListenerOrder("key2") == 1);    
 
-        Callback->AddEventListener("key", TestObj, [](ssGUI::EventInfo info){});
-        Callback->AddEventListener("key2", TestObj, [](ssGUI::EventInfo info){});
+        Callback->AddEventListener("key", TestObj, [](ssGUI::EventInfo& info){});
+        Callback->AddEventListener("key2", TestObj, [](ssGUI::EventInfo& info){});
 
         ssTEST_OUTPUT_ASSERT("With adder",  Callback->GetEventListenerOrder("key", TestObj) == 2 && 
                                             Callback->GetEventListenerOrder("key2", TestObj) == 3);    
@@ -79,7 +79,7 @@ int main()
     ssTEST("NotifyTest")
     {
         int testNum = 0;
-        Callback->AddEventListener("key",   [&](ssGUI::EventInfo info)
+        Callback->AddEventListener("key",   [&](ssGUI::EventInfo& info)
                                             { 
                                                 testNum = 1;
                                                 ssTEST_OUTPUT_ASSERT("Nullptr Container", info.Container == nullptr);
@@ -92,7 +92,7 @@ int main()
         
         auto* clonedEvent = TestObj->AddEventCallbackCopy(Callback, false);
         clonedEvent->AddEventListener(  "key",   
-                                        [&](ssGUI::EventInfo info)
+                                        [&](ssGUI::EventInfo& info)
                                         { 
                                             ssTEST_OUTPUT_ASSERT(   "Container", 
                                                                     info.Container == TestObj);
@@ -136,7 +136,7 @@ int main()
         int testNum = 0;
         std::string listenerKey = "key";
         Callback->AddEventListener( listenerKey, 
-                                    [&](ssGUI::EventInfo info)
+                                    [&](ssGUI::EventInfo& info)
                                     {
                                         testNum = 1;
                                     });

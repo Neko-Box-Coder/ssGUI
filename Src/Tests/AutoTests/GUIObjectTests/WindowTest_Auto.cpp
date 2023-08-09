@@ -38,7 +38,7 @@ int main()
         TestWindow->AddEventCallback(ssGUI::Enums::EventType::BEFORE_WINDOW_CLOSE)->AddEventListener
         (
             "Key",
-            [&](ssGUI::EventInfo info)
+            [&](ssGUI::EventInfo& info)
             {
                 TestWindow->AbortClosing();
             }

@@ -375,6 +375,7 @@ namespace ssGUI
         CheckRightClickMenu(inputInterface, inputStatus, mainWindow);
         MainLogic(inputInterface, inputStatus, mainWindow);
 
+        //TODO: Add delete check to current object
         if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_UPDATED))
             GetEventCallback(ssGUI::Enums::EventType::OBJECT_UPDATED)->Notify(mainWindow, &updateInfo);
         

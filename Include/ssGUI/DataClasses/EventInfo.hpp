@@ -41,6 +41,10 @@ namespace ssGUI
         //var: References
         //<ObjectsReferences> that this event callback has
         ObjectsReferences* References = nullptr;
+        
+        //var: DeleteCurrentListener
+        //If current listener is not needed, setting it to true will delete the current listener.
+        bool DeleteCurrentListener = false;
     
         //var: CustomInfo
         void* CustomInfo = nullptr;

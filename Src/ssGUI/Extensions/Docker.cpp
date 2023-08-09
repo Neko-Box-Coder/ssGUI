@@ -632,7 +632,7 @@ namespace Extensions
         Container->GetEventCallback(ssGUI::Enums::EventType::CHILD_REMOVED)->AddEventListener
         (
             EXTENSION_NAME,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 if(!info.Container->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
                 {

@@ -25,7 +25,7 @@ namespace ssGUI
     You only need to add the MainWindow object and run it.
     ================== C++ ==================
     ssGUIManager manager = ssGUIManager();
-    manager.AddGUIObject(mainWindowObject);
+    auto* mainWindow = manager.AddRootGUIObject<ssGUI::MainWindow>();
     manager.StartRunning();
     =========================================
 
@@ -59,6 +59,8 @@ namespace ssGUI
 
             bool IsCustomRendering;
             bool ForceRendering;
+            ssGUI::Enums::CursorType LastCursor;
+            std::string LastCursorName;
 
             float TargetFrameInterval;
             int FrameTimeIndex;
@@ -67,12 +69,11 @@ namespace ssGUI
             
             static ssGUI::ssGUIManager* CurrentInstanceP;
 
+            void InitializeMainWindows();
+
             void Internal_Update();
-            void PollInputs();
-            void CheckMainWindowExistence();
+            bool CheckMainWindowExistence();
             void Render();
-            void UpdateObjects();
-            void UpdateCursor();
             
             ssGUI::GUIObject* FindParentWindowP(ssGUI::GUIObject& obj);
 
@@ -138,8 +139,58 @@ namespace ssGUI
             //This will block the thread until all <MainWindow>s are closed
             void StartRunning();
             
+            //function: StartRunningAsync
+            //This will start the ssGUIManager without blocking the thread.
+            //Call <StepFrame> to process and render the next frame.
+            //Alternatively, you can call the functions separately. See <StepFrame> for more details.
             void StartRunningAsync();
             
+            //function: IsRunningNeededAsync
+            //Checks if it is necessary to continue to the next frame.
+            //If false, **DO NOT** call any other functions as otherwise the behaviour is undefined.
+            bool IsRunningNeededAsync();
+            
+            //function: PollInputsAsync
+            //Updates all the input between the last frame up to this moment.
+            void PollInputsAsync();
+            
+            //function: InvokePreGUIObjectsUpdateEventAsync
+            //Calls any user callback before triggering GUI objects' update
+            void InvokePreGUIObjectsUpdateEventAsync();
+            
+            //function: UpdateObjectsAsync
+            //Calls the GUI Objects main logic, this includes any <Extensions: ssGUI::ExtensionsExtension> 
+            //and <EventCallbacks: ssGUI::EventCallback> as well.
+            void UpdateObjectsAsync();
+            
+            //function: CleanUpDeletedObjectsAsync
+            //Cleans up any GUI Objects marked as deleted
+            void CleanUpDeletedObjectsAsync();
+            
+            //function: InvokePostGUIObjectsUpdateEventAsync
+            //Calls any user callback after triggering GUI objects' update
+            void InvokePostGUIObjectsUpdateEventAsync();
+            
+            //function: RenderObjectsAsync
+            //Renders GUI objects
+            void RenderObjectsAsync();
+            
+            //function: UpdateCursorAsync
+            //Updates (and loads) the cursor if it is changed
+            void UpdateCursorAsync();
+            
+            //function: StepFrame
+            //This is a bundled function which calls all the functions needed for a frame in order for ssGUI to work properly.
+            //This calls in order:
+            //1. <IsRunningNeededAsync>
+            //2. <PollInputsAsync>
+            //3. <InvokePreGUIObjectsUpdateEventAsync>
+            //4. <UpdateObjectsAsync>
+            //5. <CleanUpDeletedObjectsAsync>
+            //6. <InvokePostGUIObjectsUpdateEventAsync>
+            //7. <CleanUpDeletedObjectsAsync>
+            //8. <RenderObjectsAsync>
+            //9. <UpdateCursorAsync>
             bool StepFrame();
 
             //function: GetBackendInputInterface
@@ -344,6 +395,8 @@ namespace ssGUI
             //function: GetElapsedTimeInMillisecond
             //See <ssGUI::Backend::BackendSystemInputInterface::GetElapsedTime>            
             uint64_t GetElapsedTimeInMillisecond() const;
+            
+            void PrintGUIObjectTree() const;
 
             //function: Clear
             //Clears the console

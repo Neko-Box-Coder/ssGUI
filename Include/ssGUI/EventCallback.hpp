@@ -25,7 +25,7 @@ namespace ssGUI
         "AnyKey",
         //source is what *triggered* the callback
         //container is the GUI Object that holds this event callback
-        [](ssGUI::EventInfo info)
+        [](ssGUI::EventInfo& info)
         {
             //Do something
         }    
@@ -36,7 +36,7 @@ namespace ssGUI
     ============================== C++ ==============================
     private:
         //Events
-        std::unordered_map<std::string, std::function<void(EventInfo)>> EventListeners;     //See <AddEventListener>            
+        std::unordered_map<std::string, std::function<void(EventInfo&)>> EventListeners;    //See <AddEventListener>            
         std::vector<std::string> EventListenersOrder;                                       //See <GetEventListenerOrder>
         ssGUI::GUIObject* Container;                                                        //See <BindToObject>
         ssGUI::ObjectsReferences CurrentObjectsReferences;                                  //See <GetObjectReference> and <Internal_GetObjectsReferences>
@@ -58,7 +58,7 @@ namespace ssGUI
         
         private:
             //Events
-            std::unordered_map<std::string, std::function<void(EventInfo)>> EventListeners;     //See <AddEventListener>            
+            std::unordered_map<std::string, std::function<void(EventInfo&)>> EventListeners;    //See <AddEventListener>            
             std::vector<std::string> EventListenersOrder;                                       //See <GetEventListenerOrder>
             ssGUI::GUIObject* Container;                                                        //See <BindToObject>
             ssGUI::ObjectsReferences CurrentObjectsReferences;                                  //See <GetObjectReference> and <Internal_GetObjectsReferences>
@@ -77,11 +77,11 @@ namespace ssGUI
         public:
             //function: AddEventListener
             //Adds a callback listener function with key and adder for unique identification which triggers when <Notify> is called
-            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback);
+            virtual void AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo&)> callback);
             
             //function: AddEventListener
             //See <AddEventListener> where adder is nullptr
-            virtual void AddEventListener(std::string key, std::function<void(EventInfo)> callback);
+            virtual void AddEventListener(std::string key, std::function<void(EventInfo&)> callback);
             
             //function: IsEventListenerExist
             //Checks if the callback listener function with unique identification key and adder exists

@@ -8,9 +8,9 @@ To get started, first either add ssGUI as submodule (recursively) or clone it (r
 
 Group: For stable branch:
 
-> git clone -b v0.94.01_release --recursive https://github.com/Neko-Box-Coder/ssGUI.git
+> git clone -b v0.94.01.a_release --recursive https://github.com/Neko-Box-Coder/ssGUI.git
 or
-> git submodule add -b v0.94.01_release https://github.com/Neko-Box-Coder/ssGUI.git <folder name>
+> git submodule add -b v0.94.01.a_release https://github.com/Neko-Box-Coder/ssGUI.git <folder name>
 > git submodule update --init --recursive
 
 Group: For main branch (**don't recommend**), you will have to build EmbeddedResources

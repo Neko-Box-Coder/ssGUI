@@ -282,7 +282,7 @@ void DrawFontTest()
     }
 }
 
-//NOTE: Skipping AddImageCache for now, it is used internally anyway so it should be working.
+//TODO: Need to test AddImageCache
 
 void RemoveImageCacheTest()
 {

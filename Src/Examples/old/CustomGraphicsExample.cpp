@@ -188,7 +188,7 @@ int main()
     ecb->AddEventListener
     (
         "pyramidControl",
-        [&](ssGUI::EventInfo info)
+        [&](ssGUI::EventInfo& info)
         {
             PyramidRotateSpeed = static_cast<ssGUI::Slider*>(info.EventCallbackContainer)->GetSliderValue() * 3;
         }
@@ -208,7 +208,7 @@ int main()
     ecb->AddEventListener
     (
         "cubeControl",
-        [&](ssGUI::EventInfo info)
+        [&](ssGUI::EventInfo& info)
         {
             CubeRotateSpeed = static_cast<ssGUI::Slider*>(info.EventCallbackContainer)->GetSliderValue() * 3;
         }

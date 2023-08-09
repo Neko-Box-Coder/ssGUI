@@ -155,6 +155,11 @@ namespace ssGUI
         imageEntity.Vertices.push_back(imgVertices[3]);
 
         imageEntity.BackendImage = ImageData->GetBackendImageInterface();
+        
+        imageEntity.TexCoords.push_back(glm::vec2(0, 0));
+        imageEntity.TexCoords.push_back(glm::vec2(GetImageData()->GetSize().x, 0));
+        imageEntity.TexCoords.push_back(glm::vec2(GetImageData()->GetSize()));
+        imageEntity.TexCoords.push_back(glm::vec2(0, GetImageData()->GetSize().y));
 
         DrawingEntities.push_back(imageEntity);
 
@@ -433,7 +438,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::EventInfo info)
+            [index](ssGUI::EventInfo& info)
             {
                 auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
@@ -470,7 +475,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::EventInfo info)
+            [index](ssGUI::EventInfo& info)
             {
                 auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
@@ -510,7 +515,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.Container);
                 

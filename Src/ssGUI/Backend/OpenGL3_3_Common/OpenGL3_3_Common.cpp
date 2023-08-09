@@ -197,6 +197,7 @@ namespace Backend
         }  
     )";
 
+    const int OpenGL3_3_Common::MAX_TEXTURE_LAYER_SIZE = 4096;
 
     bool OpenGL3_3_Common::DrawShape(   const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
@@ -337,10 +338,117 @@ namespace Backend
         return true;
     }
     
+    GLuint OpenGL3_3_Common::CreateTexture2DArray(int textureSize, int numOfLayers)
+    {
+        GLuint texture2DArray = 0;
+        GL_CHECK_ERROR( glEnable(GL_TEXTURE_3D) );
+        GL_CHECK_ERROR( glGenTextures(1, &texture2DArray) );
+        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D_ARRAY, texture2DArray) );
+        
+        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST) );
+        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST) );
+        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) );
+        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) );
+        
+        GL_CHECK_ERROR( glTexImage3D(   GL_TEXTURE_2D_ARRAY, 
+                                        0, 
+                                        GL_RGBA8, 
+                                        textureSize, 
+                                        textureSize,
+                                        numOfLayers,
+                                        0,
+                                        GL_RGBA,
+                                        GL_UNSIGNED_BYTE,
+                                        NULL) );
+
+        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D_ARRAY, 0) );
+        
+        return texture2DArray;
+    }
+    
     bool OpenGL3_3_Common::OnNewAtlasRequest()
     {
-        //TODO
-        return false;
+        ssGUI_INFO(ssGUI_BACKEND_TAG, "Requesting new atlas...");
+    
+        GLint maxTextureSize = 0;
+        GLint maxLayerSize = 0;
+        
+        GL_CHECK_ERROR( glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize) );
+        GL_CHECK_ERROR( glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxLayerSize) );
+        
+        //ssLOG_LINE("maxTextureSize: "<<maxTextureSize);
+        //ssLOG_LINE("maxLayerSize: "<<maxLayerSize);
+        
+        int currentLayersCount = CurrentImageAtlas->GetAtlasLayersCount();
+        
+        //First create a texture 2D array with a new layer
+        if(currentLayersCount + 1 >= maxLayerSize)
+        {
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Max number of layers for image atlas reached");
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "currentLayersCount: "<<currentLayersCount);
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "maxLayerSize: "<<maxLayerSize);
+            return false;
+        }
+        
+        maxTextureSize = maxTextureSize > MAX_TEXTURE_LAYER_SIZE ? MAX_TEXTURE_LAYER_SIZE : maxTextureSize;
+        
+        GLuint newTextureAtlas = CreateTexture2DArray(maxTextureSize, currentLayersCount + 1);
+        
+        //Copy the old texture atlas to the new one
+        const int READ_FB = 0;
+        const int DRAW_FB = 1;
+        
+        GLuint readDrawFramebuffers[2] = {0, 0};
+        
+        GL_CHECK_ERROR( glGenFramebuffers(2, readDrawFramebuffers) );
+        GL_CHECK_ERROR( glBindFramebuffer(GL_READ_FRAMEBUFFER, readDrawFramebuffers[READ_FB]) );
+        GL_CHECK_ERROR( glBindFramebuffer(GL_DRAW_FRAMEBUFFER, readDrawFramebuffers[DRAW_FB]) );
+        
+        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+        
+        for(int i = 0; i < currentLayersCount; i++)
+        {
+            GL_CHECK_ERROR( glFramebufferTextureLayer(  GL_READ_FRAMEBUFFER, 
+                                                        GL_COLOR_ATTACHMENT0, 
+                                                        CachedImages,
+                                                        0,
+                                                        i) );
+
+            if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+
+            GL_CHECK_ERROR( glFramebufferTextureLayer(  GL_READ_FRAMEBUFFER, 
+                                                        GL_COLOR_ATTACHMENT0, 
+                                                        newTextureAtlas,
+                                                        0,
+                                                        i) );
+
+            if(glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+
+            GL_CHECK_ERROR( glBlitFramebuffer(  0, 
+                                                0, 
+                                                maxTextureSize, 
+                                                maxTextureSize, 
+                                                0, 
+                                                0, 
+                                                maxTextureSize, 
+                                                maxTextureSize,
+                                                GL_COLOR_BUFFER_BIT, 
+                                                GL_NEAREST) );
+        }
+        
+        //Clean up framebuffers used for copying
+        GL_CHECK_ERROR( glBindFramebuffer(GL_READ_FRAMEBUFFER, 0) );
+        GL_CHECK_ERROR( glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0) );
+        GL_CHECK_ERROR( glDeleteFramebuffers(2, readDrawFramebuffers) );
+        
+        //Removing old texture array
+        GL_CHECK_ERROR( glDeleteTextures(1, &CachedImages) );
+        
+        //Assign the new texture array
+        CachedImages = newTextureAtlas;
+        return true;
     }
     
     void OpenGL3_3_Common::SaveLastViewport()
@@ -645,16 +753,16 @@ namespace Backend
         mainWindow->SetGLContext();
     
         GLint maxTextureSize = 0;
-        GLint maxLayerSize = 0;
+        //GLint maxLayerSize = 0;
         
         GL_CHECK_ERROR( glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize) );
-        GL_CHECK_ERROR( glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxLayerSize) );
+        //GL_CHECK_ERROR( glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxLayerSize) );
         
         //ssLOG_LINE("maxTextureSize: "<<maxTextureSize);
         //ssLOG_LINE("maxLayerSize: "<<maxLayerSize);
         
         //maxTextureSize = 1920;
-        maxTextureSize = maxTextureSize > 4096 ? 4096 : maxTextureSize;
+        maxTextureSize = maxTextureSize > MAX_TEXTURE_LAYER_SIZE ? MAX_TEXTURE_LAYER_SIZE : maxTextureSize;
         
         GLint success = GL_FALSE;
         char infoLog[512] { 0 };
@@ -721,30 +829,6 @@ namespace Backend
         // delete the shaders as they're linked into our program now and no longer necessary
         GL_CHECK_ERROR( glDeleteShader(vertexShaderId) );
         GL_CHECK_ERROR( glDeleteShader(fragmentShaderId) );
-        
-        GL_CHECK_ERROR( glEnable(GL_TEXTURE_3D) );
-        
-        GL_CHECK_ERROR( glGenTextures(1, &CachedImages) );
-        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D_ARRAY, CachedImages) );
-        
-        //GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) );
-        
-        GL_CHECK_ERROR( glTexImage3D(   GL_TEXTURE_2D_ARRAY, 
-                                        0, 
-                                        GL_RGBA8, 
-                                        maxTextureSize, 
-                                        maxTextureSize,
-                                        1,
-                                        0,
-                                        GL_RGBA,
-                                        GL_UNSIGNED_BYTE,
-                                        NULL) );
-        
-        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D_ARRAY, 0) );
         
         //Generate ID for VBOs for vertex pos, colors, UVs and UseUVs flag
         GL_CHECK_ERROR( glGenBuffers(1, &VertsVBO) );

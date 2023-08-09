@@ -16,7 +16,7 @@ int main()
     focusEvent->AddEventListener
     (
         "test",
-        [](ssGUI::EventInfo info)
+        [](ssGUI::EventInfo& info)
         {
             info.EventCallbackContainer->SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
         }
@@ -26,7 +26,7 @@ int main()
     focusLostEvent->AddEventListener
     (
         "test",
-        [](ssGUI::EventInfo info)
+        [](ssGUI::EventInfo& info)
         {
             info.EventCallbackContainer->SetBackgroundColor(glm::u8vec4(255, 255, 255, 255));
         }

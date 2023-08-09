@@ -61,7 +61,7 @@ namespace ssGUI
         buttonEvent->ClearEventListeners();
         buttonEvent->AddEventListener(
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::Checkbox* btn = static_cast<ssGUI::Checkbox*>(info.EventSource);
                 glm::u8vec4 bgcolor = btn->GetBackgroundColor();

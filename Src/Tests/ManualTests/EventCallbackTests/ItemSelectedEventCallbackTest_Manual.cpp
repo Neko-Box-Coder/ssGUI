@@ -20,7 +20,7 @@ void SetUp()
     
     auto* ecb = TestDropdown->AddEventCallback(ssGUI::Enums::EventType::ITEM_SELECTED);
     ecb->AddEventListener(  "key", 
-                            [](ssGUI::EventInfo info)
+                            [](ssGUI::EventInfo& info)
                             {
                                 assert(info.Container == info.EventSource);
                                 assert(info.Container->GetType() == ssGUI::Enums::GUIObjectType::DROPDOWN);

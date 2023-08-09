@@ -1262,6 +1262,12 @@ namespace ssGUI
                 inputStatus.KeyInputBlockedObject = this;
             }
         }
+        
+        //Handle event callbacks
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::TEXT_CONTENT_CHANGED) && TextContentChanged)
+            GetEventCallback(ssGUI::Enums::EventType::TEXT_CONTENT_CHANGED)->Notify(this);
+        
+        TextContentChanged = false;
     }
     
     const std::string Text::ListenerKey = "Text";
@@ -1293,7 +1299,8 @@ namespace ssGUI
                     DeselectWhenFocusLost(true),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
-                    LastDefaultFontsID(0)
+                    LastDefaultFontsID(0),
+                    TextContentChanged(false)
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
@@ -1304,7 +1311,7 @@ namespace ssGUI
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
@@ -1316,7 +1323,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* text = static_cast<ssGUI::Text*>(info.Container);
                 
@@ -1383,8 +1390,7 @@ namespace ssGUI
     {
         RecalculateTextNeeded = true;
 
-        CurrentCharactersDetails.Clear();
-        ProcessedCharacterDetails.clear();
+        ClearAllCharacterDetails();
         std::vector<ssGUI::CharacterDetails> newDetails;
         ConstructCharacterDetails(text, newDetails);
         AddCharacterDetails(newDetails);
@@ -1395,8 +1401,7 @@ namespace ssGUI
     {
         RecalculateTextNeeded = true;
 
-        CurrentCharactersDetails.Clear();
-        ProcessedCharacterDetails.clear();
+        ClearAllCharacterDetails();
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         std::wstring currentText = converter.from_bytes(text);
         std::vector<ssGUI::CharacterDetails> newDetails;
@@ -1492,6 +1497,7 @@ namespace ssGUI
         CurrentCharactersDetails[index] = details;
 
         RecalculateTextNeeded = true;
+        TextContentChanged = true;
         RedrawObject();
     }
 
@@ -1516,6 +1522,7 @@ namespace ssGUI
         CurrentCharactersDetails.Add(details, index);
 
         RecalculateTextNeeded = true;
+        TextContentChanged = true;
         RedrawObject();
     }
 
@@ -1523,6 +1530,7 @@ namespace ssGUI
     {
         CurrentCharactersDetails.Add(details);
         RecalculateTextNeeded = true;
+        TextContentChanged = true;
         RedrawObject();
     }
     
@@ -1534,12 +1542,16 @@ namespace ssGUI
         CurrentCharactersDetails.Add(details, index);
 
         RecalculateTextNeeded = true;
+        TextContentChanged = true;
         RedrawObject();
     }
 
     void Text::AddCharacterDetails(std::vector<ssGUI::CharacterDetails>& details)
     {
         CurrentCharactersDetails.Add(details);
+        RecalculateTextNeeded = true;
+        TextContentChanged = true;
+        RedrawObject();
     }
 
     void Text::RemoveCharacterDetails(int index)
@@ -1549,6 +1561,7 @@ namespace ssGUI
 
         CurrentCharactersDetails.Remove(index);
         RecalculateTextNeeded = true;
+        TextContentChanged = true;
         RedrawObject();
     }
 
@@ -1562,6 +1575,7 @@ namespace ssGUI
 
         CurrentCharactersDetails.Remove(startIndex, exclusiveEndIndex);
         RecalculateTextNeeded = true;
+        TextContentChanged = true;
         RedrawObject();
     }
 
@@ -1569,6 +1583,7 @@ namespace ssGUI
     {
         CurrentCharactersDetails.Clear();
         RecalculateTextNeeded = true;
+        TextContentChanged = true;
         RedrawObject();
     }
 

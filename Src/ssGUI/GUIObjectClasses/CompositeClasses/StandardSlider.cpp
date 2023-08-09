@@ -20,7 +20,8 @@ namespace
 
 namespace ssGUI
 {
-    StandardSlider::StandardSlider(StandardSlider const& other) :   SliderTitleTextObject(other.SliderTitleTextObject),
+    StandardSlider::StandardSlider(StandardSlider const& other) :   Widget(other),
+                                                                    SliderTitleTextObject(other.SliderTitleTextObject),
                                                                     SliderObject(other.SliderObject),
                                                                     SliderDisplayValueTextObject(other.SliderDisplayValueTextObject),
                                                                     MinDisplayValue(other.MinDisplayValue),
@@ -47,7 +48,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [holderId, this](ssGUI::EventInfo info)
+            [holderId, this](ssGUI::EventInfo& info)
             {
                 auto* slider = static_cast<ssGUI::Slider*>(info.Container);
                 auto* standardSlider = info.References->GetObjectReference<ssGUI::StandardSlider>(holderId);

@@ -57,6 +57,8 @@ namespace ssGUI
 
         uint32_t LastDefaultFontsID;                                                        //(Internal variable) Used to keep track if there's any changes to the default fonts
 
+        bool TextContentChanged;                                                            //(Internal variable) Used to keep track if there's any changes to the text content
+
         static int TextObjectCount;                                                         //(Internal variable) Used for deallocating default resources
         static std::vector<ssGUI::Font*> DefaultFonts;                                      //See <GetDefaultFont>
         static uint32_t DefaultFontsChangeID;                                               //(Internal variable) Used to track default font changes
@@ -86,7 +88,8 @@ namespace ssGUI
                     DeselectWhenFocusLost(true),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
-                    LastDefaultFontsID(0)
+                    LastDefaultFontsID(0),
+                    TextContentChanged(false)
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
@@ -97,7 +100,7 @@ namespace ssGUI
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
@@ -109,7 +112,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* text = static_cast<ssGUI::Text*>(info.Container);
                 
@@ -163,6 +166,8 @@ namespace ssGUI
             glm::u8vec4 TextSelectedColor;                                                      //See <GetTextSelectedColor>
 
             uint32_t LastDefaultFontsID;                                                        //(Internal variable) Used to keep track if there's any changes to the default fonts
+
+            bool TextContentChanged;                                                            //(Internal variable) Used to keep track if there's any changes to the text content
 
             static int TextObjectCount;                                                         //(Internal variable) Used for deallocating default resources
             static std::vector<ssGUI::Font*> DefaultFonts;                                      //See <GetDefaultFont>

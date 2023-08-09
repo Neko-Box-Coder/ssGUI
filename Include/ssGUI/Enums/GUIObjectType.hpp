@@ -1,7 +1,10 @@
 #ifndef SSGUI_OBJECT_TYPE_H
 #define SSGUI_OBJECT_TYPE_H
 
+#include "ssGUI/HelperClasses/EnumToStringMacro.hpp"
 #include <cstdint>
+#include <string>
+
 namespace ssGUI 
 { 
     
@@ -66,7 +69,8 @@ namespace Enums
         SLIDER =            1 << 13,
         SCROLLBAR =         1 << 14,
         IMAGE_CANVAS =      1 << 15,
-        STANDARD_SLIDER =   1 << 16
+        STANDARD_SLIDER =   1 << 16,
+        COUNT =             1 << 17
     };
 
     inline ssGUI::Enums::GUIObjectType operator|(ssGUI::Enums::GUIObjectType a, ssGUI::Enums::GUIObjectType b)
@@ -88,6 +92,57 @@ namespace Enums
     {
         return !(a==b);
     };
+    
+    namespace
+    {
+        inline std::string InternalGUIObjectTypeToString(GUIObjectType guiObjectType)
+        {
+            static_assert((int)GUIObjectType::COUNT == 1 << 17, "ToString");
+            switch(guiObjectType)
+            {
+                RETURN_ENUM_STRING(GUIObjectType::WINDOW);
+                RETURN_ENUM_STRING(GUIObjectType::WIDGET);
+                RETURN_ENUM_STRING(GUIObjectType::MAIN_WINDOW);
+                RETURN_ENUM_STRING(GUIObjectType::IMAGE);
+                RETURN_ENUM_STRING(GUIObjectType::TEXT);
+                RETURN_ENUM_STRING(GUIObjectType::BUTTON);
+                RETURN_ENUM_STRING(GUIObjectType::BASE_OBJECT);
+                RETURN_ENUM_STRING(GUIObjectType::STANDARD_WINDOW);
+                RETURN_ENUM_STRING(GUIObjectType::STANDARD_BUTTON);
+                RETURN_ENUM_STRING(GUIObjectType::MENU);
+                RETURN_ENUM_STRING(GUIObjectType::MENU_ITEM);
+                RETURN_ENUM_STRING(GUIObjectType::DROPDOWN);
+                RETURN_ENUM_STRING(GUIObjectType::TEXT_FIELD);
+                RETURN_ENUM_STRING(GUIObjectType::SLIDER);
+                RETURN_ENUM_STRING(GUIObjectType::SCROLLBAR);
+                RETURN_ENUM_STRING(GUIObjectType::IMAGE_CANVAS);
+                RETURN_ENUM_STRING(GUIObjectType::STANDARD_SLIDER);
+                RETURN_ENUM_STRING(GUIObjectType::COUNT);
+            }
+            
+            return "";
+        }
+    }
+    
+    //function: GUIObjectTypeToString
+    inline std::string GUIObjectTypeToString(GUIObjectType guiObjectType)
+    {
+        static_assert((int)GUIObjectType::COUNT == 1 << 17, "ToString");
+        
+        std::string curString;
+        for(int i = 0; i < 18; ++i)
+        {
+            std::string returnString = InternalGUIObjectTypeToString(guiObjectType & (GUIObjectType)(1 << i));
+            if(!returnString.empty())
+                curString += returnString + ", ";
+        }
+        
+        //Remove last comma
+        if(!curString.empty())
+            curString.erase(curString.begin() + curString.size() - 2);
+
+        return curString;
+    }
 }
 
 }

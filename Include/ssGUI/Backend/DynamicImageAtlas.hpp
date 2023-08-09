@@ -16,7 +16,7 @@ namespace Backend
 {
     /*class: ssGUI::Backend::DynamicImageAtlas
     This is an internal data structure for managing image atlas for OpenGL backends. 
-    By default there's only 1 layer of image atlas, each layer has many cells for storing the textures.
+    By default there's 0 layer, each layer has many cells for storing the textures.
     
     You normally don't have to deal with this class.
 
@@ -209,6 +209,10 @@ namespace Backend
             //function: GetAtlasSize
             //The size in pixels for each layer of image atlas
             glm::ivec2 GetAtlasSize();
+    
+            //function: GetAtlasLayersCount
+            //Get how many layers currently
+            int GetAtlasLayersCount();
     };
 }
 

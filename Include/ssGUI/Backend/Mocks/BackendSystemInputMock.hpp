@@ -7,6 +7,8 @@
 //#define SSGUI_MOCK_ENABLE_LOG
 #include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
+#include <chrono>
+
 namespace ssGUI
 {
 

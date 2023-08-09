@@ -87,7 +87,7 @@ int main()
         button->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
         (
             "AnyKey",
-            [&text, i](ssGUI::EventInfo info)
+            [&text, i](ssGUI::EventInfo& info)
             {
                 if(((ssGUI::Button*)info.EventSource)->GetButtonState() != ssGUI::Enums::ButtonState::CLICKED)
                     return;

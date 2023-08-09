@@ -97,12 +97,12 @@ namespace Backend
     bool BackendDrawingX11_OpenGL3_3::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
         InitializeOpenGLCommonIfNeeded();
-
         return OpenGLCommon->DrawEntities(entities);
     }
     
     void BackendDrawingX11_OpenGL3_3::DrawToBackBuffer()
     {
+        InitializeOpenGLCommonIfNeeded();
         OpenGLCommon->DrawToBackBuffer();
     }
 
@@ -127,6 +127,7 @@ namespace Backend
 
     void BackendDrawingX11_OpenGL3_3::ClearBackBuffer(glm::u8vec3 clearColor)
     {
+        InitializeOpenGLCommonIfNeeded();
         GL_CHECK_ERROR( glClearColor(   static_cast<float>(clearColor.r) / 255.f, 
                                         static_cast<float>(clearColor.g) / 255.f, 
                                         static_cast<float>(clearColor.b) / 255.f, 

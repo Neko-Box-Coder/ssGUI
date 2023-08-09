@@ -131,6 +131,7 @@ namespace Backend
         const int VERT_TEX_COORD_INDEX;                                                     //(Internal variable) Shader layout location for texture coordinates
         const int VERT_TEX_TOP_LEFT_INDEX;                                                  //(Internal variable) Shader layout location for top left texture coordinates
         const int VERT_TEX_BOT_RIGHT_INDEX;                                                 //(Internal variable) Shader layout location for bot right texture coordinates
+        static const int MAX_TEXTURE_LAYER_SIZE;                                            //(Internal variable) Size in pixel for width and height for each layer in image atlas
     =================================================================
     ============================== C++ ==============================
     OpenGL3_3_Common::OpenGL3_3_Common( BackendMainWindowInterface* mainWindow) :   ProgramId(0),
@@ -163,16 +164,16 @@ namespace Backend
         mainWindow->SetGLContext();
     
         GLint maxTextureSize = 0;
-        GLint maxLayerSize = 0;
+        //GLint maxLayerSize = 0;
         
         GL_CHECK_ERROR( glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize) );
-        GL_CHECK_ERROR( glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxLayerSize) );
+        //GL_CHECK_ERROR( glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxLayerSize) );
         
         //ssLOG_LINE("maxTextureSize: "<<maxTextureSize);
         //ssLOG_LINE("maxLayerSize: "<<maxLayerSize);
         
         //maxTextureSize = 1920;
-        maxTextureSize = maxTextureSize > 4096 ? 4096 : maxTextureSize;
+        maxTextureSize = maxTextureSize > MAX_TEXTURE_LAYER_SIZE ? MAX_TEXTURE_LAYER_SIZE : maxTextureSize;
         
         GLint success = GL_FALSE;
         char infoLog[512] { 0 };
@@ -239,30 +240,6 @@ namespace Backend
         // delete the shaders as they're linked into our program now and no longer necessary
         GL_CHECK_ERROR( glDeleteShader(vertexShaderId) );
         GL_CHECK_ERROR( glDeleteShader(fragmentShaderId) );
-        
-        GL_CHECK_ERROR( glEnable(GL_TEXTURE_3D) );
-        
-        GL_CHECK_ERROR( glGenTextures(1, &CachedImages) );
-        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D_ARRAY, CachedImages) );
-        
-        //GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) );
-        GL_CHECK_ERROR( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) );
-        
-        GL_CHECK_ERROR( glTexImage3D(   GL_TEXTURE_2D_ARRAY, 
-                                        0, 
-                                        GL_RGBA8, 
-                                        maxTextureSize, 
-                                        maxTextureSize,
-                                        1,
-                                        0,
-                                        GL_RGBA,
-                                        GL_UNSIGNED_BYTE,
-                                        NULL) );
-        
-        GL_CHECK_ERROR( glBindTexture(GL_TEXTURE_2D_ARRAY, 0) );
         
         //Generate ID for VBOs for vertex pos, colors, UVs and UseUVs flag
         GL_CHECK_ERROR( glGenBuffers(1, &VertsVBO) );
@@ -476,6 +453,8 @@ namespace Backend
             outColor = linearColor * (fragColorN);
         }  
     )";
+    
+    const int OpenGL3_3_Common::MAX_TEXTURE_LAYER_SIZE = 4096;
     =================================================================
     */
     class OpenGL3_3_Common
@@ -517,6 +496,7 @@ namespace Backend
             const int VERT_TEX_COORD_INDEX;                                                     //(Internal variable) Shader layout location for texture coordinates
             const int VERT_TEX_TOP_LEFT_INDEX;                                                  //(Internal variable) Shader layout location for top left texture coordinates
             const int VERT_TEX_BOT_RIGHT_INDEX;                                                 //(Internal variable) Shader layout location for bot right texture coordinates
+            static const int MAX_TEXTURE_LAYER_SIZE;                                            //(Internal variable) Size in pixel for width and height for each layer in image atlas
 
             //TODO: Method to generate mipmap
 
@@ -535,6 +515,7 @@ namespace Backend
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::u8vec4>& colors);
             
+            GLuint CreateTexture2DArray(int textureSize, int numOfLayers);
             
             bool OnNewAtlasRequest();
             

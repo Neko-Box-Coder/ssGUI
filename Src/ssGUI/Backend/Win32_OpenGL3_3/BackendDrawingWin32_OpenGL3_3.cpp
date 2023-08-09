@@ -120,12 +120,12 @@ namespace Backend
     bool BackendDrawingWin32_OpenGL3_3::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
         InitializeOpenGLCommonIfNeeded();
-
         return OpenGLCommon->DrawEntities(entities);
     }
 
     void BackendDrawingWin32_OpenGL3_3::DrawToBackBuffer()
     {
+        InitializeOpenGLCommonIfNeeded();
         OpenGLCommon->DrawToBackBuffer();
     }
 
@@ -161,6 +161,7 @@ namespace Backend
 
     void BackendDrawingWin32_OpenGL3_3::ClearBackBuffer(glm::u8vec3 clearColor) 
     {
+        InitializeOpenGLCommonIfNeeded();
         //Seems like this is causing memory leak
         //GL_CHECK_ERROR( glClearColor(1, 1, 1, 1); );
         //GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );

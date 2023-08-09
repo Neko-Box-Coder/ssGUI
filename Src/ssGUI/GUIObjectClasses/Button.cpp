@@ -134,7 +134,7 @@ namespace ssGUI
         auto stateChangedEventCallback = AddEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         stateChangedEventCallback->AddEventListener(
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(info.EventSource);
                 glm::u8vec4 btnColor = btn->GetButtonColor();
