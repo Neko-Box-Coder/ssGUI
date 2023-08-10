@@ -4,7 +4,7 @@
 //#define SSGUI_MOCK_ENABLE_LOG
 #include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
-#include "FunctionOverrides.hpp"
+#include "SimpleOverride.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
 namespace ssGUI
@@ -39,7 +39,7 @@ namespace Backend
             bool CloseButton;
             ssGUI::Enums::WindowMode WindowMode;
             
-            FO_DECLARE_INSTNACE(OverrideObject);
+            SO_DECLARE_INSTNACE(OverrideObject);
         
             BackendMainWindowMock& operator=(BackendMainWindowMock const& other);
 
@@ -50,7 +50,7 @@ namespace Backend
             BackendMainWindowMock(ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface);
             ~BackendMainWindowMock() override;
 
-            FO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+            SO_DECLARE_OVERRIDE_METHODS(OverrideObject)
 
             void SetMockPositionOffset(glm::ivec2 offset);
 
