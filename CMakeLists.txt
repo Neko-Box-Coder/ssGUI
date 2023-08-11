@@ -351,34 +351,32 @@ target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Include"
 
 # Linking clip to ssGUI
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
-    target_link_libraries(ssGUI PUBLIC clip)
+    target_link_libraries(ssGUI PRIVATE clip)
 endif()
 
 # Linking ssLogger to ssGUI
-target_link_libraries(ssGUI PUBLIC ssLogger)
-
-target_link_libraries(ssGUI PUBLIC ssTest)
+target_link_libraries(ssGUI PRIVATE ssLogger)
 
 # ==========================================================
 # Linking Backend to ssGUI and adding backend compiler definitions
 # ==========================================================
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
-        target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
+        target_link_libraries(ssGUI PRIVATE SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
         target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_SFML)
     elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
         add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
         target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_WIN32_OPENGL)
-        target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
+        target_include_directories(ssGUI PRIVATE "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
         find_package(OpenGL REQUIRED)
-        target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
+        target_link_libraries(ssGUI PRIVATE OpenGL::GL glad)
         set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
     elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
         add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
         target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_X11_OPENGL)
         find_package(OpenGL REQUIRED)
         find_package(X11 REQUIRED)
-        target_link_libraries(ssGUI PUBLIC OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
+        target_link_libraries(ssGUI PRIVATE OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
         set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
     elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
         message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
@@ -389,7 +387,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     if(ssGUI_FONT_BACKEND STREQUAL "SFML")
         target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_SFML)
     elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-        target_link_libraries(ssGUI PUBLIC freetype)
+        target_link_libraries(ssGUI PRIVATE freetype)
         target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_FREE_TYPE)
     elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
         message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
@@ -401,7 +399,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
         target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_SFML)
     elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
         target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_STB_IMAGE)
-        target_link_libraries(ssGUI PUBLIC ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+        target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
     elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
         message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
     else()
@@ -410,7 +408,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
 endif()
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-    target_link_libraries(ssGUI PUBLIC SimpleOverride)
+    target_link_libraries(ssGUI PRIVATE SimpleOverride)
     target_compile_definitions(ssGUI PUBLIC SSGUI_MOCK_BACKEND)
     
     if(ssGUI_MAIN_BACKEND STREQUAL "Mock")
@@ -536,9 +534,13 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName targetsToL
         # add the executable
         add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
 
+        if(CUR_NAME STREQUAL "CustomGraphicsExampleV2")
+            target_link_libraries("${CUR_NAME}" PRIVATE OpenGL::GL glad)
+        endif()
+
         # Link targets
         foreach(linkTarget ${targetsToLink})
-            target_link_libraries("${CUR_NAME}" PUBLIC ${linkTarget})
+            target_link_libraries("${CUR_NAME}" PRIVATE ${linkTarget})
         endforeach()
 
         # Sub-directory for build
@@ -554,7 +556,6 @@ function(AddFilesToExecutables folderToExe binSubFolder ideFolderName targetsToL
 endfunction()
 
 #CopyResources(${CMAKE_CURRENT_BINARY_DIR})
-
 
 if(ssGUI_BUILD_TESTS)
     # Check if test resources is populated
@@ -589,7 +590,7 @@ if(ssGUI_BUILD_TESTS)
         AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/BackendTests/" 
                                 "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
                                 "Tests/AutoTests/BackendTests"
-                                "ssGUI;ssGUI_Test_Resources")
+                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
     #else()
     #    message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping backend tests")
     #    message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce backend tests")
@@ -600,12 +601,12 @@ if(ssGUI_BUILD_TESTS)
         AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
                                 "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
                                 "Tests/AutoTests/EventCallbackTests"
-                                "ssGUI;ssGUI_Test_Resources")
+                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
         
         AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/GUIObjectTests/" 
                                 "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/GUIObjectTests/" 
                                 "Tests/AutoTests/GUIObjectTests"
-                                "ssGUI;ssGUI_Test_Resources")    
+                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")    
     else()
         message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OFF_OPTION_STRING}, skipping tests")
     endif()
@@ -629,7 +630,7 @@ if(ssGUI_BUILD_TESTS)
         AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
                                 "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 
                                 "Tests/ManualTests/BackendTests"
-                                "ssGUI;ssGUI_Test_Resources")
+                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
     else()
         message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping manual backend tests")
         message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce manual backend tests")
@@ -639,12 +640,12 @@ if(ssGUI_BUILD_TESTS)
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" 
                             "Tests/ManualTests/EventCallbackTests"
-                            "ssGUI;ssGUI_Test_Resources")
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/GUIObjectTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/GUIObjectTests/" 
                             "Tests/ManualTests/GUIObjectTests"
-                            "ssGUI;ssGUI_Test_Resources")
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
     
     # ----------------------------------------------------------
     # Tests Templates
@@ -652,12 +653,12 @@ if(ssGUI_BUILD_TESTS)
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" 
                             "Tests/AutoTests"
-                            "ssGUI;ssGUI_Test_Resources")
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/" 
                             "Tests/ManualTests"
-                            "ssGUI;ssGUI_Test_Resources")
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
 endif()
 
 if(ssGUI_BUILD_EXAMPLES)
@@ -668,7 +669,7 @@ if(ssGUI_BUILD_EXAMPLES)
                     "${CMAKE_CURRENT_LIST_DIR}/Resources/sd.png"
                     "ssGUI_Example_sd"
                     "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoSans-Bold.ttf"
-                    "ssGUI_Example_NotoSans_Bold")
+                    "ssGUI_Example_NotoSans_Bold;ssLogger")
 
         file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/ExamplesResources.c" EMBEDDED_FILE_SIZE)
         if(EMBEDDED_FILE_SIZE LESS 1024)
@@ -683,10 +684,10 @@ if(ssGUI_BUILD_EXAMPLES)
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Examples/" 
                             "Examples"
-                            "ssGUI;ssGUI_Example_Resources")
+                            "ssGUI;ssGUI_Example_Resources;ssLogger")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/Playground/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/Examples/Playground/" 
                             "Examples/Playground"
-                            "ssGUI;ssGUI_Example_Resources")
+                            "ssGUI;ssGUI_Example_Resources;ssLogger")
 endif()
