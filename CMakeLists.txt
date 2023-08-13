@@ -210,6 +210,20 @@ if(ssGUI_HIDE_VARIABLES_ssLOGGER)
                             ssLOG_WRAP_WITH_BRACKET
                             ssLOG_LOG_TO_FILE
                             ssLOG_LEVEL)
+else()
+    mark_as_advanced(CLEAR  ssLOG_OUTPUT_STATIC
+                            ssLOG_USE_SOURCE
+                            ssLOG_BUILD_TESTS
+                            ssLOG_CALL_STACK
+                            ssLOG_LOG_WITH_ASCII
+                            ssLOG_SHOW_FILE_NAME
+                            ssLOG_SHOW_LINE_NUM
+                            ssLOG_SHOW_FUNC_NAME
+                            ssLOG_SHOW_TIME
+                            ssLOG_THREAD_SAFE
+                            ssLOG_WRAP_WITH_BRACKET
+                            ssLOG_LOG_TO_FILE
+                            ssLOG_LEVEL)
 endif()
 
 # ==========================================================
@@ -232,6 +246,9 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
 if(ssGUI_HIDE_VARIABLES_SIMPLE_OVERRIDE)
     mark_as_advanced(FORCE  SIMPLE_OVERRIDE_BUILD_TEST
                             SIMPLE_OVERRIDE_BUILD_EXAMPLE)
+else()
+    mark_as_advanced(CLEAR  SIMPLE_OVERRIDE_BUILD_TEST
+                            SIMPLE_OVERRIDE_BUILD_EXAMPLE)
 endif()
 
 endif()
@@ -252,6 +269,11 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     
     if(ssGUI_HIDE_VARIABLES_CLIP)
         mark_as_advanced(FORCE  CLIP_EXAMPLES
+                                CLIP_TESTS
+                                CLIP_X11_WITH_PNG
+                                PNG_LIBRARY)
+    else()
+        mark_as_advanced(CLEAR  CLIP_EXAMPLES
                                 CLIP_TESTS
                                 CLIP_X11_WITH_PNG
                                 PNG_LIBRARY)
@@ -297,6 +319,18 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
         set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
         if(ssGUI_HIDE_VARIABLES_FREETYPE)
             mark_as_advanced(FORCE  FT_DISABLE_ZLIB
+                                    FT_DISABLE_BZIP2
+                                    FT_DISABLE_PNG
+                                    FT_DISABLE_HARFBUZZ
+                                    FT_DISABLE_BROTLI
+                                    FT_ENABLE_ERROR_STRINGS
+                                    FT_REQUIRE_ZLIB
+                                    FT_REQUIRE_BZIP2
+                                    FT_REQUIRE_PNG
+                                    FT_REQUIRE_HARFBUZZ
+                                    FT_REQUIRE_BROTLI)
+        else()
+            mark_as_advanced(CLEAR  FT_DISABLE_ZLIB
                                     FT_DISABLE_BZIP2
                                     FT_DISABLE_PNG
                                     FT_DISABLE_HARFBUZZ
