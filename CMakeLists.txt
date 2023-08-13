@@ -161,8 +161,14 @@ set(ssLOG_BUILD_TESTS   "FALSE" CACHE BOOL "If true, this will build tests")
 set(ssLOG_CALL_STACK    "FALSE" CACHE BOOL "If true, this will build tests")
 set(ssLOG_THREAD_SAFE   "FALSE" CACHE BOOL "Use std::thread and ensure thread safety for all logged functions")
 
+# Options for hiding submodules' variables
+set(ssGUI_HIDE_ssLOGGER_VARIABLES ON CACHE BOOL "If true, this will hide all ssLogger CMake variables")
+set(ssGUI_HIDE_SIMPLE_OVERRIDE_VARIABLES ON CACHE BOOL "If true, this will hide all SimpleOverride CMake variables")
+set(ssGUI_HIDE_CLIP_OVERRIDE_VARIABLES ON CACHE BOOL "If true, this will hide all Clip CMake variables")
+set(ssGUI_HIDE_FREETYPE_OVERRIDE_VARIABLES ON CACHE BOOL "If true, this will hide all FreeType CMake variables")
+
 # Dividers
-set(ssGUI@_CMAKE_VARIABLES_START============================= "===========================================================" CACHE STRING "Divider") 
+set(ssGUI_@CMAKE_VARIABLES_START============================= "===========================================================" CACHE STRING "Divider") 
 set(ssGUI__CMAKE_VARIABLES_END=============================== "===========================================================" CACHE STRING "Divider") 
 
 if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -180,6 +186,22 @@ endif()
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/External/ssLogger")
 set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
+if(NOT ssGUI_HIDE_ssLOGGER_VARIABLES)
+    mark_as_advanced(FORCE  ssLOG_OUTPUT_STATIC
+                            ssLOG_USE_SOURCE
+                            ssLOG_BUILD_TESTS
+                            ssLOG_CALL_STACK
+                            ssLOG_LOG_WITH_ASCII
+                            ssLOG_SHOW_FILE_NAME
+                            ssLOG_SHOW_LINE_NUM
+                            ssLOG_SHOW_FUNC_NAME
+                            ssLOG_SHOW_TIME
+                            ssLOG_THREAD_SAFE
+                            ssLOG_WRAP_WITH_BRACKET
+                            ssLOG_LOG_TO_FILE
+                            ssLOG_LEVEL)
+endif()
+
 # ==========================================================
 # ssTest 
 # ==========================================================
@@ -196,6 +218,12 @@ set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/SimpleOverride" "${CMAKE_CURRENT_BINARY_DIR}/External/SimpleOverride")
     set_target_properties(SimpleOverride PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+
+if(NOT ssGUI_HIDE_SIMPLE_OVERRIDE_VARIABLES)
+    mark_as_advanced(FORCE  SIMPLE_OVERRIDE_BUILD_TEST
+                            SIMPLE_OVERRIDE_BUILD_EXAMPLE)
+endif()
+
 endif()
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
@@ -211,6 +239,13 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
 
     # Add clip subdirectory to compile the library
     add_subdirectory("${PROJECT_SOURCE_DIR}/External/clip")
+    
+    if(NOT ssGUI_HIDE_CLIP_OVERRIDE_VARIABLES)
+        mark_as_advanced(FORCE  CLIP_EXAMPLES
+                                CLIP_TESTS
+                                CLIP_X11_WITH_PNG
+                                PNG_LIBRARY)
+    endif()
 
     target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/External/clip")
 
@@ -248,8 +283,21 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     if(ssGUI_FONT_BACKEND STREQUAL "FreeType")
         add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/freetype" "${CMAKE_CURRENT_BINARY_DIR}/External/freetype")
         unset(FT_DISABLE_HARFBUZZ CACHE)
-        set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
+        set(FT_DISABLE_HARFBUZZ ON)  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
         set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+        if(NOT ssGUI_HIDE_FREETYPE_OVERRIDE_VARIABLES)
+            mark_as_advanced(FORCE  FT_DISABLE_ZLIB
+                                    FT_DISABLE_BZIP2
+                                    FT_DISABLE_PNG
+                                    FT_DISABLE_HARFBUZZ
+                                    FT_DISABLE_BROTLI
+                                    FT_ENABLE_ERROR_STRINGS
+                                    FT_REQUIRE_ZLIB
+                                    FT_REQUIRE_BZIP2
+                                    FT_REQUIRE_PNG
+                                    FT_REQUIRE_HARFBUZZ
+                                    FT_REQUIRE_BROTLI)
+        endif()
     endif()
 
     # ==========================================================
@@ -448,6 +496,7 @@ endif()
 if(ssGUI_USE_LOG_FUNC)
     target_compile_definitions(ssGUI PUBLIC ssGUI_USE_LOG_FUNC=1)
 endif()
+
 #See ssGUI/HelperClasses/LogWithTagsAndLevel.hpp for log tags and levels
 if(NOT ssGUI_LOG_TAG STREQUAL "None")
     if(ssGUI_LOG_TAG STREQUAL "ssGUI_MANAGER_TAG")
