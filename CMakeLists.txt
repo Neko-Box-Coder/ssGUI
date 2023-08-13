@@ -161,11 +161,21 @@ set(ssLOG_BUILD_TESTS   "FALSE" CACHE BOOL "If true, this will build tests")
 set(ssLOG_CALL_STACK    "FALSE" CACHE BOOL "If true, this will build tests")
 set(ssLOG_THREAD_SAFE   "FALSE" CACHE BOOL "Use std::thread and ensure thread safety for all logged functions")
 
-# Options for hiding submodules' variables
-set(ssGUI_HIDE_ssLOGGER_VARIABLES ON CACHE BOOL "If true, this will hide all ssLogger CMake variables")
-set(ssGUI_HIDE_SIMPLE_OVERRIDE_VARIABLES ON CACHE BOOL "If true, this will hide all SimpleOverride CMake variables")
-set(ssGUI_HIDE_CLIP_OVERRIDE_VARIABLES ON CACHE BOOL "If true, this will hide all Clip CMake variables")
-set(ssGUI_HIDE_FREETYPE_OVERRIDE_VARIABLES ON CACHE BOOL "If true, this will hide all FreeType CMake variables")
+# Options for hiding submodules
+set(ssGUI_HIDE_VARIABLES_ssLOGGER ON CACHE BOOL "If true, this will hide all ssLogger CMake variables")
+set(ssGUI_HIDE_VARIABLES_SIMPLE_OVERRIDE ON CACHE BOOL "If true, this will hide all SimpleOverride CMake variables")
+set(ssGUI_HIDE_VARIABLES_CLIP ON CACHE BOOL "If true, this will hide all Clip CMake variables")
+set(ssGUI_HIDE_VARIABLES_FREETYPE ON CACHE BOOL "If true, this will hide all FreeType CMake variables")
+#TODO: Add SFML
+
+set(ssGUI_HIDE_TARGET_ssLOGGER ON CACHE BOOL "If true, this will hide ssLogger CMake target")
+set(ssGUI_HIDE_TARGET_SIMPLE_OVERRIDE ON CACHE BOOL "If true, this will hide SimpleOverride CMake target")
+set(ssGUI_HIDE_TARGET_CLIP ON CACHE BOOL "If true, this will hide Clip CMake target")
+set(ssGUI_HIDE_TARGET_FREETYPE ON CACHE BOOL "If true, this will hide FreeType CMake target")
+set(ssGUI_HIDE_TARGET_SFML ON CACHE BOOL "If true, this will hide sfml CMake target")
+set(ssGUI_HIDE_TARGET_GLAD ON CACHE BOOL "If true, this will hide glad, opengl and window related CMake target")
+set(ssGUI_HIDE_TARGET_STB_IMAGE ON CACHE BOOL "If true, this will hide stb image CMake target")
+
 
 # Dividers
 set(ssGUI_@CMAKE_VARIABLES_START============================= "===========================================================" CACHE STRING "Divider") 
@@ -186,7 +196,7 @@ endif()
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/ssLogger" "${CMAKE_CURRENT_BINARY_DIR}/External/ssLogger")
 set_target_properties(ssLogger PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
-if(NOT ssGUI_HIDE_ssLOGGER_VARIABLES)
+if(ssGUI_HIDE_VARIABLES_ssLOGGER)
     mark_as_advanced(FORCE  ssLOG_OUTPUT_STATIC
                             ssLOG_USE_SOURCE
                             ssLOG_BUILD_TESTS
@@ -219,7 +229,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/SimpleOverride" "${CMAKE_CURRENT_BINARY_DIR}/External/SimpleOverride")
     set_target_properties(SimpleOverride PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
-if(NOT ssGUI_HIDE_SIMPLE_OVERRIDE_VARIABLES)
+if(ssGUI_HIDE_VARIABLES_SIMPLE_OVERRIDE)
     mark_as_advanced(FORCE  SIMPLE_OVERRIDE_BUILD_TEST
                             SIMPLE_OVERRIDE_BUILD_EXAMPLE)
 endif()
@@ -240,7 +250,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     # Add clip subdirectory to compile the library
     add_subdirectory("${PROJECT_SOURCE_DIR}/External/clip")
     
-    if(NOT ssGUI_HIDE_CLIP_OVERRIDE_VARIABLES)
+    if(ssGUI_HIDE_VARIABLES_CLIP)
         mark_as_advanced(FORCE  CLIP_EXAMPLES
                                 CLIP_TESTS
                                 CLIP_X11_WITH_PNG
@@ -285,7 +295,7 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
         unset(FT_DISABLE_HARFBUZZ CACHE)
         set(FT_DISABLE_HARFBUZZ ON)  # Disabling FT_DISABLE_HARFBUZZ by default as it is causing errors
         set_target_properties(freetype PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
-        if(NOT ssGUI_HIDE_FREETYPE_OVERRIDE_VARIABLES)
+        if(ssGUI_HIDE_VARIABLES_FREETYPE)
             mark_as_advanced(FORCE  FT_DISABLE_ZLIB
                                     FT_DISABLE_BZIP2
                                     FT_DISABLE_PNG
@@ -400,32 +410,58 @@ target_include_directories(ssGUI PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Include"
 
 # Linking clip to ssGUI
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
-    target_link_libraries(ssGUI PRIVATE clip)
+    if(ssGUI_HIDE_TARGET_CLIP)
+        target_link_libraries(ssGUI PRIVATE clip)
+    else()
+        target_link_libraries(ssGUI PUBLIC clip)
+    endif()
 endif()
 
 # Linking ssLogger to ssGUI
-target_link_libraries(ssGUI PRIVATE ssLogger)
+if(ssGUI_HIDE_TARGET_ssLOGGER)
+    target_link_libraries(ssGUI PRIVATE ssLogger)
+else()
+    target_link_libraries(ssGUI PUBLIC ssLogger)
+endif()
+
 
 # ==========================================================
 # Linking Backend to ssGUI and adding backend compiler definitions
 # ==========================================================
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     if(ssGUI_MAIN_BACKEND STREQUAL "SFML")
-        target_link_libraries(ssGUI PRIVATE SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
+        if(ssGUI_HIDE_TARGET_SFML)
+            target_link_libraries(ssGUI PRIVATE SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
+        else()
+            target_link_libraries(ssGUI PUBLIC SFML::Network SFML::Audio SFML::Graphics SFML::Window SFML::System)
+        endif()
+        
         target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_SFML)
     elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
         add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
         target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_WIN32_OPENGL)
         target_include_directories(ssGUI PRIVATE "${CMAKE_CURRENT_LIST_DIR}/External/wglExt")
         find_package(OpenGL REQUIRED)
-        target_link_libraries(ssGUI PRIVATE OpenGL::GL glad)
+        
+        if(ssGUI_HIDE_TARGET_GLAD)
+            target_link_libraries(ssGUI PRIVATE OpenGL::GL glad)
+        else()
+            target_link_libraries(ssGUI PUBLIC OpenGL::GL glad)
+        endif()
+        
         set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
     elseif(ssGUI_MAIN_BACKEND STREQUAL "X11_OpenGL3_3")
         add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/glad_v0.1.36")
         target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_X11_OPENGL)
         find_package(OpenGL REQUIRED)
         find_package(X11 REQUIRED)
-        target_link_libraries(ssGUI PRIVATE OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
+        
+        if(ssGUI_HIDE_TARGET_GLAD)
+            target_link_libraries(ssGUI PRIVATE OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
+        else()
+            target_link_libraries(ssGUI PUBLIC OpenGL::GL X11::X11 X11::Xrandr X11::Xcursor glad)
+        endif()
+        
         set_target_properties(glad PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
     elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
         message(WARNING "Template for ssGUI_MAIN_BACKEND should only be used for compiling, running it will result a crash")
@@ -436,7 +472,13 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
     if(ssGUI_FONT_BACKEND STREQUAL "SFML")
         target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_SFML)
     elseif(ssGUI_FONT_BACKEND STREQUAL "FreeType")
-        target_link_libraries(ssGUI PRIVATE freetype)
+        
+        if(ssGUI_HIDE_TARGET_FREETYPE)
+            target_link_libraries(ssGUI PRIVATE freetype)
+        else()
+            target_link_libraries(ssGUI PUBLIC freetype)
+        endif()
+        
         target_compile_definitions(ssGUI PUBLIC SSGUI_FONT_BACKEND_FREE_TYPE)
     elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
         message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
@@ -448,7 +490,13 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
         target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_SFML)
     elseif(ssGUI_IMAGE_BACKEND STREQUAL "stb_image")
         target_compile_definitions(ssGUI PUBLIC SSGUI_IMAGE_BACKEND_STB_IMAGE)
-        target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+        
+        if(ssGUI_HIDE_TARGET_STB_IMAGE)
+            target_link_libraries(ssGUI PRIVATE ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+        else()
+            target_link_libraries(ssGUI PUBLIC ssGUI_stb_image)                        # INTERFACE doesn't work for whatever reason
+        endif()
+    
     elseif(ssGUI_FONT_BACKEND STREQUAL "Template")
         message(WARNING "Template for ssGUI_FONT_BACKEND should only be used for compiling, running it will result a crash")
     else()
@@ -457,7 +505,12 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
 endif()
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-    target_link_libraries(ssGUI PRIVATE SimpleOverride)
+    if(ssGUI_HIDE_TARGET_SIMPLE_OVERRIDE)
+        target_link_libraries(ssGUI PRIVATE SimpleOverride)
+    else()
+        target_link_libraries(ssGUI PUBLIC SimpleOverride)
+    endif()
+    
     target_compile_definitions(ssGUI PUBLIC SSGUI_MOCK_BACKEND)
     
     if(ssGUI_MAIN_BACKEND STREQUAL "Mock")
