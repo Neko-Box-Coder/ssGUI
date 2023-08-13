@@ -1,7 +1,7 @@
 #ifndef SSGUI_MOCK_MACRO_H
 #define SSGUI_MOCK_MACRO_H
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #define SSGUI_MOCK_PASSTHROUGH(funcOp)\
 do\

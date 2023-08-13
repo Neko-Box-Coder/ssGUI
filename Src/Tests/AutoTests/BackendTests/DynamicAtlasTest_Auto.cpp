@@ -1,5 +1,5 @@
 #include "ssGUI/Backend/DynamicImageAtlas.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 

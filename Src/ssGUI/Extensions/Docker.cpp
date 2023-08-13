@@ -74,7 +74,7 @@ namespace Extensions
 
     void Docker::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //If widget is not present, create it
         if((*widget) == nullptr)
@@ -93,13 +93,11 @@ namespace Extensions
 
         if((*widget)->GetParent() != Container)
             (*widget)->SetParent(Container);
-        
-        ssLOG_FUNC_EXIT();
     }
 
     void Docker::DrawPreview()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         CreateWidgetIfNotPresent(&DockPreivew, GetDockPreviewColor());
 
@@ -112,8 +110,6 @@ namespace Extensions
 
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(1);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Docker::DiscardPreview()
@@ -127,7 +123,7 @@ namespace Extensions
 
     void Docker::DrawTriggerArea()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         CreateWidgetIfNotPresent(&DockTrigger, GetTriggerAreaColor());
 
@@ -156,8 +152,6 @@ namespace Extensions
             as->SetVerticalPixel(GetTriggerVerticalPixel());
             as->SetVerticalPercentage(0);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Docker::DiscardTriggerArea()
@@ -191,13 +185,12 @@ namespace Extensions
     //This function basically make sure there's no unnecessary generated Docker that only contains 1 child
     void Docker::ChildRemoved(ssGUI::GUIObject* child)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(ChildRemoveGuard ||
             Container->IsUserCreated() ||
             !Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
         {
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -208,7 +201,6 @@ namespace Extensions
         if(realChildrenCount > 1)
         {
             ChildRemoveGuard = false;
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -227,7 +219,6 @@ namespace Extensions
             
             Container->Delete();
             ChildRemoveGuard = false;
-            ssLOG_FUNC_EXIT();
             return;
         }
         //If there's only 1 child left in the docker
@@ -333,8 +324,6 @@ namespace Extensions
         }
 
         ChildRemoveGuard = false;
-
-        ssLOG_FUNC_EXIT();
     }
 
     const std::string Docker::EXTENSION_NAME = "Docker";
@@ -447,20 +436,14 @@ namespace Extensions
     //Extension methods
     void Docker::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(!isPreUpdate || Container == nullptr || !Enabled)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //Check if Layout extension exists
         if(!Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         int baseChildCount = 0;
         if(DockPreivew != nullptr)
@@ -474,7 +457,6 @@ namespace Extensions
             //static_cast<ssGUI::Extensions::Layout*>(Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->SetEnabled(true);
             DiscardPreview();
             DiscardTriggerArea();
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -506,7 +488,6 @@ namespace Extensions
             if(mainWindow == nullptr)
             {
                 ssGUI_WARNING(ssGUI_EXT_TAG, "what?");
-                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -516,7 +497,6 @@ namespace Extensions
                 DiscardPreview();
                 DiscardTriggerArea();
                 ValidDocking = false;
-                ssLOG_FUNC_EXIT();
                 return;
             }
             
@@ -543,7 +523,6 @@ namespace Extensions
                 DiscardPreview();
                 DiscardTriggerArea();
                 ValidDocking = false;
-                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -576,8 +555,6 @@ namespace Extensions
             DiscardTriggerArea();
             ValidDocking = false;
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Docker::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -590,7 +567,7 @@ namespace Extensions
 
     void Docker::BindToObject(ssGUI::GUIObject* bindObj)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         Container = bindObj;
         ssGUI::GUIObject* containerParent = Container->GetParent();
@@ -650,8 +627,6 @@ namespace Extensions
                 containerDocker->ChildRemoved(info.EventSource);
             }
         );
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Docker::Copy(ssGUI::Extensions::Extension* extension)

@@ -214,20 +214,16 @@ namespace ssGUI
 
     Button* Button::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Button* temp = new Button(*this);
         CloneExtensionsAndEventCallbacks(temp);
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
 }

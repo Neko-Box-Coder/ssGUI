@@ -1,6 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 ssGUI::ssGUIManager* Manager;
 ssGUI::MainWindow* MainWindow;

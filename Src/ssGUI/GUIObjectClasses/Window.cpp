@@ -22,7 +22,7 @@ namespace ssGUI
 
     void Window::OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& inputStatus)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         MouseDownPosition = currentMousePos;
         TransformTotalMovedDistance = glm::vec2();
@@ -64,7 +64,6 @@ namespace ssGUI
         {
             inputStatus.MouseInputBlockedObject = this;
             SetFocus(true);
-            ssLOG_FUNC_EXIT();
             return;
         }
             
@@ -77,8 +76,6 @@ namespace ssGUI
             inputStatus.MouseInputBlockedObject = this;
             SetFocus(true);
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
-            
-            ssLOG_FUNC_EXIT();
             return;
         }
         //Input blocking
@@ -88,14 +85,11 @@ namespace ssGUI
             inputStatus.MouseInputBlockedObject = this;                
             SetFocus(true);
         }
-
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Window::OnMouseDragOrResizeUpdate(ssGUI::InputStatus& inputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         inputStatus.MouseInputBlockedObject = this;
        
         if(ResizingLeft || ResizingRight || ResizingTop || ResizingBot)
@@ -176,13 +170,11 @@ namespace ssGUI
             inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_DOWN);
         else if(ResizingRight)
             inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(inputStatus.MouseInputBlockedObject == nullptr)
         {
@@ -267,8 +259,6 @@ namespace ssGUI
         OnTransformBeginSize = glm::vec2();
         TransformTotalMovedDistance = glm::vec2();
         MouseDownPosition = glm::vec2();
-
-        ssLOG_FUNC_EXIT();
     }
 
     Window::Window(Window const& other) :   GUIObject(other),
@@ -631,18 +621,14 @@ namespace ssGUI
 
     void Window::Internal_SetSelfFocus(bool focus)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(GUIObject::Hierarchy::Focused == focus)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(focus && IsOnTopWhenFocused())
             SetParent(GetParent());
         
         GUIObject::Internal_SetSelfFocus(focus);
-        ssLOG_FUNC_EXIT();
     }
 
     void Window::SetBackgroundColor(glm::u8vec4 color)
@@ -670,20 +656,16 @@ namespace ssGUI
 
     Window* Window::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Window* temp = new Window(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

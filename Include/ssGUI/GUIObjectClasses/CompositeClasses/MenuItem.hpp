@@ -16,7 +16,7 @@ namespace ssGUI
     ============================== C++ ==============================
     MenuItem::MenuItem()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
         RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
@@ -72,8 +72,6 @@ namespace ssGUI
                 }
             }
         );
-
-        ssLOG_FUNC_EXIT();
     }
     =================================================================
     */

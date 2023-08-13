@@ -39,7 +39,7 @@ namespace ssGUI
 
     void ssGUIManager::Internal_Update()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         InitializeMainWindows();
 
@@ -98,12 +98,11 @@ namespace ssGUI
                 Clear();
             #endif
         }
-        ssLOG_FUNC_EXIT();
     }
     
     bool ssGUIManager::CheckMainWindowExistence()
     {
-        ssLOG_FUNC();
+        ssGUI_LOG_FUNC();
         
         std::vector<ssGUI::GUIObject*> windowsToRemoved;
 
@@ -123,13 +122,10 @@ namespace ssGUI
 
     void ssGUIManager::Render()
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(MainWindowPList.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         for(auto mainWindow : MainWindowPList)
         {
@@ -250,14 +246,15 @@ namespace ssGUI
                                                     currentMainWindowP->GetPositionOffset());
                 }
 
-                //Dispatch Post Rendering Update event
-                ssLOG_FUNC_ENTRY("ssGUIManagerPostRenderingUpdateEvent");
-                for(int i = 0; i < PostGUIRenderEventListeners.size(); i++)
                 {
-                    if(PostGUIRenderEventListenersValid[i])
-                        PostGUIRenderEventListeners[i](currentMainWindowP);
+                    //Dispatch Post Rendering Update event
+                    ssGUI_LOG_FUNC("ssGUIManagerPostRenderingUpdateEvent");
+                    for(int i = 0; i < PostGUIRenderEventListeners.size(); i++)
+                    {
+                        if(PostGUIRenderEventListenersValid[i])
+                            PostGUIRenderEventListeners[i](currentMainWindowP);
+                    }
                 }
-                ssLOG_FUNC_EXIT("ssGUIManagerPostRenderingUpdateEvent");
 
                 //Draw everything that is displayed on the mainWindow back buffer
                 currentMainWindowP->Render();
@@ -270,7 +267,6 @@ namespace ssGUI
                 currentMainWindowP->ClearBackBuffer();
             }
         }
-        ssLOG_FUNC_EXIT();
     }
 
     ssGUI::GUIObject* ssGUIManager::FindParentWindowP(ssGUI::GUIObject& obj)
@@ -346,9 +342,8 @@ namespace ssGUI
 
     void ssGUIManager::StartRunning()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Internal_Update();
-        ssLOG_FUNC_EXIT();
     }
     
     void ssGUIManager::StartRunningAsync()
@@ -380,7 +375,7 @@ namespace ssGUI
 
     void ssGUIManager::InvokePreGUIObjectsUpdateEventAsync()
     {
-        ssLOG_FUNC();
+        ssGUI_LOG_FUNC();
         for(int i = 0; i < PreGUIUpdateEventListeners.size(); i++)
         {                
             if(PreGUIUpdateEventListenersValid[i])
@@ -390,13 +385,10 @@ namespace ssGUI
     
     void ssGUIManager::UpdateObjectsAsync()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(MainWindowPList.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         std::stack<ssGUI::GUIObject*> objToUpdate;
         std::stack<bool> childrenEvaluated;
@@ -460,8 +452,6 @@ namespace ssGUI
                 updateQueue.pop();
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
     
     void ssGUIManager::CleanUpDeletedObjectsAsync()
@@ -484,7 +474,7 @@ namespace ssGUI
     
     void ssGUIManager::InvokePostGUIObjectsUpdateEventAsync()
     {
-        ssLOG_FUNC();
+        ssGUI_LOG_FUNC();
     
         if(!MainWindowPList.empty())
         {
@@ -502,13 +492,12 @@ namespace ssGUI
         //Dispatch Custom Rendering event
         if(IsCustomRendering)
         {
-            ssLOG_FUNC_ENTRY("ssGUIManagerCustomRenderingEvent");
+            ssGUI_LOG_FUNC("ssGUIManagerCustomRenderingEvent");
             for(int i = 0; i < OnCustomRenderEventListeners.size(); i++)
             {
                 if(OnCustomRenderEventListenersValid[i])
                     OnCustomRenderEventListeners[i](MainWindowPList);
             }
-            ssLOG_FUNC_EXIT("ssGUIManagerCustomRenderingEvent");
         }
         else
             Render();

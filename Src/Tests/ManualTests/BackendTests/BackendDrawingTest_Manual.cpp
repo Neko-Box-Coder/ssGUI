@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <thread>
 #include "TestsResources.h"

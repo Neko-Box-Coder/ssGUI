@@ -32,7 +32,7 @@ namespace ssGUI
     
     MenuItem::MenuItem()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
         RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
@@ -90,8 +90,6 @@ namespace ssGUI
                 }
             }
         );
-
-        ssLOG_FUNC_EXIT();
     }
 
     MenuItem::~MenuItem()
@@ -108,20 +106,16 @@ namespace ssGUI
 
     MenuItem* MenuItem::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         MenuItem* temp = new MenuItem(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

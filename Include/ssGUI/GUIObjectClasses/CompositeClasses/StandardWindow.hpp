@@ -45,7 +45,7 @@ namespace ssGUI
                                         WindowIcon(-1),
                                         CloseButton(-1)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         SetMinSize(glm::vec2(100, 100));
         SetTitlebarHeight(26);
         
@@ -189,8 +189,6 @@ namespace ssGUI
                     standardWindow->CleanUpDefaultResources();
             }
         );
-        
-        ssLOG_FUNC_EXIT();
     }
     
     int StandardWindow::StandardWindowObjectCount = 0;

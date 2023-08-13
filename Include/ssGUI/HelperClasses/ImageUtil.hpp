@@ -462,7 +462,7 @@ namespace ssGUI
 
         static void ResizeBilinear(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
         {
-            ssLOG_FUNC_ENTRY();
+            ssGUI_LOG_FUNC();
             const uint8_t* a;
             const uint8_t* b;
             const uint8_t* c;
@@ -556,7 +556,6 @@ namespace ssGUI
                     offset++;
                 }
             }
-            ssLOG_FUNC_EXIT();
         }
 
         //Assuming is RGBA32

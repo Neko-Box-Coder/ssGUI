@@ -26,18 +26,14 @@ namespace ssGUI
     
     void StandardButton::UpdateButtonText(bool init)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto buttonTextObj = CurrentObjectsReferences.GetObjectReference(ButtonText);
         if(buttonTextObj == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         if(GetButtonMode() == StandardButton::Mode::ICON)
         {
             buttonTextObj->SetEnabled(false);
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -55,31 +51,22 @@ namespace ssGUI
             static_cast<ssGUI::Text*>(buttonTextObj)->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
             static_cast<ssGUI::Text*>(buttonTextObj)->SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void StandardButton::UpdateButtonImage(bool init)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto buttonImgObj = CurrentObjectsReferences.GetObjectReference(ButtonImage);
         if(buttonImgObj == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         auto buttonImgWrapper = CurrentObjectsReferences.GetObjectReference(ButtonImageWrapper);
         if(buttonImgWrapper == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(GetButtonMode() == StandardButton::Mode::TEXT)
         {
             buttonImgWrapper->SetEnabled(false);
-            ssLOG_FUNC_EXIT();
             return;
         }
         
@@ -109,8 +96,6 @@ namespace ssGUI
             ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
             ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     const std::string StandardButton::ListenerKey = "Standard Button";
@@ -123,7 +108,7 @@ namespace ssGUI
                                         ButtonMode(StandardButton::Mode::TEXT),
                                         ButtonImageWrapper(-1)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         SetSize(glm::vec2(70, 35));
 
         //Adjust Extensions
@@ -251,8 +236,6 @@ namespace ssGUI
         UpdateButtonText(true);
         UpdateButtonImage(true);
         NotifyButtonEventCallbackManually();
-
-        ssLOG_FUNC_EXIT();
     }
 
     StandardButton::~StandardButton()
@@ -280,7 +263,6 @@ namespace ssGUI
         if(buttonImgWrapper == nullptr)
         {
             ButtonImage = -1;
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -462,20 +444,16 @@ namespace ssGUI
 
     StandardButton* StandardButton::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         StandardButton* temp = new StandardButton(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

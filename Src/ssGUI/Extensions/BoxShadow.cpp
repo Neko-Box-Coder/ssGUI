@@ -86,7 +86,7 @@ namespace Extensions
 
     void BoxShadow::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         //Getting all the rendering details from container
         std::vector<ssGUI::DrawingEntity>& drawingEntities = Container->Extension_GetDrawingEntities();
 
@@ -216,7 +216,6 @@ namespace Extensions
         }
 
         drawingEntities.insert(drawingEntities.end(), newEntities.begin(), newEntities.end());
-        ssLOG_FUNC_EXIT();
     }
 
     void BoxShadow::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
@@ -284,31 +283,21 @@ namespace Extensions
     //Extension methods
     void BoxShadow::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BoxShadow::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr || !isPreRender)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-
-        ssLOG_FUNC_EXIT();
     }
 
     std::string BoxShadow::GetExtensionName()

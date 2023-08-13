@@ -387,20 +387,16 @@ namespace ssGUI
     
     StandardSlider* StandardSlider::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         StandardSlider* temp = new StandardSlider(*this);
         CloneExtensionsAndEventCallbacks(temp);   
 
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

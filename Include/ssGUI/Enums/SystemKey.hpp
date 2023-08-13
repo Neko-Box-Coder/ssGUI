@@ -7,7 +7,7 @@
 #include <cstdint>
 
 //We need to undefine the DELETE macro from Win32 because this collides with our enum name
-#ifdef SSGUI_MAIN_BACKEND_WIN32_OPENGL
+#ifdef DELETE
 #undef DELETE
 #endif
 

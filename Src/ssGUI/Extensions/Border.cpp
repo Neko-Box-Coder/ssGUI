@@ -27,7 +27,7 @@ namespace Extensions
 
     void Border::DrawBorder()
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         glm::vec2 drawPosition = Container->GetGlobalPosition();
         
@@ -107,8 +107,6 @@ namespace Extensions
 
             drawingEntities.push_back(entity); 
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Border::ConstructRenderInfo()

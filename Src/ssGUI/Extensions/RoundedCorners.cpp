@@ -168,7 +168,7 @@ namespace Extensions
 
     void RoundedCorners::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         startIndex = 0;
         endIndex = 0;
         for(int i = 0; i < drawingCounts.size(); i++)
@@ -181,20 +181,16 @@ namespace Extensions
             
             startIndex += drawingCounts[i];
         }
-        ssLOG_FUNC_EXIT();
     }
     
     void RoundedCorners::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         std::vector<ssGUI::DrawingEntity> drawingEntities;
         std::vector<ssGUI::DrawingEntity>& originalEntities = Container->Extension_GetDrawingEntities();
 
         if(originalEntities.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //UpdateVerticesForRounding();
         ModifiedShapes.UpdateShapesToBeModified(Container->Extension_GetGUIObjectFirstShapeIndex());
@@ -299,7 +295,6 @@ namespace Extensions
         }
         
         originalEntities = drawingEntities;
-        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -435,31 +430,20 @@ namespace Extensions
 
     void RoundedCorners::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
-
+        ssGUI_LOG_FUNC();
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(!Enabled || Container == nullptr || isPreRender)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-        
-        ssLOG_FUNC_EXIT();
     }
 
     std::string RoundedCorners::GetExtensionName()

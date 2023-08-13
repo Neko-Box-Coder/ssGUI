@@ -34,7 +34,7 @@ namespace ssGUI
 
     ssGUI::GUIObject* GUIObject::CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //1. First get a list of objects needed to be cloned and create a hashmap of original objects with the index of it
         std::vector<ssGUI::GUIObject*> originalObjsToClone = std::vector<ssGUI::GUIObject*>();
@@ -140,13 +140,12 @@ namespace ssGUI
             clonedObjs[i]->SetParent(clonedObjs[originalObjsIndex.at(oriParent)]);
         }
 
-        ssLOG_FUNC_EXIT();
         return clonedRoot;
     }
 
     void GUIObject::CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         for(auto extension : Extensions)
         {
             if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
@@ -169,8 +168,6 @@ namespace ssGUI
             if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventType()))
                 clonedObj->AddEventCallbackCopy(eventCallback.second, true);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -225,7 +222,7 @@ namespace ssGUI
 
     GUIObject::~GUIObject()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(!ObjectDelete)
         {
             NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
@@ -239,8 +236,6 @@ namespace ssGUI
         
         for(auto it : EventCallbacks)
             ssGUI::Factory::Dispose(it.second);
-        
-        ssLOG_FUNC_EXIT();
     }
 
     ssGUI::Enums::GUIObjectType GUIObject::GetType() const
@@ -288,12 +283,11 @@ namespace ssGUI
 
     void GUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!IsEnabled())
         {
             Redraw = false;
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -337,21 +331,16 @@ namespace ssGUI
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
                 GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                                     ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //If it is not enabled, don't even update/draw it
         if(!IsEnabled())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         for(auto extension : ExtensionsUpdateOrder)
         {
@@ -393,26 +382,20 @@ namespace ssGUI
             RedrawObject();
 
         LastGlobalPosition = GetGlobalPosition();
-
-        ssLOG_FUNC_EXIT();
     }
 
     GUIObject* GUIObject::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         GUIObject* temp = new GUIObject(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
     

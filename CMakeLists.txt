@@ -27,6 +27,7 @@ set(ssGUI_BUILD_EXAMPLES    ON          CACHE BOOL      "Build examples")
 set(ssGUI_LOG_LEVEL         "Warning"   CACHE STRING    "Log level")
 set(ssGUI_LOG_TAG           "None"      CACHE STRING    "Log tag (overrides level)")
 set(ssGUI_LOG_MANAGER_STATE OFF         CACHE BOOL      "Log all the state in ssGUIManager")
+set(ssGUI_USE_LOG_FUNC      OFF         CACHE BOOL      "Logs all recorded function call")
 
 #Dropdown
 set_property(CACHE ssGUI_LOG_LEVEL PROPERTY STRINGS "None" 
@@ -444,6 +445,9 @@ if(ssGUI_LOG_MANAGER_STATE)
     target_compile_definitions(ssGUI PUBLIC SSGUI_LOG_MANAGER_STATE=1)
 endif()
 
+if(ssGUI_USE_LOG_FUNC)
+    target_compile_definitions(ssGUI PUBLIC ssGUI_USE_LOG_FUNC=1)
+endif()
 #See ssGUI/HelperClasses/LogWithTagsAndLevel.hpp for log tags and levels
 if(NOT ssGUI_LOG_TAG STREQUAL "None")
     if(ssGUI_LOG_TAG STREQUAL "ssGUI_MANAGER_TAG")

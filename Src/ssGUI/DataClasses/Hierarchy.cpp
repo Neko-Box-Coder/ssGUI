@@ -35,20 +35,16 @@ namespace ssGUI
 
     void Hierarchy::NotifyAndRemoveOnObjectDestroyEventCallbackIfExist()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(DestroyEventCalled)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-        
+
         DestroyEventCalled = true;
         if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY))
         {
             CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY)->Notify(CurrentObject);
             CurrentEventCallbackManager->RemoveEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_DESTROY);
         }
-        ssLOG_FUNC_EXIT();
     }
     
     void Hierarchy::AddChild(ssGUI::GUIObject* guiObject,bool compositeChild)
@@ -122,7 +118,7 @@ namespace ssGUI
 
     void Hierarchy::SetParent(ssGUI::GUIObject* newParent, bool compositeChild)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         ssGUI_DEBUG(ssGUI_DATA_TAG, "Setting "<<CurrentObject<<" parent from "<< CurrentObjectsReferences.GetObjectReference(Parent)<<" to "<<newParent);
 
@@ -147,7 +143,6 @@ namespace ssGUI
             newParent->ChangeChildOrderToAfterPosition(it, lastIt);
             (*it).CompositeChild = compositeChild;
             PopChildrenIterator();
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -275,10 +270,7 @@ namespace ssGUI
 
         //Exit if this object is parented to nothing
         if(newParent == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //Send event callback if any object is subscribed to on recursive child add event
         currentParent = newParent;
@@ -327,8 +319,6 @@ namespace ssGUI
             
             currentParent = currentParent->GetParent();
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     bool Hierarchy::IsCurrentChildComposite() const
@@ -782,7 +772,7 @@ namespace ssGUI
     
     void Hierarchy::Internal_RemoveChild(ssGUI::GUIObject* obj)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         ssGUI_DEBUG(ssGUI_DATA_TAG, CurrentObject<<" removing child "<<obj);
         
@@ -815,9 +805,7 @@ namespace ssGUI
         PopChildrenIterator();
 
         ssGUI_DEBUG(ssGUI_DATA_TAG, "Remove success");
-        ssLOG_FUNC_EXIT();
     }
-
 
     void Hierarchy::SetUserCreated(bool created)
     {
@@ -836,7 +824,7 @@ namespace ssGUI
 
     void Hierarchy::SetFocus(bool focus)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //This goes down the hierarchy tree from the searchParent and disable any focus
         auto disableChildrenFocus = [&](ssGUI::GUIObject* searchParent, ssGUI::GUIObject* excludeChild)
@@ -900,8 +888,6 @@ namespace ssGUI
         
         //Set the focus of the children of this GUI object to be false
         disableChildrenFocus(CurrentObject, nullptr);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Hierarchy::Internal_SetSelfFocus(bool focus)
@@ -920,14 +906,11 @@ namespace ssGUI
 
     void Hierarchy::Delete()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         //To ensure delete is only called exactly once
         if(Internal_IsDeleted())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         ssGUI_DEBUG(ssGUI_DATA_TAG, CurrentObject<<" object is getting deleted");
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
@@ -952,8 +935,6 @@ namespace ssGUI
         SetParent(nullptr);
         CurrentObjectsReferences.CleanUp();
         ssGUI::GUIObject::ObjsToDelete.push_back(CurrentObject);
-
-        ssLOG_FUNC_EXIT();
     }
 
     bool Hierarchy::Internal_IsDeleted() const

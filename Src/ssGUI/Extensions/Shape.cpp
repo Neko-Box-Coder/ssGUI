@@ -168,7 +168,7 @@ namespace Extensions
 
     void Shape::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Getting all the rendering details from container
         //std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
@@ -212,8 +212,6 @@ namespace Extensions
                 }
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Shape::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
@@ -586,33 +584,23 @@ namespace Extensions
     //Extension methods
     void Shape::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Shape::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         ExtensionPreRender = isPreRender;
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-        
-        ssLOG_FUNC_EXIT();
     }
 
     std::string Shape::GetExtensionName()

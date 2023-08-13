@@ -67,7 +67,7 @@ namespace ssGUI
 
     void Text::AssignSupportedFont()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
@@ -157,8 +157,6 @@ namespace ssGUI
             if(changed)
                 ProcessedCharacterDetails[i] = newDetail;
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::DrawCharacter(glm::vec2 positionOffset, ssGUI::CharacterRenderInfo info, ssGUI::CharacterDetails details)
@@ -204,7 +202,7 @@ namespace ssGUI
 
     void Text::FormatNewlinesCharacters()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         //If multiline is disabled, replace all newline to spaces and remove all \r
         if(!MultilineAllowed)
@@ -235,8 +233,6 @@ namespace ssGUI
                 }
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     float Text::GetClosestTabSpace(float startPos, float tabSpace, float targetPos)
@@ -253,7 +249,7 @@ namespace ssGUI
 
     void Text::ConstructRenderInfosForWordWrapping()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         int currentWordIndex = 0;
         float currentLineLength = GetTextHorizontalPadding();
@@ -338,13 +334,11 @@ namespace ssGUI
             //Apply offset
             curRenderInfo.BaselinePosition.x += drawXOffset;
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::ConstructRenderInfosForCharacterWrapping()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         float currentLineLength = GetTextHorizontalPadding();
         float drawXOffset = 0;
@@ -392,13 +386,11 @@ namespace ssGUI
             //Apply offset
             curRenderInfo.BaselinePosition.x += drawXOffset;
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::ConstructRenderInfosForNoWrapping(bool checkValid)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         float drawXPos = GetTextHorizontalPadding();
 
         wchar_t prevChar = 0;
@@ -520,18 +512,13 @@ namespace ssGUI
                     Overflow = true;                    
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::ApplyFontLineSpacing()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(CharactersRenderInfos.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         float curMaxFontNewline = 0;
         int currentIndex = 0;
@@ -629,19 +616,14 @@ namespace ssGUI
             
             currentIndex++;
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::ApplyTextAlignment()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(CharactersRenderInfos.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //Alignment is fine without checking whether the iterating character is valid or not since the render position would be correct
         
@@ -750,24 +732,18 @@ namespace ssGUI
 
         for(int i = 0; i < CharactersRenderInfos.size(); i++)
             CharactersRenderInfos[i].BaselinePosition.y += alignOffset;
-
-        ssLOG_FUNC_EXIT();
     }
     
     void Text::ApplyTextHighlight()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(StartSelectionIndex == EndSelectionIndex)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         if(StartSelectionIndex < 0 || StartSelectionIndex > CharactersRenderInfos.size() ||
             EndSelectionIndex < 0 || EndSelectionIndex > CharactersRenderInfos.size())
         {
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -827,13 +803,11 @@ namespace ssGUI
             if(i == endIndex - 1)
                 drawHighlight(lineStartIndex, i, SelectionColor);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::ApplyTextUnderline()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         auto drawUnderline = [&](int startIndex, int inclusiveEndIndex, glm::u8vec4 underlineColor, float thickness, float underlineOffset)
         {
@@ -1002,8 +976,6 @@ namespace ssGUI
                 drawMultiColoredUnderline(underlineStartIndex, i);
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::DrawAllCharacters()
@@ -1113,7 +1085,7 @@ namespace ssGUI
 
     void Text::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         glm::vec2 drawPos = GetGlobalPosition();
 
@@ -1137,7 +1109,6 @@ namespace ssGUI
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
             ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to find any fonts");
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -1152,8 +1123,6 @@ namespace ssGUI
         DrawAllCharacters();
         
         ApplyTextUnderline();
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Text::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -1342,12 +1311,9 @@ namespace ssGUI
     
     void Text::ComputeCharactersPositionAndSize()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         RedrawObject();
         RecalculateTextNeeded = false;
@@ -1364,10 +1330,7 @@ namespace ssGUI
 
         //Empty text guard
         if(CurrentCharactersDetails.Empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //Populate CharactersRenderInfos list
         for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
@@ -1382,8 +1345,6 @@ namespace ssGUI
 
         ApplyFontLineSpacing();
         ApplyTextAlignment();
-
-        ssLOG_FUNC_EXIT();
     }
     
     void Text::SetText(std::wstring text)
@@ -2200,32 +2161,25 @@ namespace ssGUI
 
     Text* Text::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Text* temp = new Text(*this);
         CloneExtensionsAndEventCallbacks(temp);
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
     
     void Text::InitiateDefaultResources()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!DefaultFonts.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         const uint8_t* fileContent = NotoSans_Regular;
         size_t fileSize = NotoSans_Regular_size;
@@ -2233,7 +2187,6 @@ namespace ssGUI
         if(fileContent == nullptr)
         {
             ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -2248,7 +2201,6 @@ namespace ssGUI
             DefaultFonts.push_back(font);
             DefaultFontsChangeID++;
         }
-        ssLOG_FUNC_EXIT();
     }
     
     void Text::CleanUpDefaultResources()

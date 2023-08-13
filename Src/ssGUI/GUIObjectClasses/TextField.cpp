@@ -665,7 +665,7 @@ namespace ssGUI
     //You only need to override this when you are rendering anything.
     void TextField::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         ssGUI::Text::ConstructRenderInfo();
 
         int lastValidIndex = GetLastValidCharacterIndex();
@@ -733,10 +733,7 @@ namespace ssGUI
 
             //Draw caret
             if(BlinkCaret || !IsInteractable() || !IsFocused())
-            {
-                ssLOG_FUNC_EXIT();
                 return;
-            }
 
             ssGUI::DrawingEntity caretEntity;
             if(GetEndSelectionIndex() > GetStartSelectionIndex())
@@ -774,10 +771,7 @@ namespace ssGUI
         {
             //Draw caret
             if(BlinkCaret || !IsInteractable() || !IsFocused())
-            {
-                ssLOG_FUNC_EXIT();
                 return;
-            }
 
             ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
             
@@ -786,10 +780,7 @@ namespace ssGUI
             else if(GetDefaultFontsCount() > 0)
                 fontInterface = GetDefaultFont(0)->GetBackendFontInterface();
             else
-            {
-                ssLOG_FUNC_EXIT();
                 return;
-            }
 
             height = fontInterface->GetLineSpacing(GetNewTextFontSize()) + GetLineSpace();
             
@@ -835,8 +826,6 @@ namespace ssGUI
             caretEntity.EntityName = TEXTFIELD_CARET_SHAPE_NAME;
             DrawingEntities.push_back(caretEntity);
         }
-
-        ssLOG_FUNC_EXIT();
     }
     
     void TextField::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
@@ -943,20 +932,16 @@ namespace ssGUI
 
     TextField* TextField::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         TextField* temp = new TextField(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
 }

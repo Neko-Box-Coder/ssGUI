@@ -61,6 +61,14 @@
 
 #endif
 
-//#undef ssLOG_LINE
+#if ssGUI_USE_LOG_FUNC
+    #define ssGUI_LOG_FUNC(...) ssLOG_FUNC(__VA_ARGS__)
+    #define ssGUI_LOG_FUNC_ENTRY(...) ssLOG_FUNC_ENTRY(__VA_ARGS__)
+    #define ssGUI_LOG_FUNC_EXIT(...) ssLOG_FUNC_EXIT(__VA_ARGS__)
+#else
+    #define ssGUI_LOG_FUNC(...) do{} while(0)
+    #define ssGUI_LOG_FUNC_ENTRY(...) do{} while(0)
+    #define ssGUI_LOG_FUNC_EXIT(...) do{} while(0)
+#endif
 
 #endif

@@ -180,7 +180,7 @@ namespace ssGUI
 
     void EventCallback::Notify(ssGUI::GUIObject* source, void* customInfo)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         assert(EventListeners.size() == EventListenersOrder.size());
         
         for(int i = 0; i < EventListenersOrder.size(); i++)
@@ -200,7 +200,6 @@ namespace ssGUI
                 i--;
             }
         }
-        ssLOG_FUNC_EXIT();
     }
 
     void EventCallback::BindToObject(ssGUI::GUIObject* bindObj)

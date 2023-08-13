@@ -80,7 +80,7 @@ namespace ssGUI
 
     void Slider::UpdateSliderValueFromCursor(glm::vec2 cursorPos)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
 
@@ -109,7 +109,6 @@ namespace ssGUI
             if(IsReverse())
                 SetSliderValue(1 - GetSliderValue());
         }
-        ssLOG_FUNC_EXIT();
     }
 
     void Slider::ConstructRenderInfo()
@@ -187,7 +186,7 @@ namespace ssGUI
     void Slider::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {       
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
@@ -418,8 +417,6 @@ namespace ssGUI
         }
 
         LastSliderValue = GetSliderValue();
-
-        ssLOG_FUNC_EXIT();
     }
 
     const std::string Slider::ListenerKey = "Slider";
@@ -590,15 +587,13 @@ namespace ssGUI
 
     void Slider::SetSliderValue(float sliderValue)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         SliderValue = sliderValue;
         SliderValue = SliderValue < 0 ? 0 : SliderValue;
         SliderValue = SliderValue > 1 ? 1 : SliderValue;
 
         ApplySnapping();
         UpdateKnobOffset();
-
-        ssLOG_FUNC_EXIT();
     }
 
     float Slider::GetSliderValue() const
@@ -686,20 +681,16 @@ namespace ssGUI
 
     Slider* Slider::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Slider* temp = new Slider(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

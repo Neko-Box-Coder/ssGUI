@@ -3,7 +3,7 @@
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssTest.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "TestsResources.h"
 #include <fstream>

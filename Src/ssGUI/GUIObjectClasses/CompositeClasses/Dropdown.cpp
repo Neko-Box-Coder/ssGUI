@@ -339,31 +339,24 @@ namespace ssGUI
 
     Dropdown* Dropdown::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Dropdown* temp = new Dropdown(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
     
     void Dropdown::InitiateDefaultResources()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(DefaultDropdownArrowImageData != nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         ssGUI::ImageData* defaultImg;
 
@@ -385,8 +378,6 @@ namespace ssGUI
         }
         else
             DefaultDropdownArrowImageData = data;
-
-        ssLOG_FUNC_EXIT();
     }
     
     void Dropdown::CleanUpDefaultResources()

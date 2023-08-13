@@ -86,7 +86,7 @@ namespace Extensions
     bool Mask::IsAABBOverlap(const std::vector<glm::vec2>& shapeVerticies, glm::vec2 maskMin, glm::vec2 maskMax,
                             glm::vec2& shapeMin, glm::vec2& shapeMax)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         shapeMin = shapeVerticies[0];
         shapeMax = shapeVerticies[0];
@@ -103,18 +103,11 @@ namespace Extensions
         }
         
         if(!CheckLinesOverlapping(shapeMin.x, shapeMax.x, maskMin.x, maskMax.x))
-        {
-            ssLOG_FUNC_EXIT();
             return false;
-        }
         
         if(!CheckLinesOverlapping(shapeMin.y, shapeMax.y, maskMin.y, maskMax.y))
-        {
-            ssLOG_FUNC_EXIT();
             return false;
-        }
-
-        ssLOG_FUNC_EXIT();
+        
         return true;
     }
 
@@ -124,7 +117,7 @@ namespace Extensions
                                 const std::vector<glm::vec2>& shapeVerticies, 
                                 std::vector<glm::vec2>& maskVerticies)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         //For each vertices for this shape
         for(int currentShapeVertexIndex = 0; currentShapeVertexIndex < shapeVerticies.size(); currentShapeVertexIndex++)
         {
@@ -146,7 +139,6 @@ namespace Extensions
                 }
             }   
         }
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::FormNewShapeWithIntersections(   ssGUI::DrawingEntity& currentEntity,
@@ -159,7 +151,7 @@ namespace Extensions
                                                 std::vector<int>& shapeIntersectIndices, 
                                                 std::vector<int>& maskIntersectIndices)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Lambda function of adding new vertex infomation
         auto addNewVertexInfo = []( ssGUI::DrawingEntity& currentEntity, 
@@ -343,15 +335,13 @@ namespace Extensions
                 }
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::SampleNewUVsAndColoursForShapes( const std::vector<DrawingEntity>& originalEntities, 
                                                 std::vector<DrawingEntity>& newEntities, 
                                                 std::vector<std::vector<bool>>& changed)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Sample the new UVs and colours
         if(changed.size() != newEntities.size())
@@ -403,7 +393,6 @@ namespace Extensions
                                                     glm::vec4(colourAxis2) * axis2Value;
             }
         }
-        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::LineToLineIntersection(  glm::vec2 linePointA, glm::vec2 linePointB, 
@@ -591,12 +580,11 @@ namespace Extensions
 
     bool Mask::GetSampleIndicesFromShape(const std::vector<glm::vec2>& vertices, int closestIndices[], glm::vec2 samplePoint)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(vertices.size() < 3)
         {
             ssGUI_ERROR(ssGUI_EXT_TAG, "We are trying to sample a shape that has less than 3 vertices, this is invalid");
-            ssLOG_FUNC_EXIT();
             return false;
         }
 
@@ -682,19 +670,15 @@ namespace Extensions
             }
         }
         
-        ssLOG_FUNC_EXIT();
         return true;
     }
 
     void Mask::AddMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         std::queue<ssGUI::GUIObject*> children;
 
@@ -751,19 +735,14 @@ namespace Extensions
 
             children.pop();
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         std::queue<ssGUI::GUIObject*> children;
         if(!includeParent)
@@ -810,8 +789,6 @@ namespace Extensions
 
             children.pop();
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::ConstructRenderInfo()
@@ -868,15 +845,12 @@ namespace Extensions
 
     void Mask::SetMaskChildren(bool maskChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         MaskChildren = maskChildren;
 
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         std::queue<ssGUI::GUIObject*> children;
 
@@ -951,8 +925,6 @@ namespace Extensions
                 
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::GetMaskChildren() const
@@ -962,14 +934,11 @@ namespace Extensions
 
     void Mask::SetMaskContainer(bool maskContainer)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         MaskContainer = maskContainer;
 
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(maskContainer)
         {
@@ -1001,8 +970,6 @@ namespace Extensions
                     enforcer->RemoveTargetMaskObject(Container);
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::IsMaskContainer() const
@@ -1081,21 +1048,19 @@ namespace Extensions
 
     void Mask::Internal_RecursiveChildAdded(ssGUI::GUIObject* child)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         AddMaskEnforcerToChildren(child, true);
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::Internal_RecursiveChildRemoved(ssGUI::GUIObject* child)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         RemoveMaskEnforcerToChildren(child, true);
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 maskOffset, const std::vector<ssGUI::TargetShape>& applyShapes)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         std::vector<glm::vec2> maskShape;
         
@@ -1244,8 +1209,6 @@ namespace Extensions
         }
         
         obj->Extension_GetDrawingEntities() = newEntities;
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::SetEnabled(bool enabled)
@@ -1264,13 +1227,10 @@ namespace Extensions
     //Extension methods
     void Mask::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(isPreUpdate || Container == nullptr || !Enabled)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(FollowContainer)
         {
@@ -1297,8 +1257,6 @@ namespace Extensions
                 SetSize(Container->GetSize() + FollowSizePadding);
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)

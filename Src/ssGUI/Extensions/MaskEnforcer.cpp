@@ -33,7 +33,7 @@ namespace Extensions
 
     void MaskEnforcer::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
         {
@@ -81,8 +81,6 @@ namespace Extensions
 
             currentMask->MaskObject(Container, /*- (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset)*/glm::vec2(), it->second);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void MaskEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -99,7 +97,7 @@ namespace Extensions
 
     void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, const std::vector<ssGUI::TargetShape>& targetShapes)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(CurrentObjectsReferences.IsObjectReferenceExist(targetMaskObj))
         {
             ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.GetObjectIndex(targetMaskObj);
@@ -114,8 +112,6 @@ namespace Extensions
 
         if(Container != nullptr)
             Container->RedrawObject();
-        
-        ssLOG_FUNC_EXIT();
     }
 
     bool MaskEnforcer::HasTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
@@ -192,13 +188,10 @@ namespace Extensions
     //Extension methods
     void MaskEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //Updating Target Masks and blocking any mouse input outside the mask
         if(isPreUpdate)
@@ -255,24 +248,17 @@ namespace Extensions
                 inputStatus.MouseInputBlockedObject = nullptr;
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void MaskEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(!Enabled || Container == nullptr || isPreRender)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-        
-        ssLOG_FUNC_EXIT();
     }
 
     std::string MaskEnforcer::GetExtensionName()

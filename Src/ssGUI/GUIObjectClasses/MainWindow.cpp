@@ -378,7 +378,7 @@ namespace ssGUI
     //TODO : Add WindowDragStateChangedEvent call
     void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         for(auto extension : ExtensionsUpdateOrder)
         {
@@ -479,26 +479,20 @@ namespace ssGUI
 
             Extensions.at(extension)->Internal_Update(false, inputInterface, inputStatus, mainWindow);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     MainWindow* MainWindow::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         MainWindow* temp = new MainWindow(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
 }

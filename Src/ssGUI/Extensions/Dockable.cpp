@@ -94,7 +94,7 @@ namespace Extensions
 
     void Dockable::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //If widget is not present, create it
         if((*widget) == nullptr)
@@ -113,14 +113,12 @@ namespace Extensions
         
         if((*widget)->GetParent() != Container)
             (*widget)->SetParent(Container);
-
-        ssLOG_FUNC_EXIT();
     }
 
     
     void Dockable::DrawLeftPreview()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         CreateWidgetIfNotPresent(&DockPreivewLeft, GetDockPreviewColor());
 
@@ -133,13 +131,11 @@ namespace Extensions
 
         as->SetVerticalPercentage(1);
         as->SetHorizontalPercentage(0.5);
-        
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::DrawTopPreview()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         CreateWidgetIfNotPresent(&DockPreivewTop, GetDockPreviewColor());
 
@@ -152,13 +148,11 @@ namespace Extensions
 
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
-        
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::DrawRightPreview()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         CreateWidgetIfNotPresent(&DockPreivewRight, GetDockPreviewColor());
 
@@ -171,13 +165,11 @@ namespace Extensions
 
         as->SetHorizontalPercentage(0.5);
         as->SetVerticalPercentage(1);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::DrawBottomPreview()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         CreateWidgetIfNotPresent(&DockPreivewBottom, GetDockPreviewColor());
 
@@ -190,8 +182,6 @@ namespace Extensions
 
         as->SetHorizontalPercentage(1);
         as->SetVerticalPercentage(0.5);
-        
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::DiscardLeftPreview()
@@ -234,7 +224,7 @@ namespace Extensions
     void Dockable::DrawTriggerAreas()
     {
         //return;
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         CreateWidgetIfNotPresent(&DockTriggerTop, GetTriggerAreaColor());
         CreateWidgetIfNotPresent(&DockTriggerRight, GetTriggerAreaColor());
@@ -306,14 +296,12 @@ namespace Extensions
             asLeft->SetHorizontalPixel(GetTriggerPixel());
             asLeft->SetVerticalPixel(Container->GetSize().y - GetTriggerPixel() * 2);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     //TODO : Add mutex for multi-threading support
     void Dockable::OnWindowDragStarted()
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         ContainerIsDocking = true;
         GlobalDockMode = true;
@@ -333,7 +321,6 @@ namespace Extensions
             OriginalParent = nullptr;
             MainWindowUnderDocking = nullptr;
             DockingTopLevelParent = nullptr;
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -367,13 +354,11 @@ namespace Extensions
             DockingTopLevelParent = MainWindowUnderDocking;
         else
             DockingTopLevelParent = CurrentObjectsReferences.GetObjectReference(TopLevelParent);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::FindDockLayout(ssGUI::Extensions::Layout*& dockLayout)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(ObjectToDockNextTo->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
 
@@ -393,13 +378,11 @@ namespace Extensions
 
             dockLayout = parentLayout;
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::CreateEmptyParentForDocking(ssGUI::Extensions::Layout*& dockLayout)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         ssGUI::Window* newParent = nullptr;
         
         //Validation check
@@ -488,13 +471,12 @@ namespace Extensions
         //Therefore will need to set the size to match the new parent again.
         ObjectToDockNextTo->SetSize(newParent->GetSize());
         ObjectToDockNextTo->GetParent()->PopChildrenIterator();
-        ssLOG_FUNC_EXIT();
     }
 
     //TODO: Check top level parent for up coming docking via code feature
     void Dockable::OnWindowDragFinished()
     {                
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         //Remove the floating tag to allow docking
         Container->RemoveTag(ssGUI::Tags::OVERLAY);
@@ -585,8 +567,6 @@ namespace Extensions
         DockingTopLevelParent = nullptr;
         ObjectToDockNextTo = nullptr;
         TargetDockSide = DockSide::NONE;
-
-        ssLOG_FUNC_EXIT();
     }
     
     void Dockable::DiscardTriggerAreas()
@@ -670,7 +650,7 @@ namespace Extensions
 
     void Dockable::SetTopLevelParent(ssGUI::GUIObject* parent)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(parent != nullptr)
         {
@@ -681,8 +661,6 @@ namespace Extensions
         }
         else
             TopLevelParent = -1;
-        
-        ssLOG_FUNC_EXIT();
     }
 
     ssGUI::GUIObject* Dockable::GetTopLevelParent() const
@@ -730,13 +708,10 @@ namespace Extensions
 
     void Dockable::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(!isPreUpdate || Container == nullptr || !Enabled)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         //If global dock mode is true, check topLevelParent first, then check the cursor against the trigger area
         if(GlobalDockMode && !ContainerIsDocking && inputStatus.DockingBlockedObject == nullptr)
@@ -772,7 +747,6 @@ namespace Extensions
             if(mainWindow == nullptr)
             {
                 ssGUI_WARNING(ssGUI_EXT_TAG, "what?");
-                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -788,7 +762,6 @@ namespace Extensions
                 DiscardBottomPreview();
                 DiscardTriggerAreas();
                 ValidDocking = false;
-                ssLOG_FUNC_EXIT();
                 return;
             }
             
@@ -818,7 +791,6 @@ namespace Extensions
                 DiscardBottomPreview();
                 DiscardTriggerAreas();
                 ValidDocking = false;
-                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -907,8 +879,6 @@ namespace Extensions
             DiscardTriggerAreas();
             ValidDocking = false;
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -921,7 +891,7 @@ namespace Extensions
     
     void Dockable::BindToObject(ssGUI::GUIObject* bindObj)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         Container = bindObj;
 
@@ -963,8 +933,6 @@ namespace Extensions
                 }
             );
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Dockable::Copy(ssGUI::Extensions::Extension* extension)
