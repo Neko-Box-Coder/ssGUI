@@ -14,6 +14,7 @@ int main()
     textfield->SetSize(glm::vec2(500, 250));
     textfield->SetPosition(glm::vec2(50, 50));
     textfield->SetWrappingMode(ssGUI::Enums::TextWrapping::WORD_WRAPPING);
+    textfield->SetText("This is an example sentence.\nThis is another example sentence.\nThird sentence.");
     
     textfield->AddEventCallback(ssGUI::Enums::EventType::TEXT_CONTENT_CHANGED)->AddEventListener
     (

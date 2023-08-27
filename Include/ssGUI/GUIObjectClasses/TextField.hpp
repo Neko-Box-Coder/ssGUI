@@ -63,22 +63,6 @@ namespace ssGUI
 
             TextField(TextField const& other);
 
-            virtual int GetEndOfPreviousWord(int curIndex);
-
-            virtual int GetEndOfNextWord(int curIndex);
-
-            virtual void GetCurrentLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive);
-
-            virtual void GetPreviousLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive);
-
-            virtual void GetNextLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive);
-
-            //TODO: Rename this to GetIndexForPreviousLine
-            virtual int GetPositionForPreviousLine(int curIndex);
-
-            //TODO: Rename this to GetIndexForNextLine
-            virtual int GetPositionForNextLine(int curIndex);
-
             virtual void TextInputUpdate(std::wstring& textInput, bool& refreshBlinkTimer, bool& wordMode);
 
             virtual void CaretNavigationUpdate(ssGUI::Backend::BackendSystemInputInterface* inputInterface, bool& refreshBlinkTimer, bool& blockKeys, bool& wordMode);
@@ -89,10 +73,15 @@ namespace ssGUI
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:
+            //string: TEXT_UNDERLINE_SHAPE_NAME
             static const std::string TEXTFIELD_CARET_SHAPE_NAME;
         
             TextField();
             virtual ~TextField() override;
+
+            //====================================================================
+            //Group: Overrides
+            //====================================================================
             
             //function: GetType
             //See <Widget::GetType>

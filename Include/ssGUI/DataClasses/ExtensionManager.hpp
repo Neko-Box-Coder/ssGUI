@@ -69,7 +69,7 @@ namespace ssGUI
             virtual void SetDependentComponents(ssGUI::Renderer* renderer, ssGUI::GUIObject* obj);
             
             //====================================================================
-            //Group: Adding, Getting and Removing Extension
+            //Group: Adding, Getting And Removing Extension
             //====================================================================
             
             //function: AddExtension

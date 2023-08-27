@@ -190,9 +190,6 @@ namespace ssGUI
             }
         );
     }
-    
-    int ImageCanvas::ImageCanvasObjectCount = 0;
-    ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
     =================================================================
     */
     class ImageCanvas : public Image
@@ -258,6 +255,8 @@ namespace ssGUI
             
             //string: ListenerKey
             static const std::string ListenerKey;
+            
+            //string: IMAGE_CANVAS_IMAGE_SHAPE_NAME
             static const std::string IMAGE_CANVAS_IMAGE_SHAPE_NAME;
 
             ImageCanvas();

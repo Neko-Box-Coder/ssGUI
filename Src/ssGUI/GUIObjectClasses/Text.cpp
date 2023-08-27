@@ -1028,6 +1028,326 @@ namespace ssGUI
         }
     }
 
+    int Text::GetEndOfPreviousWord(int curIndex)
+    {
+        //Check if there's any valid character before current character
+        int validCharBeforeIndex = -1;
+        for(int i = curIndex - 1; i >= 0; i--)
+        {
+            if(GetCharacterRenderInfo(i).Valid)
+            {
+                validCharBeforeIndex = i;
+                break;
+            }
+        }
+        if(validCharBeforeIndex < 0)
+            return curIndex;
+
+        enum class characterType
+        {
+            LETTERS,
+            NUM,
+            SYMBOL,
+            SPACE_TAB_NEWLINE,
+        };
+
+        auto getCharType = [&](wchar_t c)->characterType
+        {
+            uint32_t charInt = (uint32_t)c;
+            
+            //If letters
+            if((charInt >= 65 && charInt <= 90) || (charInt >= 97 && charInt <= 122))
+                return characterType::LETTERS;
+            //If numbers
+            if(charInt >= 48 && charInt <= 57)
+                return characterType::NUM;
+            //If Symbol
+            if((charInt >= 33 && charInt <= 47) || (charInt >= 58 && charInt <= 64) || (charInt >= 91 && charInt <= 96) || (charInt >= 123 && charInt <= 126))
+                return characterType::SYMBOL;
+            //If space, tab or newline 
+            if(charInt == 9 || charInt == 10 || charInt == 12 || charInt == 13 || charInt == 32)
+                return characterType::SPACE_TAB_NEWLINE;
+
+            return characterType::LETTERS;
+        };
+
+        characterType lastCharType = getCharType(GetInternalCharacterDetail(validCharBeforeIndex).Character);
+        int lastValidIndex = validCharBeforeIndex;
+        for(int i = validCharBeforeIndex; i >= 0; i--)
+        {
+            if(!GetCharacterRenderInfo(i).Valid)
+                continue;
+            
+            characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
+
+            //Return anything 
+            if(lastCharType != curCharType && lastCharType != characterType::SPACE_TAB_NEWLINE)
+                return lastValidIndex;
+
+            lastValidIndex = i;
+            lastCharType = curCharType;
+        }
+
+        return lastValidIndex;
+    }
+
+    int Text::GetEndOfNextWord(int curIndex)
+    {
+        if(curIndex >= GetLastValidCharacterIndex())
+            return CharactersRenderInfos.size();
+        
+        enum class characterType
+        {
+            LETTERS,
+            NUM,
+            SYMBOL,
+            SPACE_TAB_NEWLINE,
+        };
+
+        auto getCharType = [&](wchar_t c)->characterType
+        {
+            uint32_t charInt = (uint32_t)c;
+            
+            //If letters
+            if((charInt >= 65 && charInt <= 90) || (charInt >= 97 && charInt <= 122))
+                return characterType::LETTERS;
+            //If numbers
+            if(charInt >= 48 && charInt <= 57)
+                return characterType::NUM;
+            //If Symbol
+            if((charInt >= 33 && charInt <= 47) || (charInt >= 58 && charInt <= 64) || (charInt >= 91 && charInt <= 96) || (charInt >= 123 && charInt <= 126))
+                return characterType::SYMBOL;
+            //If space, tab or newline 
+            if(charInt == 9 || charInt == 10 || charInt == 12 || charInt == 13 || charInt == 32)
+                return characterType::SPACE_TAB_NEWLINE;
+
+            return characterType::LETTERS;
+        };
+
+        characterType lastCharType = getCharType(GetInternalCharacterDetail(curIndex).Character);
+        int lastValidIndex = curIndex;
+        for(int i = curIndex; i <= CharactersRenderInfos.size(); i++)
+        {
+            if(i == CharactersRenderInfos.size())
+                return i;
+            
+            if(!GetCharacterRenderInfo(i).Valid)
+                continue;
+            
+            characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
+            lastValidIndex = i;
+
+            //Return anything 
+            if(lastCharType != curCharType && lastCharType != characterType::SPACE_TAB_NEWLINE)
+                return lastValidIndex;
+
+            lastCharType = curCharType;
+        }
+
+        return lastValidIndex;
+    }
+
+    void Text::GetCurrentLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive)
+    {
+        curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
+        for(int i = curIndex; i >= 0; i--)
+        {
+            if(!GetCharacterRenderInfo(i).Valid)
+                continue;
+            
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
+            {
+                startIndex = i;
+                break;
+            }
+        }
+
+        int lastValidIndex = curIndex;
+        for(int i = curIndex+1; i < CharactersRenderInfos.size(); i++)
+        {
+            if(!GetCharacterRenderInfo(i).Valid)
+                continue;
+            
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
+                break;
+            
+            lastValidIndex = i;
+        }
+        endIndexInclusive = lastValidIndex;
+    }
+
+    void Text::GetPreviousLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive)
+    {
+        bool passedCurLine = false;
+        bool endIndexSet = false;
+        curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
+        for(int i = curIndex; i >= 0; i--)
+        {
+            if(!GetCharacterRenderInfo(i).Valid)
+                continue;
+            
+            if(passedCurLine && !endIndexSet)
+            {
+                endIndexSet = true;
+                endIndexInclusive = i;
+            }
+
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
+            {
+                if(!passedCurLine)
+                {
+                    startIndex = i;
+                    endIndexInclusive = i;
+                    passedCurLine = true;
+                }
+                else
+                {
+                    startIndex = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    void Text::GetNextLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive)
+    {
+        bool startIndexSet = false;
+        bool endIndexSet = false;
+        int lastValidIndex = curIndex;
+        curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
+        for(int i = curIndex+1; i < CharactersRenderInfos.size(); i++)
+        {
+            if(!GetCharacterRenderInfo(i).Valid)
+                continue;
+            
+            if(GetCharacterRenderInfo(i).CharacterAtNewline)
+            {
+                if(!startIndexSet)
+                {
+                    startIndex = i;
+                    startIndexSet = true;
+                }
+                else
+                {
+                    endIndexInclusive = lastValidIndex;
+                    endIndexSet = true;
+                    break;
+                }
+            }
+            lastValidIndex = i;
+        }
+
+        if(!startIndexSet)
+        {
+            startIndex = lastValidIndex;
+            endIndexInclusive = lastValidIndex;
+        }
+        else if(!endIndexSet)
+            endIndexInclusive = lastValidIndex;
+    }
+
+    int Text::GetPositionForPreviousLine(int curIndex)
+    {
+        int curLinePosition = 0;
+        
+        int curLineStart = 0;
+        int curLineEnd = 0;
+        GetCurrentLineStartEndIndex(curIndex, curLineStart, curLineEnd);
+
+        int prevLineStart = 0;
+        int prevLineEnd = 0;
+        GetPreviousLineStartEndIndex(curIndex, prevLineStart, prevLineEnd);
+
+        //Find out current position from this line (Depending on alignment)
+        //Right
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        {
+            curLineEnd = curLineEnd == GetLastValidCharacterIndex() ? curLineEnd + 1 : curLineEnd;
+            curLinePosition = curLineEnd - curIndex;
+        }
+        //Left and center
+        else
+            curLinePosition = curIndex - curLineStart;
+        
+        //If there's no previous line, just return start index
+        if(prevLineEnd >= curLineStart)
+            return curLineStart;
+
+        //Go to previous line if there's any
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        {
+            if(curLinePosition > prevLineEnd - prevLineStart)
+                return prevLineStart;
+            else
+                return prevLineEnd - curLinePosition;
+        }
+        else
+        {
+            if(curLinePosition > prevLineEnd - prevLineStart)
+                return prevLineEnd;
+            else
+                return prevLineStart + curLinePosition;
+        }
+        
+        return -1;  //Just to suppress return-type warning from GCC
+    }
+
+    int Text::GetPositionForNextLine(int curIndex)
+    {
+        int curLinePosition = 0;
+        
+        int curLineStart = 0;
+        int curLineEnd = 0;
+        GetCurrentLineStartEndIndex(curIndex, curLineStart, curLineEnd);
+
+        int nextLineStart = 0;
+        int nextLineEnd = 0;
+        GetNextLineStartEndIndex(curIndex, nextLineStart, nextLineEnd);
+
+        //Find out current position from this line (Depending on alignment)
+        //Right
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+            curLinePosition = curLineEnd - curIndex;
+        //Left and center
+        else
+            curLinePosition = curIndex - curLineStart;
+
+        //If there's no next line, just return end index
+        if(curLineEnd >= nextLineStart)
+        {
+            if(curLineEnd != GetLastValidCharacterIndex())
+                return curLineEnd;
+            else
+                return curLineEnd + 1;
+        }
+        
+        //Go to next line if there's any
+        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
+        {
+            if(curLinePosition > nextLineEnd - nextLineStart)
+                return nextLineStart;
+            else
+            {
+                nextLineEnd = nextLineEnd == GetLastValidCharacterIndex() ? nextLineEnd + 1 : nextLineEnd;
+                return nextLineEnd - curLinePosition;
+            }
+        }
+        else
+        {
+            if(curLinePosition > nextLineEnd - nextLineStart)
+            {
+                if(nextLineEnd != GetLastValidCharacterIndex())
+                    return nextLineEnd;
+                else
+                    return nextLineEnd + 1;
+            }
+            else
+                return nextLineStart + curLinePosition;
+        }
+        
+        return -1;  //Just to suppress return-type warning from GCC
+    }
+
 //https://stackoverflow.com/questions/306533/how-do-i-get-a-list-of-files-in-a-directory-in-c
     /* Returns a list of files in a directory (except the ones that begin with a dot) */
 // #include <dirent.h>
@@ -1125,6 +1445,110 @@ namespace ssGUI
         ApplyTextUnderline();
     }
 
+    void Text::MouseSelectionLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, glm::ivec2 currentMousePos)
+    {
+        int closestIndex = GetNearestCharacterIndexFromPos(currentMousePos, true);
+
+        if(closestIndex == GetLastValidCharacterIndex() && IsPosAfterLastCharacter(currentMousePos))
+            closestIndex += 1;
+
+        bool isCursorInsideSelection = false;
+
+        //When left click, check if there's anything selected and see if cursor is inside the selection
+        if(GetStartSelectionIndex() != GetEndSelectionIndex())
+        {
+            if( (GetStartSelectionIndex() < closestIndex && closestIndex < GetEndSelectionIndex()) ||
+                (GetEndSelectionIndex() < closestIndex && closestIndex < GetStartSelectionIndex()))
+            {
+                isCursorInsideSelection = true;
+            }
+        }
+        
+        //ssLOG_LINE("GetStartSelectionIndex(): " << GetStartSelectionIndex());
+        //ssLOG_LINE("GetEndSelectionIndex(): " << GetEndSelectionIndex());
+        //ssLOG_LINE("ClickSelectionStartIndex: " << ClickSelectionStartIndex);
+        //ssLOG_LINE("ClickSelectionEndIndex: " << ClickSelectionEndIndex);
+        //ssLOG_LINE("closestIndex: " << closestIndex);
+        //ssLOG_LINE("inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT): " << inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT));
+        
+        //If mouse down
+        if(inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT))
+        {
+            //If in double/triple click cooldown
+            if(inputInterface->GetElapsedTime() - LastMouseDownTimestamp > MouseDoubleClickThresholdInMs)
+            {
+                //set start and end selection index to the closest (exclusive) index
+                SetStartSelectionIndex(closestIndex);
+                SetEndSelectionIndex(closestIndex);
+                ClickSelectionStartIndex = -1;
+                ClickSelectionEndIndex = -1;
+            }
+            //If in double/triple click threshold
+            else 
+            {
+                //Text double click selection outside of selection
+                if(!isCursorInsideSelection)
+                {
+                    SetStartSelectionIndex(GetEndOfPreviousWord(closestIndex));
+                    SetEndSelectionIndex(GetEndOfNextWord(closestIndex));
+                    LastClickSelectionTimestamp = inputInterface->GetElapsedTime();
+                    ClickSelectionStartIndex = GetStartSelectionIndex();
+                    ClickSelectionEndIndex = GetEndSelectionIndex();
+                }
+                //Text double/triple click selection inside selection
+                else
+                {
+                    int sentenceStartIndex, sentenceEndIndex;
+                    GetCurrentLineStartEndIndex(closestIndex, sentenceStartIndex, sentenceEndIndex);
+                    sentenceEndIndex++;
+
+                    //ssLOG_LINE("sentenceStartIndex: " << sentenceStartIndex);
+                    //ssLOG_LINE("sentenceEndIndex: " << sentenceEndIndex);
+
+                    //Double click selection
+                    if( ClickSelectionStartIndex == -1 || 
+                        (ClickSelectionStartIndex == sentenceStartIndex && ClickSelectionEndIndex == sentenceEndIndex))
+                    {
+                        SetStartSelectionIndex(GetEndOfPreviousWord(closestIndex));
+                        SetEndSelectionIndex(GetEndOfNextWord(closestIndex));
+                    }
+                    //Triple click selection
+                    else
+                    {
+                        SetStartSelectionIndex(sentenceStartIndex);
+                        SetEndSelectionIndex(sentenceEndIndex);
+                    }
+                    
+                    ClickSelectionStartIndex = GetStartSelectionIndex();
+                    ClickSelectionEndIndex = GetEndSelectionIndex();
+                    LastClickSelectionTimestamp = inputInterface->GetElapsedTime();
+                }
+            }
+        }
+        //When holding left mouse button (drag)
+        else
+        {
+            //If double/triple click selection exists
+            if(ClickSelectionStartIndex < ClickSelectionEndIndex)
+            {
+                SetStartSelectionIndex(ClickSelectionStartIndex);
+                SetEndSelectionIndex(ClickSelectionEndIndex);
+                
+                if(closestIndex <= ClickSelectionStartIndex)
+                    SetStartSelectionIndex(closestIndex);
+                else if(closestIndex >= ClickSelectionEndIndex)
+                    SetEndSelectionIndex(closestIndex);
+            }
+            else
+                SetEndSelectionIndex(closestIndex);
+        }
+        
+        if(inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT))
+            LastMouseDownTimestamp = inputInterface->GetElapsedTime();
+
+        //ssLOG_LINE();
+    }
+
     void Text::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
                         ssGUI::GUIObject* mainWindow)
     {
@@ -1156,41 +1580,35 @@ namespace ssGUI
                 mouseInWindowBoundY = true;
             
             //Input blocking
-            if(mouseInWindowBoundX && mouseInWindowBoundY)
+            if((mouseInWindowBoundX && mouseInWindowBoundY) || LastMouseDownInTextBound)
             {
                 inputInterface->SetCursorType(ssGUI::Enums::CursorType::TEXT); 
                 inputStatus.MouseInputBlockedObject = this;
             }
 
+            bool isMouseButtonDown =    (inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT) ||
+                                        inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::MIDDLE) ||
+                                        inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::RIGHT));
+
             //If mouse click on this, set focus
-            if(mouseInWindowBoundX && mouseInWindowBoundY &&
-                ((inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT)) ||
-                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::MIDDLE) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::MIDDLE)) ||
-                (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))))
+            if(mouseInWindowBoundX && mouseInWindowBoundY && isMouseButtonDown)
             {
-                SetFocus(true);    
+                SetFocus(true);
+                LastMouseDownInTextBound = true;
+            }
+            else if(isMouseButtonDown)
+            {
+                SetFocus(false);
+                LastMouseDownInTextBound = false;
             }
 
             //Text selection with mouse
-            if(IsTextSelectionAllowed() && inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-                mouseInWindowBoundX && mouseInWindowBoundY && IsInteractable())
+            if( IsTextSelectionAllowed() && 
+                inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
+                IsInteractable() &&
+                ((mouseInWindowBoundX && mouseInWindowBoundY) || LastMouseDownInTextBound))
             {
-                int closestIndex = GetNearestCharacterIndexFromPos(currentMousePos, true);
-
-                if(closestIndex == GetLastValidCharacterIndex() && IsPosAfterLastCharacter(currentMousePos))
-                {
-                    closestIndex += 1;
-                }
-
-                //When left click down, set start and end selection index to the closest (exclusive) index
-                if(!inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT))
-                {
-                    SetStartSelectionIndex(closestIndex);
-                    SetEndSelectionIndex(closestIndex);
-                }
-                //When left clicking, move end selection index to the closest index
-                else
-                    SetEndSelectionIndex(closestIndex);
+                MouseSelectionLogic(inputInterface, currentMousePos);
             }
         }
 
@@ -1200,6 +1618,7 @@ namespace ssGUI
         {
             SetStartSelectionIndex(GetStartSelectionIndex());
             SetEndSelectionIndex(GetStartSelectionIndex());
+            LastMouseDownInTextBound = false;
         }
 
         if(inputStatus.KeyInputBlockedObject == nullptr)
@@ -1266,10 +1685,16 @@ namespace ssGUI
                     StartSelectionIndex(-1),
                     EndSelectionIndex(-1),
                     DeselectWhenFocusLost(true),
+                    LastMouseDownInTextBound(false),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
                     LastDefaultFontsID(0),
-                    TextContentChanged(false)
+                    TextContentChanged(false),
+                    MouseDoubleClickThresholdInMs(500),
+                    LastMouseDownTimestamp(0),
+                    LastClickSelectionTimestamp(0),
+                    ClickSelectionStartIndex(-1),
+                    ClickSelectionEndIndex(-1)
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
@@ -1307,44 +1732,6 @@ namespace ssGUI
     Text::~Text()
     {
         NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
-    }
-    
-    void Text::ComputeCharactersPositionAndSize()
-    {
-        ssGUI_LOG_FUNC();
-        if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
-            return;
-
-        RedrawObject();
-        RecalculateTextNeeded = false;
-        Overflow = false;
-        
-        //Clear and reprocess the character details
-        ProcessedCharacterDetails.clear(); 
-
-        FormatNewlinesCharacters();
-
-        AssignSupportedFont();
-
-        CharactersRenderInfos.clear();
-
-        //Empty text guard
-        if(CurrentCharactersDetails.Empty())
-            return;
-
-        //Populate CharactersRenderInfos list
-        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
-            CharactersRenderInfos.push_back(ssGUI::CharacterRenderInfo());
-        
-        if(WrappingMode == ssGUI::Enums::TextWrapping::WORD_WRAPPING)
-            ConstructRenderInfosForWordWrapping();
-        else if(WrappingMode == ssGUI::Enums::TextWrapping::CHARACTER_WRAPPING)
-            ConstructRenderInfosForCharacterWrapping();
-        else
-            ConstructRenderInfosForNoWrapping(true);
-
-        ApplyFontLineSpacing();
-        ApplyTextAlignment();
     }
     
     void Text::SetText(std::wstring text)
@@ -1547,6 +1934,44 @@ namespace ssGUI
         TextContentChanged = true;
         RedrawObject();
     }
+    
+    void Text::ComputeCharactersPositionAndSize()
+    {
+        ssGUI_LOG_FUNC();
+        if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
+            return;
+
+        RedrawObject();
+        RecalculateTextNeeded = false;
+        Overflow = false;
+        
+        //Clear and reprocess the character details
+        ProcessedCharacterDetails.clear(); 
+
+        FormatNewlinesCharacters();
+
+        AssignSupportedFont();
+
+        CharactersRenderInfos.clear();
+
+        //Empty text guard
+        if(CurrentCharactersDetails.Empty())
+            return;
+
+        //Populate CharactersRenderInfos list
+        for(int i = 0; i < CurrentCharactersDetails.Size(); i++)
+            CharactersRenderInfos.push_back(ssGUI::CharacterRenderInfo());
+        
+        if(WrappingMode == ssGUI::Enums::TextWrapping::WORD_WRAPPING)
+            ConstructRenderInfosForWordWrapping();
+        else if(WrappingMode == ssGUI::Enums::TextWrapping::CHARACTER_WRAPPING)
+            ConstructRenderInfosForCharacterWrapping();
+        else
+            ConstructRenderInfosForNoWrapping(true);
+
+        ApplyFontLineSpacing();
+        ApplyTextAlignment();
+    }
 
     glm::vec2 Text::GetCharacterGlobalPosition(int index, bool topLeftCorner)
     {
@@ -1557,307 +1982,6 @@ namespace ssGUI
                 (topLeftCorner ? 
                 CharactersRenderInfos[index].BaselinePosition + CharactersRenderInfos[index].DrawOffset :
                 CharactersRenderInfos[index].BaselinePosition);
-    }
-
-    bool Text::IsOverflow() const
-    {
-        return Overflow;
-    }
-
-    void Text::SetNewTextFontSize(float size)
-    {
-        FontSize = size;
-    }
-
-    float Text::GetNewTextFontSize() const
-    {
-        return FontSize;
-    }
-
-    void Text::SetNewTextColor(glm::u8vec4 color)
-    {
-        TextColor = color;
-    }
-
-    glm::u8vec4 Text::GetNewTextColor() const
-    {
-        return TextColor;
-    } 
-
-    void Text::SetNewTextUnderlined(bool underline)
-    {
-        TextUnderline = underline;
-    }
-
-    bool Text::IsNewTextUnderlined() const
-    {
-        return TextUnderline;
-    }
-
-    void Text::ApplyNewTextSettingsToExistingText()
-    {
-        RecalculateTextNeeded = true;
-        
-        for(size_t i = 0; i < CurrentCharactersDetails.Size(); i++)
-        {
-            CurrentCharactersDetails[i].FontSize = GetNewTextFontSize();
-            CurrentCharactersDetails[i].CharacterColor = GetNewTextColor();
-            CurrentCharactersDetails[i].Underlined = IsNewTextUnderlined();
-        }
-        
-        RedrawObject();
-    }
-
-    void Text::SetMultilineAllowed(bool multiline)
-    {
-        MultilineAllowed = multiline;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    bool Text::IsMultilineAllowed() const
-    {
-        return MultilineAllowed;
-    }   
-
-    void Text::SetWrappingMode(ssGUI::Enums::TextWrapping wrappingMode)
-    {
-        WrappingMode = wrappingMode;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    ssGUI::Enums::TextWrapping Text::GetWrappingMode() const
-    {
-        return WrappingMode;
-    }
-
-    void Text::SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
-    {
-        CurrentHorizontalAlignment = align;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    ssGUI::Enums::AlignmentHorizontal Text::GetTextHorizontalAlignment() const
-    {
-        return CurrentHorizontalAlignment;
-    }
-
-    void Text::SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
-    {
-        CurrentVerticalAlignment = align;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    ssGUI::Enums::AlignmentVertical Text::GetTextVerticalAlignment() const
-    {
-        return CurrentVerticalAlignment;
-    }
-    
-    void Text::SetTextAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
-    {
-        CurrentHorizontalAlignment = hori;
-        CurrentVerticalAlignment = vert;
-        RecalculateTextNeeded = true;
-        RedrawObject();    
-    }
-
-    void Text::AddFont(ssGUI::Font* font)
-    {
-        if(font == nullptr)
-            return;
-
-        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
-            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
-        
-        CurrentFonts.push_back(font);
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    void Text::AddFont(ssGUI::Font* font, int index)
-    {
-        if(font == nullptr)
-            return;
-        
-        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
-            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
-        
-        CurrentFonts.insert(CurrentFonts.begin() + index, font);
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-    
-    ssGUI::Font* Text::GetFont(int index) const
-    {
-        if(index < 0 || index >= CurrentFonts.size())
-            return nullptr;
-        
-        return CurrentFonts[index];
-    }
-
-    void Text::SetFont(ssGUI::Font* font, int index)
-    {
-        if(index < 0 || index >= CurrentFonts.size() || font == nullptr)
-            return;
-
-        if(font != CurrentFonts[index] && IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
-            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
-
-        CurrentFonts[index] = font;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    void Text::RemoveFont(int index)
-    {
-        if(index < 0 || index >= CurrentFonts.size())
-            return;
-
-        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
-            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
-
-        CurrentFonts.erase(CurrentFonts.begin() + index);
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    int Text::GetFontsCount() const
-    {
-        return CurrentFonts.size();
-    }
-
-    void Text::SetTextHorizontalPadding(float padding)
-    {
-        HorizontalPadding = padding;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    float Text::GetTextHorizontalPadding() const
-    {
-        return HorizontalPadding;
-    }
-
-    void Text::SetTextVerticalPadding(float padding)
-    {
-        VerticalPadding = padding;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    float Text::GetTextVerticalPadding() const
-    {
-        return VerticalPadding;
-    }
-
-    void Text::SetCharacterSpace(float charSpace)
-    {
-        CharacterSpace = charSpace;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    float Text::GetCharacterSpace() const
-    {
-        return CharacterSpace;
-    }
-
-    void Text::SetLineSpace(float lineSpace)
-    {
-        LineSpace = lineSpace;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-
-    float Text::GetLineSpace() const
-    {
-        return LineSpace;
-    }
-
-    void Text::SetTabSize(float tabSize)
-    {
-        TabSize = tabSize;
-        RecalculateTextNeeded = true;
-        RedrawObject();
-    }
-    
-    float Text::GetTabSize() const
-    {
-        return TabSize;
-    }
-
-    void Text::SetTextSelectionAllowed(bool allowed)
-    {
-        SelectionAllowed = allowed;
-        RedrawObject();
-    }
-
-    bool Text::IsTextSelectionAllowed() const
-    {
-        return SelectionAllowed;
-    }
-
-    void Text::SetStartSelectionIndex(int index)
-    {
-        if(IsTextSelectionAllowed())
-        {
-            StartSelectionIndex = index;
-            RedrawObject();
-        }
-    }
-
-    int Text::GetStartSelectionIndex() const
-    {
-        return IsTextSelectionAllowed() ? StartSelectionIndex : -1;
-    }
-
-    void Text::SetEndSelectionIndex(int index)
-    {
-        if(IsTextSelectionAllowed())
-        {
-            EndSelectionIndex = index;
-            RedrawObject();
-        }
-    }
-
-    int Text::GetEndSelectionIndex() const
-    {
-        return IsTextSelectionAllowed() ? EndSelectionIndex : -1;
-    }
-
-    void Text::SetSelectionColor(glm::u8vec4 color)
-    {
-        SelectionColor = color;
-        RedrawObject();
-    }
-
-    glm::u8vec4 Text::GetSelectionColor() const
-    {
-        return SelectionColor;
-    }
-
-    void Text::SetTextSelectedColor(glm::u8vec4 color)
-    {
-        TextSelectedColor = color;
-        RedrawObject();
-    }
-
-    glm::u8vec4 Text::GetTextSelectedColor() const
-    {
-        return TextSelectedColor;
-    }
-    
-    void Text::SetDeselectWhenFocusLost(bool deselectWhenFocusLost)
-    {
-        DeselectWhenFocusLost = deselectWhenFocusLost;
-    }
-    
-    bool Text::IsDeselectWhenFocusLost() const
-    {
-        return DeselectWhenFocusLost;
     }
 
     int Text::GetContainedCharacterIndexFromPos(glm::vec2 pos)
@@ -1965,6 +2089,10 @@ namespace ssGUI
         //TODO: Add max search iterations
         while (true)
         {
+            //ssLOG_LINE("startIndex: " << startIndex);
+            //ssLOG_LINE("endIndex: " << endIndex);
+            //ssLOG_LINE("midIndex: " << midIndex);
+        
             //Check start and end index are valid
             while (!CharactersRenderInfos[startIndex].Valid && startIndex < CharactersRenderInfos.size()) 
             {
@@ -1985,6 +2113,9 @@ namespace ssGUI
             {
                 midIndex--;
             }
+            
+            //ssLOG_LINE("midIndex2: " << midIndex);
+            //ssLOG_LINE();
 
             ssGUI::CharacterRenderInfo& midInfo = CharactersRenderInfos[midIndex];
             ssGUI::CharacterRenderInfo& startInfo = CharactersRenderInfos[startIndex];
@@ -1996,6 +2127,10 @@ namespace ssGUI
 
             if(startIndex == midIndex)
             {                
+                //If above the line, just go for the startIndex character
+                if(pos.y < globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMinY)
+                    return startIndex;
+                
                 //If below the line, just go for the endIndex character
                 if(pos.y > globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMaxY)
                     return endIndex;
@@ -2019,6 +2154,10 @@ namespace ssGUI
                 //If above the line, just go for the startIndex character
                 if(pos.y < globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMinY)
                     return startIndex;
+                
+                //If below the line, just go for the endIndex character
+                if(pos.y > globalPos.y + midInfo.BaselinePosition.y + midInfo.LineMaxY)
+                    return endIndex;
                 
                 if(!useLeftEdge)
                 {
@@ -2113,6 +2252,307 @@ namespace ssGUI
             return true;
         else
             return false;
+    }
+
+    bool Text::IsOverflow() const
+    {
+        return Overflow;
+    }
+
+    void Text::SetMultilineAllowed(bool multiline)
+    {
+        MultilineAllowed = multiline;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    bool Text::IsMultilineAllowed() const
+    {
+        return MultilineAllowed;
+    }   
+
+    void Text::SetWrappingMode(ssGUI::Enums::TextWrapping wrappingMode)
+    {
+        WrappingMode = wrappingMode;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    ssGUI::Enums::TextWrapping Text::GetWrappingMode() const
+    {
+        return WrappingMode;
+    }
+
+    void Text::SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal align)
+    {
+        CurrentHorizontalAlignment = align;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    ssGUI::Enums::AlignmentHorizontal Text::GetTextHorizontalAlignment() const
+    {
+        return CurrentHorizontalAlignment;
+    }
+
+    void Text::SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical align)
+    {
+        CurrentVerticalAlignment = align;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    ssGUI::Enums::AlignmentVertical Text::GetTextVerticalAlignment() const
+    {
+        return CurrentVerticalAlignment;
+    }
+    
+    void Text::SetTextAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert)
+    {
+        CurrentHorizontalAlignment = hori;
+        CurrentVerticalAlignment = vert;
+        RecalculateTextNeeded = true;
+        RedrawObject();    
+    }
+    
+    void Text::SetTextHorizontalPadding(float padding)
+    {
+        HorizontalPadding = padding;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    float Text::GetTextHorizontalPadding() const
+    {
+        return HorizontalPadding;
+    }
+
+    void Text::SetTextVerticalPadding(float padding)
+    {
+        VerticalPadding = padding;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    float Text::GetTextVerticalPadding() const
+    {
+        return VerticalPadding;
+    }
+
+    void Text::SetCharacterSpace(float charSpace)
+    {
+        CharacterSpace = charSpace;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    float Text::GetCharacterSpace() const
+    {
+        return CharacterSpace;
+    }
+
+    void Text::SetLineSpace(float lineSpace)
+    {
+        LineSpace = lineSpace;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    float Text::GetLineSpace() const
+    {
+        return LineSpace;
+    }
+
+    void Text::SetTabSize(float tabSize)
+    {
+        TabSize = tabSize;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+    
+    float Text::GetTabSize() const
+    {
+        return TabSize;
+    }
+    
+    void Text::AddFont(ssGUI::Font* font)
+    {
+        if(font == nullptr)
+            return;
+
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
+        
+        CurrentFonts.push_back(font);
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    void Text::AddFont(ssGUI::Font* font, int index)
+    {
+        if(font == nullptr)
+            return;
+        
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
+        
+        CurrentFonts.insert(CurrentFonts.begin() + index, font);
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+    
+    ssGUI::Font* Text::GetFont(int index) const
+    {
+        if(index < 0 || index >= CurrentFonts.size())
+            return nullptr;
+        
+        return CurrentFonts[index];
+    }
+
+    void Text::SetFont(ssGUI::Font* font, int index)
+    {
+        if(index < 0 || index >= CurrentFonts.size() || font == nullptr)
+            return;
+
+        if(font != CurrentFonts[index] && IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
+
+        CurrentFonts[index] = font;
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    void Text::RemoveFont(int index)
+    {
+        if(index < 0 || index >= CurrentFonts.size())
+            return;
+
+        if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE))
+            GetEventCallback(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE)->Notify(this);
+
+        CurrentFonts.erase(CurrentFonts.begin() + index);
+        RecalculateTextNeeded = true;
+        RedrawObject();
+    }
+
+    int Text::GetFontsCount() const
+    {
+        return CurrentFonts.size();
+    }
+    
+    void Text::SetNewTextFontSize(float size)
+    {
+        FontSize = size;
+    }
+
+    float Text::GetNewTextFontSize() const
+    {
+        return FontSize;
+    }
+
+    void Text::SetNewTextColor(glm::u8vec4 color)
+    {
+        TextColor = color;
+    }
+
+    glm::u8vec4 Text::GetNewTextColor() const
+    {
+        return TextColor;
+    } 
+
+    void Text::SetNewTextUnderlined(bool underline)
+    {
+        TextUnderline = underline;
+    }
+
+    bool Text::IsNewTextUnderlined() const
+    {
+        return TextUnderline;
+    }
+
+    void Text::ApplyNewTextSettingsToExistingText()
+    {
+        RecalculateTextNeeded = true;
+        
+        for(size_t i = 0; i < CurrentCharactersDetails.Size(); i++)
+        {
+            CurrentCharactersDetails[i].FontSize = GetNewTextFontSize();
+            CurrentCharactersDetails[i].CharacterColor = GetNewTextColor();
+            CurrentCharactersDetails[i].Underlined = IsNewTextUnderlined();
+        }
+        
+        RedrawObject();
+    }
+
+    void Text::SetTextSelectionAllowed(bool allowed)
+    {
+        SelectionAllowed = allowed;
+        RedrawObject();
+    }
+
+    bool Text::IsTextSelectionAllowed() const
+    {
+        return SelectionAllowed;
+    }
+
+    void Text::SetStartSelectionIndex(int index)
+    {
+        if(IsTextSelectionAllowed())
+        {
+            StartSelectionIndex = index;
+            RedrawObject();
+        }
+    }
+
+    int Text::GetStartSelectionIndex() const
+    {
+        return IsTextSelectionAllowed() ? StartSelectionIndex : -1;
+    }
+
+    void Text::SetEndSelectionIndex(int index)
+    {
+        if(IsTextSelectionAllowed())
+        {
+            EndSelectionIndex = index;
+            RedrawObject();
+        }
+    }
+
+    int Text::GetEndSelectionIndex() const
+    {
+        return IsTextSelectionAllowed() ? EndSelectionIndex : -1;
+    }
+
+    void Text::SetSelectionColor(glm::u8vec4 color)
+    {
+        SelectionColor = color;
+        RedrawObject();
+    }
+
+    glm::u8vec4 Text::GetSelectionColor() const
+    {
+        return SelectionColor;
+    }
+
+    void Text::SetTextSelectedColor(glm::u8vec4 color)
+    {
+        TextSelectedColor = color;
+        RedrawObject();
+    }
+
+    glm::u8vec4 Text::GetTextSelectedColor() const
+    {
+        return TextSelectedColor;
+    }
+    
+    void Text::SetDeselectWhenFocusLost(bool deselectWhenFocusLost)
+    {
+        DeselectWhenFocusLost = deselectWhenFocusLost;
+    }
+    
+    bool Text::IsDeselectWhenFocusLost() const
+    {
+        return DeselectWhenFocusLost;
     }
 
     ssGUI::Font* Text::AddDefaultFont()
