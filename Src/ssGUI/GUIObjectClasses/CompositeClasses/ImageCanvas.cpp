@@ -241,7 +241,7 @@ namespace ssGUI
                                 ssGUI::GUIObject* mainWindow)
     {        
         //By default don't show rotation UI
-        auto shape = GetAnyExtension<ssGUI::Extensions::Shape>();
+        auto shape = GetExtension<ssGUI::Extensions::Shape>();
         
         if(!IsInteractable() || !IsBlockInput())
             return;

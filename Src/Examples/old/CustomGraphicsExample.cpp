@@ -169,10 +169,10 @@ int main()
     window.GetWindowTitleObject()->SetText("Rotation Control");
     window.SetParent(&mainWindow);
     window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Layout>());
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->SetUpdateContainerMinMaxSize(false);   //By default, layout extension overrides the min max size
+    window.GetExtension<ssGUI::Extensions::Layout>()->SetUpdateContainerMinMaxSize(false);   //By default, layout extension overrides the min max size
     window.SetMinSize(glm::vec2(240, 200));
     float sizes[] = {0.2, 0.2, 0.2, 0.4};
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(sizes, 4);
+    window.GetExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(sizes, 4);
 
     //Pyramid Rotation Speed Text
     ssGUI::Text pyramidText;
@@ -195,7 +195,7 @@ int main()
     );
     pyramidSlider.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedPosition>());
     pyramidSlider.AddEventCallback(ecb);
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddChildWithWrapper(&pyramidSlider);
+    window.GetExtension<ssGUI::Extensions::Layout>()->AddChildWithWrapper(&pyramidSlider);
 
     //Cube Rotation Speed Text
     ssGUI::Text* cubeText = pyramidText.Clone(true);
@@ -213,7 +213,7 @@ int main()
             CubeRotateSpeed = static_cast<ssGUI::Slider*>(info.EventCallbackContainer)->GetSliderValue() * 3;
         }
     );
-    window.GetAnyExtension<ssGUI::Extensions::Layout>()->AddChildWithWrapper(cubeSlider);
+    window.GetExtension<ssGUI::Extensions::Layout>()->AddChildWithWrapper(cubeSlider);
 
     //Create ssGUIManager and start it
     ssGUI::ssGUIManager guiManager;

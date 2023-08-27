@@ -71,9 +71,9 @@ namespace Extensions
 
         //Check if parent has layout
         if(Container->GetType() != ssGUI::Enums::GUIObjectType::WINDOW || Container->GetParent() == nullptr || 
-            !Container->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+            !Container->GetParent()->IsExtensionExist<ssGUI::Extensions::Layout>())
         {
-            Container->RemoveExtension(GetExtensionName());
+            Container->RemoveExtension<ssGUI::Extensions::WindowLayoutItemEnforcer>();
             return;
         }
 
@@ -88,7 +88,7 @@ namespace Extensions
         if(LastContainerSize != Container->GetSize())
             return;
 
-        auto layout = static_cast<ssGUI::Extensions::Layout*>(Container->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        auto layout = Container->GetParent()->GetExtension<ssGUI::Extensions::Layout>();
         
         auto resizeLambda = [&](float targetResizeAmount, float containerResizedAmount, float othersResizedAmount, ssGUI::WindowResizeDragData const & resizeData, bool horizontal)
         {

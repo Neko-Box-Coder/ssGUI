@@ -68,8 +68,8 @@ namespace ssGUI
         SetSize(glm::vec2(200, GetSize().y));
         AddExtension<ssGUI::Extensions::Layout>();
         AddExtension<ssGUI::Extensions::Border>();
-        GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(2);
-        GetAnyExtension<ssGUI::Extensions::Layout>()->SetSpacing(0);
+        GetExtension<ssGUI::Extensions::Layout>()->SetPadding(2);
+        GetExtension<ssGUI::Extensions::Layout>()->SetSpacing(0);
         SetBackgroundColor(glm::u8vec4(150, 150, 150, 255));
         AddTag(ssGUI::Tags::FLOATING);
     }
@@ -199,11 +199,11 @@ namespace ssGUI
         menuItem->Delete();
         
         //Validation check
-        if(!IsAnyExtensionExist<ssGUI::Extensions::Layout>())
+        if(!IsExtensionExist<ssGUI::Extensions::Layout>())
             return;
         
         //Removing space created by the menu item that we deleted
-        auto* layout = GetAnyExtension<ssGUI::Extensions::Layout>();
+        auto* layout = GetExtension<ssGUI::Extensions::Layout>();
         float layoutItemSpacing = layout->GetSpacing() + layout->GetPadding() * 2;
         
         if(layout->IsHorizontalLayout())

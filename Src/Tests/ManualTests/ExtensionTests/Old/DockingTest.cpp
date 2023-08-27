@@ -79,7 +79,7 @@ int main()
     ssLOG_LINE("mainWindowWidget: "<<&mainWindowWidget);
     mainWindowWidget.AddExtension(docker);
     // auto dockerLayout = static_cast<ssGUI::Extensions::Layout*>(mainWindowWidget.GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
-    auto dockerLayout = mainWindowWidget.GetAnyExtension<ssGUI::Extensions::Layout>();
+    auto dockerLayout = mainWindowWidget.GetExtension<ssGUI::Extensions::Layout>();
 
     dockerLayout->SetPadding(2);
 

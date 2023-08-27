@@ -33,7 +33,7 @@ int main()
     );
 
     //Clone the extension for the button widget
-    button.AddExtensionCopy(text.GetAnyExtension<ssGUI::Extensions::AdvancedPosition>())->SetVerticalPixel(20);
+    button.AddExtensionCopy(text.GetExtension<ssGUI::Extensions::AdvancedPosition>())->SetVerticalPixel(20);
 
     //Add the text and button widget to the main window
     text.SetParent(&mainWindow);

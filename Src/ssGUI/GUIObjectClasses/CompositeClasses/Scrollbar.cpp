@@ -39,7 +39,7 @@ namespace ssGUI
         float diff = 50;
         SetBackgroundColor(GetBackgroundColor() - glm::u8vec4(diff, diff, diff, 0));
 
-        GetKnobObject()->RemoveAnyExtension<ssGUI::Extensions::Outline>();
+        GetKnobObject()->RemoveExtension<ssGUI::Extensions::Outline>();
         auto btn = static_cast<ssGUI::StandardButton*>(GetKnobObject());
         glm::u8vec4 bgColor = GetBackgroundColor();
         bgColor.a = 255;

@@ -123,8 +123,8 @@ namespace Extensions
         CreateWidgetIfNotPresent(&DockPreivewLeft, GetDockPreviewColor());
 
         //Set the correct position and size
-        ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewLeft->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewLeft->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* ap = DockPreivewLeft->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* as = DockPreivewLeft->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
@@ -140,8 +140,8 @@ namespace Extensions
         CreateWidgetIfNotPresent(&DockPreivewTop, GetDockPreviewColor());
 
         //Set the correct position and size
-        ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewTop->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewTop->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* ap = DockPreivewTop->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* as = DockPreivewTop->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::TOP);
@@ -157,8 +157,8 @@ namespace Extensions
         CreateWidgetIfNotPresent(&DockPreivewRight, GetDockPreviewColor());
 
         //Set the correct position and size
-        ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewRight->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewRight->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* ap = DockPreivewRight->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* as = DockPreivewRight->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::RIGHT);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
@@ -174,8 +174,8 @@ namespace Extensions
         CreateWidgetIfNotPresent(&DockPreivewBottom, GetDockPreviewColor());
 
         //Set the correct position and size
-        ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockPreivewBottom->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(DockPreivewBottom->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* ap = DockPreivewBottom->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* as = DockPreivewBottom->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
         ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
         ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::BOTTOM);
@@ -232,17 +232,17 @@ namespace Extensions
         CreateWidgetIfNotPresent(&DockTriggerLeft, GetTriggerAreaColor());
 
         //Set the correct position and size
-        ssGUI::Extensions::AdvancedPosition* apTop = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockTriggerTop->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* asTop = static_cast<ssGUI::Extensions::AdvancedSize*>(DockTriggerTop->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* apTop = DockTriggerTop->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* asTop = DockTriggerTop->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ssGUI::Extensions::AdvancedPosition* apRight = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockTriggerRight->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* asRight = static_cast<ssGUI::Extensions::AdvancedSize*>(DockTriggerRight->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* apRight = DockTriggerRight->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* asRight = DockTriggerRight->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ssGUI::Extensions::AdvancedPosition* apBottom = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockTriggerBottom->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* asBottom = static_cast<ssGUI::Extensions::AdvancedSize*>(DockTriggerBottom->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* apBottom = DockTriggerBottom->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* asBottom = DockTriggerBottom->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ssGUI::Extensions::AdvancedPosition* apLeft = static_cast<ssGUI::Extensions::AdvancedPosition*>(DockTriggerLeft->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        ssGUI::Extensions::AdvancedSize* asLeft = static_cast<ssGUI::Extensions::AdvancedSize*>(DockTriggerLeft->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ssGUI::Extensions::AdvancedPosition* apLeft = DockTriggerLeft->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ssGUI::Extensions::AdvancedSize* asLeft = DockTriggerLeft->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
         if(UseTriggerPercentage)
         {
@@ -339,7 +339,7 @@ namespace Extensions
         //     {
         //         containerParent->MoveChildrenIteratorNext();
         //         glm::vec2 childSize = containerParent->GetCurrentChild()->GetSize();
-        //         if(static_cast<ssGUI::Extensions::Layout*>(containerParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsHorizontalLayout())
+        //         if(containerParent->GetExtension<ssGUI::Extensions::Layout>()->IsHorizontalLayout())
         //             containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x + Container->GetSize().x, childSize.y));
         //         else
         //             containerParent->GetCurrentChild()->SetSize(glm::vec2(childSize.x, childSize.y + Container->GetSize().y));                
@@ -360,7 +360,7 @@ namespace Extensions
     {
         ssGUI_LOG_FUNC();
         
-        ssGUI::Extensions::Layout* parentLayout = static_cast<ssGUI::Extensions::Layout*>(ObjectToDockNextTo->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        ssGUI::Extensions::Layout* parentLayout = ObjectToDockNextTo->GetParent()->GetExtension<ssGUI::Extensions::Layout>();
 
         if(ObjectToDockNextTo->GetParent()->GetChildrenCount() > 1)
         {
@@ -390,8 +390,8 @@ namespace Extensions
             ssLOG_EXIT_PROGRAM();
 
         //If not floating, turn window to invisible
-        if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
-            ObjectToDockNextTo->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->IsEnabled())
+        if( ObjectToDockNextTo->GetParent()->IsExtensionExist<ssGUI::Extensions::Docker>() && 
+            ObjectToDockNextTo->GetParent()->GetExtension<ssGUI::Extensions::Docker>()->IsEnabled())
         {
             newParent = new ssGUI::Window();
             newParent->SetTitlebar(false);
@@ -404,7 +404,7 @@ namespace Extensions
             auto allExtensions = newParent->GetListOfExtensions();
             for(auto extension : allExtensions)
             {
-                if(extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME ||
+                if( extension->GetExtensionName() == ssGUI::Extensions::Docker::EXTENSION_NAME ||
                     extension->GetExtensionName() == ssGUI::Extensions::Layout::EXTENSION_NAME)
                 {
                     continue;
@@ -426,28 +426,28 @@ namespace Extensions
         newParent->SetParent(ObjectToDockNextTo->GetParent());
 
         //The docker will automatically create docker & layout extension if not exist
-        if(!newParent->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+        if(!newParent->IsExtensionExist<ssGUI::Extensions::Docker>())
         {
             newParent->AddExtension<ssGUI::Extensions::Docker>();
-            dockLayout = static_cast<ssGUI::Extensions::Layout*>(newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+            dockLayout = newParent->GetExtension<ssGUI::Extensions::Layout>();
         }
 
-        if(!newParent->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+        if(!newParent->IsExtensionExist<ssGUI::Extensions::Layout>())
             newParent->AddExtension<ssGUI::Extensions::Layout>();
 
         //Check if the generated docker does not use parent docker & layout or not.
-        if( newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME) && 
-            newParent->GetParent()->GetAnyExtension<ssGUI::Extensions::Docker>()->IsChildrenDockerUseThisSettings() && 
-            newParent->GetParent()->GetAnyExtension<ssGUI::Extensions::Docker>()->IsEnabled())
+        if( newParent->GetParent()->IsExtensionExist<ssGUI::Extensions::Docker>() && 
+            newParent->GetParent()->GetExtension<ssGUI::Extensions::Docker>()->IsChildrenDockerUseThisSettings() && 
+            newParent->GetParent()->GetExtension<ssGUI::Extensions::Docker>()->IsEnabled())
         {
-            auto parentDocker = static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME));
-            newParent->GetExtension(ssGUI::Extensions::Docker::EXTENSION_NAME)->Copy(parentDocker);
+            auto parentDocker = newParent->GetParent()->GetExtension<ssGUI::Extensions::Docker>();
+            newParent->GetExtension<ssGUI::Extensions::Docker>()->Copy(parentDocker);
 
-            if( newParent->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && 
-                static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME))->IsEnabled())
+            if( newParent->GetParent()->IsExtensionExist<ssGUI::Extensions::Layout>() && 
+                newParent->GetParent()->GetExtension<ssGUI::Extensions::Layout>()->IsEnabled())
             {
-                auto parentLayout = static_cast<ssGUI::Extensions::Docker*>(newParent->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
-                newParent->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME)->Copy(parentLayout);
+                auto parentLayout = newParent->GetParent()->GetExtension<ssGUI::Extensions::Layout>();
+                newParent->GetExtension<ssGUI::Extensions::Layout>()->Copy(parentLayout);
             }
         }
         
@@ -486,10 +486,10 @@ namespace Extensions
         bool validDocking = false;
         if(ObjectToDockNextTo != nullptr)
         {
-            if(ObjectToDockNextTo->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
-                validDocking = ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Docker>()->IsValidDocking();
-            else if(ObjectToDockNextTo->IsAnyExtensionExist<ssGUI::Extensions::Dockable>())
-                validDocking = ObjectToDockNextTo->GetAnyExtension<ssGUI::Extensions::Dockable>()->IsValidDocking();
+            if(ObjectToDockNextTo->IsExtensionExist<ssGUI::Extensions::Docker>())
+                validDocking = ObjectToDockNextTo->GetExtension<ssGUI::Extensions::Docker>()->IsValidDocking();
+            else if(ObjectToDockNextTo->IsExtensionExist<ssGUI::Extensions::Dockable>())
+                validDocking = ObjectToDockNextTo->GetExtension<ssGUI::Extensions::Dockable>()->IsValidDocking();
         }
 
         //Docking mechanism for dockable window
@@ -497,7 +497,7 @@ namespace Extensions
         if( ObjectToDockNextTo != nullptr && ObjectToDockNextTo->GetParent() != nullptr && validDocking)
         {
             //If it is just docker, just need to add it as a child
-            if(ObjectToDockNextTo->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            if(ObjectToDockNextTo->IsExtensionExist<ssGUI::Extensions::Docker>())
             {
                 Container->SetParent(ObjectToDockNextTo);
                 goto reset;
@@ -507,8 +507,8 @@ namespace Extensions
             ssGUI::Extensions::Layout* dockLayout = nullptr;
             
             //Check if the parent of the ObjectToDockNextTo has the Docker extension
-            if(ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME) && 
-                ObjectToDockNextTo->GetParent()->IsExtensionExist(ssGUI::Extensions::Docker::EXTENSION_NAME))
+            if( ObjectToDockNextTo->GetParent()->IsExtensionExist<ssGUI::Extensions::Layout>() && 
+                ObjectToDockNextTo->GetParent()->IsExtensionExist<ssGUI::Extensions::Docker>())
             {
                 FindDockLayout(dockLayout);
             }
@@ -551,7 +551,7 @@ namespace Extensions
             }
         }
         //If we are not docking, set the parent of the window to top level parent if floating
-        else if(Floatable && OriginalParent->IsAnyExtensionExist<ssGUI::Extensions::Docker>())
+        else if(Floatable && OriginalParent->IsExtensionExist<ssGUI::Extensions::Docker>())
         {            
             auto globalPos = Container->GetGlobalPosition();
             Container->SetParent(DockingTopLevelParent);
@@ -910,15 +910,14 @@ namespace Extensions
                 EXTENSION_NAME,
                 [](ssGUI::EventInfo& info)
                 {
-                    if(!info.Container->IsExtensionExist(ssGUI::Extensions::Dockable::EXTENSION_NAME))
+                    if(!info.Container->IsExtensionExist<ssGUI::Extensions::Dockable>())
                     {
                         ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Dockable extension. Probably something wrong with cloning");
                         ssLOG_EXIT_PROGRAM();
                         return;
                     }
 
-                    ssGUI::Extensions::Dockable* containerDockable = static_cast<ssGUI::Extensions::Dockable*>
-                            (info.Container->GetExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME));
+                    ssGUI::Extensions::Dockable* containerDockable = info.Container->GetExtension<ssGUI::Extensions::Dockable>();
                     
                     //When the current window started being dragged
                     if(static_cast<ssGUI::Window*>(info.EventSource)->GetWindowDragState() == ssGUI::Enums::WindowDragState::STARTED)

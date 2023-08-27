@@ -79,20 +79,20 @@ namespace ssGUI
             ssGUI::Extensions::AdvancedSize* as;
             ssGUI::Extensions::AdvancedPosition* ap;
             
-            if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+            if(!buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
                 buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
-            as = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
+            as = buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
             as->SetHorizontalPercentage(0.55);
             as->SetHorizontalPixel(0);
             as->SetVerticalPercentage(0.55);
             as->SetVerticalPixel(0);
 
-            if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+            if(!buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
                 buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
 
-            ap = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
+            ap = buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
             ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
             ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
         }

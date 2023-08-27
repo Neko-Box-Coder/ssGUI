@@ -41,8 +41,8 @@ namespace ssGUI
         SetSize(glm::vec2(200, GetSize().y));
         AddExtension<ssGUI::Extensions::Layout>();
         AddExtension<ssGUI::Extensions::Border>();
-        GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(2);
-        GetAnyExtension<ssGUI::Extensions::Layout>()->SetSpacing(0);
+        GetExtension<ssGUI::Extensions::Layout>()->SetPadding(2);
+        GetExtension<ssGUI::Extensions::Layout>()->SetSpacing(0);
         SetBackgroundColor(glm::u8vec4(150, 150, 150, 255));
         AddTag(ssGUI::Tags::FLOATING);
     }

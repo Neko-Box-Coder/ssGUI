@@ -18,9 +18,9 @@ namespace ssGUI
     {
         ssGUI_LOG_FUNC();
 
-        RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
-        RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
-        RemoveAnyExtension<ssGUI::Extensions::Outline>();
+        RemoveExtension<ssGUI::Extensions::BoxShadow>();
+        RemoveExtension<ssGUI::Extensions::RoundedCorners>();
+        RemoveExtension<ssGUI::Extensions::Outline>();
 
         GetButtonTextObject()->SetNewTextFontSize(15);
         GetButtonTextObject()->SetTextHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT);

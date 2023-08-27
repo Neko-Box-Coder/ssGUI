@@ -17,7 +17,7 @@ int main()
     window.SetPosition(glm::vec2(20, 20));
     window.SetMinSize(glm::vec2(100, 100));
     window.SetSize(glm::vec2(325, 280));
-    window.RemoveAnyExtension<ssGUI::Extensions::Border>();
+    window.RemoveExtension<ssGUI::Extensions::Border>();
     window.SetTitlebarHeight(25);
     window.SetParent(&mainWindow);
 
@@ -47,12 +47,12 @@ int main()
         {
             if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                if(window.IsAnyExtensionExist<ssGUI::Extensions::Border>())
-                    window.RemoveAnyExtension<ssGUI::Extensions::Border>();
+                if(window.IsExtensionExist<ssGUI::Extensions::Border>())
+                    window.RemoveExtension<ssGUI::Extensions::Border>();
                 else
                 {
                     window.AddExtension<ssGUI::Extensions::Border>();
-                    window.GetAnyExtension<ssGUI::Extensions::Border>()->SetBorderWidth(2);
+                    window.GetExtension<ssGUI::Extensions::Border>()->SetBorderWidth(2);
                 }
             }
         }
@@ -65,8 +65,8 @@ int main()
         {
             if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                if(window.IsAnyExtensionExist<ssGUI::Extensions::BoxShadow>())
-                    window.RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
+                if(window.IsExtensionExist<ssGUI::Extensions::BoxShadow>())
+                    window.RemoveExtension<ssGUI::Extensions::BoxShadow>();
                 else
                 {
                     window.AddExtension<ssGUI::Extensions::BoxShadow>();
@@ -82,8 +82,8 @@ int main()
         {
             if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                if(window.IsAnyExtensionExist<ssGUI::Extensions::RoundedCorners>())
-                    window.RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
+                if(window.IsExtensionExist<ssGUI::Extensions::RoundedCorners>())
+                    window.RemoveExtension<ssGUI::Extensions::RoundedCorners>();
                 else
                 {
                     auto rc = window.AddExtension<ssGUI::Extensions::RoundedCorners>();
@@ -99,7 +99,7 @@ int main()
                     rc->AddTargetVertex(baseShape, 2);
                     rc->AddTargetVertex(baseShape, 3);
                     
-                    window.ChangeAnyExtensionDrawOrder<ssGUI::Extensions::RoundedCorners>(0);
+                    window.ChangeExtensionDrawOrder<ssGUI::Extensions::RoundedCorners>(0);
                 }
             }
         }
@@ -112,8 +112,8 @@ int main()
         {
             if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {
-                if(window.IsAnyExtensionExist<ssGUI::Extensions::Outline>())
-                    window.RemoveAnyExtension<ssGUI::Extensions::Outline>();
+                if(window.IsExtensionExist<ssGUI::Extensions::Outline>())
+                    window.RemoveExtension<ssGUI::Extensions::Outline>();
                 else
                 {
                     auto windowOutline = window.AddExtension<ssGUI::Extensions::Outline>();

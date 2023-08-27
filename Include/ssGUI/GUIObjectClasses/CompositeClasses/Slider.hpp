@@ -83,7 +83,7 @@ namespace ssGUI
         
         button->AddExtension<ssGUI::Extensions::RoundedCorners>()->SetRoundedCornersRadius(KnobSize);
 
-        button->RemoveAnyExtension<ssGUI::Extensions::Border>();
+        button->RemoveExtension<ssGUI::Extensions::Border>();
         button->SetUserCreated(false);
         button->AddExtension<ssGUI::Extensions::Outline>()->SetOutlineThickness(1.5);
         button->SetParent(this, true);

@@ -38,18 +38,18 @@ namespace Extensions
         for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
         {
             ssGUI::GUIObject* curMaskObj = CurrentObjectsReferences.GetObjectReference(it->first);
-            if(curMaskObj == nullptr || !curMaskObj->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
+            if(curMaskObj == nullptr || !curMaskObj->IsExtensionExist<ssGUI::Extensions::Mask>())
             {
                 continue;
             }
 
-            if(!curMaskObj->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
+            if(!curMaskObj->GetExtension<ssGUI::Extensions::Mask>()->IsEnabled())
                 continue;
 
             //Sepcial check to not mask any currently docking window that has TopLevelParent set to higher than the object that has the mask extension
-            if(Container->IsAnyExtensionExist<ssGUI::Extensions::Dockable>())
+            if(Container->IsExtensionExist<ssGUI::Extensions::Dockable>())
             {
-                auto dockableEx = Container->GetAnyExtension<ssGUI::Extensions::Dockable>();
+                auto dockableEx = Container->GetExtension<ssGUI::Extensions::Dockable>();
                 if(dockableEx->IsCurrentlyDocking())
                 {
                     ssGUI::GUIObject* topLevelParent =  dockableEx->GetTopLevelParent();
@@ -76,10 +76,10 @@ namespace Extensions
                 }
             }
 
-            ssGUI::Extensions::Mask* currentMask = static_cast<ssGUI::Extensions::Mask*>(CurrentObjectsReferences.GetObjectReference(it->first)->
-                GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME));
+            ssGUI::Extensions::Mask* currentMask = CurrentObjectsReferences .GetObjectReference(it->first)
+                                                                            ->GetExtension<ssGUI::Extensions::Mask>();
 
-            currentMask->MaskObject(Container, /*- (mainWindowP->GetGlobalPosition() + mainWindowPositionOffset)*/glm::vec2(), it->second);
+            currentMask->MaskObject(Container, glm::vec2(), it->second);
         }
     }
 
@@ -157,8 +157,8 @@ namespace Extensions
 
         for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
         {
-            if(CurrentObjectsReferences.GetObjectReference(it->first) != nullptr && 
-                CurrentObjectsReferences.GetObjectReference(it->first)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
+            if( CurrentObjectsReferences.GetObjectReference(it->first) != nullptr && 
+                CurrentObjectsReferences.GetObjectReference(it->first)->IsExtensionExist<ssGUI::Extensions::Mask>())
             {
                 returnVec.push_back
                 (
@@ -196,28 +196,28 @@ namespace Extensions
         //Updating Target Masks and blocking any mouse input outside the mask
         if(isPreUpdate)
         {
-            if(Container->GetExtensionDrawOrder(GetExtensionName()) != Container->GetExtensionsCount() - 1)
-                Container->ChangeExtensionDrawOrder(GetExtensionName(), Container->GetExtensionsCount() - 1);
+            if( Container->GetExtensionDrawOrder<ssGUI::Extensions::MaskEnforcer>() != Container->GetExtensionsCount() - 1)
+                Container->ChangeExtensionDrawOrder<ssGUI::Extensions::MaskEnforcer>(Container->GetExtensionsCount() - 1);
 
             std::vector<ssGUIObjectIndex> indicesToDelete = std::vector<ssGUIObjectIndex>();
 
             for(auto it = TargetMasks.begin(); it != TargetMasks.end(); it++)
             {
-                if(CurrentObjectsReferences.GetObjectReference(it->first) == nullptr || 
-                    !CurrentObjectsReferences.GetObjectReference(it->first)->IsExtensionExist(ssGUI::Extensions::Mask::EXTENSION_NAME))
+                if( CurrentObjectsReferences.GetObjectReference(it->first) == nullptr || 
+                    !CurrentObjectsReferences.GetObjectReference(it->first)->IsExtensionExist<ssGUI::Extensions::Mask>())
                 {
                     indicesToDelete.push_back(it->first);
                     continue;
                 }
                 
-                if(!CurrentObjectsReferences.GetObjectReference(it->first)->GetExtension(ssGUI::Extensions::Mask::EXTENSION_NAME)->IsEnabled())
+                if(!CurrentObjectsReferences.GetObjectReference(it->first)->GetExtension<ssGUI::Extensions::Mask>()->IsEnabled())
                     continue;
 
                 if(inputStatus.MouseInputBlockedObject != nullptr)                
                     continue;
                 
                 //If so, check if the cursor is inside the mask
-                ssGUI::Extensions::Mask* maskExt = CurrentObjectsReferences.GetObjectReference(it->first)->GetAnyExtension<ssGUI::Extensions::Mask>();
+                ssGUI::Extensions::Mask* maskExt = CurrentObjectsReferences.GetObjectReference(it->first)->GetExtension<ssGUI::Extensions::Mask>();
                 glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
                 if(!maskExt->IsPointContainedInMask(currentMousePos))
                 {

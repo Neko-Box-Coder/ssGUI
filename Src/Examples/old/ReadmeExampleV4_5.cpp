@@ -10,8 +10,8 @@ int main()
     mainWindow.SetSize(glm::vec2(450, 110));
     mainWindow.SetResizeType(ssGUI::Enums::ResizeType::NONE);
     mainWindow.AddExtension<ssGUI::Extensions::Layout>();
-    mainWindow.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.5);
-    mainWindow.GetAnyExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.5);
+    mainWindow.GetExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.5);
+    mainWindow.GetExtension<ssGUI::Extensions::Layout>()->AddPreferredSizeMultiplier(0.5);
 
     //Create a text widget and set the respective properties
     ssGUI::Text text;

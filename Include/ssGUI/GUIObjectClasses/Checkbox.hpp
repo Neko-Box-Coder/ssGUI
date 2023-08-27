@@ -21,7 +21,7 @@ namespace ssGUI
                             Checked(false)
     {
         SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
-        auto border = GetAnyExtension<ssGUI::Extensions::Border>();
+        auto border = GetExtension<ssGUI::Extensions::Border>();
         border->SetBorderWidth(2);
         border->SetBorderColor(GetBackgroundColor());
 
@@ -60,7 +60,7 @@ namespace ssGUI
                         break;
                 }
 
-                auto border = btn->GetAnyExtension<ssGUI::Extensions::Border>();
+                auto border = btn->GetExtension<ssGUI::Extensions::Border>();
 
                 if(border != nullptr)
                     border->SetBorderColor(btn->GetBackgroundColor());

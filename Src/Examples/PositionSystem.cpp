@@ -40,7 +40,7 @@ int main()
     ssGUI::StandardWindow widgetChild;
     widgetChild.GetWindowTitleObject()->SetText("Child GUI Object");
     widgetChild.SetSize(glm::vec2(200, 200));
-    widgetChild.RemoveAnyExtension<ssGUI::Extensions::Dockable>();                                  //By default, it can dock to other windows, we don't need that
+    widgetChild.RemoveExtension<ssGUI::Extensions::Dockable>();                                  //By default, it can dock to other windows, we don't need that
     widgetChild.SetParent(&parentWidget);                                                           //Also by default, dockable extention reparent the GUI object
                                                                                                     //After dragging the window and we don't want that.
     //A different parent window
@@ -49,7 +49,7 @@ int main()
     parentWindow.GetWindowTitleObject()->SetText("Parent Window GUI Object");
     parentWindow.SetSize(glm::vec2(350, 350));
     parentWindow.AddExtension<ssGUI::Extensions::Mask>();                   //Adding a mask extension for masking the child window
-    parentWindow.RemoveAnyExtension<ssGUI::Extensions::Dockable>();                                 //Remove it for now
+    parentWindow.RemoveExtension<ssGUI::Extensions::Dockable>();                                 //Remove it for now
     parentWindow.SetParent(&mainWindow);
 
     //A child window inside the parent window

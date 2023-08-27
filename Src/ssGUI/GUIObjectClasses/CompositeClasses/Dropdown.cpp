@@ -76,7 +76,7 @@ namespace ssGUI
 
         //Swap size multiplier
         SetButtonMode(ssGUI::StandardButton::Mode::BOTH);
-        auto layout = GetAnyExtension<ssGUI::Extensions::Layout>();
+        auto layout = GetExtension<ssGUI::Extensions::Layout>();
         float iconMulti = layout->GetPreferredSizeMultiplier(0);
         float textMulti = layout->GetPreferredSizeMultiplier(1);
         layout->SetPreferredSizeMultiplier(0, textMulti);

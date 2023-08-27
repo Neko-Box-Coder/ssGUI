@@ -11,7 +11,7 @@ int main()
 
     //Create a window
     ssGUI::StandardWindow window;
-    window.RemoveAnyExtension<ssGUI::Extensions::Dockable>();           //We don't need docking
+    window.RemoveExtension<ssGUI::Extensions::Dockable>();           //We don't need docking
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
 

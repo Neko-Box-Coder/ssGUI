@@ -1019,9 +1019,8 @@ namespace Extensions
                         return;
                     }
                     
-                    if(layoutContainer->IsAnyExtensionExist<ssGUI::Extensions::Layout>())
-                        layoutContainer ->GetAnyExtension<ssGUI::Extensions::Layout>()
-                                        ->Internal_OnChildMinMaxSizeChanged(info.EventSource);
+                    if(layoutContainer->IsExtensionExist<ssGUI::Extensions::Layout>())
+                        layoutContainer ->GetExtension<ssGUI::Extensions::Layout>()->Internal_OnChildMinMaxSizeChanged(info.EventSource);
                 }
                 // std::bind(&ssGUI::Extensions::Layout::Internal_OnChildMinMaxSizeChanged, this, std::placeholders::_1)
             );
@@ -1230,7 +1229,7 @@ namespace Extensions
             [](ssGUI::EventInfo& info)
             {
                 ssGUI_LOG_FUNC("OnRecursiveChildAddEventCallback");
-                if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+                if(!info.Container->IsExtensionExist<ssGUI::Extensions::Layout>())
                 {
                     ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Layout extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
@@ -1238,7 +1237,7 @@ namespace Extensions
                 }
 
                 ssGUI::Extensions::Layout* containerLayout = static_cast<ssGUI::Extensions::Layout*>
-                    (info.Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+                    (info.Container->GetExtension<ssGUI::Extensions::Layout>());
                 ObjectsReferences* layoutOR = containerLayout->Internal_GetObjectsReferences();
                 int childIndex =    layoutOR->IsObjectReferenceExist(info.EventSource) ? 
                                     layoutOR->GetObjectIndex(info.EventSource) : 
@@ -1248,7 +1247,7 @@ namespace Extensions
                 if(containerLayout->OriginalChildrenSize.find(childIndex) == containerLayout->OriginalChildrenSize.end())
                     containerLayout->OriginalChildrenSize[childIndex] = info.EventSource->GetSize();
 
-                if( !info.EventSource->IsExtensionExist(ssGUI::Extensions::WindowLayoutItemEnforcer::EXTENSION_NAME) && 
+                if( !info.EventSource->IsExtensionExist<ssGUI::Extensions::WindowLayoutItemEnforcer>() && 
                     info.EventSource->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
                 {
                     info.EventSource->AddExtension<ssGUI::Extensions::WindowLayoutItemEnforcer>();
@@ -1285,7 +1284,7 @@ namespace Extensions
             [](ssGUI::EventInfo& info)
             {                    
                 ssGUI_LOG_FUNC("ChildPositionChangedEventCallback");
-                if(!info.Container->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+                if(!info.Container->IsExtensionExist<ssGUI::Extensions::Layout>())
                 {
                     ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Layout extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
@@ -1293,7 +1292,7 @@ namespace Extensions
                 }
 
                 ssGUI::Extensions::Layout* containerLayout = static_cast<ssGUI::Extensions::Layout*>
-                    (info.Container->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+                    (info.Container->GetExtension<ssGUI::Extensions::Layout>());
 
                 if(containerLayout->IsOverrideChildrenResizeTypeAndOnTop())
                     containerLayout->UpdateChildrenResizeTypesAndOnTop();

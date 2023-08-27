@@ -31,7 +31,7 @@ int main()
     (
         [&]()
         {
-            //auto* layout = slider->GetAnyExtension<ssGUI::Extensions::Layout>();
+            //auto* layout = slider->GetExtension<ssGUI::Extensions::Layout>();
             //ssLOG_LINE("layout->GetPreferredSizeMultiplier(0): "<<layout->GetPreferredSizeMultiplier(0));
             //ssLOG_LINE("layout->GetPreferredSizeMultiplier(1): "<<layout->GetPreferredSizeMultiplier(1));
             //ssLOG_LINE("layout->GetPreferredSizeMultiplier(2): "<<layout->GetPreferredSizeMultiplier(2));

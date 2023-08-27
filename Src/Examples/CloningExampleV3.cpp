@@ -12,7 +12,7 @@ int main()
     auto* window = mainWindow.AddChild<ssGUI::StandardWindow>();
     
     //We don't need docking
-    window->RemoveAnyExtension<ssGUI::Extensions::Dockable>();
+    window->RemoveExtension<ssGUI::Extensions::Dockable>();
     window->SetRenderSize(glm::ivec2(450, 80));
     window->AddExtension<ssGUI::Extensions::Layout>();
     

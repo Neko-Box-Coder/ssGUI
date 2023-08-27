@@ -55,14 +55,14 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
 
-        if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+        if(!windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
             windowTitleObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
-        if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+        if(!windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
             windowTitleObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ap = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        as = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
+        ap = windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
         
         if(init)
         {
@@ -111,14 +111,14 @@ namespace ssGUI
         
         static_cast<ssGUI::Text*>(windowIconObj)->SetBlockInput(false);
         
-        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+        if(!windowIconObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
             windowIconObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
-        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+        if(!windowIconObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
             windowIconObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ap = windowIconObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = windowIconObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
         
         if(init)
         {
@@ -160,14 +160,14 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
 
-        if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+        if(!closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
             closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
-        if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+        if(!closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
             closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
         
-        ap = closeButtonObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        as = closeButtonObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
+        ap = closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
         if(init)
         {
@@ -241,7 +241,7 @@ namespace ssGUI
         closeButton->SetHeapAllocated(true);
         closeButton->SetParent(this, true);
         closeButton->SetMinSize(glm::vec2(5, 5));
-        closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+        closeButton->RemoveExtension<ssGUI::Extensions::Border>();
 
         //Change button shape to circle
         auto shapeEx = closeButton->AddExtension<ssGUI::Extensions::Shape>();
@@ -263,7 +263,7 @@ namespace ssGUI
             [circleId](ssGUI::EventInfo& info)
             {
                 auto closeButtonObj = static_cast<ssGUI::Button*>(info.EventSource);
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                auto shape = info.EventSource->GetExtension<ssGUI::Extensions::Shape>();
                 int amount = 60;
                 
                 static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
@@ -302,7 +302,7 @@ namespace ssGUI
             ListenerKey, this,
             [circleId](ssGUI::EventInfo& info)
             {
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                auto shape = info.EventSource->GetExtension<ssGUI::Extensions::Shape>();
                 shape->SetAdditionalCircle(circleId, glm::vec2(), info.EventSource->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
