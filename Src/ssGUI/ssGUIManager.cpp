@@ -714,21 +714,6 @@ namespace ssGUI
         return 1000 / TargetFrameInterval;
     }
     
-    bool ssGUIManager::IsButtonOrKeyDown(ssGUI::Enums::GenericButtonAndKeyInput input) const
-    {
-        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && !BackendInput->IsButtonOrKeyPressExistLastFrame(input);
-    }
-    
-    bool ssGUIManager::IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const
-    {
-        return BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && BackendInput->IsButtonOrKeyPressExistLastFrame(input);
-    }
-    
-    bool ssGUIManager::IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const
-    {
-        return !BackendInput->IsButtonOrKeyPressExistCurrentFrame(input) && BackendInput->IsButtonOrKeyPressExistLastFrame(input);
-    }
-    
     glm::ivec2 ssGUIManager::GetMousePosition(ssGUI::MainWindow* mainWindow) const
     {
         return BackendInput->GetCurrentMousePosition(mainWindow == nullptr ? nullptr : mainWindow->GetBackendWindowInterface());   

@@ -68,6 +68,33 @@ namespace Backend
                 return IsButtonOrKeyPressExistCurrentFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
             }
 
+            //function: IsButtonOrKeyDown
+            //See <IsButtonOrKeyPressExistCurrentFrame> and <IsButtonOrKeyPressExistLastFrame>
+            template<typename T>
+            bool IsButtonOrKeyDown(T input) const
+            {
+                return  IsButtonOrKeyPressExistCurrentFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input)) && 
+                        !IsButtonOrKeyPressExistLastFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            }
+
+            //function: IsButtonOrKeyHeld
+            //See <IsButtonOrKeyPressExistCurrentFrame> and <IsButtonOrKeyPressExistLastFrame>
+            template<typename T>
+            bool IsButtonOrKeyHeld(T input) const
+            {
+                return  IsButtonOrKeyPressExistCurrentFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input)) && 
+                        IsButtonOrKeyPressExistLastFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            }
+
+            //function: IsButtonOrKeyUp
+            //See <IsButtonOrKeyPressExistCurrentFrame> and <IsButtonOrKeyPressExistLastFrame>
+            template<typename T>
+            bool IsButtonOrKeyUp(T input) const
+            {
+                return  !IsButtonOrKeyPressExistCurrentFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input)) && 
+                        IsButtonOrKeyPressExistLastFrame(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+            }
+
             //function: GetLastMousePosition
             //Get mouse position relative to the mainWindow from last frame. If nullptr is passed, it will return global mouse position instead.
             virtual glm::ivec2 GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const = 0;

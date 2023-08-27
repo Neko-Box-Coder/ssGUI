@@ -256,45 +256,27 @@ namespace ssGUI
             float GetTargetFramerate();
             
             //function: IsButtonOrKeyDown
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyDown(ssGUI::Enums::GenericButtonAndKeyInput input) const;
-            
-            //function: IsButtonOrKeyDown
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyDown>
             template<typename T>
             bool IsButtonOrKeyDown(T input) const
             {
-                return IsButtonOrKeyDown(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+                return BackendInput->IsButtonOrKeyDown(input);
             }
             
             //function: IsButtonOrKeyHeld
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const;
-            
-            //function: IsButtonOrKeyHeld
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyHeld>
             template<typename T>
             bool IsButtonOrKeyHeld(T input) const
             {
-                return IsButtonOrKeyHeld(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+                return BackendInput->IsButtonOrKeyHeld(input);
             }
             
             //function: IsButtonOrKeyUp
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const;
-            
-            //function: IsButtonOrKeyUp
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyUp>
             template<typename T>
             bool IsButtonOrKeyUp(T input) const
             {
-                return IsButtonOrKeyUp(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+                return BackendInput->IsButtonOrKeyUp(input);
             }
             
             //function: GetMousePosition
