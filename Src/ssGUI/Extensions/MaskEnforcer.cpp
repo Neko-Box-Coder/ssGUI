@@ -4,14 +4,71 @@
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
 
+#include <algorithm>
+
 namespace ssGUI
 {
 
 namespace Extensions
 {
+    void MaskEnforcer::ApplyEventCallbacksToMasks()
+    {
+        if(Container != nullptr)
+        {
+            for(int i = 0; i < MasksToAddEventCallbacks.size(); ++i)
+            {
+                ssGUI::GUIObject* maskObject = CurrentObjectsReferences.GetObjectReference(MasksToAddEventCallbacks.at(i));
+                if(maskObject != nullptr)
+                    AddBeforeRenderEventCallback(maskObject);
+            }
+            
+            MasksToAddEventCallbacks.clear();
+        }    
+    }
+
+    void MaskEnforcer::AddBeforeRenderEventCallback(ssGUI::GUIObject* maskObject)
+    {
+        auto beforeRenderEvent = maskObject->AddEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER);
+        ssGUIObjectIndex enforcerContainerIndex = beforeRenderEvent->AddObjectReference(Container);
+        
+        beforeRenderEvent->AddEventListener
+        (
+            ListenerKey,
+            Container,
+            [enforcerContainerIndex](ssGUI::EventInfo& info)
+            {
+                ssGUI::GUIObject* enforcerContainer = info.References->GetObjectReference(enforcerContainerIndex);
+                
+                //Check if all the things we need are still here
+                if( enforcerContainer == nullptr || 
+                    !enforcerContainer->IsExtensionExist<ssGUI::Extensions::MaskEnforcer>() ||
+                    !info.Container->IsExtensionExist<ssGUI::Extensions::Mask>())
+                {
+                    info.DeleteCurrentListener = true;
+                    return;
+                }
+                
+                //Trigger enforocer
+                auto* maskEnforcer = enforcerContainer->GetExtension<ssGUI::Extensions::MaskEnforcer>();
+                ssGUIObjectIndex maskIndex = maskEnforcer->CurrentObjectsReferences.GetObjectIndex(info.Container);
+                
+                //Check if maskEnforcer still has reference the mask, if not exit.
+                if(maskIndex < 0)
+                {
+                    info.DeleteCurrentListener = true;
+                    return;
+                }
+                
+                if(info.Container->IsRedrawNeeded())
+                    enforcerContainer->RedrawObject();
+            }
+        );
+    }
+
     MaskEnforcer::MaskEnforcer() :  Container(nullptr),
                                     Enabled(true),
                                     TargetMasks(),
+                                    MasksToAddEventCallbacks(),
                                     BlockingContainerInput(false),
                                     CurrentObjectsReferences()
     {}
@@ -26,9 +83,11 @@ namespace Extensions
         Container = nullptr;
         Enabled = other.IsEnabled();
         TargetMasks = other.TargetMasks;
+        MasksToAddEventCallbacks = other.MasksToAddEventCallbacks;
         BlockingContainerInput = false;
-
         CurrentObjectsReferences = other.CurrentObjectsReferences;
+
+        ApplyEventCallbacksToMasks();
     }
 
     void MaskEnforcer::ConstructRenderInfo()
@@ -89,6 +148,7 @@ namespace Extensions
     }
     
     const std::string MaskEnforcer::EXTENSION_NAME = "Mask Enforcer";
+    const std::string MaskEnforcer::ListenerKey = "Mask Enforcer";
         
     void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
     {        
@@ -98,20 +158,20 @@ namespace Extensions
     void MaskEnforcer::AddTargetMaskObject(ssGUI::GUIObject* targetMaskObj, const std::vector<ssGUI::TargetShape>& targetShapes)
     {
         ssGUI_LOG_FUNC();
-        if(CurrentObjectsReferences.IsObjectReferenceExist(targetMaskObj))
-        {
-            ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.GetObjectIndex(targetMaskObj);
-            if(TargetMasks.find(maskObjIndex) == TargetMasks.end())
-                TargetMasks.insert({maskObjIndex, targetShapes});
-        }
-        else
-        {
-            ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.AddObjectReference(targetMaskObj);
+        
+        ssGUIObjectIndex maskObjIndex = CurrentObjectsReferences.AddObjectReference(targetMaskObj);
+        if(TargetMasks.find(maskObjIndex) == TargetMasks.end())
             TargetMasks.insert({maskObjIndex, targetShapes});
+
+        if(Container == nullptr)
+        {
+            //ssGUI_ERROR(ssGUI_EXT_TAG, "You need to bind a container first before adding target mask object");
+            MasksToAddEventCallbacks.push_back(maskObjIndex);
+            return;
         }
 
-        if(Container != nullptr)
-            Container->RedrawObject();
+        AddBeforeRenderEventCallback(targetMaskObj);
+        Container->RedrawObject();
     }
 
     bool MaskEnforcer::HasTargetMaskObject(ssGUI::GUIObject* targetMaskObj)
@@ -132,8 +192,19 @@ namespace Extensions
             return;
         }
 
-        if(TargetMasks.find(index) != TargetMasks.end())      
+        if(TargetMasks.find(index) != TargetMasks.end())
+        {
             TargetMasks.erase(index);
+            auto foundIt = std::find(MasksToAddEventCallbacks.begin(), MasksToAddEventCallbacks.end(), index);
+            if(foundIt != MasksToAddEventCallbacks.end())
+                MasksToAddEventCallbacks.erase(foundIt);
+            
+            if(Container != nullptr && targetMaskObj->IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
+            {
+                targetMaskObj   ->GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)
+                                ->RemoveEventListener(ListenerKey, Container);
+            }
+        }
 
         if(Container != nullptr)
             Container->RedrawObject();
@@ -257,6 +328,7 @@ namespace Extensions
         if(!Enabled || Container == nullptr || isPreRender)
             return;
 
+        //ssLOG_LINE("Container: " << Container);
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
     }
@@ -269,6 +341,7 @@ namespace Extensions
     void MaskEnforcer::BindToObject(ssGUI::GUIObject* bindObj)
     {
         Container = bindObj;
+        ApplyEventCallbacksToMasks();
     }
 
     void MaskEnforcer::Copy(ssGUI::Extensions::Extension* extension)
@@ -280,6 +353,7 @@ namespace Extensions
         
         Enabled = maskEnforcer->IsEnabled();
         TargetMasks = maskEnforcer->TargetMasks;
+        MasksToAddEventCallbacks = maskEnforcer->MasksToAddEventCallbacks;
         BlockingContainerInput = maskEnforcer->BlockingContainerInput;
         CurrentObjectsReferences = maskEnforcer->CurrentObjectsReferences;
     }

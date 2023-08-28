@@ -21,17 +21,18 @@ namespace Extensions
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;                                            //See <BindToObject>
-        bool Enabled;                                                           //See <IsEnabled>
-        std::unordered_map<ssGUIObjectIndex, std::vector<int>> TargetMasks;     //See <AddTargetMaskObject>
-        bool BlockingContainerInput;                                            //(Internal variable) Used to block inputs outside the mask area
-
-        ObjectsReferences CurrentObjectsReferences;                             //(Internal variable) Used to track the object that has the mask
+        ssGUI::GUIObject* Container;                                                        //See <BindToObject>
+        bool Enabled;                                                                       //See <IsEnabled>
+        std::unordered_map<ssGUIObjectIndex, std::vector<ssGUI::TargetShape>> TargetMasks;  //See <AddTargetMaskObject>
+        std::vector<ssGUIObjectIndex> MasksToAddEventCallbacks;                             //(Internal variable) List of masks to register event callbacks when no Container is binded
+        bool BlockingContainerInput;                                                        //(Internal variable) Used to block inputs outside the mask area
+        ObjectsReferences CurrentObjectsReferences;                                         //(Internal variable) Used to track the object that has the mask
     =================================================================
     ============================== C++ ==============================
     MaskEnforcer::MaskEnforcer() :  Container(nullptr),
                                     Enabled(true),
                                     TargetMasks(),
+                                    MasksToAddEventCallbacks(),
                                     BlockingContainerInput(false),
                                     CurrentObjectsReferences()
     {}
@@ -46,13 +47,15 @@ namespace Extensions
             MaskEnforcer& operator=(MaskEnforcer const& other);
 
         protected:
-        
             ssGUI::GUIObject* Container;                                                        //See <BindToObject>
             bool Enabled;                                                                       //See <IsEnabled>
             std::unordered_map<ssGUIObjectIndex, std::vector<ssGUI::TargetShape>> TargetMasks;  //See <AddTargetMaskObject>
+            std::vector<ssGUIObjectIndex> MasksToAddEventCallbacks;                             //(Internal variable) List of masks to register event callbacks when no Container is binded
             bool BlockingContainerInput;                                                        //(Internal variable) Used to block inputs outside the mask area
-
             ObjectsReferences CurrentObjectsReferences;                                         //(Internal variable) Used to track the object that has the mask
+
+            void ApplyEventCallbacksToMasks();
+            void AddBeforeRenderEventCallback(ssGUI::GUIObject* maskObject);
 
             MaskEnforcer();
             virtual ~MaskEnforcer() override;
@@ -67,6 +70,7 @@ namespace Extensions
         
         public:
             static const std::string EXTENSION_NAME;
+            static const std::string ListenerKey;
             
             //function: AddTargetMaskObject
             //Add a <Mask> extension to mask this object. targetMaskObj should have <Mask> attached.
