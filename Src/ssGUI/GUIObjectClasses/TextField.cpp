@@ -26,6 +26,11 @@ namespace ssGUI
         ArrowNavPauseDuration = other.ArrowNavPauseDuration;
         LastArrowNavTime = other.LastArrowNavTime;
         ArrowNavInterval = other.ArrowNavInterval;
+    
+        LastInputTime = other.LastInputTime;
+        FinishedChangingNotified = other.FinishedChangingNotified;
+        LastIsFocused = other.LastIsFocused;
+        FinishedChangingTimeThresholdInMs = other.FinishedChangingTimeThresholdInMs;
     }
 
     void TextField::TextInputUpdate(std::wstring& textInput, bool& refreshBlinkTimer, bool& wordMode)
@@ -579,6 +584,36 @@ namespace ssGUI
                 blockKeys = true;
                 TextInputUpdate(textInput, refreshBlinkTimer, wordMode);
             }
+            
+            //Event callback
+            if(!textInput.empty())
+            {
+                if(IsEventCallbackExist(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_CHANGED_VIA_GUI))
+                    GetEventCallback(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_CHANGED_VIA_GUI)->Notify(this);
+                
+                LastInputTime = inputInterface->GetElapsedTime();
+                FinishedChangingNotified = false;
+            }
+            else
+            {
+                bool notifyFinishedChanging = false;
+                
+                if(!IsFocused() && LastIsFocused && !FinishedChangingNotified)
+                    notifyFinishedChanging = true;
+                
+                if(inputInterface->GetElapsedTime() - LastInputTime > FinishedChangingTimeThresholdInMs && !FinishedChangingNotified)
+                    notifyFinishedChanging = true;
+
+                if(notifyFinishedChanging)
+                {
+                    FinishedChangingNotified = true;
+                    
+                    if(IsEventCallbackExist(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI))
+                        GetEventCallback(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI)->Notify(this);
+                }
+            }
+        
+            LastIsFocused = IsFocused();
         }
 
         ssGUI::Text::MainLogic(inputInterface, inputStatus, mainWindow);
@@ -639,7 +674,11 @@ namespace ssGUI
                                 LastArrowNavStartTime(0),
                                 ArrowNavPauseDuration(500),
                                 LastArrowNavTime(0),
-                                ArrowNavInterval(20)
+                                ArrowNavInterval(20),
+                                LastInputTime(0),
+                                FinishedChangingNotified(true),
+                                LastIsFocused(false),
+                                FinishedChangingTimeThresholdInMs(500)
     {
         SetBlockInput(true);
         SetMinSize(glm::vec2(35, 35));

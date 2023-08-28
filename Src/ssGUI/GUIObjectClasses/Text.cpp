@@ -1604,7 +1604,8 @@ namespace ssGUI
                 mouseInWindowBoundY = true;
             
             //Input blocking
-            if((mouseInWindowBoundX && mouseInWindowBoundY) || LastMouseDownInTextBound)
+            if( (mouseInWindowBoundX && mouseInWindowBoundY) || 
+                (LastMouseDownInTextBound && inputInterface->IsButtonOrKeyHeld(ssGUI::Enums::MouseButton::LEFT)))
             {
                 inputInterface->SetCursorType(ssGUI::Enums::CursorType::TEXT); 
                 inputStatus.MouseInputBlockedObject = this;

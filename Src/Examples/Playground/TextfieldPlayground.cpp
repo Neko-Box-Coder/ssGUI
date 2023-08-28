@@ -21,7 +21,25 @@ int main()
         "Key",
         [](ssGUI::EventInfo& info)
         {
-            ssLOG_LINE("Changing...");
+            ssLOG_LINE("TEXT_CONTENT_CHANGED");
+        }
+    );
+    
+    textfield->AddEventCallback(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_CHANGED_VIA_GUI)->AddEventListener
+    (
+        "Key",
+        [](ssGUI::EventInfo& info)
+        {
+            ssLOG_LINE("TEXT_FIELD_CONTENT_CHANGED_VIA_GUI");
+        }
+    );
+
+    textfield->AddEventCallback(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI)->AddEventListener
+    (
+        "Key",
+        [](ssGUI::EventInfo& info)
+        {
+            ssLOG_LINE("TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI");
         }
     );
 
