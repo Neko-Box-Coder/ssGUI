@@ -16,6 +16,9 @@ namespace ssGUI
         uint64_t LastBlinkTime;             //(Internal variable) Used to do the caret blinking animation
         int32_t BlinkDuration;              //(Internal variable) Used for the duration of the caret blinking
         bool BlinkCaret;                    //(Internal variable) Flag for controlling the blinking of the caret
+        int LastStartSelectionIndex;        //(Internal variable) Used for setting the caret to the correct position
+        int LastEndSelectionIndex;          //(Internal variable) Used for setting the caret to the correct position
+        int CaretPosition;                  //(Internal variable) Used for setting position of carret
 
         uint64_t LastArrowNavStartTime;     //(Internal variable) Used to control the character navigation with arrow keys
         int ArrowNavPauseDuration;          //(Internal variable) Used to control the character navigation with arrow keys
@@ -26,6 +29,9 @@ namespace ssGUI
     TextField::TextField() :    LastBlinkTime(0),
                                 BlinkDuration(500),
                                 BlinkCaret(false),
+                                LastStartSelectionIndex(-1),
+                                LastEndSelectionIndex(-1),
+                                CaretPosition(-1),
                                 LastArrowNavStartTime(0),
                                 ArrowNavPauseDuration(500),
                                 LastArrowNavTime(0),
@@ -55,6 +61,9 @@ namespace ssGUI
             uint64_t LastBlinkTime;             //(Internal variable) Used to do the caret blinking animation
             int32_t BlinkDuration;              //(Internal variable) Used for the duration of the caret blinking
             bool BlinkCaret;                    //(Internal variable) Flag for controlling the blinking of the caret
+            int LastStartSelectionIndex;        //(Internal variable) Used for setting the caret to the correct position
+            int LastEndSelectionIndex;          //(Internal variable) Used for setting the caret to the correct position
+            int CaretPosition;                  //(Internal variable) Used for setting position of carret
 
             uint64_t LastArrowNavStartTime;     //(Internal variable) Used to control the character navigation with arrow keys
             int ArrowNavPauseDuration;          //(Internal variable) Used to control the character navigation with arrow keys

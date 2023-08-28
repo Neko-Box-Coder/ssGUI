@@ -18,6 +18,10 @@ namespace ssGUI
         LastBlinkTime = other.LastBlinkTime;
         BlinkDuration = other.BlinkDuration;
         BlinkCaret = other.BlinkCaret;
+        LastStartSelectionIndex = other.LastStartSelectionIndex;
+        LastEndSelectionIndex = other.LastEndSelectionIndex;
+        CaretPosition = other.CaretPosition;
+        
         LastArrowNavStartTime = other.LastArrowNavStartTime;
         ArrowNavPauseDuration = other.ArrowNavPauseDuration;
         LastArrowNavTime = other.LastArrowNavTime;
@@ -193,26 +197,47 @@ namespace ssGUI
         //Arrow navigation
         if(GetStartSelectionIndex() >= 0 && GetEndSelectionIndex() >= 0)
         {
+            auto getNextValidCharacterIndex = [this](int startPos, int direction) -> int
+            {
+                do
+                {
+                    if(startPos <= 0 && direction < 0)
+                        return startPos;
+                    
+                    if(startPos >= CurrentCharactersDetails.Size() && direction > 0)
+                        return CurrentCharactersDetails.Size() - 1;
+
+                    startPos = startPos + direction;
+                }
+                while(!GetCharacterRenderInfo(startPos).Valid);
+                return startPos;
+            };
+        
             if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT))
             {
                 auto moveLeft = [&]()
                 {
-                    if(GetEndSelectionIndex() > GetFirstValidCharacterIndex())
+                    int leftMostIndex = -1;
+                
+                    if(!selectionMode)
                     {
-                        if(!wordMode)
-                        {
-                            do
-                            {
-                                SetEndSelectionIndex(GetEndSelectionIndex() - 1);
-                            }
-                            while(!GetCharacterRenderInfo(GetEndSelectionIndex()).Valid);
-                        }
+                        if(GetStartSelectionIndex() <= GetEndSelectionIndex() && GetStartSelectionIndex() > GetFirstValidCharacterIndex())
+                            leftMostIndex = GetStartSelectionIndex();
+                        else if(GetEndSelectionIndex() <= GetStartSelectionIndex() && GetEndSelectionIndex() > GetFirstValidCharacterIndex())
+                            leftMostIndex = GetEndSelectionIndex();
                         else
-                            SetEndSelectionIndex(GetEndOfPreviousWord(GetEndSelectionIndex()));
-                        
-                        if(!selectionMode)
-                            SetStartSelectionIndex(GetEndSelectionIndex());   
+                            return;
                     }
+                    else
+                        leftMostIndex = GetEndSelectionIndex();
+
+                    if(!wordMode)
+                        SetEndSelectionIndex(getNextValidCharacterIndex(leftMostIndex, -1));
+                    else
+                        SetEndSelectionIndex(GetEndOfPreviousWord(leftMostIndex));
+                    
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the left arrow key                
@@ -236,25 +261,27 @@ namespace ssGUI
             {
                 auto moveRight = [&]()
                 {
-                    if(GetEndSelectionIndex() + 1 <= GetCharactersDetailsCount())
-                    {
-                        if(!wordMode)
-                        {
-                            do
-                            {
-                                SetEndSelectionIndex(GetEndSelectionIndex() + 1);
+                    int rightMostIndex = -1;
 
-                                if(GetEndSelectionIndex() >= GetCharactersDetailsCount())
-                                    break;
-                            }
-                            while(!GetCharacterRenderInfo(GetEndSelectionIndex()).Valid);
-                        }
+                    if(!selectionMode)
+                    {
+                        if(GetStartSelectionIndex() >= GetEndSelectionIndex() && GetStartSelectionIndex() + 1 <= GetCharactersDetailsCount())
+                            rightMostIndex = GetStartSelectionIndex();
+                        else if(GetEndSelectionIndex() >= GetStartSelectionIndex() && GetEndSelectionIndex() + 1 <= GetCharactersDetailsCount())
+                            rightMostIndex = GetEndSelectionIndex();
                         else
-                            SetEndSelectionIndex(GetEndOfNextWord(GetEndSelectionIndex()));
+                            return;
+                    }                    
+                    else
+                        rightMostIndex = GetEndSelectionIndex();
                     
-                        if(!selectionMode)
-                            SetStartSelectionIndex(GetEndSelectionIndex());
-                    }
+                    if(!wordMode)
+                        SetEndSelectionIndex(getNextValidCharacterIndex(rightMostIndex, 1));
+                    else
+                        SetEndSelectionIndex(GetEndOfNextWord(rightMostIndex));
+                
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the right arrow key                
@@ -279,15 +306,21 @@ namespace ssGUI
             {
                 auto moveUp = [&]()
                 {
+                    int upMostIndex = -1;
+
                     if(!selectionMode)
                     {
-                        SetEndSelectionIndex(GetPositionForPreviousLine(GetEndSelectionIndex()));
-                        SetStartSelectionIndex(GetEndSelectionIndex());
+                        if(GetStartSelectionIndex() <= GetEndSelectionIndex())
+                            upMostIndex = GetStartSelectionIndex();
+                        else
+                            upMostIndex = GetEndSelectionIndex();
                     }
                     else
-                    {
-                        SetEndSelectionIndex(GetPositionForPreviousLine(GetEndSelectionIndex()));
-                    }
+                        upMostIndex = GetEndSelectionIndex();
+    
+                    SetEndSelectionIndex(GetPositionForPreviousLine(upMostIndex));
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the up arrow key                
@@ -311,15 +344,21 @@ namespace ssGUI
             {
                 auto moveDown = [&]()
                 {
+                    int downMostIndex = -1;
+                    
                     if(!selectionMode)
                     {
-                        SetEndSelectionIndex(GetPositionForNextLine(GetEndSelectionIndex()));
-                        SetStartSelectionIndex(GetEndSelectionIndex());
+                        if(GetStartSelectionIndex() >= GetEndSelectionIndex())
+                            downMostIndex = GetStartSelectionIndex();
+                        else
+                            downMostIndex = GetEndSelectionIndex();
                     }
                     else
-                    {
-                        SetEndSelectionIndex(GetPositionForNextLine(GetEndSelectionIndex()));
-                    }
+                        downMostIndex = GetEndSelectionIndex();
+                    
+                    SetEndSelectionIndex(GetPositionForNextLine(downMostIndex));
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the right down key                
@@ -351,13 +390,13 @@ namespace ssGUI
         int lastValidIndex = GetLastValidCharacterIndex();
         glm::vec2 drawPos = GetGlobalPosition();
         float height = 0;
-        float caretWidth = GetEndSelectionIndex() < 0 || GetEndSelectionIndex() >= GetCharactersDetailsCount() ? 
+        float caretWidth = CaretPosition < 0 || CaretPosition >= GetCharactersDetailsCount() ? 
             GetNewTextFontSize() / 15.f : 
-            GetCharacterDetails(GetEndSelectionIndex()).FontSize / 15.f;
+            GetCharacterDetails(CaretPosition).FontSize / 15.f;
 
-        if(GetEndSelectionIndex() >= 0 && lastValidIndex >= 0)
+        if(CaretPosition >= 0 && lastValidIndex >= 0)
         {
-            if(GetEndSelectionIndex() > lastValidIndex)
+            if(CaretPosition > lastValidIndex)
             {
                 //Last character
                 if(GetCharacterDetails(lastValidIndex).Character != '\n')
@@ -404,11 +443,11 @@ namespace ssGUI
             }
             else
             {
-                drawPos += GetCharacterRenderInfo(GetEndSelectionIndex()).BaselinePosition + 
-                    glm::vec2(0, GetCharacterRenderInfo(GetEndSelectionIndex()).LineMinY);
+                drawPos += GetCharacterRenderInfo(CaretPosition).BaselinePosition + 
+                    glm::vec2(0, GetCharacterRenderInfo(CaretPosition).LineMinY);
                 
-                height = GetCharacterRenderInfo(GetEndSelectionIndex()).LineMaxY - 
-                    GetCharacterRenderInfo(GetEndSelectionIndex()).LineMinY;
+                height = GetCharacterRenderInfo(CaretPosition).LineMaxY - 
+                    GetCharacterRenderInfo(CaretPosition).LineMinY;
             }
 
             //Draw caret
@@ -416,7 +455,7 @@ namespace ssGUI
                 return;
 
             ssGUI::DrawingEntity caretEntity;
-            if(GetEndSelectionIndex() > GetStartSelectionIndex())
+            if(CaretPosition > GetStartSelectionIndex())
             {
                 caretEntity.Vertices.push_back(drawPos);
                 caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
@@ -550,6 +589,21 @@ namespace ssGUI
             if(inputStatus.KeyInputBlockedObject == nullptr)
                 CaretNavigationUpdate(inputInterface, refreshBlinkTimer, blockKeys, wordMode);
 
+            //Check Carret
+            if(GetStartSelectionIndex() != LastStartSelectionIndex)
+            {
+                CaretPosition = GetStartSelectionIndex();
+                refreshBlinkTimer = true;
+            }
+            else if(GetEndSelectionIndex() != LastEndSelectionIndex)
+            {
+                CaretPosition = GetEndSelectionIndex();
+                refreshBlinkTimer = true;
+            }
+            
+            LastStartSelectionIndex = GetStartSelectionIndex();
+            LastEndSelectionIndex = GetEndSelectionIndex();
+
             //Blinking caret
             if(refreshBlinkTimer)
                 LastBlinkTime = inputInterface->GetElapsedTime() - BlinkDuration;
@@ -579,6 +633,9 @@ namespace ssGUI
     TextField::TextField() :    LastBlinkTime(0),
                                 BlinkDuration(500),
                                 BlinkCaret(false),
+                                LastStartSelectionIndex(-1),
+                                LastEndSelectionIndex(-1),
+                                CaretPosition(-1),
                                 LastArrowNavStartTime(0),
                                 ArrowNavPauseDuration(500),
                                 LastArrowNavTime(0),

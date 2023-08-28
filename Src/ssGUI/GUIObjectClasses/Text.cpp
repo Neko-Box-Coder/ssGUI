@@ -39,9 +39,16 @@ namespace ssGUI
         StartSelectionIndex = other.GetStartSelectionIndex();
         EndSelectionIndex = other.GetEndSelectionIndex();
         DeselectWhenFocusLost = other.IsDeselectWhenFocusLost();
+        LastMouseDownInTextBound = other.LastMouseDownInTextBound;
         SelectionColor = other.GetSelectionColor();
         TextSelectedColor = other.GetTextSelectedColor();
         LastDefaultFontsID = other.LastDefaultFontsID;
+        TextContentChanged = other.TextContentChanged;
+        MouseDoubleClickThresholdInMs = other.MouseDoubleClickThresholdInMs;
+        LastMouseDownTimestamp = other.LastMouseDownTimestamp;
+        LastClickSelectionTimestamp = other.LastClickSelectionTimestamp;
+        ClickSelectionStartIndex = other.ClickSelectionStartIndex;
+        ClickSelectionEndIndex = other.ClickSelectionEndIndex;
         
         TextObjectCount++;
     }
@@ -1027,6 +1034,41 @@ namespace ssGUI
             }
         }
     }
+    
+    namespace
+    {
+        enum class CharacterType
+        {
+            LETTERS,
+            NUM,
+            SYMBOL,
+            SPACE_TAB,
+            NEWLINE
+        };
+        
+        CharacterType GetCharType(wchar_t c)
+        {
+            uint32_t charInt = (uint32_t)c;
+            
+            //If letters
+            if((charInt >= 65 && charInt <= 90) || (charInt >= 97 && charInt <= 122))
+                return CharacterType::LETTERS;
+            //If numbers
+            if(charInt >= 48 && charInt <= 57)
+                return CharacterType::NUM;
+            //If Symbol
+            if((charInt >= 33 && charInt <= 47) || (charInt >= 58 && charInt <= 64) || (charInt >= 91 && charInt <= 96) || (charInt >= 123 && charInt <= 126))
+                return CharacterType::SYMBOL;
+            //If space or tab 
+            if(charInt == 9 || charInt == 12 || charInt == 13 || charInt == 32)
+                return CharacterType::SPACE_TAB;
+            //If newline
+            if(charInt == 10)
+                return CharacterType::NEWLINE;
+
+            return CharacterType::LETTERS;
+        };
+    }
 
     int Text::GetEndOfPreviousWord(int curIndex)
     {
@@ -1040,50 +1082,23 @@ namespace ssGUI
                 break;
             }
         }
+
         if(validCharBeforeIndex < 0)
             return curIndex;
 
-        enum class characterType
-        {
-            LETTERS,
-            NUM,
-            SYMBOL,
-            SPACE_TAB_NEWLINE,
-        };
-
-        auto getCharType = [&](wchar_t c)->characterType
-        {
-            uint32_t charInt = (uint32_t)c;
-            
-            //If letters
-            if((charInt >= 65 && charInt <= 90) || (charInt >= 97 && charInt <= 122))
-                return characterType::LETTERS;
-            //If numbers
-            if(charInt >= 48 && charInt <= 57)
-                return characterType::NUM;
-            //If Symbol
-            if((charInt >= 33 && charInt <= 47) || (charInt >= 58 && charInt <= 64) || (charInt >= 91 && charInt <= 96) || (charInt >= 123 && charInt <= 126))
-                return characterType::SYMBOL;
-            //If space, tab or newline 
-            if(charInt == 9 || charInt == 10 || charInt == 12 || charInt == 13 || charInt == 32)
-                return characterType::SPACE_TAB_NEWLINE;
-
-            return characterType::LETTERS;
-        };
-
-        characterType lastCharType = getCharType(GetInternalCharacterDetail(validCharBeforeIndex).Character);
+        CharacterType lastCharType = GetCharType(GetInternalCharacterDetail(validCharBeforeIndex).Character);
         int lastValidIndex = validCharBeforeIndex;
         for(int i = validCharBeforeIndex; i >= 0; i--)
         {
             if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
-            characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
+            CharacterType curCharType = GetCharType(GetInternalCharacterDetail(i).Character);
 
             //Return anything 
-            if(lastCharType != curCharType && lastCharType != characterType::SPACE_TAB_NEWLINE)
+            if((lastCharType != curCharType && lastCharType != CharacterType::SPACE_TAB) || lastCharType == CharacterType::NEWLINE)
                 return lastValidIndex;
-
+                
             lastValidIndex = i;
             lastCharType = curCharType;
         }
@@ -1096,37 +1111,9 @@ namespace ssGUI
         if(curIndex >= GetLastValidCharacterIndex())
             return CharactersRenderInfos.size();
         
-        enum class characterType
-        {
-            LETTERS,
-            NUM,
-            SYMBOL,
-            SPACE_TAB_NEWLINE,
-        };
-
-        auto getCharType = [&](wchar_t c)->characterType
-        {
-            uint32_t charInt = (uint32_t)c;
-            
-            //If letters
-            if((charInt >= 65 && charInt <= 90) || (charInt >= 97 && charInt <= 122))
-                return characterType::LETTERS;
-            //If numbers
-            if(charInt >= 48 && charInt <= 57)
-                return characterType::NUM;
-            //If Symbol
-            if((charInt >= 33 && charInt <= 47) || (charInt >= 58 && charInt <= 64) || (charInt >= 91 && charInt <= 96) || (charInt >= 123 && charInt <= 126))
-                return characterType::SYMBOL;
-            //If space, tab or newline 
-            if(charInt == 9 || charInt == 10 || charInt == 12 || charInt == 13 || charInt == 32)
-                return characterType::SPACE_TAB_NEWLINE;
-
-            return characterType::LETTERS;
-        };
-
-        characterType lastCharType = getCharType(GetInternalCharacterDetail(curIndex).Character);
+        CharacterType lastCharType = GetCharType(GetInternalCharacterDetail(curIndex).Character);
         int lastValidIndex = curIndex;
-        for(int i = curIndex; i <= CharactersRenderInfos.size(); i++)
+        for(int i = curIndex + 1; i <= CharactersRenderInfos.size(); i++)
         {
             if(i == CharactersRenderInfos.size())
                 return i;
@@ -1134,11 +1121,11 @@ namespace ssGUI
             if(!GetCharacterRenderInfo(i).Valid)
                 continue;
             
-            characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
+            CharacterType curCharType = GetCharType(GetInternalCharacterDetail(i).Character);
             lastValidIndex = i;
 
             //Return anything 
-            if(lastCharType != curCharType && lastCharType != characterType::SPACE_TAB_NEWLINE)
+            if((lastCharType != curCharType && lastCharType != CharacterType::SPACE_TAB) || lastCharType == CharacterType::NEWLINE)
                 return lastValidIndex;
 
             lastCharType = curCharType;
@@ -1150,6 +1137,15 @@ namespace ssGUI
     void Text::GetCurrentLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive)
     {
         curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
+        
+        //ssLOG_LINE("CharactersRenderInfos.size(): " << CharactersRenderInfos.size());
+        //ssLOG_LINE("CurrentCharactersDetails.Size(): " << CurrentCharactersDetails.Size());
+        
+        //ssLOG_LINE("GetCharacterRenderInfo(CharactersRenderInfos.size() - 1).CharacterAtNewline: " << GetCharacterRenderInfo(CharactersRenderInfos.size() - 1).CharacterAtNewline);
+        //ssLOG_LINE("GetCharacterRenderInfo(CharactersRenderInfos.size() - 1).Valid: " << GetCharacterRenderInfo(CharactersRenderInfos.size() - 1).Valid);
+        
+        //ssLOG_LINE("CurrentCharactersDetails.At(CurrentCharactersDetails.Size() - 1).Character: " << (int)CurrentCharactersDetails.At(CurrentCharactersDetails.Size() - 1).Character);
+        
         for(int i = curIndex; i >= 0; i--)
         {
             if(!GetCharacterRenderInfo(i).Valid)
@@ -1180,7 +1176,20 @@ namespace ssGUI
     {
         bool passedCurLine = false;
         bool endIndexSet = false;
-        curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
+        
+        //Special case for querying beyond the last character when it is a newline character 
+        if(curIndex == CharactersRenderInfos.size())
+        {
+            curIndex = CharactersRenderInfos.size() - 1;
+            
+            if(!CurrentCharactersDetails.Empty() && CurrentCharactersDetails.At(CharactersRenderInfos.size() - 1).Character == L'\n')
+            {
+                endIndexInclusive = curIndex;
+                endIndexSet = true;
+                passedCurLine = true;
+            }
+        }
+
         for(int i = curIndex; i >= 0; i--)
         {
             if(!GetCharacterRenderInfo(i).Valid)
@@ -1258,6 +1267,21 @@ namespace ssGUI
         int prevLineEnd = 0;
         GetPreviousLineStartEndIndex(curIndex, prevLineStart, prevLineEnd);
 
+        //ssLOG_LINE("curIndex: " << curIndex);
+        //ssLOG_LINE("curLineStart: " << curLineStart);
+        //ssLOG_LINE("curLineEnd: " << curLineEnd);
+        //ssLOG_LINE("prevLineStart: " << prevLineStart);
+        //ssLOG_LINE("prevLineEnd: " << prevLineEnd);
+        //ssLOG_LINE("CharactersRenderInfos.size(): " << CharactersRenderInfos.size());
+
+        //Special case if last character is a newline
+        if( curIndex >= CharactersRenderInfos.size() && 
+            !CurrentCharactersDetails.Empty() && 
+            CurrentCharactersDetails.Back().Character == L'\n')
+        {
+            curIndex = CharactersRenderInfos.size() - 1;
+        }
+
         //Find out current position from this line (Depending on alignment)
         //Right
         if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
@@ -1270,7 +1294,7 @@ namespace ssGUI
             curLinePosition = curIndex - curLineStart;
         
         //If there's no previous line, just return start index
-        if(prevLineEnd >= curLineStart)
+        if(prevLineEnd >= curLineStart && prevLineStart >= curLineStart)
             return curLineStart;
 
         //Go to previous line if there's any

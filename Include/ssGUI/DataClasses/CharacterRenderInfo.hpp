@@ -34,7 +34,8 @@ namespace ssGUI
             glm::vec2 BaselinePosition = glm::vec2();
 
             //var: CharacterAtNewline
-            //True if this character is on a newline
+            //True if this character is on a newline. 
+            //Note that the newline character itself won't be at newline, only the character after it will be
             bool CharacterAtNewline = false;
 
             //var: Rendered
