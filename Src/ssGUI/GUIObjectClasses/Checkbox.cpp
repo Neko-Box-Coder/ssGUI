@@ -56,6 +56,8 @@ namespace ssGUI
         auto border = GetExtension<ssGUI::Extensions::Border>();
         border->SetBorderWidth(2);
         border->SetBorderColor(GetBackgroundColor());
+        SetMinSize(glm::vec2(20, 20));
+        SetMaxSize(glm::vec2(20, 20));
 
         auto buttonEvent = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEvent->ClearEventListeners();
