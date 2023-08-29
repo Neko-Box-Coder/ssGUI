@@ -206,11 +206,14 @@ namespace ssGUI
             {
                 do
                 {
-                    if(startPos <= 0 && direction < 0)
+                    if(startPos < 0)
+                        return startPos;
+                    
+                    if(startPos == 0 && direction < 0)
                         return startPos;
                     
                     if(startPos >= CurrentCharactersDetails.Size() && direction > 0)
-                        return CurrentCharactersDetails.Size() - 1;
+                        return CurrentCharactersDetails.Size();
 
                     startPos = startPos + direction;
                 }
@@ -249,6 +252,7 @@ namespace ssGUI
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::LEFT))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveLeft();
                 }
                 //When the user is holding down the left arrow key
@@ -262,7 +266,8 @@ namespace ssGUI
                 refreshBlinkTimer = true;
                 blockKeys = true;
             }
-            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT))
+            
+            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT))
             {
                 auto moveRight = [&]()
                 {
@@ -293,6 +298,7 @@ namespace ssGUI
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::RIGHT))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveRight();
                 }
                 //When the user is holding down the right arrow key
@@ -332,6 +338,7 @@ namespace ssGUI
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::UP))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveUp();
                 }
                 //When the user is holding down the up arrow key
@@ -345,7 +352,8 @@ namespace ssGUI
                 refreshBlinkTimer = true;
                 blockKeys = true;
             }
-            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN))
+            
+            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN))
             {
                 auto moveDown = [&]()
                 {
@@ -370,6 +378,7 @@ namespace ssGUI
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::DOWN))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveDown();
                 }
                 //When the user is holding down the down arrow key
