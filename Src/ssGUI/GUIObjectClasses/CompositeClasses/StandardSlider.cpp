@@ -1,6 +1,9 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardSlider.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
+#include "ssGUI/Extensions/BoxShadow.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
+#include "ssGUI/Extensions/RoundedCorners.hpp"
+#include "ssGUI/Extensions/Outline.hpp"
 
 namespace 
 {
@@ -48,15 +51,14 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [holderId, this](ssGUI::EventInfo& info)
+            [holderId](ssGUI::EventInfo& info)
             {
                 auto* slider = static_cast<ssGUI::Slider*>(info.Container);
                 auto* standardSlider = info.References->GetObjectReference<ssGUI::StandardSlider>(holderId);
 
                 if(standardSlider == nullptr || standardSlider->GetDisplayValueTextObject() == nullptr)
                 {
-                    ssGUI::EventCallback* ecb = slider->GetEventCallback(ssGUI::Enums::EventType::SLIDER_VALUE_CHANGED);
-                    ecb->RemoveEventListener(ListenerKey, this);
+                    info.DeleteCurrentListener = true;
                     return;
                 }
                 
@@ -71,7 +73,48 @@ namespace ssGUI
         slider->ForwardEvent(this, Enums::EventType::SLIDER_VALUE_CHANGED_VIA_GUI);
         slider->ForwardEvent(this, Enums::EventType::SLIDER_VALUE_FINISHED_CHANGING);
     }
-    
+
+    void StandardSlider::AddTextModifiedEventCallback()
+    {
+        ssGUI::TextField* textfield = GetDisplayValueTextObject();
+        if(textfield == nullptr)
+            return;
+        
+        auto* ecb = textfield->AddEventCallback(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI);
+        ssGUIObjectIndex holderId = ecb->AddObjectReference(this);
+        ecb->AddEventListener
+        (
+            ListenerKey,
+            this,
+            [holderId](ssGUI::EventInfo& info)
+            {
+                auto* textfield = static_cast<ssGUI::TextField*>(info.Container);
+                auto* standardSlider = info.References->GetObjectReference<ssGUI::StandardSlider>(holderId);
+
+                if(standardSlider == nullptr || standardSlider->GetSliderObject() == nullptr)
+                {
+                    info.DeleteCurrentListener = true;
+                    return;
+                }
+                
+                try
+                {
+                    float result = std::stof(textfield->GetText());
+                    standardSlider->SetDisplayValue(result);
+                }
+                catch(...)
+                {
+                    standardSlider->SetDisplayValue(0);
+                    textfield->SetText("0");
+                }
+            }
+        );
+        
+        //Forward events from textfield to this
+        textfield->ForwardEvent(this, Enums::EventType::TEXT_FIELD_CONTENT_CHANGED_VIA_GUI);
+        textfield->ForwardEvent(this, Enums::EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI);
+    }
+
     //void StandardSlider::RemoveDisplayValueEventCallback()
     //{
     //    ssGUI::Slider* slider = GetSliderObject();
@@ -131,11 +174,16 @@ namespace ssGUI
         sliderAS->SetVerticalPixel(sliderHeight);
         SliderObject = CurrentObjectsReferences.AddObjectReference(slider);
 
-        auto* sliderValue = AddChild<ssGUI::Text>();
+        auto* sliderValue = AddChild<ssGUI::TextField>();
+        sliderValue->RemoveExtension<ssGUI::Extensions::Outline>();
+        sliderValue->RemoveExtension<ssGUI::Extensions::BoxShadow>();
+        sliderValue->RemoveExtension<ssGUI::Extensions::RoundedCorners>();
+        sliderValue->SetBackgroundColor(glm::u8vec4());
         sliderValue->SetText(ValueToString(DisplayInteger, DisplayDecimalPlaces, slider->GetSliderValue()));
         SliderDisplayValueTextObject = CurrentObjectsReferences.AddObjectReference(sliderValue);
    
         AddDisplayValueEventCallback();
+        AddTextModifiedEventCallback();
     }
 
     StandardSlider::~StandardSlider()
@@ -213,7 +261,7 @@ namespace ssGUI
         return CurrentObjectsReferences.GetObjectReference<ssGUI::Slider>(SliderObject);
     }
     
-    void StandardSlider::SetDisplayValueTextObject(ssGUI::Text* text)
+    void StandardSlider::SetDisplayValueTextObject(ssGUI::TextField* text)
     {
         if(text == nullptr)
         {
@@ -237,11 +285,12 @@ namespace ssGUI
 
         SliderDisplayValueTextObject = CurrentObjectsReferences.AddObjectReference(text);
         UpdateDisplayTextContent();
+        AddTextModifiedEventCallback();
     }
     
-    ssGUI::Text* StandardSlider::GetDisplayValueTextObject() const
+    ssGUI::TextField* StandardSlider::GetDisplayValueTextObject() const
     {
-        return CurrentObjectsReferences.GetObjectReference<ssGUI::Text>(SliderDisplayValueTextObject);
+        return CurrentObjectsReferences.GetObjectReference<ssGUI::TextField>(SliderDisplayValueTextObject);
     }
     
     void StandardSlider::SetMinDisplayValue(float min)
