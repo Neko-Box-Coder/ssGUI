@@ -234,7 +234,7 @@ namespace ssGUI
                         else if(GetEndSelectionIndex() <= GetStartSelectionIndex() && GetEndSelectionIndex() > GetFirstValidCharacterIndex())
                             leftMostIndex = GetEndSelectionIndex();
                         else
-                            return;
+                            leftMostIndex = 0;
                     }
                     else
                         leftMostIndex = GetEndSelectionIndex();
@@ -275,13 +275,13 @@ namespace ssGUI
 
                     if(!selectionMode)
                     {
-                        if(GetStartSelectionIndex() >= GetEndSelectionIndex() && GetStartSelectionIndex() + 1 <= GetCharactersDetailsCount())
+                        if(GetStartSelectionIndex() >= GetEndSelectionIndex() && GetStartSelectionIndex() <= GetCharactersDetailsCount())
                             rightMostIndex = GetStartSelectionIndex();
-                        else if(GetEndSelectionIndex() >= GetStartSelectionIndex() && GetEndSelectionIndex() + 1 <= GetCharactersDetailsCount())
+                        else if(GetEndSelectionIndex() >= GetStartSelectionIndex() && GetEndSelectionIndex() <= GetCharactersDetailsCount())
                             rightMostIndex = GetEndSelectionIndex();
                         else
-                            return;
-                    }                    
+                            rightMostIndex = GetCharactersDetailsCount();
+                    }      
                     else
                         rightMostIndex = GetEndSelectionIndex();
                     
