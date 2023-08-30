@@ -70,7 +70,8 @@ namespace Enums
         SCROLLBAR =         1 << 14,
         IMAGE_CANVAS =      1 << 15,
         STANDARD_SLIDER =   1 << 16,
-        COUNT =             1 << 17
+        STANDARD_CHECKBOX = 1 << 17,
+        COUNT =             1 << 18
     };
 
     inline ssGUI::Enums::GUIObjectType operator|(ssGUI::Enums::GUIObjectType a, ssGUI::Enums::GUIObjectType b)
@@ -97,7 +98,7 @@ namespace Enums
     {
         inline std::string InternalGUIObjectTypeToString(GUIObjectType guiObjectType)
         {
-            static_assert((int)GUIObjectType::COUNT == 1 << 17, "ToString");
+            static_assert((int)GUIObjectType::COUNT == 1 << 18, "ToString");
             switch(guiObjectType)
             {
                 RETURN_ENUM_STRING(GUIObjectType::WINDOW);
@@ -117,6 +118,7 @@ namespace Enums
                 RETURN_ENUM_STRING(GUIObjectType::SCROLLBAR);
                 RETURN_ENUM_STRING(GUIObjectType::IMAGE_CANVAS);
                 RETURN_ENUM_STRING(GUIObjectType::STANDARD_SLIDER);
+                RETURN_ENUM_STRING(GUIObjectType::STANDARD_CHECKBOX);
                 RETURN_ENUM_STRING(GUIObjectType::COUNT);
             }
             
@@ -127,10 +129,10 @@ namespace Enums
     //function: GUIObjectTypeToString
     inline std::string GUIObjectTypeToString(GUIObjectType guiObjectType)
     {
-        static_assert((int)GUIObjectType::COUNT == 1 << 17, "ToString");
+        static_assert((int)GUIObjectType::COUNT == 1 << 18, "ToString");
         
         std::string curString;
-        for(int i = 0; i < 18; ++i)
+        for(int i = 0; i < 19; ++i)
         {
             std::string returnString = InternalGUIObjectTypeToString(guiObjectType & (GUIObjectType)(1 << i));
             if(!returnString.empty())

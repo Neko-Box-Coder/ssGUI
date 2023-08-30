@@ -22,6 +22,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardButton.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardSlider.hpp"
+#include "ssGUI/GUIObjectClasses/CompositeClasses/StandardCheckbox.hpp"
 #include "ssGUI/ssGUIManager.hpp"
 #include "ssGUI/ssGUITags.hpp"
 #include "ssGUI/Factory.hpp"
