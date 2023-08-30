@@ -408,8 +408,8 @@ namespace ssGUI
     
     void StandardSlider::SetInteractable(bool interactable)
     {
-        if(GetTitleTextObject() != nullptr)
-            GetTitleTextObject()->SetInteractable(interactable);
+        //if(GetTitleTextObject() != nullptr)
+        //    GetTitleTextObject()->SetInteractable(interactable);
             
         if(GetSliderObject() != nullptr)
             GetSliderObject()->SetInteractable(interactable);

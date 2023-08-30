@@ -410,7 +410,7 @@ namespace ssGUI
             virtual bool IsChildrenIteratorEnd();
 
             //function: StashChildrenIterator
-            //Stores the current children iterator on the stack. Any modification will not affect the children iterator.
+            //Stores the current children iterator on the stack. Any modification will not affect the stashed children iterator.
             //However, if the stashed children iterator points to a child that is removed then the stashed children iterator will be invalid
             //and <IsChildrenIteratorEnd> will be true when the stashed iterator is restored (popped).
             virtual void StashChildrenIterator();

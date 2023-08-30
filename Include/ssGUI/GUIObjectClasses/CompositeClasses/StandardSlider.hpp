@@ -96,6 +96,7 @@ namespace ssGUI
             virtual void UpdateDisplayTextContent();
 
         public:
+            //string: ListenerKey
             static const std::string ListenerKey;
 
             StandardSlider();
