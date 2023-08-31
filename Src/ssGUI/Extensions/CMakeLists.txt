@@ -12,4 +12,5 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/BoxShadow.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Shape.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/WindowLayoutItemEnforcer.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/TemplateExtension.cpp"
                     )
