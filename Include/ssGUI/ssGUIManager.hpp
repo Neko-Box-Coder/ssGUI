@@ -55,6 +55,7 @@ namespace ssGUI
             bool ForceRendering;
             ssGUI::Enums::CursorType LastCursor;
             std::string LastCursorName;
+            ssGUI::InputStatus LastInputStatus;
 
             float TargetFrameInterval;
             int FrameTimeIndex;
@@ -134,57 +135,57 @@ namespace ssGUI
             void StartRunning();
             
             //function: StartRunningAsync
-            //This will start the ssGUIManager without blocking the thread.
+            //This will start the ssGUIManager by initializing exiting main windows.
             //Call <StepFrame> to process and render the next frame.
             //Alternatively, you can call the functions separately. See <StepFrame> for more details.
             void StartRunningAsync();
             
-            //function: IsRunningNeededAsync
+            //function: IsRunningNeeded
             //Checks if it is necessary to continue to the next frame.
             //If false, **DO NOT** call any other functions as otherwise the behaviour is undefined.
-            bool IsRunningNeededAsync();
+            bool IsRunningNeeded();
             
-            //function: PollInputsAsync
+            //function: PollInputs
             //Updates all the input between the last frame up to this moment.
-            void PollInputsAsync();
+            void PollInputs();
             
-            //function: InvokePreGUIObjectsUpdateEventAsync
+            //function: InvokePreGUIObjectsUpdateEvent
             //Calls any user callback before triggering GUI objects' update
-            void InvokePreGUIObjectsUpdateEventAsync();
+            void InvokePreGUIObjectsUpdateEvent();
             
-            //function: UpdateObjectsAsync
+            //function: UpdateObjects
             //Calls the GUI Objects main logic, this includes any <Extensions: ssGUI::ExtensionsExtension> 
             //and <EventCallbacks: ssGUI::EventCallback> as well.
-            void UpdateObjectsAsync();
+            void UpdateObjects();
             
-            //function: CleanUpDeletedObjectsAsync
+            //function: CleanUpDeletedObjects
             //Cleans up any GUI Objects marked as deleted
-            void CleanUpDeletedObjectsAsync();
+            void CleanUpDeletedObjects();
             
-            //function: InvokePostGUIObjectsUpdateEventAsync
+            //function: InvokePostGUIObjectsUpdateEvent
             //Calls any user callback after triggering GUI objects' update
-            void InvokePostGUIObjectsUpdateEventAsync();
+            void InvokePostGUIObjectsUpdateEvent();
             
-            //function: RenderObjectsAsync
+            //function: RenderObjects
             //Renders GUI objects
-            void RenderObjectsAsync();
+            void RenderObjects();
             
-            //function: UpdateCursorAsync
+            //function: UpdateCursor
             //Updates (and loads) the cursor if it is changed
-            void UpdateCursorAsync();
+            void UpdateCursor();
             
             //function: StepFrame
             //This is a bundled function which calls all the functions needed for a frame in order for ssGUI to work properly.
             //This calls in order:
-            //1. <IsRunningNeededAsync>
-            //2. <PollInputsAsync>
-            //3. <InvokePreGUIObjectsUpdateEventAsync>
-            //4. <UpdateObjectsAsync>
-            //5. <CleanUpDeletedObjectsAsync>
-            //6. <InvokePostGUIObjectsUpdateEventAsync>
-            //7. <CleanUpDeletedObjectsAsync>
-            //8. <RenderObjectsAsync>
-            //9. <UpdateCursorAsync>
+            //1. <IsRunningNeeded>
+            //2. <PollInputs>
+            //3. <InvokePreGUIObjectsUpdateEvent>
+            //4. <UpdateObjects>
+            //5. <CleanUpDeletedObjects>
+            //6. <InvokePostGUIObjectsUpdateEvent>
+            //7. <CleanUpDeletedObjects>
+            //8. <RenderObjects>
+            //9. <UpdateCursor>
             bool StepFrame();
 
             //function: GetBackendInputInterface

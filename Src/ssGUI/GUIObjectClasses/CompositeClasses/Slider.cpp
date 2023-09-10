@@ -183,7 +183,9 @@ namespace ssGUI
         DrawingEntities.push_back(sliderFillEntity);
     }
 
-    void Slider::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void Slider::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            const ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {       
         ssGUI_LOG_FUNC();
@@ -200,10 +202,9 @@ namespace ssGUI
         //If the user clicked on the knob, record the offset
         if(knob != nullptr && knob->GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK && IsInteractable())
         {
-            CursorKnobOffset = 
-                IsVertical() ?
-                mousePos.y - knob->GetGlobalPosition().y : 
-                mousePos.x - knob->GetGlobalPosition().x;
+            CursorKnobOffset =  IsVertical() ?
+                                mousePos.y - knob->GetGlobalPosition().y : 
+                                mousePos.x - knob->GetGlobalPosition().x;
         }
         //If the user is dragging the knob, update the position
         else if(knob != nullptr && ((knob->GetButtonState() == ssGUI::Enums::ButtonState::CLICKING && IsInteractable() && IsBlockInput()) || SliderDragging))
@@ -224,26 +225,22 @@ namespace ssGUI
             //Reposition the knob
             UpdateKnobOffset();
 
-            inputStatus.MouseInputBlockedObject = this;
+            currentInputStatus.MouseInputBlockedData.SetBlockData(this);
         }
         else
         {
             //Check if user clicked on the slider instead. If so, move the knob to the cursor
-            bool mouseWithinWidget = 
-                mousePos.x >= GetGlobalPosition().x && mousePos.x <= GetGlobalPosition().x + GetSize().x &&
-                mousePos.y >= GetGlobalPosition().y && mousePos.y <= GetGlobalPosition().y + GetSize().y;
+            bool mouseWithinWidget =    mousePos.x >= GetGlobalPosition().x && 
+                                        mousePos.x <= GetGlobalPosition().x + GetSize().x &&
+                                        mousePos.y >= GetGlobalPosition().y && 
+                                        mousePos.y <= GetGlobalPosition().y + GetSize().y;
             
-            //TODO: Tidy this
-            if
-            (
-                mouseWithinWidget &&
-                (
-                    inputStatus.MouseInputBlockedObject == nullptr || 
-                    (GetKnobObject() != nullptr && inputStatus.MouseInputBlockedObject == GetKnobObject())
-                ) 
-                &&
-                IsBlockInput()
-            )
+            bool mouseInputNotBlocked = currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE || 
+                                        (   GetKnobObject() != nullptr && 
+                                            currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::GUI_OBJECT &&
+                                            currentInputStatus.MouseInputBlockedData.GetBlockData<ssGUI::GUIObject>() == GetKnobObject());
+            
+            if(mouseWithinWidget && mouseInputNotBlocked && IsBlockInput())
             {
                 if(IsInteractable())
                 {
@@ -304,11 +301,15 @@ namespace ssGUI
                     guiInteracted = oriSliderValue == GetSliderValue() ? false : true;
                 }
 
-                inputStatus.MouseInputBlockedObject = this;
+                currentInputStatus.MouseInputBlockedData.SetBlockData(this);
             }
             
             //Check for keyboard input
-            if(inputStatus.KeyInputBlockedObject == NULL && (IsFocused() || mouseWithinWidget) && IsInteractable() && IsBlockInput() && !guiInteracted)
+            if( currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && 
+                (IsFocused() || mouseWithinWidget) && 
+                IsInteractable() && 
+                IsBlockInput() && 
+                !guiInteracted)
             {
                 float oriSliderValue = GetSliderValue();
                 
@@ -346,7 +347,7 @@ namespace ssGUI
                 {
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? increaseSliderValue() : decreaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
                 //Continuous input of left/down
@@ -356,7 +357,7 @@ namespace ssGUI
                 {
                     LastKeyNavTime = inputInterface->GetElapsedTime();
                     IsReverse() ? increaseSliderValue() : decreaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
 
@@ -365,7 +366,7 @@ namespace ssGUI
                 {
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? decreaseSliderValue() : increaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
                 //Continuous input of right/up
@@ -375,7 +376,7 @@ namespace ssGUI
                 {
                     LastKeyNavTime = inputInterface->GetElapsedTime();
                     IsReverse() ? decreaseSliderValue() : increaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
 

@@ -1,5 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"                     //Includes all the core ssGUI classes
-#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Legacy/Dockable.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Mask.hpp"
 #include "ssGUI/Extensions/Shape.hpp"

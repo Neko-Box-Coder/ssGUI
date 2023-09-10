@@ -1573,8 +1573,10 @@ namespace ssGUI
         //ssLOG_LINE();
     }
 
-    void Text::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-                        ssGUI::GUIObject* mainWindow)
+    void Text::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            const ssGUI::InputStatus& lastInputStatus, 
+                            ssGUI::GUIObject* mainWindow)
     {
         //Check any changes to default fonts
         //TODO: Maybe need optimization
@@ -1589,7 +1591,7 @@ namespace ssGUI
             RedrawObject(); 
         }
         
-        if(inputStatus.MouseInputBlockedObject == nullptr && IsBlockInput())
+        if(currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && IsBlockInput())
         {
             //Mouse Input blocking
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
@@ -1608,7 +1610,7 @@ namespace ssGUI
                 (LastMouseDownInTextBound && inputInterface->IsButtonOrKeyHeld(ssGUI::Enums::MouseButton::LEFT)))
             {
                 inputInterface->SetCursorType(ssGUI::Enums::CursorType::TEXT); 
-                inputStatus.MouseInputBlockedObject = this;
+                currentInputStatus.MouseInputBlockedData.SetBlockData(this);
             }
 
             bool isMouseButtonDown =    (inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT) ||
@@ -1646,7 +1648,7 @@ namespace ssGUI
             LastMouseDownInTextBound = false;
         }
 
-        if(inputStatus.KeyInputBlockedObject == nullptr)
+        if(currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
         {
             //Text copying when ctrl+c is pressed and there is something highlighted
             bool ctrlPressed =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) || 
@@ -1672,7 +1674,7 @@ namespace ssGUI
                     inputInterface->SetClipboardText(curText); 
                 }
 
-                inputStatus.KeyInputBlockedObject = this;
+                currentInputStatus.KeyInputBlockedData.SetBlockData(this);
             }
         }
         

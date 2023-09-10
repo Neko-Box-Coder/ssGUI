@@ -751,6 +751,27 @@ namespace ssGUI
         return childrenCopy;
     }
 
+    bool Hierarchy::HasChildRecursively(ssGUI::GUIObject* searchChild) const
+    {
+        return searchChild->HasParentRecursively(CurrentObject);
+    }
+    
+    bool Hierarchy::HasParentRecursively(ssGUI::GUIObject* searchParent) const
+    {
+        ssGUI::GUIObject* currentParent = CurrentObject;
+        while(currentParent != nullptr)
+        {
+            if(currentParent == searchParent)
+                return true;
+            
+            currentParent = currentParent->GetParent();
+        }
+        
+        return false;
+    }
+    
+
+
     void Hierarchy::Internal_AddChild(ssGUI::GUIObject* obj, bool compositeChild)
     {
         StashChildrenIterator();

@@ -170,10 +170,11 @@ namespace ssGUI
         }
     }
 
-    void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-        ssGUI::GUIObject* mainWindow)
+    void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::InputStatus& inputStatus, 
+                                        ssGUI::GUIObject* mainWindow)
     {
-        if(inputStatus.MouseInputBlockedObject != nullptr || RightClickMenuId < 0)
+        if(inputStatus.MouseInputBlockedData.GetBlockDataType() != ssGUI::Enums::BlockDataType::NONE || RightClickMenuId < 0)
             return;
         
         //Mouse Input blocking
@@ -189,9 +190,9 @@ namespace ssGUI
             mouseInWindowBoundY = true;
         
         //Input blocking
-        if(mouseInWindowBoundX && mouseInWindowBoundY && (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT)))
+        if( mouseInWindowBoundX && mouseInWindowBoundY && inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::RIGHT))
         {
-            inputStatus.MouseInputBlockedObject = this;
+            inputStatus.MouseInputBlockedData.SetBlockData(this);
             auto* curMenu = CurrentObjectsReferences.GetObjectReference<ssGUI::Menu>(RightClickMenuId);
             
             if(curMenu == nullptr)
@@ -205,8 +206,10 @@ namespace ssGUI
         }
     }
 
-    void GUIObject::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-        ssGUI::GUIObject* mainWindow)
+    void GUIObject::MainLogic(  ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                const ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
     }
     
@@ -281,7 +284,9 @@ namespace ssGUI
         RightClickMenuId = -1;
     }
 
-    void GUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void GUIObject::Internal_Draw(  ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                    ssGUI::GUIObject* mainWindow, 
+                                    glm::vec2 mainWindowPositionOffset)
     {
         ssGUI_LOG_FUNC();
 
@@ -333,7 +338,9 @@ namespace ssGUI
         }
     }
 
-    void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    const ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
@@ -348,21 +355,22 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(true, inputInterface, inputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         }
         
         ssGUI::ObjectUpdateInfo updateInfo = 
         {
             inputInterface,
-            inputStatus,
+            currentInputStatus,
+            lastInputStatus,
             mainWindow
         };
         
         if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE))
             GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE)->Notify(mainWindow, &updateInfo);
 
-        CheckRightClickMenu(inputInterface, inputStatus, mainWindow);
-        MainLogic(inputInterface, inputStatus, mainWindow);
+        CheckRightClickMenu(inputInterface, currentInputStatus, mainWindow);
+        MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
 
         //TODO: Add delete check to current object
         if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_UPDATED))
@@ -374,7 +382,7 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(false, inputInterface, inputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         }
         
         //Check position different for redraw

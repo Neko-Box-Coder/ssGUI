@@ -15,13 +15,16 @@ namespace ssGUI
     {
     }
 
-    void MenuItem::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-                            ssGUI::GUIObject* mainWindow)
+    void MenuItem::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                const ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
-        ssGUI::StandardButton::MainLogic(inputInterface, inputStatus, mainWindow);
+        ssGUI::StandardButton::MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
 
         //Use normal cursor for menu item instead of "click" cursor if hovered
-        if(inputStatus.MouseInputBlockedObject == this)
+        if( currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::GUI_OBJECT &&
+            currentInputStatus.MouseInputBlockedData.GetBlockData<ssGUI::GUIObject>() == this)
         {
             if(inputInterface->GetCursorType() == ssGUI::Enums::CursorType::HAND)
                 inputInterface->SetCursorType(ssGUI::Enums::CursorType::NORMAL);

@@ -57,7 +57,11 @@ namespace Extensions
 
             //function: Internal_Update
             //Updates function called every frame
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) = 0;
+            virtual void Internal_Update(   bool isPreUpdate, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            const ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow) = 0;
             
             //function: Internal_Draw
             //Renders function called every frame

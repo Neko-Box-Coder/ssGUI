@@ -428,7 +428,11 @@ namespace Extensions
         return Enabled;
     }
 
-    void RoundedCorners::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void RoundedCorners::Internal_Update(   bool isPreUpdate, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            const ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
         if(!Enabled || Container == nullptr)

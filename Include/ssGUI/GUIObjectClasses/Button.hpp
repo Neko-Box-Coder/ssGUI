@@ -74,7 +74,9 @@ namespace ssGUI
 
             virtual void ConstructRenderInfo() override;
             virtual void SetButtonState(ssGUI::Enums::ButtonState state);
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    const ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
             
         public:

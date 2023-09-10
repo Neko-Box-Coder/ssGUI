@@ -1,5 +1,5 @@
 #include "ssGUI/Extensions/MaskEnforcer.hpp"
-#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Legacy/Dockable.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp" //For getting mouse position
@@ -257,7 +257,11 @@ namespace Extensions
     }
         
     //Extension methods
-    void MaskEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void MaskEnforcer::Internal_Update( bool isPreUpdate, 
+                                        ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::InputStatus& currentInputStatus, 
+                                        const ssGUI::InputStatus& lastInputStatus, 
+                                        ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
 
@@ -284,7 +288,7 @@ namespace Extensions
                 if(!CurrentObjectsReferences.GetObjectReference(it->first)->GetExtension<ssGUI::Extensions::Mask>()->IsEnabled())
                     continue;
 
-                if(inputStatus.MouseInputBlockedObject != nullptr)                
+                if(currentInputStatus.MouseInputBlockedData.GetBlockDataType() != ssGUI::Enums::BlockDataType::NONE)                
                     continue;
                 
                 //If so, check if the cursor is inside the mask
@@ -294,7 +298,7 @@ namespace Extensions
                 {
                     //If not, cut off the input
                     BlockingContainerInput = true;
-                    inputStatus.MouseInputBlockedObject = Container;
+                    currentInputStatus.MouseInputBlockedData.SetBlockData(Container);
                 }  
             }
 
@@ -316,7 +320,7 @@ namespace Extensions
             if(BlockingContainerInput)
             {
                 BlockingContainerInput = false;
-                inputStatus.MouseInputBlockedObject = nullptr;
+                currentInputStatus.MouseInputBlockedData.UnsetBlockData();
             }
         }
     }

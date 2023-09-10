@@ -105,7 +105,11 @@ namespace Extensions
         return Enabled;
     }
 
-    void AdvancedSize::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void AdvancedSize::Internal_Update( bool isPreUpdate, 
+                                        ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::InputStatus& currentInputStatus, 
+                                        const ssGUI::InputStatus& lastInputStatus, 
+                                        ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
         

@@ -105,6 +105,7 @@ namespace Extensions
                                                                                                             //NOTE: subset of ObjectsToExclude that indicates for special objects 
                                                                                                             //that are not excluded by the user, which is maintain by the extension itself.
 
+            //TODO: Remove this, this seems to not be used anymore
             std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;                           //(Internal variable) Used to restore the size of the child when its parent being set to other GUI object
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;      //(Internal variable) Used to restore the resize type of the child when its parent being set to other GUI object
             std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;                               //(Internal variable) Used to restore if the child moves to top if focused when its parent being set to other GUI object
@@ -299,7 +300,11 @@ namespace Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(   bool isPreUpdate, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            const ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>

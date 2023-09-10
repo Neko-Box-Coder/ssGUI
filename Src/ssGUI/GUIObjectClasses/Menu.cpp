@@ -31,7 +31,9 @@ namespace ssGUI
         currentMenu->SetEnabled(false);        
     }
 
-    void Menu::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void Menu::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            const ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
         if(!IsFocused())
@@ -214,13 +216,20 @@ namespace ssGUI
     
     void Menu::ClearMenuItems()
     {
-        std::vector<ssGUI::GUIObject*> children = GetListOfChildren();
-        
-        for(int i = 0; i < children.size(); i++)
+        StashChildrenIterator();
+        MoveChildrenIteratorToFirst();
+        while(!IsChildrenIteratorEnd())
         {
-            if(children[i]->GetType() == ssGUI::Enums::GUIObjectType::MENU_ITEM)
-                RemoveMenuItem(static_cast<ssGUI::MenuItem*>(children[i]));
+            if(GetCurrentChild()->GetType() == ssGUI::Enums::GUIObjectType::MENU_ITEM)
+            {
+                ssGUI::GUIObject* currentChild = GetCurrentChild();
+                MoveChildrenIteratorNext();
+                RemoveMenuItem(static_cast<ssGUI::MenuItem*>(currentChild));
+            }
+            else
+                MoveChildrenIteratorNext();
         }
+        PopChildrenIterator();
     }
 
     ssGUI::MenuItem* Menu::AddMenuItem()

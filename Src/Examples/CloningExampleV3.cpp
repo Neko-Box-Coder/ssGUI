@@ -1,6 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
-#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Legacy/Dockable.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
 using namespace ssGUI::Enums;

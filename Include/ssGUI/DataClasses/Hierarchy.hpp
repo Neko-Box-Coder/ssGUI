@@ -512,9 +512,26 @@ namespace ssGUI
             virtual void ChangeChildOrderToAfterPosition(   ssGUI::Hierarchy::ChildToken child, 
                                                             ssGUI::Hierarchy::ChildToken position);
 
-            //function: GetListOfChildren
-            //Gets a list of children
+            /*function: GetListOfChildren
+            Gets a list of children. 
+            
+            It is not recommended to do any modification to any of the children since any modification may modify the state of the children.
+            
+            For example, if there's an event callback that deletes or change the parent of a child (say the 3rd child), 
+            and if it got triggered by an action previously (say when processing the 1st child),
+            this will lead to the list of children not up to date and that child (3rd child in this example) could be invalid.
+            
+            To avoid this situation, it is recommended to use child iterator (<GetCurrentChild>, <MoveChildrenIteratorNext>, etc...) to iterate the children instead.
+            */
             virtual std::vector<ssGUI::GUIObject*> GetListOfChildren() const;
+
+            //function: HasChildRecursively
+            //Returns true if the searchChild is an recursive child of this GUI Object
+            virtual bool HasChildRecursively(ssGUI::GUIObject* searchChild) const;
+
+            //function: HasParentRecursively
+            //Returns true if the searchChild is an recursive parent of this GUI Object
+            virtual bool HasParentRecursively(ssGUI::GUIObject* searchParent) const;
 
             //function: Internal_AddChild
             //(Internal ssGUI function) Adds the GUI Object to the children record. Use <SetParent> instead for adding or removing child.

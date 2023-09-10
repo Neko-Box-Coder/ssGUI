@@ -44,7 +44,7 @@ namespace ssGUI
         InitializeMainWindows();
 
         float threadSleepMultiplier = 1;
-        while (IsRunningNeededAsync())
+        while (IsRunningNeeded())
         {
             uint64_t startFrameTime = BackendInput->GetElapsedTime();
             
@@ -302,6 +302,7 @@ namespace ssGUI
                                     ForceRendering(false), 
                                     LastCursor(ssGUI::Enums::CursorType::NORMAL),
                                     LastCursorName(),
+                                    LastInputStatus(),
                                     TargetFrameInterval(10),
                                     FrameTimeIndex(0), 
                                     FrameTimes()
@@ -351,7 +352,7 @@ namespace ssGUI
         InitializeMainWindows();
     }
     
-    bool ssGUIManager::IsRunningNeededAsync()
+    bool ssGUIManager::IsRunningNeeded()
     {
         //If MainWindow is closed before this function is called, this will updpate it
         //which will prevent crash from PollInputs().
@@ -363,7 +364,7 @@ namespace ssGUI
         return true;
     }
     
-    void ssGUIManager::PollInputsAsync()
+    void ssGUIManager::PollInputs()
     {
         BackendInput->UpdateInput();
         
@@ -373,7 +374,7 @@ namespace ssGUI
         BackendInput->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
     }
 
-    void ssGUIManager::InvokePreGUIObjectsUpdateEventAsync()
+    void ssGUIManager::InvokePreGUIObjectsUpdateEvent()
     {
         ssGUI_LOG_FUNC();
         for(int i = 0; i < PreGUIUpdateEventListeners.size(); i++)
@@ -383,7 +384,7 @@ namespace ssGUI
         }
     }
     
-    void ssGUIManager::UpdateObjectsAsync()
+    void ssGUIManager::UpdateObjects()
     {
         ssGUI_LOG_FUNC();
         
@@ -395,6 +396,8 @@ namespace ssGUI
         std::queue<ssGUI::GUIObject*> updateQueue;
 
         //For now, update main window in order as it doesn't matter
+        ssGUI::InputStatus inputStatus;
+        
         for(auto mainWindow : MainWindowPList)
         {            
             if(mainWindow->GetType() != ssGUI::Enums::GUIObjectType::MAIN_WINDOW)
@@ -409,9 +412,6 @@ namespace ssGUI
             
             objToUpdate.push(mainWindow);
             childrenEvaluated.push(false);
-
-            ssGUI::GUIObject* parentWindowP = nullptr;
-            ssGUI::InputStatus inputStatus;
 
             while (!objToUpdate.empty())
             {
@@ -444,7 +444,7 @@ namespace ssGUI
             {
                 if(!updateQueue.front()->Internal_IsDeleted())
                 {
-                    updateQueue.front()->Internal_Update(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(BackendInput), inputStatus, mainWindow);
+                    updateQueue.front()->Internal_Update(BackendInput, inputStatus, LastInputStatus, mainWindow);
                     
                     //ssGUI_DEBUG(ssGUI_MANAGER_TAG, "object "<<updateQueue.front()<<" checking validity");
                     //updateQueue.front()->Internal_GetObjectsReferences()->CheckObjectsReferencesValidity();
@@ -452,9 +452,36 @@ namespace ssGUI
                 updateQueue.pop();
             }
         }
+        
+        //Check deleted objects
+        LastInputStatus = inputStatus;
+        
+        if(LastInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::GUI_OBJECT)
+        {
+            if(LastInputStatus.MouseInputBlockedData.GetBlockData<ssGUI::GUIObject>()->Internal_IsDeleted())
+                LastInputStatus.MouseInputBlockedData.UnsetBlockData();
+        }
+        
+        if(LastInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::GUI_OBJECT)
+        {
+            if(LastInputStatus.KeyInputBlockedData.GetBlockData<ssGUI::GUIObject>()->Internal_IsDeleted())
+                LastInputStatus.KeyInputBlockedData.UnsetBlockData();
+        }
+        
+        if(LastInputStatus.LegacyDockingBlockedObject != nullptr)
+        {
+            if(LastInputStatus.LegacyDockingBlockedObject->Internal_IsDeleted())
+                LastInputStatus.LegacyDockingBlockedObject = nullptr;
+        }
+        
+        if(LastInputStatus.CurrentDragData.GetDragDataType() == ssGUI::Enums::DragDataType::GUI_OBJECT)
+        {
+            if(LastInputStatus.CurrentDragData.GetDragData<ssGUI::GUIObject>()->Internal_IsDeleted())
+                LastInputStatus.CurrentDragData.UnsetDragData();
+        }
     }
     
-    void ssGUIManager::CleanUpDeletedObjectsAsync()
+    void ssGUIManager::CleanUpDeletedObjects()
     {
         CheckMainWindowExistence();
         
@@ -472,7 +499,7 @@ namespace ssGUI
         }
     }
     
-    void ssGUIManager::InvokePostGUIObjectsUpdateEventAsync()
+    void ssGUIManager::InvokePostGUIObjectsUpdateEvent()
     {
         ssGUI_LOG_FUNC();
     
@@ -487,7 +514,7 @@ namespace ssGUI
         }
     }
     
-    void ssGUIManager::RenderObjectsAsync()
+    void ssGUIManager::RenderObjects()
     {
         //Dispatch Custom Rendering event
         if(IsCustomRendering)
@@ -503,7 +530,7 @@ namespace ssGUI
             Render();
     }
     
-    void ssGUIManager::UpdateCursorAsync()
+    void ssGUIManager::UpdateCursor()
     {
         //Update the cursor if it is different from last frame
         if(LastCursor != BackendInput->GetCursorType() || 
@@ -515,38 +542,38 @@ namespace ssGUI
     
     bool ssGUIManager::StepFrame()
     {
-        if(!IsRunningNeededAsync())
+        if(!IsRunningNeeded())
             return false;
     
         {
-            PollInputsAsync();
+            PollInputs();
 
             //Dispatch Update event
-            InvokePreGUIObjectsUpdateEventAsync();
+            InvokePreGUIObjectsUpdateEvent();
 
             #ifdef SSGUI_LOG_MANAGER_STATE
                 ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Update");
             #endif
 
-            UpdateObjectsAsync();
+            UpdateObjects();
 
-            CleanUpDeletedObjectsAsync();
+            CleanUpDeletedObjects();
 
-            InvokePostGUIObjectsUpdateEventAsync();
+            InvokePostGUIObjectsUpdateEvent();
 
-            CleanUpDeletedObjectsAsync();
+            CleanUpDeletedObjects();
 
             #ifdef SSGUI_LOG_MANAGER_STATE
                 ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Render");
             #endif
 
-            RenderObjectsAsync();        
+            RenderObjects();        
 
             #ifdef SSGUI_LOG_MANAGER_STATE
                 ssGUI_DEBUG(ssGUI_MANAGER_TAG, "Post Render");
             #endif
 
-            UpdateCursorAsync();
+            UpdateCursor();
 
             #if SSGUI_SLOW_UPDATE
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));

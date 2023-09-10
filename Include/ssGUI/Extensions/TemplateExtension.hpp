@@ -50,7 +50,16 @@ namespace Extensions
                                                 glm::vec2 mainWindowPositionOffset) override;
 
         public:
+            //====================================================================
+            //Group: Constants
+            //====================================================================
+
+            //string: EXTENSION_NAME
             static const std::string EXTENSION_NAME;
+
+            //====================================================================
+            //Group: Overrides
+            //====================================================================
 
             //Override from Extension
             //function: SetEnabled
@@ -65,7 +74,8 @@ namespace Extensions
             //See <Extension::Internal_Update>
             virtual void Internal_Update(   bool isPreUpdate, 
                                             ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
-                                            ssGUI::InputStatus& inputStatus, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            const ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
@@ -98,7 +108,5 @@ namespace Extensions
 }
 
 }
-
-
 
 #endif

@@ -30,10 +30,19 @@ namespace ssGUI
             virtual void ConstructRenderInfo() override;
 
         public:
+            //====================================================================
+            //Group: Constants
+            //====================================================================
+
+            //string: ListenerKey
             static const std::string ListenerKey;
 
             TemplateGUIObject();
             virtual ~TemplateGUIObject() override;
+
+            //====================================================================
+            //Group: Overrides
+            //====================================================================
 
             //function: GetType
             //See <Widget::GetType>

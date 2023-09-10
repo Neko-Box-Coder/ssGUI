@@ -1,10 +1,10 @@
-#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Legacy/Dockable.hpp"
 
 #include "ssGUI/ssGUITags.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
-#include "ssGUI/Extensions/Docker.hpp"
+#include "ssGUI/Extensions/Legacy/Docker.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
@@ -706,7 +706,11 @@ namespace Extensions
         return Enabled;
     }
 
-    void Dockable::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void Dockable::Internal_Update( bool isPreUpdate, 
+                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    const ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
         
@@ -714,7 +718,7 @@ namespace Extensions
             return;
         
         //If global dock mode is true, check topLevelParent first, then check the cursor against the trigger area
-        if(GlobalDockMode && !ContainerIsDocking && inputStatus.DockingBlockedObject == nullptr)
+        if(GlobalDockMode && !ContainerIsDocking && currentInputStatus.LegacyDockingBlockedObject == nullptr)
         {
             ssGUI::GUIObject* curParent = Container;
             ssGUI::GUIObject* topLevel = GetTopLevelParent();
@@ -867,7 +871,7 @@ namespace Extensions
                 DrawTriggerAreas();
             }
             
-            inputStatus.DockingBlockedObject = Container;
+            currentInputStatus.LegacyDockingBlockedObject = Container;
             ObjectToDockNextTo = Container;
         }
         else

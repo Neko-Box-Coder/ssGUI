@@ -46,8 +46,10 @@ namespace ssGUI
         );
     }
 
-    void Dropdown::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-                            ssGUI::GUIObject* mainWindow)
+    void Dropdown::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                const ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
         if(DropdownMenu != -1 && CurrentObjectsReferences.GetObjectReference(DropdownMenu) != nullptr &&
             CurrentObjectsReferences.GetObjectReference(DropdownMenu)->GetParent() != mainWindow)
@@ -55,7 +57,7 @@ namespace ssGUI
             CurrentObjectsReferences.GetObjectReference(DropdownMenu)->SetParent(mainWindow);
         }
 
-        StandardButton::MainLogic(inputInterface, inputStatus, mainWindow);
+        StandardButton::MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
     }
 
     const std::string Dropdown::ListenerKey = "Dropdown";

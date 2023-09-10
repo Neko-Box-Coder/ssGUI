@@ -6,7 +6,6 @@
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
-#include "ssGUI/Extensions/Dockable.hpp"
 #include "ssGUI/Extensions/Outline.hpp"
 #include "ssGUI/Extensions/BoxShadow.hpp"
 #include "ssGUI/Extensions/Shape.hpp"
@@ -320,9 +319,6 @@ namespace ssGUI
         rc->AddTargetVertex(baseShape, 1);
         rc->AddTargetVertex(baseShape, 2);
         rc->AddTargetVertex(baseShape, 3);
-        
-        //Make window dockable
-        AddExtension<ssGUI::Extensions::Dockable>();
         
         //Add outline to window
         auto windowOutline = AddExtension<ssGUI::Extensions::Outline>();

@@ -29,6 +29,11 @@ namespace Extensions
 
     const std::string TemplateExtension::EXTENSION_NAME = "Template Extension";
     
+    bool TemplateExtension::IsEnabled() const
+    {
+        return Enabled;
+    }
+
     void TemplateExtension::SetEnabled(bool enabled)
     {
         Enabled = enabled;
@@ -36,12 +41,14 @@ namespace Extensions
     
     void TemplateExtension::Internal_Update(bool isPreUpdate, 
                                             ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
-                                            ssGUI::InputStatus& inputStatus, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            const ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
         
-        //This should be done in pre update
+        //This is function is executed twice, one before the Container GUI object update and one after.
+        //You can use the isPreUpdate variable to decide when to execute the extension update
         if(!isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
             return;
     }
@@ -51,7 +58,6 @@ namespace Extensions
                                             ssGUI::GUIObject* mainWindow, 
                                             glm::vec2 mainWindowPositionOffset)
     {
-        //Nothing to draw
     }
 
     std::string TemplateExtension::GetExtensionName()

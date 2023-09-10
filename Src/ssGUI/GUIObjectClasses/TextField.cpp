@@ -561,7 +561,9 @@ namespace ssGUI
         }
     }
     
-    void TextField::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void TextField::MainLogic(  ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                const ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {       
         bool blockKeys = false;
@@ -576,7 +578,7 @@ namespace ssGUI
                         inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL);
 
             //Pasting
-            if( inputStatus.KeyInputBlockedObject == nullptr && 
+            if( currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && 
                 inputInterface->ClipbaordHasText() && wordMode && 
                 inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::V) &&
                 !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::V))
@@ -588,7 +590,7 @@ namespace ssGUI
 
             //Text input
             //TODO: Put textInput to a CharacterDetails vector and insert the whole vector instead of 1 by 1
-            if(inputStatus.KeyInputBlockedObject == nullptr && IsFocused() && !textInput.empty())
+            if(currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && IsFocused() && !textInput.empty())
             {
                 blockKeys = true;
                 TextInputUpdate(textInput, refreshBlinkTimer, wordMode);
@@ -625,12 +627,12 @@ namespace ssGUI
             LastIsFocused = IsFocused();
         }
 
-        ssGUI::Text::MainLogic(inputInterface, inputStatus, mainWindow);
+        ssGUI::Text::MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         
         if(IsInteractable())
         {
             //Caret navigation
-            if(inputStatus.KeyInputBlockedObject == nullptr)
+            if(currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
                 CaretNavigationUpdate(inputInterface, refreshBlinkTimer, blockKeys, wordMode);
 
             //Check Carret
@@ -668,7 +670,7 @@ namespace ssGUI
                 RedrawObject();
 
             if(blockKeys)
-                inputStatus.KeyInputBlockedObject = this;
+                currentInputStatus.KeyInputBlockedData.SetBlockData(this);
         }
     }
 

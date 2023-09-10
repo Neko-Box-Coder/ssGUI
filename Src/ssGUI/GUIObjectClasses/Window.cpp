@@ -62,7 +62,7 @@ namespace ssGUI
         //Resize
         if(ResizingBot || ResizingLeft || ResizingRight || ResizingTop)
         {
-            inputStatus.MouseInputBlockedObject = this;
+            inputStatus.MouseInputBlockedData.SetBlockData(this);
             SetFocus(true);
             return;
         }
@@ -73,7 +73,7 @@ namespace ssGUI
             IsDraggable())
         {
             Dragging = true;
-            inputStatus.MouseInputBlockedObject = this;
+            inputStatus.MouseInputBlockedData.SetBlockData(this);
             SetFocus(true);
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
             return;
@@ -82,15 +82,17 @@ namespace ssGUI
         if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
             currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
         {
-            inputStatus.MouseInputBlockedObject = this;                
+            inputStatus.MouseInputBlockedData.SetBlockData(this);                
             SetFocus(true);
         }
     }
 
-    void Window::OnMouseDragOrResizeUpdate(ssGUI::InputStatus& inputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+    void Window::OnMouseDragOrResizeUpdate( ssGUI::InputStatus& inputStatus, 
+                                            glm::vec2 mouseDelta, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
         ssGUI_LOG_FUNC();
-        inputStatus.MouseInputBlockedObject = this;
+        inputStatus.MouseInputBlockedData.SetBlockData(this);
        
         if(ResizingLeft || ResizingRight || ResizingTop || ResizingBot)
         {
@@ -172,11 +174,13 @@ namespace ssGUI
             inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
     }
 
-    void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+    void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, 
+                                                glm::vec2 currentMousePos, 
+                                                ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
         ssGUI_LOG_FUNC();
         
-        if(inputStatus.MouseInputBlockedObject == nullptr)
+        if(inputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
         {
             //Mouse Input blocking
             bool mouseInWindowBoundX = false;
@@ -190,7 +194,7 @@ namespace ssGUI
             
             //Input blocking
             if(mouseInWindowBoundX && mouseInWindowBoundY)
-                inputStatus.MouseInputBlockedObject = this;
+                inputStatus.MouseInputBlockedData.SetBlockData(this);
             
             //Updating cursor
             bool canResizeTop = false;
@@ -345,7 +349,9 @@ namespace ssGUI
         // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
     }
 
-    void Window::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void Window::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            const ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
         glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
@@ -358,20 +364,21 @@ namespace ssGUI
         
         //Resize
         //On mouse down
-        if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-            inputStatus.MouseInputBlockedObject == nullptr)
+        if( inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT) &&
+            currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
         {
-            OnMouseDownUpdate(currentMousePos, inputStatus);
+            OnMouseDownUpdate(currentMousePos, currentInputStatus);
         }
         //When the user is resizing or dragging the window
-        else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
+        else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && 
+                (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
         {
-            OnMouseDragOrResizeUpdate(inputStatus, mouseDelta, inputInterface);
+            OnMouseDragOrResizeUpdate(currentInputStatus, mouseDelta, inputInterface);
         }
         //Otherwise show resize cursor if necessary 
         else
         {
-            BlockMouseInputAndUpdateCursor(inputStatus, currentMousePos, inputInterface);
+            BlockMouseInputAndUpdateCursor(currentInputStatus, currentMousePos, inputInterface);
         }
     }
         

@@ -29,6 +29,13 @@ namespace ssGUI
         BEFORE_OBJECT_UPDATE                            - Triggered *before* this GUI object is being updated. Container will be the source for triggering this event callback.
                                                             <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::ObjectUpdateInfo> struct.
         
+        BEFORE_OBJECT_DOCKING                           - Triggerd *before* the container is being docked to another object. Container will be the source for triggering this event callback.
+                                                            <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::DockEventInfo> struct.
+                                                            To abort the docking operation, simply set <ssGUI::DockEventInfo::AbortDocking> to true.
+        BEFORE_EXTERNAL_OBJECT_BEING_DOCKED             - Triggerd *before* an object is docking to container. The object being docked will be the source for triggering this event callback.
+                                                            <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::DockEventInfo> struct.
+                                                            To abort the docking operation, simply set <ssGUI::DockEventInfo::AbortDocking> to true.
+        
         BUTTON_STATE_CHANGED                            - Triggered *after* the button state has changed. Button(Container) will be the source for triggering this event callback.
         CHILD_ADDED                                     - Triggered *after* a child is paranted on this GUI object. The child object being added will be the source for triggering this event callback.
         CHILD_POSITION_CHANGED                          - Triggered *after* <ssGUI::Hierarchy::ChangeChildOrderToBeforePosition> or <ssGUI::Hierarchy::ChangeChildOrderToAfterPosition> is called.
@@ -66,11 +73,18 @@ namespace ssGUI
         TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI    - Triggered *after* the content of the text field is finished editing by user input, either by deselecting the GUI Object 
                                                             or a period of time (default 500ms) without user input
 
-        COUNT                               - Count
+        OBJECT_DOCKED                                   - Triggerd *after* the container is being docked to another object. Container will be the source for triggering this event callback.
+                                                            <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::DockEventInfo> struct.
+                                                            <ssGUI::DockEventInfo::AbortDocking> has no effect.
+        EXTERNAL_OBJECT_DOCKED                          - Triggerd *after* an object is docking to container. The object being docked will be the source for triggering this event callback.
+                                                            <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::DockEventInfo> struct.
+                                                            <ssGUI::DockEventInfo::AbortDocking> has no effect.
+
+        COUNT                                           - Count
         
-        SCROLLBAR_VALUE_CHANGED             - Same as <SLIDER_VALUE_CHANGED>
-        SCROLLBAR_VALUE_CHANGED_VIA_GUI     - Same as <SLIDER_VALUE_CHANGED_VIA_GUI>
-        SCROLLBAR_VALUE_FINISHED_CHANGING   - Same as <SLIDER_VALUE_FINISHED_CHANGING>
+        SCROLLBAR_VALUE_CHANGED                         - Same as <SLIDER_VALUE_CHANGED>
+        SCROLLBAR_VALUE_CHANGED_VIA_GUI                 - Same as <SLIDER_VALUE_CHANGED_VIA_GUI>
+        SCROLLBAR_VALUE_FINISHED_CHANGING               - Same as <SLIDER_VALUE_FINISHED_CHANGING>
         */
         enum class EventType : uint16_t
         {
@@ -84,6 +98,8 @@ namespace ssGUI
             BEFORE_RECURSIVE_CHILD_REMOVE,
             BEFORE_WINDOW_CLOSE,
             BEFORE_OBJECT_UPDATE,
+            BEFORE_OBJECT_DOCKING,
+            BEFORE_EXTERNAL_OBJECT_BEING_DOCKED,
             
             BUTTON_STATE_CHANGED,
             CHILD_ADDED,
@@ -107,6 +123,9 @@ namespace ssGUI
             TEXT_FIELD_CONTENT_CHANGED_VIA_GUI,
             TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI,
             
+            OBJECT_DOCKED,
+            EXTERNAL_OBJECT_DOCKED,
+            
             COUNT,
             
             SCROLLBAR_VALUE_CHANGED = SLIDER_VALUE_CHANGED,
@@ -117,7 +136,7 @@ namespace ssGUI
         //function: EventTypeToString
         inline std::string EventTypeToString(EventType event)
         {
-            static_assert((int)EventType::COUNT == 29, "ToString");
+            static_assert((int)EventType::COUNT == 33, "ToString");
             switch(event)
             {
                 RETURN_ENUM_STRING(EventType::NONE);
@@ -130,6 +149,8 @@ namespace ssGUI
                 RETURN_ENUM_STRING(EventType::BEFORE_RECURSIVE_CHILD_REMOVE);
                 RETURN_ENUM_STRING(EventType::BEFORE_WINDOW_CLOSE);
                 RETURN_ENUM_STRING(EventType::BEFORE_OBJECT_UPDATE);
+                RETURN_ENUM_STRING(EventType::BEFORE_OBJECT_DOCKING);
+                RETURN_ENUM_STRING(EventType::BEFORE_EXTERNAL_OBJECT_BEING_DOCKED);
                 
                 RETURN_ENUM_STRING(EventType::BUTTON_STATE_CHANGED);
                 RETURN_ENUM_STRING(EventType::CHILD_ADDED);
@@ -152,6 +173,9 @@ namespace ssGUI
                 
                 RETURN_ENUM_STRING(EventType::TEXT_FIELD_CONTENT_CHANGED_VIA_GUI);
                 RETURN_ENUM_STRING(EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI);
+                
+                RETURN_ENUM_STRING(EventType::OBJECT_DOCKED);
+                RETURN_ENUM_STRING(EventType::EXTERNAL_OBJECT_DOCKED);
                 
                 RETURN_ENUM_STRING(EventType::COUNT);
             }

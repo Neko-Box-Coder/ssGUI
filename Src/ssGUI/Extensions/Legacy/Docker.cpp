@@ -1,7 +1,7 @@
-#include "ssGUI/Extensions/Docker.hpp"
+#include "ssGUI/Extensions/Legacy/Docker.hpp"
 
 
-#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Legacy/Dockable.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
@@ -434,7 +434,11 @@ namespace Extensions
     }
 
     //Extension methods
-    void Docker::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void Docker::Internal_Update(   bool isPreUpdate, 
+                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    const ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
         
@@ -461,7 +465,7 @@ namespace Extensions
         }
 
         //If global dock mode is true, check the cursor against the trigger area
-        if(Dockable::GlobalDockMode && inputStatus.DockingBlockedObject == nullptr)
+        if(Dockable::GlobalDockMode && currentInputStatus.LegacyDockingBlockedObject == nullptr)
         {
             ssGUI::GUIObject* curParent = Container;
             bool underDockingTopLevel = false;
@@ -546,7 +550,7 @@ namespace Extensions
                 DiscardPreview();
             }
 
-            inputStatus.DockingBlockedObject = Container;
+            currentInputStatus.LegacyDockingBlockedObject = Container;
             Dockable::ObjectToDockNextTo = Container;
         }
         else

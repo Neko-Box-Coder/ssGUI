@@ -20,7 +20,10 @@ namespace ssGUI
         ssGUI::Backend::BackendSystemInputInterface* InputInterface;
         
         //var: InputStatus
-        ssGUI::InputStatus& InputStatus;
+        ssGUI::InputStatus& CurrentInputStatus;
+        
+        //var: LastInputStatus
+        const ssGUI::InputStatus& LastInputStatus;
         
         //var: MainWindow
         ssGUI::GUIObject* MainWindow;
