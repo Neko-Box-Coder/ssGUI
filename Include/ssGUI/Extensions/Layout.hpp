@@ -38,6 +38,7 @@ namespace Extensions
         float Padding;                                                                                  //See <GetPadding>
         float Spacing;                                                                                  //See <GetSpacing>
         bool Overflow;                                                                                  //See <GetOverflow>
+        bool Updated;                                                                                   //(Internal variable) Used for calling parent layout update if present
 
         ObjectsReferences CurrentObjectsReferences;                                                     //(Internal variable) Used to keep track of all the children and event callbacks
 
@@ -64,6 +65,7 @@ namespace Extensions
                         Padding(0),
                         Spacing(5),
                         Overflow(false),
+                        Updated(false),
                         CurrentObjectsReferences(),
                         LastUpdateChildrenSize(),
                         ObjectsToExclude(),
@@ -96,6 +98,7 @@ namespace Extensions
             float Padding;                                                                                  //See <GetPadding>
             float Spacing;                                                                                  //See <GetSpacing>
             bool Overflow;                                                                                  //See <GetOverflow>
+            bool Updated;                                                                                   //(Internal variable) Used for calling parent layout update if present
 
             ObjectsReferences CurrentObjectsReferences;                                                     //(Internal variable) Used to keep track of all the children and event callbacks
 
@@ -118,8 +121,13 @@ namespace Extensions
             static void operator delete(void* p)        {free(p);};
             static void operator delete[](void* p)      {free(p);};
 
-            void LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
-                                std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
+            void LayoutChildren(float startPos, 
+                                float length, 
+                                std::vector<float>& childrenPos, 
+                                std::vector<float>& childrenLength, 
+                                std::vector<float>& minChildrenLength, 
+                                std::vector<float>& maxChildrenLength, 
+                                int lastChildChangeIndex,
                                 float sizeDiff);
 
             void UpdateChildrenResizeTypesAndOnTop();
@@ -132,8 +140,12 @@ namespace Extensions
 
             void DisableChildrenResizingInUpdate();
 
-            void GetAndValidateChildrenDetails(std::vector<float>& childrenPos, std::vector<float>& childrenSize, std::vector<float>& childrenMinSize,
-                                    std::vector<float>& childrenMaxSize, glm::vec2 containerPos, glm::vec2 containerSize);
+            void GetAndValidateChildrenDetails( std::vector<float>& childrenPos, 
+                                                std::vector<float>& childrenSize, 
+                                                std::vector<float>& childrenMinSize,
+                                                std::vector<float>& childrenMaxSize, 
+                                                glm::vec2 containerPos, 
+                                                glm::vec2 containerSize);
             
             void GetLastDifferentChild(std::vector<float>& childrenPos, std::vector<float>& childrenSize, float& sizeDiff, int& lastChildChangeIndex);
 
@@ -298,8 +310,12 @@ namespace Extensions
             //See <Extension::IsEnabled>
             virtual bool IsEnabled() const override;
 
-            //function: Internal_Update
-            //See <Extension::Internal_Update>
+            /*function: Internal_Update
+            For nested layouts, layout needs to be updated from parent to children which is the reverse order of update.
+            Therefore, this will call it's parent layout (if there's one) and it's possible for its update logic to be called before its container update.
+            
+            For what <Internal_Update> does, see <Extension::Internal_Update>
+            */
             virtual void Internal_Update(   bool isPreUpdate, 
                                             ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 

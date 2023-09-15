@@ -23,6 +23,7 @@ namespace Extensions
                         Padding(0),
                         Spacing(5),
                         Overflow(false),
+                        Updated(false),
                         CurrentObjectsReferences(),
                         LastUpdateChildrenSize(),
                         ObjectsToExclude(),
@@ -79,6 +80,7 @@ namespace Extensions
         Padding = other.GetPadding();
         Spacing = other.GetSpacing();
         Overflow = other.GetOverflow();
+        Updated = other.Updated;
         CurrentObjectsReferences = other.CurrentObjectsReferences;
         LastUpdateChildrenSize = other.LastUpdateChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
         ObjectsToExclude = other.ObjectsToExclude;
@@ -88,8 +90,13 @@ namespace Extensions
         OriginalChildrenOnTop = other.OriginalChildrenOnTop;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
     }
 
-    void Layout::LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
-                                std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
+    void Layout::LayoutChildren(float startPos, 
+                                float length, 
+                                std::vector<float>& childrenPos, 
+                                std::vector<float>& childrenLength, 
+                                std::vector<float>& minChildrenLength, 
+                                std::vector<float>& maxChildrenLength, 
+                                int lastChildChangeIndex,
                                 float sizeDiff)
     {        
         ssGUI_LOG_FUNC();
@@ -529,8 +536,12 @@ namespace Extensions
         Container->PopChildrenIterator();
     }
 
-    void Layout::GetAndValidateChildrenDetails(std::vector<float>& childrenPos, std::vector<float>& childrenSize, std::vector<float>& childrenMinSize,
-                                                std::vector<float>& childrenMaxSize, glm::vec2 containerPos, glm::vec2 containerSize)
+    void Layout::GetAndValidateChildrenDetails( std::vector<float>& childrenPos, 
+                                                std::vector<float>& childrenSize, 
+                                                std::vector<float>& childrenMinSize,
+                                                std::vector<float>& childrenMaxSize, 
+                                                glm::vec2 containerPos, 
+                                                glm::vec2 containerSize)
     {
         ssGUI_LOG_FUNC();
         Container->StashChildrenIterator();
@@ -1119,8 +1130,20 @@ namespace Extensions
     {
         ssGUI_LOG_FUNC();
         
-        if(isPreUpdate || Container == nullptr || Container->GetChildrenCount() == 0 || !Enabled)
+        if(isPreUpdate || Container == nullptr || Container->GetChildrenCount() == 0 || !Enabled || Updated)
             return;
+
+        Updated = true;
+
+        if( Container->GetParent() != nullptr && 
+            Container->GetParent()->IsExtensionExist<ssGUI::Extensions::Layout>())
+        {
+            Container->GetParent()->GetExtension<ssGUI::Extensions::Layout>()->Internal_Update( isPreUpdate, 
+                                                                                                inputInterface, 
+                                                                                                currentInputStatus, 
+                                                                                                lastInputStatus, 
+                                                                                                mainWindow);
+        }
 
         //Update SpecialObjectsToExclude if needed
         UpdateSpeicalObjectsToExclude();
@@ -1224,10 +1247,11 @@ namespace Extensions
         if(GetUpdateContainerMinMaxSize())
             SetUpdateContainerMinMaxSize(true);
 
-        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD))
-            Container->AddEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD);
-
-        Container->GetEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD)->AddEventListener
+        //TODO: Need to add and use child add and remove any recursive child event instead. 
+        //      The current way may harm performance significantly.
+        //      Right now it will add recursive child to object reference meaning the deeper the nesting,
+        //      the more references it has.
+        Container->AddEventCallback(ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD)->AddEventListener
         (
             EXTENSION_NAME,
             [](ssGUI::EventInfo& info)
@@ -1240,8 +1264,7 @@ namespace Extensions
                     return;
                 }
 
-                ssGUI::Extensions::Layout* containerLayout = static_cast<ssGUI::Extensions::Layout*>
-                    (info.Container->GetExtension<ssGUI::Extensions::Layout>());
+                ssGUI::Extensions::Layout* containerLayout = info.Container->GetExtension<ssGUI::Extensions::Layout>();
                 ObjectsReferences* layoutOR = containerLayout->Internal_GetObjectsReferences();
                 int childIndex =    layoutOR->IsObjectReferenceExist(info.EventSource) ? 
                                     layoutOR->GetObjectIndex(info.EventSource) : 
@@ -1259,30 +1282,25 @@ namespace Extensions
             }
         );
 
-        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED))
-            Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED);
-        
-        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED))
-            Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED);
-
-        if(!Container->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED))
-            Container->AddEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED);
-
-        Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->AddEventListener
+        Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->AddEventListener
         (
             EXTENSION_NAME,
-            [this](ssGUI::EventInfo& info){Internal_OnRecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
-            // std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildAdded, this, std::placeholders::_1)
+            [](ssGUI::EventInfo& info)
+            {
+                info.Container->GetExtension<ssGUI::Extensions::Layout>()->Internal_OnRecursiveChildAdded(info.EventSource);
+            }
         );
         
-        Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->AddEventListener
+        Container->AddEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->AddEventListener
         (
             EXTENSION_NAME,
-            [this](ssGUI::EventInfo& info){Internal_OnRecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
-            // std::bind(&ssGUI::Extensions::Layout::Internal_OnRecursiveChildRemoved, this, std::placeholders::_1)
+            [](ssGUI::EventInfo& info)
+            {
+                info.Container->GetExtension<ssGUI::Extensions::Layout>()->Internal_OnRecursiveChildRemoved(info.EventSource);
+            }
         );
 
-        Container->GetEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED)->AddEventListener
+        Container->AddEventCallback(ssGUI::Enums::EventType::CHILD_POSITION_CHANGED)->AddEventListener
         (
             EXTENSION_NAME,
             [](ssGUI::EventInfo& info)
@@ -1295,13 +1313,21 @@ namespace Extensions
                     return;
                 }
 
-                ssGUI::Extensions::Layout* containerLayout = static_cast<ssGUI::Extensions::Layout*>
-                    (info.Container->GetExtension<ssGUI::Extensions::Layout>());
+                ssGUI::Extensions::Layout* containerLayout = info.Container->GetExtension<ssGUI::Extensions::Layout>();
 
                 if(containerLayout->IsOverrideChildrenResizeTypeAndOnTop())
                     containerLayout->UpdateChildrenResizeTypesAndOnTop();
             }
         );
+     
+        Container->AddEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->AddEventListener
+        (
+            EXTENSION_NAME,
+            [](ssGUI::EventInfo& info)
+            {
+                info.Container->GetExtension<ssGUI::Extensions::Layout>()->Updated = false;
+            }
+        );   
     }
 
     void Layout::Copy(ssGUI::Extensions::Extension* extension)
@@ -1321,6 +1347,7 @@ namespace Extensions
         Padding = layout->GetPadding();
         Spacing = layout->GetSpacing();
         Overflow = layout->GetOverflow();
+        Updated = layout->Updated;
         CurrentObjectsReferences = layout->CurrentObjectsReferences;
     }
 
