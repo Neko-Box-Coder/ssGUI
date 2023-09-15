@@ -33,7 +33,7 @@ namespace ssGUI
 
     void Menu::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
-                            const ssGUI::InputStatus& lastInputStatus, 
+                            ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
         if(!IsFocused())

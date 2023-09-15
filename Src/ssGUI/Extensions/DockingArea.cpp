@@ -270,7 +270,7 @@ namespace Extensions
     void DockingArea::Internal_Update(bool isPreUpdate, 
                                             ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
-                                            const ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();
@@ -293,8 +293,11 @@ namespace Extensions
             DISCARD_AND_RETURN();
         }
         
-        if(lastInputStatus.CurrentDragData.GetDragDataType() != ssGUI::Enums::DragDataType::GUI_OBJECT)
+        if( lastInputStatus.CurrentDragData.GetDragDataType() != ssGUI::Enums::DragDataType::GUI_OBJECT ||
+            (lastInputStatus.CurrentDragData.IsIntercepted() && lastInputStatus.CurrentDragData.GetInterceptor() == Container))
+        {
             DISCARD_AND_RETURN();
+        }
         
         if( lastInputStatus.CurrentDragData.GetDragData<ssGUI::GUIObject>()->Internal_IsDeleted() ||
             !lastInputStatus.CurrentDragData.GetDragData<ssGUI::GUIObject>()->IsExtensionExist<ssGUI::Extensions::DockableV2>())
@@ -393,6 +396,7 @@ namespace Extensions
             //Otherwise, dock the object if mouse up
             else if(inputInterface->IsButtonOrKeyUp(ssGUI::Enums::MouseButton::LEFT))
             {
+                lastInputStatus.CurrentDragData.SetInterceptor(Container);
                 DockExternalObject(objectBeingDocked);
                 DiscardPreview();    
                 DiscardTriggerArea();

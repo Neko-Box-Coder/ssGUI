@@ -36,6 +36,21 @@ namespace ssGUI
         CurrentDragDataType = ssGUI::Enums::DragDataType::CUSTOM;
     }
     
+    void DragData::SetInterceptor(ssGUI::GUIObject* interceptor)
+    {
+        Interceptor = interceptor;
+    }
+    
+    bool DragData::IsIntercepted() const
+    {
+        return Interceptor != nullptr;
+    }
+    
+    ssGUI::GUIObject* DragData::GetInterceptor() const
+    {
+        return Interceptor;
+    }
+    
     template<>
     ssGUI::GUIObject* DragData::GetDragData() const
     {

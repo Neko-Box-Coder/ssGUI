@@ -23,7 +23,7 @@ namespace ssGUI
         ssGUI::InputStatus& CurrentInputStatus;
         
         //var: LastInputStatus
-        const ssGUI::InputStatus& LastInputStatus;
+        ssGUI::InputStatus& LastInputStatus;
         
         //var: MainWindow
         ssGUI::GUIObject* MainWindow;

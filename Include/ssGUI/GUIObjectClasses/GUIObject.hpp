@@ -66,7 +66,7 @@ namespace ssGUI
                                                 ssGUI::GUIObject* mainWindow);
             virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
-                                    const ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow);
 
         public:
@@ -118,7 +118,7 @@ namespace ssGUI
             //(Internal ssGUI function) Update function called by <ssGUIManager>
             virtual void Internal_Update(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
-                                            const ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow);
 
             //function: Clone

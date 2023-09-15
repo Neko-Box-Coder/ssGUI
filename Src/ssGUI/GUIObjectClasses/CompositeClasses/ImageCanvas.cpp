@@ -239,7 +239,7 @@ namespace ssGUI
 
     void ImageCanvas::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
-                                const ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {        
         //By default don't show rotation UI

@@ -29,6 +29,7 @@ namespace ssGUI
         private:
             ssGUI::Enums::DragDataType CurrentDragDataType = ssGUI::Enums::DragDataType::NONE;
             std::string CustomDataIdentifier = "";
+            ssGUI::GUIObject* Interceptor = nullptr;
             
             union 
             {
@@ -60,6 +61,18 @@ namespace ssGUI
             //function: SetDragData
             //Sets the drag data for custom data
             void SetDragData(void* data);
+            
+            //function: SetInterceptor
+            //Sets the interceptor for the current drag data, setting nullptr to unset it
+            void SetInterceptor(ssGUI::GUIObject* interceptor);
+            
+            //function: IsIntercepted
+            //Returns if the current drag data is being intercepted
+            bool IsIntercepted() const;
+            
+            //function: GetInterceptor
+            //Returns the GUI Object that has intercepted the current drag data, nullptr if none.
+            ssGUI::GUIObject* GetInterceptor() const;
             
             //function: GetDragData
             //Sets the drag data for the corresponding data type. 

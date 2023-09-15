@@ -208,7 +208,7 @@ namespace ssGUI
 
     void GUIObject::MainLogic(  ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
-                                const ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {
     }
@@ -340,7 +340,7 @@ namespace ssGUI
 
     void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
-                                    const ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
     {
         ssGUI_LOG_FUNC();

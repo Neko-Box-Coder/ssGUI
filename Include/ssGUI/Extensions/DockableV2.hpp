@@ -139,7 +139,7 @@ namespace Extensions
 
             virtual void AttemptUndockingFromGUI(   ssGUI::Window* containerWindow, 
                                                     ssGUI::MainWindow* mainWindow,
-                                                    const ssGUI::InputStatus& lastInputStatus);
+                                                    ssGUI::InputStatus& lastInputStatus);
 
             virtual bool IsAttemptingToUndockFromGUI();
 
@@ -351,7 +351,7 @@ namespace Extensions
             virtual void Internal_Update(   bool isPreUpdate, 
                                             ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
-                                            const ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw

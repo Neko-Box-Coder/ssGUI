@@ -479,6 +479,13 @@ namespace ssGUI
             if(LastInputStatus.CurrentDragData.GetDragData<ssGUI::GUIObject>()->Internal_IsDeleted())
                 LastInputStatus.CurrentDragData.UnsetDragData();
         }
+        
+        if(LastInputStatus.CurrentDragData.IsIntercepted())
+        {
+            if(LastInputStatus.CurrentDragData.GetInterceptor()->Internal_IsDeleted())
+                LastInputStatus.CurrentDragData.SetInterceptor(nullptr);
+        }
+        
     }
     
     void ssGUIManager::CleanUpDeletedObjects()

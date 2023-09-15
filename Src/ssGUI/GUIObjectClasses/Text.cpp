@@ -1575,7 +1575,7 @@ namespace ssGUI
 
     void Text::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
-                            const ssGUI::InputStatus& lastInputStatus, 
+                            ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
         //Check any changes to default fonts

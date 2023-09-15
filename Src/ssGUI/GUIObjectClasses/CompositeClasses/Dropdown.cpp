@@ -48,7 +48,7 @@ namespace ssGUI
 
     void Dropdown::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
-                                const ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {
         if(DropdownMenu != -1 && CurrentObjectsReferences.GetObjectReference(DropdownMenu) != nullptr &&
