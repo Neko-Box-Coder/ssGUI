@@ -294,10 +294,6 @@ namespace ssGUI
         
         //Update local position
         CurrentTransform->SetGlobalPosition(CurrentTransform->GetGlobalPosition());
-
-        //Update focus status for recursive parent objects if this object is focused
-        if(IsFocused())
-            SetFocus(true);
         
         //Send event callback if any object is subscribed to child added
         if(newParent->IsEventCallbackExist(ssGUI::Enums::EventType::CHILD_ADDED))
@@ -319,6 +315,11 @@ namespace ssGUI
             
             currentParent = currentParent->GetParent();
         }
+
+        //Update focus status for recursive parent objects if this object is focused
+        //This will trigger position changed callback so set the focus after notifying all event callbacks
+        if(IsFocused())
+            SetFocus(true);
     }
 
     bool Hierarchy::IsCurrentChildComposite() const

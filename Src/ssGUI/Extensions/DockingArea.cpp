@@ -486,15 +486,8 @@ namespace Extensions
                 if(lastChild != nullptr)
                 {
                     dockingAreaExt->PauseChildRemovedEventListener = true;
-                    
-                    //Remove layout extension first since it modifiy the size when child get removed
-                    if(info.Container->IsExtensionExist<ssGUI::Extensions::Layout>())
-                        info.Container->RemoveExtension<ssGUI::Extensions::Layout>();
-                    
                     lastChild->SetParent(info.Container->GetParent());
-                    
                     info.Container->GetParent()->MoveChildAfterTargetChild(lastChild, info.Container);
-                    
                     dockingAreaExt->PauseChildRemovedEventListener = false;
                 }
 

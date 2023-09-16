@@ -49,12 +49,13 @@ namespace ssGUI
             virtual void SetDependentComponents(ssGUI::Renderer* renderer, ssGUI::GUIObject* obj);
 
             //function: AddEventCallback
-            //Adds an eventCallback to this GUI Object. If the eventCallback already exists, nothing will be modified.
+            //Adds an eventCallback to this GUI Object. 
+            //If the eventCallback already exists, it will return the existing one event callback.
             virtual ssGUI::EventCallback* AddEventCallback(ssGUI::Enums::EventType eventType);
             
             //function: AddEventCallbackCopy
             //Adds an eventCallback to this GUI Object by copying an already existing eventCallback. 
-            //If an eventCallback already exists in this GUI object, nothing will be modified.
+            //If the eventCallback already exists, it will return the existing one event callback.
             virtual ssGUI::EventCallback* AddEventCallbackCopy(ssGUI::EventCallback* copy, bool copyListeners);
 
             //function: GetEventCallback

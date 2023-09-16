@@ -48,6 +48,9 @@ namespace Extensions
                     target->RemoveEventCallback(eventType);
             };
 
+            //Revert any changes we made to the children when they got parented            
+            SetOverrideChildrenResizeTypeAndOnTop(false);
+
             eventCallbackCleanUp(Container, ssGUI::Enums::EventType::BEFORE_RECURSIVE_CHILD_ADD);
             eventCallbackCleanUp(Container, ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED);
             eventCallbackCleanUp(Container, ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED);

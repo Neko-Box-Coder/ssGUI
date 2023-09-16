@@ -289,7 +289,7 @@ namespace Extensions
             containerWindow->SetParent(mainWindow);
         else
             containerWindow->SetParent(CurrentObjectsReferences.GetObjectReference(TopLevelParent));
-            
+        
         containerWindow->SetGlobalPosition(posBeforeUndocking + LastDraggedDistance);
         LastDraggedDistance = glm::vec2();
     }
