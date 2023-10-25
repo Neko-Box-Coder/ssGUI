@@ -24,12 +24,7 @@ namespace Extensions
     Shape::Shape(Shape const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-
-        ExtensionPreRender = other.ExtensionPreRender;
-        AdditionalShapes = other.AdditionalShapes;
-        GUIObjectShapesToRemove = other.GUIObjectShapesToRemove;
-        NextID = other.NextID;
+        Copy(&other);
     }
 
     void Shape::ConstructAdditionalPolygon(AdditionalShape& targetShape, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
@@ -607,7 +602,7 @@ namespace Extensions
             ConstructRenderInfo();
     }
 
-    std::string Shape::GetExtensionName()
+    std::string Shape::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -617,12 +612,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void Shape::Copy(ssGUI::Extensions::Extension* extension)
+    void Shape::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Shape* Shape = static_cast<ssGUI::Extensions::Shape*>(extension);
+        auto* Shape = static_cast<const ssGUI::Extensions::Shape*>(extension);
         
         Enabled = Shape->IsEnabled();
         ExtensionPreRender = Shape->ExtensionPreRender;

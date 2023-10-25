@@ -24,11 +24,7 @@ namespace Extensions
     BoxShadow::BoxShadow(BoxShadow const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        PositionOffset = other.GetPositionOffset();
-        SizeOffset = other.GetSizeOffset();
-        BlurRadius = other.GetBlurRadius();
-        ShadowColor = other.GetShadowColor();
+        Copy(&other);
     }
 
     double BoxShadow::GetAngle(glm::vec2 a, glm::vec2 b)
@@ -304,7 +300,7 @@ namespace Extensions
             ConstructRenderInfo();
     }
 
-    std::string BoxShadow::GetExtensionName()
+    std::string BoxShadow::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -314,12 +310,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void BoxShadow::Copy(ssGUI::Extensions::Extension* extension)
+    void BoxShadow::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
 
-        ssGUI::Extensions::BoxShadow* BoxShadow = static_cast<ssGUI::Extensions::BoxShadow*>(extension);
+        auto* BoxShadow = static_cast<const ssGUI::Extensions::BoxShadow*>(extension);
 
         Enabled = BoxShadow->IsEnabled();
         PositionOffset = BoxShadow->GetPositionOffset();

@@ -22,12 +22,7 @@ namespace Extensions
     AdvancedSize::AdvancedSize(AdvancedSize const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        HorizontalPixelValue = other.GetHorizontalPixel();
-        VerticalPixelValue = other.GetVerticalPixel();
-        HorizontalPercentageValue = other.GetHorizontalPercentage();
-        VerticalPercentageValue = other.GetVerticalPercentage();
-        LastParentSize = other.LastParentSize;
+        Copy(&other);
     }
 
     void AdvancedSize::ConstructRenderInfo()
@@ -146,7 +141,7 @@ namespace Extensions
         //Nothing to draw
     }
 
-    std::string AdvancedSize::GetExtensionName()
+    std::string AdvancedSize::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -156,12 +151,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void AdvancedSize::Copy(ssGUI::Extensions::Extension* extension)
+    void AdvancedSize::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(extension);
+        auto* as = static_cast<const ssGUI::Extensions::AdvancedSize*>(extension);
         Enabled = as->IsEnabled();
         HorizontalPixelValue = as->GetHorizontalPixel();
         VerticalPixelValue = as->GetVerticalPixel();

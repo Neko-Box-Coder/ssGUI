@@ -51,28 +51,7 @@ namespace Extensions
     DockableV2::DockableV2(DockableV2 const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        Undockable = other.Undockable;
-        CurrentObjectsReferences = other.CurrentObjectsReferences;
-        
-        for(int i = 0; i < 4; ++i)
-        {
-            DockPreview[i] = other.DockPreview[i];
-            DockTrigger[i] = other.DockTrigger[i];
-        }
-        
-        TriggerMarginPercentage = other.TriggerMarginPercentage;
-        TriggerMarginPixels = other.TriggerMarginPixels;
-        TriggerSizePercentage = other.TriggerSizePercentage;
-        TriggerSizePixels = other.TriggerSizePixels;
-        TriggerColor = other.TriggerColor;
-        PreviewColor = other.PreviewColor;
-        TopLevelParent = other.TopLevelParent;
-        LastDraggedDistance = other.LastDraggedDistance;
-        DockedSinceLastUpdate = other.DockedSinceLastUpdate;
-        AttemptToUndock = other.AttemptToUndock;
-        DefaultDockingArea = other.DefaultDockingArea;
-        DefaultNewParent = other.DefaultNewParent;
+        Copy(&other);
     }
     
     void DockableV2::ConstructRenderInfo()
@@ -888,7 +867,7 @@ namespace Extensions
     {
     }
 
-    std::string DockableV2::GetExtensionName()
+    std::string DockableV2::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -914,12 +893,12 @@ namespace Extensions
         );
     }
 
-    void DockableV2::Copy(ssGUI::Extensions::Extension* extension)
+    void DockableV2::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::DockableV2* original = static_cast<ssGUI::Extensions::DockableV2*>(extension);
+        auto* original = static_cast<const ssGUI::Extensions::DockableV2*>(extension);
         Enabled = original->IsEnabled();
         
         Undockable = original->Undockable;

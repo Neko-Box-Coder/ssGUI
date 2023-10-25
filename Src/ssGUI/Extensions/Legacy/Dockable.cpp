@@ -66,14 +66,8 @@ namespace Extensions
     Dockable::Dockable(Dockable const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        TopLevelParent = other.TopLevelParent;
-        CurrentObjectsReferences = other.CurrentObjectsReferences;
-        UseTriggerPercentage = other.IsUseTriggerPercentage();
-        TriggerPercentage = other.GetTriggerPercentage();
-        TriggerPixel = other.GetTriggerPixel();
-        TriggerAreaColor = other.GetTriggerAreaColor();
-        DockPreviewColor = other.GetDockPreviewColor();
+        Copy(&other);
+
         OriginalParent = nullptr;
         ContainerIsDocking = false;
         DockPreivewTop = nullptr;
@@ -888,7 +882,7 @@ namespace Extensions
     void Dockable::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
     
-    std::string Dockable::GetExtensionName()
+    std::string Dockable::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -938,12 +932,12 @@ namespace Extensions
         }
     }
 
-    void Dockable::Copy(ssGUI::Extensions::Extension* extension)
+    void Dockable::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Dockable* dockable = static_cast<ssGUI::Extensions::Dockable*>(extension);
+        auto* dockable = static_cast<const ssGUI::Extensions::Dockable*>(extension);
 
         Enabled = dockable->IsEnabled();
         TopLevelParent = dockable->TopLevelParent;
@@ -951,7 +945,7 @@ namespace Extensions
         UseTriggerPercentage = dockable->IsUseTriggerPercentage();
         TriggerPixel = dockable->GetTriggerPixel();
         TriggerAreaColor = dockable->GetTriggerAreaColor();
-        DockPreviewColor = dockable->GetDockPreviewColor();   
+        DockPreviewColor = dockable->GetDockPreviewColor();
     }
 
     ObjectsReferences* Dockable::Internal_GetObjectsReferences()

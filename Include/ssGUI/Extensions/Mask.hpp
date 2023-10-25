@@ -229,7 +229,7 @@ namespace Extensions
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
-            virtual std::string GetExtensionName() override;
+            virtual std::string GetExtensionName() const override;
             
             //function: BindToObject
             //See <Extension::BindToObject>
@@ -237,7 +237,7 @@ namespace Extensions
             
             //function: Copy
             //See <Extension::Copy>
-            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+            virtual void Copy(const ssGUI::Extensions::Extension* extension) override;
 
             //function: Internal_GetObjectsReferences
             //See <Extension::Internal_GetObjectsReferences>
