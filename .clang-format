@@ -1,0 +1,54 @@
+---
+BasedOnStyle: Microsoft
+AccessModifierOffset: 0
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: None
+AlignConsecutiveBitFields: None
+AlignConsecutiveDeclarations: None
+AlignConsecutiveMacros: None
+AlignEscapedNewlines: Left
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AlwaysBreakTemplateDeclarations: Yes
+AttributeMacros:
+  - __capability
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterUnion: true
+  BeforeLambdaBody: true
+  BeforeWhile: true
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterComma
+ColumnLimit: 100
+FixNamespaceComments: false
+IndentAccessModifiers: true
+IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
+InsertTrailingCommas: Wrapped
+KeepEmptyLinesAtTheStartOfBlocks: false
+NamespaceIndentation: All
+PPIndentWidth: 4
+PackConstructorInitializers: CurrentLine
+PenaltyBreakAssignment: 1
+PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakComment: 1
+PenaltyBreakFirstLessLess: 1
+PenaltyBreakOpenParenthesis: 1000
+PenaltyBreakString: 1
+PenaltyBreakTemplateDeclaration: 1
+PenaltyExcessCharacter: 100000
+PenaltyIndentedWhitespace: 1
+PenaltyReturnTypeOnItsOwnLine: 100000
+PointerAlignment: Left
+QualifierAlignment: Left
+SeparateDefinitionBlocks: Always
+SpaceAfterTemplateKeyword: false
+SpaceBeforeParens: Never
+SpacesInLineCommentPrefix:
+  Maximum: 0
+  Minimum: 0
+SpaceBeforeRangeBasedForLoopColon: false
+Standard: c++11
