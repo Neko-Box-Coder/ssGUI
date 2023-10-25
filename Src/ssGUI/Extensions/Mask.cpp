@@ -829,14 +829,7 @@ namespace Extensions
     Mask::Mask(Mask const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        MaskChildren = other.GetMaskChildren();
-        MaskContainer = other.IsMaskContainer();
-        FollowContainer = other.GetFollowContainer();
-        FollowPositionOffset = other.GetFollowPositionOffset();
-        FollowSizePadding = other.GetFollowSizePadding();
-        GlobalPosition = other.GetGlobalPosition();
-        Size = other.GetSize();
+        Copy(&other);
     }
 
     const std::string Mask::EXTENSION_NAME = "Mask";
@@ -1264,7 +1257,7 @@ namespace Extensions
         //Call mask function
     }
 
-    std::string Mask::GetExtensionName()
+    std::string Mask::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -1280,12 +1273,12 @@ namespace Extensions
             SetMaskContainer(true); //Same thing here
     }
 
-    void Mask::Copy(ssGUI::Extensions::Extension* extension)
+    void Mask::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Mask* mask = static_cast<ssGUI::Extensions::Mask*>(extension);
+        auto* mask = static_cast<const ssGUI::Extensions::Mask*>(extension);
         
         Enabled = mask->IsEnabled();
         MaskChildren = mask->GetMaskChildren();

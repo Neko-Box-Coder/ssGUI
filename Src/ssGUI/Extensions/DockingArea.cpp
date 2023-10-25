@@ -35,16 +35,7 @@ namespace Extensions
     DockingArea::DockingArea(DockingArea const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        CurrentObjectsReferences = other.CurrentObjectsReferences;
-        DockPreview = other.DockPreview;
-        DockTrigger = other.DockTrigger;
-        TriggerSizePercentage = other.TriggerSizePercentage;
-        TriggerSizePixels = other.TriggerSizePixels;
-        TriggerColor = other.TriggerColor;
-        PreviewColor = other.PreviewColor;
-        PauseChildRemovedEventListener = other.PauseChildRemovedEventListener;
-        DefaultLayout = other.DefaultLayout;
+        Copy(&other);
     }
     
     void DockingArea::ConstructRenderInfo()
@@ -418,7 +409,7 @@ namespace Extensions
         //Nothing to draw
     }
 
-    std::string DockingArea::GetExtensionName()
+    std::string DockingArea::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -499,12 +490,12 @@ namespace Extensions
         );
     }
 
-    void DockingArea::Copy(ssGUI::Extensions::Extension* extension)
+    void DockingArea::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::DockingArea* original = static_cast<ssGUI::Extensions::DockingArea*>(extension);
+        auto* original = static_cast<const ssGUI::Extensions::DockingArea*>(extension);
         Enabled = original->IsEnabled();
         CurrentObjectsReferences = original->CurrentObjectsReferences;
         DockPreview = original->DockPreview;

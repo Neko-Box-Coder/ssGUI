@@ -25,9 +25,7 @@ namespace Extensions
     RoundedCorners::RoundedCorners(RoundedCorners const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        RoundedCornersRadius = other.GetRoundedCornersRadius();
-        ModifiedShapes = other.ModifiedShapes;
+        Copy(&other);
     }
 
     double RoundedCorners::GetAngle(glm::vec2 a, glm::vec2 b)
@@ -450,7 +448,7 @@ namespace Extensions
             ConstructRenderInfo();
     }
 
-    std::string RoundedCorners::GetExtensionName()
+    std::string RoundedCorners::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -460,21 +458,16 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void RoundedCorners::Copy(ssGUI::Extensions::Extension* extension)
+    void RoundedCorners::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::RoundedCorners* roundedCorners = static_cast<ssGUI::Extensions::RoundedCorners*>(extension);
+        auto* roundedCorners = static_cast<const ssGUI::Extensions::RoundedCorners*>(extension);
         
         Enabled = roundedCorners->IsEnabled();
         RoundedCornersRadius = roundedCorners->GetRoundedCornersRadius();
         ModifiedShapes = roundedCorners->ModifiedShapes;
-        //TargetShapes = roundedCorners->TargetShapes;
-        //TargetVertices = roundedCorners->TargetVertices;
-        //VerticesToRound = roundedCorners->VerticesToRound;
-        //VerticesToRoundPrevVertices = roundedCorners->VerticesToRoundPrevVertices;
-        //VerticesToRoundNextVertices = roundedCorners->VerticesToRoundNextVertices;
     }
 
     ObjectsReferences* RoundedCorners::Internal_GetObjectsReferences()

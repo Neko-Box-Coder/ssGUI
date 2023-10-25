@@ -49,20 +49,11 @@ namespace Extensions
     Docker::Docker(Docker const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        ChildrenDockerUseThisSettings = other.IsChildrenDockerUseThisSettings();
-
-        UseTriggerPercentage = other.IsUseTriggerPercentage();
-        TriggerHorizontalPercentage = other.GetTriggerHorizontalPercentage();
-        TriggerVerticalPercentage = other.GetTriggerVerticalPercentage();
-        TriggerHorizontalPixel = other.GetTriggerHorizontalPixel();
-        TriggerVerticalPixel = other.GetTriggerVerticalPixel();
-        TriggerAreaColor = other.GetTriggerAreaColor();
-        DockPreviewColor = other.GetDockPreviewColor();
-
+        
+        Copy(&other);
+        
         DockPreivew = nullptr;
         DockTrigger = nullptr;
-
         ChildRemoveGuard = false;
     }
 
@@ -564,7 +555,7 @@ namespace Extensions
     void Docker::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
-    std::string Docker::GetExtensionName()
+    std::string Docker::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -632,12 +623,12 @@ namespace Extensions
         );
     }
 
-    void Docker::Copy(ssGUI::Extensions::Extension* extension)
+    void Docker::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Docker* docker = static_cast<ssGUI::Extensions::Docker*>(extension);
+        auto* docker = static_cast<const ssGUI::Extensions::Docker*>(extension);
         
         Enabled = docker->IsEnabled();
         ChildrenDockerUseThisSettings = docker->IsChildrenDockerUseThisSettings();

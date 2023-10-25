@@ -23,13 +23,7 @@ namespace Extensions
     AdvancedPosition::AdvancedPosition(AdvancedPosition const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        CurrentHorizontal = other.GetHorizontalAlignment();
-        CurrentVertical = other.GetVerticalAlignment();
-        HorizontalPixelValue = other.GetHorizontalPixel();
-        VerticalPixelValue = other.GetVerticalPixel();
-        HorizontalPercentageValue = other.GetHorizontalPercentage();
-        VerticalPercentageValue = other.GetVerticalPercentage();
+        Copy(&other);
     }
 
     void AdvancedPosition::ConstructRenderInfo()
@@ -231,7 +225,7 @@ namespace Extensions
         //Nothing to draw
     }
 
-    std::string AdvancedPosition::GetExtensionName()
+    std::string AdvancedPosition::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -241,12 +235,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void AdvancedPosition::Copy(ssGUI::Extensions::Extension* extension)
+    void AdvancedPosition::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::AdvancedPosition* ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(extension);
+        auto* ap = static_cast<const ssGUI::Extensions::AdvancedPosition*>(extension);
         Enabled = ap->IsEnabled();
         CurrentHorizontal = ap->GetHorizontalAlignment();
         CurrentVertical = ap->GetVerticalAlignment();

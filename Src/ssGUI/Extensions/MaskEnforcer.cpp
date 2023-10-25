@@ -81,12 +81,9 @@ namespace Extensions
     MaskEnforcer::MaskEnforcer(MaskEnforcer const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        TargetMasks = other.TargetMasks;
-        MasksToAddEventCallbacks = other.MasksToAddEventCallbacks;
-        BlockingContainerInput = false;
-        CurrentObjectsReferences = other.CurrentObjectsReferences;
-
+        Copy(&other);
+        
+        //TODO: Check if this is needed
         ApplyEventCallbacksToMasks();
     }
 
@@ -337,7 +334,7 @@ namespace Extensions
             ConstructRenderInfo();
     }
 
-    std::string MaskEnforcer::GetExtensionName()
+    std::string MaskEnforcer::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -348,12 +345,12 @@ namespace Extensions
         ApplyEventCallbacksToMasks();
     }
 
-    void MaskEnforcer::Copy(ssGUI::Extensions::Extension* extension)
+    void MaskEnforcer::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::MaskEnforcer* maskEnforcer = static_cast<ssGUI::Extensions::MaskEnforcer*>(extension);
+        auto* maskEnforcer = static_cast<const ssGUI::Extensions::MaskEnforcer*>(extension);
         
         Enabled = maskEnforcer->IsEnabled();
         TargetMasks = maskEnforcer->TargetMasks;

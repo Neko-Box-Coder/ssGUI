@@ -19,10 +19,7 @@ namespace Extensions
     Border::Border(Border const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        BorderColor = other.GetBorderColor();
-        BorderWidth = other.GetBorderWidth();
-        BorderSides = other.BorderSides;
+        Copy(&other);
     }
 
     void Border::DrawBorder()
@@ -219,7 +216,7 @@ namespace Extensions
             ConstructRenderInfo();
     }
     
-    std::string Border::GetExtensionName()
+    std::string Border::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -230,12 +227,12 @@ namespace Extensions
         Container->RedrawObject();
     }
 
-    void Border::Copy(ssGUI::Extensions::Extension* extension)
+    void Border::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Border* border = static_cast<ssGUI::Extensions::Border*>(extension);
+        auto* border = static_cast<const ssGUI::Extensions::Border*>(extension);
         Enabled = border->IsEnabled();
         BorderColor = border->GetBorderColor();
         BorderWidth = border->GetBorderWidth();

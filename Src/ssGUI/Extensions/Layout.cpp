@@ -71,26 +71,8 @@ namespace Extensions
     Layout::Layout(Layout const& other)
     {
         ssGUI_LOG_FUNC();
-        HorizontalLayout = other.IsHorizontalLayout();
-        PreferredSizeMultipliers = other.PreferredSizeMultipliers;
-        DisableChildrenResizing = other.IsChildrenResizingDisabled();
-        OverrideChildrenResizeTypesAndOnTop = other.IsOverrideChildrenResizeTypeAndOnTop();
-        UpdateContainerMinMaxSize = other.GetUpdateContainerMinMaxSize();
-        ReverseOrder = other.IsReverseOrder();
-        CoverFullLength = other.IsCoverFullLength();    
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        Padding = other.GetPadding();
-        Spacing = other.GetSpacing();
-        Overflow = other.GetOverflow();
-        Updated = other.Updated;
-        CurrentObjectsReferences = other.CurrentObjectsReferences;
-        LastUpdateChildrenSize = other.LastUpdateChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
-        ObjectsToExclude = other.ObjectsToExclude;
-        SpecialObjectsToExclude = other.SpecialObjectsToExclude;
-        OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
-        OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
-        OriginalChildrenOnTop = other.OriginalChildrenOnTop;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
+        Copy(&other);
     }
 
     void Layout::LayoutChildren(float startPos, 
@@ -1232,7 +1214,7 @@ namespace Extensions
     void Layout::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
-    std::string Layout::GetExtensionName()
+    std::string Layout::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -1333,11 +1315,12 @@ namespace Extensions
         );   
     }
 
-    void Layout::Copy(ssGUI::Extensions::Extension* extension)
+    void Layout::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
-        ssGUI::Extensions::Layout* layout = static_cast<ssGUI::Extensions::Layout*>(extension);
+        
+        auto* layout = static_cast<const ssGUI::Extensions::Layout*>(extension);
         
         HorizontalLayout = layout->IsHorizontalLayout();
         PreferredSizeMultipliers = layout->PreferredSizeMultipliers;
@@ -1352,6 +1335,12 @@ namespace Extensions
         Overflow = layout->GetOverflow();
         Updated = layout->Updated;
         CurrentObjectsReferences = layout->CurrentObjectsReferences;
+        LastUpdateChildrenSize = layout->LastUpdateChildrenSize;
+        ObjectsToExclude = layout->ObjectsToExclude;
+        SpecialObjectsToExclude = layout->SpecialObjectsToExclude;
+        OriginalChildrenSize = layout->OriginalChildrenSize;
+        OriginalChildrenResizeType = layout->OriginalChildrenResizeType;
+        OriginalChildrenOnTop = layout->OriginalChildrenOnTop;
     }
 
     ObjectsReferences* Layout::Internal_GetObjectsReferences()
