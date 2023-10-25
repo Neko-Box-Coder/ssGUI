@@ -295,11 +295,6 @@ namespace Extensions
             //If a GUI Object is excluded, it will be ignored
             virtual void UnexcludeObject(ssGUI::GUIObject* obj);
 
-            virtual void ForceUpdateLayout( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
-                                            ssGUI::InputStatus& currentInputStatus, 
-                                            ssGUI::InputStatus& lastInputStatus, 
-                                            ssGUI::GUIObject* mainWindow);
-
             //function: Internal_OnRecursiveChildAdded
             //(Internal ssGUI function) Listener function when a child is being added
             virtual void Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child);
