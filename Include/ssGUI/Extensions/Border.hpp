@@ -26,13 +26,16 @@ namespace Extensions
         //TODO : Maybe change to private enum class. Just too lazy to do it atm :P
         int8_t BorderSides;             //(Internal variable) Used to identify which sides need to apply the border 
                                         //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
+        
+        bool InnerBorder;               //If true, the border will be rendered inside the GUI Object
     =================================================================
     ============================== C++ ==============================
     Border::Border() :  Container(nullptr),
                         Enabled(true),
                         BorderColor(0, 0, 0, 255),
                         BorderWidth(1),
-                        BorderSides(15)
+                        BorderSides(1 << 3 | 1 << 2 | 1 << 1 | 1 << 0),
+                        InnerBorder(false)
     {}
     =================================================================
     */
@@ -54,9 +57,13 @@ namespace Extensions
             int8_t BorderSides;             //(Internal variable) Used to identify which sides need to apply the border 
                                             //(0000 [Bottom bit] [Right bit] [Top bit] [Left bit])
 
+            bool InnerBorder;               //If true, the border will be rendered inside the GUI Object
+
             virtual void DrawBorder();
             virtual void ConstructRenderInfo() override;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void ConstructRenderInfo(   ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                                ssGUI::GUIObject* mainWindow, 
+                                                glm::vec2 mainWindowPositionOffset) override;
 
             Border();
             virtual ~Border() override;
@@ -110,8 +117,14 @@ namespace Extensions
             //function: IsBorderBottomShowing
             virtual bool IsBorderBottomShowing() const;
 
+            //function: SetInnerBorder
+            virtual void SetInnerBorder(bool innerBorder);
+            
+            //function: IsInnerBorder
+            virtual bool IsInnerBorder() const;
+
             //Override from Extension
-            //function: SetEnabled           
+            //function: SetEnabled
             //See <Extension::SetEnabled>
             virtual void SetEnabled(bool enabled) override;
 
@@ -133,7 +146,7 @@ namespace Extensions
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
-            virtual std::string GetExtensionName() override;
+            virtual std::string GetExtensionName() const override;
             
             //function: BindToObject
             //See <Extension::BindToObject>
@@ -141,7 +154,7 @@ namespace Extensions
 
             //function: Copy
             //See <Extension::Copy>
-            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+            virtual void Copy(const ssGUI::Extensions::Extension* extension) override;
 
             //function: Internal_GetObjectsReferences
             //See <Extension::Internal_GetObjectsReferences>

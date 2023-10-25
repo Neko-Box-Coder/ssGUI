@@ -24,10 +24,8 @@ namespace Extensions
     WindowLayoutItemEnforcer::WindowLayoutItemEnforcer(WindowLayoutItemEnforcer const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        ContainerStartPos = other.ContainerStartPos;
-        ContainerStartSize = other.ContainerStartSize;
-        ContainerResizeStarted = other.ContainerResizeStarted;
+        Copy(&other);
+        LastContainerSize = glm::vec2();
     }
 
     void WindowLayoutItemEnforcer::ConstructRenderInfo()
@@ -264,7 +262,7 @@ namespace Extensions
         //Don't need to draw anything
     }
 
-    std::string WindowLayoutItemEnforcer::GetExtensionName()
+    std::string WindowLayoutItemEnforcer::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -274,12 +272,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void WindowLayoutItemEnforcer::Copy(ssGUI::Extensions::Extension* extension)
+    void WindowLayoutItemEnforcer::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::WindowLayoutItemEnforcer* WindowLayoutItemEnforcer = static_cast<ssGUI::Extensions::WindowLayoutItemEnforcer*>(extension);
+        auto* WindowLayoutItemEnforcer = static_cast<const ssGUI::Extensions::WindowLayoutItemEnforcer*>(extension);
         
         Enabled = WindowLayoutItemEnforcer->IsEnabled();
         ContainerStartPos = WindowLayoutItemEnforcer->ContainerStartPos;

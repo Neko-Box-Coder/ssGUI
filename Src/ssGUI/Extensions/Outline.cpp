@@ -28,13 +28,7 @@ namespace Extensions
     Outline::Outline(Outline const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-
-        OutlineThickness = other.GetOutlineThickness();
-        SimpleOutline = other.IsSimpleOutline();
-        InnerOutline = other.IsInnerOutline();
-        OutlineColor = other.GetOutlineColor();
-        ModifiedShapes = other.ModifiedShapes;
+        Copy(&other);
     }
 
     void Outline::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex)
@@ -638,7 +632,7 @@ nextVertex (n)    (a)                   curVertex
             ConstructRenderInfo();
     }
 
-    std::string Outline::GetExtensionName()
+    std::string Outline::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -648,12 +642,12 @@ nextVertex (n)    (a)                   curVertex
         Container = bindObj;
     }
 
-    void Outline::Copy(ssGUI::Extensions::Extension* extension)
+    void Outline::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
 
-        ssGUI::Extensions::Outline* outline = static_cast<ssGUI::Extensions::Outline*>(extension);
+        auto* outline = static_cast<const ssGUI::Extensions::Outline*>(extension);
 
         Enabled = outline->IsEnabled();
 

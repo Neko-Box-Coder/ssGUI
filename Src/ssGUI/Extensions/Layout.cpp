@@ -71,26 +71,8 @@ namespace Extensions
     Layout::Layout(Layout const& other)
     {
         ssGUI_LOG_FUNC();
-        HorizontalLayout = other.IsHorizontalLayout();
-        PreferredSizeMultipliers = other.PreferredSizeMultipliers;
-        DisableChildrenResizing = other.IsChildrenResizingDisabled();
-        OverrideChildrenResizeTypesAndOnTop = other.IsOverrideChildrenResizeTypeAndOnTop();
-        UpdateContainerMinMaxSize = other.GetUpdateContainerMinMaxSize();
-        ReverseOrder = other.IsReverseOrder();
-        CoverFullLength = other.IsCoverFullLength();    
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        Padding = other.GetPadding();
-        Spacing = other.GetSpacing();
-        Overflow = other.GetOverflow();
-        Updated = other.Updated;
-        CurrentObjectsReferences = other.CurrentObjectsReferences;
-        LastUpdateChildrenSize = other.LastUpdateChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
-        ObjectsToExclude = other.ObjectsToExclude;
-        SpecialObjectsToExclude = other.SpecialObjectsToExclude;
-        OriginalChildrenSize = other.OriginalChildrenSize;//std::unordered_map<ssGUIObjectIndex, glm::ivec2>();
-        OriginalChildrenResizeType = other.OriginalChildrenResizeType;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
-        OriginalChildrenOnTop = other.OriginalChildrenOnTop;//std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType>();
+        Copy(&other);
     }
 
     void Layout::LayoutChildren(float startPos, 
@@ -203,6 +185,8 @@ namespace Extensions
 
         Container->StashChildrenIterator();
         Container->MoveChildrenIteratorToFirst();
+        
+       ssGUI::Window* lastWindowChild = nullptr; 
         while(!Container->IsChildrenIteratorEnd())
         {
             ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
@@ -213,7 +197,8 @@ namespace Extensions
                 continue;
             }
             
-            if(Container->GetCurrentChild()->GetType() != ssGUI::Enums::GUIObjectType::WINDOW)
+            if( Container->GetCurrentChild()->GetType() != ssGUI::Enums::GUIObjectType::WINDOW || 
+                !Container->GetCurrentChild()->IsEnabled())
             {
                 Container->MoveChildrenIteratorNext();
                 continue;
@@ -249,10 +234,7 @@ namespace Extensions
                         windowP->SetResizeType(ssGUI::Enums::ResizeType::BOTTOM);
                 }
 
-                //last element
-                if(Container->IsChildrenIteratorLast())
-                    windowP->SetResizeType(ssGUI::Enums::ResizeType::NONE);
-
+                lastWindowChild = windowP;
                 windowP->SetOnTopWhenFocused(false);
             }
             
@@ -268,6 +250,14 @@ namespace Extensions
 
             Container->MoveChildrenIteratorNext();
         }
+        
+        //last element of the layout shouldn't be resized so that the container can be resized
+        if(IsOverrideChildrenResizeTypeAndOnTop() && lastWindowChild != nullptr)
+        {
+            if(Container->IsChildrenIteratorLast())
+                lastWindowChild->SetResizeType(ssGUI::Enums::ResizeType::NONE);
+        }
+        
         Container->PopChildrenIterator();
     }
 
@@ -286,7 +276,7 @@ namespace Extensions
         {            
             ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
             
-            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            if((childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end()) || !Container->GetCurrentChild()->IsEnabled())
             {
                 Container->MoveChildrenIteratorNext();
                 continue;
@@ -312,7 +302,8 @@ namespace Extensions
             while(!Container->IsChildrenIteratorEnd())
             {
                 ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
-                if(currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end())
+                if( (currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end()) || 
+                    !Container->GetCurrentChild()->IsEnabled())
                 {
                     Container->MoveChildrenIteratorNext();
                     continue;
@@ -360,15 +351,8 @@ namespace Extensions
                 maxMinY += GetPadding() * 2;
             }
 
-            //Check if we want to use container's min max or children's min max
-            maxMinY = maxMinY > Container->GetMinSize().y ? maxMinY : Container->GetMinSize().y;
-            minMaxY = minMaxY < Container->GetMaxSize().y ? minMaxY : Container->GetMaxSize().y;
-
             if(IsCoverFullLength())
             {
-                minSizeTotalX = minSizeTotalX > Container->GetMinSize().x ? minSizeTotalX : Container->GetMinSize().x;
-                maxSizeTotalX = maxSizeTotalX < Container->GetMaxSize().x ? maxSizeTotalX : Container->GetMaxSize().x;
-
                 Container->SetMinSize(glm::vec2(minSizeTotalX, maxMinY));
                 Container->SetMaxSize(glm::vec2(maxSizeTotalX, minMaxY));
             }
@@ -390,7 +374,8 @@ namespace Extensions
             while(!Container->IsChildrenIteratorEnd())   
             {
                 ssGUIObjectIndex currentChildIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
-                if(currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end())
+                if( (currentChildIndex != -1 && ObjectsToExclude.find(currentChildIndex) != ObjectsToExclude.end()) ||
+                    !Container->GetCurrentChild()->IsEnabled())
                 {
                     Container->MoveChildrenIteratorNext();
                     continue;
@@ -434,15 +419,8 @@ namespace Extensions
             minMaxX += GetPadding() * 2;
             maxMinX += GetPadding() * 2;
             
-            //Check if we want to use container's min max or children's min max
-            maxMinX = maxMinX > Container->GetMinSize().x ? maxMinX : Container->GetMinSize().x;
-            minMaxX = minMaxX < Container->GetMaxSize().x ? minMaxX : Container->GetMaxSize().x;
-            
             if(IsCoverFullLength())
             {
-                minSizeTotalY = minSizeTotalY > Container->GetMinSize().y ? minSizeTotalY : Container->GetMinSize().y;
-                maxSizeTotalY = maxSizeTotalY < Container->GetMaxSize().y ? maxSizeTotalY : Container->GetMaxSize().y;
-
                 Container->SetMinSize(glm::vec2(maxMinX, minSizeTotalY));
                 Container->SetMaxSize(glm::vec2(minMaxX, maxSizeTotalY));
             }
@@ -461,7 +439,7 @@ namespace Extensions
         for(auto it : SpecialObjectsToExclude)
         {
             //Don't need to hold reference for it as it is not a child
-            if(CurrentObjectsReferences.GetObjectReference(it) == nullptr || 
+            if( CurrentObjectsReferences.GetObjectReference(it) == nullptr || 
                 CurrentObjectsReferences.GetObjectReference(it)->GetParent() != Container)
             {       
                 objsToRemove.push_back(it);
@@ -525,7 +503,8 @@ namespace Extensions
             ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
             
             //Don't update the objects if excluded
-            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            if((childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end()) ||
+                !Container->GetCurrentChild()->IsEnabled())
             {
                 Container->MoveChildrenIteratorNext();
                 continue;
@@ -553,7 +532,8 @@ namespace Extensions
         {
             ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
             
-            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            if( (childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end()) ||
+                !Container->GetCurrentChild()->IsEnabled())
             {   
                 Container->MoveChildrenIteratorNext();
                 continue;
@@ -625,7 +605,8 @@ namespace Extensions
         {
             ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
             
-            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            if( (childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end()) ||
+                !Container->GetCurrentChild()->IsEnabled())
             {
                 Container->MoveChildrenIteratorPrevious();
                 continue;
@@ -691,7 +672,8 @@ namespace Extensions
         {
             ssGUIObjectIndex childIndex = CurrentObjectsReferences.GetObjectIndex(Container->GetCurrentChild());
             
-            if(childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end())
+            if( (childIndex != -1 && ObjectsToExclude.find(childIndex) != ObjectsToExclude.end()) ||
+                !Container->GetCurrentChild()->IsEnabled())
             {
                 Container->MoveChildrenIteratorNext();
                 continue;
@@ -739,6 +721,7 @@ namespace Extensions
     void Layout::SetHorizontalLayout(bool horizontal)
     {
         HorizontalLayout = horizontal;
+        UpdateChildrenResizeTypesAndOnTop();
     }
 
     void Layout::AddPreferredSizeMultiplier(float sizeMultiplier)
@@ -798,6 +781,7 @@ namespace Extensions
     void Layout::SetReverseOrder(bool reverseOrder)
     {
         ReverseOrder = reverseOrder;
+        UpdateChildrenResizeTypesAndOnTop();
     }
 
     bool Layout::IsCoverFullLength() const
@@ -968,6 +952,15 @@ namespace Extensions
             if(obj->GetParent() == Container)
                 Internal_OnRecursiveChildAdded(obj);
         }
+    }
+
+    void Layout::ForceUpdateLayout( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::GUIObject* mainWindow)
+    {
+        Updated = false;
+        Internal_Update(false, inputInterface, currentInputStatus, lastInputStatus, mainWindow);
     }
 
     void Layout::Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child)
@@ -1176,6 +1169,9 @@ namespace Extensions
         if(DisableChildrenResizing)
             DisableChildrenResizingInUpdate();
 
+        if(IsOverrideChildrenResizeTypeAndOnTop())
+            UpdateChildrenResizeTypesAndOnTop();
+        
         //Set all children's width and get all children pos and size and min size
         std::vector<float> childrenPos;
         std::vector<float> childrenSize;
@@ -1232,7 +1228,7 @@ namespace Extensions
     void Layout::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
-    std::string Layout::GetExtensionName()
+    std::string Layout::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -1333,11 +1329,12 @@ namespace Extensions
         );   
     }
 
-    void Layout::Copy(ssGUI::Extensions::Extension* extension)
+    void Layout::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
-        ssGUI::Extensions::Layout* layout = static_cast<ssGUI::Extensions::Layout*>(extension);
+        
+        auto* layout = static_cast<const ssGUI::Extensions::Layout*>(extension);
         
         HorizontalLayout = layout->IsHorizontalLayout();
         PreferredSizeMultipliers = layout->PreferredSizeMultipliers;
@@ -1352,6 +1349,12 @@ namespace Extensions
         Overflow = layout->GetOverflow();
         Updated = layout->Updated;
         CurrentObjectsReferences = layout->CurrentObjectsReferences;
+        LastUpdateChildrenSize = layout->LastUpdateChildrenSize;
+        ObjectsToExclude = layout->ObjectsToExclude;
+        SpecialObjectsToExclude = layout->SpecialObjectsToExclude;
+        OriginalChildrenSize = layout->OriginalChildrenSize;
+        OriginalChildrenResizeType = layout->OriginalChildrenResizeType;
+        OriginalChildrenOnTop = layout->OriginalChildrenOnTop;
     }
 
     ObjectsReferences* Layout::Internal_GetObjectsReferences()

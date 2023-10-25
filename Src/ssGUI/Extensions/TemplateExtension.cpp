@@ -16,7 +16,7 @@ namespace Extensions
     TemplateExtension::TemplateExtension(TemplateExtension const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
+        Copy(&other);
     }
     
     void TemplateExtension::ConstructRenderInfo()
@@ -49,7 +49,11 @@ namespace Extensions
         
         //This is function is executed twice, one before the Container GUI object update and one after.
         //You can use the isPreUpdate variable to decide when to execute the extension update
-        if(!isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
+        if(!isPreUpdate || Container == nullptr || Container->GetParent() == nullptr)
+            return;
+        
+        //Need to perform clean up if this is disabled. For example delete any objects created by this extension
+        if(!Enabled)
             return;
     }
 
@@ -60,7 +64,7 @@ namespace Extensions
     {
     }
 
-    std::string TemplateExtension::GetExtensionName()
+    std::string TemplateExtension::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -70,12 +74,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void TemplateExtension::Copy(ssGUI::Extensions::Extension* extension)
+    void TemplateExtension::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::TemplateExtension* original = static_cast<ssGUI::Extensions::TemplateExtension*>(extension);
+        auto* original = static_cast<const ssGUI::Extensions::TemplateExtension*>(extension);
         Enabled = original->IsEnabled();
     }
 

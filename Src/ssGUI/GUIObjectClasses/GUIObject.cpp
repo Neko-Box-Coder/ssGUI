@@ -1,5 +1,6 @@
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 
+#include "ssGUI/DataClasses/ObjectUpdateInfo.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"    //This is for getting the MainWindow offset
 #include "ssGUI/ssGUIManager.hpp"                   //This is for accessing DeletedObjs
 #include "ssGUI/GUIObjectClasses/Menu.hpp"          //This is for spawning right click menu

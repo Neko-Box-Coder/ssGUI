@@ -161,9 +161,11 @@ namespace Extensions
             static const std::string EXTENSION_NAME;
 
             //function: IsHorizontalLayout
+            //Returns true if the children are positioned left to right (horizontal) or top to bottom (vertical)
             virtual bool IsHorizontalLayout() const;
             
             //function: SetHorizontalLayout
+            //Sets if the children are positioned left to right (horizontal) or top to bottom (vertical)
             virtual void SetHorizontalLayout(bool horizontal);
 
             //function: AddPreferredSizeMultiplier
@@ -172,6 +174,8 @@ namespace Extensions
             virtual void AddPreferredSizeMultiplier(float sizeMultiplier);
             
             //function: AddPreferredSizeMultiplier
+            //Template version of <AddPreferredSizeMultiplier> for adding multiple size multipliers at once.
+            //See <AddPreferredSizeMultiplier>
             template<typename... floats>
             inline void AddPreferredSizeMultipliers(float sizeMultiplier, floats... sizeMultipliers)
             {
@@ -180,6 +184,8 @@ namespace Extensions
             }
 
             //function: AddPreferredSizeMultiplier
+            //Array version of <AddPreferredSizeMultiplier> for adding multiple size multipliers at once.
+            //See <AddPreferredSizeMultiplier>
             virtual void AddPreferredSizeMultipliers(float sizeMultipliers[], int count);
 
             //function: SetPreferredSizeMultiplier
@@ -289,6 +295,11 @@ namespace Extensions
             //If a GUI Object is excluded, it will be ignored
             virtual void UnexcludeObject(ssGUI::GUIObject* obj);
 
+            virtual void ForceUpdateLayout( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow);
+
             //function: Internal_OnRecursiveChildAdded
             //(Internal ssGUI function) Listener function when a child is being added
             virtual void Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child);
@@ -328,7 +339,7 @@ namespace Extensions
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
-            virtual std::string GetExtensionName() override;
+            virtual std::string GetExtensionName() const override;
             
             //function: BindToObject
             //See <Extension::BindToObject>
@@ -336,7 +347,7 @@ namespace Extensions
 
             //function: Copy
             //See <Extension::Copy>
-            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+            virtual void Copy(const ssGUI::Extensions::Extension* extension) override;
 
             //function: Internal_GetObjectsReferences
             //See <Extension::Internal_GetObjectsReferences>

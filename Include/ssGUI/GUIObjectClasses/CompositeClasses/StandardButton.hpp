@@ -165,15 +165,6 @@ namespace ssGUI
     */
     class StandardButton : public Button
     {
-        public:
-            //Enum: ssGUI::StandardButton::Mode
-            enum class Mode
-            {
-                TEXT,
-                ICON,
-                BOTH
-            };
-
         private:
             StandardButton& operator=(StandardButton const& other) = default;
 
@@ -183,14 +174,14 @@ namespace ssGUI
             bool AdaptiveButtonTextColor;               //See <IsAdaptiveButtonTextColor>
             glm::ivec4 ButtonTextColorDifference;       //See <GetAdaptiveButtonTextColorDifference>
             bool AdaptiveButtonTextContrast;            //See <IsAdaptiveButtonTextContrast>
-            Mode ButtonMode;                            //See <GetButtonMode>
 
             ssGUIObjectIndex ButtonImageWrapper;        //(Internal variable) Allow the button image's size to be set by AdvancedSize
 
             StandardButton(StandardButton const& other);
 
-            virtual void UpdateButtonText(bool init);
-            virtual void UpdateButtonImage(bool init);
+            virtual void UpdateButtonText();
+            virtual void UpdateButtonImage();
+            virtual glm::u8vec4 GetAdaptiveTextColor() const;
 
         public:
             //string: ListenerKey
@@ -244,14 +235,6 @@ namespace ssGUI
             //function: GetAdaptiveButtonTextColorDifference
             //Gets the button text color difference to button color (ButtonTextColor-ButtonColor)
             virtual glm::ivec4 GetAdaptiveButtonTextColorDifference() const;
-
-            //function: SetButtonMode
-            //Sets the button mode for displaying text or icon or both
-            virtual void SetButtonMode(Mode buttonMode);
-
-            //function: GetButtonMode
-            //Gets the button mode for displaying text or icon or both
-            virtual Mode GetButtonMode() const;
 
             //function: SetButtonColor
             //See <Button::SetButtonColor>

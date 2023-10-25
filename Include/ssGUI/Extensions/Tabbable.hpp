@@ -1,5 +1,5 @@
-#ifndef SSGUI_TEMPLATE_EXTENSION_HPP
-#define SSGUI_TEMPLATE_EXTENSION_HPP
+#ifndef SSGUI_TABBABLE_HPP
+#define SSGUI_TABBABLE_HPP
 
 #include "ssGUI/Extensions/Extension.hpp"
 
@@ -9,7 +9,7 @@ namespace ssGUI
 //namespace: ssGUI::Extensions
 namespace Extensions
 {
-    /*class: ssGUI::Extensions::TemplateExtension
+    /*class: ssGUI::Extensions::Tabbable
     A template Extension. Use this to create new Extension Classes.
     
     Variables & Constructor:
@@ -19,26 +19,35 @@ namespace Extensions
         bool Enabled;                       //See <IsEnabled>
     =================================================================
     ============================== C++ ==============================
-    TemplateExtension::TemplateExtension() :    Container(nullptr),
+    Tabbable::Tabbable() :    Container(nullptr),
                                                 Enabled(true)
     {}
     =================================================================
     */
-    class TemplateExtension : public Extension
+    class Tabbable : public Extension
     {
         public:
             friend class ssGUI::Factory;
 
         private:
-            TemplateExtension& operator=(TemplateExtension const& other);
+            Tabbable& operator=(Tabbable const& other);
         
         protected:
             ssGUI::GUIObject* Container;        //See <BindToObject>
             bool Enabled;                       //See <IsEnabled>
 
-            TemplateExtension();
-            virtual ~TemplateExtension() override;
-            TemplateExtension(TemplateExtension const& other);
+            ssGUIObjectIndex TabAreaObject;
+            
+            ObjectsReferences CurrentObjectsReferences;                     //See <Internal_GetObjectsReferences>
+            ssGUIObjectIndex TopLevelParent;                                //See <GetTopLevelParent>
+            bool Untabbable;                                                //See 
+            
+            glm::vec2 LastMouseDragBeginPosition = glm::vec2();
+            
+
+            Tabbable();
+            virtual ~Tabbable() override;
+            Tabbable(Tabbable const& other);
             static void* operator new(size_t size)      {return ::operator new(size);};
             static void* operator new[](size_t size)    {return ::operator new(size);};
             static void operator delete(void* p)        {free(p);};
@@ -49,6 +58,8 @@ namespace Extensions
                                                 ssGUI::GUIObject* mainWindow, 
                                                 glm::vec2 mainWindowPositionOffset) override;
 
+            //virtual void DrawTabPreview(glm::vec2 mousePos);
+
         public:
             //====================================================================
             //Group: Constants
@@ -56,6 +67,20 @@ namespace Extensions
 
             //string: EXTENSION_NAME
             static const std::string EXTENSION_NAME;
+
+
+            virtual void SetTopLevelParent(ssGUI::GUIObject* topLevelParent);
+            virtual ssGUI::GUIObject* GetTopLevelParent() const;
+            virtual void SetUntabbable(bool untabbable);
+            virtual bool IsUntabbable() const;
+
+            virtual glm::vec2 GetLastMouseDragBeginPosition() const;
+            virtual void SetLastMouseDragBeginPosition(glm::vec2 pos);
+
+            //virtual void AddExternalTab(ssGUI::GUIObject* exteranlObject, bool dockAfter);
+            ssGUI::GUIObject* GetTabAreaObject() const;
+            void SetTabAreaObject(ssGUI::GUIObject* tabArea);
+
 
             //====================================================================
             //Group: Overrides
@@ -103,7 +128,7 @@ namespace Extensions
 
             //function: Clone
             //See <Extension::Clone>
-            virtual TemplateExtension* Clone() override;
+            virtual Tabbable* Clone() override;
     };
 }
 
