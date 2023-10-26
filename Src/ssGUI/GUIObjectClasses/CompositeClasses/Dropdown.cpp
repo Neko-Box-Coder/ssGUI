@@ -77,7 +77,7 @@ namespace ssGUI
         ChangeChildOrderToAfterPosition(firstIt, lastIt);
 
         //Swap size multiplier
-        SetButtonMode(ssGUI::StandardButton::Mode::BOTH);
+        //SetButtonMode(ssGUI::StandardButton::Mode::BOTH);
         auto layout = GetExtension<ssGUI::Extensions::Layout>();
         float iconMulti = layout->GetPreferredSizeMultiplier(0);
         float textMulti = layout->GetPreferredSizeMultiplier(1);
@@ -87,7 +87,11 @@ namespace ssGUI
         InitiateDefaultResources();
         //Set icon to dropdown arrow
         if(DefaultDropdownArrowImageData != nullptr)
-            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData);
+        {
+            auto* dropdownIcon = AddChild<ssGUI::Image>();
+            dropdownIcon->SetImageData(DefaultDropdownArrowImageData);
+            SetButtonIconObject(dropdownIcon);
+        }
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
