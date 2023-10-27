@@ -9,21 +9,50 @@ namespace ssGUI
 //namespace: ssGUI::Extensions
 namespace Extensions
 {
+    /* clang-format off */
+    
     /*class: ssGUI::Extensions::Tabbable
-    A template Extension. Use this to create new Extension Classes.
+    Allows the attached object to be tabbed under <ssGUI::Extensions::TabArea>
     
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::GUIObject* Container;        //See <BindToObject>
-        bool Enabled;                       //See <IsEnabled>
+        //See <BindToObject>
+        ssGUI::GUIObject* Container;
+        
+        //See <IsEnabled>
+        bool Enabled;
+
+        //See <GetTabAreaObject>
+        ssGUIObjectIndex TabAreaObject;
+        
+        //See <Internal_GetObjectsReferences>
+        ObjectsReferences CurrentObjectsReferences;
+        
+        //See <GetTopLevelParent>
+        ssGUIObjectIndex TopLevelParent;
+        
+        //See <IsUntabbable>
+        bool Untabbable;
+        
+        //See <GetLastMouseDragBeginPosition>
+        glm::vec2 LastMouseDragBeginPosition;
     =================================================================
     ============================== C++ ==============================
-    Tabbable::Tabbable() :    Container(nullptr),
-                                                Enabled(true)
-    {}
+    Tabbable::Tabbable() :
+        Container(nullptr),
+        Enabled(true),
+        TabAreaObject(-1),
+        CurrentObjectsReferences(),
+        TopLevelParent(-1),
+        Untabbable(false),
+        LastMouseDragBeginPosition()
+    {
+    }
     =================================================================
     */
+    
+    /* clang-format on */
     class Tabbable : public Extension
     {
         public:
@@ -33,17 +62,26 @@ namespace Extensions
             Tabbable& operator=(Tabbable const& other);
         
         protected:
-            ssGUI::GUIObject* Container;        //See <BindToObject>
-            bool Enabled;                       //See <IsEnabled>
+            //See <BindToObject>
+            ssGUI::GUIObject* Container;
+            
+            //See <IsEnabled>
+            bool Enabled;
 
+            //See <GetTabAreaObject>
             ssGUIObjectIndex TabAreaObject;
             
-            ObjectsReferences CurrentObjectsReferences;                     //See <Internal_GetObjectsReferences>
-            ssGUIObjectIndex TopLevelParent;                                //See <GetTopLevelParent>
-            bool Untabbable;                                                //See 
+            //See <Internal_GetObjectsReferences>
+            ObjectsReferences CurrentObjectsReferences;
             
-            glm::vec2 LastMouseDragBeginPosition = glm::vec2();
+            //See <GetTopLevelParent>
+            ssGUIObjectIndex TopLevelParent;
             
+            //See <IsUntabbable>
+            bool Untabbable;
+            
+            //See <GetLastMouseDragBeginPosition>
+            glm::vec2 LastMouseDragBeginPosition;
 
             Tabbable();
             virtual ~Tabbable() override;
@@ -58,8 +96,6 @@ namespace Extensions
                                                 ssGUI::GUIObject* mainWindow, 
                                                 glm::vec2 mainWindowPositionOffset) override;
 
-            //virtual void DrawTabPreview(glm::vec2 mousePos);
-
         public:
             //====================================================================
             //Group: Constants
@@ -68,17 +104,32 @@ namespace Extensions
             //string: EXTENSION_NAME
             static const std::string EXTENSION_NAME;
 
+            //====================================================================
+            //Group: Tabbable
+            //====================================================================
 
+            //function: SetTopLevelParent
             virtual void SetTopLevelParent(ssGUI::GUIObject* topLevelParent);
+            
+            //function: GetTopLevelParent
             virtual ssGUI::GUIObject* GetTopLevelParent() const;
+            
+            //function: SetUntabbable
             virtual void SetUntabbable(bool untabbable);
+            
+            //function: IsUntabbable
             virtual bool IsUntabbable() const;
 
+            //function: GetLastMouseDragBeginPosition
             virtual glm::vec2 GetLastMouseDragBeginPosition() const;
+            
+            //function: SetLastMouseDragBeginPosition
             virtual void SetLastMouseDragBeginPosition(glm::vec2 pos);
 
-            //virtual void AddExternalTab(ssGUI::GUIObject* exteranlObject, bool dockAfter);
+            //function: GetTabAreaObject
             ssGUI::GUIObject* GetTabAreaObject() const;
+            
+            //function: SetTabAreaObject
             void SetTabAreaObject(ssGUI::GUIObject* tabArea);
 
 

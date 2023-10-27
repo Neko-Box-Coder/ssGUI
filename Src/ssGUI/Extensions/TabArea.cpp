@@ -1650,7 +1650,7 @@ namespace ssGUI
 
         ObjectsReferences* TabArea::Internal_GetObjectsReferences()
         {
-            return nullptr;
+            return &CurrentObjectsReferences;
         }
 
         TabArea* TabArea::Clone()

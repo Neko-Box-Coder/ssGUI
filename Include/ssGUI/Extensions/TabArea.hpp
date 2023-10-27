@@ -11,6 +11,8 @@ namespace ssGUI
     //namespace: ssGUI::Extensions
     namespace Extensions
     {
+        /* clang-format off */
+        
         /*class: ssGUI::Extensions::TabArea
         Allows GUI Objects with <ssGUI::Extensions::Tab> to be tabbed under this extension
 
@@ -34,7 +36,7 @@ namespace ssGUI
 
             //See <GetTabBar>
             ssGUIObjectIndex TabBar;
-            
+
             //See <GetCurrentTabContent>
             ssGUIObjectIndex CurrentTabContent;
 
@@ -43,7 +45,7 @@ namespace ssGUI
 
             //See <GetTabContentsHolder>
             ssGUIObjectIndex ContentsHolder;
-            
+
             //(Internal variable) Used for holding all the tabs
             ssGUIObjectIndex TabsHolder;
 
@@ -58,10 +60,10 @@ namespace ssGUI
 
             //See <GetTabPreviewColor>
             glm::u8vec4 PreviewColor;
-            
+
             //See <GetOverrideTabPreviewSize>
             bool OverrideTabPreviewSize;
-            
+
             //See <GetOverrideTabPreviewSize>
             glm::vec2 TabPreviewOverrideSize;
 
@@ -70,16 +72,16 @@ namespace ssGUI
 
             //See <GetDefaultTabBarObject>
             static ssGUI::GUIObject* DefaultTabBarObject;
-            
+
             //See <GetDefaultTabBarColor>
             static glm::u8vec4 DefaultTabBarColor;
-            
+
             //See <GetDefaultTabObject>
             static ssGUI::Tab* DefaultTabObject;
-            
+
             //See <GetDefaultTabColor>
             static glm::u8vec4 DefaultTabColor;
-            
+
             //See <GetDefaultPreviewColor>
             static glm::u8vec4 DefaultPreviewColor;
         =================================================================
@@ -105,6 +107,8 @@ namespace ssGUI
         }
         =================================================================
         */
+
+        /* clang-format on */
         class TabArea : public Extension
         {
             public:
@@ -131,7 +135,7 @@ namespace ssGUI
 
                 //See <GetTabBar>
                 ssGUIObjectIndex TabBar;
-                
+
                 //See <GetCurrentTabContent>
                 ssGUIObjectIndex CurrentTabContent;
 
@@ -140,7 +144,7 @@ namespace ssGUI
 
                 //See <GetTabContentsHolder>
                 ssGUIObjectIndex ContentsHolder;
-                
+
                 //(Internal variable) Used for holding all the tabs
                 ssGUIObjectIndex TabsHolder;
 
@@ -155,10 +159,10 @@ namespace ssGUI
 
                 //See <GetTabPreviewColor>
                 glm::u8vec4 PreviewColor;
-                
+
                 //See <GetOverrideTabPreviewSize>
                 bool OverrideTabPreviewSize;
-                
+
                 //See <GetOverrideTabPreviewSize>
                 glm::vec2 TabPreviewOverrideSize;
 
@@ -167,16 +171,16 @@ namespace ssGUI
 
                 //See <GetDefaultTabBarObject>
                 static ssGUI::GUIObject* DefaultTabBarObject;
-                
+
                 //See <GetDefaultTabBarColor>
                 static glm::u8vec4 DefaultTabBarColor;
-                
+
                 //See <GetDefaultTabObject>
                 static ssGUI::Tab* DefaultTabObject;
-                
+
                 //See <GetDefaultTabColor>
                 static glm::u8vec4 DefaultTabColor;
-                
+
                 //See <GetDefaultPreviewColor>
                 static glm::u8vec4 DefaultPreviewColor;
 
@@ -229,19 +233,18 @@ namespace ssGUI
                 virtual void UpdateOrientationsForContentsAndPreviews();
 
                 virtual bool TabbedIfNeeded(ssGUI::Backend::BackendSystemInputInterface*
-                                                        inputInterface,
-                                                    ssGUI::InputStatus& inputStatus,
-                                                    ssGUI::InputStatus& lastInputStatus,
-                                                    bool isMouseInsideTabBar,
-                                                    glm::ivec2 mousePos);
+                                                inputInterface,
+                                            ssGUI::InputStatus& inputStatus,
+                                            ssGUI::InputStatus& lastInputStatus,
+                                            bool isMouseInsideTabBar,
+                                            glm::ivec2 mousePos);
 
                 virtual void SetLastClickedTab(ssGUI::GUIObject* lastTab);
 
                 virtual bool SanityCheck() const;
 
                 virtual bool CanContentBeTabbed(ssGUI::GUIObject* contentToCheck,
-                                                        ssGUI::GUIObject* contentTopLevelParent)
-                    const;
+                                                ssGUI::GUIObject* contentTopLevelParent) const;
 
                 virtual void AddDeletionToCloseButton(ssGUI::Tab* tab);
 
@@ -279,7 +282,7 @@ namespace ssGUI
 
                 //function: SetTabPreviewColor
                 virtual void SetTabPreviewColor(glm::u8vec4 color);
-                
+
                 //function: GetTabPreviewColor
                 virtual glm::u8vec4 GetTabPreviewColor() const;
 
@@ -288,11 +291,11 @@ namespace ssGUI
 
                 //function: GetDefaultPreviewColor
                 static glm::u8vec4 GetDefaultPreviewColor();
-                
+
                 //====================================================================
                 //Group: Tab Bar
                 //====================================================================
-                
+
                 //function: GetTabBar
                 virtual ssGUI::GUIObject* GetTabBar() const;
 
@@ -301,7 +304,7 @@ namespace ssGUI
 
                 //function: GetTabBarHeight
                 virtual float GetTabBarHeight() const;
-                
+
                 //function: SetTabBarColor
                 virtual void SetTabBarColor(glm::u8vec4 color);
 
