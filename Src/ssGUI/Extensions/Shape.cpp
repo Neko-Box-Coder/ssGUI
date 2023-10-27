@@ -113,6 +113,8 @@ namespace Extensions
 
         glm::vec2 curLineNormalized;
         glm::vec2 perpendcularVector;
+        startThickness /= 2.f;
+        endThickness /= 2.f;
 
         //Special case of checking of the line has any length
         if(curLine.x == 0 && curLine.y == 0)
@@ -150,11 +152,11 @@ namespace Extensions
         targetShape.Colors.push_back(endColor);
 
         targetShape.Type = ShapeType::LINE;
-        targetShape.Data.Line.StartPos = start;        
-        targetShape.Data.Line.StartSize = startThickness;        
-        targetShape.Data.Line.StartColor = startColor;        
-        targetShape.Data.Line.EndPos = end;        
-        targetShape.Data.Line.EndSize = endThickness;        
+        targetShape.Data.Line.StartPos = start;
+        targetShape.Data.Line.StartSize = startThickness;
+        targetShape.Data.Line.StartColor = startColor;
+        targetShape.Data.Line.EndPos = end;
+        targetShape.Data.Line.EndSize = endThickness;
         targetShape.Data.Line.EndColor = endColor;
 
         targetShape.BehindGUI = behindGUIObject;
