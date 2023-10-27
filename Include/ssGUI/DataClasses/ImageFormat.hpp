@@ -31,6 +31,7 @@ namespace ssGUI
         bool HasAlpha = true;
         
         //var: PreMultipliedAlpha
+        //If this image has pre-multiplied alpha, this means that the color values are already multiplied with the alpha value.
         bool PreMultipliedAlpha = false;
         
         //var: IndexR 
