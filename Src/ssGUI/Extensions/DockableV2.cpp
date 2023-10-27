@@ -567,7 +567,10 @@ namespace Extensions
     void DockableV2::SetTopLevelParent(ssGUI::GUIObject* topLevelParent)
     {
         if(topLevelParent == nullptr)
+        {
             TopLevelParent = -1;
+            return;
+        }
         
         TopLevelParent = CurrentObjectsReferences.AddObjectReference(topLevelParent);
     }

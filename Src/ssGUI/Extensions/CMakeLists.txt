@@ -15,4 +15,6 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/TemplateExtension.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/DockableV2.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/DockingArea.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/TabArea.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/Tabbable.cpp"
                     )

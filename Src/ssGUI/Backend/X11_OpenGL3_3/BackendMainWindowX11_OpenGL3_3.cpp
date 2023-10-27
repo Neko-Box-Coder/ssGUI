@@ -781,23 +781,31 @@ namespace Backend
 
     glm::ivec2 BackendMainWindowX11_OpenGL3_3::GetWindowPosition() const
     {
-        XWindowAttributes attr;
-        if(!XGetWindowAttributes(WindowDisplay, WindowId, &attr))
-        {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to XGetWindowAttributes");
-            return glm::ivec2(0, 0);
-        }
+        #if 0
+            XWindowAttributes attr;
+            if(!XGetWindowAttributes(WindowDisplay, WindowId, &attr))
+            {
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to XGetWindowAttributes");
+                return glm::ivec2(0, 0);
+            }
+        #endif
 
         //https://stackoverflow.com/a/23940869/7519584
-        int x, y;
+        int renderPosX, renderPosY;
         Window curWindow = WindowId;
         XTranslateCoordinates(WindowDisplay, WindowId, RootWindow(WindowDisplay, DefaultScreen(WindowDisplay)), 
-                                0, 0, &x, &y, &curWindow );
+                                0, 0, &renderPosX, &renderPosY, &curWindow );
+
+        //ssLOG_LINE("xy: " << renderPosX << ", " << renderPosY);
+        //ssLOG_LINE("attr: "<<attr.x<<", "<<attr.y);
 
         int top, right, left, bot;
         GetWindowDecor(top, right, bot, left);
+        
+        //ssLOG_LINE("decor: "<<left<<", "<<top);
 
-        return glm::ivec2(x - attr.x - left, y - attr.y - top);
+        //return glm::ivec2(x - attr.x - left, y - attr.y - top);
+        return glm::ivec2(renderPosX - left, renderPosY - top);
     }
 
     glm::ivec2 BackendMainWindowX11_OpenGL3_3::GetPositionOffset() const
