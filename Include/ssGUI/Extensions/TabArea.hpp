@@ -12,17 +12,97 @@ namespace ssGUI
     namespace Extensions
     {
         /*class: ssGUI::Extensions::TabArea
+        Allows GUI Objects with <ssGUI::Extensions::Tab> to be tabbed under this extension
 
         Variables & Constructor:
         ============================== C++ ==============================
         protected:
-            ssGUI::GUIObject* Container;        //See <BindToObject>
-            bool Enabled;                       //See <IsEnabled>
+            //See <BindToObject>
+            ssGUI::GUIObject* Container;
+
+            //See <IsEnabled>
+            bool Enabled;
+
+            //See <GetTabBarHeight>
+            float TabBarHeight;
+
+            //See <GetNewTabWidth>
+            float NewTabWidth;
+
+            //See <Internal_GetObjectsReferences>
+            ObjectsReferences CurrentObjectsReferences;
+
+            //See <GetTabBar>
+            ssGUIObjectIndex TabBar;
+            
+            //See <GetCurrentTabContent>
+            ssGUIObjectIndex CurrentTabContent;
+
+            //(Internal variable) Used for detecting which tab is clicked
+            ssGUIObjectIndex LastClickedTab;
+
+            //See <GetTabContentsHolder>
+            ssGUIObjectIndex ContentsHolder;
+            
+            //(Internal variable) Used for holding all the tabs
+            ssGUIObjectIndex TabsHolder;
+
+            using TabId = ssGUIObjectIndex;
+            using TabContentId = ssGUIObjectIndex;
+
+            //(Internal variable) Used for mapping tabs and tabs contents
+            std::unordered_map<TabContentId, TabId> TabsInfos;
+
+            //(Internal variable) Object for displaying tab preview
+            ssGUIObjectIndex TabPreview;
+
+            //See <GetTabPreviewColor>
+            glm::u8vec4 PreviewColor;
+            
+            //See <GetOverrideTabPreviewSize>
+            bool OverrideTabPreviewSize;
+            
+            //See <GetOverrideTabPreviewSize>
+            glm::vec2 TabPreviewOverrideSize;
+
+            //See <GetNewTabColor>
+            glm::u8vec4 NewTabColor;
+
+            //See <GetDefaultTabBarObject>
+            static ssGUI::GUIObject* DefaultTabBarObject;
+            
+            //See <GetDefaultTabBarColor>
+            static glm::u8vec4 DefaultTabBarColor;
+            
+            //See <GetDefaultTabObject>
+            static ssGUI::Tab* DefaultTabObject;
+            
+            //See <GetDefaultTabColor>
+            static glm::u8vec4 DefaultTabColor;
+            
+            //See <GetDefaultPreviewColor>
+            static glm::u8vec4 DefaultPreviewColor;
         =================================================================
         ============================== C++ ==============================
-        TabArea::TabArea() :    Container(nullptr),
-                                                    Enabled(true)
-        {}
+        TabArea::TabArea() :
+            Container(nullptr),
+            Enabled(true),
+            TabBarHeight(25),
+            NewTabWidth(100),
+            CurrentObjectsReferences(),
+            TabBar(-1),
+            CurrentTabContent(-1),
+            LastClickedTab(-1),
+            ContentsHolder(-1),
+            TabsHolder(-1),
+            TabsInfos(),
+            TabPreview(-1),
+            PreviewColor(DefaultPreviewColor),
+            OverrideTabPreviewSize(false),
+            TabPreviewOverrideSize(),
+            NewTabColor(DefaultTabColor)
+        {
+        }
         =================================================================
         */
         class TabArea : public Extension
@@ -40,40 +120,64 @@ namespace ssGUI
                 //See <IsEnabled>
                 bool Enabled;
 
+                //See <GetTabBarHeight>
                 float TabBarHeight;
 
+                //See <GetNewTabWidth>
                 float NewTabWidth;
 
                 //See <Internal_GetObjectsReferences>
                 ObjectsReferences CurrentObjectsReferences;
 
+                //See <GetTabBar>
                 ssGUIObjectIndex TabBar;
+                
+                //See <GetCurrentTabContent>
                 ssGUIObjectIndex CurrentTabContent;
 
+                //(Internal variable) Used for detecting which tab is clicked
                 ssGUIObjectIndex LastClickedTab;
 
+                //See <GetTabContentsHolder>
                 ssGUIObjectIndex ContentsHolder;
+                
+                //(Internal variable) Used for holding all the tabs
                 ssGUIObjectIndex TabsHolder;
 
                 using TabId = ssGUIObjectIndex;
                 using TabContentId = ssGUIObjectIndex;
 
+                //(Internal variable) Used for mapping tabs and tabs contents
                 std::unordered_map<TabContentId, TabId> TabsInfos;
 
+                //(Internal variable) Object for displaying tab preview
                 ssGUIObjectIndex TabPreview;
 
-                //See <GetDockPreviewColor>
+                //See <GetTabPreviewColor>
                 glm::u8vec4 PreviewColor;
+                
+                //See <GetOverrideTabPreviewSize>
                 bool OverrideTabPreviewSize;
+                
+                //See <GetOverrideTabPreviewSize>
                 glm::vec2 TabPreviewOverrideSize;
 
-                //See <GetTabColor>
+                //See <GetNewTabColor>
                 glm::u8vec4 NewTabColor;
 
+                //See <GetDefaultTabBarObject>
                 static ssGUI::GUIObject* DefaultTabBarObject;
+                
+                //See <GetDefaultTabBarColor>
                 static glm::u8vec4 DefaultTabBarColor;
+                
+                //See <GetDefaultTabObject>
                 static ssGUI::Tab* DefaultTabObject;
+                
+                //See <GetDefaultTabColor>
                 static glm::u8vec4 DefaultTabColor;
+                
+                //See <GetDefaultPreviewColor>
                 static glm::u8vec4 DefaultPreviewColor;
 
                 TabArea();
@@ -158,6 +262,10 @@ namespace ssGUI
                 //string: ListenerKey
                 static const std::string ListenerKey;
 
+                //====================================================================
+                //Group: Tab Preview
+                //====================================================================
+
                 //function: SetOverrideTabPreviewSize
                 //By default, the tab preview size is half of the tab size.
                 //If override is true, the tab preview size will be OverrideTabPreviewSize.
@@ -171,9 +279,20 @@ namespace ssGUI
 
                 //function: SetTabPreviewColor
                 virtual void SetTabPreviewColor(glm::u8vec4 color);
+                
                 //function: GetTabPreviewColor
                 virtual glm::u8vec4 GetTabPreviewColor() const;
 
+                //function: SetDefaultPreviewColor
+                static void SetDefaultPreviewColor(glm::u8vec4 color);
+
+                //function: GetDefaultPreviewColor
+                static glm::u8vec4 GetDefaultPreviewColor();
+                
+                //====================================================================
+                //Group: Tab Bar
+                //====================================================================
+                
                 //function: GetTabBar
                 virtual ssGUI::GUIObject* GetTabBar() const;
 
@@ -182,6 +301,34 @@ namespace ssGUI
 
                 //function: GetTabBarHeight
                 virtual float GetTabBarHeight() const;
+                
+                //function: SetTabBarColor
+                virtual void SetTabBarColor(glm::u8vec4 color);
+
+                //function: GetTabBarColor
+                virtual glm::u8vec4 GetTabBarColor() const;
+
+                //function: SetTabBarHorizontal
+                virtual void SetTabBarHorizontal(bool horizontal);
+
+                //function: IsTabBarHorizontal
+                virtual bool IsTabBarHorizontal() const;
+
+                //function: SetDefaultTabBarObject
+                static void SetDefaultTabBarObject(ssGUI::GUIObject* defaultTabBar);
+
+                //function: GetDefaultTabBarObject
+                static ssGUI::GUIObject* GetDefaultTabBarObject();
+
+                //function: SetDefaultTabBarColor
+                static void SetDefaultTabBarColor(glm::u8vec4 color);
+
+                //function: GetDefaultTabBarColor
+                static glm::u8vec4 GetDefaultTabBarColor();
+
+                //====================================================================
+                //Group: Tab appearance and order
+                //====================================================================
 
                 //function: SetNewTabWidth
                 virtual void SetNewTabWidth(float width);
@@ -201,11 +348,21 @@ namespace ssGUI
                 //function: GetNewTabColor
                 virtual glm::u8vec4 GetNewTabColor() const;
 
-                //function: SetTabBarColor
-                virtual void SetTabBarColor(glm::u8vec4 color);
+                //function: SetDefaultTabObject
+                static void SetDefaultTabObject(ssGUI::Tab* defaultTab);
 
-                //function: GetTabBarColor
-                virtual glm::u8vec4 GetTabBarColor() const;
+                //function: GetDefaultTabObject
+                static ssGUI::Tab* GetDefaultTabObject();
+
+                //function: SetDefaultTabColor
+                static void SetDefaultTabColor(glm::u8vec4 color);
+
+                //function: GetDefaultTabColor
+                static glm::u8vec4 GetDefaultTabColor();
+
+                //====================================================================
+                //Group: Tab Content
+                //====================================================================
 
                 //function: AddContent
                 virtual ssGUI::Tab* AddContent(ssGUI::GUIObject* contentToRegister,
@@ -260,42 +417,6 @@ namespace ssGUI
 
                 //function: GetCurrentTabContent
                 virtual ssGUI::GUIObject* GetCurrentTabContent() const;
-
-                //function: SetTabBarHorizontal
-                virtual void SetTabBarHorizontal(bool horizontal);
-
-                //function: IsTabBarHorizontal
-                virtual bool IsTabBarHorizontal() const;
-
-                //function: SetDefaultTabBarObject
-                static void SetDefaultTabBarObject(ssGUI::GUIObject* defaultTabBar);
-
-                //function: GetDefaultTabBarObject
-                static ssGUI::GUIObject* GetDefaultTabBarObject();
-
-                //function: SetDefaultTabBarColor
-                static void SetDefaultTabBarColor(glm::u8vec4 color);
-
-                //function: GetDefaultTabBarColor
-                static glm::u8vec4 GetDefaultTabBarColor();
-
-                //function: SetDefaultTabObject
-                static void SetDefaultTabObject(ssGUI::Tab* defaultTab);
-
-                //function: GetDefaultTabObject
-                static ssGUI::Tab* GetDefaultTabObject();
-
-                //function: SetDefaultTabColor
-                static void SetDefaultTabColor(glm::u8vec4 color);
-
-                //function: GetDefaultTabColor
-                static glm::u8vec4 GetDefaultTabColor();
-
-                //function: SetDefaultPreviewColor
-                static void SetDefaultPreviewColor(glm::u8vec4 color);
-
-                //function: GetDefaultPreviewColor
-                static glm::u8vec4 GetDefaultPreviewColor();
 
                 //====================================================================
                 //Group: Overrides

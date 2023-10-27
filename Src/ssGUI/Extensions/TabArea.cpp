@@ -27,6 +27,7 @@ namespace ssGUI
             Enabled(true),
             TabBarHeight(25),
             NewTabWidth(100),
+            CurrentObjectsReferences(),
             TabBar(-1),
             CurrentTabContent(-1),
             LastClickedTab(-1),
@@ -36,6 +37,7 @@ namespace ssGUI
             TabPreview(-1),
             PreviewColor(DefaultPreviewColor),
             OverrideTabPreviewSize(false),
+            TabPreviewOverrideSize(),
             NewTabColor(DefaultTabColor)
         {
         }
@@ -47,21 +49,7 @@ namespace ssGUI
         TabArea::TabArea(const TabArea& other)
         {
             Container = nullptr;
-            Enabled = other.IsEnabled();
-            TabBarHeight = other.GetTabBarHeight();
-            NewTabWidth = other.GetNewTabWidth();
-            CurrentObjectsReferences = other.CurrentObjectsReferences;
-            TabBar = other.TabBar;
-            CurrentTabContent = other.CurrentTabContent;
-            LastClickedTab = -1;
-            ContentsHolder = other.ContentsHolder;
-            TabsHolder = other.TabsHolder;
-            TabsInfos = other.TabsInfos;
-            TabPreview = other.TabPreview;
-            PreviewColor = other.PreviewColor;
-            OverrideTabPreviewSize = other.OverrideTabPreviewSize;
-            TabPreviewOverrideSize = other.TabPreviewOverrideSize;
-            NewTabColor = other.NewTabColor;
+            Copy(&other);
         }
 
         void TabArea::Initialize()
@@ -840,6 +828,16 @@ namespace ssGUI
         {
             return PreviewColor;
         }
+        
+        void TabArea::SetDefaultPreviewColor(glm::u8vec4 color)
+        {
+            DefaultPreviewColor = color;
+        }
+
+        glm::u8vec4 TabArea::GetDefaultPreviewColor()
+        {
+            return DefaultPreviewColor;
+        }
 
         ssGUI::GUIObject* TabArea::GetTabBar() const
         {
@@ -857,6 +855,74 @@ namespace ssGUI
         float TabArea::GetTabBarHeight() const
         {
             return TabBarHeight;
+        }
+        
+        void TabArea::SetTabBarColor(glm::u8vec4 color)
+        {
+            if(!SanityCheck())
+                return;
+
+            CurrentObjectsReferences.GetObjectReference(TabBar)->SetBackgroundColor(color);
+        }
+
+        glm::u8vec4 TabArea::GetTabBarColor() const
+        {
+            return CurrentObjectsReferences.GetObjectReference(TabBar)->GetBackgroundColor();
+        }
+        
+        void TabArea::SetTabBarHorizontal(bool horizontal)
+        {
+            if(!SanityCheck())
+            {
+                ssLOG_EXIT_PROGRAM();
+                return;
+            }
+
+            ssGUI::GUIObject* tabsHolder = CurrentObjectsReferences.GetObjectReference(TabsHolder);
+            ssGUI::GUIObject* contentsHolder =
+                CurrentObjectsReferences.GetObjectReference(ContentsHolder);
+            ssGUI::GUIObject* tabBar = CurrentObjectsReferences.GetObjectReference(TabBar);
+
+            tabsHolder->GetExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(horizontal);
+            tabBar->GetExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(horizontal);
+            Container->GetExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(!horizontal);
+            contentsHolder->GetExtension<ssGUI::Extensions::Layout>()
+                ->SetHorizontalLayout(!horizontal);
+
+            UpdateOrientationsForContentsAndPreviews();
+        }
+
+        bool TabArea::IsTabBarHorizontal() const
+        {
+            if(!SanityCheck())
+            {
+                ssLOG_EXIT_PROGRAM();
+                return true;
+            }
+
+            return CurrentObjectsReferences.GetObjectReference(TabsHolder)
+                ->GetExtension<ssGUI::Extensions::Layout>()
+                ->IsHorizontalLayout();
+        }
+
+        void TabArea::SetDefaultTabBarObject(ssGUI::GUIObject* defaultTabBar)
+        {
+            DefaultTabBarObject = defaultTabBar;
+        }
+
+        ssGUI::GUIObject* TabArea::GetDefaultTabBarObject()
+        {
+            return DefaultTabBarObject;
+        }
+
+        void TabArea::SetDefaultTabBarColor(glm::u8vec4 color)
+        {
+            DefaultTabBarColor = color;
+        }
+
+        glm::u8vec4 TabArea::GetDefaultTabBarColor()
+        {
+            return DefaultTabBarColor;
         }
 
         void TabArea::SetNewTabWidth(float width)
@@ -898,18 +964,25 @@ namespace ssGUI
         {
             return NewTabColor;
         }
-
-        void TabArea::SetTabBarColor(glm::u8vec4 color)
+        
+        void TabArea::SetDefaultTabObject(ssGUI::Tab* defaultTab)
         {
-            if(!SanityCheck())
-                return;
-
-            CurrentObjectsReferences.GetObjectReference(TabBar)->SetBackgroundColor(color);
+            DefaultTabObject = defaultTab;
         }
 
-        glm::u8vec4 TabArea::GetTabBarColor() const
+        ssGUI::Tab* TabArea::GetDefaultTabObject()
         {
-            return CurrentObjectsReferences.GetObjectReference(TabBar)->GetBackgroundColor();
+            return DefaultTabObject;
+        }
+
+        void TabArea::SetDefaultTabColor(glm::u8vec4 color)
+        {
+            DefaultTabColor = color;
+        }
+
+        glm::u8vec4 TabArea::GetDefaultTabColor()
+        {
+            return DefaultTabColor;
         }
 
         ssGUI::Tab* TabArea::AddContent(ssGUI::GUIObject* contentToRegister, ssGUI::Tab* tabToUse)
@@ -1307,91 +1380,6 @@ namespace ssGUI
             return CurrentObjectsReferences.GetObjectReference(tabIt->first);
         }
 
-        void TabArea::SetTabBarHorizontal(bool horizontal)
-        {
-            if(!SanityCheck())
-            {
-                ssLOG_EXIT_PROGRAM();
-                return;
-            }
-
-            ssGUI::GUIObject* tabsHolder = CurrentObjectsReferences.GetObjectReference(TabsHolder);
-            ssGUI::GUIObject* contentsHolder =
-                CurrentObjectsReferences.GetObjectReference(ContentsHolder);
-            ssGUI::GUIObject* tabBar = CurrentObjectsReferences.GetObjectReference(TabBar);
-
-            tabsHolder->GetExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(horizontal);
-            tabBar->GetExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(horizontal);
-            Container->GetExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(!horizontal);
-            contentsHolder->GetExtension<ssGUI::Extensions::Layout>()
-                ->SetHorizontalLayout(!horizontal);
-
-            UpdateOrientationsForContentsAndPreviews();
-        }
-
-        bool TabArea::IsTabBarHorizontal() const
-        {
-            if(!SanityCheck())
-            {
-                ssLOG_EXIT_PROGRAM();
-                return true;
-            }
-
-            return CurrentObjectsReferences.GetObjectReference(TabsHolder)
-                ->GetExtension<ssGUI::Extensions::Layout>()
-                ->IsHorizontalLayout();
-        }
-
-        void TabArea::SetDefaultTabBarObject(ssGUI::GUIObject* defaultTabBar)
-        {
-            DefaultTabBarObject = defaultTabBar;
-        }
-
-        ssGUI::GUIObject* TabArea::GetDefaultTabBarObject()
-        {
-            return DefaultTabBarObject;
-        }
-
-        void TabArea::SetDefaultTabBarColor(glm::u8vec4 color)
-        {
-            DefaultTabBarColor = color;
-        }
-
-        glm::u8vec4 TabArea::GetDefaultTabBarColor()
-        {
-            return DefaultTabBarColor;
-        }
-
-        void TabArea::SetDefaultTabObject(ssGUI::Tab* defaultTab)
-        {
-            DefaultTabObject = defaultTab;
-        }
-
-        ssGUI::Tab* TabArea::GetDefaultTabObject()
-        {
-            return DefaultTabObject;
-        }
-
-        void TabArea::SetDefaultTabColor(glm::u8vec4 color)
-        {
-            DefaultTabColor = color;
-        }
-
-        glm::u8vec4 TabArea::GetDefaultTabColor()
-        {
-            return DefaultTabColor;
-        }
-
-        void TabArea::SetDefaultPreviewColor(glm::u8vec4 color)
-        {
-            DefaultPreviewColor = color;
-        }
-
-        glm::u8vec4 TabArea::GetDefaultPreviewColor()
-        {
-            return DefaultPreviewColor;
-        }
-
         bool TabArea::IsEnabled() const
         {
             return Enabled;
@@ -1642,9 +1630,22 @@ namespace ssGUI
                 return;
 
             auto* original = static_cast<const ssGUI::Extensions::TabArea*>(extension);
-            Enabled = original->IsEnabled();
-
-            //TODO(NOW)
+            
+            Enabled = original->Enabled;
+            TabBarHeight = original->TabBarHeight;
+            NewTabWidth = original->NewTabWidth;
+            CurrentObjectsReferences = original->CurrentObjectsReferences;
+            TabBar = original->TabBar;
+            CurrentTabContent = original->CurrentTabContent;
+            LastClickedTab = -1;
+            ContentsHolder = original->ContentsHolder;
+            TabsHolder = original->TabsHolder;
+            TabsInfos = original->TabsInfos;
+            TabPreview = original->TabPreview;
+            PreviewColor = original->PreviewColor;
+            OverrideTabPreviewSize = original->OverrideTabPreviewSize;
+            TabPreviewOverrideSize = original->TabPreviewOverrideSize;
+            NewTabColor = original->NewTabColor;
         }
 
         ObjectsReferences* TabArea::Internal_GetObjectsReferences()
