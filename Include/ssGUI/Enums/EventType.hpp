@@ -80,6 +80,15 @@ namespace ssGUI
                                                             <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::DockEventInfo> struct.
                                                             <ssGUI::DockEventInfo::AbortDocking> has no effect.
 
+        NEW_TAB_CONTENT_ADDED                           - Triggered *after* there's a new tab content added to TabArea extension. The content being added will be the source for triggering this event callback.
+                                                            <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::TabEventInfo> struct.
+                                                            
+        TAB_CONTENT_SWITCHED                            - Triggered *after* a new tab content is switched. The new tab content will be the source for triggering this event callback.
+                                                            <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::TabEventInfo> struct.
+
+        TAB_CONTENT_UNTABBED                            - Triggered *after* the tabbed content is untabbed. The untabbed content will be the source for triggering this event callback.
+                                                            <ssGUI::EventInfo::CustomInfo> will be pointer to <ssGUI::TabEventInfo> struct.
+
         COUNT                                           - Count
         
         SCROLLBAR_VALUE_CHANGED                         - Same as <SLIDER_VALUE_CHANGED>
@@ -126,6 +135,10 @@ namespace ssGUI
             OBJECT_DOCKED,
             EXTERNAL_OBJECT_DOCKED,
             
+            NEW_TAB_CONTENT_ADDED,
+            TAB_CONTENT_SWITCHED,
+            TAB_CONTENT_UNTABBED,
+            
             COUNT,
             
             SCROLLBAR_VALUE_CHANGED = SLIDER_VALUE_CHANGED,
@@ -136,7 +149,7 @@ namespace ssGUI
         //function: EventTypeToString
         inline std::string EventTypeToString(EventType event)
         {
-            static_assert((int)EventType::COUNT == 33, "ToString");
+            static_assert((int)EventType::COUNT == 36, "ToString");
             switch(event)
             {
                 RETURN_ENUM_STRING(EventType::NONE);
@@ -176,6 +189,10 @@ namespace ssGUI
                 
                 RETURN_ENUM_STRING(EventType::OBJECT_DOCKED);
                 RETURN_ENUM_STRING(EventType::EXTERNAL_OBJECT_DOCKED);
+                
+                RETURN_ENUM_STRING(EventType::NEW_TAB_CONTENT_ADDED);
+                RETURN_ENUM_STRING(EventType::TAB_CONTENT_SWITCHED);
+                RETURN_ENUM_STRING(EventType::TAB_CONTENT_UNTABBED);
                 
                 RETURN_ENUM_STRING(EventType::COUNT);
             }

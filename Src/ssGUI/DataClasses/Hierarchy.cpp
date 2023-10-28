@@ -47,34 +47,34 @@ namespace ssGUI
         }
     }
     
-    void Hierarchy::AddChild(ssGUI::GUIObject* guiObject,bool compositeChild)
+    void Hierarchy::SetChildParent(ssGUI::GUIObject* guiObject, bool compositeChild)
     {
         guiObject->SetParent(CurrentObject, compositeChild);
     }
     
-    void Hierarchy::AddChild(   ssGUI::GUIObject* guiObject,  
-                                ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
-                                ssGUI::Enums::AlignmentVertical verticalAlignment,
-                                bool compositeChild)
+    void Hierarchy::SetChildParent( ssGUI::GUIObject* guiObject,  
+                                    ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                    ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                    bool compositeChild)
     {
-        AddChild(guiObject, compositeChild);
+        SetChildParent(guiObject, compositeChild);
         auto* ap = guiObject->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         ap->SetAlignment(horizontalAlignment, verticalAlignment);
     }
     
-    void Hierarchy::AddChildWithWrapper(ssGUI::GUIObject* guiObject, bool compositeChild)
+    void Hierarchy::SetChildParentWithWrapper(ssGUI::GUIObject* guiObject, bool compositeChild)
     {
         auto* wrapper = ssGUI::Create<ssGUI::GUIObject>();
-        AddChild(wrapper, compositeChild);
-        wrapper->AddChild(guiObject, compositeChild);
+        SetChildParent(wrapper, compositeChild);
+        wrapper->SetChildParent(guiObject, compositeChild);
     }
     
-    void Hierarchy::AddChildWithWrapper(ssGUI::GUIObject* guiObject,  
-                                        ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
-                                        ssGUI::Enums::AlignmentVertical verticalAlignment,
-                                        bool compositeChild)
+    void Hierarchy::SetChildParentWithWrapper(  ssGUI::GUIObject* guiObject,  
+                                                ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                                ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                                bool compositeChild)
     {
-        AddChildWithWrapper(guiObject, compositeChild);
+        SetChildParentWithWrapper(guiObject, compositeChild);
         auto* ap = guiObject->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         ap->SetAlignment(horizontalAlignment, verticalAlignment);
     }
