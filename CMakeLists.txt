@@ -113,6 +113,7 @@ set(ssGUI_MOCK_BACKEND_MODE "${ssGUI_MOCK_OFF_OPTION_STRING}" CACHE STRING
 ${ssGUI_MOCK_OFF_OPTION_STRING}
 ${ssGUI_MOCK_OPTION_STRING}
 ${ssGUI_MOCK_WITH_NATIVE_OPTION_STRING}")
+
 set_property(CACHE ssGUI_MOCK_BACKEND_MODE PROPERTY STRINGS "${ssGUI_MOCK_OFF_OPTION_STRING}" 
                                                             "${ssGUI_MOCK_OPTION_STRING}" 
                                                             "${ssGUI_MOCK_WITH_NATIVE_OPTION_STRING}")
@@ -688,186 +689,12 @@ endif()
 # Building tests and examples 
 # ==========================================================
 
-function(AddFilesToExecutables folderToExe binSubFolder ideFolderName targetsToLink)
-    file(GLOB ssGUI_EXE_CPP_FILES "${folderToExe}*.cpp")
-
-    foreach(CUR_SOURCE_PATH ${ssGUI_EXE_CPP_FILES})
-
-        # Get the file name without path and extension
-        get_filename_component(CUR_NAME "${CUR_SOURCE_PATH}" NAME_WE)  
-
-        # Freetype test
-        #if(CUR_NAME STREQUAL "FreetypeTest" AND NOT ssGUI_FONT_BACKEND STREQUAL "FreeType")
-        #    continue()
-        #elseif(CUR_NAME STREQUAL "FreetypeTest" AND ssGUI_FONT_BACKEND STREQUAL "FreeType")
-        #    add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
-        #    target_link_libraries("${CUR_NAME}" PRIVATE freetype)
-        #    continue()
-        #endif()
-
-        # For now, skip custom graphics example if we are using SFML backend
-        STRING(TOLOWER ${ssGUI_MAIN_BACKEND} ssGUI_LOWER_MAIN_BACKEND)
-        if((CUR_NAME STREQUAL "CustomGraphicsExampleV2" OR CUR_NAME STREQUAL "DynamicAtlasTest_Auto") AND NOT ssGUI_LOWER_MAIN_BACKEND MATCHES ".*opengl.*")
-            continue()
-        endif()
-
-        # add the executable
-        add_executable("${CUR_NAME}" "${CUR_SOURCE_PATH}")
-
-        if(CUR_NAME STREQUAL "CustomGraphicsExampleV2")
-            target_link_libraries("${CUR_NAME}" PRIVATE OpenGL::GL glad)
-        endif()
-
-        # Link targets
-        foreach(linkTarget ${targetsToLink})
-            target_link_libraries("${CUR_NAME}" PRIVATE ${linkTarget})
-        endforeach()
-
-        # Sub-directory for build
-        set_target_properties("${CUR_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${binSubFolder})
-
-        # Set folder name for IDEs such as Visual Studio
-        set_target_properties("${CUR_NAME}" PROPERTIES FOLDER ${ideFolderName})
-
-    endforeach(CUR_SOURCE_PATH "${ssGUI_EXE_CPP_FILES}")
-
-    #CopyResources(${binSubFolder})
-
-endfunction()
-
 #CopyResources(${CMAKE_CURRENT_BINARY_DIR})
 
 if(ssGUI_BUILD_TESTS)
-    # Check if test resources is populated
-    file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/TestsResources.c" EMBEDDED_FILE_SIZE)
-    if(EMBEDDED_FILE_SIZE LESS 1024)
-        EMBED_FILES("${CMAKE_CURRENT_LIST_DIR}/Src/Tests/TestsResources.c"
-                    "${CMAKE_CURRENT_LIST_DIR}/Resources/arial.ttf"
-                    "ssGUI_Test_arial"
-                    "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoColorEmoji.ttf"
-                    "ssGUI_Test_NotoColorEmoji"
-                    "${CMAKE_CURRENT_LIST_DIR}/Resources/sd.png"
-                    "ssGUI_Test_sd"
-                    "${CMAKE_CURRENT_LIST_DIR}/Resources/sdTestEdge.png"
-                    "ssGUI_Test_sd_edge"
-                    "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoSans-Bold.ttf"
-                    "ssGUI_Test_NotoSans_Bold")
-
-        file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/TestsResources.c" EMBEDDED_FILE_SIZE)
-        if(EMBEDDED_FILE_SIZE LESS 1024)
-            message(WARNING "Failed to embed test resources")
-        endif()
-    endif()
-    
-    add_library(ssGUI_Test_Resources "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/TestsResources.c")
-    target_include_directories(ssGUI_Test_Resources PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Src/Tests")
-    set_target_properties(ssGUI_Test_Resources PROPERTIES FOLDER "Tests")
-
-    # ----------------------------------------------------------
-    # Auto Tests
-    # ----------------------------------------------------------
-    #if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
-        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/BackendTests/" 
-                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/BackendTests/" 
-                                "Tests/AutoTests/BackendTests"
-                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
-    #else()
-    #    message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping backend tests")
-    #    message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce backend tests")
-    #endif()
-    
-    
-    if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/EventCallbackTests/" 
-                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/EventCallbackTests/" 
-                                "Tests/AutoTests/EventCallbackTests"
-                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
-        
-        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/GUIObjectTests/" 
-                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/GUIObjectTests/" 
-                                "Tests/AutoTests/GUIObjectTests"
-                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")    
-    else()
-        message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OFF_OPTION_STRING}, skipping tests")
-    endif()
-    
-    if(WIN32)
-        file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
-        file(   COPY "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.bat"
-                DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests")
-        #execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.bat" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.bat")
-    else()
-        file(   CHMOD "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.sh"
-                PERMISSIONS  OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
-        file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/")
-        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/RunAllTests.sh" "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/RunAllTests.sh")
-    endif()
-
-    # ----------------------------------------------------------
-    # Manual Tests
-    # ----------------------------------------------------------
-    if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
-        AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/BackendTests/" 
-                                "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/BackendTests/" 
-                                "Tests/ManualTests/BackendTests"
-                                "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
-    else()
-        message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping manual backend tests")
-        message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce manual backend tests")
-    endif()
-
-    # TODO: The aim is to replace these manual tests with auto tests, unless it is backend tests I guess
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/EventCallbackTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/EventCallbackTests/" 
-                            "Tests/ManualTests/EventCallbackTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/GUIObjectTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/GUIObjectTests/" 
-                            "Tests/ManualTests/GUIObjectTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
-    
-    # ----------------------------------------------------------
-    # Tests Templates
-    # ----------------------------------------------------------
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/AutoTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/AutoTests/" 
-                            "Tests/AutoTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Tests/ManualTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Tests/ManualTests/" 
-                            "Tests/ManualTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/Tests")
 endif()
 
 if(ssGUI_BUILD_EXAMPLES)
-    # Check if example resources is populated
-    file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/ExamplesResources.c" EMBEDDED_FILE_SIZE)
-    if(EMBEDDED_FILE_SIZE LESS 1024)
-        EMBED_FILES("${CMAKE_CURRENT_LIST_DIR}/Src/Examples/ExamplesResources.c"                    
-                    "${CMAKE_CURRENT_LIST_DIR}/Resources/sd.png"
-                    "ssGUI_Example_sd"
-                    "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoSans-Bold.ttf"
-                    "ssGUI_Example_NotoSans_Bold;ssLogger")
-
-        file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/ExamplesResources.c" EMBEDDED_FILE_SIZE)
-        if(EMBEDDED_FILE_SIZE LESS 1024)
-            message(WARNING "Failed to embed example resources")
-        endif()
-    endif()
-    
-    add_library(ssGUI_Example_Resources "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/ExamplesResources.c")
-    target_include_directories(ssGUI_Example_Resources PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Src/Examples")
-    set_target_properties(ssGUI_Example_Resources PROPERTIES FOLDER "Examples")
-
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Examples/" 
-                            "Examples"
-                            "ssGUI;ssGUI_Example_Resources;ssLogger")
-    
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/Src/Examples/Playground/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/Examples/Playground/" 
-                            "Examples/Playground"
-                            "ssGUI;ssGUI_Example_Resources;ssLogger")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/Examples")
 endif()
