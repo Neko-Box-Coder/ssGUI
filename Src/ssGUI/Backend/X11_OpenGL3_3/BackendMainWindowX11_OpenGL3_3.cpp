@@ -796,15 +796,8 @@ namespace Backend
         XTranslateCoordinates(WindowDisplay, WindowId, RootWindow(WindowDisplay, DefaultScreen(WindowDisplay)), 
                                 0, 0, &renderPosX, &renderPosY, &curWindow );
 
-        //ssLOG_LINE("xy: " << renderPosX << ", " << renderPosY);
-        //ssLOG_LINE("attr: "<<attr.x<<", "<<attr.y);
-
         int top, right, left, bot;
         GetWindowDecor(top, right, bot, left);
-        
-        //ssLOG_LINE("decor: "<<left<<", "<<top);
-
-        //return glm::ivec2(x - attr.x - left, y - attr.y - top);
         return glm::ivec2(renderPosX - left, renderPosY - top);
     }
 
