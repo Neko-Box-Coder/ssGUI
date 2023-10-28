@@ -24,11 +24,7 @@ namespace Extensions
     BoxShadow::BoxShadow(BoxShadow const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        PositionOffset = other.GetPositionOffset();
-        SizeOffset = other.GetSizeOffset();
-        BlurRadius = other.GetBlurRadius();
-        ShadowColor = other.GetShadowColor();
+        Copy(&other);
     }
 
     double BoxShadow::GetAngle(glm::vec2 a, glm::vec2 b)
@@ -86,7 +82,7 @@ namespace Extensions
 
     void BoxShadow::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         //Getting all the rendering details from container
         std::vector<ssGUI::DrawingEntity>& drawingEntities = Container->Extension_GetDrawingEntities();
 
@@ -216,7 +212,6 @@ namespace Extensions
         }
 
         drawingEntities.insert(drawingEntities.end(), newEntities.begin(), newEntities.end());
-        ssLOG_FUNC_EXIT();
     }
 
     void BoxShadow::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
@@ -282,36 +277,30 @@ namespace Extensions
     }
 
     //Extension methods
-    void BoxShadow::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void BoxShadow::Internal_Update(bool isPreUpdate, 
+                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BoxShadow::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr || !isPreRender)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-
-        ssLOG_FUNC_EXIT();
     }
 
-    std::string BoxShadow::GetExtensionName()
+    std::string BoxShadow::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -321,12 +310,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void BoxShadow::Copy(ssGUI::Extensions::Extension* extension)
+    void BoxShadow::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
 
-        ssGUI::Extensions::BoxShadow* BoxShadow = static_cast<ssGUI::Extensions::BoxShadow*>(extension);
+        auto* BoxShadow = static_cast<const ssGUI::Extensions::BoxShadow*>(extension);
 
         Enabled = BoxShadow->IsEnabled();
         PositionOffset = BoxShadow->GetPositionOffset();

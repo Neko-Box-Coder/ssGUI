@@ -22,7 +22,7 @@ namespace ssGUI
 
     void Window::OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& inputStatus)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         MouseDownPosition = currentMousePos;
         TransformTotalMovedDistance = glm::vec2();
@@ -62,9 +62,8 @@ namespace ssGUI
         //Resize
         if(ResizingBot || ResizingLeft || ResizingRight || ResizingTop)
         {
-            inputStatus.MouseInputBlockedObject = this;
+            inputStatus.MouseInputBlockedData.SetBlockData(this);
             SetFocus(true);
-            ssLOG_FUNC_EXIT();
             return;
         }
             
@@ -74,29 +73,26 @@ namespace ssGUI
             IsDraggable())
         {
             Dragging = true;
-            inputStatus.MouseInputBlockedObject = this;
+            inputStatus.MouseInputBlockedData.SetBlockData(this);
             SetFocus(true);
             SetWindowDragState(ssGUI::Enums::WindowDragState::STARTED);
-            
-            ssLOG_FUNC_EXIT();
             return;
         }
         //Input blocking
         if( currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x && 
             currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
         {
-            inputStatus.MouseInputBlockedObject = this;                
+            inputStatus.MouseInputBlockedData.SetBlockData(this);                
             SetFocus(true);
         }
-
-
-        ssLOG_FUNC_EXIT();
     }
 
-    void Window::OnMouseDragOrResizeUpdate(ssGUI::InputStatus& inputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+    void Window::OnMouseDragOrResizeUpdate( ssGUI::InputStatus& inputStatus, 
+                                            glm::vec2 mouseDelta, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        ssLOG_FUNC_ENTRY();
-        inputStatus.MouseInputBlockedObject = this;
+        ssGUI_LOG_FUNC();
+        inputStatus.MouseInputBlockedData.SetBlockData(this);
        
         if(ResizingLeft || ResizingRight || ResizingTop || ResizingBot)
         {
@@ -176,15 +172,15 @@ namespace ssGUI
             inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_DOWN);
         else if(ResizingRight)
             inputInterface->SetCursorType(ssGUI::Enums::CursorType::RESIZE_RIGHT);
-
-        ssLOG_FUNC_EXIT();
     }
 
-    void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+    void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, 
+                                                glm::vec2 currentMousePos, 
+                                                ssGUI::Backend::BackendSystemInputInterface* inputInterface)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
-        if(inputStatus.MouseInputBlockedObject == nullptr)
+        if(inputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
         {
             //Mouse Input blocking
             bool mouseInWindowBoundX = false;
@@ -198,7 +194,7 @@ namespace ssGUI
             
             //Input blocking
             if(mouseInWindowBoundX && mouseInWindowBoundY)
-                inputStatus.MouseInputBlockedObject = this;
+                inputStatus.MouseInputBlockedData.SetBlockData(this);
             
             //Updating cursor
             bool canResizeTop = false;
@@ -267,8 +263,31 @@ namespace ssGUI
         OnTransformBeginSize = glm::vec2();
         TransformTotalMovedDistance = glm::vec2();
         MouseDownPosition = glm::vec2();
+    }
 
-        ssLOG_FUNC_EXIT();
+    Window::Window(Window const& other) :   GUIObject(other),
+                                            Titlebar(other.Titlebar),
+                                            TitlebarHeight(other.TitlebarHeight),
+                                            ResizeType(other.ResizeType),
+                                            Draggable(other.Draggable),
+                                            Closable(other.Closable),
+                                            Closed(other.Closed),
+                                            IsClosingAborted(other.IsClosingAborted),
+                                            TitlebarColorDifference(other.TitlebarColorDifference),
+                                            AdaptiveTitlebarColor(other.AdaptiveTitlebarColor),
+                                            DeleteAfterClosed(other.DeleteAfterClosed),
+                                            OnTopWhenFocused(other.OnTopWhenFocused),
+                                            CurrentDragState(ssGUI::Enums::WindowDragState::NONE),
+                                            ResizeHitbox(other.ResizeHitbox),
+                                            ResizingTop(false),
+                                            ResizingBot(false),
+                                            ResizingLeft(false),
+                                            ResizingRight(false),
+                                            Dragging(false),
+                                            TransformTotalMovedDistance(),
+                                            OnTransformBeginSize(),
+                                            MouseDownPosition()                                            
+    {
     }
 
     void Window::ConstructRenderInfo()
@@ -330,7 +349,9 @@ namespace ssGUI
         // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
     }
 
-    void Window::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void Window::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
         glm::vec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
@@ -343,20 +364,21 @@ namespace ssGUI
         
         //Resize
         //On mouse down
-        if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::LEFT) &&
-            inputStatus.MouseInputBlockedObject == nullptr)
+        if( inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::LEFT) &&
+            currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
         {
-            OnMouseDownUpdate(currentMousePos, inputStatus);
+            OnMouseDownUpdate(currentMousePos, currentInputStatus);
         }
         //When the user is resizing or dragging the window
-        else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
+        else if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && 
+                (ResizingLeft || ResizingRight || ResizingTop || ResizingBot || Dragging))
         {
-            OnMouseDragOrResizeUpdate(inputStatus, mouseDelta, inputInterface);
+            OnMouseDragOrResizeUpdate(currentInputStatus, mouseDelta, inputInterface);
         }
         //Otherwise show resize cursor if necessary 
         else
         {
-            BlockMouseInputAndUpdateCursor(inputStatus, currentMousePos, inputInterface);
+            BlockMouseInputAndUpdateCursor(currentInputStatus, currentMousePos, inputInterface);
         }
     }
         
@@ -606,18 +628,14 @@ namespace ssGUI
 
     void Window::Internal_SetSelfFocus(bool focus)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(GUIObject::Hierarchy::Focused == focus)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(focus && IsOnTopWhenFocused())
             SetParent(GetParent());
         
         GUIObject::Internal_SetSelfFocus(focus);
-        ssLOG_FUNC_EXIT();
     }
 
     void Window::SetBackgroundColor(glm::u8vec4 color)
@@ -645,20 +663,16 @@ namespace ssGUI
 
     Window* Window::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Window* temp = new Window(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

@@ -18,7 +18,7 @@ int main()
         TestWindow = ssGUI::Factory::Create<ssGUI::Window>();
         
         //Timing is making sure the listener is triggered **after** the event
-        Callback->AddEventListener( "key", [&](ssGUI::EventInfo info)
+        Callback->AddEventListener( "key", [&](ssGUI::EventInfo& info)
                                     {
                                         ssTEST_OUTPUT_ASSERT("Timing", TestObj->GetParent() == TestWindow); 
                                         ListenerNum = 1;

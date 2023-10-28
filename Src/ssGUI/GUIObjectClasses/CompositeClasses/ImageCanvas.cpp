@@ -155,6 +155,11 @@ namespace ssGUI
         imageEntity.Vertices.push_back(imgVertices[3]);
 
         imageEntity.BackendImage = ImageData->GetBackendImageInterface();
+        
+        imageEntity.TexCoords.push_back(glm::vec2(0, 0));
+        imageEntity.TexCoords.push_back(glm::vec2(GetImageData()->GetSize().x, 0));
+        imageEntity.TexCoords.push_back(glm::vec2(GetImageData()->GetSize()));
+        imageEntity.TexCoords.push_back(glm::vec2(0, GetImageData()->GetSize().y));
 
         DrawingEntities.push_back(imageEntity);
 
@@ -232,18 +237,28 @@ namespace ssGUI
     const std::string ImageCanvas::ListenerKey = "Image Canvas";
     const std::string ImageCanvas::IMAGE_CANVAS_IMAGE_SHAPE_NAME = "Image Canvas Image";
 
-    void ImageCanvas::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void ImageCanvas::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {        
         //By default don't show rotation UI
-        auto shape = GetAnyExtension<ssGUI::Extensions::Shape>();
+        auto shape = GetExtension<ssGUI::Extensions::Shape>();
         
         if(!IsInteractable() || !IsBlockInput())
             return;
 
+        bool isMouseNotBlockedByThis =  currentInputStatus.MouseInputBlockedData.GetBlockDataType() != ssGUI::Enums::BlockDataType::GUI_OBJECT ||
+                                        (currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::GUI_OBJECT &&
+                                        currentInputStatus.MouseInputBlockedData.GetBlockData<ssGUI::GUIObject>() != this);
+
         //No functionality if mouse input is blocked
-        if(inputStatus.MouseInputBlockedObject != nullptr && inputStatus.MouseInputBlockedObject != this && !MousePressed)
+        if( currentInputStatus.MouseInputBlockedData.GetBlockDataType() != ssGUI::Enums::BlockDataType::NONE && 
+            isMouseNotBlockedByThis &&
+            !MousePressed)
+        {
             return;
+        }
 
         glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
         bool mouseWithinWidget =    currentMousePos.x >= GetGlobalPosition().x &&
@@ -254,7 +269,6 @@ namespace ssGUI
         if(!inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT))
             MousePressed = false;
 
-        if(inputStatus.KeyInputBlockedObject == nullptr || inputStatus.KeyInputBlockedObject == this)
         {
             //Check if mosue down is within widget
             if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::LEFT) && 
@@ -263,13 +277,13 @@ namespace ssGUI
             {
                 MousePressed = true;
                 MouseButtonDownPosition = currentMousePos;
-                inputStatus.MouseInputBlockedObject = this;
+                currentInputStatus.MouseInputBlockedData.SetBlockData(this);
             }
 
             //If space key is pressed, use delta cursor position to move canvas
             if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(GetPanKey()))
             {
-                inputStatus.KeyInputBlockedObject = this;
+                currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                 
                 if(MousePressed || mouseWithinWidget)
                     inputInterface->SetCursorType(ssGUI::Enums::CursorType::MOVE);
@@ -279,7 +293,7 @@ namespace ssGUI
                     glm::vec2 lastMousePos = inputInterface->GetLastMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
                     glm::vec2 diff = GetUVFromGlobalPosition(currentMousePos) - GetUVFromGlobalPosition(lastMousePos);
                     SetViewportCenterPosition(GetViewportCenterPosition() - diff);
-                    inputStatus.MouseInputBlockedObject = this;
+                    currentInputStatus.MouseInputBlockedData.SetBlockData(this);
                 }
 
                 SetFocus(true);
@@ -288,7 +302,7 @@ namespace ssGUI
             //If r key is pressed, use start cursor position and current cursor position to rotate canvas
             else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(GetRotateKey()))
             {
-                inputStatus.KeyInputBlockedObject = this;
+                currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                 SetFocus(true);
 
                 if(MousePressed || mouseWithinWidget)
@@ -345,7 +359,7 @@ namespace ssGUI
                         glm::vec2 canvasCenter = GetGlobalPosition() + GetSize() * 0.5f;
                         SetViewportRotation(OnRotateStartRotation + GetAngle(glm::vec2(currentMousePos) - canvasCenter, MouseButtonDownPosition - canvasCenter), true);
                     }
-                    inputStatus.MouseInputBlockedObject = this;
+                    currentInputStatus.MouseInputBlockedData.SetBlockData(this);
                 }
             }
 
@@ -365,7 +379,7 @@ namespace ssGUI
         //Handle scrolling for image zooming
         if(IsUseScrollZooming() && mouseWithinWidget)
         {
-            inputStatus.MouseInputBlockedObject = this;
+            currentInputStatus.MouseInputBlockedData.SetBlockData(this);
 
             //Scrolling up
             if(inputInterface->GetCurrentMouseScrollDelta().y > 0)
@@ -433,7 +447,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::EventInfo info)
+            [index](ssGUI::EventInfo& info)
             {
                 auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
@@ -470,7 +484,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::EventInfo info)
+            [index](ssGUI::EventInfo& info)
             {
                 auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
@@ -510,7 +524,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.Container);
                 
@@ -815,20 +829,16 @@ namespace ssGUI
 
     ImageCanvas* ImageCanvas::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         ImageCanvas* temp = new ImageCanvas(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
     

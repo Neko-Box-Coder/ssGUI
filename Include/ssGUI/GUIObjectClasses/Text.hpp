@@ -51,11 +51,20 @@ namespace ssGUI
         int StartSelectionIndex;                                                            //See <GetStartSelectionIndex>
         int EndSelectionIndex;                                                              //See <GetEndSelectionIndex>
         bool DeselectWhenFocusLost;                                                         //See <IsDeselectWhenFocusLost>
+        bool LastMouseDownInTextBound;
 
         glm::u8vec4 SelectionColor;                                                         //See <GetSelectionColor>
         glm::u8vec4 TextSelectedColor;                                                      //See <GetTextSelectedColor>
 
         uint32_t LastDefaultFontsID;                                                        //(Internal variable) Used to keep track if there's any changes to the default fonts
+
+        bool TextContentChanged;                                                            //(Internal variable) Used to keep track if there's any changes to the text content
+
+        int MouseDoubleClickThresholdInMs;                                                  //(Internal variable) Used to register double and triple click
+        uint64_t LastMouseDownTimestamp;                                                    //(Internal variable) Used to register double and triple click
+        uint64_t LastClickSelectionTimestamp;                                               //(Internal variable) Used to register double and triple click
+        int ClickSelectionStartIndex;                                                       //(Internal variable) Used to register double and triple click
+        int ClickSelectionEndIndex;                                                         //(Internal variable) Used to register double and triple click
 
         static int TextObjectCount;                                                         //(Internal variable) Used for deallocating default resources
         static std::vector<ssGUI::Font*> DefaultFonts;                                      //See <GetDefaultFont>
@@ -84,9 +93,16 @@ namespace ssGUI
                     StartSelectionIndex(-1),
                     EndSelectionIndex(-1),
                     DeselectWhenFocusLost(true),
+                    LastMouseDownInTextBound(false),
                     SelectionColor(51, 153, 255, 255),
                     TextSelectedColor(255, 255, 255, 255),
-                    LastDefaultFontsID(0)
+                    LastDefaultFontsID(0),
+                    TextContentChanged(false),
+                    MouseDoubleClickThresholdInMs(500),
+                    LastMouseDownTimestamp(0),
+                    LastClickSelectionTimestamp(0),
+                    ClickSelectionStartIndex(-1),
+                    ClickSelectionEndIndex(-1)
     {
         SetBackgroundColor(glm::ivec4(255, 255, 255, 0));
         SetBlockInput(false);
@@ -97,7 +113,7 @@ namespace ssGUI
         sizeChangedCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 static_cast<ssGUI::Text*>(info.EventSource)->RecalculateTextNeeded = true;
             }
@@ -109,7 +125,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* text = static_cast<ssGUI::Text*>(info.Container);
                 
@@ -120,10 +136,6 @@ namespace ssGUI
             }
         );
     }
-
-    int Text::TextObjectCount = 0;
-    std::vector<ssGUI::Font*> Text::DefaultFonts = std::vector<ssGUI::Font*>();
-    uint32_t Text::DefaultFontsChangeID = 1;
     =================================================================
     */
     class Text : public Widget
@@ -158,11 +170,20 @@ namespace ssGUI
             int StartSelectionIndex;                                                            //See <GetStartSelectionIndex>
             int EndSelectionIndex;                                                              //See <GetEndSelectionIndex>
             bool DeselectWhenFocusLost;                                                         //See <IsDeselectWhenFocusLost>
+            bool LastMouseDownInTextBound;
 
             glm::u8vec4 SelectionColor;                                                         //See <GetSelectionColor>
             glm::u8vec4 TextSelectedColor;                                                      //See <GetTextSelectedColor>
 
             uint32_t LastDefaultFontsID;                                                        //(Internal variable) Used to keep track if there's any changes to the default fonts
+
+            bool TextContentChanged;                                                            //(Internal variable) Used to keep track if there's any changes to the text content
+
+            int MouseDoubleClickThresholdInMs;                                                  //(Internal variable) Used to register double and triple click
+            uint64_t LastMouseDownTimestamp;                                                    //(Internal variable) Used to register double and triple click
+            uint64_t LastClickSelectionTimestamp;                                               //(Internal variable) Used to register double and triple click
+            int ClickSelectionStartIndex;                                                       //(Internal variable) Used to register double and triple click
+            int ClickSelectionEndIndex;                                                         //(Internal variable) Used to register double and triple click
 
             static int TextObjectCount;                                                         //(Internal variable) Used for deallocating default resources
             static std::vector<ssGUI::Font*> DefaultFonts;                                      //See <GetDefaultFont>
@@ -199,24 +220,50 @@ namespace ssGUI
 
             virtual void DrawAllCharacters();
 
+            virtual int GetEndOfPreviousWord(int curIndex);
+            
+            virtual int GetEndOfNextWord(int curIndex);
+
+            virtual void GetCurrentLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive);
+
+            virtual void GetPreviousLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive);
+
+            virtual void GetNextLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive);
+
+            //TODO: Rename this to GetIndexForPreviousLine
+            virtual int GetPositionForPreviousLine(int curIndex);
+
+            //TODO: Rename this to GetIndexForNextLine
+            virtual int GetPositionForNextLine(int curIndex);
+
+            virtual void MouseSelectionLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, glm::ivec2 currentMousePos);
+
             virtual void ConstructRenderInfo() override;
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:
             //string: ListenerKey
             static const std::string ListenerKey;
+            
+            //string: TEXT_CHARACTER_SHAPE_NAME
             static const std::string TEXT_CHARACTER_SHAPE_NAME;
+            
+            //string: TEXT_HIGHLIGHT_SHAPE_NAME
             static const std::string TEXT_HIGHLIGHT_SHAPE_NAME;
+            
+            //string: TEXT_UNDERLINE_SHAPE_NAME
             static const std::string TEXT_UNDERLINE_SHAPE_NAME;
 
             Text();
             virtual ~Text() override;
 
-            //function: ComputeCharactersPositionAndSize
-            //Computes all the characters' positions and sizes. This is called automatically when there's any changes to the text.
-            virtual void ComputeCharactersPositionAndSize();
+            //====================================================================
+            //Group: Text Manipulations
+            //====================================================================
             
             //function: SetText
             //Sets the text to show
@@ -268,6 +315,10 @@ namespace ssGUI
             //Gets the text being shown. This is deprecated, use the template version instead.
             virtual std::wstring GetText() const;
             
+            //====================================================================
+            //Group: Character Manipulations
+            //====================================================================
+            
             //function: GetCharacterCount
             //Gets the number of characters for the text being shown
             virtual int GetCharacterCount() const;
@@ -316,43 +367,44 @@ namespace ssGUI
             //Removes all override character details
             virtual void ClearAllCharacterDetails();
 
+            //function: ComputeCharactersPositionAndSize
+            //Computes all the characters' positions and sizes. This is called automatically when there's any changes to the text.
+            virtual void ComputeCharactersPositionAndSize();
+
             //function: GetCharacterGlobalPosition
             //Gets the global position of the character
             //If topLeftCorner is true, this will return the top-left corner of the character,
             //Otherwise this will return the left-most position of the character on the baseline (Bottom Left corner).
             virtual glm::vec2 GetCharacterGlobalPosition(int index, bool topLeftCorner);
             
+            //function: GetContainedCharacterIndexFromPos
+            //Gets the character index if the passed in position is contained inside a character
+            virtual int GetContainedCharacterIndexFromPos(glm::vec2 pos);
+            
+            //funciton: GetNearestCharacterIndexFromPos
+            //Gets the character index that is closest to the passed in position.
+            //If useLeftEdge, it will use the left side of the character instead of the center of it.
+            virtual int GetNearestCharacterIndexFromPos(glm::vec2 pos, bool useLeftEdge);
+
+            //function: GetFirstValidCharacterIndex
+            //Return the index of the first valid character (<ssGUI::CharacterRenderInfo::Valid>) 
+            virtual int GetFirstValidCharacterIndex();
+
+            //function: GetLastValidCharacterIndex
+            //Return the index of the last valid character (<ssGUI::CharacterRenderInfo::Valid>)
+            virtual int GetLastValidCharacterIndex();
+
+            //function: IsPosAfterLastCharacter
+            //Returns if the x position is before or after the right side of the last character
+            virtual bool IsPosAfterLastCharacter(glm::vec2 pos);
+            
+            //====================================================================
+            //Group: Text Status, Wrapping, Alignment, Padding And Spacing
+            //====================================================================
+            
             //function: IsOverflow
             //Returns true if the text is overflowing the text widget
             virtual bool IsOverflow() const;
-            
-            //function: SetNewTextFontSize
-            //Sets the size of the font being used for new text being added or set
-            virtual void SetNewTextFontSize(float size);
-            
-            //function: GetNewTextFontSize
-            //Returns the size of the font being used for new text being added or set
-            virtual float GetNewTextFontSize() const;
-
-            //function: SetNewTextColor
-            //Sets the text color being used for new text being added or set
-            virtual void SetNewTextColor(glm::u8vec4 color);
-
-            //function: GetNewTextColor
-            //Gets the text color being used for new text being added or set
-            virtual glm::u8vec4 GetNewTextColor() const;
-
-            //function: SetNewTextUnderlined
-            //Sets if text is underlined for new text being added or set
-            virtual void SetNewTextUnderlined(bool underline);
-
-            //function: IsNewTextUnderlined
-            //Returns if text is underlined for new text being added or set
-            virtual bool IsNewTextUnderlined() const;
-            
-            //function: ApplyNewTextSettingsToExistingText
-            //Applies the new character settings (color, font size, underline, etc...) to all characters
-            virtual void ApplyNewTextSettingsToExistingText();
 
             //function: SetMultilineAllowed
             //If true, newlines will be allowed
@@ -384,26 +436,6 @@ namespace ssGUI
             
             //function: SetTextAlignment
             virtual void SetTextAlignment(ssGUI::Enums::AlignmentHorizontal hori, ssGUI::Enums::AlignmentVertical vert);
-
-            //function: AddFont
-            //Adds the font to the end for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
-            virtual void AddFont(ssGUI::Font* font);
-
-            //function: AddFont
-            //Adds the font to the index position for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
-            virtual void AddFont(ssGUI::Font* font, int index);
-            
-            //function: GetFont
-            virtual ssGUI::Font* GetFont(int index) const;
-
-            //function: SetFont
-            virtual void SetFont(ssGUI::Font* font, int index);
-
-            //function: RemoveFont
-            virtual void RemoveFont(int index);
-
-            //function: GetFontsCount
-            virtual int GetFontsCount() const;
 
             //function: SetTextHorizontalPadding
             //Sets the horizontal padding for the beginning and the end of the text
@@ -444,6 +476,62 @@ namespace ssGUI
             //function: GetTabSize
             //Gets how many space each tab is
             virtual float GetTabSize() const;
+
+            //====================================================================
+            //Group: Text Font, Size, Color And Underline
+            //====================================================================
+
+            //function: AddFont
+            //Adds the font to the end for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
+            virtual void AddFont(ssGUI::Font* font);
+
+            //function: AddFont
+            //Adds the font to the index position for this text object. Multiple fonts can be added as "fall back" if the character is not supported by it.
+            virtual void AddFont(ssGUI::Font* font, int index);
+            
+            //function: GetFont
+            virtual ssGUI::Font* GetFont(int index) const;
+
+            //function: SetFont
+            virtual void SetFont(ssGUI::Font* font, int index);
+
+            //function: RemoveFont
+            virtual void RemoveFont(int index);
+
+            //function: GetFontsCount
+            virtual int GetFontsCount() const;
+
+            //function: SetNewTextFontSize
+            //Sets the size of the font being used for new text being added or set
+            virtual void SetNewTextFontSize(float size);
+            
+            //function: GetNewTextFontSize
+            //Returns the size of the font being used for new text being added or set
+            virtual float GetNewTextFontSize() const;
+
+            //function: SetNewTextColor
+            //Sets the text color being used for new text being added or set
+            virtual void SetNewTextColor(glm::u8vec4 color);
+
+            //function: GetNewTextColor
+            //Gets the text color being used for new text being added or set
+            virtual glm::u8vec4 GetNewTextColor() const;
+
+            //function: SetNewTextUnderlined
+            //Sets if text is underlined for new text being added or set
+            virtual void SetNewTextUnderlined(bool underline);
+
+            //function: IsNewTextUnderlined
+            //Returns if text is underlined for new text being added or set
+            virtual bool IsNewTextUnderlined() const;
+            
+            //function: ApplyNewTextSettingsToExistingText
+            //Applies the new character settings (color, font size, underline, etc...) to all characters
+            virtual void ApplyNewTextSettingsToExistingText();
+
+            //====================================================================
+            //Group: Text Selection
+            //====================================================================
 
             //function: SetTextSelectionAllowed
             //Sets if text selection is allowed
@@ -500,26 +588,9 @@ namespace ssGUI
             //Returns the text to deselect when its focus is lost or not
             virtual bool IsDeselectWhenFocusLost() const;
 
-            //function: GetContainedCharacterIndexFromPos
-            //Gets the character index if the passed in position is contained inside a character
-            virtual int GetContainedCharacterIndexFromPos(glm::vec2 pos);
-            
-            //funciton: GetNearestCharacterIndexFromPos
-            //Gets the character index that is closest to the passed in position.
-            //If useLeftEdge, it will use the left side of the character instead of the center of it.
-            virtual int GetNearestCharacterIndexFromPos(glm::vec2 pos, bool useLeftEdge);
-
-            //function: GetFirstValidCharacterIndex
-            //Return the index of the first valid character (<ssGUI::CharacterRenderInfo::Valid>) 
-            virtual int GetFirstValidCharacterIndex();
-
-            //function: GetLastValidCharacterIndex
-            //Return the index of the last valid character (<ssGUI::CharacterRenderInfo::Valid>)
-            virtual int GetLastValidCharacterIndex();
-
-            //function: IsPosAfterLastCharacter
-            //Returns if the x position is before or after the right side of the last character
-            virtual bool IsPosAfterLastCharacter(glm::vec2 pos);
+            //====================================================================
+            //Group: Default Fonts
+            //====================================================================
 
             //function: AddDefaultFont
             //Adds the font to the end of default fonts. Multiple fonts can be added as "fall back" if the character is not supported by it.
@@ -539,6 +610,10 @@ namespace ssGUI
 
             //function: GetDefaultFontsCount 
             static int GetDefaultFontsCount();
+
+            //====================================================================
+            //Group: Overrides
+            //====================================================================
             
             //function: GetType
             //See <GUIObject::GetType>

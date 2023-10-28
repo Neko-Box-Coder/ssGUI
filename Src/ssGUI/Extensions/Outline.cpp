@@ -28,13 +28,7 @@ namespace Extensions
     Outline::Outline(Outline const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-
-        OutlineThickness = other.GetOutlineThickness();
-        SimpleOutline = other.IsSimpleOutline();
-        InnerOutline = other.IsInnerOutline();
-        OutlineColor = other.GetOutlineColor();
-        ModifiedShapes = other.ModifiedShapes;
+        Copy(&other);
     }
 
     void Outline::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int>const & drawingCounts, int& shapeIndex)
@@ -133,7 +127,7 @@ nextVertex (n)    (a)                   curVertex
 
     void Outline::PlotArc(glm::vec2 start, glm::vec2 end, glm::vec2 circlePos, std::vector<glm::vec2>& plottedPoints)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         glm::vec2 cirOriginline = glm::vec2(1, 0);
         glm::vec2 startDir = (start - circlePos);
         glm::vec2 endDir = (end - circlePos);
@@ -159,7 +153,6 @@ nextVertex (n)    (a)                   curVertex
             ssGUI_ERROR(ssGUI_EXT_TAG, "end: "<<end.x<<", "<<end.y);
             ssGUI_ERROR(ssGUI_EXT_TAG, "circlePos: "<<circlePos.x<<", "<<circlePos.y);
             ssLOG_EXIT_PROGRAM();
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -176,12 +169,11 @@ nextVertex (n)    (a)                   curVertex
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)arcRadius;
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + circlePos);
         }
-        ssLOG_FUNC_EXIT();
     }
 
     void Outline::ConstructComplexOutline(bool isInner)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         //Getting all the rendering details from container
         std::vector<ssGUI::DrawingEntity> newEntities;
 
@@ -191,10 +183,7 @@ nextVertex (n)    (a)                   curVertex
         //Vertices infos of the outline
 
         if(originalEntities.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         ModifiedShapes.UpdateShapesToBeModified(Container->Extension_GetGUIObjectFirstShapeIndex());
 
@@ -307,16 +296,10 @@ nextVertex (n)    (a)                   curVertex
                     glm::vec2 outlinePos2;
 
                     if(!FindInnerOutlinesIntersection(curVertex, prevVertex, nextVertex, GetOutlineThickness(), outlinePos1))
-                    {
-                        ssLOG_FUNC_EXIT();
                         return;
-                    }
                     
                     if(!FindInnerOutlinesIntersection(nextVertex, curVertex, nextNextVertex, GetOutlineThickness(), outlinePos2))
-                    {
-                        ssLOG_FUNC_EXIT();
                         return;
-                    }
 
                     //Link the outline to next vertex if it is present in the verticesToOutline list
                     bool linkingPossible = false;
@@ -353,23 +336,18 @@ nextVertex (n)    (a)                   curVertex
         }
         
         originalEntities.insert(originalEntities.end(), newEntities.begin(), newEntities.end());
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Outline::ConstructSimpleOutline()
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Getting all the rendering details from container
         std::vector<ssGUI::DrawingEntity> newEntities;
         std::vector<ssGUI::DrawingEntity>& originalEntities = Container->Extension_GetDrawingEntities();
 
         if(originalEntities.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         ModifiedShapes.UpdateShapesToBeModified(Container->Extension_GetGUIObjectFirstShapeIndex());
         for(int i = 0; i < originalEntities.size(); i++)
@@ -439,7 +417,6 @@ nextVertex (n)    (a)                   curVertex
         }
         
         originalEntities.insert(originalEntities.begin() + Container->Extension_GetGUIObjectFirstShapeIndex(), newEntities.begin(), newEntities.end());
-        ssLOG_FUNC_EXIT();
     }
 
     void Outline::ConstructRenderInfo()
@@ -632,36 +609,30 @@ nextVertex (n)    (a)                   curVertex
     }
 
     //Extension methods
-    void Outline::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void Outline::Internal_Update(  bool isPreUpdate, 
+                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Outline::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr || isPreRender)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-
-        ssLOG_FUNC_EXIT();
     }
 
-    std::string Outline::GetExtensionName()
+    std::string Outline::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -671,12 +642,12 @@ nextVertex (n)    (a)                   curVertex
         Container = bindObj;
     }
 
-    void Outline::Copy(ssGUI::Extensions::Extension* extension)
+    void Outline::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
 
-        ssGUI::Extensions::Outline* outline = static_cast<ssGUI::Extensions::Outline*>(extension);
+        auto* outline = static_cast<const ssGUI::Extensions::Outline*>(extension);
 
         Enabled = outline->IsEnabled();
 

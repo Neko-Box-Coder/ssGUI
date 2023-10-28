@@ -9,12 +9,6 @@
 #include <stack>
 #include <queue>
 
-#if SSGUI_SLOW_UPDATE
-    //For slowing update for debugging purposes
-    #include <thread>
-    #include <chrono>
-#endif
-
 //namespace: ssGUI
 namespace ssGUI
 {
@@ -25,7 +19,7 @@ namespace ssGUI
     You only need to add the MainWindow object and run it.
     ================== C++ ==================
     ssGUIManager manager = ssGUIManager();
-    manager.AddGUIObject(mainWindowObject);
+    auto* mainWindow = manager.AddRootGUIObject<ssGUI::MainWindow>();
     manager.StartRunning();
     =========================================
 
@@ -59,6 +53,9 @@ namespace ssGUI
 
             bool IsCustomRendering;
             bool ForceRendering;
+            ssGUI::Enums::CursorType LastCursor;
+            std::string LastCursorName;
+            ssGUI::InputStatus LastInputStatus;
 
             float TargetFrameInterval;
             int FrameTimeIndex;
@@ -67,12 +64,11 @@ namespace ssGUI
             
             static ssGUI::ssGUIManager* CurrentInstanceP;
 
+            void InitializeMainWindows();
+
             void Internal_Update();
-            void PollInputs();
-            void CheckMainWindowExistence();
+            bool CheckMainWindowExistence();
             void Render();
-            void UpdateObjects();
-            void UpdateCursor();
             
             ssGUI::GUIObject* FindParentWindowP(ssGUI::GUIObject& obj);
 
@@ -138,8 +134,58 @@ namespace ssGUI
             //This will block the thread until all <MainWindow>s are closed
             void StartRunning();
             
+            //function: StartRunningAsync
+            //This will start the ssGUIManager by initializing exiting main windows.
+            //Call <StepFrame> to process and render the next frame.
+            //Alternatively, you can call the functions separately. See <StepFrame> for more details.
             void StartRunningAsync();
             
+            //function: IsRunningNeeded
+            //Checks if it is necessary to continue to the next frame.
+            //If false, **DO NOT** call any other functions as otherwise the behaviour is undefined.
+            bool IsRunningNeeded();
+            
+            //function: PollInputs
+            //Updates all the input between the last frame up to this moment.
+            void PollInputs();
+            
+            //function: InvokePreGUIObjectsUpdateEvent
+            //Calls any user callback before triggering GUI objects' update
+            void InvokePreGUIObjectsUpdateEvent();
+            
+            //function: UpdateObjects
+            //Calls the GUI Objects main logic, this includes any <Extensions: ssGUI::ExtensionsExtension> 
+            //and <EventCallbacks: ssGUI::EventCallback> as well.
+            void UpdateObjects();
+            
+            //function: CleanUpDeletedObjects
+            //Cleans up any GUI Objects marked as deleted
+            void CleanUpDeletedObjects();
+            
+            //function: InvokePostGUIObjectsUpdateEvent
+            //Calls any user callback after triggering GUI objects' update
+            void InvokePostGUIObjectsUpdateEvent();
+            
+            //function: RenderObjects
+            //Renders GUI objects
+            void RenderObjects();
+            
+            //function: UpdateCursor
+            //Updates (and loads) the cursor if it is changed
+            void UpdateCursor();
+            
+            //function: StepFrame
+            //This is a bundled function which calls all the functions needed for a frame in order for ssGUI to work properly.
+            //This calls in order:
+            //1. <IsRunningNeeded>
+            //2. <PollInputs>
+            //3. <InvokePreGUIObjectsUpdateEvent>
+            //4. <UpdateObjects>
+            //5. <CleanUpDeletedObjects>
+            //6. <InvokePostGUIObjectsUpdateEvent>
+            //7. <CleanUpDeletedObjects>
+            //8. <RenderObjects>
+            //9. <UpdateCursor>
             bool StepFrame();
 
             //function: GetBackendInputInterface
@@ -211,45 +257,27 @@ namespace ssGUI
             float GetTargetFramerate();
             
             //function: IsButtonOrKeyDown
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyDown(ssGUI::Enums::GenericButtonAndKeyInput input) const;
-            
-            //function: IsButtonOrKeyDown
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyDown>
             template<typename T>
             bool IsButtonOrKeyDown(T input) const
             {
-                return IsButtonOrKeyDown(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+                return BackendInput->IsButtonOrKeyDown(input);
             }
             
             //function: IsButtonOrKeyHeld
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyHeld(ssGUI::Enums::GenericButtonAndKeyInput input) const;
-            
-            //function: IsButtonOrKeyHeld
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyHeld>
             template<typename T>
             bool IsButtonOrKeyHeld(T input) const
             {
-                return IsButtonOrKeyHeld(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+                return BackendInput->IsButtonOrKeyHeld(input);
             }
             
             //function: IsButtonOrKeyUp
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyUp(ssGUI::Enums::GenericButtonAndKeyInput input) const;
-            
-            //function: IsButtonOrKeyUp
-            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame> and
-            //<ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
+            //See <ssGUI::Backend::BackendSystemInputInterface::IsButtonOrKeyUp>
             template<typename T>
             bool IsButtonOrKeyUp(T input) const
             {
-                return IsButtonOrKeyUp(static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(input));
+                return BackendInput->IsButtonOrKeyUp(input);
             }
             
             //function: GetMousePosition
@@ -344,21 +372,12 @@ namespace ssGUI
             //function: GetElapsedTimeInMillisecond
             //See <ssGUI::Backend::BackendSystemInputInterface::GetElapsedTime>            
             uint64_t GetElapsedTimeInMillisecond() const;
+            
+            void PrintGUIObjectTree() const;
 
             //function: Clear
             //Clears the console
-            inline void Clear()
-            {
-                #if defined (_WIN32)
-                    system("cls");
-                    //clrscr(); // including header file : conio.h
-                #elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
-                    system("clear");
-                    //std::cout<< u8"\033[2J\033[1;1H"; //Using ANSI Escape Sequences 
-                #elif defined (__APPLE__)
-                    system("clear");
-                #endif
-            }
+            void Clear();
     };
 }
 

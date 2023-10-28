@@ -56,11 +56,17 @@ namespace ssGUI
             GUIObject(GUIObject const& other);
 
             virtual void SetupComponents();
+            
             virtual ssGUI::GUIObject* CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot);
+            
             virtual void CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj);
-            virtual void CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            
+            virtual void CheckRightClickMenu(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                                ssGUI::InputStatus& inputStatus, 
                                                 ssGUI::GUIObject* mainWindow);
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow);
 
         public:
@@ -104,11 +110,16 @@ namespace ssGUI
 
             //function: Internal_Draw
             //(Internal ssGUI function) Draw function called by <ssGUIManager>
-            virtual void Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset);
+            virtual void Internal_Draw( ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                        ssGUI::GUIObject* mainWindow, 
+                                        glm::vec2 mainWindowPositionOffset);
             
             //function: Internal_Update
             //(Internal ssGUI function) Update function called by <ssGUIManager>
-            virtual void Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow);
+            virtual void Internal_Update(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow);
 
             //function: Clone
             //Clone function for cloning the object. Use this function instead of assignment operator or copy constructor.

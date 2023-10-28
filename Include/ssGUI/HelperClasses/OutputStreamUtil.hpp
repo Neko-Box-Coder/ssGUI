@@ -37,8 +37,14 @@ inline std::ostream& operator<<(std::ostream& stream, const std::wstring& str)
 
 namespace ssGUI
 {
-    template<   typename EnumType,
-                typename = typename std::enable_if<std::is_enum<EnumType>::value>::type>
+    template
+    <   
+        typename EnumType,
+        typename =  typename std::enable_if
+                    <
+                        std::is_enum<EnumType>::value
+                    >::type
+    >
     inline std::ostream& operator<<(std::ostream& stream, const EnumType& enumVal)
     {
         stream << typeid(EnumType).name() << ": " << reinterpret_cast<const int&>(enumVal);

@@ -2,8 +2,10 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
-#include "ssGUI/Extensions/Docker.hpp"
-#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Legacy/Docker.hpp"
+#include "ssGUI/Extensions/Legacy/Dockable.hpp"
+
+#include <tuple>
 
 //Layout example
 int main()
@@ -19,7 +21,7 @@ int main()
     // window.AddExtension(new ssGUI::Extensions::Layout());
     // window.RemoveExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME);
     window.AddExtension<ssGUI::Extensions::Docker>();
-    // window.GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(5);
+    // window.GetExtension<ssGUI::Extensions::Layout>()->SetPadding(5);
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
     ssGUI::StandardWindow window2;
@@ -28,6 +30,21 @@ int main()
     ssGUI::StandardWindow window3;
     window3.SetTitlebarColor(glm::u8vec4(127, 255, 127, 255));
     window3.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
+    window3.AddExtension<ssGUI::Extensions::Layout>();
+    window3.AddChild<ssGUI::StandardSlider>();
+    window3.AddChild<ssGUI::StandardSlider>();
+    
+    auto* dummyHolder = window3.AddChild<ssGUI::GUIObject>();
+    dummyHolder->AddExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(true);
+    dummyHolder->AddChild<ssGUI::Text>()->SetText("Test");
+    dummyHolder->AddChild<ssGUI::TextField>();
+    
+    dummyHolder = window3.AddChild<ssGUI::GUIObject>();
+    dummyHolder->AddExtension<ssGUI::Extensions::Layout>()->SetHorizontalLayout(true);
+    dummyHolder->AddChild<ssGUI::Text>()->SetText("Test2");
+    dummyHolder->AddChild<ssGUI::Checkbox>();
+    
+    
     ssGUI::StandardWindow window4;
     window4.SetTitlebarColor(glm::u8vec4(127, 127, 255, 255));
     window4.SetBackgroundColor(glm::u8vec4(100, 100, 100, 255));
@@ -45,6 +62,7 @@ int main()
     //Create the GUIManager, add the main window and start running
     ssGUI::ssGUIManager guiManager;
     guiManager.AddRootGUIObject((ssGUI::GUIObject*)&mainWindow);
+    
     guiManager.StartRunning();
     return 0;
 }

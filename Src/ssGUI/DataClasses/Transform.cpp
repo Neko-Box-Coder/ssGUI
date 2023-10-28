@@ -26,7 +26,7 @@ namespace ssGUI
                                 GlobalPosition(0, 0),
                                 Size(25, 25),
                                 MinSize(25, 25),
-                                MaxSize(std::numeric_limits<float>::max(), std::numeric_limits<float>::max()),
+                                MaxSize(9999, 9999),
                                 Anchor(ssGUI::Enums::AnchorType::TOP_LEFT),
                                 CurrentHierarchy(nullptr),
                                 CurrentRenderer(nullptr),
@@ -48,13 +48,10 @@ namespace ssGUI
 
     void Transform::SyncPosition()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(CurrentHierarchy->GetParent() == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         glm::vec2 parentGlobalPositon = CurrentHierarchy->GetParent()->GetParent() == nullptr ? 
                                         glm::vec2() : CurrentHierarchy->GetParent()->GetGlobalPosition();
@@ -98,19 +95,14 @@ namespace ssGUI
         //Local Position = (Global position - Anchor Point) * anchorDirection
         Position.x = (GlobalPosition.x + positionOffset.x - anchorPosition.x) * anchorDirection.x;
         Position.y = (GlobalPosition.y + positionOffset.y - anchorPosition.y) * anchorDirection.y;
-
-        ssLOG_FUNC_EXIT();
     }
     
     void Transform::SyncGlobalPosition()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(CurrentHierarchy->GetParent() == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         glm::vec2 parentGlobalPositon = CurrentHierarchy->GetParent()->GetParent() == nullptr ? 
             glm::vec2() : CurrentHierarchy->GetParent()->GetGlobalPosition();
@@ -161,8 +153,6 @@ namespace ssGUI
         //Global Position = AnchorPoint + local position * anchorDirection
         GlobalPosition.x = anchorPosition.x + Position.x * anchorDirection.x - positionOffset.x;
         GlobalPosition.y = anchorPosition.y + Position.y * anchorDirection.y - positionOffset.y;
-
-        ssLOG_FUNC_EXIT();
     }
 
     glm::vec2 Transform::GetPosition() const
@@ -228,6 +218,8 @@ namespace ssGUI
 
     void Transform::SetMinSize(glm::vec2 minSize)
     {
+        ssGUI_LOG_FUNC();
+    
         if(MinSize == minSize)
             return;
             

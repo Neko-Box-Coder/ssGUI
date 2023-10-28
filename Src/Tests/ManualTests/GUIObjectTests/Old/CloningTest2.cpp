@@ -31,7 +31,7 @@ int main()
     button.GetEventCallback(ssGUI::EventCallbacks::ButtonStateChangedEventCallback::EVENT_NAME)->AddEventListener
     (
         "AnyKey",
-        [textIndex](ssGUI::EventInfo info)
+        [textIndex](ssGUI::EventInfo& info)
         {
             if(((ssGUI::Button*)info.EventSource)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
             {

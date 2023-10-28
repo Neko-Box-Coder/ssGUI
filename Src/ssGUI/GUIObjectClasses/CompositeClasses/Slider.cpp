@@ -80,7 +80,7 @@ namespace ssGUI
 
     void Slider::UpdateSliderValueFromCursor(glm::vec2 cursorPos)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
 
@@ -109,7 +109,6 @@ namespace ssGUI
             if(IsReverse())
                 SetSliderValue(1 - GetSliderValue());
         }
-        ssLOG_FUNC_EXIT();
     }
 
     void Slider::ConstructRenderInfo()
@@ -184,10 +183,12 @@ namespace ssGUI
         DrawingEntities.push_back(sliderFillEntity);
     }
 
-    void Slider::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void Slider::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {       
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         auto knob = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(KnobObject));
         glm::vec2 curKnobSize = knob == nullptr ? glm::vec2(KnobSize, KnobSize) : knob->GetSize();
@@ -201,10 +202,9 @@ namespace ssGUI
         //If the user clicked on the knob, record the offset
         if(knob != nullptr && knob->GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK && IsInteractable())
         {
-            CursorKnobOffset = 
-                IsVertical() ?
-                mousePos.y - knob->GetGlobalPosition().y : 
-                mousePos.x - knob->GetGlobalPosition().x;
+            CursorKnobOffset =  IsVertical() ?
+                                mousePos.y - knob->GetGlobalPosition().y : 
+                                mousePos.x - knob->GetGlobalPosition().x;
         }
         //If the user is dragging the knob, update the position
         else if(knob != nullptr && ((knob->GetButtonState() == ssGUI::Enums::ButtonState::CLICKING && IsInteractable() && IsBlockInput()) || SliderDragging))
@@ -225,26 +225,22 @@ namespace ssGUI
             //Reposition the knob
             UpdateKnobOffset();
 
-            inputStatus.MouseInputBlockedObject = this;
+            currentInputStatus.MouseInputBlockedData.SetBlockData(this);
         }
         else
         {
             //Check if user clicked on the slider instead. If so, move the knob to the cursor
-            bool mouseWithinWidget = 
-                mousePos.x >= GetGlobalPosition().x && mousePos.x <= GetGlobalPosition().x + GetSize().x &&
-                mousePos.y >= GetGlobalPosition().y && mousePos.y <= GetGlobalPosition().y + GetSize().y;
+            bool mouseWithinWidget =    mousePos.x >= GetGlobalPosition().x && 
+                                        mousePos.x <= GetGlobalPosition().x + GetSize().x &&
+                                        mousePos.y >= GetGlobalPosition().y && 
+                                        mousePos.y <= GetGlobalPosition().y + GetSize().y;
             
-            //TODO: Tidy this
-            if
-            (
-                mouseWithinWidget &&
-                (
-                    inputStatus.MouseInputBlockedObject == nullptr || 
-                    (GetKnobObject() != nullptr && inputStatus.MouseInputBlockedObject == GetKnobObject())
-                ) 
-                &&
-                IsBlockInput()
-            )
+            bool mouseInputNotBlocked = currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE || 
+                                        (   GetKnobObject() != nullptr && 
+                                            currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::GUI_OBJECT &&
+                                            currentInputStatus.MouseInputBlockedData.GetBlockData<ssGUI::GUIObject>() == GetKnobObject());
+            
+            if(mouseWithinWidget && mouseInputNotBlocked && IsBlockInput())
             {
                 if(IsInteractable())
                 {
@@ -305,11 +301,15 @@ namespace ssGUI
                     guiInteracted = oriSliderValue == GetSliderValue() ? false : true;
                 }
 
-                inputStatus.MouseInputBlockedObject = this;
+                currentInputStatus.MouseInputBlockedData.SetBlockData(this);
             }
             
             //Check for keyboard input
-            if(inputStatus.KeyInputBlockedObject == NULL && (IsFocused() || mouseWithinWidget) && IsInteractable() && IsBlockInput() && !guiInteracted)
+            if( currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && 
+                (IsFocused() || mouseWithinWidget) && 
+                IsInteractable() && 
+                IsBlockInput() && 
+                !guiInteracted)
             {
                 float oriSliderValue = GetSliderValue();
                 
@@ -347,7 +347,7 @@ namespace ssGUI
                 {
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? increaseSliderValue() : decreaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
                 //Continuous input of left/down
@@ -357,7 +357,7 @@ namespace ssGUI
                 {
                     LastKeyNavTime = inputInterface->GetElapsedTime();
                     IsReverse() ? increaseSliderValue() : decreaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
 
@@ -366,7 +366,7 @@ namespace ssGUI
                 {
                     LastKeyNavStartTime = inputInterface->GetElapsedTime();
                     IsReverse() ? decreaseSliderValue() : increaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
                 //Continuous input of right/up
@@ -376,7 +376,7 @@ namespace ssGUI
                 {
                     LastKeyNavTime = inputInterface->GetElapsedTime();
                     IsReverse() ? decreaseSliderValue() : increaseSliderValue();
-                    inputStatus.KeyInputBlockedObject = this;
+                    currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                     SetFocus(true);
                 }
 
@@ -418,8 +418,6 @@ namespace ssGUI
         }
 
         LastSliderValue = GetSliderValue();
-
-        ssLOG_FUNC_EXIT();
     }
 
     const std::string Slider::ListenerKey = "Slider";
@@ -464,7 +462,7 @@ namespace ssGUI
         
         button->AddExtension<ssGUI::Extensions::RoundedCorners>()->SetRoundedCornersRadius(KnobSize);
 
-        button->RemoveAnyExtension<ssGUI::Extensions::Border>();
+        button->RemoveExtension<ssGUI::Extensions::Border>();
         button->SetUserCreated(false);
         button->AddExtension<ssGUI::Extensions::Outline>()->SetOutlineThickness(1.5);
         button->SetParent(this, true);
@@ -474,7 +472,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(info.EventSource);
                 glm::u8vec4 btnColor = btn->GetButtonColor();
@@ -590,15 +588,13 @@ namespace ssGUI
 
     void Slider::SetSliderValue(float sliderValue)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         SliderValue = sliderValue;
         SliderValue = SliderValue < 0 ? 0 : SliderValue;
         SliderValue = SliderValue > 1 ? 1 : SliderValue;
 
         ApplySnapping();
         UpdateKnobOffset();
-
-        ssLOG_FUNC_EXIT();
     }
 
     float Slider::GetSliderValue() const
@@ -686,20 +682,16 @@ namespace ssGUI
 
     Slider* Slider::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Slider* temp = new Slider(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

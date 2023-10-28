@@ -15,13 +15,16 @@ namespace ssGUI
     {
     }
 
-    void MenuItem::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-                            ssGUI::GUIObject* mainWindow)
+    void MenuItem::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
-        ssGUI::StandardButton::MainLogic(inputInterface, inputStatus, mainWindow);
+        ssGUI::StandardButton::MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
 
         //Use normal cursor for menu item instead of "click" cursor if hovered
-        if(inputStatus.MouseInputBlockedObject == this)
+        if( currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::GUI_OBJECT &&
+            currentInputStatus.MouseInputBlockedData.GetBlockData<ssGUI::GUIObject>() == this)
         {
             if(inputInterface->GetCursorType() == ssGUI::Enums::CursorType::HAND)
                 inputInterface->SetCursorType(ssGUI::Enums::CursorType::NORMAL);
@@ -32,11 +35,11 @@ namespace ssGUI
     
     MenuItem::MenuItem()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
-        RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
-        RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
-        RemoveAnyExtension<ssGUI::Extensions::Outline>();
+        RemoveExtension<ssGUI::Extensions::BoxShadow>();
+        RemoveExtension<ssGUI::Extensions::RoundedCorners>();
+        RemoveExtension<ssGUI::Extensions::Outline>();
 
         GetButtonTextObject()->SetNewTextFontSize(15);
         GetButtonTextObject()->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::LEFT);
@@ -47,7 +50,7 @@ namespace ssGUI
         buttonEventCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.Container);
                 int buttonReactAmount = 20;
@@ -90,8 +93,6 @@ namespace ssGUI
                 }
             }
         );
-
-        ssLOG_FUNC_EXIT();
     }
 
     MenuItem::~MenuItem()
@@ -108,20 +109,16 @@ namespace ssGUI
 
     MenuItem* MenuItem::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         MenuItem* temp = new MenuItem(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

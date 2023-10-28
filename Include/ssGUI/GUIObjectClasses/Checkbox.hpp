@@ -21,15 +21,17 @@ namespace ssGUI
                             Checked(false)
     {
         SetBackgroundColor(glm::u8vec4(0, 0, 0, 255));
-        auto border = GetAnyExtension<ssGUI::Extensions::Border>();
+        auto border = GetExtension<ssGUI::Extensions::Border>();
         border->SetBorderWidth(2);
         border->SetBorderColor(GetBackgroundColor());
+        SetMinSize(glm::vec2(20, 20));
+        SetMaxSize(glm::vec2(20, 20));
 
         auto buttonEvent = GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         buttonEvent->ClearEventListeners();
         buttonEvent->AddEventListener(
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::Checkbox* btn = static_cast<ssGUI::Checkbox*>(info.EventSource);
                 glm::u8vec4 bgcolor = btn->GetBackgroundColor();
@@ -60,7 +62,7 @@ namespace ssGUI
                         break;
                 }
 
-                auto border = btn->GetAnyExtension<ssGUI::Extensions::Border>();
+                auto border = btn->GetExtension<ssGUI::Extensions::Border>();
 
                 if(border != nullptr)
                     border->SetBorderColor(btn->GetBackgroundColor());

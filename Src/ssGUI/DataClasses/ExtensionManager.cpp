@@ -13,23 +13,6 @@ namespace ssGUI
         CurrentRenderer = nullptr;
         CurrentObject = nullptr;
     }
-    
-    ExtensionManager::ExtensionManager() :  Extensions(),
-                                            ExtensionsDrawOrder(),
-                                            ExtensionsUpdateOrder(),
-                                            CurrentRenderer(nullptr),
-                                            CurrentObject(nullptr)
-    {}
-
-    ExtensionManager::~ExtensionManager()
-    {
-    }
-
-    void ExtensionManager::SetDependentComponents(ssGUI::Renderer* renderer, ssGUI::GUIObject* obj)
-    {
-        CurrentRenderer = renderer;
-        CurrentObject = obj;
-    }
 
     ssGUI::Extensions::Extension* ExtensionManager::GetExtension(std::string extensionName)
     {
@@ -38,23 +21,12 @@ namespace ssGUI
 
         return Extensions[extensionName];
     }
-
-    std::vector<ssGUI::Extensions::Extension*> ExtensionManager::GetListOfExtensions()
-    {
-        std::vector<ssGUI::Extensions::Extension*> returnVector = std::vector<ssGUI::Extensions::Extension*>();
-        
-        for(auto extension : Extensions)
-            returnVector.push_back(extension.second);
-        
-        return returnVector;
-    }
     
-
     bool ExtensionManager::IsExtensionExist(std::string extensionName) const
     {
         return Extensions.find(extensionName) != Extensions.end();
     }
-
+    
     void ExtensionManager::RemoveExtension(std::string extensionName)
     {
         if(!IsExtensionExist(extensionName))
@@ -68,11 +40,6 @@ namespace ssGUI
         Extensions.erase(extensionName);
         ssGUI::Factory::Dispose(targetExtension);
         CurrentRenderer->RedrawObject();
-    }
-
-    int ExtensionManager::GetExtensionsCount() const
-    {
-        return ExtensionsDrawOrder.size();
     }
 
     int ExtensionManager::GetExtensionDrawOrder(std::string extensionName) const
@@ -139,4 +106,35 @@ namespace ssGUI
         CurrentRenderer->RedrawObject();
     }
 
+    ExtensionManager::ExtensionManager() :  Extensions(),
+                                            ExtensionsDrawOrder(),
+                                            ExtensionsUpdateOrder(),
+                                            CurrentRenderer(nullptr),
+                                            CurrentObject(nullptr)
+    {}
+
+    ExtensionManager::~ExtensionManager()
+    {
+    }
+
+    void ExtensionManager::SetDependentComponents(ssGUI::Renderer* renderer, ssGUI::GUIObject* obj)
+    {
+        CurrentRenderer = renderer;
+        CurrentObject = obj;
+    }
+
+    std::vector<ssGUI::Extensions::Extension*> ExtensionManager::GetListOfExtensions()
+    {
+        std::vector<ssGUI::Extensions::Extension*> returnVector = std::vector<ssGUI::Extensions::Extension*>();
+        
+        for(auto extension : Extensions)
+            returnVector.push_back(extension.second);
+        
+        return returnVector;
+    }
+    
+    int ExtensionManager::GetExtensionsCount() const
+    {
+        return ExtensionsDrawOrder.size();
+    }
 }

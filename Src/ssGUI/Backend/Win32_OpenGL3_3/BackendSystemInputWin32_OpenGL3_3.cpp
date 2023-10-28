@@ -25,49 +25,41 @@ namespace Backend
     template <class T>
     void BackendSystemInputWin32_OpenGL3_3::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(std::find_if(vectorAddTo.begin(), vectorAddTo.end(), [&elementToAdd](T key){return elementToAdd == key;}) 
             == vectorAddTo.end())
         {
             vectorAddTo.push_back(elementToAdd);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     template <class T>
     void BackendSystemInputWin32_OpenGL3_3::RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         typename std::vector<T>::iterator foundElement =
             std::find_if(vectorRemoveFrom.begin(), vectorRemoveFrom.end(), [&elementToRemove](T key){return elementToRemove == key;});
 
         if(foundElement != vectorRemoveFrom.end())
             vectorRemoveFrom.erase(foundElement);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputWin32_OpenGL3_3::FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysPressedDown);
         if(it == destinationKeyPresses.end())
             destinationKeyPresses.push_back(keysPressedDown);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputWin32_OpenGL3_3::FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
-        ssLOG_FUNC_ENTRY();        
+        ssGUI_LOG_FUNC();        
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysReleased);
         if(it != destinationKeyPresses.end())
             destinationKeyPresses.erase(it);
-
-        ssLOG_FUNC_EXIT();
     }
 
     HCURSOR BackendSystemInputWin32_OpenGL3_3::CreateWin32Cursor(glm::ivec2 hotspot, ssGUI::ImageData* imgData)
@@ -455,13 +447,12 @@ namespace Backend
     //TODO: Store the hotspot and also shouldn't be setting the cursor 
     void BackendSystemInputWin32_OpenGL3_3::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -470,7 +461,6 @@ namespace Backend
         if(customCursorPtr == nullptr)
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid custom cursor image");
-            ssLOG_FUNC_EXIT();    
             return;
         }
 
@@ -488,7 +478,6 @@ namespace Backend
         if(!result)
         {
             delete[] convertedPtr;
-            ssLOG_FUNC_EXIT();    
             return;
         }
 
@@ -533,14 +522,11 @@ namespace Backend
         if(cursorData.Win32CursorHandle == nullptr)
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to recreate the cursor");
-            ssLOG_FUNC_EXIT();
             return;
         }
 
         //Store cursor
         CustomCursors[cursorName] = cursorData;
-
-        ssLOG_FUNC_EXIT();    
     }
 
     void BackendSystemInputWin32_OpenGL3_3::SetCurrentCustomCursor(std::string cursorName)
@@ -595,7 +581,7 @@ namespace Backend
 
     void BackendSystemInputWin32_OpenGL3_3::UpdateCursor()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         //For each main window, we need to update the cursor
         for(int i = 0; i < ssGUI::Backend::BackendManager::GetMainWindowCount(); i++)
@@ -678,8 +664,6 @@ namespace Backend
 
             #undef SSGUI_SHOW_WIN32_CURSORS
         }
-
-        ssLOG_FUNC_EXIT();
     }
     
     int BackendSystemInputWin32_OpenGL3_3::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)

@@ -20,97 +20,84 @@ namespace ssGUI
         AdaptiveButtonTextColor = other.IsAdaptiveButtonTextColor();
         ButtonTextColorDifference = other.GetAdaptiveButtonTextColorDifference();
         AdaptiveButtonTextContrast = other.IsAdaptiveButtonTextContrast();
-        ButtonMode = other.GetButtonMode();
+        //ButtonMode = other.GetButtonMode();
         ButtonImageWrapper = other.ButtonImageWrapper;
     }
     
-    void StandardButton::UpdateButtonText(bool init)
+    void StandardButton::UpdateButtonText()
     {
-        ssLOG_FUNC_ENTRY();
-        auto buttonTextObj = CurrentObjectsReferences.GetObjectReference(ButtonText);
+        ssGUI_LOG_FUNC();
+        auto* buttonTextObj = CurrentObjectsReferences.GetObjectReference(ButtonText);
         if(buttonTextObj == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
-        if(GetButtonMode() == StandardButton::Mode::ICON)
-        {
-            buttonTextObj->SetEnabled(false);
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-
-        buttonTextObj->SetEnabled(true);
-        // if(!buttonTextObj->HasTag(ssGUI::Tags::FLOATING))
-            // buttonTextObj->AddTag(ssGUI::Tags::FLOATING);
-
-        // ssGUI::Extensions::AdvancedSize* as;
+        MoveChildToFirst(buttonTextObj);
         
-        // if(!buttonTextObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-        //     buttonTextObj->AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::AdvancedSize>());
-        
-        if(init)
-        {
-            static_cast<ssGUI::Text*>(buttonTextObj)->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-            static_cast<ssGUI::Text*>(buttonTextObj)->SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
-        }
-
-        ssLOG_FUNC_EXIT();
+        static_cast<ssGUI::Text*>(buttonTextObj)->SetTextHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        static_cast<ssGUI::Text*>(buttonTextObj)->SetTextVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
     }
 
-    void StandardButton::UpdateButtonImage(bool init)
+    void StandardButton::UpdateButtonImage()
     {
-        ssLOG_FUNC_ENTRY();
-        auto buttonImgObj = CurrentObjectsReferences.GetObjectReference(ButtonImage);
+        ssGUI_LOG_FUNC();
+        auto* buttonImgObj = CurrentObjectsReferences.GetObjectReference(ButtonImage);
         if(buttonImgObj == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
-        auto buttonImgWrapper = CurrentObjectsReferences.GetObjectReference(ButtonImageWrapper);
+        auto* buttonImgWrapper = CurrentObjectsReferences.GetObjectReference(ButtonImageWrapper);
         if(buttonImgWrapper == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
+        
+        MoveChildToFirst(buttonImgWrapper);
+        
+        ssGUI::Extensions::AdvancedSize* as;
+        ssGUI::Extensions::AdvancedPosition* ap;
+        
+        if(!buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
+            buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
-        if(GetButtonMode() == StandardButton::Mode::TEXT)
+        as = buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
+
+        as->SetHorizontalPercentage(0.55);
+        as->SetHorizontalPixel(0);
+        as->SetVerticalPercentage(0.55);
+        as->SetVerticalPixel(0);
+
+        if(!buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
+            buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
+
+        ap = buttonImgObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
+        ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+    }
+
+    glm::u8vec4 StandardButton::GetAdaptiveTextColor() const
+    {
+        glm::ivec4 textResult;
+
+        if(IsAdaptiveButtonTextContrast())
         {
-            buttonImgWrapper->SetEnabled(false);
-            ssLOG_FUNC_EXIT();
-            return;
-        }
-        
-        buttonImgWrapper->SetEnabled(true);
-        // if(!buttonImgWrapper->HasTag(ssGUI::Tags::FLOATING))
-            // buttonImgWrapper->AddTag(ssGUI::Tags::FLOATING);
-        
-        if(init)
-        {
-            ssGUI::Extensions::AdvancedSize* as;
-            ssGUI::Extensions::AdvancedPosition* ap;
+            float averageButtonColor = (GetButtonColor().r + GetButtonColor().g + GetButtonColor().b) / (float)3;
+            float averageTextDiffColor = (  GetAdaptiveButtonTextColorDifference().r + 
+                                            GetAdaptiveButtonTextColorDifference().g + 
+                                            GetAdaptiveButtonTextColorDifference().b) / (float)3;
             
-            if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
-                buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
-
-            as = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
-
-            as->SetHorizontalPercentage(0.55);
-            as->SetHorizontalPixel(0);
-            as->SetVerticalPercentage(0.55);
-            as->SetVerticalPixel(0);
-
-            if(!buttonImgObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
-                buttonImgObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
-
-            ap = buttonImgObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-            ap->SetHorizontalAlignment(ssGUI::Enums::AlignmentHorizontal::CENTER);
-            ap->SetVerticalAlignment(ssGUI::Enums::AlignmentVertical::CENTER);
+            int contrastFactor = averageButtonColor + averageTextDiffColor > 255 ? -1 : 1; 
+            textResult = (glm::ivec4)GetButtonColor() + GetAdaptiveButtonTextColorDifference() * contrastFactor;
         }
+        else
+            textResult = (glm::ivec4)GetButtonColor() + GetAdaptiveButtonTextColorDifference();
 
-        ssLOG_FUNC_EXIT();
+        textResult.r = textResult.r < 0 ? 0 : textResult.r;
+        textResult.r = textResult.r > 255 ? 255 : textResult.r;
+        textResult.g = textResult.g < 0 ? 0 : textResult.g;
+        textResult.g = textResult.g > 255 ? 255 : textResult.g;
+        textResult.b = textResult.b > 255 ? 255 : textResult.b;
+        textResult.b = textResult.b < 0 ? 0 : textResult.b;
+        textResult.a = textResult.a < 0 ? 0 : textResult.a;
+        textResult.a = textResult.a > 255 ? 255 : textResult.a;
+    
+        return glm::u8vec4((uint8_t)textResult.r, (uint8_t)textResult.g, (uint8_t)textResult.b, (uint8_t)textResult.a);
     }
 
     const std::string StandardButton::ListenerKey = "Standard Button";
@@ -120,10 +107,9 @@ namespace ssGUI
                                         AdaptiveButtonTextColor(true),
                                         ButtonTextColorDifference(0, 0, 0, 0),
                                         AdaptiveButtonTextContrast(true),
-                                        ButtonMode(StandardButton::Mode::TEXT),
                                         ButtonImageWrapper(-1)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         SetSize(glm::vec2(70, 35));
 
         //Adjust Extensions
@@ -145,28 +131,9 @@ namespace ssGUI
         layout->AddPreferredSizeMultiplier(0.25);
         layout->AddPreferredSizeMultiplier(0.75);
 
-        //Add Button Image
-        auto wrapper = ssGUI::Factory::Create<ssGUI::Widget>();
-        wrapper->SetParent(this, true);
-        wrapper->SetBlockInput(false);
-        wrapper->SetUserCreated(false);
-        wrapper->SetBackgroundColor(glm::u8vec4(0, 0, 0, 25));
-        ButtonImageWrapper = CurrentObjectsReferences.AddObjectReference(wrapper);
-
-        auto buttonImage = new ssGUI::Image();
-        buttonImage->SetUserCreated(false);
-        buttonImage->SetHeapAllocated(true);
-        buttonImage->SetParent(wrapper);
-        buttonImage->SetMinSize(glm::vec2(5, 5));
-        buttonImage->SetBackgroundColor(glm::u8vec4(0, 0, 0, 0));
-        buttonImage->SetBlockInput(false);
-        ButtonImage = CurrentObjectsReferences.AddObjectReference(buttonImage);
-
         //Add button text
-        auto buttonText = new ssGUI::Text();
+        auto* buttonText = AddChild<ssGUI::Text>(true);
         buttonText->SetUserCreated(false);
-        buttonText->SetHeapAllocated(true);
-        buttonText->SetParent(this, true);
         buttonText->SetMinSize(glm::vec2(5, 5));
         buttonText->SetNewTextColor(glm::u8vec4(255, 255, 255, 255));
         ButtonText = CurrentObjectsReferences.AddObjectReference(buttonText);
@@ -182,7 +149,7 @@ namespace ssGUI
         buttonEventCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.Container);
                 auto iconImage = btn->GetButtonIconObject();
@@ -248,11 +215,9 @@ namespace ssGUI
             }
         ); 
 
-        UpdateButtonText(true);
-        UpdateButtonImage(true);
+        UpdateButtonText();
+        UpdateButtonImage();
         NotifyButtonEventCallbackManually();
-
-        ssLOG_FUNC_EXIT();
     }
 
     StandardButton::~StandardButton()
@@ -279,23 +244,14 @@ namespace ssGUI
         auto buttonImgWrapper = CurrentObjectsReferences.GetObjectReference(ButtonImageWrapper);
         if(buttonImgWrapper == nullptr)
         {
-            ButtonImage = -1;
-            ssLOG_FUNC_EXIT();
-            return;
+            buttonImgWrapper = AddChild<ssGUI::GUIObject>(true);
+            ButtonImageWrapper = CurrentObjectsReferences.AddObjectReference(buttonImgWrapper);
         }
 
-        glm::vec2 globalPos = image->GetGlobalPosition();
         image->SetParent(buttonImgWrapper, true);
-        image->SetGlobalPosition(globalPos);
-
         ssGUIObjectIndex newImageIndex = CurrentObjectsReferences.GetObjectIndex(image);
-
-        if(newImageIndex != -1)
-            ButtonImage = newImageIndex;
-        else
-            ButtonImage = CurrentObjectsReferences.AddObjectReference(image);
-
-        UpdateButtonImage(false);
+        ButtonImage = CurrentObjectsReferences.AddObjectReference(image);
+        UpdateButtonImage();
     }
 
     ssGUI::Image* StandardButton::GetButtonIconObject() const
@@ -335,7 +291,7 @@ namespace ssGUI
 
         text->SetText(oldText);
 
-        UpdateButtonText(false);
+        UpdateButtonText();
     }
 
     ssGUI::Text* StandardButton::GetButtonTextObject() const
@@ -385,18 +341,6 @@ namespace ssGUI
         return ButtonTextColorDifference;
     }
 
-    void StandardButton::SetButtonMode(Mode buttonMode)
-    {
-        ButtonMode = buttonMode;
-        UpdateButtonText(false);
-        UpdateButtonImage(false);
-    }
-
-    StandardButton::Mode StandardButton::GetButtonMode() const
-    {
-        return ButtonMode;
-    }
-
     void StandardButton::SetButtonColor(glm::u8vec4 color)
     {
         Button::SetButtonColor(color);
@@ -410,28 +354,7 @@ namespace ssGUI
             return;    
         }
 
-        glm::ivec4 textResult;
-
-        if(IsAdaptiveButtonTextContrast())
-        {
-            float averageButtonColor = (GetButtonColor().r + GetButtonColor().g + GetButtonColor().b) / (float)3;
-            float averageTextDiffColor = (GetAdaptiveButtonTextColorDifference().r + GetAdaptiveButtonTextColorDifference().g + GetAdaptiveButtonTextColorDifference().b) / (float)3;
-            int contrastFactor = averageButtonColor + averageTextDiffColor > 255 ? -1 : 1; 
-            textResult = (glm::ivec4)GetButtonColor() + GetAdaptiveButtonTextColorDifference() * contrastFactor;
-        }
-        else
-            textResult = (glm::ivec4)color + GetAdaptiveButtonTextColorDifference();
-
-        textResult.r = textResult.r < 0 ? 0 : textResult.r;
-        textResult.r = textResult.r > 255 ? 255 : textResult.r;
-        textResult.g = textResult.g < 0 ? 0 : textResult.g;
-        textResult.g = textResult.g > 255 ? 255 : textResult.g;
-        textResult.b = textResult.b > 255 ? 255 : textResult.b;
-        textResult.b = textResult.b < 0 ? 0 : textResult.b;
-        textResult.a = textResult.a < 0 ? 0 : textResult.a;
-        textResult.a = textResult.a > 255 ? 255 : textResult.a;
-
-        GetButtonTextObject()->SetNewTextColor(glm::u8vec4((uint8_t)textResult.r, (uint8_t)textResult.g, (uint8_t)textResult.b, (uint8_t)textResult.a));
+        GetButtonTextObject()->SetNewTextColor(GetAdaptiveTextColor());
         GetButtonTextObject()->ApplyNewTextSettingsToExistingText();
     }
     
@@ -462,20 +385,16 @@ namespace ssGUI
 
     StandardButton* StandardButton::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         StandardButton* temp = new StandardButton(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

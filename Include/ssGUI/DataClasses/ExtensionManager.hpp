@@ -48,11 +48,29 @@ namespace ssGUI
 
             ExtensionManager(ExtensionManager const&);
 
+            ssGUI::Extensions::Extension* GetExtension(std::string extensionName);
+
+            bool IsExtensionExist(std::string extensionName) const;
+
+            void RemoveExtension(std::string extensionName);
+
+            int GetExtensionDrawOrder(std::string extensionName) const;
+
+            void ChangeExtensionDrawOrder(std::string extensionName, int order);
+
+            int GetExtensionUpdateOrder(std::string extensionName) const;
+
+            void ChangeExtensionUpdateOrder(std::string extensionName, int order);
+
         public:
             ExtensionManager();
             virtual ~ExtensionManager();
 
             virtual void SetDependentComponents(ssGUI::Renderer* renderer, ssGUI::GUIObject* obj);
+            
+            //====================================================================
+            //Group: Adding, Getting And Removing Extension
+            //====================================================================
             
             //function: AddExtension
             //Adds an extension to this GUI Object. If the extension already exists, nothing will be modified.
@@ -61,8 +79,8 @@ namespace ssGUI
             {
                 if(std::is_base_of<ssGUI::Extensions::Extension, T>::value)
                 {
-                    if(IsAnyExtensionExist<T>())
-                        return GetAnyExtension<T>();
+                    if(IsExtensionExist<T>())
+                        return GetExtension<T>();
 
                     auto* extension = ssGUI::Factory::Create<T>();
                     Extensions[extension->GetExtensionName()] = extension;
@@ -107,15 +125,8 @@ namespace ssGUI
             
             //function: GetExtension
             //Gets the extension by the name of it. Nullptr will be returned if not found.
-            virtual ssGUI::Extensions::Extension* GetExtension(std::string extensionName);
-
-            //function: GetAnyExtension
-            //Generic version of <GetExtension>. 
-            //It has to be a different name as template function doesn't support inheritance.
-            //If it had the same name, the derived version of GetExtension will "hide" the generic version of it
-            //and will just throw an error saying the template function is not found.
             template <typename T>
-            T* GetAnyExtension()
+            T* GetExtension()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
@@ -128,13 +139,8 @@ namespace ssGUI
 
             //function: IsExtensionExist
             //Returns true if the extension exists on this GUI Object
-            virtual bool IsExtensionExist(std::string extensionName) const;
-
-            //function: IsAnyExtensionExist
-            //Generic version of <IsExtensionExist>. 
-            //Reason for not having the same name can be found in <GetAnyExtension>
             template <typename T>
-            bool IsAnyExtensionExist()
+            bool IsExtensionExist()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
@@ -143,13 +149,8 @@ namespace ssGUI
             
             //function: RemoveExtension
             //Removes the extension by the name of it
-            virtual void RemoveExtension(std::string extensionName);
-
-            //function: RemoveAnyExtension
-            //Generic version of <RemoveExtension>. 
-            //Reason for not having the same name can be found in <GetAnyExtension>
             template <typename T>
-            void RemoveAnyExtension()
+            void RemoveExtension()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
@@ -160,15 +161,14 @@ namespace ssGUI
             //Returns the number of extensions on this GUI Object
             virtual int GetExtensionsCount() const;
             
+            //====================================================================
+            //Group: Changing Extension Execution Order
+            //====================================================================
+            
             //function: GetExtensionDrawOrder
             //Returns the draw order of the extension by the name of it
-            virtual int GetExtensionDrawOrder(std::string extensionName) const;
-
-            //function: GetAnyExtensionDrawOrder
-            //Generic version of <GetExtensionDrawOrder>. 
-            //Reason for not having the same name can be found in <GetAnyExtension>
             template <typename T>
-            int GetAnyExtensionDrawOrder()
+            int GetExtensionDrawOrder()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
@@ -177,13 +177,8 @@ namespace ssGUI
             
             //function: ChangeExtensionDrawOrder
             //Changes the draw order of the extension by the name of it
-            virtual void ChangeExtensionDrawOrder(std::string extensionName, int order);
-
-            //function: ChangeAnyExtensionDrawOrder
-            //Generic version of <ChangeExtensionDrawOrder>. 
-            //Reason for not having the same name can be found in <GetAnyExtension>
             template <typename T>
-            void ChangeAnyExtensionDrawOrder(int order)
+            void ChangeExtensionDrawOrder(int order)
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
@@ -192,28 +187,18 @@ namespace ssGUI
             
             //function: GetExtensionUpdateOrder
             //Returns the update order of the extension by the name of it
-            virtual int GetExtensionUpdateOrder(std::string extensionName) const;
-
-            //function: GetAnyExtensionUpdateOrder
-            //Generic version of <GetExtensionUpdateOrder>. 
-            //Reason for not having the same name can be found in <GetAnyExtension>
             template <typename T>
-            int GetAnyExtensionUpdateOrder()
+            int GetExtensionUpdateOrder()
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
-                return GetAnyExtensionUpdateOrder(T::EXTENSION_NAME);
+                return GetExtensionUpdateOrder(T::EXTENSION_NAME);
             }
             
             //function: ChangeExtensionUpdateOrder
             //Changes the update order of the extension by the name of it
-            virtual void ChangeExtensionUpdateOrder(std::string extensionName, int order);
-
-            //function: ChangeAnyExtensionUpdateOrder
-            //Generic version of <ChangeExtensionUpdateOrder>. 
-            //Reason for not having the same name can be found in <GetAnyExtension>
             template <typename T>
-            void ChangeAnyExtensionUpdateOrder(int order)
+            void ChangeExtensionUpdateOrder(int order)
             {
                 static_assert(std::is_base_of<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");
                 static_assert(!std::is_same<ssGUI::Extensions::Extension, T>::value, "Invalid Type to get extension");

@@ -22,12 +22,7 @@ namespace Extensions
     AdvancedSize::AdvancedSize(AdvancedSize const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        HorizontalPixelValue = other.GetHorizontalPixel();
-        VerticalPixelValue = other.GetVerticalPixel();
-        HorizontalPercentageValue = other.GetHorizontalPercentage();
-        VerticalPercentageValue = other.GetVerticalPercentage();
-        LastParentSize = other.LastParentSize;
+        Copy(&other);
     }
 
     void AdvancedSize::ConstructRenderInfo()
@@ -105,24 +100,22 @@ namespace Extensions
         return Enabled;
     }
 
-    void AdvancedSize::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void AdvancedSize::Internal_Update( bool isPreUpdate, 
+                                        ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::InputStatus& currentInputStatus, 
+                                        ssGUI::InputStatus& lastInputStatus, 
+                                        ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //This should be done in pre update
         if(!isPreUpdate || Container == nullptr || Container->GetParent() == nullptr || !Enabled)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //Size caching if parent's size hasn't changed
         ssGUI::GUIObject* parent = Container->GetParent();
         if(parent->GetSize() == LastParentSize && !SettingsChanged)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         glm::vec2 finalSize;
 
@@ -141,8 +134,6 @@ namespace Extensions
 
         LastParentSize = parent->GetSize();
         SettingsChanged = false;
-        
-        ssLOG_FUNC_EXIT();
     }
 
     void AdvancedSize::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -150,7 +141,7 @@ namespace Extensions
         //Nothing to draw
     }
 
-    std::string AdvancedSize::GetExtensionName()
+    std::string AdvancedSize::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -160,12 +151,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void AdvancedSize::Copy(ssGUI::Extensions::Extension* extension)
+    void AdvancedSize::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::AdvancedSize* as = static_cast<ssGUI::Extensions::AdvancedSize*>(extension);
+        auto* as = static_cast<const ssGUI::Extensions::AdvancedSize*>(extension);
         Enabled = as->IsEnabled();
         HorizontalPixelValue = as->GetHorizontalPixel();
         VerticalPixelValue = as->GetVerticalPixel();

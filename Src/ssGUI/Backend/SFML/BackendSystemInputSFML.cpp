@@ -20,49 +20,41 @@ namespace Backend
     template <class T>
     void BackendSystemInputSFML::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(std::find_if(vectorAddTo.begin(), vectorAddTo.end(), [&elementToAdd](T key){return elementToAdd == key;}) 
             == vectorAddTo.end())
         {
             vectorAddTo.push_back(elementToAdd);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     template <class T>
     void BackendSystemInputSFML::RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         typename std::vector<T>::iterator foundElement =
             std::find_if(vectorRemoveFrom.begin(), vectorRemoveFrom.end(), [&elementToRemove](T key){return elementToRemove == key;});
 
         if(foundElement != vectorRemoveFrom.end())
             vectorRemoveFrom.erase(foundElement);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputSFML::FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysPressedDown);
         if(it == destinationKeyPresses.end())
             destinationKeyPresses.push_back(keysPressedDown);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputSFML::FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
-        ssLOG_FUNC_ENTRY();        
+        ssGUI_LOG_FUNC();        
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysReleased);
         if(it != destinationKeyPresses.end())
             destinationKeyPresses.erase(it);
-
-        ssLOG_FUNC_EXIT();
     }
 
     BackendSystemInputSFML::BackendSystemInputSFML() :  CurrentKeyPresses(),
@@ -104,7 +96,7 @@ namespace Backend
 
     void BackendSystemInputSFML::UpdateInput(/*std::vector<ssGUI::Backend::BackendMainWindowInterface*>& mainWindows*/)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         InputText.clear();
         MouseScrollDelta = glm::vec2();
         
@@ -254,8 +246,6 @@ namespace Backend
                 }
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputSFML::GetLastButtonAndKeyPresses()
@@ -356,7 +346,7 @@ namespace Backend
 
     void BackendSystemInputSFML::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
@@ -405,8 +395,6 @@ namespace Backend
 
         //Setting hotspot
         CustomCursors[cursorName].second = hotspot;
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputSFML::SetCurrentCustomCursor(std::string cursorName)
@@ -470,7 +458,7 @@ namespace Backend
 
     void BackendSystemInputSFML::UpdateCursor()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         switch (CurrentCursor)
         {
             case ssGUI::Enums::CursorType::NONE:
@@ -562,7 +550,6 @@ namespace Backend
                 static_cast<sf::RenderWindow*>(ssGUI::Backend::BackendManager::GetMainWindowInterface(i)->GetRawHandle())->setMouseCursorVisible(true);
             }
         }
-        ssLOG_FUNC_EXIT();
     }
 
     int BackendSystemInputSFML::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)

@@ -5,7 +5,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/ImageCanvas.hpp"
 #include "ssGUI/Extensions/Border.hpp"
 
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ExamplesResources.h"
 
 //Image Test
@@ -31,7 +31,7 @@ int main()
     (
         [&]()
         {
-            //auto* layout = slider->GetAnyExtension<ssGUI::Extensions::Layout>();
+            //auto* layout = slider->GetExtension<ssGUI::Extensions::Layout>();
             //ssLOG_LINE("layout->GetPreferredSizeMultiplier(0): "<<layout->GetPreferredSizeMultiplier(0));
             //ssLOG_LINE("layout->GetPreferredSizeMultiplier(1): "<<layout->GetPreferredSizeMultiplier(1));
             //ssLOG_LINE("layout->GetPreferredSizeMultiplier(2): "<<layout->GetPreferredSizeMultiplier(2));

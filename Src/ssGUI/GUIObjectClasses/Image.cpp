@@ -140,7 +140,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* image = static_cast<ssGUI::Image*>(info.Container);
                 
@@ -203,20 +203,16 @@ namespace ssGUI
 
     Image* Image::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Image* temp = new Image(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
         
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 

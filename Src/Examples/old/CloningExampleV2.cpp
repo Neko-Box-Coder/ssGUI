@@ -9,7 +9,7 @@ int main()
     ssGUI::MainWindow mainWindow;
     
     auto* window = mainWindow.AddChild<ssGUI::StandardWindow>();                        //Create a standard window, just a fancier window
-    window->RemoveAnyExtension<ssGUI::Extensions::Dockable>();                          //We don't need docking
+    window->RemoveExtension<ssGUI::Extensions::Dockable>();                          //We don't need docking
     window->SetRenderSize(glm::ivec2(450, 80));                                         //Render size same as before
     auto layout = window->AddExtension<ssGUI::Extensions::Layout>();                    //Add layout for auto sizing child GUI objects
     
@@ -32,7 +32,7 @@ int main()
     buttonEventCallback->AddEventListener
     (
         "listenerKey",
-        [textId](ssGUI::EventInfo info)
+        [textId](ssGUI::EventInfo& info)
         {
             auto* textToChange = info.References->GetObjectReference<ssGUI::Text>(textId);
             auto* currentButton = static_cast<ssGUI::StandardButton*>(info.Container);

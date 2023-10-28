@@ -5,7 +5,7 @@
 #include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
-#include "FunctionOverrides.hpp"
+#include "SimpleOverride.hpp"
 
 namespace ssGUI
 {
@@ -17,7 +17,7 @@ namespace Backend
     class BackendFontMock : public BackendFontInterface
     {   
         private:
-            FO_DECLARE_INSTNACE(OverrideObject);
+            SO_DECLARE_INSTNACE(OverrideObject);
 
             ssGUI::Backend::BackendFontInterface* UnderlyingInterface;
 
@@ -27,7 +27,7 @@ namespace Backend
             BackendFontMock(BackendFontMock const& other);
 
         public:
-            FO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+            SO_DECLARE_OVERRIDE_METHODS(OverrideObject)
 
             BackendFontMock(ssGUI::Backend::BackendFontInterface* fontInterface);
             ~BackendFontMock() override;

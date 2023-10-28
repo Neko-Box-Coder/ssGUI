@@ -11,7 +11,7 @@ int main()
 
     //Create a window
     ssGUI::StandardWindow window;
-    window.RemoveAnyExtension<ssGUI::Extensions::Dockable>();           //We don't need docking
+    window.RemoveExtension<ssGUI::Extensions::Dockable>();           //We don't need docking
     window.SetSize(glm::vec2(150, 150));
     window.SetParent(&mainWindow);
 
@@ -50,7 +50,7 @@ int main()
     ecb->AddEventListener
     (
         "AnyKey",
-        [textIndex](ssGUI::EventInfo info)
+        [textIndex](ssGUI::EventInfo& info)
         {
             //When the button is clicked, sets the text
             if(static_cast<ssGUI::Button*>(info.Container)->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)

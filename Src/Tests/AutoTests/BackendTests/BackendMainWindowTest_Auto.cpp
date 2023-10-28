@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/Factory.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssTest.hpp"
 
 #ifdef SSGUI_MAIN_BACKEND_SFML

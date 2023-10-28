@@ -1,6 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Dropdown.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 ssGUI::ssGUIManager* Manager;
 ssGUI::MainWindow* MainWindow;
@@ -20,7 +20,7 @@ void SetUp()
     
     auto* ecb = TestDropdown->AddEventCallback(ssGUI::Enums::EventType::ITEM_SELECTED);
     ecb->AddEventListener(  "key", 
-                            [](ssGUI::EventInfo info)
+                            [](ssGUI::EventInfo& info)
                             {
                                 assert(info.Container == info.EventSource);
                                 assert(info.Container->GetType() == ssGUI::Enums::GUIObjectType::DROPDOWN);

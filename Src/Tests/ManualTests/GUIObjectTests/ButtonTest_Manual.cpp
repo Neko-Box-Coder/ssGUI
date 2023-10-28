@@ -1,5 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 ssGUI::MainWindow* MainWindow = nullptr;
 ssGUI::ssGUIManager* Manager = nullptr;
@@ -38,7 +38,7 @@ void NotifyButtonEventCallbackManuallyTest()    //1
     TestButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
     (
         "Key",
-        [&called](ssGUI::EventInfo info)
+        [&called](ssGUI::EventInfo& info)
         {
             called = true;
         }
@@ -72,7 +72,7 @@ void GetButtonStateTest(bool firstRun)  //2
         TestButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->AddEventListener
         (
             "PrintButtonState",
-            [&](ssGUI::EventInfo info)
+            [&](ssGUI::EventInfo& info)
             {
                 ssLOG_SIMPLE(ssGUI::Enums::ToString(TestButton->GetButtonState()));
             }

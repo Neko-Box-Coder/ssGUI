@@ -193,17 +193,6 @@ namespace Backend
         return false;
     }
     
-    void DynamicImageAtlas::AddOnRequestNewAtlasCallback(std::function<bool(void)> callback)
-    {
-        OnRequestNewAtlasCallback = callback;
-    }
-    
-    glm::ivec2 DynamicImageAtlas::GetAtlasSize()
-    {
-        return AtlasSizeInPixel;
-    }
-    
-    
     DynamicImageAtlas::DynamicImageAtlas(   glm::ivec2 atlasSize, 
                                             glm::ivec2 cellSize,
                                             std::function<bool(void)> newAtlasRequestCallback) :    CellSizeInPixel(cellSize),
@@ -214,16 +203,16 @@ namespace Backend
                                                                                                     ImageInfos(),
                                                                                                     FreeCells(),
                                                                                                     OnRequestNewAtlasCallback(newAtlasRequestCallback),
-                                                                                                    MaxAtlasIndex(0)
+                                                                                                    MaxAtlasIndex(-1)
     {
         //First we calculate the actual atlas texture size we can use
         CellsCountInGrid = AtlasSizeInPixel / CellSizeInPixel;
         UsableSizeInPixel = CellsCountInGrid * CellSizeInPixel;
 
-        FreeCellsInfo cellsInfo;
-        cellsInfo.CellsPositionIndex = glm::ivec3(0, 0, 0);
-        cellsInfo.CellsCountIn2D = CellsCountInGrid;
-        FreeCells.insert(std::make_pair(CellsCountInGrid.x * CellsCountInGrid.y, cellsInfo));
+        //FreeCellsInfo cellsInfo;
+        //cellsInfo.CellsPositionIndex = glm::ivec3(0, 0, 0);
+        //cellsInfo.CellsCountIn2D = CellsCountInGrid;
+        //FreeCells.insert(std::make_pair(CellsCountInGrid.x * CellsCountInGrid.y, cellsInfo));
     }
     
     bool DynamicImageAtlas::RequestImage(ImageAtlasImageInfo imgInfo, int& returnId)
@@ -287,6 +276,22 @@ namespace Backend
         returnInfo = ImageInfos.at(id);
         return true;
     }
+    
+    void DynamicImageAtlas::AddOnRequestNewAtlasCallback(std::function<bool(void)> callback)
+    {
+        OnRequestNewAtlasCallback = callback;
+    }
+    
+    glm::ivec2 DynamicImageAtlas::GetAtlasSize()
+    {
+        return AtlasSizeInPixel;
+    }
+    
+    int DynamicImageAtlas::GetAtlasLayersCount()
+    {
+        return MaxAtlasIndex + 1;
+    }
+    
 }
 
 }

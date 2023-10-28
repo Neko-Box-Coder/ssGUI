@@ -57,7 +57,11 @@ namespace Extensions
 
             //function: Internal_Update
             //Updates function called every frame
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) = 0;
+            virtual void Internal_Update(   bool isPreUpdate, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow) = 0;
             
             //function: Internal_Draw
             //Renders function called every frame
@@ -65,7 +69,7 @@ namespace Extensions
             
             //function: GetExtensionName
             //Returns this extension's name
-            virtual std::string GetExtensionName() = 0;
+            virtual std::string GetExtensionName() const = 0;
             
             //TODO: CHange this to internal
 
@@ -75,7 +79,7 @@ namespace Extensions
             
             //function: Copy
             //Copy all values of this extension to another extension
-            virtual void Copy(ssGUI::Extensions::Extension* extension) = 0;
+            virtual void Copy(const ssGUI::Extensions::Extension* extension) = 0;
 
             //function: Internal_GetObjectsReferences
             //Returns all the referenced GUI Objects. If nullptr is returned, this extension is not referencing any GUI Object (exception for container).

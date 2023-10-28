@@ -52,7 +52,7 @@ int main()
     buttonCallback->AddEventListener
     (
         "Key",
-        [&](ssGUI::EventInfo info)
+        [&](ssGUI::EventInfo& info)
         {
             if(deleteButton.GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK)
             {

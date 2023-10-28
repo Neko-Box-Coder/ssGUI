@@ -17,7 +17,9 @@ namespace ssGUI
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
     }
 
-    void MainWindow::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void MainWindow::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {}
     
@@ -376,9 +378,12 @@ namespace ssGUI
     }
 
     //TODO : Add WindowDragStateChangedEvent call
-    void MainWindow::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void MainWindow::Internal_Update(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::InputStatus& currentInputStatus, 
+                                        ssGUI::InputStatus& lastInputStatus, 
+                                        ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         for(auto extension : ExtensionsUpdateOrder)
         {
@@ -386,7 +391,7 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(true, inputInterface, inputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         }
 
         //Update cursor position offset every .5 seconds
@@ -433,11 +438,11 @@ namespace ssGUI
 
         LastSize = GetSize();
 
-        CheckRightClickMenu(inputInterface, inputStatus, mainWindow);
-        MainLogic(inputInterface, inputStatus, mainWindow);
+        CheckRightClickMenu(inputInterface, currentInputStatus, mainWindow);
+        MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
 
         //Apply focus
-        if(inputStatus.MouseInputBlockedObject == nullptr)
+        if(currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
         {
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(GetBackendWindowInterface());
 
@@ -452,7 +457,7 @@ namespace ssGUI
             
             //Input blocking
             if(mouseInWindowBoundX && mouseInWindowBoundY)
-                inputStatus.MouseInputBlockedObject = this;
+                currentInputStatus.MouseInputBlockedData.SetBlockData(this);
 
             //If mouse click on this, set focus
             if(mouseInWindowBoundX && mouseInWindowBoundY &&
@@ -463,6 +468,10 @@ namespace ssGUI
                 GUIObject::SetFocus(true);
             }
         }
+        
+        //Keyboard blocking
+        if(IsFocused() && currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
+            currentInputStatus.MouseInputBlockedData.SetBlockData(this);
 
         // glm::ivec2 currentMousePos = inputInterface.GetCurrentMousePosition();
         // std::cout << "current mouse pos: "<<currentMousePos.x <<", "<<currentMousePos.y<<"\n";
@@ -477,28 +486,22 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(false, inputInterface, inputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     MainWindow* MainWindow::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         MainWindow* temp = new MainWindow(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
 }

@@ -1,5 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 ssGUI::MainWindow* MainWindow = nullptr;
 ssGUI::ssGUIManager* Manager = nullptr;

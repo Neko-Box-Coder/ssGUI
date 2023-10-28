@@ -34,7 +34,7 @@ int main()
         
         
         //Timing is making sure the listener is triggered **before** the event
-        Callback->AddEventListener( "key", [&](ssGUI::EventInfo info)
+        Callback->AddEventListener( "key", [&](ssGUI::EventInfo& info)
                                     {
                                         if(ListenerNum < 1)
                                         {

@@ -46,7 +46,7 @@ namespace ssGUI
 
         //Swap size multiplier
         SetButtonMode(ssGUI::StandardButton::Mode::BOTH);
-        auto layout = GetAnyExtension<ssGUI::Extensions::Layout>();
+        auto layout = GetExtension<ssGUI::Extensions::Layout>();
         float iconMulti = layout->GetPreferredSizeMultiplier(0);
         float textMulti = layout->GetPreferredSizeMultiplier(1);
         layout->SetPreferredSizeMultiplier(0, textMulti);
@@ -72,7 +72,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.Container);
                 
@@ -118,7 +118,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* dropdown = static_cast<ssGUI::Dropdown*>(info.Container);
                 
@@ -152,7 +152,9 @@ namespace ssGUI
 
             void AddItemListener(ssGUI::EventCallback* ecb, int index);
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:

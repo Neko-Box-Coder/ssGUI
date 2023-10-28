@@ -307,6 +307,8 @@ namespace Extensions
             Nullptr can be returned if the id is invalid. */
             virtual std::vector<glm::u8vec4>* GetAdditionalShapeColorsWithID(int id);
             
+            //TODO: Get shape index with id
+            
             //TODO: Maybe allow getting properties of different shapes
 
             //function: GetAdditionalShapesCount
@@ -344,7 +346,11 @@ namespace Extensions
 
             //function: Internal_Update
             //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
+            virtual void Internal_Update(   bool isPreUpdate, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
@@ -352,7 +358,7 @@ namespace Extensions
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
-            virtual std::string GetExtensionName() override;
+            virtual std::string GetExtensionName() const override;
             
             //function: BindToObject
             //See <Extension::BindToObject>
@@ -360,7 +366,7 @@ namespace Extensions
 
             //function: Copy
             //See <Extension::Copy>
-            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+            virtual void Copy(const ssGUI::Extensions::Extension* extension) override;
 
             //function: Internal_GetObjectsReferences
             //See <Extension::Internal_GetObjectsReferences>

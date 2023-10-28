@@ -25,9 +25,7 @@ namespace Extensions
     RoundedCorners::RoundedCorners(RoundedCorners const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        RoundedCornersRadius = other.GetRoundedCornersRadius();
-        ModifiedShapes = other.ModifiedShapes;
+        Copy(&other);
     }
 
     double RoundedCorners::GetAngle(glm::vec2 a, glm::vec2 b)
@@ -168,7 +166,7 @@ namespace Extensions
 
     void RoundedCorners::GetStartEndVertexIndex(int currentIndex, int& startIndex, int& endIndex, std::vector<int> const & drawingCounts)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         startIndex = 0;
         endIndex = 0;
         for(int i = 0; i < drawingCounts.size(); i++)
@@ -181,20 +179,16 @@ namespace Extensions
             
             startIndex += drawingCounts[i];
         }
-        ssLOG_FUNC_EXIT();
     }
     
     void RoundedCorners::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         std::vector<ssGUI::DrawingEntity> drawingEntities;
         std::vector<ssGUI::DrawingEntity>& originalEntities = Container->Extension_GetDrawingEntities();
 
         if(originalEntities.empty())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         //UpdateVerticesForRounding();
         ModifiedShapes.UpdateShapesToBeModified(Container->Extension_GetGUIObjectFirstShapeIndex());
@@ -299,7 +293,6 @@ namespace Extensions
         }
         
         originalEntities = drawingEntities;
-        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -433,36 +426,29 @@ namespace Extensions
         return Enabled;
     }
 
-    void RoundedCorners::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void RoundedCorners::Internal_Update(   bool isPreUpdate, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
-
+        ssGUI_LOG_FUNC();
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void RoundedCorners::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(!Enabled || Container == nullptr || isPreRender)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-        
-        ssLOG_FUNC_EXIT();
     }
 
-    std::string RoundedCorners::GetExtensionName()
+    std::string RoundedCorners::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -472,21 +458,16 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void RoundedCorners::Copy(ssGUI::Extensions::Extension* extension)
+    void RoundedCorners::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::RoundedCorners* roundedCorners = static_cast<ssGUI::Extensions::RoundedCorners*>(extension);
+        auto* roundedCorners = static_cast<const ssGUI::Extensions::RoundedCorners*>(extension);
         
         Enabled = roundedCorners->IsEnabled();
         RoundedCornersRadius = roundedCorners->GetRoundedCornersRadius();
         ModifiedShapes = roundedCorners->ModifiedShapes;
-        //TargetShapes = roundedCorners->TargetShapes;
-        //TargetVertices = roundedCorners->TargetVertices;
-        //VerticesToRound = roundedCorners->VerticesToRound;
-        //VerticesToRoundPrevVertices = roundedCorners->VerticesToRoundPrevVertices;
-        //VerticesToRoundNextVertices = roundedCorners->VerticesToRoundNextVertices;
     }
 
     ObjectsReferences* RoundedCorners::Internal_GetObjectsReferences()

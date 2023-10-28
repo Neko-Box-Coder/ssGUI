@@ -24,10 +24,8 @@ namespace Extensions
     WindowLayoutItemEnforcer::WindowLayoutItemEnforcer(WindowLayoutItemEnforcer const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        ContainerStartPos = other.ContainerStartPos;
-        ContainerStartSize = other.ContainerStartSize;
-        ContainerResizeStarted = other.ContainerResizeStarted;
+        Copy(&other);
+        LastContainerSize = glm::vec2();
     }
 
     void WindowLayoutItemEnforcer::ConstructRenderInfo()
@@ -54,33 +52,30 @@ namespace Extensions
     }
         
     //Extension methods
-    void WindowLayoutItemEnforcer::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void WindowLayoutItemEnforcer::Internal_Update( bool isPreUpdate, 
+                                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                                    ssGUI::InputStatus& currentInputStatus, 
+                                                    ssGUI::InputStatus& lastInputStatus, 
+                                                    ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(isPreUpdate)
         {
             if(Container->GetType() == ssGUI::Enums::GUIObjectType::WINDOW)
-            {
                 LastContainerSize = Container->GetSize();
-            }
             
-            ssLOG_FUNC_EXIT();
             return;
         }
 
         //Check if parent has layout
         if(Container->GetType() != ssGUI::Enums::GUIObjectType::WINDOW || Container->GetParent() == nullptr || 
-            !Container->GetParent()->IsExtensionExist(ssGUI::Extensions::Layout::EXTENSION_NAME))
+            !Container->GetParent()->IsExtensionExist<ssGUI::Extensions::Layout>())
         {
-            Container->RemoveExtension(GetExtensionName());
-            ssLOG_FUNC_EXIT();
+            Container->RemoveExtension<ssGUI::Extensions::WindowLayoutItemEnforcer>();
             return;
         }
 
@@ -89,17 +84,13 @@ namespace Extensions
         if(!windowContainer->IsResizing())
         {
             ContainerResizeStarted = false;
-            ssLOG_FUNC_EXIT();
             return;
         }
 
         if(LastContainerSize != Container->GetSize())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
-        auto layout = static_cast<ssGUI::Extensions::Layout*>(Container->GetParent()->GetExtension(ssGUI::Extensions::Layout::EXTENSION_NAME));
+        auto layout = Container->GetParent()->GetExtension<ssGUI::Extensions::Layout>();
         
         auto resizeLambda = [&](float targetResizeAmount, float containerResizedAmount, float othersResizedAmount, ssGUI::WindowResizeDragData const & resizeData, bool horizontal)
         {
@@ -115,7 +106,6 @@ namespace Extensions
                 temp.OnTransformBeginSize = Container->GetSize();
                 windowContainer->SetResizeDragData(temp);
                 LastContainerSize = Container->GetSize();
-                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -205,7 +195,6 @@ namespace Extensions
                 ContainerResizeStarted = true;
                 ContainerStartPos = Container->GetGlobalPosition();
                 ContainerStartSize = Container->GetSize();
-                ssLOG_FUNC_EXIT();
                 return;
             }
 
@@ -265,18 +254,15 @@ namespace Extensions
         }
         else
             ContainerResizeStarted = false;
-
-        ssLOG_FUNC_EXIT();
     }
 
     void WindowLayoutItemEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         //Don't need to draw anything
-        ssLOG_FUNC_EXIT();
     }
 
-    std::string WindowLayoutItemEnforcer::GetExtensionName()
+    std::string WindowLayoutItemEnforcer::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -286,12 +272,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void WindowLayoutItemEnforcer::Copy(ssGUI::Extensions::Extension* extension)
+    void WindowLayoutItemEnforcer::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::WindowLayoutItemEnforcer* WindowLayoutItemEnforcer = static_cast<ssGUI::Extensions::WindowLayoutItemEnforcer*>(extension);
+        auto* WindowLayoutItemEnforcer = static_cast<const ssGUI::Extensions::WindowLayoutItemEnforcer*>(extension);
         
         Enabled = WindowLayoutItemEnforcer->IsEnabled();
         ContainerStartPos = WindowLayoutItemEnforcer->ContainerStartPos;

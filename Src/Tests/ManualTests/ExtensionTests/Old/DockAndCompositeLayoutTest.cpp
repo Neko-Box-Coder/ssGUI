@@ -21,7 +21,7 @@ int main()
     // window.AddExtension(new ssGUI::Extensions::Layout());
     // window.RemoveExtension(ssGUI::Extensions::Dockable::EXTENSION_NAME);
     window.AddExtension(ssGUI::Factory::Create<ssGUI::Extensions::Docker>());
-    // window.GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(5);
+    // window.GetExtension<ssGUI::Extensions::Layout>()->SetPadding(5);
     window.SetBackgroundColor(glm::u8vec4(180, 180, 180, 255));
     
     ssGUI::StandardWindow window2;

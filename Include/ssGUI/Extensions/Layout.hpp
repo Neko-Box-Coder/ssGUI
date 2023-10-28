@@ -38,6 +38,7 @@ namespace Extensions
         float Padding;                                                                                  //See <GetPadding>
         float Spacing;                                                                                  //See <GetSpacing>
         bool Overflow;                                                                                  //See <GetOverflow>
+        bool Updated;                                                                                   //(Internal variable) Used for calling parent layout update if present
 
         ObjectsReferences CurrentObjectsReferences;                                                     //(Internal variable) Used to keep track of all the children and event callbacks
 
@@ -64,6 +65,7 @@ namespace Extensions
                         Padding(0),
                         Spacing(5),
                         Overflow(false),
+                        Updated(false),
                         CurrentObjectsReferences(),
                         LastUpdateChildrenSize(),
                         ObjectsToExclude(),
@@ -96,6 +98,7 @@ namespace Extensions
             float Padding;                                                                                  //See <GetPadding>
             float Spacing;                                                                                  //See <GetSpacing>
             bool Overflow;                                                                                  //See <GetOverflow>
+            bool Updated;                                                                                   //(Internal variable) Used for calling parent layout update if present
 
             ObjectsReferences CurrentObjectsReferences;                                                     //(Internal variable) Used to keep track of all the children and event callbacks
 
@@ -105,6 +108,7 @@ namespace Extensions
                                                                                                             //NOTE: subset of ObjectsToExclude that indicates for special objects 
                                                                                                             //that are not excluded by the user, which is maintain by the extension itself.
 
+            //TODO: Remove this, this seems to not be used anymore
             std::unordered_map<ssGUIObjectIndex, glm::vec2> OriginalChildrenSize;                           //(Internal variable) Used to restore the size of the child when its parent being set to other GUI object
             std::unordered_map<ssGUIObjectIndex, ssGUI::Enums::ResizeType> OriginalChildrenResizeType;      //(Internal variable) Used to restore the resize type of the child when its parent being set to other GUI object
             std::unordered_map<ssGUIObjectIndex, bool> OriginalChildrenOnTop;                               //(Internal variable) Used to restore if the child moves to top if focused when its parent being set to other GUI object
@@ -117,8 +121,13 @@ namespace Extensions
             static void operator delete(void* p)        {free(p);};
             static void operator delete[](void* p)      {free(p);};
 
-            void LayoutChildren(float startPos, float length, std::vector<float>& childrenPos, std::vector<float>& childrenLength, 
-                                std::vector<float>& minChildrenLength, std::vector<float>& maxChildrenLength, int lastChildChangeIndex,
+            void LayoutChildren(float startPos, 
+                                float length, 
+                                std::vector<float>& childrenPos, 
+                                std::vector<float>& childrenLength, 
+                                std::vector<float>& minChildrenLength, 
+                                std::vector<float>& maxChildrenLength, 
+                                int lastChildChangeIndex,
                                 float sizeDiff);
 
             void UpdateChildrenResizeTypesAndOnTop();
@@ -131,8 +140,12 @@ namespace Extensions
 
             void DisableChildrenResizingInUpdate();
 
-            void GetAndValidateChildrenDetails(std::vector<float>& childrenPos, std::vector<float>& childrenSize, std::vector<float>& childrenMinSize,
-                                    std::vector<float>& childrenMaxSize, glm::vec2 containerPos, glm::vec2 containerSize);
+            void GetAndValidateChildrenDetails( std::vector<float>& childrenPos, 
+                                                std::vector<float>& childrenSize, 
+                                                std::vector<float>& childrenMinSize,
+                                                std::vector<float>& childrenMaxSize, 
+                                                glm::vec2 containerPos, 
+                                                glm::vec2 containerSize);
             
             void GetLastDifferentChild(std::vector<float>& childrenPos, std::vector<float>& childrenSize, float& sizeDiff, int& lastChildChangeIndex);
 
@@ -148,9 +161,11 @@ namespace Extensions
             static const std::string EXTENSION_NAME;
 
             //function: IsHorizontalLayout
+            //Returns true if the children are positioned left to right (horizontal) or top to bottom (vertical)
             virtual bool IsHorizontalLayout() const;
             
             //function: SetHorizontalLayout
+            //Sets if the children are positioned left to right (horizontal) or top to bottom (vertical)
             virtual void SetHorizontalLayout(bool horizontal);
 
             //function: AddPreferredSizeMultiplier
@@ -159,6 +174,8 @@ namespace Extensions
             virtual void AddPreferredSizeMultiplier(float sizeMultiplier);
             
             //function: AddPreferredSizeMultiplier
+            //Template version of <AddPreferredSizeMultiplier> for adding multiple size multipliers at once.
+            //See <AddPreferredSizeMultiplier>
             template<typename... floats>
             inline void AddPreferredSizeMultipliers(float sizeMultiplier, floats... sizeMultipliers)
             {
@@ -167,6 +184,8 @@ namespace Extensions
             }
 
             //function: AddPreferredSizeMultiplier
+            //Array version of <AddPreferredSizeMultiplier> for adding multiple size multipliers at once.
+            //See <AddPreferredSizeMultiplier>
             virtual void AddPreferredSizeMultipliers(float sizeMultipliers[], int count);
 
             //function: SetPreferredSizeMultiplier
@@ -276,6 +295,13 @@ namespace Extensions
             //If a GUI Object is excluded, it will be ignored
             virtual void UnexcludeObject(ssGUI::GUIObject* obj);
 
+            //function: ForceUpdateLayout
+            //Forces layout to be updated early, and it will not be updated again by <Internal_Update>
+            virtual void ForceUpdateLayout( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow);
+
             //function: Internal_OnRecursiveChildAdded
             //(Internal ssGUI function) Listener function when a child is being added
             virtual void Internal_OnRecursiveChildAdded(ssGUI::GUIObject* child);
@@ -297,9 +323,17 @@ namespace Extensions
             //See <Extension::IsEnabled>
             virtual bool IsEnabled() const override;
 
-            //function: Internal_Update
-            //See <Extension::Internal_Update>
-            virtual void Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow) override;
+            /*function: Internal_Update
+            For nested layouts, layout needs to be updated from parent to children which is the reverse order of update.
+            Therefore, this will call it's parent layout (if there's one) and it's possible for its update logic to be called before its container update.
+            
+            For what <Internal_Update> does, see <Extension::Internal_Update>
+            */
+            virtual void Internal_Update(   bool isPreUpdate, 
+                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::InputStatus& currentInputStatus, 
+                                            ssGUI::InputStatus& lastInputStatus, 
+                                            ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
@@ -307,7 +341,7 @@ namespace Extensions
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>
-            virtual std::string GetExtensionName() override;
+            virtual std::string GetExtensionName() const override;
             
             //function: BindToObject
             //See <Extension::BindToObject>
@@ -315,7 +349,7 @@ namespace Extensions
 
             //function: Copy
             //See <Extension::Copy>
-            virtual void Copy(ssGUI::Extensions::Extension* extension) override;
+            virtual void Copy(const ssGUI::Extensions::Extension* extension) override;
 
             //function: Internal_GetObjectsReferences
             //See <Extension::Internal_GetObjectsReferences>

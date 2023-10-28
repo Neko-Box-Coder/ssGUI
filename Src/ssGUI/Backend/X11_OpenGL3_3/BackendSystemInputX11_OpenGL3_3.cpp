@@ -29,49 +29,41 @@ namespace Backend
     template <class T>
     void BackendSystemInputX11_OpenGL3_3::AddNonExistElement(T elementToAdd, std::vector<T>& vectorAddTo)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(std::find_if(vectorAddTo.begin(), vectorAddTo.end(), [&elementToAdd](T key){return elementToAdd == key;}) 
             == vectorAddTo.end())
         {
             vectorAddTo.push_back(elementToAdd);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     template <class T>
     void BackendSystemInputX11_OpenGL3_3::RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         typename std::vector<T>::iterator foundElement =
             std::find_if(vectorRemoveFrom.begin(), vectorRemoveFrom.end(), [&elementToRemove](T key){return elementToRemove == key;});
 
         if(foundElement != vectorRemoveFrom.end())
             vectorRemoveFrom.erase(foundElement);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputX11_OpenGL3_3::FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysPressedDown);
         if(it == destinationKeyPresses.end())
             destinationKeyPresses.push_back(keysPressedDown);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void BackendSystemInputX11_OpenGL3_3::FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
     {
-        ssLOG_FUNC_ENTRY();        
+        ssGUI_LOG_FUNC();        
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysReleased);
         if(it != destinationKeyPresses.end())
             destinationKeyPresses.erase(it);
-
-        ssLOG_FUNC_EXIT();
     }
     
     bool BackendSystemInputX11_OpenGL3_3::PopulateCursorDataHandles(CursorData& cursorData)
@@ -191,7 +183,7 @@ namespace Backend
     
     void BackendSystemInputX11_OpenGL3_3::UpdateInput()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         FetchEvents();
 
         ssGUI::Backend::X11RawHandle* rawHandle = nullptr;
@@ -589,8 +581,6 @@ namespace Backend
             //Clear buffer
             InputCharsBuffer.clear();
         }
-        
-        ssLOG_FUNC_EXIT();
     }
 
     const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputX11_OpenGL3_3::GetLastButtonAndKeyPresses()

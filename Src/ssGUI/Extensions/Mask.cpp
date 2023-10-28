@@ -86,7 +86,7 @@ namespace Extensions
     bool Mask::IsAABBOverlap(const std::vector<glm::vec2>& shapeVerticies, glm::vec2 maskMin, glm::vec2 maskMax,
                             glm::vec2& shapeMin, glm::vec2& shapeMax)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         shapeMin = shapeVerticies[0];
         shapeMax = shapeVerticies[0];
@@ -103,18 +103,11 @@ namespace Extensions
         }
         
         if(!CheckLinesOverlapping(shapeMin.x, shapeMax.x, maskMin.x, maskMax.x))
-        {
-            ssLOG_FUNC_EXIT();
             return false;
-        }
         
         if(!CheckLinesOverlapping(shapeMin.y, shapeMax.y, maskMin.y, maskMax.y))
-        {
-            ssLOG_FUNC_EXIT();
             return false;
-        }
-
-        ssLOG_FUNC_EXIT();
+        
         return true;
     }
 
@@ -124,7 +117,7 @@ namespace Extensions
                                 const std::vector<glm::vec2>& shapeVerticies, 
                                 std::vector<glm::vec2>& maskVerticies)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         //For each vertices for this shape
         for(int currentShapeVertexIndex = 0; currentShapeVertexIndex < shapeVerticies.size(); currentShapeVertexIndex++)
         {
@@ -146,7 +139,6 @@ namespace Extensions
                 }
             }   
         }
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::FormNewShapeWithIntersections(   ssGUI::DrawingEntity& currentEntity,
@@ -159,7 +151,7 @@ namespace Extensions
                                                 std::vector<int>& shapeIntersectIndices, 
                                                 std::vector<int>& maskIntersectIndices)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Lambda function of adding new vertex infomation
         auto addNewVertexInfo = []( ssGUI::DrawingEntity& currentEntity, 
@@ -343,15 +335,13 @@ namespace Extensions
                 }
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::SampleNewUVsAndColoursForShapes( const std::vector<DrawingEntity>& originalEntities, 
                                                 std::vector<DrawingEntity>& newEntities, 
                                                 std::vector<std::vector<bool>>& changed)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Sample the new UVs and colours
         if(changed.size() != newEntities.size())
@@ -403,7 +393,6 @@ namespace Extensions
                                                     glm::vec4(colourAxis2) * axis2Value;
             }
         }
-        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::LineToLineIntersection(  glm::vec2 linePointA, glm::vec2 linePointB, 
@@ -591,12 +580,11 @@ namespace Extensions
 
     bool Mask::GetSampleIndicesFromShape(const std::vector<glm::vec2>& vertices, int closestIndices[], glm::vec2 samplePoint)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(vertices.size() < 3)
         {
             ssGUI_ERROR(ssGUI_EXT_TAG, "We are trying to sample a shape that has less than 3 vertices, this is invalid");
-            ssLOG_FUNC_EXIT();
             return false;
         }
 
@@ -682,19 +670,15 @@ namespace Extensions
             }
         }
         
-        ssLOG_FUNC_EXIT();
         return true;
     }
 
     void Mask::AddMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         std::queue<ssGUI::GUIObject*> children;
 
@@ -726,15 +710,14 @@ namespace Extensions
             }
             Container->PopChildrenIterator();
 
-            if(!child->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
+            if(!child->IsExtensionExist<ssGUI::Extensions::MaskEnforcer>())
             {
                 child   ->AddExtension<ssGUI::Extensions::MaskEnforcer>()
                         ->AddTargetMaskObject(Container);
             }
             else
             {
-                ssGUI::Extensions::MaskEnforcer* maskEnforcer = static_cast<ssGUI::Extensions::MaskEnforcer*>(
-                    child->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME));
+                ssGUI::Extensions::MaskEnforcer* maskEnforcer = child->GetExtension<ssGUI::Extensions::MaskEnforcer>();
                 
                 if(!maskEnforcer->HasTargetMaskObject(Container))
                     maskEnforcer->AddTargetMaskObject(Container);
@@ -751,19 +734,14 @@ namespace Extensions
 
             children.pop();
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::RemoveMaskEnforcerToChildren(ssGUI::GUIObject* parent, bool includeParent)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         std::queue<ssGUI::GUIObject*> children;
         if(!includeParent)
@@ -784,16 +762,15 @@ namespace Extensions
         {
             ssGUI::GUIObject* child = children.front();
 
-            if(child->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
+            if(child->IsExtensionExist<ssGUI::Extensions::MaskEnforcer>())
             {
-                ssGUI::Extensions::MaskEnforcer* enforcer = dynamic_cast<ssGUI::Extensions::MaskEnforcer*>
-                    (child->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME));
+                ssGUI::Extensions::MaskEnforcer* enforcer = child->GetExtension<ssGUI::Extensions::MaskEnforcer>();
                 
                 //Check if it has more than 1 Target Mask GUI Object, if just remove Target Mask GUI Object
                 if(enforcer->HasTargetMaskObject(Container))
                 {
                     if(enforcer->GetTargetMaskObjects().size() == 1)
-                        child->RemoveExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME);
+                        child->RemoveExtension<ssGUI::Extensions::MaskEnforcer>();
                     else
                         enforcer->RemoveTargetMaskObject(Container);
                 }
@@ -810,8 +787,6 @@ namespace Extensions
 
             children.pop();
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::ConstructRenderInfo()
@@ -854,29 +829,19 @@ namespace Extensions
     Mask::Mask(Mask const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        MaskChildren = other.GetMaskChildren();
-        MaskContainer = other.IsMaskContainer();
-        FollowContainer = other.GetFollowContainer();
-        FollowPositionOffset = other.GetFollowPositionOffset();
-        FollowSizePadding = other.GetFollowSizePadding();
-        GlobalPosition = other.GetGlobalPosition();
-        Size = other.GetSize();
+        Copy(&other);
     }
 
     const std::string Mask::EXTENSION_NAME = "Mask";
 
     void Mask::SetMaskChildren(bool maskChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         MaskChildren = maskChildren;
 
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         std::queue<ssGUI::GUIObject*> children;
 
@@ -897,7 +862,7 @@ namespace Extensions
                 Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_ADDED)->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildAdded, this, std::placeholders::_1)
                 );
             }
@@ -908,7 +873,7 @@ namespace Extensions
                 event->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildAdded(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildAdded, this, std::placeholders::_1)
                 );
             }
@@ -918,7 +883,7 @@ namespace Extensions
                 Container->GetEventCallback(ssGUI::Enums::EventType::RECURSIVE_CHILD_REMOVED)->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildRemoved, this, std::placeholders::_1)
                 );
             }
@@ -929,7 +894,7 @@ namespace Extensions
                 event->AddEventListener
                 (
                     EXTENSION_NAME,
-                    [this](ssGUI::EventInfo info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
+                    [this](ssGUI::EventInfo& info){Internal_RecursiveChildRemoved(info.EventSource);}         //TODO: Use ObjectsReferences instead of this
                     // std::bind(&ssGUI::Extensions::Mask::Internal_RecursiveChildRemoved, this, std::placeholders::_1)
                 );
             }
@@ -951,8 +916,6 @@ namespace Extensions
                 
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::GetMaskChildren() const
@@ -962,26 +925,22 @@ namespace Extensions
 
     void Mask::SetMaskContainer(bool maskContainer)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         MaskContainer = maskContainer;
 
         if(Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(maskContainer)
         {
-            if(!Container->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))
+            if(!Container->IsExtensionExist<ssGUI::Extensions::MaskEnforcer>())
             {
                 Container   ->AddExtension<ssGUI::Extensions::MaskEnforcer>()
                             ->AddTargetMaskObject(Container);
             }
             else
             {
-                ssGUI::Extensions::MaskEnforcer* enforcer = static_cast<ssGUI::Extensions::MaskEnforcer*>
-                    (Container->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME));
+                ssGUI::Extensions::MaskEnforcer* enforcer = Container->GetExtension<ssGUI::Extensions::MaskEnforcer>();
                 
                 if(!enforcer->HasTargetMaskObject(Container))
                     enforcer->AddTargetMaskObject(Container);
@@ -989,20 +948,17 @@ namespace Extensions
         }
         else
         {
-            if(Container->IsExtensionExist(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME) && static_cast<ssGUI::Extensions::MaskEnforcer*>
-                (Container->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME))->HasTargetMaskObject(Container))
+            if( Container->IsExtensionExist<ssGUI::Extensions::MaskEnforcer>() && 
+                Container->GetExtension<ssGUI::Extensions::MaskEnforcer>()->HasTargetMaskObject(Container))
             {
-                ssGUI::Extensions::MaskEnforcer* enforcer = static_cast<ssGUI::Extensions::MaskEnforcer*>
-                    (Container->GetExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME));
+                ssGUI::Extensions::MaskEnforcer* enforcer = Container->GetExtension<ssGUI::Extensions::MaskEnforcer>();
                 
                 if(enforcer->GetTargetMaskObjects().size() == 1)
-                    Container->RemoveExtension(ssGUI::Extensions::MaskEnforcer::EXTENSION_NAME);
+                    Container->RemoveExtension<ssGUI::Extensions::MaskEnforcer>();
                 else
                     enforcer->RemoveTargetMaskObject(Container);
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     bool Mask::IsMaskContainer() const
@@ -1081,21 +1037,19 @@ namespace Extensions
 
     void Mask::Internal_RecursiveChildAdded(ssGUI::GUIObject* child)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         AddMaskEnforcerToChildren(child, true);
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::Internal_RecursiveChildRemoved(ssGUI::GUIObject* child)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         RemoveMaskEnforcerToChildren(child, true);
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::MaskObject(ssGUI::GUIObject* obj, glm::vec2 maskOffset, const std::vector<ssGUI::TargetShape>& applyShapes)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         std::vector<glm::vec2> maskShape;
         
@@ -1244,8 +1198,6 @@ namespace Extensions
         }
         
         obj->Extension_GetDrawingEntities() = newEntities;
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::SetEnabled(bool enabled)
@@ -1262,15 +1214,16 @@ namespace Extensions
     }
     
     //Extension methods
-    void Mask::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void Mask::Internal_Update( bool isPreUpdate, 
+                                ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(isPreUpdate || Container == nullptr || !Enabled)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(FollowContainer)
         {
@@ -1297,8 +1250,6 @@ namespace Extensions
                 SetSize(Container->GetSize() + FollowSizePadding);
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Mask::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
@@ -1306,7 +1257,7 @@ namespace Extensions
         //Call mask function
     }
 
-    std::string Mask::GetExtensionName()
+    std::string Mask::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -1322,12 +1273,12 @@ namespace Extensions
             SetMaskContainer(true); //Same thing here
     }
 
-    void Mask::Copy(ssGUI::Extensions::Extension* extension)
+    void Mask::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Mask* mask = static_cast<ssGUI::Extensions::Mask*>(extension);
+        auto* mask = static_cast<const ssGUI::Extensions::Mask*>(extension);
         
         Enabled = mask->IsEnabled();
         MaskChildren = mask->GetMaskChildren();

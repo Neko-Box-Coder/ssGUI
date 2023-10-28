@@ -1,11 +1,13 @@
 #ifndef SSGUI_BACKEND_SYSTEM_INPUT_MOCK_H
 #define SSGUI_BACKEND_SYSTEM_INPUT_MOCK_H
 
-#include "FunctionOverrides.hpp"
+#include "SimpleOverride.hpp"
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 
 //#define SSGUI_MOCK_ENABLE_LOG
 #include "ssGUI/Backend/Mocks/MockMacro.hpp"
+
+#include <chrono>
 
 namespace ssGUI
 {
@@ -54,7 +56,7 @@ namespace Backend
             std::chrono::high_resolution_clock::time_point StartTime;
             
 
-            FO_DECLARE_INSTNACE(OverrideObject);
+            SO_DECLARE_INSTNACE(OverrideObject);
 
             BackendSystemInputMock& operator=(BackendSystemInputMock const& other);
 
@@ -65,7 +67,7 @@ namespace Backend
             BackendSystemInputMock(ssGUI::Backend::BackendSystemInputInterface* systemInputInterface);
             ~BackendSystemInputMock() override;
             
-            FO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+            SO_DECLARE_OVERRIDE_METHODS(OverrideObject)
             
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendSystemInputInterface*, UnderlyingInterface)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::vector<ssGUI::Enums::GenericButtonAndKeyInput>, LastKeyPresses)

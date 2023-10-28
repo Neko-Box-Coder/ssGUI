@@ -31,7 +31,9 @@ namespace ssGUI
         currentMenu->SetEnabled(false);        
     }
 
-    void Menu::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void Menu::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
         if(!IsFocused())
@@ -68,8 +70,8 @@ namespace ssGUI
         SetSize(glm::vec2(200, GetSize().y));
         AddExtension<ssGUI::Extensions::Layout>();
         AddExtension<ssGUI::Extensions::Border>();
-        GetAnyExtension<ssGUI::Extensions::Layout>()->SetPadding(2);
-        GetAnyExtension<ssGUI::Extensions::Layout>()->SetSpacing(0);
+        GetExtension<ssGUI::Extensions::Layout>()->SetPadding(2);
+        GetExtension<ssGUI::Extensions::Layout>()->SetSpacing(0);
         SetBackgroundColor(glm::u8vec4(150, 150, 150, 255));
         AddTag(ssGUI::Tags::FLOATING);
     }
@@ -173,7 +175,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [menuIndex](ssGUI::EventInfo info)
+            [menuIndex](ssGUI::EventInfo& info)
             {
                 auto btn = static_cast<ssGUI::Button*>(info.EventSource);
                 if(btn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
@@ -199,11 +201,11 @@ namespace ssGUI
         menuItem->Delete();
         
         //Validation check
-        if(!IsAnyExtensionExist<ssGUI::Extensions::Layout>())
+        if(!IsExtensionExist<ssGUI::Extensions::Layout>())
             return;
         
         //Removing space created by the menu item that we deleted
-        auto* layout = GetAnyExtension<ssGUI::Extensions::Layout>();
+        auto* layout = GetExtension<ssGUI::Extensions::Layout>();
         float layoutItemSpacing = layout->GetSpacing() + layout->GetPadding() * 2;
         
         if(layout->IsHorizontalLayout())
@@ -214,13 +216,20 @@ namespace ssGUI
     
     void Menu::ClearMenuItems()
     {
-        std::vector<ssGUI::GUIObject*> children = GetListOfChildren();
-        
-        for(int i = 0; i < children.size(); i++)
+        StashChildrenIterator();
+        MoveChildrenIteratorToFirst();
+        while(!IsChildrenIteratorEnd())
         {
-            if(children[i]->GetType() == ssGUI::Enums::GUIObjectType::MENU_ITEM)
-                RemoveMenuItem(static_cast<ssGUI::MenuItem*>(children[i]));
+            if(GetCurrentChild()->GetType() == ssGUI::Enums::GUIObjectType::MENU_ITEM)
+            {
+                ssGUI::GUIObject* currentChild = GetCurrentChild();
+                MoveChildrenIteratorNext();
+                RemoveMenuItem(static_cast<ssGUI::MenuItem*>(currentChild));
+            }
+            else
+                MoveChildrenIteratorNext();
         }
+        PopChildrenIterator();
     }
 
     ssGUI::MenuItem* Menu::AddMenuItem()
@@ -248,7 +257,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [subMenuIndex, menuIndex](ssGUI::EventInfo info)
+            [subMenuIndex, menuIndex](ssGUI::EventInfo& info)
             {
                 auto btn = static_cast<ssGUI::Button*>(info.EventSource);
                 if(btn->GetButtonState() == ssGUI::Enums::ButtonState::CLICKED)
@@ -344,20 +353,16 @@ namespace ssGUI
 
     Menu* Menu::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Menu* temp = new Menu(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
 }

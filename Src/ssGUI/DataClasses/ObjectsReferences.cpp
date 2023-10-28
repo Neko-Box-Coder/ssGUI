@@ -15,7 +15,7 @@ namespace ssGUI
 
     ObjectsReferences::ObjectsReferences(ObjectsReferences const& other)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         ObjectsReferencesTable = other.ObjectsReferencesTable;
         ReverseObjectsReferencesTable = other.ReverseObjectsReferencesTable;
@@ -37,8 +37,6 @@ namespace ssGUI
                 ssLOG_EXIT_PROGRAM();
             }
         }
-        
-        ssLOG_FUNC_EXIT();
     }
 
     ObjectsReferences::~ObjectsReferences()
@@ -48,7 +46,7 @@ namespace ssGUI
 
     ObjectsReferences& ObjectsReferences::operator=(ObjectsReferences const& other)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         ObjectsReferencesTable = other.ObjectsReferencesTable;
         ReverseObjectsReferencesTable = other.ReverseObjectsReferencesTable;
         NextFreeIndex = other.NextFreeIndex;
@@ -70,7 +68,6 @@ namespace ssGUI
             }
         }
         
-        ssLOG_FUNC_EXIT();
         return *this;
     }
 
@@ -81,18 +78,12 @@ namespace ssGUI
 
     ssGUIObjectIndex ObjectsReferences::AddObjectReference(ssGUI::GUIObject* obj)
     {
-        // ssLOG_FUNC_ENTRY();
-        
         if(CleanedUp)
-        {
-            // ssLOG_FUNC_EXIT();
             return -1;
-        }
         
         if(obj == nullptr)
         {
             ssGUI_ERROR(ssGUI_DATA_TAG, "Attempted to add nullptr");
-            // ssLOG_FUNC_EXIT();
             ssLOG_EXIT_PROGRAM();
             return -1;
         }
@@ -102,46 +93,28 @@ namespace ssGUI
             ObjectsReferencesTable[NextFreeIndex] = obj;
             ReverseObjectsReferencesTable[obj] = NextFreeIndex;
             obj->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, NextFreeIndex);
-            // ssLOG_FUNC_EXIT();
             return NextFreeIndex++;
         }
         else
-        {
-            // ssLOG_FUNC_EXIT();
             return GetObjectIndex(obj);
-        }
     }
 
     ssGUI::GUIObject* ObjectsReferences::GetObjectReference(ssGUIObjectIndex index) const
     {
-        // ssLOG_FUNC_ENTRY();
-        
         if(ObjectsReferencesTable.find(index) != ObjectsReferencesTable.end() && !CleanedUp)
-        {
-            // ssLOG_FUNC_EXIT();
             return ObjectsReferencesTable.at(index);
-        }
         else
-        {
-            // ssLOG_FUNC_EXIT();
             return nullptr;
-        }
     }
 
     void ObjectsReferences::SetObjectReference(ssGUIObjectIndex index, ssGUI::GUIObject* obj)
     {
-        // ssLOG_FUNC_ENTRY();
-
         if(CleanedUp)
-        {
-            // ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(obj == nullptr)
         {
             ssGUI_ERROR(ssGUI_DATA_TAG, "Attempted to set nullptr");
-            // ssLOG_FUNC_EXIT();
             ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -154,18 +127,14 @@ namespace ssGUI
             ReverseObjectsReferencesTable[ObjectsReferencesTable[index]] = index;
             ObjectsReferencesTable[index]->Internal_GetObjectsReferences()->Internal_AddExternalDependency(this, index);
         }
-        // ssLOG_FUNC_EXIT();
     }
 
     void ObjectsReferences::RemoveObjectReference(ssGUIObjectIndex index, bool internalCleanUp)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(CleanedUp)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(ObjectsReferencesTable.find(index) != ObjectsReferencesTable.end())
         {
@@ -176,45 +145,30 @@ namespace ssGUI
             if(!internalCleanUp)
                 obj->Internal_GetObjectsReferences()->Internal_RemoveExternalDependency(this);
         }   
-        ssLOG_FUNC_EXIT();
     }
 
     void ObjectsReferences::Internal_AddExternalDependency(ObjectsReferences* dependency, ssGUIObjectIndex index)
     {
-        // ssLOG_FUNC_ENTRY();
-        
         if(CleanedUp)
-        {
-            // ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(dependency == nullptr)
         {
             ssGUI_ERROR(ssGUI_DATA_TAG, "Adding null dependency found");
-            // ssLOG_FUNC_EXIT();
             ssLOG_EXIT_PROGRAM();
             return;
         }
 
         ExternalObjectsDependencies[dependency] = index;   
-        // ssLOG_FUNC_EXIT();
     }
 
     void ObjectsReferences::Internal_RemoveExternalDependency(ObjectsReferences* dependency)
     {
-        // ssLOG_FUNC_ENTRY();
-        
         if(CleanedUp)
-        {
-            // ssLOG_FUNC_EXIT();
             return;
-        }
 
         if(ExternalObjectsDependencies.find(dependency) != ExternalObjectsDependencies.end())
             ExternalObjectsDependencies.erase(dependency);
-        // ssLOG_FUNC_EXIT();
-
     }
     
     ssGUIObjectIndex ObjectsReferences::GetObjectIndex(ssGUI::GUIObject* obj) const
@@ -248,13 +202,10 @@ namespace ssGUI
 
     void ObjectsReferences::CleanUp()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(CleanedUp)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         for(auto it : ExternalObjectsDependencies)
         {
@@ -269,13 +220,11 @@ namespace ssGUI
         }
         
         CleanedUp = true;
-
-        ssLOG_FUNC_EXIT();
     }
 
     void ObjectsReferences::CheckObjectsReferencesValidity()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         ssGUI_DEBUG(ssGUI_DATA_TAG, "Object Reference: "<<this);
         //Iterate all objects references and check
@@ -305,7 +254,5 @@ namespace ssGUI
             else
                 it.first->GetObjectsReferencesCount();
         }
-
-        ssLOG_FUNC_EXIT();
     }
 }

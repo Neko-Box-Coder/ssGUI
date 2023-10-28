@@ -83,7 +83,7 @@ namespace ssGUI
         
         button->AddExtension<ssGUI::Extensions::RoundedCorners>()->SetRoundedCornersRadius(KnobSize);
 
-        button->RemoveAnyExtension<ssGUI::Extensions::Border>();
+        button->RemoveExtension<ssGUI::Extensions::Border>();
         button->SetUserCreated(false);
         button->AddExtension<ssGUI::Extensions::Outline>()->SetOutlineThickness(1.5);
         button->SetParent(this, true);
@@ -93,7 +93,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(info.EventSource);
                 glm::u8vec4 btnColor = btn->GetButtonColor();
@@ -167,7 +167,9 @@ namespace ssGUI
 
             virtual void ConstructRenderInfo() override;
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
         public:
             //string: ListenerKey

@@ -16,11 +16,11 @@ namespace ssGUI
     ============================== C++ ==============================
     MenuItem::MenuItem()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
-        RemoveAnyExtension<ssGUI::Extensions::BoxShadow>();
-        RemoveAnyExtension<ssGUI::Extensions::RoundedCorners>();
-        RemoveAnyExtension<ssGUI::Extensions::Outline>();
+        RemoveExtension<ssGUI::Extensions::BoxShadow>();
+        RemoveExtension<ssGUI::Extensions::RoundedCorners>();
+        RemoveExtension<ssGUI::Extensions::Outline>();
 
         GetButtonTextObject()->SetNewTextFontSize(15);
         GetButtonTextObject()->SetTextHorizontalAlignment(ssGUI::Enums::TextAlignmentHorizontal::LEFT);
@@ -31,7 +31,7 @@ namespace ssGUI
         buttonEventCallback->AddEventListener
         (
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::StandardButton* btn = static_cast<ssGUI::StandardButton*>(info.EventCallbackContainer);
                 int buttonReactAmount = 20;
@@ -72,8 +72,6 @@ namespace ssGUI
                 }
             }
         );
-
-        ssLOG_FUNC_EXIT();
     }
     =================================================================
     */
@@ -85,7 +83,9 @@ namespace ssGUI
         protected:
             MenuItem(MenuItem const& other);
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:

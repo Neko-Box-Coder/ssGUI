@@ -45,7 +45,7 @@ namespace ssGUI
                                         WindowIcon(-1),
                                         CloseButton(-1)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         SetMinSize(glm::vec2(100, 100));
         SetTitlebarHeight(26);
         
@@ -79,7 +79,7 @@ namespace ssGUI
         closeButton->SetHeapAllocated(true);
         closeButton->SetParent(this, true);
         closeButton->SetMinSize(glm::vec2(5, 5));
-        closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+        closeButton->RemoveExtension<ssGUI::Extensions::Border>();
 
         //Change button shape to circle
         auto shapeEx = closeButton->AddExtension<ssGUI::Extensions::Shape>();
@@ -98,10 +98,10 @@ namespace ssGUI
         buttonEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::EventInfo info)
+            [circleId](ssGUI::EventInfo& info)
             {
                 auto closeButtonObj = static_cast<ssGUI::Button*>(info.EventSource);
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                auto shape = info.EventSource->GetExtension<ssGUI::Extensions::Shape>();
                 int amount = 60;
                 
                 static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
@@ -138,9 +138,9 @@ namespace ssGUI
         shapeEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::EventInfo info)
+            [circleId](ssGUI::EventInfo& info)
             {
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                auto shape = info.EventSource->GetExtension<ssGUI::Extensions::Shape>();
                 shape->SetAdditionalCircle(circleId, glm::vec2(), info.EventSource->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
@@ -149,13 +149,16 @@ namespace ssGUI
         //Add rounded corners to window
         auto rc = AddExtension<ssGUI::Extensions::RoundedCorners>();
         rc->ClearTargetShapes();
-        rc->AddTargetVertex(0);
-        rc->AddTargetVertex(1);
-        rc->AddTargetVertex(2);
-        rc->AddTargetVertex(3);
-        rc->AddTargetVertex(4);
-        rc->AddTargetVertex(5);
-
+        ssGUI::TargetShape titlebarShape(ssGUI::Window::WINDOW_TITLEBAR_SHAPE_NAME);
+        ssGUI::TargetShape baseShape(ssGUI::Window::WINDOW_BASE_SHAPE_NAME);
+        
+        rc->AddTargetVertex(titlebarShape, 0);
+        rc->AddTargetVertex(titlebarShape, 1);
+        rc->AddTargetVertex(baseShape, 0);
+        rc->AddTargetVertex(baseShape, 1);
+        rc->AddTargetVertex(baseShape, 2);
+        rc->AddTargetVertex(baseShape, 3);
+        
         //Make window dockable
         AddExtension<ssGUI::Extensions::Dockable>();
         
@@ -169,9 +172,9 @@ namespace ssGUI
         shadowEx->SetSizeOffset(glm::vec2(10, 10));
         RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
 
-        UpdateTitleText();
-        UpdateIconImage();
-        UpdateCloseButton();
+        UpdateTitleText(true);
+        UpdateIconImage(true);
+        UpdateCloseButton(true);
 
         StandardWindowObjectCount++;
         
@@ -179,7 +182,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* standardWindow = static_cast<ssGUI::StandardWindow*>(info.Container);
                 
@@ -189,8 +192,6 @@ namespace ssGUI
                     standardWindow->CleanUpDefaultResources();
             }
         );
-        
-        ssLOG_FUNC_EXIT();
     }
     
     int StandardWindow::StandardWindowObjectCount = 0;

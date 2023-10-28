@@ -1,5 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 ssGUI::MainWindow* MainWindow;
 ssGUI::Button* TestButton;
@@ -12,7 +12,7 @@ void SetUp()
     Manager = ssGUI::Factory::Create<ssGUI::ssGUIManager>();
     auto* ecb = TestButton->GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
     ecb->AddEventListener(  "TestKey",    
-                            [](ssGUI::EventInfo info)
+                            [](ssGUI::EventInfo& info)
                             {
                                 ssGUI::Enums::ButtonState state =
                                     static_cast<ssGUI::Button*>(info.Container)->GetButtonState();

@@ -24,12 +24,7 @@ namespace Extensions
     Shape::Shape(Shape const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-
-        ExtensionPreRender = other.ExtensionPreRender;
-        AdditionalShapes = other.AdditionalShapes;
-        GUIObjectShapesToRemove = other.GUIObjectShapesToRemove;
-        NextID = other.NextID;
+        Copy(&other);
     }
 
     void Shape::ConstructAdditionalPolygon(AdditionalShape& targetShape, std::vector<glm::vec2>const & vertices, std::vector<glm::u8vec4>const & colors, bool behindGUIObject)
@@ -118,6 +113,8 @@ namespace Extensions
 
         glm::vec2 curLineNormalized;
         glm::vec2 perpendcularVector;
+        startThickness /= 2.f;
+        endThickness /= 2.f;
 
         //Special case of checking of the line has any length
         if(curLine.x == 0 && curLine.y == 0)
@@ -155,11 +152,11 @@ namespace Extensions
         targetShape.Colors.push_back(endColor);
 
         targetShape.Type = ShapeType::LINE;
-        targetShape.Data.Line.StartPos = start;        
-        targetShape.Data.Line.StartSize = startThickness;        
-        targetShape.Data.Line.StartColor = startColor;        
-        targetShape.Data.Line.EndPos = end;        
-        targetShape.Data.Line.EndSize = endThickness;        
+        targetShape.Data.Line.StartPos = start;
+        targetShape.Data.Line.StartSize = startThickness;
+        targetShape.Data.Line.StartColor = startColor;
+        targetShape.Data.Line.EndPos = end;
+        targetShape.Data.Line.EndSize = endThickness;
         targetShape.Data.Line.EndColor = endColor;
 
         targetShape.BehindGUI = behindGUIObject;
@@ -168,7 +165,7 @@ namespace Extensions
 
     void Shape::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //Getting all the rendering details from container
         //std::vector<glm::vec2>& drawingVertices = Container->Extension_GetDrawingVertices();
@@ -212,8 +209,6 @@ namespace Extensions
                 }
             }
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Shape::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
@@ -584,38 +579,32 @@ namespace Extensions
     }
         
     //Extension methods
-    void Shape::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void Shape::Internal_Update(bool isPreUpdate, 
+                                ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Shape::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         if(!Enabled || Container == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         ExtensionPreRender = isPreRender;
 
         if(Container->IsRedrawNeeded())
             ConstructRenderInfo();
-        
-        ssLOG_FUNC_EXIT();
     }
 
-    std::string Shape::GetExtensionName()
+    std::string Shape::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -625,12 +614,12 @@ namespace Extensions
         Container = bindObj;
     }
 
-    void Shape::Copy(ssGUI::Extensions::Extension* extension)
+    void Shape::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Shape* Shape = static_cast<ssGUI::Extensions::Shape*>(extension);
+        auto* Shape = static_cast<const ssGUI::Extensions::Shape*>(extension);
         
         Enabled = Shape->IsEnabled();
         ExtensionPreRender = Shape->ExtensionPreRender;

@@ -7,4 +7,6 @@ target_sources(ssGUI PRIVATE
                     "${CMAKE_CURRENT_LIST_DIR}/ObjectsReferences.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Renderer.cpp"
                     "${CMAKE_CURRENT_LIST_DIR}/Transform.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/DragData.cpp"
+                    "${CMAKE_CURRENT_LIST_DIR}/BlockData.cpp"
                     )

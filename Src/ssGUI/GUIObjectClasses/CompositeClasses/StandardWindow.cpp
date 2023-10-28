@@ -6,7 +6,6 @@
 #include "ssGUI/GUIObjectClasses/Button.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 #include "ssGUI/Extensions/AdvancedSize.hpp"
-#include "ssGUI/Extensions/Dockable.hpp"
 #include "ssGUI/Extensions/Outline.hpp"
 #include "ssGUI/Extensions/BoxShadow.hpp"
 #include "ssGUI/Extensions/Shape.hpp"
@@ -37,13 +36,10 @@ namespace ssGUI
 
     void StandardWindow::UpdateTitleText(bool init)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto windowTitleObj = dynamic_cast<ssGUI::Text*>(CurrentObjectsReferences.GetObjectReference(WindowTitle));
         if(windowTitleObj == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         int textHeight = GetTitlebarHeight() - GetVerticalPadding() * 2;
         if(AutoFontSize)
@@ -58,14 +54,14 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
 
-        if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+        if(!windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
             windowTitleObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
-        if(!windowTitleObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+        if(!windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
             windowTitleObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ap = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        as = windowTitleObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
+        ap = windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = windowTitleObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
         
         if(init)
         {
@@ -89,20 +85,15 @@ namespace ssGUI
         }
         
         as->SetVerticalPixel(textHeight);
-
-        ssLOG_FUNC_EXIT();
     }
 
     void StandardWindow::UpdateIconImage(bool init)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto windowIconObj = CurrentObjectsReferences.GetObjectReference(WindowIcon);
         
         if(windowIconObj == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         if(!windowIconObj->HasTag(ssGUI::Tags::FLOATING))
             windowIconObj->AddTag(ssGUI::Tags::FLOATING);
@@ -119,14 +110,14 @@ namespace ssGUI
         
         static_cast<ssGUI::Text*>(windowIconObj)->SetBlockInput(false);
         
-        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+        if(!windowIconObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
             windowIconObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
-        if(!windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+        if(!windowIconObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
             windowIconObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
 
-        ap = static_cast<ssGUI::Extensions::AdvancedPosition*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME));
-        as = static_cast<ssGUI::Extensions::AdvancedSize*>(windowIconObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME));
+        ap = windowIconObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = windowIconObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
         
         if(init)
         {
@@ -152,20 +143,15 @@ namespace ssGUI
             as->SetHorizontalPixel(iconHeight);
             as->SetVerticalPixel(iconHeight);
         }
-        
-        ssLOG_FUNC_EXIT();
     }
 
     void StandardWindow::UpdateCloseButton(bool init)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         auto closeButtonObj = static_cast<ssGUI::Button*>(CurrentObjectsReferences.GetObjectReference(CloseButton));
         
         if(closeButtonObj == nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
         
         if(!closeButtonObj->HasTag(ssGUI::Tags::FLOATING))
             closeButtonObj->AddTag(ssGUI::Tags::FLOATING);
@@ -173,14 +159,14 @@ namespace ssGUI
         ssGUI::Extensions::AdvancedPosition* ap;
         ssGUI::Extensions::AdvancedSize* as;
 
-        if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedPosition::EXTENSION_NAME))
+        if(!closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedPosition>())
             closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedPosition>();
         
-        if(!closeButtonObj->GetExtension(ssGUI::Extensions::AdvancedSize::EXTENSION_NAME))
+        if(!closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedSize>())
             closeButtonObj->AddExtension<ssGUI::Extensions::AdvancedSize>();
         
-        ap = closeButtonObj->GetAnyExtension<ssGUI::Extensions::AdvancedPosition>();
-        as = closeButtonObj->GetAnyExtension<ssGUI::Extensions::AdvancedSize>();
+        ap = closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedPosition>();
+        as = closeButtonObj->GetExtension<ssGUI::Extensions::AdvancedSize>();
 
         if(init)
         {
@@ -205,8 +191,6 @@ namespace ssGUI
             as->SetHorizontalPixel(buttonHeight);
             as->SetVerticalPixel(buttonHeight);
         }
-        
-        ssLOG_FUNC_EXIT();
     }
 
     const std::string StandardWindow::ListenerKey = "Standard Window";
@@ -222,7 +206,7 @@ namespace ssGUI
                                         WindowIcon(-1),
                                         CloseButton(-1)
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         SetMinSize(glm::vec2(100, 100));
         SetTitlebarHeight(26);
         
@@ -256,7 +240,7 @@ namespace ssGUI
         closeButton->SetHeapAllocated(true);
         closeButton->SetParent(this, true);
         closeButton->SetMinSize(glm::vec2(5, 5));
-        closeButton->RemoveExtension(ssGUI::Extensions::Border::EXTENSION_NAME);
+        closeButton->RemoveExtension<ssGUI::Extensions::Border>();
 
         //Change button shape to circle
         auto shapeEx = closeButton->AddExtension<ssGUI::Extensions::Shape>();
@@ -275,10 +259,10 @@ namespace ssGUI
         buttonEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::EventInfo info)
+            [circleId](ssGUI::EventInfo& info)
             {
                 auto closeButtonObj = static_cast<ssGUI::Button*>(info.EventSource);
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                auto shape = info.EventSource->GetExtension<ssGUI::Extensions::Shape>();
                 int amount = 60;
                 
                 static_assert((int)ssGUI::Enums::ButtonState::COUNT == 6, "Make sure this is updated");
@@ -315,9 +299,9 @@ namespace ssGUI
         shapeEvent->AddEventListener
         (
             ListenerKey, this,
-            [circleId](ssGUI::EventInfo info)
+            [circleId](ssGUI::EventInfo& info)
             {
-                auto shape = static_cast<ssGUI::Extensions::Shape*>(info.EventSource->GetExtension(ssGUI::Extensions::Shape::EXTENSION_NAME));
+                auto shape = info.EventSource->GetExtension<ssGUI::Extensions::Shape>();
                 shape->SetAdditionalCircle(circleId, glm::vec2(), info.EventSource->GetSize(), glm::u8vec4(255, 127, 127, 255), false);
             }
         );
@@ -335,9 +319,6 @@ namespace ssGUI
         rc->AddTargetVertex(baseShape, 1);
         rc->AddTargetVertex(baseShape, 2);
         rc->AddTargetVertex(baseShape, 3);
-        
-        //Make window dockable
-        AddExtension<ssGUI::Extensions::Dockable>();
         
         //Add outline to window
         auto windowOutline = AddExtension<ssGUI::Extensions::Outline>();
@@ -359,7 +340,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* standardWindow = static_cast<ssGUI::StandardWindow*>(info.Container);
                 
@@ -369,8 +350,6 @@ namespace ssGUI
                     standardWindow->CleanUpDefaultResources();
             }
         );
-        
-        ssLOG_FUNC_EXIT();
     }
 
     StandardWindow::~StandardWindow()
@@ -669,20 +648,16 @@ namespace ssGUI
     //function: Clone
     StandardWindow* StandardWindow::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         StandardWindow* temp = new StandardWindow(*this);
         CloneExtensionsAndEventCallbacks(temp);
 
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
     

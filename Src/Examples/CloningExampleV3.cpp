@@ -1,6 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/Extensions/Layout.hpp"
-#include "ssGUI/Extensions/Dockable.hpp"
+#include "ssGUI/Extensions/Legacy/Dockable.hpp"
 #include "ssGUI/Extensions/AdvancedPosition.hpp"
 
 using namespace ssGUI::Enums;
@@ -12,7 +12,7 @@ int main()
     auto* window = mainWindow.AddChild<ssGUI::StandardWindow>();
     
     //We don't need docking
-    window->RemoveAnyExtension<ssGUI::Extensions::Dockable>();
+    window->RemoveExtension<ssGUI::Extensions::Dockable>();
     window->SetRenderSize(glm::ivec2(450, 80));
     window->AddExtension<ssGUI::Extensions::Layout>();
     
@@ -31,7 +31,7 @@ int main()
     buttonEventCallback->AddEventListener
     (
         "listenerKey",
-        [textId](ssGUI::EventInfo info)
+        [textId](ssGUI::EventInfo& info)
         {
             auto* textToChange = info.References->GetObjectReference<ssGUI::Text>(textId);
             auto* currentButton = static_cast<ssGUI::StandardButton*>(info.Container);

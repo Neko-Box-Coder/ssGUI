@@ -1,15 +1,21 @@
 > ⚠️ This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
+### 🔗 Quick Links
+- [🔌 Status of ssGUI](#-status-of-ssgui-v09402)
+- [❓ What is ssGUI?](#-what-is-ssgui)
+- [❓ Why Another GUI Framework?](#-why-another-gui-framework)
+- [📌 Cool Features](#-cool-features)
+- [🧮 Quick Start](#-quick-start)
+- [🛣️ Roadmap](#️-roadmap)
+- [❤️ Special Thanks](#️-special-thanks)
+- [📜 Licenses](#-licenses)
+---
+
 <!-- ⚠️ Documentation is for the current stable version (v0.93.00.b), not for this version. Some info may not up-to-date.-->
-### 🔌 Status of ssGUI (v0.94.01)
+### 🔌 Status of ssGUI (v0.94.02)
 - #### 🔀 Branches
-    <!--- ![](https://img.shields.io/badge/Latest_Development-v0.93.03-E5FF3C?style=for-the-badge&logo=GitHub)-->
-    - ![](https://img.shields.io/badge/Current_Development-v0.94.02-E5FF3C?style=for-the-badge&logo=GitHub)
-        <!--- ![](https://img.shields.io/badge/Status_📋:-Partial_implemented_Win32-2E2E2E?style=flat-square&labelColor=D53434)-->
-    <!--- ![](https://img.shields.io/badge/Development_Release-v0.94.00-brightgreen?style=for-the-badge&logo=GitHub)-->
-    - ![](https://img.shields.io/badge/Stable_Release-v0.94.00-D53434?style=for-the-badge&logo=GitHub)
-        - ![](https://img.shields.io/badge/Status_📋:-Heavy_stutter_on_Windows._Use_v0.94.01_instead-2E2E2E?style=flat-square&labelColor=D53434)
-    - ![](https://img.shields.io/badge/Main-v0.94.01-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Last_Release-v0.94.01-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Current_Development-v0.94.02-darkgray?style=for-the-badge&logo=GitHub)
 
 - #### 🖥️ OS support
     - ![](https://img.shields.io/badge/Linux-Working-brightgreen?style=for-the-badge&logo=linux&logoColor=white)
@@ -19,7 +25,7 @@
 - #### 📈 Current Progress
     - ![](https://img.shields.io/badge/v0.93-|█████ 100％ █████|-29D236?style=for-the-badge&logo=)
     - ![](https://img.shields.io/badge/v0.94-|█████ 100％ █████|-29D236?style=for-the-badge)
-    - ![](https://img.shields.io/badge/v0.95-|███──  30％   ─────|-E5FF3C?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.95-|█████   60％  █────|-E5FF3C?style=for-the-badge)
 ---
 
 ### ❓ What is ssGUI?
@@ -42,6 +48,8 @@
     HTML Documentation provides step by step tutorial for getting started, (**WIP**) ~~with a number of mock up GUI examples to reference from.~~ 
     
     API is clearly documented with (**WIP**) ~~images to describe each properties.~~
+    
+    #### [See Documentation Here](https://neko-box-coder.github.io/ssGUI_Doc/)
 
 - ### 🦾 Easily Extensible
     ssGUI uses the extensions and (Optional) event callbacks model. Only add the functionalities you need and you are good to go.
@@ -137,7 +145,7 @@ Which ssGUI has achieved most of them.
 
 #### 🔧 Using ssGUI in your project
 1. Add ssGUI to your project as submodule 
-    - `git submodule add -b v0.94.01_release https://github.com/Neko-Box-Coder/ssGUI.git <folder name>`
+    - `git submodule add -b v0.94.01.a_release https://github.com/Neko-Box-Coder/ssGUI.git <folder name>`
 2. Then initialize the submodules used by ssGUI 
     - `git submodule update --init --recursive`
 3. Add ssGUI to your `CMakeLists.txt` by doing 

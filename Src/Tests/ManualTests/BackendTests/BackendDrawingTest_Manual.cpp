@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <thread>
 #include "TestsResources.h"
@@ -282,7 +282,7 @@ void DrawFontTest()
     }
 }
 
-//NOTE: Skipping AddImageCache for now, it is used internally anyway so it should be working.
+//TODO: Need to test AddImageCache
 
 void RemoveImageCacheTest()
 {

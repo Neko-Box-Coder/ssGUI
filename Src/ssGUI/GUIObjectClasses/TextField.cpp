@@ -18,330 +18,19 @@ namespace ssGUI
         LastBlinkTime = other.LastBlinkTime;
         BlinkDuration = other.BlinkDuration;
         BlinkCaret = other.BlinkCaret;
+        LastStartSelectionIndex = other.LastStartSelectionIndex;
+        LastEndSelectionIndex = other.LastEndSelectionIndex;
+        CaretPosition = other.CaretPosition;
+        
         LastArrowNavStartTime = other.LastArrowNavStartTime;
         ArrowNavPauseDuration = other.ArrowNavPauseDuration;
         LastArrowNavTime = other.LastArrowNavTime;
         ArrowNavInterval = other.ArrowNavInterval;
-    }
-
-    int TextField::GetEndOfPreviousWord(int curIndex)
-    {
-        //Check if there's any valid character before current character
-        int validCharBeforeIndex = -1;
-        for(int i = curIndex - 1; i >= 0; i--)
-        {
-            if(CharactersRenderInfos[i].Valid)
-            {
-                validCharBeforeIndex = i;
-                break;
-            }
-        }
-        if(validCharBeforeIndex < 0)
-            return curIndex;
-
-        enum class characterType
-        {
-            LETTERS,
-            NUM,
-            SYMBOL,
-            SPACE_TAB_NEWLINE,
-        };
-
-        auto getCharType = [&](wchar_t c)->characterType
-        {
-            uint32_t charInt = (uint32_t)c;
-            
-            //If letters
-            if((charInt >= 65 && charInt <= 90) || (charInt >= 97 && charInt <= 122))
-                return characterType::LETTERS;
-            //If numbers
-            if(charInt >= 48 && charInt <= 57)
-                return characterType::NUM;
-            //If Symbol
-            if((charInt >= 33 && charInt <= 47) || (charInt >= 58 && charInt <= 64) || (charInt >= 91 && charInt <= 96) || (charInt >= 123 && charInt <= 126))
-                return characterType::SYMBOL;
-            //If space, tab or newline 
-            if(charInt == 9 || charInt == 10 || charInt == 12 || charInt == 13 || charInt == 32)
-                return characterType::SPACE_TAB_NEWLINE;
-
-            return characterType::LETTERS;
-        };
-
-        characterType lastCharType = getCharType(GetInternalCharacterDetail(validCharBeforeIndex).Character);
-        int lastValidIndex = validCharBeforeIndex;
-        for(int i = validCharBeforeIndex; i >= 0; i--)
-        {
-            if(!CharactersRenderInfos[i].Valid)
-                continue;
-            
-            characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
-
-            //Return anything 
-            if(lastCharType != curCharType && lastCharType != characterType::SPACE_TAB_NEWLINE)
-                return lastValidIndex;
-
-            lastValidIndex = i;
-            lastCharType = curCharType;
-        }
-
-        return lastValidIndex;
-    }
-
-    int TextField::GetEndOfNextWord(int curIndex)
-    {
-        if(curIndex >= GetLastValidCharacterIndex())
-            return CharactersRenderInfos.size();
-        
-        enum class characterType
-        {
-            LETTERS,
-            NUM,
-            SYMBOL,
-            SPACE_TAB_NEWLINE,
-        };
-
-        auto getCharType = [&](wchar_t c)->characterType
-        {
-            uint32_t charInt = (uint32_t)c;
-            
-            //If letters
-            if((charInt >= 65 && charInt <= 90) || (charInt >= 97 && charInt <= 122))
-                return characterType::LETTERS;
-            //If numbers
-            if(charInt >= 48 && charInt <= 57)
-                return characterType::NUM;
-            //If Symbol
-            if((charInt >= 33 && charInt <= 47) || (charInt >= 58 && charInt <= 64) || (charInt >= 91 && charInt <= 96) || (charInt >= 123 && charInt <= 126))
-                return characterType::SYMBOL;
-            //If space, tab or newline 
-            if(charInt == 9 || charInt == 10 || charInt == 12 || charInt == 13 || charInt == 32)
-                return characterType::SPACE_TAB_NEWLINE;
-
-            return characterType::LETTERS;
-        };
-
-        characterType lastCharType = getCharType(GetInternalCharacterDetail(curIndex).Character);
-        int lastValidIndex = curIndex;
-        for(int i = curIndex; i <= CharactersRenderInfos.size(); i++)
-        {
-            if(i == CharactersRenderInfos.size())
-                return i;
-            
-            if(!CharactersRenderInfos[i].Valid)
-                continue;
-            
-            characterType curCharType = getCharType(GetInternalCharacterDetail(i).Character);
-            lastValidIndex = i;
-
-            //Return anything 
-            if(lastCharType != curCharType && lastCharType != characterType::SPACE_TAB_NEWLINE)
-                return lastValidIndex;
-
-            lastCharType = curCharType;
-        }
-
-        return lastValidIndex;
-    }
-
-    void TextField::GetCurrentLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive)
-    {
-        curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
-        for(int i = curIndex; i >= 0; i--)
-        {
-            if(!CharactersRenderInfos[i].Valid)
-                continue;
-            
-            if(CharactersRenderInfos[i].CharacterAtNewline)
-            {
-                startIndex = i;
-                break;
-            }
-        }
-
-        int lastValidIndex = curIndex;
-        for(int i = curIndex+1; i < CharactersRenderInfos.size(); i++)
-        {
-            if(!CharactersRenderInfos[i].Valid)
-                continue;
-            
-            if(CharactersRenderInfos[i].CharacterAtNewline)
-                break;
-            
-            lastValidIndex = i;
-        }
-        endIndexInclusive = lastValidIndex;
-    }
-
-    void TextField::GetPreviousLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive)
-    {
-        bool passedCurLine = false;
-        bool endIndexSet = false;
-        curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
-        for(int i = curIndex; i >= 0; i--)
-        {
-            if(!CharactersRenderInfos[i].Valid)
-                continue;
-            
-            if(passedCurLine && !endIndexSet)
-            {
-                endIndexSet = true;
-                endIndexInclusive = i;
-            }
-
-            if(CharactersRenderInfos[i].CharacterAtNewline)
-            {
-                if(!passedCurLine)
-                {
-                    startIndex = i;
-                    endIndexInclusive = i;
-                    passedCurLine = true;
-                }
-                else
-                {
-                    startIndex = i;
-                    break;
-                }
-            }
-        }
-    }
-
-    void TextField::GetNextLineStartEndIndex(int curIndex, int& startIndex, int& endIndexInclusive)
-    {
-        bool startIndexSet = false;
-        bool endIndexSet = false;
-        int lastValidIndex = curIndex;
-        curIndex = curIndex == CharactersRenderInfos.size() ? CharactersRenderInfos.size() - 1 : curIndex;
-        for(int i = curIndex+1; i < CharactersRenderInfos.size(); i++)
-        {
-            if(!CharactersRenderInfos[i].Valid)
-                continue;
-            
-            if(CharactersRenderInfos[i].CharacterAtNewline)
-            {
-                if(!startIndexSet)
-                {
-                    startIndex = i;
-                    startIndexSet = true;
-                }
-                else
-                {
-                    endIndexInclusive = lastValidIndex;
-                    endIndexSet = true;
-                    break;
-                }
-            }
-            lastValidIndex = i;
-        }
-
-        if(!startIndexSet)
-        {
-            startIndex = lastValidIndex;
-            endIndexInclusive = lastValidIndex;
-        }
-        else if(!endIndexSet)
-            endIndexInclusive = lastValidIndex;
-    }
-
-    int TextField::GetPositionForPreviousLine(int curIndex)
-    {
-        int curLinePosition = 0;
-        
-        int curLineStart = 0;
-        int curLineEnd = 0;
-        GetCurrentLineStartEndIndex(curIndex, curLineStart, curLineEnd);
-
-        int prevLineStart = 0;
-        int prevLineEnd = 0;
-        GetPreviousLineStartEndIndex(curIndex, prevLineStart, prevLineEnd);
-
-        //Find out current position from this line (Depending on alignment)
-        //Right
-        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
-        {
-            curLineEnd = curLineEnd == GetLastValidCharacterIndex() ? curLineEnd + 1 : curLineEnd;
-            curLinePosition = curLineEnd - curIndex;
-        }
-        //Left and center
-        else
-            curLinePosition = curIndex - curLineStart;
-        
-        //If there's no previous line, just return start index
-        if(prevLineEnd >= curLineStart)
-            return curLineStart;
-
-        //Go to previous line if there's any
-        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
-        {
-            if(curLinePosition > prevLineEnd - prevLineStart)
-                return prevLineStart;
-            else
-                return prevLineEnd - curLinePosition;
-        }
-        else
-        {
-            if(curLinePosition > prevLineEnd - prevLineStart)
-                return prevLineEnd;
-            else
-                return prevLineStart + curLinePosition;
-        }
-        
-        return -1;  //Just to suppress return-type warning from GCC
-    }
-
-    int TextField::GetPositionForNextLine(int curIndex)
-    {
-        int curLinePosition = 0;
-        
-        int curLineStart = 0;
-        int curLineEnd = 0;
-        GetCurrentLineStartEndIndex(curIndex, curLineStart, curLineEnd);
-
-        int nextLineStart = 0;
-        int nextLineEnd = 0;
-        GetNextLineStartEndIndex(curIndex, nextLineStart, nextLineEnd);
-
-        //Find out current position from this line (Depending on alignment)
-        //Right
-        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
-            curLinePosition = curLineEnd - curIndex;
-        //Left and center
-        else
-            curLinePosition = curIndex - curLineStart;
-
-        //If there's no next line, just return end index
-        if(curLineEnd >= nextLineStart)
-        {
-            if(curLineEnd != GetLastValidCharacterIndex())
-                return curLineEnd;
-            else
-                return curLineEnd + 1;
-        }
-        
-        //Go to next line if there's any
-        if(GetTextHorizontalAlignment() == ssGUI::Enums::AlignmentHorizontal::RIGHT)
-        {
-            if(curLinePosition > nextLineEnd - nextLineStart)
-                return nextLineStart;
-            else
-            {
-                nextLineEnd = nextLineEnd == GetLastValidCharacterIndex() ? nextLineEnd + 1 : nextLineEnd;
-                return nextLineEnd - curLinePosition;
-            }
-        }
-        else
-        {
-            if(curLinePosition > nextLineEnd - nextLineStart)
-            {
-                if(nextLineEnd != GetLastValidCharacterIndex())
-                    return nextLineEnd;
-                else
-                    return nextLineEnd + 1;
-            }
-            else
-                return nextLineStart + curLinePosition;
-        }
-        
-        return -1;  //Just to suppress return-type warning from GCC
+    
+        LastInputTime = other.LastInputTime;
+        FinishedChangingNotified = other.FinishedChangingNotified;
+        LastIsFocused = other.LastIsFocused;
+        FinishedChangingTimeThresholdInMs = other.FinishedChangingTimeThresholdInMs;
     }
 
     void TextField::TextInputUpdate(std::wstring& textInput, bool& refreshBlinkTimer, bool& wordMode)
@@ -351,9 +40,9 @@ namespace ssGUI
 
         ssGUI::CharacterDetails baseCD;
         if(insertIndex - 1 >= 0)
-            baseCD = CurrentCharactersDetails[insertIndex - 1];
-        else if(insertIndex + 1 < CurrentCharactersDetails.Size())
-            baseCD = CurrentCharactersDetails[insertIndex + 1];
+            baseCD = GetCharacterDetails(insertIndex - 1);
+        else if(insertIndex + 1 < GetCharactersDetailsCount())
+            baseCD = GetCharacterDetails(insertIndex + 1);
         else
         {
             baseCD.CharacterColor = GetNewTextColor();
@@ -371,17 +60,18 @@ namespace ssGUI
         {
             auto curChar = (int32_t)textInput.at(i);
 
-            //Exclude control characters
+            //Non control characters
             if((curChar > 31 && curChar < 127) || curChar > 159)
             {
                 ssGUI::CharacterDetails cd = baseCD;
                 cd.Character = textInput.at(i);
 
-                CurrentCharactersDetails.Add(cd, insertIndex);
+                AddCharacterDetails(insertIndex, cd);
                 insertIndex++;
                 charCount++;
                 alterText = true;
             }
+            //Control characters
             else
             {
                 switch(curChar) 
@@ -448,7 +138,7 @@ namespace ssGUI
                         SetStartSelectionIndex(GetEndSelectionIndex());
                         break;
                     case 127:   //Delete
-                        if(insertIndex < CurrentCharactersDetails.Size() && GetStartSelectionIndex() == GetEndSelectionIndex() && 
+                        if(insertIndex < GetCharactersDetailsCount() && GetStartSelectionIndex() == GetEndSelectionIndex() && 
                             GetStartSelectionIndex() >= 0)
                         {
                             if(wordMode)
@@ -512,32 +202,57 @@ namespace ssGUI
         //Arrow navigation
         if(GetStartSelectionIndex() >= 0 && GetEndSelectionIndex() >= 0)
         {
+            auto getNextValidCharacterIndex = [this](int startPos, int direction) -> int
+            {
+                do
+                {
+                    if(startPos < 0)
+                        return startPos;
+                    
+                    if(startPos == 0 && direction < 0)
+                        return startPos;
+                    
+                    if(startPos >= CurrentCharactersDetails.Size() && direction > 0)
+                        return CurrentCharactersDetails.Size();
+
+                    startPos = startPos + direction;
+                }
+                while(!GetCharacterRenderInfo(startPos).Valid);
+                return startPos;
+            };
+        
             if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT))
             {
                 auto moveLeft = [&]()
                 {
-                    if(GetEndSelectionIndex() > GetFirstValidCharacterIndex())
+                    int leftMostIndex = -1;
+                
+                    if(!selectionMode)
                     {
-                        if(!wordMode)
-                        {
-                            do
-                            {
-                                SetEndSelectionIndex(GetEndSelectionIndex() - 1);
-                            }
-                            while(!CharactersRenderInfos[GetEndSelectionIndex()].Valid);
-                        }
+                        if(GetStartSelectionIndex() <= GetEndSelectionIndex() && GetStartSelectionIndex() > GetFirstValidCharacterIndex())
+                            leftMostIndex = GetStartSelectionIndex();
+                        else if(GetEndSelectionIndex() <= GetStartSelectionIndex() && GetEndSelectionIndex() > GetFirstValidCharacterIndex())
+                            leftMostIndex = GetEndSelectionIndex();
                         else
-                            SetEndSelectionIndex(GetEndOfPreviousWord(GetEndSelectionIndex()));
-                        
-                        if(!selectionMode)
-                            SetStartSelectionIndex(GetEndSelectionIndex());   
+                            leftMostIndex = 0;
                     }
+                    else
+                        leftMostIndex = GetEndSelectionIndex();
+
+                    if(!wordMode)
+                        SetEndSelectionIndex(getNextValidCharacterIndex(leftMostIndex, -1));
+                    else
+                        SetEndSelectionIndex(GetEndOfPreviousWord(leftMostIndex));
+                    
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the left arrow key                
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::LEFT))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveLeft();
                 }
                 //When the user is holding down the left arrow key
@@ -551,35 +266,39 @@ namespace ssGUI
                 refreshBlinkTimer = true;
                 blockKeys = true;
             }
-            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT))
+            
+            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT))
             {
                 auto moveRight = [&]()
                 {
-                    if(GetEndSelectionIndex() + 1 <= CurrentCharactersDetails.Size())
-                    {
-                        if(!wordMode)
-                        {
-                            do
-                            {
-                                SetEndSelectionIndex(GetEndSelectionIndex() + 1);
+                    int rightMostIndex = -1;
 
-                                if(GetEndSelectionIndex() >= CurrentCharactersDetails.Size())
-                                    break;
-                            }
-                            while(!CharactersRenderInfos[GetEndSelectionIndex()].Valid);
-                        }
+                    if(!selectionMode)
+                    {
+                        if(GetStartSelectionIndex() >= GetEndSelectionIndex() && GetStartSelectionIndex() <= GetCharactersDetailsCount())
+                            rightMostIndex = GetStartSelectionIndex();
+                        else if(GetEndSelectionIndex() >= GetStartSelectionIndex() && GetEndSelectionIndex() <= GetCharactersDetailsCount())
+                            rightMostIndex = GetEndSelectionIndex();
                         else
-                            SetEndSelectionIndex(GetEndOfNextWord(GetEndSelectionIndex()));
+                            rightMostIndex = GetCharactersDetailsCount();
+                    }      
+                    else
+                        rightMostIndex = GetEndSelectionIndex();
                     
-                        if(!selectionMode)
-                            SetStartSelectionIndex(GetEndSelectionIndex());
-                    }
+                    if(!wordMode)
+                        SetEndSelectionIndex(getNextValidCharacterIndex(rightMostIndex, 1));
+                    else
+                        SetEndSelectionIndex(GetEndOfNextWord(rightMostIndex));
+                
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the right arrow key                
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::RIGHT))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveRight();
                 }
                 //When the user is holding down the right arrow key
@@ -598,21 +317,28 @@ namespace ssGUI
             {
                 auto moveUp = [&]()
                 {
+                    int upMostIndex = -1;
+
                     if(!selectionMode)
                     {
-                        SetEndSelectionIndex(GetPositionForPreviousLine(GetEndSelectionIndex()));
-                        SetStartSelectionIndex(GetEndSelectionIndex());
+                        if(GetStartSelectionIndex() <= GetEndSelectionIndex())
+                            upMostIndex = GetStartSelectionIndex();
+                        else
+                            upMostIndex = GetEndSelectionIndex();
                     }
                     else
-                    {
-                        SetEndSelectionIndex(GetPositionForPreviousLine(GetEndSelectionIndex()));
-                    }
+                        upMostIndex = GetEndSelectionIndex();
+    
+                    SetEndSelectionIndex(GetPositionForPreviousLine(upMostIndex));
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the up arrow key                
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::UP))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveUp();
                 }
                 //When the user is holding down the up arrow key
@@ -626,25 +352,33 @@ namespace ssGUI
                 refreshBlinkTimer = true;
                 blockKeys = true;
             }
-            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN))
+            
+            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN))
             {
                 auto moveDown = [&]()
                 {
+                    int downMostIndex = -1;
+                    
                     if(!selectionMode)
                     {
-                        SetEndSelectionIndex(GetPositionForNextLine(GetEndSelectionIndex()));
-                        SetStartSelectionIndex(GetEndSelectionIndex());
+                        if(GetStartSelectionIndex() >= GetEndSelectionIndex())
+                            downMostIndex = GetStartSelectionIndex();
+                        else
+                            downMostIndex = GetEndSelectionIndex();
                     }
                     else
-                    {
-                        SetEndSelectionIndex(GetPositionForNextLine(GetEndSelectionIndex()));
-                    }
+                        downMostIndex = GetEndSelectionIndex();
+                    
+                    SetEndSelectionIndex(GetPositionForNextLine(downMostIndex));
+                    if(!selectionMode)
+                        SetStartSelectionIndex(GetEndSelectionIndex());
                 };
 
                 //When the user first press the right down key                
                 if(!inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::DOWN))
                 {
                     LastArrowNavStartTime = inputInterface->GetElapsedTime();
+                    LastArrowNavTime = inputInterface->GetElapsedTime();
                     moveDown();
                 }
                 //When the user is holding down the down arrow key
@@ -664,32 +398,32 @@ namespace ssGUI
     //You only need to override this when you are rendering anything.
     void TextField::ConstructRenderInfo()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         ssGUI::Text::ConstructRenderInfo();
 
         int lastValidIndex = GetLastValidCharacterIndex();
         glm::vec2 drawPos = GetGlobalPosition();
         float height = 0;
-        float caretWidth = GetEndSelectionIndex() < 0 || GetEndSelectionIndex() >= CurrentCharactersDetails.Size() ? 
+        float caretWidth = CaretPosition < 0 || CaretPosition >= GetCharactersDetailsCount() ? 
             GetNewTextFontSize() / 15.f : 
-            CurrentCharactersDetails[GetEndSelectionIndex()].FontSize / 15.f;
+            GetCharacterDetails(CaretPosition).FontSize / 15.f;
 
-        if(GetEndSelectionIndex() >= 0 && lastValidIndex >= 0)
+        if(CaretPosition >= 0 && lastValidIndex >= 0)
         {
-            if(GetEndSelectionIndex() > lastValidIndex)
+            if(CaretPosition > lastValidIndex)
             {
                 //Last character
-                if(CurrentCharactersDetails[lastValidIndex].Character != '\n')
+                if(GetCharacterDetails(lastValidIndex).Character != '\n')
                 {
-                    drawPos += CharactersRenderInfos[lastValidIndex].BaselinePosition + 
-                        glm::vec2(CharactersRenderInfos[lastValidIndex].Advance, 
-                        CharactersRenderInfos[lastValidIndex].LineMinY);
+                    drawPos += GetCharacterRenderInfo(lastValidIndex).BaselinePosition + 
+                        glm::vec2(GetCharacterRenderInfo(lastValidIndex).Advance, 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY);
                     
-                    height = CharactersRenderInfos[lastValidIndex].LineMaxY - 
-                        CharactersRenderInfos[lastValidIndex].LineMinY;
+                    height = GetCharacterRenderInfo(lastValidIndex).LineMaxY - 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY;
                 }
                 //If caret is pointing Newline, go to next line
-                if(CurrentCharactersDetails[lastValidIndex].Character == '\n')
+                if(GetCharacterDetails(lastValidIndex).Character == '\n')
                 {
                     const ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(lastValidIndex);
                     ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
@@ -713,32 +447,29 @@ namespace ssGUI
                         drawPos.x += GetSize().x - GetTextHorizontalPadding();
                     }
 
-                    drawPos.y += CharactersRenderInfos[lastValidIndex].BaselinePosition.y + 
-                        CharactersRenderInfos[lastValidIndex].LineMinY +
+                    drawPos.y += GetCharacterRenderInfo(lastValidIndex).BaselinePosition.y + 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY +
                         fontInterface->GetLineSpacing(curDetail.FontSize) + GetLineSpace();
                     
-                    height = CharactersRenderInfos[lastValidIndex].LineMaxY - 
-                        CharactersRenderInfos[lastValidIndex].LineMinY;
+                    height = GetCharacterRenderInfo(lastValidIndex).LineMaxY - 
+                        GetCharacterRenderInfo(lastValidIndex).LineMinY;
                 }
             }
             else
             {
-                drawPos += CharactersRenderInfos[GetEndSelectionIndex()].BaselinePosition + 
-                    glm::vec2(0, CharactersRenderInfos[GetEndSelectionIndex()].LineMinY);
+                drawPos += GetCharacterRenderInfo(CaretPosition).BaselinePosition + 
+                    glm::vec2(0, GetCharacterRenderInfo(CaretPosition).LineMinY);
                 
-                height = CharactersRenderInfos[GetEndSelectionIndex()].LineMaxY - 
-                    CharactersRenderInfos[GetEndSelectionIndex()].LineMinY;
+                height = GetCharacterRenderInfo(CaretPosition).LineMaxY - 
+                    GetCharacterRenderInfo(CaretPosition).LineMinY;
             }
 
             //Draw caret
             if(BlinkCaret || !IsInteractable() || !IsFocused())
-            {
-                ssLOG_FUNC_EXIT();
                 return;
-            }
 
             ssGUI::DrawingEntity caretEntity;
-            if(GetEndSelectionIndex() > GetStartSelectionIndex())
+            if(CaretPosition > GetStartSelectionIndex())
             {
                 caretEntity.Vertices.push_back(drawPos);
                 caretEntity.Colors.push_back(glm::u8vec4(0, 0, 0, 255));
@@ -773,10 +504,7 @@ namespace ssGUI
         {
             //Draw caret
             if(BlinkCaret || !IsInteractable() || !IsFocused())
-            {
-                ssLOG_FUNC_EXIT();
                 return;
-            }
 
             ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
             
@@ -785,10 +513,7 @@ namespace ssGUI
             else if(GetDefaultFontsCount() > 0)
                 fontInterface = GetDefaultFont(0)->GetBackendFontInterface();
             else
-            {
-                ssLOG_FUNC_EXIT();
                 return;
-            }
 
             height = fontInterface->GetLineSpacing(GetNewTextFontSize()) + GetLineSpace();
             
@@ -834,11 +559,11 @@ namespace ssGUI
             caretEntity.EntityName = TEXTFIELD_CARET_SHAPE_NAME;
             DrawingEntities.push_back(caretEntity);
         }
-
-        ssLOG_FUNC_EXIT();
     }
     
-    void TextField::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void TextField::MainLogic(  ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
     {       
         bool blockKeys = false;
@@ -853,7 +578,7 @@ namespace ssGUI
                         inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL);
 
             //Pasting
-            if( inputStatus.KeyInputBlockedObject == nullptr && 
+            if( currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && 
                 inputInterface->ClipbaordHasText() && wordMode && 
                 inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::V) &&
                 !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::V))
@@ -865,20 +590,65 @@ namespace ssGUI
 
             //Text input
             //TODO: Put textInput to a CharacterDetails vector and insert the whole vector instead of 1 by 1
-            if(inputStatus.KeyInputBlockedObject == nullptr && IsFocused() && !textInput.empty())
+            if(currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && IsFocused() && !textInput.empty())
             {
                 blockKeys = true;
                 TextInputUpdate(textInput, refreshBlinkTimer, wordMode);
             }
+            
+            //Event callback
+            if(!textInput.empty())
+            {
+                if(IsEventCallbackExist(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_CHANGED_VIA_GUI))
+                    GetEventCallback(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_CHANGED_VIA_GUI)->Notify(this);
+                
+                LastInputTime = inputInterface->GetElapsedTime();
+                FinishedChangingNotified = false;
+            }
+            else
+            {
+                bool notifyFinishedChanging = false;
+                
+                if(!IsFocused() && LastIsFocused && !FinishedChangingNotified)
+                    notifyFinishedChanging = true;
+                
+                if(inputInterface->GetElapsedTime() - LastInputTime > FinishedChangingTimeThresholdInMs && !FinishedChangingNotified)
+                    notifyFinishedChanging = true;
+
+                if(notifyFinishedChanging)
+                {
+                    FinishedChangingNotified = true;
+                    
+                    if(IsEventCallbackExist(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI))
+                        GetEventCallback(ssGUI::Enums::EventType::TEXT_FIELD_CONTENT_FINISHED_CHANGING_VIA_GUI)->Notify(this);
+                }
+            }
+        
+            LastIsFocused = IsFocused();
         }
 
-        ssGUI::Text::MainLogic(inputInterface, inputStatus, mainWindow);
+        ssGUI::Text::MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         
         if(IsInteractable())
         {
             //Caret navigation
-            if(inputStatus.KeyInputBlockedObject == nullptr)
+            if(currentInputStatus.KeyInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE)
                 CaretNavigationUpdate(inputInterface, refreshBlinkTimer, blockKeys, wordMode);
+
+            //Check Carret
+            if(GetStartSelectionIndex() != LastStartSelectionIndex)
+            {
+                CaretPosition = GetStartSelectionIndex();
+                refreshBlinkTimer = true;
+            }
+            else if(GetEndSelectionIndex() != LastEndSelectionIndex)
+            {
+                CaretPosition = GetEndSelectionIndex();
+                refreshBlinkTimer = true;
+            }
+            
+            LastStartSelectionIndex = GetStartSelectionIndex();
+            LastEndSelectionIndex = GetEndSelectionIndex();
 
             //Blinking caret
             if(refreshBlinkTimer)
@@ -900,7 +670,7 @@ namespace ssGUI
                 RedrawObject();
 
             if(blockKeys)
-                inputStatus.KeyInputBlockedObject = this;
+                currentInputStatus.KeyInputBlockedData.SetBlockData(this);
         }
     }
 
@@ -909,10 +679,17 @@ namespace ssGUI
     TextField::TextField() :    LastBlinkTime(0),
                                 BlinkDuration(500),
                                 BlinkCaret(false),
+                                LastStartSelectionIndex(-1),
+                                LastEndSelectionIndex(-1),
+                                CaretPosition(-1),
                                 LastArrowNavStartTime(0),
                                 ArrowNavPauseDuration(500),
                                 LastArrowNavTime(0),
-                                ArrowNavInterval(20)
+                                ArrowNavInterval(20),
+                                LastInputTime(0),
+                                FinishedChangingNotified(true),
+                                LastIsFocused(false),
+                                FinishedChangingTimeThresholdInMs(500)
     {
         SetBlockInput(true);
         SetMinSize(glm::vec2(35, 35));
@@ -942,20 +719,16 @@ namespace ssGUI
 
     TextField* TextField::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         TextField* temp = new TextField(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
 }

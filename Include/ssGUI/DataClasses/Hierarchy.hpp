@@ -125,18 +125,18 @@ namespace ssGUI
 
             virtual void NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
             
-            void AddChild(ssGUI::GUIObject* guiObject, bool compositeChild);
-            void AddChild(  ssGUI::GUIObject* guiObject,  
-                            ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
-                            ssGUI::Enums::AlignmentVertical verticalAlignment,
-                            bool compositeChild);
+            void SetChildParent(ssGUI::GUIObject* guiObject, bool compositeChild);
+            void SetChildParent(ssGUI::GUIObject* guiObject,  
+                                ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                bool compositeChild);
             
-            void AddChildWithWrapper(ssGUI::GUIObject* guiObject, bool compositeChild);
+            void SetChildParentWithWrapper(ssGUI::GUIObject* guiObject, bool compositeChild);
 
-            void AddChildWithWrapper(   ssGUI::GUIObject* guiObject, 
-                                        ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
-                                        ssGUI::Enums::AlignmentVertical verticalAlignment,
-                                        bool compositeChild);
+            void SetChildParentWithWrapper( ssGUI::GUIObject* guiObject, 
+                                            ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
+                                            ssGUI::Enums::AlignmentVertical verticalAlignment,
+                                            bool compositeChild);
 
         public:
             Hierarchy();
@@ -175,7 +175,7 @@ namespace ssGUI
                 ssGUI_BASE_CHECK_RETURN_NULL();
 
                 auto* guiObject = ssGUI::Factory::Create<T>();
-                AddChild(guiObject, compositeChild);
+                SetChildParent(guiObject, compositeChild);
                 return guiObject;
             }
 
@@ -189,7 +189,7 @@ namespace ssGUI
                 ssGUI_BASE_CHECK_RETURN_NULL();
 
                 auto* guiObject = ssGUI::Factory::Create<T>();
-                AddChild(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
+                SetChildParent(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
                 return guiObject;
             }
             
@@ -201,7 +201,7 @@ namespace ssGUI
                 ssGUI_BASE_CHECK_RETURN_NULL();
                 
                 auto* guiObject = ssGUI::Factory::Create<T>();
-                AddChildWithWrapper(guiObject, compositeChild);
+                SetChildParentWithWrapper(guiObject, compositeChild);
                 return guiObject;
             }
             
@@ -215,7 +215,7 @@ namespace ssGUI
                 ssGUI_BASE_CHECK_RETURN_NULL();
                 
                 auto* guiObject = ssGUI::Factory::Create<T>();
-                AddChildWithWrapper(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
+                SetChildParentWithWrapper(guiObject, horizontalAlignment, verticalAlignment, compositeChild);
                 return guiObject;
             }
             
@@ -303,7 +303,7 @@ namespace ssGUI
             //function: AddChildAfter
             //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
             template<typename T>
-            T* AddChildAfter(  ssGUI::GUIObject* target, 
+            T* AddChildAfter(   ssGUI::GUIObject* target, 
                                 ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
                                 ssGUI::Enums::AlignmentVertical verticalAlignment,
                                 bool compositeChild = false)
@@ -336,7 +336,7 @@ namespace ssGUI
             //function: AddChildAfterWithWrapper
             //Same as above but with <AdvancedPosition: ssGUI::Extensions::AdvancedPosition> extension added
             template<typename T>
-            T* AddChildAfterWithWrapper(   ssGUI::GUIObject* target, 
+            T* AddChildAfterWithWrapper(    ssGUI::GUIObject* target, 
                                             ssGUI::Enums::AlignmentHorizontal horizontalAlignment,
                                             ssGUI::Enums::AlignmentVertical verticalAlignment,
                                             bool compositeChild = false)
@@ -410,7 +410,7 @@ namespace ssGUI
             virtual bool IsChildrenIteratorEnd();
 
             //function: StashChildrenIterator
-            //Stores the current children iterator on the stack. Any modification will not affect the children iterator.
+            //Stores the current children iterator on the stack. Any modification will not affect the stashed children iterator.
             //However, if the stashed children iterator points to a child that is removed then the stashed children iterator will be invalid
             //and <IsChildrenIteratorEnd> will be true when the stashed iterator is restored (popped).
             virtual void StashChildrenIterator();
@@ -512,9 +512,26 @@ namespace ssGUI
             virtual void ChangeChildOrderToAfterPosition(   ssGUI::Hierarchy::ChildToken child, 
                                                             ssGUI::Hierarchy::ChildToken position);
 
-            //function: GetListOfChildren
-            //Gets a list of children
+            /*function: GetListOfChildren
+            Gets a list of children. 
+            
+            It is not recommended to do any modification to any of the children since any modification may modify the state of the children.
+            
+            For example, if there's an event callback that deletes or change the parent of a child (say the 3rd child), 
+            and if it got triggered by an action previously (say when processing the 1st child),
+            this will lead to the list of children not up to date and that child (3rd child in this example) could be invalid.
+            
+            To avoid this situation, it is recommended to use child iterator (<GetCurrentChild>, <MoveChildrenIteratorNext>, etc...) to iterate the children instead.
+            */
             virtual std::vector<ssGUI::GUIObject*> GetListOfChildren() const;
+
+            //function: HasChildRecursively
+            //Returns true if the searchChild is an recursive child (including this GUI Object) of this GUI Object
+            virtual bool HasChildRecursively(ssGUI::GUIObject* searchChild) const;
+
+            //function: HasParentRecursively
+            //Returns true if the searchChild is an recursive parent (including this GUI Object) of this GUI Object.
+            virtual bool HasParentRecursively(ssGUI::GUIObject* searchParent) const;
 
             //function: Internal_AddChild
             //(Internal ssGUI function) Adds the GUI Object to the children record. Use <SetParent> instead for adding or removing child.

@@ -30,7 +30,7 @@ namespace Backend
     bool BackendFontMock::IsValid() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        FO_RETURN_IF_FOUND(OverrideObject, IsValid(), bool);
+        SO_RETURN_IF_FOUND(OverrideObject, IsValid(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsValid(), bool);
         return true;
     }
@@ -38,7 +38,7 @@ namespace Backend
     ssGUI::CharacterRenderInfo BackendFontMock::GetCharacterRenderInfo(wchar_t charUnicode, float charSize)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize);
-        FO_RETURN_IF_FOUND(OverrideObject, GetCharacterRenderInfo(wchar_t, float), ssGUI::CharacterRenderInfo, charUnicode, charSize);
+        SO_RETURN_IF_FOUND(OverrideObject, GetCharacterRenderInfo(wchar_t, float), ssGUI::CharacterRenderInfo, charUnicode, charSize);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetCharacterRenderInfo(charUnicode, charSize), ssGUI::CharacterRenderInfo);
         return ssGUI::CharacterRenderInfo();
     }
@@ -46,7 +46,7 @@ namespace Backend
     bool BackendFontMock::IsCharacterSupported(wchar_t charUnicode)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode);
-        FO_RETURN_IF_FOUND(OverrideObject, IsCharacterSupported(wchar_t), bool, charUnicode);
+        SO_RETURN_IF_FOUND(OverrideObject, IsCharacterSupported(wchar_t), bool, charUnicode);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsCharacterSupported(charUnicode), bool);
         return true;
     }
@@ -54,7 +54,7 @@ namespace Backend
     float BackendFontMock::GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, (int)secondCharUnicode, charSize);
-        FO_RETURN_IF_FOUND(OverrideObject,
+        SO_RETURN_IF_FOUND(OverrideObject,
                             GetKerning(wchar_t, wchar_t, float), float,
                             charUnicode, secondCharUnicode, charSize);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetKerning(charUnicode, secondCharUnicode, charSize), float);
@@ -64,7 +64,7 @@ namespace Backend
     float BackendFontMock::GetLineSpacing(float charSize)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
-        FO_RETURN_IF_FOUND(OverrideObject, GetLineSpacing(float), float, charSize);
+        SO_RETURN_IF_FOUND(OverrideObject, GetLineSpacing(float), float, charSize);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetLineSpacing(charSize), float);
         return 0;
     }
@@ -72,7 +72,7 @@ namespace Backend
     float BackendFontMock::GetUnderlineOffset(float charSize)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
-        FO_RETURN_IF_FOUND(OverrideObject, GetUnderlineOffset(float), float, charSize);
+        SO_RETURN_IF_FOUND(OverrideObject, GetUnderlineOffset(float), float, charSize);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetUnderlineOffset(charSize), float);
         return 0;
     }
@@ -80,7 +80,7 @@ namespace Backend
     float BackendFontMock::GetUnderlineThickness(float charSize)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
-        FO_RETURN_IF_FOUND(OverrideObject, GetUnderlineThickness(float), float, charSize);
+        SO_RETURN_IF_FOUND(OverrideObject, GetUnderlineThickness(float), float, charSize);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetUnderlineThickness(charSize), float);
         return 0;
     }
@@ -88,7 +88,7 @@ namespace Backend
     bool BackendFontMock::LoadFromPath(std::string path)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(path);
-        FO_RETURN_IF_FOUND(OverrideObject, LoadFromPath(std::string), bool, path);
+        SO_RETURN_IF_FOUND(OverrideObject, LoadFromPath(std::string), bool, path);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromPath(path), bool);
         return true;
     }
@@ -96,7 +96,7 @@ namespace Backend
     bool BackendFontMock::LoadFromMemory(void* dataPtr, int lengthInBytes)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, lengthInBytes);
-        FO_RETURN_IF_FOUND(OverrideObject, LoadFromMemory(void*, int), bool, dataPtr, lengthInBytes);
+        SO_RETURN_IF_FOUND(OverrideObject, LoadFromMemory(void*, int), bool, dataPtr, lengthInBytes);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromMemory(dataPtr, lengthInBytes), bool);
         return true;
     }
@@ -104,7 +104,7 @@ namespace Backend
     bool BackendFontMock::GetFixedAvailableFontSizes(std::vector<float>& fontSizes)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(fontSizes);
-        FO_ARGUMENTS_AND_RETURN_IF_FOUND(true, OverrideObject, GetFixedAvailableFontSizes(std::vector<float>&), fontSizes);
+        SO_MODIFY_ARGUMENTS_AND_RETURN_IF_FOUND(OverrideObject, true, GetFixedAvailableFontSizes(std::vector<float>&), fontSizes);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetFixedAvailableFontSizes(fontSizes), bool);
         return true;
     }
@@ -112,12 +112,12 @@ namespace Backend
     bool BackendFontMock::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize, characterImage);
-        FO_ARGUMENTS_AND_RETURN_IF_FOUND(   true, 
-                                            OverrideObject, 
-                                            GetCharacterImage(wchar_t, float, ssGUI::ImageData&), 
-                                            charUnicode, 
-                                            charSize, 
-                                            (FO_NonComparableCopyable<ssGUI::ImageData>&)characterImage);
+        SO_MODIFY_ARGUMENTS_AND_RETURN_IF_FOUND(OverrideObject,
+                                                true, 
+                                                GetCharacterImage(wchar_t, float, ssGUI::ImageData&), 
+                                                charUnicode, 
+                                                charSize, 
+                                                (SO_NonComparableCopyable<ssGUI::ImageData>&)characterImage);
         
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetCharacterImage(charUnicode, charSize, characterImage), bool);
         return true;
@@ -126,7 +126,7 @@ namespace Backend
     void* BackendFontMock::GetRawHandle()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        FO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
+        SO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawHandle(), void*);
         return nullptr;
     }

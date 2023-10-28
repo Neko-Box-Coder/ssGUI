@@ -44,10 +44,12 @@ namespace ssGUI
             GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
-    void Button::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void Button::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                            ssGUI::InputStatus& currentInputStatus, 
+                            ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
     {
-        if(inputStatus.MouseInputBlockedObject == nullptr && IsBlockInput())
+        if(currentInputStatus.MouseInputBlockedData.GetBlockDataType() == ssGUI::Enums::BlockDataType::NONE && IsBlockInput())
         {
             //On mouse down
             glm::ivec2 currentMousePos = inputInterface->GetCurrentMousePosition(dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface());
@@ -57,7 +59,7 @@ namespace ssGUI
                 if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
-                    inputStatus.MouseInputBlockedObject = this;
+                    currentInputStatus.MouseInputBlockedData.SetBlockData(this);
                     if(IsInteractable())
                     {
                         SetFocus(true);
@@ -71,7 +73,7 @@ namespace ssGUI
                     (GetButtonState() == ssGUI::Enums::ButtonState::ON_CLICK ||
                     GetButtonState() == ssGUI::Enums::ButtonState::CLICKING))
             {
-                inputStatus.MouseInputBlockedObject = this;
+                currentInputStatus.MouseInputBlockedData.SetBlockData(this);
                 if(IsInteractable())
                 {
                     SetFocus(true);
@@ -86,7 +88,7 @@ namespace ssGUI
                     currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
             {
-                inputStatus.MouseInputBlockedObject = this;
+                currentInputStatus.MouseInputBlockedData.SetBlockData(this);
                 if(IsInteractable())
                 {
                     SetFocus(true);
@@ -100,7 +102,7 @@ namespace ssGUI
                 if (currentMousePos.x >= GetGlobalPosition().x && currentMousePos.x <= GetGlobalPosition().x + GetSize().x &&
                     currentMousePos.y >= GetGlobalPosition().y && currentMousePos.y <= GetGlobalPosition().y + GetSize().y)
                 {
-                    inputStatus.MouseInputBlockedObject = this;
+                    currentInputStatus.MouseInputBlockedData.SetBlockData(this);
                     if(IsInteractable())
                     {
                         inputInterface->SetCursorType(ssGUI::Enums::CursorType::HAND);
@@ -134,7 +136,7 @@ namespace ssGUI
         auto stateChangedEventCallback = AddEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED);
         stateChangedEventCallback->AddEventListener(
             ListenerKey, this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 ssGUI::Button* btn = static_cast<ssGUI::Button*>(info.EventSource);
                 glm::u8vec4 btnColor = btn->GetButtonColor();
@@ -214,20 +216,16 @@ namespace ssGUI
 
     Button* Button::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Button* temp = new Button(*this);
         CloneExtensionsAndEventCallbacks(temp);
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
 }

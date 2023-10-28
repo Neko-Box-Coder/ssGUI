@@ -32,7 +32,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [index, dropdownRefIndex](ssGUI::EventInfo info)
+            [index, dropdownRefIndex](ssGUI::EventInfo& info)
             {
                 auto itemContainer = static_cast<ssGUI::MenuItem*>(info.Container);
                 auto dropdown = static_cast<ssGUI::Dropdown*>(info.References->GetObjectReference(dropdownRefIndex));
@@ -46,8 +46,10 @@ namespace ssGUI
         );
     }
 
-    void Dropdown::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-                            ssGUI::GUIObject* mainWindow)
+    void Dropdown::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
         if(DropdownMenu != -1 && CurrentObjectsReferences.GetObjectReference(DropdownMenu) != nullptr &&
             CurrentObjectsReferences.GetObjectReference(DropdownMenu)->GetParent() != mainWindow)
@@ -55,7 +57,7 @@ namespace ssGUI
             CurrentObjectsReferences.GetObjectReference(DropdownMenu)->SetParent(mainWindow);
         }
 
-        StandardButton::MainLogic(inputInterface, inputStatus, mainWindow);
+        StandardButton::MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
     }
 
     const std::string Dropdown::ListenerKey = "Dropdown";
@@ -75,8 +77,8 @@ namespace ssGUI
         ChangeChildOrderToAfterPosition(firstIt, lastIt);
 
         //Swap size multiplier
-        SetButtonMode(ssGUI::StandardButton::Mode::BOTH);
-        auto layout = GetAnyExtension<ssGUI::Extensions::Layout>();
+        //SetButtonMode(ssGUI::StandardButton::Mode::BOTH);
+        auto layout = GetExtension<ssGUI::Extensions::Layout>();
         float iconMulti = layout->GetPreferredSizeMultiplier(0);
         float textMulti = layout->GetPreferredSizeMultiplier(1);
         layout->SetPreferredSizeMultiplier(0, textMulti);
@@ -85,7 +87,11 @@ namespace ssGUI
         InitiateDefaultResources();
         //Set icon to dropdown arrow
         if(DefaultDropdownArrowImageData != nullptr)
-            GetButtonIconObject()->SetImageData(DefaultDropdownArrowImageData);
+        {
+            auto* dropdownIcon = AddChild<ssGUI::Image>();
+            dropdownIcon->SetImageData(DefaultDropdownArrowImageData);
+            SetButtonIconObject(dropdownIcon);
+        }
 
         //Create dropdown menu
         auto dropdownMenu = ssGUI::Factory::Create<ssGUI::Menu>();
@@ -102,7 +108,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto dropdownContainer = static_cast<ssGUI::Dropdown*>(info.Container);
                 
@@ -148,7 +154,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* dropdown = static_cast<ssGUI::Dropdown*>(info.Container);
                 
@@ -339,31 +345,24 @@ namespace ssGUI
 
     Dropdown* Dropdown::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         Dropdown* temp = new Dropdown(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
 
-        ssLOG_FUNC_EXIT();
         return temp;
     }
     
     void Dropdown::InitiateDefaultResources()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(DefaultDropdownArrowImageData != nullptr)
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         ssGUI::ImageData* defaultImg;
 
@@ -385,8 +384,6 @@ namespace ssGUI
         }
         else
             DefaultDropdownArrowImageData = data;
-
-        ssLOG_FUNC_EXIT();
     }
     
     void Dropdown::CleanUpDefaultResources()

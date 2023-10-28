@@ -1,7 +1,7 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/HelperClasses/GenericInputToString.hpp"
 #include "TestsResources.h"
 

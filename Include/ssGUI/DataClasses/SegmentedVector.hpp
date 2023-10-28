@@ -679,14 +679,14 @@ namespace ssGUI
             //Returns the reference to first element
             inline T& Front()
             {
-                return InternalVectors[0].front();
+                return InternalVectors.at(0).front();
             };
 
             //function: Back
             //Returns the reference to last element
             inline T& Back()
             {
-                return InternalVectors[InternalVectors.size()].back();
+                return InternalVectors.at(InternalVectors.size() - 1).back();
             };
     };
 }

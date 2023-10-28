@@ -10,7 +10,8 @@ namespace Extensions
                         Enabled(true),
                         BorderColor(0, 0, 0, 255),
                         BorderWidth(1),
-                        BorderSides(15)
+                        BorderSides(1 << 3 | 1 << 2 | 1 << 1 | 1 << 0),
+                        InnerBorder(false)
     {}
     
     Border::~Border()
@@ -19,20 +20,18 @@ namespace Extensions
     Border::Border(Border const& other)
     {
         Container = nullptr;
-        Enabled = other.IsEnabled();
-        BorderColor = other.GetBorderColor();
-        BorderWidth = other.GetBorderWidth();
-        BorderSides = other.BorderSides;
+        Copy(&other);
     }
 
     void Border::DrawBorder()
     {        
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         glm::vec2 drawPosition = Container->GetGlobalPosition();
         
         int width = GetBorderWidth();
-        glm::u8vec4 colour = GetBorderColor();
+        glm::vec2 offset = InnerBorder ? glm::vec2() : glm::vec2(width, width);
+        glm::u8vec4 color = GetBorderColor();
 
         std::vector<ssGUI::DrawingEntity>& drawingEntities = Container->Extension_GetDrawingEntities();
 
@@ -41,15 +40,21 @@ namespace Extensions
         {
             ssGUI::DrawingEntity entity;
             entity.EntityName = BORDER_TOP_SHAPE_NAME;
-            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      0));
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, 0));
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, width));
-            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      width));
-        
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
+            entity.Vertices.push_back(drawPosition - offset + glm::vec2(0, 0));
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(offset.x, -offset.y) + 
+                                        glm::vec2(Container->GetSize().x, 0));
+
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(offset.x, -offset.y) + 
+                                        glm::vec2(Container->GetSize().x, width));
+
+            entity.Vertices.push_back(  drawPosition - offset + glm::vec2(0, width));
+
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
 
             drawingEntities.push_back(entity);
         }
@@ -59,15 +64,30 @@ namespace Extensions
         {
             ssGUI::DrawingEntity entity;
             entity.EntityName = BORDER_RIGHT_SHAPE_NAME;
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, (IsBorderTopShowing() ? width : 0)));
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x,         (IsBorderTopShowing() ? width : 0)));
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x,         Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x - width, Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(offset.x, -offset.y) + 
+                                        glm::vec2(  Container->GetSize().x - width, 
+                                                    (IsBorderTopShowing() ? width : 0)));
 
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(offset.x, -offset.y) + 
+                                        glm::vec2(  Container->GetSize().x, 
+                                                    (IsBorderTopShowing() ? width : 0)));
+            
+            entity.Vertices.push_back(  drawPosition + 
+                                        offset + 
+                                        glm::vec2(  Container->GetSize().x, 
+                                                    Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            
+            entity.Vertices.push_back(  drawPosition + 
+                                        offset +
+                                        glm::vec2(  Container->GetSize().x - width, 
+                                                    Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
 
             drawingEntities.push_back(entity);
         }
@@ -77,15 +97,26 @@ namespace Extensions
         {
             ssGUI::DrawingEntity entity;
             entity.EntityName = BORDER_BOTTOM_SHAPE_NAME;
-            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y - width));
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y - width));
-            entity.Vertices.push_back(drawPosition + glm::vec2(Container->GetSize().x, Container->GetSize().y));
-            entity.Vertices.push_back(drawPosition + glm::vec2(0,                      Container->GetSize().y));
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(-offset.x, offset.y) + 
+                                        glm::vec2(0, Container->GetSize().y - width));
+            
+            entity.Vertices.push_back(  drawPosition + 
+                                        offset + 
+                                        glm::vec2(Container->GetSize().x, Container->GetSize().y - width));
+            
+            entity.Vertices.push_back(  drawPosition + 
+                                        offset + 
+                                        glm::vec2(Container->GetSize().x, Container->GetSize().y));
+            
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(-offset.x, offset.y) + 
+                                        glm::vec2(0, Container->GetSize().y));
 
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
 
             drawingEntities.push_back(entity);
         }
@@ -95,20 +126,30 @@ namespace Extensions
         {
             ssGUI::DrawingEntity entity;
             entity.EntityName = BORDER_LEFT_SHAPE_NAME;
-            entity.Vertices.push_back(drawPosition + glm::vec2(0,      IsBorderTopShowing() ? width : 0));
-            entity.Vertices.push_back(drawPosition + glm::vec2(width,  IsBorderTopShowing() ? width : 0));
-            entity.Vertices.push_back(drawPosition + glm::vec2(width,  Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
-            entity.Vertices.push_back(drawPosition + glm::vec2(0,      Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            
+            entity.Vertices.push_back(  drawPosition - 
+                                        offset + 
+                                        glm::vec2(0, IsBorderTopShowing() ? width : 0));
+            
+            entity.Vertices.push_back(  drawPosition - 
+                                        offset + 
+                                        glm::vec2(width, IsBorderTopShowing() ? width : 0));
+            
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(-offset.x, offset.y) + 
+                                        glm::vec2(width,Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
+            
+            entity.Vertices.push_back(  drawPosition + 
+                                        glm::vec2(-offset.x, offset.y) + 
+                                        glm::vec2(0, Container->GetSize().y + (IsBorderBottomShowing() ? -width : 0)));
 
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
-            entity.Colors.push_back(colour);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
+            entity.Colors.push_back(color);
 
             drawingEntities.push_back(entity); 
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
     void Border::ConstructRenderInfo()
@@ -116,7 +157,9 @@ namespace Extensions
         DrawBorder();
     }
 
-    void Border::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Border::ConstructRenderInfo(   ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                        ssGUI::GUIObject* mainWindow, 
+                                        glm::vec2 mainWindowPositionOffset)
     {
         ConstructRenderInfo();
     }
@@ -189,6 +232,15 @@ namespace Extensions
         return ((BorderSides & (1 << 3)) > 0);
     }
     
+    void Border::SetInnerBorder(bool innerBorder)
+    {
+        InnerBorder = innerBorder;
+    }
+    
+    bool Border::IsInnerBorder() const
+    {
+        return InnerBorder;
+    }
 
     void Border::SetEnabled(bool enabled)
     {
@@ -203,7 +255,11 @@ namespace Extensions
         return Enabled;
     }
 
-    void Border::Internal_Update(bool isPreUpdate, ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, ssGUI::GUIObject* mainWindow)
+    void Border::Internal_Update(   bool isPreUpdate, 
+                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
+                                    ssGUI::GUIObject* mainWindow)
     {
         //Do nothing
     }
@@ -217,7 +273,7 @@ namespace Extensions
             ConstructRenderInfo();
     }
     
-    std::string Border::GetExtensionName()
+    std::string Border::GetExtensionName() const
     {
         return EXTENSION_NAME;
     }
@@ -228,16 +284,17 @@ namespace Extensions
         Container->RedrawObject();
     }
 
-    void Border::Copy(ssGUI::Extensions::Extension* extension)
+    void Border::Copy(const ssGUI::Extensions::Extension* extension)
     {
         if(extension->GetExtensionName() != EXTENSION_NAME)
             return;
         
-        ssGUI::Extensions::Border* border = static_cast<ssGUI::Extensions::Border*>(extension);
+        auto* border = static_cast<const ssGUI::Extensions::Border*>(extension);
         Enabled = border->IsEnabled();
         BorderColor = border->GetBorderColor();
         BorderWidth = border->GetBorderWidth();
         BorderSides = border->BorderSides;
+        InnerBorder = border->InnerBorder;
     }
 
     ObjectsReferences* Border::Internal_GetObjectsReferences()

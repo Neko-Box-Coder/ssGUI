@@ -1,5 +1,6 @@
 #include "ssGUI/GUIObjectClasses/GUIObject.hpp"
 
+#include "ssGUI/DataClasses/ObjectUpdateInfo.hpp"
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"    //This is for getting the MainWindow offset
 #include "ssGUI/ssGUIManager.hpp"                   //This is for accessing DeletedObjs
 #include "ssGUI/GUIObjectClasses/Menu.hpp"          //This is for spawning right click menu
@@ -34,7 +35,7 @@ namespace ssGUI
 
     ssGUI::GUIObject* GUIObject::CloneChildren(ssGUI::GUIObject* originalRoot, ssGUI::GUIObject* clonedRoot)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //1. First get a list of objects needed to be cloned and create a hashmap of original objects with the index of it
         std::vector<ssGUI::GUIObject*> originalObjsToClone = std::vector<ssGUI::GUIObject*>();
@@ -140,13 +141,12 @@ namespace ssGUI
             clonedObjs[i]->SetParent(clonedObjs[originalObjsIndex.at(oriParent)]);
         }
 
-        ssLOG_FUNC_EXIT();
         return clonedRoot;
     }
 
     void GUIObject::CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         for(auto extension : Extensions)
         {
             if(!clonedObj->IsExtensionExist(extension.second->GetExtensionName()))
@@ -169,14 +169,13 @@ namespace ssGUI
             if(!clonedObj->IsEventCallbackExist(eventCallback.second->GetEventType()))
                 clonedObj->AddEventCallbackCopy(eventCallback.second, true);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
-    void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-        ssGUI::GUIObject* mainWindow)
+    void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::InputStatus& inputStatus, 
+                                        ssGUI::GUIObject* mainWindow)
     {
-        if(inputStatus.MouseInputBlockedObject != nullptr || RightClickMenuId < 0)
+        if(inputStatus.MouseInputBlockedData.GetBlockDataType() != ssGUI::Enums::BlockDataType::NONE || RightClickMenuId < 0)
             return;
         
         //Mouse Input blocking
@@ -192,9 +191,9 @@ namespace ssGUI
             mouseInWindowBoundY = true;
         
         //Input blocking
-        if(mouseInWindowBoundX && mouseInWindowBoundY && (inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) && !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT)))
+        if( mouseInWindowBoundX && mouseInWindowBoundY && inputInterface->IsButtonOrKeyDown(ssGUI::Enums::MouseButton::RIGHT))
         {
-            inputStatus.MouseInputBlockedObject = this;
+            inputStatus.MouseInputBlockedData.SetBlockData(this);
             auto* curMenu = CurrentObjectsReferences.GetObjectReference<ssGUI::Menu>(RightClickMenuId);
             
             if(curMenu == nullptr)
@@ -208,8 +207,10 @@ namespace ssGUI
         }
     }
 
-    void GUIObject::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
-        ssGUI::GUIObject* mainWindow)
+    void GUIObject::MainLogic(  ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::InputStatus& currentInputStatus, 
+                                ssGUI::InputStatus& lastInputStatus, 
+                                ssGUI::GUIObject* mainWindow)
     {
     }
     
@@ -225,7 +226,7 @@ namespace ssGUI
 
     GUIObject::~GUIObject()
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         if(!ObjectDelete)
         {
             NotifyAndRemoveOnObjectDestroyEventCallbackIfExist();
@@ -239,8 +240,6 @@ namespace ssGUI
         
         for(auto it : EventCallbacks)
             ssGUI::Factory::Dispose(it.second);
-        
-        ssLOG_FUNC_EXIT();
     }
 
     ssGUI::Enums::GUIObjectType GUIObject::GetType() const
@@ -286,14 +285,15 @@ namespace ssGUI
         RightClickMenuId = -1;
     }
 
-    void GUIObject::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void GUIObject::Internal_Draw(  ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                    ssGUI::GUIObject* mainWindow, 
+                                    glm::vec2 mainWindowPositionOffset)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
 
         if(!IsEnabled())
         {
             Redraw = false;
-            ssLOG_FUNC_EXIT();
             return;
         }
 
@@ -337,21 +337,18 @@ namespace ssGUI
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
                 GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
         }
-
-        ssLOG_FUNC_EXIT();
     }
 
-    void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+    void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         
         //If it is not enabled, don't even update/draw it
         if(!IsEnabled())
-        {
-            ssLOG_FUNC_EXIT();
             return;
-        }
 
         for(auto extension : ExtensionsUpdateOrder)
         {
@@ -359,22 +356,24 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(true, inputInterface, inputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(true, inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         }
         
         ssGUI::ObjectUpdateInfo updateInfo = 
         {
             inputInterface,
-            inputStatus,
+            currentInputStatus,
+            lastInputStatus,
             mainWindow
         };
         
         if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE))
             GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_UPDATE)->Notify(mainWindow, &updateInfo);
 
-        CheckRightClickMenu(inputInterface, inputStatus, mainWindow);
-        MainLogic(inputInterface, inputStatus, mainWindow);
+        CheckRightClickMenu(inputInterface, currentInputStatus, mainWindow);
+        MainLogic(inputInterface, currentInputStatus, lastInputStatus, mainWindow);
 
+        //TODO: Add delete check to current object
         if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_UPDATED))
             GetEventCallback(ssGUI::Enums::EventType::OBJECT_UPDATED)->Notify(mainWindow, &updateInfo);
         
@@ -384,7 +383,7 @@ namespace ssGUI
             if(!IsExtensionExist(extension))
                 continue;
 
-            Extensions.at(extension)->Internal_Update(false, inputInterface, inputStatus, mainWindow);
+            Extensions.at(extension)->Internal_Update(false, inputInterface, currentInputStatus, lastInputStatus, mainWindow);
         }
         
         //Check position different for redraw
@@ -392,26 +391,20 @@ namespace ssGUI
             RedrawObject();
 
         LastGlobalPosition = GetGlobalPosition();
-
-        ssLOG_FUNC_EXIT();
     }
 
     GUIObject* GUIObject::Clone(bool cloneChildren)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         GUIObject* temp = new GUIObject(*this);
         CloneExtensionsAndEventCallbacks(temp);   
         
         if(cloneChildren)
         {
             if(CloneChildren(this, temp) == nullptr)
-            {
-                ssLOG_FUNC_EXIT();
                 return nullptr;
-            }
         }
-
-        ssLOG_FUNC_EXIT();
+        
         return temp;
     }
     

@@ -1,5 +1,5 @@
 #include "ssGUI/Backend/DynamicImageAtlas.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
@@ -34,7 +34,7 @@ int main()
     
     ssTEST_CLEAN_UP
     {
-        AtlasRequested = false;
+        AtlasRequested = 0;
         delete dynamicAtlas;
     };
     
@@ -84,11 +84,11 @@ int main()
         int imgId = -1;
         ssTEST_OUTPUT_ASSERT("RequestImage", dynamicAtlas->RequestImage(imgInfo, imgId));
         
-        ssTEST_OUTPUT_ASSERT("New Atlas not allocated", AtlasRequested == 0);
+        ssTEST_OUTPUT_ASSERT("New Atlas allocated", AtlasRequested == 1);
         
         ssTEST_OUTPUT_ASSERT("RequestImage 2", dynamicAtlas->RequestImage(imgInfo, imgId));
         
-        ssTEST_OUTPUT_ASSERT("New Atlas allocated", AtlasRequested == 1);
+        ssTEST_OUTPUT_ASSERT("New Atlas allocated again", AtlasRequested == 2);
     
         dynamicAtlas->AddOnRequestNewAtlasCallback([](){ return false; });
         
@@ -143,7 +143,7 @@ int main()
         DynamicImageAtlas::ImageAtlasImageInfo getImgInfo4;
         ssTEST_OUTPUT_ASSERT("GetImageInfo 4", dynamicAtlas->GetImageInfo(imgId4, getImgInfo4));
         
-        ssTEST_OUTPUT_ASSERT("Validate Pos for new atlas", getImgInfo4.LocationInPixel == glm::ivec3(0, 0, 1) && AtlasRequested == 1);
+        ssTEST_OUTPUT_ASSERT("Validate Pos for new atlas", getImgInfo4.LocationInPixel == glm::ivec3(0, 0, 1) && AtlasRequested == 2);
     };
     
     ssTEST("RemoveImage adds free cells back Test")
@@ -181,7 +181,7 @@ int main()
         
         
         ssTEST_OUTPUT_ASSERT("Validation",  imgId4 != imgId3 &&
-                                            AtlasRequested == 0 &&
+                                            AtlasRequested == 1 &&
                                             getImgInfo4.LocationInPixel == glm::ivec3(350, 0, 0));
     };
  
@@ -225,7 +225,7 @@ int main()
         
         ssTEST_OUTPUT_ASSERT("Validate Pos",    getImgInfo.LocationInPixel == glm::ivec3() &&
                                                 getImgInfo2.LocationInPixel == glm::ivec3(0, 200, 0) &&
-                                                getImgInfo3.LocationInPixel == glm::ivec3(350, 0, 0));
+                                                getImgInfo3.LocationInPixel == glm::ivec3(400, 0, 0));
     };
  
     

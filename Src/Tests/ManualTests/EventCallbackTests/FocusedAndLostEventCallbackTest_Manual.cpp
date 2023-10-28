@@ -1,5 +1,5 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 
 ssGUI::MainWindow* MainWindow;
@@ -37,14 +37,14 @@ void SetUp()
     auto* ecb = TestWindow->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
     auto* ecb2 = TestWindow->AddEventCallback(ssGUI::Enums::EventType::FOCUSED);
     ecb->AddEventListener(  "TestKey",    
-                            [&](ssGUI::EventInfo info)
+                            [&](ssGUI::EventInfo& info)
                             {
                                 ssLOG_SIMPLE("Focused: "<<objToPtr(info.EventSource));
                                 assert(info.EventSource->IsFocused());
                             });
                             
     ecb2->AddEventListener(  "TestKey",    
-                            [&](ssGUI::EventInfo info)
+                            [&](ssGUI::EventInfo& info)
                             {
                                 ssLOG_SIMPLE("Focus lost: "<<objToPtr(info.EventSource));
                                 assert(!info.EventSource->IsFocused());

@@ -76,6 +76,9 @@ namespace ssGUI
     //TODO: It was called SetVisible before so that's why it is in Renderer. Maybe move this to Hierarachy class?
     void Renderer::SetEnabled(bool enabled)
     {
+        if(Enabled == enabled)
+            return;
+
         Enabled = enabled;
         RedrawObject();
     }
@@ -106,9 +109,14 @@ namespace ssGUI
 
     void Renderer::SetBackgroundColor(glm::u8vec4 color)
     {
+        if(color == BackgroundColour)
+            return;
+
         BackgroundColour = color;
+
         if(CurrentEventCallbackManager->IsEventCallbackExist(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED))
             CurrentEventCallbackManager->GetEventCallback(ssGUI::Enums::EventType::BACKGROUND_COLOR_CHANGED)->Notify(CurrentObject);
+        
         RedrawObject();
     }
 

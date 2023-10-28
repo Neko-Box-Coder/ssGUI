@@ -3,6 +3,7 @@
 
 #include "ssGUI/GUIObjectClasses/CompositeClasses/Slider.hpp"
 #include "ssGUI/GUIObjectClasses/Text.hpp"
+#include "ssGUI/GUIObjectClasses/TextField.hpp"
 
 //namespace: ssGUI
 namespace ssGUI
@@ -40,7 +41,7 @@ namespace ssGUI
         SetSize(glm::vec2(300, 30));
 
         //Set layout preferred sizes
-        layout->AddPreferredSizeMultipliers(0.3f, 0.5f, 0.1f);
+        layout->AddPreferredSizeMultipliers(0.25f, 0.5f, 0.15f);
         
         //Add components
         auto* sliderTitle = AddChild<ssGUI::Text>();
@@ -57,11 +58,16 @@ namespace ssGUI
         sliderAS->SetVerticalPixel(sliderHeight);
         SliderObject = CurrentObjectsReferences.AddObjectReference(slider);
 
-        auto* sliderValue = AddChild<ssGUI::Text>();
+        auto* sliderValue = AddChild<ssGUI::TextField>();
+        sliderValue->RemoveExtension<ssGUI::Extensions::Outline>();
+        sliderValue->RemoveExtension<ssGUI::Extensions::BoxShadow>();
+        sliderValue->RemoveExtension<ssGUI::Extensions::RoundedCorners>();
+        sliderValue->SetBackgroundColor(glm::u8vec4());
         sliderValue->SetText(ValueToString(DisplayInteger, DisplayDecimalPlaces, slider->GetSliderValue()));
         SliderDisplayValueTextObject = CurrentObjectsReferences.AddObjectReference(sliderValue);
    
         AddDisplayValueEventCallback();
+        AddTextModifiedEventCallback();
     }
     =================================================================
     */
@@ -85,45 +91,47 @@ namespace ssGUI
             virtual void ConstructRenderInfo() override;
 
             virtual void AddDisplayValueEventCallback();
+            virtual void AddTextModifiedEventCallback();
             //virtual void RemoveDisplayValueEventCallback();
             virtual void UpdateDisplayTextContent();
 
         public:
+            //string: ListenerKey
             static const std::string ListenerKey;
 
             StandardSlider();
             virtual ~StandardSlider() override;
 
-            //function: SetTitleTextObject
-            //Sets the title text GUI Object. 
-            //The text content of the old text GUI Object will be copied to the new one.
-            //The new text GUI Object will be inserted at the same place as the old one.
-            //Passing nullptr will unset the text GUI object.
+            /*function: SetTitleTextObject
+            Sets the title text GUI Object. 
+            The text content of the old text GUI Object will be copied to the new one.
+            The old text GUI Object will be deleted and the new text GUI Object will be inserted at the same place as the old one.
+            Passing nullptr will unset the text GUI object.*/
             virtual void SetTitleTextObject(ssGUI::Text* text);
             
             //function: GetTitleTextObject
             //Gets the title text GUI Object. 
             virtual ssGUI::Text* GetTitleTextObject() const;
             
-            //function: SetSliderObject
-            //Sets the actual slider GUI object.
-            //The new slider GUI Object will be inserted at the same place as the old one.
-            //Passing nullptr will unset the slider GUI object.
+            /*function: SetSliderObject
+            Sets the actual slider GUI object.
+            The old slider GUI Object will be deleted and the new slider GUI Object will be inserted at the same place as the old one.
+            Passing nullptr will unset the slider GUI object.*/
             virtual void SetSliderObject(ssGUI::Slider* slider);
             
             //function: GetSliderObject
             //Gets the actual slider GUI object.
             virtual ssGUI::Slider* GetSliderObject() const;
             
-            //function: SetDisplayValueTextObject
-            //Sets the display value text for showing the value of the slider.
-            //The new text GUI Object will be inserted at the same place as the old one.
-            //Passing nullptr will unset the display value text GUI object.
-            virtual void SetDisplayValueTextObject(ssGUI::Text* text);
+            /*function: SetDisplayValueTextObject
+            Sets the display value text for showing the value of the slider.
+            The old slider GUI Object will be deleted and the new text GUI Object will be inserted at the same place as the old one.
+            Passing nullptr will unset the display value text GUI object.*/
+            virtual void SetDisplayValueTextObject(ssGUI::TextField* text);
             
             //function: GetDisplayValueTextObject
             //Gets the display value text for showing the value of the slider.
-            virtual ssGUI::Text* GetDisplayValueTextObject() const;
+            virtual ssGUI::TextField* GetDisplayValueTextObject() const;
 
             //function: SetMinDisplayValue
             //Sets the minimum display value that is mapped to 0 for the actual slider value.
@@ -165,21 +173,21 @@ namespace ssGUI
             //the mapped minimum and maximum display value.
             virtual float GetDisplayStepValue() const;
             
-            //function: SetDisplayIntegerValue
-            //Sets if integer is shown instead of float.
-            //Please note that the underlying display value is still float, 
-            //but just rounded to integer when displaying in value text GUI Object. 
+            /*function: SetDisplayIntegerValue
+            Sets if integer is shown instead of float.
+            Please note that the underlying display value is still float, 
+            but just rounded to integer when displaying in value text GUI Object.*/
             virtual void SetDisplayIntegerValue(bool displayInteger);
             
             //function: IsDisplayIntegerValue
             //Returns if integer is shown instead of float.
             virtual bool IsDisplayIntegerValue() const;
             
-            //function: SetDisplayDecimalPlaces
-            //Sets how many decimal places are shown. 
-            //This has no effect if <IsDisplayIntegerValue> is false.
-            //Please note that the underlying display value is not affected by this, 
-            //but just discarding the extra decimals when displaying in value text GUI Object. 
+            /*function: SetDisplayDecimalPlaces
+            Sets how many decimal places are shown. 
+            This has no effect if <IsDisplayIntegerValue> is false.
+            Please note that the underlying display value is not affected by this, 
+            but just discarding the extra decimals when displaying in value text GUI Object.*/
             virtual void SetDisplayDecimalPlaces(int decimalPlaces);
             
             //function: GetDisplayDecimalPlaces

@@ -137,6 +137,8 @@ namespace ssGUI
                     if(format.IndexA < 0)
                     {
                         //If we are outputing RGBA
+                        //TODO: This behavior is misleading, there should be a flag for sepecifying if the mono pixels are outputing to RGB pixels as opaque RGBA image or 
+                        //      outputing to alpha channel of RGBA image with RGB channels being white
                         if(outputFormat.IndexA >= 0)
                         {
                             conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
@@ -149,6 +151,7 @@ namespace ssGUI
                                                 };
                         }
                         //If we are outputing RGB
+                        //TODO: This is wrong since we are just setting the RGB channels to white without using the mono pixels
                         else
                         {
                             conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
@@ -219,8 +222,10 @@ namespace ssGUI
             //RGB
             else
             {
+                //If the input RGB image has alpha
                 if(format.HasAlpha)
                 {
+                    //If the input image doesn't have pre-multiplied alpha, we can just copy the pixels
                     if(!format.PreMultipliedAlpha)
                     {
                         //If we are outputing RGBA
@@ -245,6 +250,7 @@ namespace ssGUI
                                                 };
                         }
                     }
+                    //If the input image has pre-multiplied alpha, we need to get the original color values
                     else
                     {
                         //If we are outputing RGBA
@@ -280,7 +286,7 @@ namespace ssGUI
                 //If the input RGB image doesn't have alpha
                 else
                 {
-                    //If we are outputing RGBA
+                    //If we are outputing RGBA, we just set the alpha to max
                     if(outputFormat.IndexA >= 0)
                     {
                         conversionFunc =    [&](InputChannelType const* curPixelPtr, int x, int y)
@@ -347,7 +353,7 @@ namespace ssGUI
             inImg = monoImgPtr;\
         }
         
-        public:        
+        public:
         static bool ConvertToRGBA32(void* outImg, void const * inImg, ssGUI::ImageFormat format, 
                                     glm::ivec2 imageSize)
         {
@@ -462,7 +468,7 @@ namespace ssGUI
 
         static void ResizeBilinear(const uint8_t* inputPixels, int w, int h, uint8_t* outputPixels, int w2, int h2)
         {
-            ssLOG_FUNC_ENTRY();
+            ssGUI_LOG_FUNC();
             const uint8_t* a;
             const uint8_t* b;
             const uint8_t* c;
@@ -556,7 +562,6 @@ namespace ssGUI
                     offset++;
                 }
             }
-            ssLOG_FUNC_EXIT();
         }
 
         //Assuming is RGBA32

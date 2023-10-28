@@ -102,7 +102,7 @@ namespace ssGUI
         (
             "Event Callback Manager",
             CurrentObject,
-            [forwardObjId, forwardEvent](ssGUI::EventInfo info)
+            [forwardObjId, forwardEvent](ssGUI::EventInfo& info)
             {
                 ssGUI::GUIObject* forwardToObj = info.References->GetObjectReference(forwardObjId);
                 if(forwardToObj == nullptr)

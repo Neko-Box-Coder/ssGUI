@@ -102,7 +102,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::EventInfo info)
+            [index](ssGUI::EventInfo& info)
             {
                 auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
@@ -139,7 +139,7 @@ namespace ssGUI
         ecb->AddEventListener
         (
             ListenerKey, this,
-            [index](ssGUI::EventInfo info)
+            [index](ssGUI::EventInfo& info)
             {
                 auto imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.References->GetObjectReference(index));
                 if(imageCanvas == nullptr)
@@ -179,7 +179,7 @@ namespace ssGUI
         (
             ListenerKey,
             this,
-            [](ssGUI::EventInfo info)
+            [](ssGUI::EventInfo& info)
             {
                 auto* imageCanvas = static_cast<ssGUI::ImageCanvas*>(info.Container);
                 
@@ -190,9 +190,6 @@ namespace ssGUI
             }
         );
     }
-    
-    int ImageCanvas::ImageCanvasObjectCount = 0;
-    ssGUI::ImageData* ImageCanvas::DefaultRotationCursor = nullptr;
     =================================================================
     */
     class ImageCanvas : public Image
@@ -249,7 +246,9 @@ namespace ssGUI
 
             virtual void ConstructRenderInfo() override;
 
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
         public:
             //====================================================================
@@ -258,6 +257,8 @@ namespace ssGUI
             
             //string: ListenerKey
             static const std::string ListenerKey;
+            
+            //string: IMAGE_CANVAS_IMAGE_SHAPE_NAME
             static const std::string IMAGE_CANVAS_IMAGE_SHAPE_NAME;
 
             ImageCanvas();

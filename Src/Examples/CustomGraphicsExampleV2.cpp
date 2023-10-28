@@ -1,6 +1,6 @@
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "glad/glad.h"
-#include "ssLogger/ssLog.hpp"
+#include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 //Modified from https://github.com/opengl-tutorials/ogl/blob/master/common/shader.cpp
 int CreateShaders(std::string& vertexShaderCode, std::string& fragmentShaderCode)

@@ -32,10 +32,12 @@ namespace ssGUI
             Widget& operator=(Widget const& other) = default;
 
         protected:
-            Widget(Widget const& other) = default;
+            Widget(Widget const& other);
 
             virtual void ConstructRenderInfo() override;
-            virtual void MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, ssGUI::InputStatus& inputStatus, 
+            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::InputStatus& currentInputStatus, 
+                                    ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;
 
         public:

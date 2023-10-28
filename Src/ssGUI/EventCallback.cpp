@@ -18,7 +18,7 @@ namespace ssGUI
         CurrentObjectsReferences.CleanUp();
     }
     
-    void EventCallback::AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo)> callback)
+    void EventCallback::AddEventListener(std::string key, ssGUI::GUIObject* adder, std::function<void(EventInfo&)> callback)
     {
         if(adder != nullptr)
         {
@@ -40,7 +40,7 @@ namespace ssGUI
         assert(EventListeners.size() == EventListenersOrder.size());
     }
 
-    void EventCallback::AddEventListener(std::string key, std::function<void(EventInfo)> callback)
+    void EventCallback::AddEventListener(std::string key, std::function<void(EventInfo&)> callback)
     {
         AddEventListener(key, nullptr, callback);
     }
@@ -180,7 +180,7 @@ namespace ssGUI
 
     void EventCallback::Notify(ssGUI::GUIObject* source, void* customInfo)
     {
-        ssLOG_FUNC_ENTRY();
+        ssGUI_LOG_FUNC();
         assert(EventListeners.size() == EventListenersOrder.size());
         
         for(int i = 0; i < EventListenersOrder.size(); i++)
@@ -189,10 +189,17 @@ namespace ssGUI
             info.EventSource = source;
             info.Container = Container;
             info.References = &CurrentObjectsReferences;
+            info.DeleteCurrentListener = false;
             info.CustomInfo = customInfo;
             EventListeners.at(EventListenersOrder[i])(info);
+        
+            if(info.DeleteCurrentListener)
+            {
+                EventListeners.erase(EventListenersOrder[i]);
+                EventListenersOrder.erase(EventListenersOrder.begin() + i);
+                i--;
+            }
         }
-        ssLOG_FUNC_EXIT();
     }
 
     void EventCallback::BindToObject(ssGUI::GUIObject* bindObj)

@@ -10,7 +10,7 @@ int main()
     callback->AddEventListener
     (
         "AnyKey",
-        [](ssGUI::EventInfo info) 
+        [](ssGUI::EventInfo& info) 
         {
             std::cout<<"child added\n";
         }
