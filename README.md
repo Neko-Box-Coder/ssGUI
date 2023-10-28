@@ -12,10 +12,10 @@
 ---
 
 <!-- ⚠️ Documentation is for the current stable version (v0.93.00.b), not for this version. Some info may not up-to-date.-->
-### 🔌 Status of ssGUI (v0.94.02)
+### 🔌 Status of ssGUI (v0.94.03)
 - #### 🔀 Branches
-    - ![](https://img.shields.io/badge/Last_Release-v0.94.01-brightgreen?style=for-the-badge&logo=GitHub)
-    - ![](https://img.shields.io/badge/Current_Development-v0.94.02-darkgray?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Last_Release-v0.94.02-brightgreen?style=for-the-badge&logo=GitHub)
+    - ![](https://img.shields.io/badge/Current_Development-v0.94.03-darkgray?style=for-the-badge&logo=GitHub)
 
 - #### 🖥️ OS support
     - ![](https://img.shields.io/badge/Linux-Working-brightgreen?style=for-the-badge&logo=linux&logoColor=white)
@@ -25,7 +25,7 @@
 - #### 📈 Current Progress
     - ![](https://img.shields.io/badge/v0.93-|█████ 100％ █████|-29D236?style=for-the-badge&logo=)
     - ![](https://img.shields.io/badge/v0.94-|█████ 100％ █████|-29D236?style=for-the-badge)
-    - ![](https://img.shields.io/badge/v0.95-|█████   60％  █────|-E5FF3C?style=for-the-badge)
+    - ![](https://img.shields.io/badge/v0.95-|█████   70％  ██───|-E5FF3C?style=for-the-badge)
 ---
 
 ### ❓ What is ssGUI?
