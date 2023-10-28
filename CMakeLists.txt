@@ -24,8 +24,25 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(ssGUI_OUTPUT_STATIC     ON          CACHE BOOL      "Use and create static library instead")
 set(ssGUI_BUILD_TESTS       OFF         CACHE BOOL      "Build tests")
 set(ssGUI_BUILD_EXAMPLES    ON          CACHE BOOL      "Build examples")
-set(ssGUI_LOG_LEVEL         "Warning"   CACHE STRING    "Log level")
-set(ssGUI_LOG_TAG           "None"      CACHE STRING    "Log tag (overrides level)")
+set(ssGUI_LOG_LEVEL         "Warning"   CACHE STRING    
+"Log level: 
+None
+Debug
+Info
+Warning
+Error")
+
+
+set(ssGUI_LOG_TAG           "None"      CACHE STRING    
+"Log tag (overrides level): 
+ssGUI_MANAGER_TAG
+ssGUI_IMAGE_UTIL_TAG
+ssGUI_BACKEND_TAG
+ssGUI_DATA_TAG
+ssGUI_EXT_TAG
+ssGUI_GUI_OBJECT_TAG")
+
+
 set(ssGUI_LOG_MANAGER_STATE OFF         CACHE BOOL      "Log all the state in ssGUIManager")
 set(ssGUI_USE_LOG_FUNC      OFF         CACHE BOOL      "Logs all recorded function call")
 
@@ -44,10 +61,29 @@ set_property(CACHE ssGUI_LOG_TAG PROPERTY STRINGS   "None"
                                                     "ssGUI_EXT_TAG" 
                                                     "ssGUI_GUI_OBJECT_TAG")
 
-set(ssGUI_MAIN_BACKEND_DESCRIPTION "The main backend that will be used by ssGUI")
-set(ssGUI_FONT_BACKEND_DESCRIPTION "The font backend that will be used by ssGUI")
-set(ssGUI_IMAGE_BACKEND_DESCRIPTION "The image backend that will be used by ssGUI")
+set(ssGUI_MAIN_BACKEND_DESCRIPTION 
+"The main backend that will be used by ssGUI:
+Win32_OpenGL3_3
+X11_OpenGL3_3
+SFML
+Mock
+Template")
 
+
+set(ssGUI_FONT_BACKEND_DESCRIPTION 
+"The font backend that will be used by ssGUI:
+FreeType
+SFML
+Mock
+Template")
+
+
+set(ssGUI_IMAGE_BACKEND_DESCRIPTION 
+"The image backend that will be used by ssGUI:
+stb_image
+SFML
+Mock
+Template")
 
 # Default backend options variable
 if(NOT ssGUI_MAIN_BACKEND STREQUAL "SFML" AND NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
@@ -72,7 +108,11 @@ set(ssGUI_MOCK_OFF_OPTION_STRING "Off")
 set(ssGUI_MOCK_OPTION_STRING "Mock")
 set(ssGUI_MOCK_WITH_NATIVE_OPTION_STRING "Mock With Native Backend")
 
-set(ssGUI_MOCK_BACKEND_MODE "Off" CACHE STRING "Mock backend mode")
+set(ssGUI_MOCK_BACKEND_MODE "${ssGUI_MOCK_OFF_OPTION_STRING}" CACHE STRING 
+"Mock backend mode:
+${ssGUI_MOCK_OFF_OPTION_STRING}
+${ssGUI_MOCK_OPTION_STRING}
+${ssGUI_MOCK_WITH_NATIVE_OPTION_STRING}")
 set_property(CACHE ssGUI_MOCK_BACKEND_MODE PROPERTY STRINGS "${ssGUI_MOCK_OFF_OPTION_STRING}" 
                                                             "${ssGUI_MOCK_OPTION_STRING}" 
                                                             "${ssGUI_MOCK_WITH_NATIVE_OPTION_STRING}")
