@@ -1,0 +1,32 @@
+format_version: 10
+pipelines:
+  ssGUI_Pipeline:
+    group: MainGroup
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+    materials:
+      ssGUI_v0.94.03_Material:
+        git: https://github.com/Neko-Box-Coder/ssGUI.git
+        shallow_clone: true
+        auto_update: false
+        branch: v0.94.03
+        destination: ./ssGUI
+    stages:
+    - DummyStage:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          DummyJob:
+            timeout: 0
+            tasks:
+            - exec:
+                run_if: passed
+                #working_directory: ./ssGUI
+                command: ls
+                arguments:
+                - -lah
