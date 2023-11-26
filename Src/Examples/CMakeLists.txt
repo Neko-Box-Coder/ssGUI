@@ -3,11 +3,14 @@ include("${CMAKE_CURRENT_LIST_DIR}/../../CMakeScripts/Executables.cmake")
 # Check if example resources is populated
 file(SIZE "${CMAKE_CURRENT_LIST_DIR}/ExamplesResources.c" EMBEDDED_FILE_SIZE)
 if(EMBEDDED_FILE_SIZE LESS 1024)
-    EMBED_FILES("${CMAKE_CURRENT_LIST_DIR}/ExamplesResources.c"                    
-                "${CMAKE_CURRENT_LIST_DIR}/../../Resources/sd.png"
-                "ssGUI_Example_sd"
-                "${CMAKE_CURRENT_LIST_DIR}/../../Resources/NotoSans-Bold.ttf"
-                "ssGUI_Example_NotoSans_Bold;ssLogger")
+    set(EXAMPLE_RESOURCES_TO_EMBED  "${CMAKE_CURRENT_LIST_DIR}/../../Resources/sd.png"
+                                    "ssGUI_Example_sd"
+                                    "${CMAKE_CURRENT_LIST_DIR}/../../Resources/NotoSans-Bold.ttf"
+                                    "ssGUI_Example_NotoSans_Bold")
+    
+    EMBED_FILES("${EMBED_EXEC_PATH}" 
+                "${CMAKE_CURRENT_LIST_DIR}/ExamplesResources.c"
+                "${EXAMPLE_RESOURCES_TO_EMBED}")
 
     file(SIZE "${CMAKE_CURRENT_LIST_DIR}/ExamplesResources.c" EMBEDDED_FILE_SIZE)
     if(EMBEDDED_FILE_SIZE LESS 1024)
