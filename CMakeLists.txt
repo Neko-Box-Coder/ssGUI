@@ -204,13 +204,13 @@ set(ssLOG_THREAD_SAFE   "FALSE" CACHE BOOL "Use std::thread and ensure thread sa
 
 # Options for hiding submodules
 set(ssGUI_HIDE_VARIABLES_ssLOGGER ON CACHE BOOL "If true, this will hide all ssLogger CMake variables")
-set(ssGUI_HIDE_VARIABLES_SIMPLE_OVERRIDE ON CACHE BOOL "If true, this will hide all SimpleOverride CMake variables")
+set(ssGUI_HIDE_VARIABLES_CPP_OVERRIDE ON CACHE BOOL "If true, this will hide all CppOverride CMake variables")
 set(ssGUI_HIDE_VARIABLES_CLIP ON CACHE BOOL "If true, this will hide all Clip CMake variables")
 set(ssGUI_HIDE_VARIABLES_FREETYPE ON CACHE BOOL "If true, this will hide all FreeType CMake variables")
 #TODO: Add SFML
 
 set(ssGUI_HIDE_TARGET_ssLOGGER ON CACHE BOOL "If true, this will hide ssLogger CMake target")
-set(ssGUI_HIDE_TARGET_SIMPLE_OVERRIDE ON CACHE BOOL "If true, this will hide SimpleOverride CMake target")
+set(ssGUI_HIDE_TARGET_CPP_OVERRIDE ON CACHE BOOL "If true, this will hide CppOverride CMake target")
 set(ssGUI_HIDE_TARGET_CLIP ON CACHE BOOL "If true, this will hide Clip CMake target")
 set(ssGUI_HIDE_TARGET_FREETYPE ON CACHE BOOL "If true, this will hide FreeType CMake target")
 set(ssGUI_HIDE_TARGET_SFML ON CACHE BOOL "If true, this will hide sfml CMake target")
@@ -277,19 +277,19 @@ set_target_properties(ssTest PROPERTIES FOLDER External)  # Set folder name for 
 
 
 # ==========================================================
-# SimpleOverride
+# CppOverride
 # ==========================================================
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/SimpleOverride" "${CMAKE_CURRENT_BINARY_DIR}/External/SimpleOverride")
-    set_target_properties(SimpleOverride PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/CppOverride" "${CMAKE_CURRENT_BINARY_DIR}/External/CppOverride")
+    set_target_properties(CppOverride PROPERTIES FOLDER External)  # Set folder name for IDEs such as Visual Studio
 
-if(ssGUI_HIDE_VARIABLES_SIMPLE_OVERRIDE)
-    mark_as_advanced(FORCE  SIMPLE_OVERRIDE_BUILD_TEST
-                            SIMPLE_OVERRIDE_BUILD_EXAMPLE)
+if(ssGUI_HIDE_VARIABLES_CPP_OVERRIDE)
+    mark_as_advanced(FORCE  CPP_OVERRIDE_BUILD_TEST
+                            CPP_OVERRIDE_BUILD_EXAMPLE)
 else()
-    mark_as_advanced(CLEAR  SIMPLE_OVERRIDE_BUILD_TEST
-                            SIMPLE_OVERRIDE_BUILD_EXAMPLE)
+    mark_as_advanced(CLEAR  CPP_OVERRIDE_BUILD_TEST
+                            CPP_OVERRIDE_BUILD_EXAMPLE)
 endif()
 
 endif()
@@ -580,10 +580,10 @@ if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
 endif()
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-    if(ssGUI_HIDE_TARGET_SIMPLE_OVERRIDE)
-        target_link_libraries(ssGUI PRIVATE SimpleOverride)
+    if(ssGUI_HIDE_TARGET_CPP_OVERRIDE)
+        target_link_libraries(ssGUI PRIVATE CppOverride)
     else()
-        target_link_libraries(ssGUI PUBLIC SimpleOverride)
+        target_link_libraries(ssGUI PUBLIC CppOverride)
     endif()
     
     target_compile_definitions(ssGUI PUBLIC SSGUI_MOCK_BACKEND)

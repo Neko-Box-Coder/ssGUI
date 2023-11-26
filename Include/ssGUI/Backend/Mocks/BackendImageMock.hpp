@@ -4,7 +4,7 @@
 //#define SSGUI_MOCK_ENABLE_LOG
 #include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
-#include "SimpleOverride.hpp"
+#include "CppOverride.hpp"
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include <vector>
 
@@ -20,7 +20,7 @@ namespace Backend
         private:
             ssGUI::Backend::BackendImageInterface* UnderlyingInterface;
             std::vector<ssGUI::Backend::BackendDrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
-            SO_DECLARE_INSTNACE(OverrideObject);
+            CO_DECLARE_MEMBER_INSTNACE(OverrideObject);
             
             BackendImageMock& operator=(BackendImageMock const& other);
 
@@ -31,7 +31,7 @@ namespace Backend
             BackendImageMock(ssGUI::Backend::BackendImageInterface* imageInterface);
             ~BackendImageMock() override;
 
-            SO_DECLARE_OVERRIDE_METHODS(OverrideObject)
+            CO_DECLARE_OVERRIDE_METHODS(OverrideObject)
 
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendImageInterface*, UnderlyingInterface)
 
