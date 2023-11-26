@@ -660,7 +660,11 @@ endif()
 
 # This is only called when embed target is specified for CMake
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/External/Embed2C" EXCLUDE_FROM_ALL)
+
 include("${CMAKE_CURRENT_LIST_DIR}/External/Embed2C/embedFile.cmake")
+
+set(EMBED_EXEC_PATH "")
+GET_EXEC_PATH(EMBED_EXEC_PATH)
 
 function(CopyResources targetDir)
     file(MAKE_DIRECTORY ${targetDir})
@@ -669,15 +673,20 @@ endfunction()
 
 file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c" EMBEDDED_FILE_SIZE)
 if(EMBEDDED_FILE_SIZE LESS 1024)
-    EMBED_FILES("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
-                "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoSans-Regular.ttf"
-                "NotoSans_Regular"
-                "${CMAKE_CURRENT_LIST_DIR}/Resources/DownArrow.png"
-                "DownArrow"
-                "${CMAKE_CURRENT_LIST_DIR}/Resources/RotationCursor.png"
-                "RotationCursor"
-                "${CMAKE_CURRENT_LIST_DIR}/Resources/WindowIcon.png"
-                "WindowIcon")
+    set(DEFAULT_RESOURCES_TO_EMBED  "${CMAKE_CURRENT_LIST_DIR}/Resources/NotoSans-Regular.ttf"
+                                    "NotoSans_Regular"
+                                    "${CMAKE_CURRENT_LIST_DIR}/Resources/DownArrow.png"
+                                    "DownArrow"
+                                    "${CMAKE_CURRENT_LIST_DIR}/Resources/RotationCursor.png"
+                                    "RotationCursor"
+                                    "${CMAKE_CURRENT_LIST_DIR}/Resources/WindowIcon.png"
+                                    "WindowIcon")
+    
+    #message("DEFAULT_RESOURCES_TO_EMBED: ${DEFAULT_RESOURCES_TO_EMBED}")
+    
+    EMBED_FILES("${EMBED_EXEC_PATH}" 
+                "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c" 
+                "${DEFAULT_RESOURCES_TO_EMBED}")
 
     file(SIZE "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c" EMBEDDED_FILE_SIZE)
     if(EMBEDDED_FILE_SIZE LESS 1024)
