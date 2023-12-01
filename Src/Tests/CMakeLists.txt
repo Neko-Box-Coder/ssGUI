@@ -35,7 +35,6 @@ set_target_properties(ssGUI_Test_Resources PROPERTIES FOLDER "Tests")
 # ----------------------------------------------------------
 #if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
 
-    # TODO(NOW): Update to CppOverride
     #AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/BackendTests/" 
     #                        "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/BackendTests/" 
     #                        "Tests/AutoTests/BackendTests"
@@ -46,28 +45,28 @@ set_target_properties(ssGUI_Test_Resources PROPERTIES FOLDER "Tests")
 #endif()
 
 # TODO(NOW): Update to CppOverride
-#if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-#    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/BackendTests/" 
-#                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/BackendTests/" 
-#                            "Tests/AutoTests/BackendTests"
-#                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;SimpleOverride")
-#else()
-#    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/BackendTests/" 
-#                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/BackendTests/" 
-#                            "Tests/AutoTests/BackendTests"
-#                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
-#endif()
+if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/BackendTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/BackendTests/" 
+                            "Tests/AutoTests/BackendTests"
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;CppOverride")
+else()
+    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/BackendTests/" 
+                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/BackendTests/" 
+                            "Tests/AutoTests/BackendTests"
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
+endif()
 
 if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/EventCallbackTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/EventCallbackTests/" 
                             "Tests/AutoTests/EventCallbackTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;SimpleOverride")
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;CppOverride")
     
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/GUIObjectTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/GUIObjectTests/" 
                             "Tests/AutoTests/GUIObjectTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;SimpleOverride")    
+                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;CppOverride")    
 else()
     message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OFF_OPTION_STRING}, skipping tests")
 endif()

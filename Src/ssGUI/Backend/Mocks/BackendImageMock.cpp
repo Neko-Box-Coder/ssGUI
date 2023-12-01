@@ -19,8 +19,9 @@ namespace Backend
         OverrideObject = other.OverrideObject;
     }
 
-    BackendImageMock::BackendImageMock(ssGUI::Backend::BackendImageInterface* imageInterface) : UnderlyingInterface(imageInterface),
-                                                                                                LinkedBackendDrawing()
+    BackendImageMock::BackendImageMock(ssGUI::Backend::BackendImageInterface* imageInterface) : 
+        UnderlyingInterface(imageInterface),
+        LinkedBackendDrawing()
     {}
 
     BackendImageMock::~BackendImageMock()
@@ -37,7 +38,7 @@ namespace Backend
     void* BackendImageMock::GetRawHandle()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
+        CO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawHandle(), void*);
         return nullptr;
     }
@@ -45,7 +46,7 @@ namespace Backend
     bool BackendImageMock::IsValid() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, IsValid(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, IsValid(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsValid(), bool);
         return true;
     }
@@ -53,7 +54,7 @@ namespace Backend
     bool BackendImageMock::LoadFromPath(std::string path)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(path);
-        SO_RETURN_IF_FOUND(OverrideObject, LoadFromPath(std::string), bool, path);
+        CO_RETURN_IF_FOUND(OverrideObject, LoadFromPath(std::string), bool, path);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadFromPath(path), bool);
         return true;
     }
@@ -61,15 +62,28 @@ namespace Backend
     bool BackendImageMock::LoadImgFileFromMemory(const void * dataPtr, std::size_t size)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, size);
-        SO_RETURN_IF_FOUND(OverrideObject, LoadImgFileFromMemory(const void*, std::size_t), bool, dataPtr, size);
+        CO_RETURN_IF_FOUND( OverrideObject, 
+                            LoadImgFileFromMemory(const void*, std::size_t), 
+                            bool, 
+                            dataPtr, 
+                            size);
+        
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadImgFileFromMemory(dataPtr, size), bool);
         return true;
     }
 
-    bool BackendImageMock::LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
+    bool BackendImageMock::LoadRawFromMemory(   const void * dataPtr, 
+                                                ssGUI::ImageFormat format, 
+                                                glm::ivec2 imageSize)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, format, imageSize);
-        SO_RETURN_IF_FOUND(OverrideObject, LoadRawFromMemory(const void*, ssGUI::ImageFormat, glm::ivec2), bool, dataPtr, format, imageSize);
+        CO_RETURN_IF_FOUND( OverrideObject, 
+                            LoadRawFromMemory(const void*, ssGUI::ImageFormat, glm::ivec2), 
+                            bool, 
+                            dataPtr, 
+                            format, 
+                            imageSize);
+        
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(LoadRawFromMemory(dataPtr, format, imageSize), bool);
         return true;
     }
@@ -77,7 +91,7 @@ namespace Backend
     glm::ivec2 BackendImageMock::GetSize() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetSize(), glm::ivec2);
+        CO_RETURN_IF_FOUND(OverrideObject, GetSize(), glm::ivec2);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetSize(), glm::ivec2);
         return glm::ivec2();
     }
@@ -85,8 +99,8 @@ namespace Backend
     void* BackendImageMock::GetPixelPtr(ssGUI::ImageFormat& format) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(format);
-        SO_MODIFY_ARGUMENTS_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), format);
-        SO_RETURN_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), void*, format);
+        CO_MODIFY_ARGS_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), format);
+        CO_RETURN_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), void*, format);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetPixelPtr(format), void*);
         return nullptr;
     }
@@ -105,7 +119,8 @@ namespace Backend
         }
     }
 
-    void BackendImageMock::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    using DrawingInterface = ssGUI::Backend::BackendDrawingInterface;
+    void BackendImageMock::Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing)
     {
         //NOTE: We don't want to pass the drawing backend to the underlying interface
         //      since the drawing backend holds a reference (pointer) to this instead
@@ -120,7 +135,7 @@ namespace Backend
         LinkedBackendDrawing.push_back(backendDrawing);
     }
 
-    void BackendImageMock::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageMock::Internal_RemoveBackendDrawingRecord(DrawingInterface* backendDrawing)
     {
         //NOTE: We don't want to pass the drawing backend to the underlying interface
         //      since the drawing backend holds a reference (pointer) to this instead

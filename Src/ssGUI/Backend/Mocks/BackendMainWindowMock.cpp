@@ -36,7 +36,8 @@ namespace Backend
             UnderlyingInterface = other.UnderlyingInterface->Clone();
     }
 
-    BackendMainWindowMock::BackendMainWindowMock(ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface) :
+    using MainWindowInterface = ssGUI::Backend::BackendMainWindowInterface;
+    BackendMainWindowMock::BackendMainWindowMock(MainWindowInterface* mainWindowInterface) :
         UnderlyingInterface(mainWindowInterface),
         WindowPosition(),
         PositionOffset(glm::ivec2(5, 5)),
@@ -81,7 +82,7 @@ namespace Backend
     glm::ivec2 BackendMainWindowMock::GetWindowPosition() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetWindowPosition(), glm::ivec2);
+        CO_RETURN_IF_FOUND(OverrideObject, GetWindowPosition(), glm::ivec2);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetWindowPosition(), glm::ivec2);
         return WindowPosition;
     }
@@ -89,7 +90,7 @@ namespace Backend
     glm::ivec2 BackendMainWindowMock::GetPositionOffset() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetPositionOffset(), glm::ivec2);
+        CO_RETURN_IF_FOUND(OverrideObject, GetPositionOffset(), glm::ivec2);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetPositionOffset(), glm::ivec2);
         return PositionOffset;
     }
@@ -104,7 +105,7 @@ namespace Backend
     glm::ivec2 BackendMainWindowMock::GetWindowSize() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetWindowSize(), glm::ivec2);
+        CO_RETURN_IF_FOUND(OverrideObject, GetWindowSize(), glm::ivec2);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetWindowSize(), glm::ivec2);
         return WindowSize;
     }
@@ -120,7 +121,7 @@ namespace Backend
     glm::ivec2 BackendMainWindowMock::GetRenderSize() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetRenderSize(), glm::ivec2);
+        CO_RETURN_IF_FOUND(OverrideObject, GetRenderSize(), glm::ivec2);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRenderSize(), glm::ivec2);
         //return RenderSize;
         return WindowSize - SizeOffset;
@@ -129,7 +130,7 @@ namespace Backend
     bool BackendMainWindowMock::IsClosed() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, IsClosed(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, IsClosed(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsClosed(), bool);
         return Closed;
     }
@@ -164,7 +165,7 @@ namespace Backend
     int BackendMainWindowMock::AddOnCloseEvent(std::function<void()> func)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, AddOnCloseEvent(std::function<void()>), int, SO_ANY);
+        CO_RETURN_IF_FOUND(OverrideObject, AddOnCloseEvent(std::function<void()>), int, func);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(AddOnCloseEvent(func), int);
         
         OnCloseListeners.push_back(std::pair<std::function<void()>, bool>(func, true));
@@ -191,7 +192,7 @@ namespace Backend
     std::wstring BackendMainWindowMock::GetTitle() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetTitle(), std::wstring);
+        CO_RETURN_IF_FOUND(OverrideObject, GetTitle(), std::wstring);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetTitle(), std::wstring);
         return Title;
     }
@@ -213,7 +214,7 @@ namespace Backend
     bool BackendMainWindowMock::IsVisible() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, IsVisible(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, IsVisible(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsVisible(), bool);
         return Visible;
     }
@@ -228,7 +229,7 @@ namespace Backend
     bool BackendMainWindowMock::IsVSync() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, IsVSync(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, IsVSync(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsVSync(), bool);
         return VSync;
     }
@@ -253,7 +254,7 @@ namespace Backend
     bool BackendMainWindowMock::IsFocused() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, IsFocused(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, IsFocused(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsFocused(), bool);
         return Focused;
     }
@@ -261,7 +262,11 @@ namespace Backend
     int BackendMainWindowMock::AddFocusChangedByUserEvent(std::function<void(bool focused)> func)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, AddFocusChangedByUserEvent(std::function<void(bool focused)>), int, SO_ANY);
+        CO_RETURN_IF_FOUND( OverrideObject, 
+                            AddFocusChangedByUserEvent(std::function<void(bool focused)>), 
+                            int, 
+                            func);
+        
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(AddFocusChangedByUserEvent(func), int);
         
         FocusChangedListeners.push_back(std::pair<std::function<void(bool)>, bool>(func, true));
@@ -287,7 +292,7 @@ namespace Backend
     int BackendMainWindowMock::GetMSAA() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetMSAA(), int);
+        CO_RETURN_IF_FOUND(OverrideObject, GetMSAA(), int);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetMSAA(), int);
         return MSAA;
     }
@@ -302,7 +307,7 @@ namespace Backend
     bool BackendMainWindowMock::HasTitlebar() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, HasTitlebar(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, HasTitlebar(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(HasTitlebar(), bool);
         return Titlebar;
     }
@@ -317,7 +322,7 @@ namespace Backend
     bool BackendMainWindowMock::IsResizable() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, IsResizable(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, IsResizable(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsResizable(), bool);
         return Resizable;
     }
@@ -332,7 +337,7 @@ namespace Backend
     bool BackendMainWindowMock::HasCloseButton() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, HasCloseButton(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, HasCloseButton(), bool);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(HasCloseButton(), bool);
         return CloseButton;
     }
@@ -347,7 +352,7 @@ namespace Backend
     ssGUI::Enums::WindowMode BackendMainWindowMock::GetWindowMode() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetWindowMode(), ssGUI::Enums::WindowMode);
+        CO_RETURN_IF_FOUND(OverrideObject, GetWindowMode(), ssGUI::Enums::WindowMode);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetWindowMode(), ssGUI::Enums::WindowMode);
         return WindowMode;
     }
@@ -355,7 +360,7 @@ namespace Backend
     bool BackendMainWindowMock::SetGLContext()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, SetGLContext(), bool);
+        CO_RETURN_IF_FOUND(OverrideObject, SetGLContext(), bool);
         SSGUI_MOCK_PASSTHROUGH(SetGLContext());
         return true;
     }
@@ -368,7 +373,7 @@ namespace Backend
     void* BackendMainWindowMock::GetRawHandle()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
+        CO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawHandle(), void*);
         return nullptr;
     }
