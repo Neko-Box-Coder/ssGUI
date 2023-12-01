@@ -113,7 +113,7 @@ pipelines:
                     set -e
                     source ~/helpers.sh
                     (
-                      git clone --verbose --reference ~/.gitcache/ssGUI --recursive -b \
+                      git clone --verbose --reference-if-able ~/.gitcache/ssGUI --recursive -b \
                       "$BRANCH" "https://github.com/$USER_ORIGIN/ssGUI.git"
                     )
             
