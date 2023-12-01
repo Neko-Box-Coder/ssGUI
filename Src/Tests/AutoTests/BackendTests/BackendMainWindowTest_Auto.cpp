@@ -45,14 +45,20 @@ int main()
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         #endif 
         ssTEST_OUTPUT_ASSERT(TestWindow->GetWindowPosition() == pos);
-        //ssLOG_LINE("TestWindow->GetWindowPosition(): "<<TestWindow->GetWindowPosition().x<<", "<<TestWindow->GetWindowPosition().y);
+        //ssLOG_LINE(   "TestWindow->GetWindowPosition(): " << 
+        //              TestWindow->GetWindowPosition().x <<
+        //              ", " <<
+        //              TestWindow->GetWindowPosition().y);
     };
 
     ssTEST("GetPositionOffsetTest")
     {
         ssTEST_OUTPUT_ASSERT(TestWindow->GetPositionOffset().x >= 0 && TestWindow->GetPositionOffset().y >= 0);
         
-        //ssLOG_LINE("TestWindow->GetPositionOffset(): "<<TestWindow->GetPositionOffset().x<<", "<<TestWindow->GetPositionOffset().y);
+        //ssLOG_LINE(   "TestWindow->GetPositionOffset(): " << 
+        //              TestWindow->GetPositionOffset().x << 
+        //              ", " << 
+        //              TestWindow->GetPositionOffset().y);
     };
 
     ssTEST("WindowSizeTest")
@@ -74,7 +80,8 @@ int main()
         
         //SFML can't return window size
         #ifndef SSGUI_MAIN_BACKEND_SFML
-            ssTEST_OUTPUT_ASSERT("Against Window Size", TestWindow->GetRenderSize() != TestWindow->GetWindowSize());
+            ssTEST_OUTPUT_ASSERT(   "Against Window Size", 
+                                    TestWindow->GetRenderSize() != TestWindow->GetWindowSize());
         #else
             ssTEST_OUTPUT_SKIP("Against Window Size");
         #endif
@@ -183,13 +190,16 @@ int main()
     ssTEST("WindowModeTest()")
     {
         TestWindow->SetWindowMode(ssGUI::Enums::WindowMode::BORDERLESS);
-        ssTEST_OUTPUT_ASSERT("BORDERLESS", TestWindow->GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS);
+        ssTEST_OUTPUT_ASSERT(   "BORDERLESS", 
+                                TestWindow->GetWindowMode() == ssGUI::Enums::WindowMode::BORDERLESS);
         
         TestWindow->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
-        ssTEST_OUTPUT_ASSERT("NORMAL", TestWindow->GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL);
+        ssTEST_OUTPUT_ASSERT(   "NORMAL", 
+                                TestWindow->GetWindowMode() == ssGUI::Enums::WindowMode::NORMAL);
         
         TestWindow->SetWindowMode(ssGUI::Enums::WindowMode::FULLSCREEN);
-        ssTEST_OUTPUT_ASSERT("FULLSCREEN", TestWindow->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN);
+        ssTEST_OUTPUT_ASSERT(   "FULLSCREEN", 
+                                TestWindow->GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN);
         
         TestWindow->SetWindowMode(ssGUI::Enums::WindowMode::NORMAL);
     };
@@ -204,9 +214,10 @@ int main()
     ssTEST("GetRawHandleTest()")
     {
         #ifdef SSGUI_MAIN_BACKEND_MOCK
-            (*static_cast<ssGUI::Backend::BackendMainWindowMock*>(TestWindow))
-                .OverrideReturns(GetRawHandle())
-                .Returns((void*)1);
+            using MainWindowMock = ssGUI::Backend::BackendMainWindowMock;
+            
+            CO_OVERRIDE_RETURNS ((*static_cast<MainWindowMock*>(TestWindow)), GetRawHandle())
+                                .Returns((void*)1);
         #endif
         
         ssTEST_OUTPUT_ASSERT(TestWindow->GetRawHandle() != nullptr);

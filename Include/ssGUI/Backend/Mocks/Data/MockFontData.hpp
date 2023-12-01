@@ -23,8 +23,8 @@ namespace ssGUI
 {
     inline void SetMockBackendFontData(ssGUI::Backend::BackendFontMock& mockFont)
     {
-        mockFont.OverrideReturns(IsValid())
-                .Returns(true);
+        CO_OVERRIDE_RETURNS (mockFont, IsValid())
+                            .Returns(true);
         
         auto setRepeatedRenderInfoAttributes = [](ssGUI::CharacterRenderInfo& renderInfo)
         {
@@ -134,29 +134,34 @@ namespace ssGUI
         renderInfos[{static_cast<wchar_t>(32), 15.f}].Size = glm::vec2(0, 0);
         setRepeatedRenderInfoAttributes(renderInfos[{static_cast<wchar_t>(32), 15.f}]);
 
-        mockFont.OverrideReturns(GetCharacterRenderInfo(wchar_t, float))
-                .ReturnsByAction<ssGUI::CharacterRenderInfo>
-                (
-                    [renderInfos](std::vector<void*>& args, void* out)
-                    {
-                        (*static_cast<ssGUI::CharacterRenderInfo*>(out)) = renderInfos.at({*static_cast<wchar_t*>(args[0]), *static_cast<float*>(args[1])});
-                    }
-                )
-                .If
-                (
-                    [renderInfos](std::vector<void*>& args) -> bool
-                    {
-                        return  args.size() == 2 && 
-                                renderInfos.find({*static_cast<wchar_t*>(args[0]), *static_cast<float*>(args[1])}) != renderInfos.end();
-                    }
-                )
-                .Otherwise_Do
-                (
-                    [](...)
-                    {
-                        assert(false);
-                    }
-                );
+        CO_OVERRIDE_RETURNS (mockFont, GetCharacterRenderInfo(wchar_t, float))
+                            .ReturnsByAction<ssGUI::CharacterRenderInfo>
+                            (
+                                [renderInfos](const std::vector<void*>& args, void* out)
+                                {
+                                    (*static_cast<ssGUI::CharacterRenderInfo*>(out)) = 
+                                        renderInfos.at({*static_cast<wchar_t*>(args[0]), 
+                                                        *static_cast<float*>(args[1])});
+                                }
+                            )
+                            .If
+                            (
+                                [renderInfos](const std::vector<void*>& args) -> bool
+                                {
+                                    return  args.size() == 2 && 
+                                            renderInfos.find({
+                                                                *static_cast<wchar_t*>(args[0]), 
+                                                                *static_cast<float*>(args[1])
+                                                            }) != renderInfos.end();
+                                }
+                            )
+                            .Otherwise_Do
+                            (
+                                [](...)
+                                {
+                                    assert(false);
+                                }
+                            );
         
         std::unordered_set<wchar_t> supportedChars;
         supportedChars.insert(static_cast<wchar_t>(84));
@@ -175,58 +180,60 @@ namespace ssGUI
         supportedChars.insert(static_cast<wchar_t>(102));
         supportedChars.insert(static_cast<wchar_t>(103));
         
-        mockFont.OverrideReturns(IsCharacterSupported(wchar_t))
-                .ReturnsByAction<bool>
-                (
-                    [supportedChars](std::vector<void *>& args, void* out)
-                    {
-                        if(args.size() != 1)
-                        {
-                            assert(false);
-                            return false;
-                        }
-                        
-                        return supportedChars.find(*static_cast<wchar_t*>(args[0])) != supportedChars.end();
-                    }
-                );
+        CO_OVERRIDE_RETURNS (mockFont, IsCharacterSupported(wchar_t))
+                            .ReturnsByAction<bool>
+                            (
+                                [supportedChars](const std::vector<void*>& args, void* out)
+                                {
+                                    if(args.size() != 1)
+                                    {
+                                        assert(false);
+                                        return false;
+                                    }
+                                    
+                                    return  supportedChars.find(*static_cast<wchar_t*>(args[0])) != 
+                                            supportedChars.end();
+                                }
+                            );
 
-        //NOTE: For now, GetKerning always returns 0 on native freetype until we can enable harfbuzz and fix it maybe
-        mockFont.OverrideReturns(GetKerning(wchar_t, wchar_t, float))
-                .Returns(0.f);
+        //NOTE: For now, GetKerning always returns 0 on native freetype until 
+        //      we can enable harfbuzz and fix it maybe
+        CO_OVERRIDE_RETURNS (mockFont, GetKerning(wchar_t, wchar_t, float))
+                            .Returns(0.f);
         
         auto assertFalse = [](...) { assert(false); };
         
-        mockFont.OverrideReturns(GetLineSpacing(float))
-                .Returns(20.4375f)
-                .WhenCalledWith(15.f)
-                .Otherwise_Do(assertFalse);
+        CO_OVERRIDE_RETURNS (mockFont, GetLineSpacing(float))
+                            .Returns(20.4375f)
+                            .WhenCalledWith(15.f)
+                            .Otherwise_Do(assertFalse);
         
-        mockFont.OverrideReturns(GetUnderlineOffset(float))
-                .Returns(0.f)
-                .WhenCalledExpectedly_Do(assertFalse);
+        CO_OVERRIDE_RETURNS (mockFont, GetUnderlineOffset(float))
+                            .Returns(0.f)
+                            .WhenCalledExpectedly_Do(assertFalse);
         
-        mockFont.OverrideReturns(GetUnderlineThickness(float))
-                .Returns(0.f)
-                .WhenCalledExpectedly_Do(assertFalse);
+        CO_OVERRIDE_RETURNS (mockFont, GetUnderlineThickness(float))
+                            .Returns(0.f)
+                            .WhenCalledExpectedly_Do(assertFalse);
         
-        mockFont.OverrideReturns(LoadFromPath(std::string))
-                .Returns(false)
-                .WhenCalledExpectedly_Do(assertFalse);
+        CO_OVERRIDE_RETURNS (mockFont, LoadFromPath(std::string))
+                            .Returns(false)
+                            .WhenCalledExpectedly_Do(assertFalse);
                 
-        mockFont.OverrideReturns(LoadFromMemory(void*, int))
-                .Returns(true);
+        CO_OVERRIDE_RETURNS (mockFont, LoadFromMemory(void*, int))
+                            .Returns(true);
+                    
+        CO_OVERRIDE_RETURNS (mockFont, GetFixedAvailableFontSizes(std::vector<float>&))
+                            .Returns(false)
+                            .WhenCalledExpectedly_Do(assertFalse);
         
-        mockFont.OverrideReturns(GetFixedAvailableFontSizes(std::vector<float>&))
-                .Returns(false)
-                .WhenCalledExpectedly_Do(assertFalse);
+        CO_OVERRIDE_RETURNS (mockFont, GetCharacterImage(wchar_t, float, ssGUI::ImageData&))
+                            .Returns(false)
+                            .WhenCalledExpectedly_Do(assertFalse);
         
-        mockFont.OverrideReturns(GetCharacterImage(wchar_t, float, ssGUI::ImageData&))
-                .Returns(false)
-                .WhenCalledExpectedly_Do(assertFalse);
-        
-        mockFont.OverrideReturns(GetRawHandle())
-                .Returns(nullptr)
-                .WhenCalledExpectedly_Do(assertFalse);
+        CO_OVERRIDE_RETURNS (mockFont, GetRawHandle())
+                            .Returns(nullptr)
+                            .WhenCalledExpectedly_Do(assertFalse);
     }
 }
 

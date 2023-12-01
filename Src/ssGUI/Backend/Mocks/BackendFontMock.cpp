@@ -8,7 +8,7 @@ namespace ssGUI
 
 namespace Backend
 {
-    BackendFontMock::BackendFontMock(BackendFontMock const& other)                                                                        
+    BackendFontMock::BackendFontMock(const BackendFontMock& other)
     {
         if(other.UnderlyingInterface != nullptr)
             UnderlyingInterface = other.UnderlyingInterface->Clone();
@@ -133,7 +133,7 @@ namespace Backend
                                             charUnicode, 
                                             charSize, 
                                             characterImage);
-        
+
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetCharacterImage(  charUnicode, 
                                                                     charSize, 
                                                                     characterImage), 

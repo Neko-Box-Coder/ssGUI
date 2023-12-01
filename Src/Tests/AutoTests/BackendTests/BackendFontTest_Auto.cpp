@@ -10,6 +10,7 @@
 
 #ifdef SSGUI_FONT_BACKEND_MOCK
     #include "ssGUI/Backend/Mocks/BackendFontMock.hpp"
+    #include "ssGUI/Backend/Mocks/BackendImageMock.hpp"
     
     #define SSGUI_MOCK_FONT (*static_cast<ssGUI::Backend::BackendFontMock*>(TestFont))
 #endif
@@ -61,34 +62,34 @@ int main()
     ssTEST("IsValidTest")
     {
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(IsValid())
-                            .Returns(false);
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, IsValid())
+                                .Returns(false);
         #endif
     
         ssTEST_OUTPUT_ASSERT("Not loaded", !TestFont->IsValid());
 
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
-            SSGUI_MOCK_FONT .OverrideReturns(LoadFromMemory(void*, int))
-                            .Returns(true)
-                            .WhenCalledWith((void*)ssGUI_Test_arial, (int)ssGUI_Test_arial_size)
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, LoadFromMemory(void*, int))
+                                .Returns(true)
+                                .WhenCalledWith((void*)ssGUI_Test_arial, (int)ssGUI_Test_arial_size)
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
             
-            SSGUI_MOCK_FONT .OverrideReturns(LoadFromMemory(void*, int))
-                            .Returns(false)
-                            .WhenCalledWith(FO_ANY, FO_ANY);
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, LoadFromMemory(void*, int))
+                                .Returns(false)
+                                .WhenCalledWith(CO_ANY, CO_ANY);
         #endif
 
         bool result = TestFont->LoadFromMemory((void*)ssGUI_Test_arial, ssGUI_Test_arial_size);
         
         #ifdef SSGUI_FONT_BACKEND_MOCK
             SSGUI_MOCK_FONT.ClearAllOverrideReturns();
-            SSGUI_MOCK_FONT .OverrideReturns(IsValid())
-                            .Returns(true)
-                            .If([&result](...) { return result; });
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, IsValid())
+                                .Returns(true)
+                                .If([&result](...) { return result; });
             
-            SSGUI_MOCK_FONT .OverrideReturns(IsValid())
-                            .Returns(false);
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, IsValid())
+                                .Returns(false);
         #endif
 
         ssTEST_OUTPUT_ASSERT("loaded", TestFont->IsValid());
@@ -101,8 +102,8 @@ int main()
     ssTEST("GetCharacterRenderInfoTest")
     {
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(LoadFromMemory(void*, int))
-                            .Returns(true);
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, LoadFromMemory(void*, int))
+                                .Returns(true);
         #endif
     
         TestFont->LoadFromMemory((void*)ssGUI_Test_arial, ssGUI_Test_arial_size);
@@ -113,10 +114,10 @@ int main()
             retInfo.DrawOffset = glm::vec2(-1, -15);
             retInfo.Size = glm::vec2(15, 15);
             
-            SSGUI_MOCK_FONT .OverrideReturns(GetCharacterRenderInfo(wchar_t,float))
-                            .Returns(retInfo)
-                            .WhenCalledWith(L'A', 20.f)
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, GetCharacterRenderInfo(wchar_t,float))
+                                .Returns(retInfo)
+                                .WhenCalledWith(L'A', 20.f)
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
 
         ssGUI::CharacterRenderInfo info = TestFont->GetCharacterRenderInfo(L'A', 20);
@@ -145,14 +146,14 @@ int main()
     ssTEST("IsCharacterSupportedTest")
     {
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(IsCharacterSupported(wchar_t))
-                            .Returns(true)
-                            .WhenCalledWith(L'Z');
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, IsCharacterSupported(wchar_t))
+                                .Returns(true)
+                                .WhenCalledWith(L'Z');
             
-            SSGUI_MOCK_FONT .OverrideReturns(IsCharacterSupported(wchar_t))
-                            .Returns(false)
-                            .WhenCalledWith(L'あ')
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, IsCharacterSupported(wchar_t))
+                                .Returns(false)
+                                .WhenCalledWith(L'あ')
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
     
         ssTEST_OUTPUT_ASSERT("Supported", TestFont->IsCharacterSupported(L'Z'));
@@ -180,10 +181,10 @@ int main()
     ssTEST("GetLineSpacingTest")
     {
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(GetLineSpacing(float))
-                            .Returns(23.f)
-                            .WhenCalledWith(20.f)
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, GetLineSpacing(float))
+                                .Returns(23.f)
+                                .WhenCalledWith(20.f)
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
     
         ssTEST_OUTPUT_ASSERT(__func__, FLOAT_EQUAL(TestFont->GetLineSpacing(20), 23));
@@ -196,10 +197,10 @@ int main()
     ssTEST("GetUnderlineOffsetTest")
     {
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(GetUnderlineOffset(float))
-                            .Returns(2.859f)
-                            .WhenCalledWith(20.f)
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, GetUnderlineOffset(float))
+                                .Returns(2.859f)
+                                .WhenCalledWith(20.f)
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
 
         ssTEST_OUTPUT_ASSERT(__func__, FLOAT_EQUAL(TestFont->GetUnderlineOffset(20), 2.859));
@@ -212,10 +213,10 @@ int main()
     ssTEST("GetUnderlineThicknessTest")
     {
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(GetUnderlineThickness(float))
-                            .Returns(1.46f)
-                            .WhenCalledWith(20.f)
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, GetUnderlineThickness(float))
+                                .Returns(1.46f)
+                                .WhenCalledWith(20.f)
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
         
         ssTEST_OUTPUT_ASSERT(__func__, FLOAT_EQUAL(TestFont->GetUnderlineThickness(20), 1.46f));
@@ -231,10 +232,10 @@ int main()
         ssTEST_CALL_SET_UP();
 
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(LoadFromPath(std::string))
-                            .Returns(true)
-                            .WhenCalledWith(std::string("./arial.ttf"))
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, LoadFromPath(std::string))
+                                .Returns(true)
+                                .WhenCalledWith(std::string("./arial.ttf"))
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
 
         ssTEST_OUTPUT_ASSERT(__func__, TestFont->LoadFromPath("./arial.ttf"));
@@ -263,10 +264,10 @@ int main()
         fs.read((char*)buffer, size); 
         
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(LoadFromMemory(void*, int))
-                            .Returns(true)
-                            .WhenCalledWith((void*)buffer, (int)size)
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, LoadFromMemory(void*, int))
+                                .Returns(true)
+                                .WhenCalledWith((void*)buffer, (int)size)
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
         
         ssTEST_OUTPUT_ASSERT(TestFont->LoadFromMemory(buffer, size));
@@ -289,7 +290,7 @@ int main()
             #ifdef SSGUI_FONT_BACKEND_MOCK
                 std::vector<float> setFontSizes;
                 setFontSizes.push_back(128.f);
-                SSGUI_MOCK_FONT .OverrideArgs(GetFixedAvailableFontSizes(std::vector<float>&))
+                CO_OVERRIDE_ARGS(SSGUI_MOCK_FONT, GetFixedAvailableFontSizes(std::vector<float>&))
                                 .SetArgs(setFontSizes)
                                 .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
             #endif
@@ -316,10 +317,18 @@ int main()
 
         #ifdef SSGUI_FONT_BACKEND_MOCK
             bool calledCorrectly = false;
-            SSGUI_MOCK_FONT .OverrideArgs(GetCharacterImage(wchar_t, float, ssGUI::ImageData&))
-                            .SetArgs(FO_DONT_SET, FO_DONT_SET, FO_DONT_SET) //NOTE: We can't set ssGUI::ImageData because it is not copyable 
-                            .WhenCalledWith(L'A', 20.f, FO_ANY)             //      with default copy constructor or assignment
-                            .WhenCalledExpectedly_Do([&calledCorrectly](...){ calledCorrectly = true; });
+            CO_OVERRIDE_ARGS(SSGUI_MOCK_FONT, GetCharacterImage(wchar_t, float, ssGUI::ImageData&))
+                            //NOTE: We can't set ssGUI::ImageData because it is not copyable 
+                            //      with default copy constructor or assignment
+                            .SetArgs(CO_DONT_SET, CO_DONT_SET, CO_DONT_SET)
+                            .WhenCalledWith(L'A', 20.f, CO_ANY)
+                            .WhenCalledExpectedly_Do
+                            (
+                                [&calledCorrectly](...)
+                                { 
+                                    calledCorrectly = true; 
+                                }
+                            );
         #endif
 
         ssGUI::ImageData data;
@@ -328,9 +337,11 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             if(calledCorrectly)
             {
-                auto& imgBackendMock = (*static_cast<ssGUI::Backend::BackendImageMock*>(data.GetBackendImageInterface()));
-                imgBackendMock  .OverrideReturns(GetSize())
-                                .Returns(glm::ivec2(15, 15));
+                using ImageMock = ssGUI::Backend::BackendImageMock;
+                auto& imgBackendMock = *static_cast<ImageMock*>(data.GetBackendImageInterface());
+                
+                CO_OVERRIDE_RETURNS (imgBackendMock, GetSize())
+                                    .Returns(glm::ivec2(15, 15));
             }
         #endif
         
@@ -344,8 +355,8 @@ int main()
     ssTEST("GetRawHandleTest")
     {
         #ifdef SSGUI_FONT_BACKEND_MOCK
-            SSGUI_MOCK_FONT .OverrideReturns(GetRawHandle())
-                            .Returns((void*)0x1);
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, GetRawHandle())
+                                .Returns((void*)0x1);
         #endif
     
         ssTEST_OUTPUT_ASSERT(TestFont->GetRawHandle() != nullptr);
@@ -361,10 +372,10 @@ int main()
             ssGUI::CharacterRenderInfo retInfo;
             retInfo.Size = glm::vec2(15, 15);
             
-            SSGUI_MOCK_FONT .OverrideReturns(GetCharacterRenderInfo(wchar_t,float))
-                            .Returns(retInfo)
-                            .WhenCalledWith(L'A', 20.f)
-                            .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_FONT, GetCharacterRenderInfo(wchar_t,float))
+                                .Returns(retInfo)
+                                .WhenCalledWith(L'A', 20.f)
+                                .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
     
         ssGUI::Backend::BackendFontInterface* clonedFont = TestFont->Clone();

@@ -79,7 +79,8 @@ int main()
     
     ssTEST("RequestNewAtlasCallback Test")
     {
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(glm::ivec2(500, 300),  false);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(   glm::ivec2(500, 300),  
+                                                                            false);
     
         int imgId = -1;
         ssTEST_OUTPUT_ASSERT("RequestImage", dynamicAtlas->RequestImage(imgInfo, imgId));
@@ -98,15 +99,21 @@ int main()
     ssTEST("Allocated Image Position Test")
     {
         int imgId = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(glm::ivec2(350, 200),  false);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(   glm::ivec2(350, 200), 
+                                                                            false);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage", dynamicAtlas->RequestImage(imgInfo, imgId));
 
         int imgId2 = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo2 = CreateImageInfo(glm::ivec2(450, 200),  false);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo2 = CreateImageInfo(  glm::ivec2(450, 200), 
+                                                                            false);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage 2", dynamicAtlas->RequestImage(imgInfo2, imgId2));
         
         int imgId3 = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo3 = CreateImageInfo(glm::ivec2(70, 200),  false);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo3 = CreateImageInfo(  glm::ivec2(70, 200), 
+                                                                            false);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage 3", dynamicAtlas->RequestImage(imgInfo3, imgId3));
 
         //┌────────────┬────┐
@@ -143,21 +150,29 @@ int main()
         DynamicImageAtlas::ImageAtlasImageInfo getImgInfo4;
         ssTEST_OUTPUT_ASSERT("GetImageInfo 4", dynamicAtlas->GetImageInfo(imgId4, getImgInfo4));
         
-        ssTEST_OUTPUT_ASSERT("Validate Pos for new atlas", getImgInfo4.LocationInPixel == glm::ivec3(0, 0, 1) && AtlasRequested == 2);
+        ssTEST_OUTPUT_ASSERT(   "Validate Pos for new atlas", 
+                                getImgInfo4.LocationInPixel == glm::ivec3(0, 0, 1) && 
+                                AtlasRequested == 2);
     };
     
     ssTEST("RemoveImage adds free cells back Test")
     {
         int imgId = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(glm::ivec2(350, 200),  false);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(   glm::ivec2(350, 200), 
+                                                                            false);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage", dynamicAtlas->RequestImage(imgInfo, imgId));
 
         int imgId2 = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo2 = CreateImageInfo(glm::ivec2(450, 200),  false);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo2 = CreateImageInfo(  glm::ivec2(450, 200), 
+                                                                            false);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage 2", dynamicAtlas->RequestImage(imgInfo2, imgId2));
         
         int imgId3 = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo3 = CreateImageInfo(glm::ivec2(70, 200),  false);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo3 = CreateImageInfo(  glm::ivec2(70, 200), 
+                                                                            false);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage 3", dynamicAtlas->RequestImage(imgInfo3, imgId3));
 
         //┌────────────┬────┐
@@ -188,15 +203,21 @@ int main()
     ssTEST("Mipmap allocation Test")
     {
         int imgId = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(glm::ivec2(250, 200),  true);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo = CreateImageInfo(   glm::ivec2(250, 200),  
+                                                                            true);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage", dynamicAtlas->RequestImage(imgInfo, imgId));
 
         int imgId2 = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo2 = CreateImageInfo(glm::ivec2(300, 200),  true);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo2 = CreateImageInfo(  glm::ivec2(300, 200),  
+                                                                            true);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage 2", dynamicAtlas->RequestImage(imgInfo2, imgId2));
         
         int imgId3 = -1;
-        DynamicImageAtlas::ImageAtlasImageInfo imgInfo3 = CreateImageInfo(glm::ivec2(50, 200),  true);
+        DynamicImageAtlas::ImageAtlasImageInfo imgInfo3 = CreateImageInfo(  glm::ivec2(50, 200),  
+                                                                            true);
+        
         ssTEST_OUTPUT_ASSERT("RequestImage 3", dynamicAtlas->RequestImage(imgInfo3, imgId3));
         
         // mm = mipmaps

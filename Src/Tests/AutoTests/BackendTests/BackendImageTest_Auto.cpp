@@ -51,32 +51,32 @@ int main()
             
             #ifdef SSGUI_IMAGE_BACKEND_MOCK
                 bool loadFromPathSet = false;
-                SSGUI_MOCK_IMAGE.OverrideReturns(LoadFromPath(std::string))
-                                .Returns(true)
-                                .WhenCalledWith(std::string("./sd.png"))
-                                .WhenCalledExpectedly_Do
-                                (
-                                    [&loadFromPathSet](...)
-                                    {
-                                        loadFromPathSet = true;
-                                    }
-                                );
+                CO_OVERRIDE_RETURNS (SSGUI_MOCK_IMAGE, LoadFromPath(std::string))
+                                    .Returns(true)
+                                    .WhenCalledWith(std::string("./sd.png"))
+                                    .WhenCalledExpectedly_Do
+                                    (
+                                        [&loadFromPathSet](...)
+                                        {
+                                            loadFromPathSet = true;
+                                        }
+                                    );
                                 
-                SSGUI_MOCK_IMAGE.OverrideReturns(GetRawHandle())
-                                .ReturnsByAction<void*>
-                                (
-                                    [](std::vector<void *>& args, void* out)
-                                    {
-                                        (*static_cast<void**>(out)) = (void*)1;
-                                    }
-                                )
-                                .If
-                                (
-                                    [&loadFromPathSet](std::vector<void*>& args)
-                                    {
-                                        return loadFromPathSet;
-                                    }
-                                );
+                CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, GetRawHandle())
+                                    .ReturnsByAction<void*>
+                                    (
+                                        [](const std::vector<void*>& args, void* out)
+                                        {
+                                            (*static_cast<void**>(out)) = (void*)1;
+                                        }
+                                    )
+                                    .If
+                                    (
+                                        [&loadFromPathSet](const std::vector<void*>& args)
+                                        {
+                                            return loadFromPathSet;
+                                        }
+                                    );
             #endif
         
             ssTEST_OUTPUT_ASSERT("No Image loaded", TestImage->GetRawHandle() == nullptr);
@@ -93,7 +93,7 @@ int main()
         #ifdef SSGUI_IMAGE_BACKEND_MOCK
             SSGUI_MOCK_IMAGE.ClearAllOverrideReturns();
             bool loadFromPathSet = false;
-            SSGUI_MOCK_IMAGE.OverrideReturns(LoadFromPath(std::string))
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, LoadFromPath(std::string))
                             .Returns(true)
                             .WhenCalledWith(std::string("./sd.png"))
                             .WhenCalledExpectedly_Do
@@ -104,10 +104,10 @@ int main()
                                 }
                             );
                             
-            SSGUI_MOCK_IMAGE.OverrideReturns(IsValid())
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, IsValid())
                             .ReturnsByAction<bool>
                             (
-                                [&loadFromPathSet](std::vector<void *>& args, void* out)
+                                [&loadFromPathSet](const std::vector<void*>& args, void* out)
                                 {
                                     (*static_cast<bool*>(out)) = loadFromPathSet;
                                 }
@@ -124,7 +124,7 @@ int main()
         #ifdef SSGUI_IMAGE_BACKEND_MOCK
             SSGUI_MOCK_IMAGE.ClearAllOverrideReturns();
             bool loadFromPathSet = false;
-            SSGUI_MOCK_IMAGE.OverrideReturns(LoadFromPath(std::string))
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, LoadFromPath(std::string))
                             .Returns(true)
                             .WhenCalledWith(std::string("./sd.png"))
                             .WhenCalledExpectedly_Do
@@ -135,10 +135,10 @@ int main()
                                 }
                             );
                             
-            SSGUI_MOCK_IMAGE.OverrideReturns(GetSize())
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, GetSize())
                                 .ReturnsByAction<glm::ivec2>
                                 (
-                                    [](std::vector<void *>& args, void* out)
+                                    [](const std::vector<void*>& args, void* out)
                                     {
                                         (*static_cast<glm::ivec2*>(out)) = glm::ivec2(293, 293);
                                     }
@@ -161,7 +161,7 @@ int main()
         #ifdef SSGUI_IMAGE_BACKEND_MOCK
             SSGUI_MOCK_IMAGE.ClearAllOverrideReturns();
             bool loadImgFileFromMemorySet = false;
-            SSGUI_MOCK_IMAGE.OverrideReturns(LoadImgFileFromMemory(const void*, std::size_t))
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, LoadImgFileFromMemory(const void*, std::size_t))
                             .Returns(true)
                             .WhenCalledWith((const void*)::WindowIcon, WindowIcon_size)
                             .WhenCalledExpectedly_Do
@@ -172,10 +172,10 @@ int main()
                                 }
                             );
                             
-            SSGUI_MOCK_IMAGE.OverrideReturns(GetSize())
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, GetSize())
                                 .ReturnsByAction<glm::ivec2>
                                 (
-                                    [](std::vector<void *>& args, void* out)
+                                    [](const std::vector<void*>& args, void* out)
                                     {
                                         (*static_cast<glm::ivec2*>(out)) = glm::ivec2(48, 48);
                                     }
@@ -212,18 +212,30 @@ int main()
             for(int x = 0; x < imgWidth; x++)
             {
                 dummyImg[(y * imgWidth + x) * 4 + 0] = x < columnWidth ? 255 : 0;
-                dummyImg[(y * imgWidth + x) * 4 + 1] = x >= columnWidth && x < columnWidth * 2 ? 255 : 0;
-                dummyImg[(y * imgWidth + x) * 4 + 2] = x >= columnWidth * 2 && x < columnWidth * 3 ? 255 : 0;
-                dummyImg[(y * imgWidth + x) * 4 + 3] = x >= columnWidth * 3 ? 127 : 255;
+                dummyImg[(y * imgWidth + x) * 4 + 1] =  x >= columnWidth && x < columnWidth * 2 ? 
+                                                        255 : 
+                                                        0;
+                
+                dummyImg[(y * imgWidth + x) * 4 + 2] =  x >= columnWidth * 2 && x < columnWidth * 3 ? 
+                                                        255 : 
+                                                        0;
+                
+                dummyImg[(y * imgWidth + x) * 4 + 3] =  x >= columnWidth * 3 ? 
+                                                        127 : 
+                                                        255;
             }
         }
         
         #ifdef SSGUI_IMAGE_BACKEND_MOCK
             SSGUI_MOCK_IMAGE.ClearAllOverrideReturns();
             bool loadRawFromMemorySet = false;
-            SSGUI_MOCK_IMAGE.OverrideReturns(LoadRawFromMemory(const void*, ssGUI::ImageFormat, glm::ivec2))
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, LoadRawFromMemory(const void*, 
+                                                                    ssGUI::ImageFormat, 
+                                                                    glm::ivec2))
                             .Returns(true)
-                            .WhenCalledWith((const void*)dummyImg, ssGUI::ImageFormat(), glm::ivec2(64, 64))
+                            .WhenCalledWith(    (const void*)dummyImg, 
+                                                ssGUI::ImageFormat(), 
+                                                glm::ivec2(64, 64))
                             .WhenCalledExpectedly_Do
                             (
                                 [&loadRawFromMemorySet](...)
@@ -232,10 +244,10 @@ int main()
                                 }
                             );
                             
-            SSGUI_MOCK_IMAGE.OverrideReturns(IsValid())
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, IsValid())
                             .ReturnsByAction<bool>
                             (
-                                [&loadRawFromMemorySet](std::vector<void *>& args, void* out)
+                                [&loadRawFromMemorySet](const std::vector<void*>& args, void* out)
                                 {
                                     (*static_cast<bool*>(out)) = loadRawFromMemorySet;
                                 }
@@ -251,7 +263,7 @@ int main()
     {
         #ifdef SSGUI_IMAGE_BACKEND_MOCK
             SSGUI_MOCK_IMAGE.ClearAllOverrideReturns();
-            SSGUI_MOCK_IMAGE.OverrideReturns(GetSize())
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, GetSize())
                             .Returns(glm::ivec2(imgWidth, imgWidth));
         #endif
     
@@ -272,13 +284,20 @@ int main()
                 for(int x = 0; x < imgWidth; x++)
                 {
                     retImg[(y * imgWidth + x) * 4 + 0] = x < columnWidth ? 255 : 0;
-                    retImg[(y * imgWidth + x) * 4 + 1] = x >= columnWidth && x < columnWidth * 2 ? 255 : 0;
-                    retImg[(y * imgWidth + x) * 4 + 2] = x >= columnWidth * 2 && x < columnWidth * 3 ? 255 : 0;
+                    retImg[(y * imgWidth + x) * 4 + 1] =    x >= columnWidth && x < columnWidth * 2 ? 
+                                                            255 : 
+                                                            0;
+                    
+                    retImg[(y * imgWidth + x) * 4 + 2] =    (x >= columnWidth * 2 && 
+                                                            x < columnWidth * 3) ? 
+                                                            255 : 
+                                                            0;
+                    
                     retImg[(y * imgWidth + x) * 4 + 3] = x >= columnWidth * 3 ? 127 : 255;
                 }
             }
             
-            SSGUI_MOCK_IMAGE.OverrideReturns(GetPixelPtr(ssGUI::ImageFormat&))
+            CO_OVERRIDE_RETURNS(SSGUI_MOCK_IMAGE, GetPixelPtr(ssGUI::ImageFormat&))
                             .Returns((void*)retImg);
             
             ssGUI::ImageFormat setFormat;
@@ -290,7 +309,7 @@ int main()
             setFormat.IndexB = 2;
             setFormat.IndexA = 3;
             
-            SSGUI_MOCK_IMAGE.OverrideArgs(GetPixelPtr(ssGUI::ImageFormat&))
+            CO_OVERRIDE_ARGS(SSGUI_MOCK_IMAGE, GetPixelPtr(ssGUI::ImageFormat&))
                             .SetArgs(setFormat);
         #endif
         
@@ -345,8 +364,8 @@ int main()
         #ifdef SSGUI_IMAGE_BACKEND_MOCK
             SSGUI_MOCK_IMAGE.ClearAllOverrideReturns();
             SSGUI_MOCK_IMAGE.ClearAllOverrideArgs();
-            SSGUI_MOCK_IMAGE.OverrideReturns(GetSize())
-                            .Returns(glm::ivec2(imgWidth, imgWidth));
+            CO_OVERRIDE_RETURNS (SSGUI_MOCK_IMAGE, GetSize())
+                                .Returns(glm::ivec2(imgWidth, imgWidth));
         #endif
     
         ssGUI::Backend::BackendImageInterface* clonedImg = TestImage->Clone();
