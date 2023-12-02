@@ -59,17 +59,13 @@ pipelines:
             tasks:
             
             # Fetching/Creating cache
-            - plugin:
-                <<: *ShellRun
+            - exec:
                 run_if: passed
-                options:
-                  shtype: bash
-                  script: |+
-                    set -e
-                    source ~/helpers.sh
-                    (
-                      echo Fetching/Creating cache...
-                    )
+                command: sh
+                arguments:
+                - -c
+                - echo Fetching/Creating cache...
+            
             - exec:
                 run_if: passed
                 command: sh
@@ -89,20 +85,15 @@ pipelines:
                     if [[ ! -d ~/.gitcache/ssGUI ]]; then
                       git clone --verbose --recursive "https://github.com/neko-box-coder/ssGUI.git"
                     fi
-                    cd ./ssGUI && git pull --verbose --no-edit --ff-only origin $(git branch --show-current)
+                    cd ./ssGUI && git fetch origin && git reset --hard origin/$(git branch --show-current)
             
             # Clone Branch
-            - plugin:
-                <<: *ShellRun
+            - exec:
                 run_if: passed
-                options:
-                  shtype: bash
-                  script: |+
-                    set -e
-                    source ~/helpers.sh
-                    (
-                      echo Checking out branch "$BRANCH" at user "$USER_ORIGIN"
-                    )
+                command: sh
+                arguments:
+                - -c
+                - echo Checking out branch "$BRANCH" at user "$USER_ORIGIN"
             
             - plugin:
                 <<: *ShellRun
@@ -183,7 +174,9 @@ pipelines:
                       pushd ./ssGUI/Build
                       cmake ..
                       popd
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
             
             - plugin: &BuildEmbed2C
                 <<: *ShellRun
@@ -197,7 +190,9 @@ pipelines:
                       pushd ./ssGUI/Build
                       cmake --build . --target Embed2C
                       popd
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
             
             - plugin:
                 <<: *ShellRun
@@ -211,7 +206,9 @@ pipelines:
                       pushd ./ssGUI/Build
                       cmake .. -DssGUI_BUILD_TESTS=true
                       popd
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
             
             - plugin: &Build_ssGUI
                 <<: *ShellRun
@@ -223,9 +220,11 @@ pipelines:
                     source ~/helpers.sh
                     (
                       pushd ./ssGUI/Build
-                      cmake .. --build . -j 16
+                      cmake --build . -j 16
                       popd
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
 
             - plugin: 
                 <<: *NotifyPipelineStatus
@@ -252,9 +251,11 @@ pipelines:
                     source ~/helpers.sh
                     (
                       pushd ./ssGUI/Build
-                      cmake .. -DssGUI_BUILD_TESTS=true -DssGUI_MOCK_BACKEND_MODE=\"Mock With Native Backend\"
+                      cmake .. -DssGUI_BUILD_TESTS=true -DssGUI_MOCK_BACKEND_MODE="Mock With Native Backend"
                       popd
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
             
             - plugin: *Build_ssGUI
             
@@ -289,9 +290,10 @@ pipelines:
                       -DssGUI_FONT_BACKEND=Mock \
                       -DssGUI_IMAGE_BACKEND=Mock \
                       -DssGUI_MAIN_BACKEND=Mock
-                      
                       popd
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
             
             - plugin: *Build_ssGUI
             
@@ -341,7 +343,9 @@ pipelines:
                     source ~/helpers.sh
                     (
                       chmod +x ./ssGUI_LinucBuild_Mock/Src/Tests/AutoTests/RunAllTests.sh
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
             
             - plugin:
                 <<: *ShellRun
@@ -355,7 +359,9 @@ pipelines:
                       pushd ./ssGUI_LinucBuild_Mock/Src/Tests/AutoTests
                       ./RunAllTests.sh
                       popd
+                      echo CI_SUCCESS
                     ) 2>&1 | tee -a ./ci.log
+                    check_for_keyword "./ci.log" "CI_SUCCESS"
 
             - plugin:
                 <<: *NotifyPipelineStatus
