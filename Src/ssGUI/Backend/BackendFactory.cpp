@@ -41,6 +41,11 @@
 #endif
 
 #ifdef SSGUI_MOCK_BACKEND
+    //NOTE: The Status macro is from xlib which conflicts with the Status variable in CppOverride
+    #ifdef Status
+        #undef Status
+    #endif
+    
     #include "ssGUI/Backend/Mocks/BackendDrawingMock.hpp"
     #include "ssGUI/Backend/Mocks/BackendFontMock.hpp"
     #include "ssGUI/Backend/Mocks/BackendImageMock.hpp"
