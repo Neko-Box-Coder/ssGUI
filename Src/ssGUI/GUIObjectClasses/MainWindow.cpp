@@ -33,7 +33,7 @@ namespace ssGUI
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
         BackendMainWindow->AddFocusChangedByUserEvent(std::bind(&ssGUI::MainWindow::Internal_FocusChanged, this, std::placeholders::_1));
-        BackendMainWindow->SetMSAA(8);
+        BackendMainWindow->SetAntiAliasingLevel(8);
         SetBackgroundColor(glm::u8vec4(255, 255, 255, 255));
     }
 
@@ -119,7 +119,7 @@ namespace ssGUI
 
     void MainWindow::SetMSAA(int level)
     {
-        BackendMainWindow->SetMSAA(level);
+        BackendMainWindow->SetAntiAliasingLevel(level);
     }
 
     int MainWindow::GetMSAA() const
@@ -175,7 +175,7 @@ namespace ssGUI
     
     bool MainWindow::SetRenderContext()
     {
-        return BackendMainWindow->SetGLContext();
+        return BackendMainWindow->SetContext();
     }
 
     void MainWindow::SaveState()
@@ -185,7 +185,7 @@ namespace ssGUI
     
     void MainWindow::RestoreState()
     {
-        BackendDrawing->RestoreState();        
+        BackendDrawing->RestoreDrawingState();        
     }
 
     void MainWindow::SetEnabled(bool enabled)

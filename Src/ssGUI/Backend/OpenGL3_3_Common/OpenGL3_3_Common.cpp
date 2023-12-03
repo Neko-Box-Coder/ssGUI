@@ -470,7 +470,7 @@ namespace Backend
         if(cachedIds.find(key) != cachedIds.end())
             return false;
 
-        CurrentMainWindow->SetGLContext();
+        CurrentMainWindow->SetContext();
 
         {
             //Allocate space on atlas
@@ -750,7 +750,7 @@ namespace Backend
     {
         CurrentMainWindow = mainWindow;
 
-        mainWindow->SetGLContext();
+        mainWindow->SetContext();
     
         GLint maxTextureSize = 0;
         //GLint maxLayerSize = 0;
@@ -892,7 +892,7 @@ namespace Backend
 
         //LastMainWindowSize = CurrentMainWindow->GetRenderSize();
         
-        CurrentMainWindow->SetGLContext();
+        CurrentMainWindow->SetContext();
         //glm::ivec2 renderSize = CurrentMainWindow->GetRenderSize();
         GL_CHECK_ERROR( glViewport(0, 0, widthHeight.x, widthHeight.y); );
         
@@ -922,7 +922,7 @@ namespace Backend
             return;
         }
 
-        if(!CurrentMainWindow->SetGLContext())
+        if(!CurrentMainWindow->SetContext())
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
             return;
@@ -946,7 +946,7 @@ namespace Backend
             return;
         }
 
-        if(!CurrentMainWindow->SetGLContext())
+        if(!CurrentMainWindow->SetContext())
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
             return;

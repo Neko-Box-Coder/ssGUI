@@ -282,10 +282,10 @@ namespace Backend
             FocusChangedListeners[index].second = false;
     }
 
-    void BackendMainWindowMock::SetMSAA(int level)
+    void BackendMainWindowMock::SetAntiAliasingLevel(int level)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SSGUI_MOCK_PASSTHROUGH(SetMSAA(level));
+        SSGUI_MOCK_PASSTHROUGH(SetAntiAliasingLevel(level));
         MSAA = level;
     }
 
@@ -357,11 +357,11 @@ namespace Backend
         return WindowMode;
     }
 
-    bool BackendMainWindowMock::SetGLContext()
+    bool BackendMainWindowMock::SetContext()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, SetGLContext(), bool);
-        SSGUI_MOCK_PASSTHROUGH(SetGLContext());
+        SSGUI_MOCK_PASSTHROUGH(SetContext());
         return true;
     }
     

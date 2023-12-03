@@ -1,10 +1,8 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_H
-#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_H
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_HPP
+#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_HPP
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
-#include "ssGUI/Enums/CursorType.hpp"
 #include "ssGUI/Enums/WindowMode.hpp"
-#include "glm/vec2.hpp"
 #include <string>
 #include <functional>
 
@@ -29,9 +27,13 @@ namespace Backend
             //Gets the MainWindow position (distance from top-left) on the screen
             virtual glm::ivec2 GetWindowPosition() const = 0;
 
-            //function: GetPositionOffset
-            //Gets the offset from top-left corner of the rendering area and the top-left corner of the titlebar.
-            //The offset should always be positive, meaning adding the offset to <GetWindowPosition> will get the position of the rendering area.
+            /*function: GetPositionOffset
+            Gets the offset from top-left corner of the rendering area 
+                and the top-left corner of the titlebar.
+            
+            The offset should always be positive, meaning adding the offset to 
+                <GetWindowPosition> will get the position of the rendering area.
+            */
             virtual glm::ivec2 GetPositionOffset() const = 0;
 
             //function: SetWindowSize
@@ -59,11 +61,13 @@ namespace Backend
             virtual void Close() = 0;
             
             //function: AbortClosing
-            //Stops the main window from closing. Needs to be called when it is being closed in order for it to work.
+            //Stops the main window from closing. 
+            //Needs to be called when it is being closed in order for it to work.
             virtual void AbortClosing() = 0;
 
             //function: AddOnCloseEvent
-            //Adds the function to be called when the main window closes. Returns an index that can be used to remove the function for being called.
+            //Adds the function to be called when the main window closes. 
+            //Returns an index that can be used to remove the function for being called.
             virtual int AddOnCloseEvent(std::function<void()> func) = 0;
 
             //function: RemoveOnCloseEvent
@@ -109,27 +113,29 @@ namespace Backend
             virtual bool IsFocused() const = 0;
 
             //function: AddFocusChangedByUserEvent
-            //Adds the function to be called when the main window gained or lost focus. Returns an index that can be used to remove the function for being called.
+            //Adds the function to be called when the main window gained or lost focus. 
+            //Returns an index that can be used to remove the function for being called.
             virtual int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) = 0;
 
             //function: RemoveFocusChangedByUserEvent
             //Removes the function to be called when the main window gained or lost focus
             virtual void RemoveFocusChangedByUserEvent(int index) = 0;
 
-            //function: SetMSAA
+            //function: SetAntiAliasingLevel
             //Sets the main window's anti aliasing level
-            virtual void SetMSAA(int level) = 0;
+            virtual void SetAntiAliasingLevel(int level) = 0;
 
-            //function: GetMSAA
+            //function: GetAntiAliasingLevel
             //Gets the main window's anti aliasing level
-            virtual int GetMSAA() const = 0;
+            virtual int GetAntiAliasingLevel() const = 0;
 
             //function: SetTitlebar
             //Sets if the main window has titlebar (and border) or not
             virtual void SetTitlebar(bool titlebar) = 0;
 
             //function: HasTitlebar
-            //Returns if the main window has titlebar (and border) or not. Note that if the main window is not in normal mode, this will return false.
+            //Returns if the main window has titlebar (and border) or not. 
+            //Note that if the main window is not in normal mode, this will return false.
             virtual bool HasTitlebar() const = 0;
 
             //function: SetResizable
@@ -137,7 +143,8 @@ namespace Backend
             virtual void SetResizable(bool resizable) = 0;
 
             //function: IsResizable
-            //Returns if the main window is resizable or not. Note that if the main window is not in normal mode, this will return false.
+            //Returns if the main window is resizable or not. 
+            //Note that if the main window is not in normal mode, this will return false.
             virtual bool IsResizable() const = 0;
 
             //function: SetCloseButton
@@ -145,7 +152,8 @@ namespace Backend
             virtual void SetCloseButton(bool closeButton) = 0;
 
             //function: HasCloseButton
-            //Returns if the main window has close button or not. Note that if the main window is not in normal mode, this will return false.
+            //Returns if the main window has close button or not. 
+            //Note that if the main window is not in normal mode, this will return false.
             virtual bool HasCloseButton() const = 0;
 
             //function: SetWindowMode
@@ -156,22 +164,29 @@ namespace Backend
             //Gets the main window mode
             virtual ssGUI::Enums::WindowMode GetWindowMode() const = 0;
 
-            //function: SetGLContext
-            //Sets this window as the current MainWindow context
-            virtual bool SetGLContext() = 0;
+            //function: SetDrawingContext
+            //Sets this window as the current MainWindow context for drawing
+            virtual bool SetDrawingContext() = 0;
             
-            //function: Clone
-            //Clones the current main window with the same settings, dispose it with <ssGUI::Factory::Dispose> when not needed.
-            //Events such as <AddOnCloseEvent> and <AddFocusChangedByUserEvent> are not copied.
-            //Cloning a closed window is an *undefined* behaviour, same goes to window that is in "invisible" state.
-            //This function is tested limitedly, creating a new <MainWindow> is advised.
+            /*function: Clone
+            Clones the current main window with the same settings, 
+              dispose it with <ssGUI::Factory::Dispose> when not needed.
+            
+            Events such as <AddOnCloseEvent> and <AddFocusChangedByUserEvent> are not copied.
+            
+            Cloning a closed window is an *undefined* behaviour, 
+              same goes to window that is in "invisible" state.
+            
+            This function is tested limitedly, creating a new <MainWindow> is advised.
+            */
             virtual BackendMainWindowInterface* Clone() = 0;
 
             //function: GetRawHandle
-            virtual void* GetRawHandle() = 0;
+            virtual void* GetRawHandle() const = 0;
     };
 
-    inline BackendMainWindowInterface::~BackendMainWindowInterface(){}   //Pure virtual destructor needs to be defined
+    //Pure virtual destructor needs to be defined
+    inline BackendMainWindowInterface::~BackendMainWindowInterface(){}
 }
 
 }

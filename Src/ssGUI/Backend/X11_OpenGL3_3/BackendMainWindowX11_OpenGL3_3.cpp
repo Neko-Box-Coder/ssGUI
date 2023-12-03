@@ -1030,7 +1030,7 @@ namespace Backend
 
     void BackendMainWindowX11_OpenGL3_3::SetVSync(bool vSync)
     {
-        SetGLContext();
+        SetContext();
         GLXDrawable drawable = glXGetCurrentDrawable();
         if(drawable == None)
         {
@@ -1111,7 +1111,7 @@ namespace Backend
         ExternalFocusChangedCallback[index] = nullptr;
     }
 
-    void BackendMainWindowX11_OpenGL3_3::SetMSAA(int level)
+    void BackendMainWindowX11_OpenGL3_3::SetAntiAliasingLevel(int level)
     {
         MsaaLevel = level;
         ssGUI_DestroyWindow();
@@ -1277,7 +1277,7 @@ namespace Backend
         return CurrentWindowMode;
     }
 
-    bool BackendMainWindowX11_OpenGL3_3::SetGLContext()
+    bool BackendMainWindowX11_OpenGL3_3::SetContext()
     {
         int result = glXMakeCurrent(WindowDisplay, WindowId, WindowContext);
         return result == True;

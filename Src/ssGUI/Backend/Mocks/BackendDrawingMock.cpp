@@ -67,13 +67,13 @@ namespace Backend
         return ClearedColor[(CurrentDrawingBuffer + 1) % 2];
     }
     
-    void BackendDrawingMock::SaveState()
+    void BackendDrawingMock::SaveDrawingState()
     {
         SSGUI_MOCK_PASSTHROUGH(SaveState());
         SavedStateCount++;
     }
 
-    void BackendDrawingMock::RestoreState()
+    void BackendDrawingMock::RestoreDrawingState()
     {
         SSGUI_MOCK_PASSTHROUGH(SaveState());
         SavedStateCount--;

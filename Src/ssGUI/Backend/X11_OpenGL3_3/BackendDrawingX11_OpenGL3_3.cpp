@@ -82,13 +82,13 @@ namespace Backend
             delete OpenGLCommon;
     }
     
-    void BackendDrawingX11_OpenGL3_3::SaveState()
+    void BackendDrawingX11_OpenGL3_3::SaveDrawingState()
     {
         InitializeOpenGLCommonIfNeeded();
         OpenGLCommon->SaveState();
     }
 
-    void BackendDrawingX11_OpenGL3_3::RestoreState()
+    void BackendDrawingX11_OpenGL3_3::RestoreDrawingState()
     {
         InitializeOpenGLCommonIfNeeded();
         OpenGLCommon->RestoreState();

@@ -1,8 +1,7 @@
-#ifndef SSGUI_IMAGE_INTERFACE_H
-#define SSGUI_IMAGE_INTERFACE_H
+#ifndef SSGUI_IMAGE_INTERFACE_HPP
+#define SSGUI_IMAGE_INTERFACE_HPP
 
 #include <string>
-#include "glm/vec2.hpp"
 #include "ssGUI/DataClasses/ImageFormat.hpp"
 
 namespace ssGUI
@@ -23,7 +22,7 @@ namespace Backend
 
             //function: GetRawHandle
             //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr.
-            virtual void* GetRawHandle() = 0;
+            virtual void* GetRawHandle() const = 0;
 
             //function: IsValid
             //Returns true if image is loaded
@@ -35,11 +34,14 @@ namespace Backend
 
             //function: LoadImgFileFromMemory
             //Loads an image file from memory with specified size in bytes
-            virtual bool LoadImgFileFromMemory(const void * dataPtr, std::size_t size) = 0;
+            virtual bool LoadImgFileFromMemory( const void* dataPtr, 
+                                                std::size_t size) = 0;
 
             //function: LoadRawFromMemory
             //This loads an image with specified image format in memory 
-            virtual bool LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) = 0;
+            virtual bool LoadRawFromMemory( const void* dataPtr, 
+                                            ssGUI::ImageFormat format, 
+                                            glm::ivec2 imageSize) = 0;
 
             //function: GetSize
             //Returns the size of the image
@@ -53,22 +55,27 @@ namespace Backend
             //Updates the drawing interfaces' cache with the current image
             virtual void UpdateCache() = 0;
             
+            using DrawingInterface = ssGUI::Backend::BackendDrawingInterface;
+            
             //function: Internal_AddBackendDrawingRecord
-            //(Internal ssGUI function) Adds a linking record of indicating this image is stored in backend drawing.
+            //(Internal ssGUI function) Adds a linking record of indicating 
+            //  this image is stored in backend drawing.
             //By default no linking record will be cloned when <Clone> is called.
-            virtual void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
+            virtual void Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing) = 0;
             
             //function: Internal_RemoveBackendDrawingRecord
-            //(Internal ssGUI function) Removes a linking record of indicating this image is stored in backend drawing.
+            //(Internal ssGUI function) Removes a linking record of indicating 
+            //  this image is stored in backend drawing.
             //By default no linking record will be cloned when <Clone> is called.
-            virtual void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) = 0;
+            virtual void Internal_RemoveBackendDrawingRecord(DrawingInterface* backendDrawing) = 0;
 
             //function: Clone
             //Clones the backend image
             virtual BackendImageInterface* Clone() = 0;
     };
 
-    inline BackendImageInterface::~BackendImageInterface(){}   //Pure virtual destructor needs to be defined
+    //Pure virtual destructor needs to be defined
+    inline BackendImageInterface::~BackendImageInterface(){}
 }
 
 }

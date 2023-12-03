@@ -159,7 +159,7 @@ int main()
 
     ssTEST("MSAATest()")
     {
-        TestWindow->SetMSAA(4);
+        TestWindow->SetAntiAliasingLevel(4);
         ssTEST_OUTPUT_ASSERT(TestWindow->GetMSAA() == 4);
     };
 

@@ -297,7 +297,7 @@ namespace Backend
 
             //function: SetMSAA
             //See <BackendMainWindowInterface::SetMSAA>
-            void SetMSAA(int level) override;
+            void SetAntiAliasingLevel(int level) override;
 
             //function: GetMSAA
             //See <BackendMainWindowInterface::GetMSAA>
@@ -337,7 +337,7 @@ namespace Backend
 
             //function: SetGLContext
             //See <BackendMainWindowInterface::SetGLContext>
-            bool SetGLContext() override;
+            bool SetContext() override;
             
             //function: Clone
             //See <BackendMainWindowInterface::Clone>
