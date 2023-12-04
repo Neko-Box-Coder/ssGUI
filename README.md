@@ -93,7 +93,7 @@
 ![](./7rsp5l.jpg)
  
 Joke aside, I just wanted to have a GUI framework that can be: 
-- Spined up within minutes with minimum / no configuration 
+- Spinned up within minutes with minimum / no configuration 
 - Uses C++ STL 
 - No restrictions on commercial use
 - Simple, feature rich but not bloated
@@ -202,7 +202,7 @@ int main()
 - #### Support systems without OpenGL
 - #### GUI Builder
 - #### Optional immediate mode support
-- File Diaglog support
+- File Dialog support
 - Tabs extension
 - Color picker
 - ~~Instance rendering~~
@@ -234,7 +234,7 @@ int main()
 
 ### 📜 Licenses
 This project is under Apache-2.0 License. 
-Licenses for resoureces used by testing and examples are stored as "Credits.txt" under the same folder.
+Licenses for resources used by testing and examples are stored as "Credits.txt" under the same folder.
 
 - GLM:
     - The Happy Bunny License or MIT License
