@@ -142,7 +142,7 @@ namespace Backend
 
     }
 
-    int BackendMainWindowTemplate::GetMSAA() const
+    int BackendMainWindowTemplate::GetAntiAliasingLevel() const
     {
         return 0;
     }

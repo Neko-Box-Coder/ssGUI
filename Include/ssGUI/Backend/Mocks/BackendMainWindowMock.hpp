@@ -176,9 +176,9 @@ namespace Backend
             //See <BackendMainWindowInterface::SetMSAA>
             void SetAntiAliasingLevel(int level) override;
 
-            //function: GetMSAA
-            //See <BackendMainWindowInterface::GetMSAA>
-            int GetMSAA() const override;
+            //function: GetAntiAliasingLevel
+            //See <BackendMainWindowInterface::GetAntiAliasingLevel>
+            int GetAntiAliasingLevel() const override;
 
             //function: SetTitlebar
             //See <BackendMainWindowInterface::SetTitlebar>
@@ -214,7 +214,7 @@ namespace Backend
 
             //function: SetGLContext
             //See <BackendMainWindowInterface::SetGLContext>
-            bool SetContext() override;
+            bool SetDrawingContext() override;
             
             //function: Clone
             //See <BackendMainWindowInterface::Clone>
@@ -222,7 +222,7 @@ namespace Backend
 
             //function: GetRawHandle
             //See <BackendMainWindowInterface::GetRawHandle>
-            void* GetRawHandle() override;
+            void* GetRawHandle() const override;
     };
 }
 

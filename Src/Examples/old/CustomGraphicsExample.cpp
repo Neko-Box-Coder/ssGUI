@@ -227,7 +227,7 @@ int main()
         [&]()
         {
             //Save OpenGL status
-            mainWindow.GetBackendDrawingInterface()->SaveState();
+            mainWindow.GetBackendDrawingInterface()->SaveDrawingState();
 
             //Draw OpenGL scene
             initGL();
@@ -235,7 +235,7 @@ int main()
             display();
             
             //Restore OpenGL status
-            mainWindow.GetBackendDrawingInterface()->RestoreState();
+            mainWindow.GetBackendDrawingInterface()->RestoreDrawingState();
         }
     );
 

@@ -470,7 +470,7 @@ namespace Backend
         if(cachedIds.find(key) != cachedIds.end())
             return false;
 
-        CurrentMainWindow->SetContext();
+        CurrentMainWindow->SetDrawingContext();
 
         {
             //Allocate space on atlas
@@ -750,7 +750,7 @@ namespace Backend
     {
         CurrentMainWindow = mainWindow;
 
-        mainWindow->SetContext();
+        mainWindow->SetDrawingContext();
     
         GLint maxTextureSize = 0;
         //GLint maxLayerSize = 0;
@@ -892,7 +892,7 @@ namespace Backend
 
         //LastMainWindowSize = CurrentMainWindow->GetRenderSize();
         
-        CurrentMainWindow->SetContext();
+        CurrentMainWindow->SetDrawingContext();
         //glm::ivec2 renderSize = CurrentMainWindow->GetRenderSize();
         GL_CHECK_ERROR( glViewport(0, 0, widthHeight.x, widthHeight.y); );
         
@@ -914,7 +914,7 @@ namespace Backend
         return orthoMat;
     }
     
-    void OpenGL3_3_Common::SaveState()
+    void OpenGL3_3_Common::SaveDrawingState()
     {
         if(CurrentMainWindow == nullptr)
         {
@@ -922,7 +922,7 @@ namespace Backend
             return;
         }
 
-        if(!CurrentMainWindow->SetContext())
+        if(!CurrentMainWindow->SetDrawingContext())
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
             return;
@@ -938,7 +938,7 @@ namespace Backend
         GL_CHECK_ERROR( glPushMatrix(); );
     }
 
-    void OpenGL3_3_Common::RestoreState()
+    void OpenGL3_3_Common::RestoreDrawingState()
     {
         if(CurrentMainWindow == nullptr)
         {
@@ -946,7 +946,7 @@ namespace Backend
             return;
         }
 
-        if(!CurrentMainWindow->SetContext())
+        if(!CurrentMainWindow->SetDrawingContext())
         {
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
             return;
@@ -1083,7 +1083,7 @@ namespace Backend
     
         SaveLastViewport();
         
-        SaveState();
+        SaveDrawingState();
         
         GL_CHECK_ERROR( glUseProgram(ProgramId) );
         
@@ -1142,7 +1142,7 @@ namespace Backend
         TextureBotRightCoords.clear();
         Idx.clear();
         
-        RestoreState();
+        RestoreDrawingState();
         
         LoadLastViewport();
     }

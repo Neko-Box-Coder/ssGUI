@@ -24,11 +24,11 @@ namespace Backend
 
             //function: SaveState
             //See <BackendDrawingInterface::SaveState>
-            void SaveState() override;
+            void SaveDrawingState() override;
 
-            //function: RestoreState
-            //See <BackendDrawingInterface::RestoreState>
-            void RestoreState() override;
+            //function: RestoreDrawingState
+            //See <BackendDrawingInterface::RestoreDrawingState>
+            void RestoreDrawingState() override;
 
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>

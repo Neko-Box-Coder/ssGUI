@@ -18,7 +18,7 @@ namespace Backend
         public:
             using CharSize = uint16_t;
             using CharCode = uint32_t;
-            using CharTextureIdentifier = std::tuple<   ssGUI::Backend::BackendFontInterface*, 
+            using CharTextureIdentifier = std::tuple<   BackendFontInterface*, 
                                                         CharSize, 
                                                         CharCode>;
         
@@ -70,17 +70,17 @@ namespace Backend
             //  or system memory for drawing
             //To update the cached image, call <BackendImageInterface::UpdateCache>.
             //Calling this fuction multiple times will not update the cache image.
-            virtual void AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
+            virtual void AddImageCache(BackendImageInterface* backendImage) = 0;
             
             //function: RemoveImageCache
             //This removes the backend image from the cache.
-            virtual void RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
+            virtual void RemoveImageCache(BackendImageInterface* backendImage) = 0;
             
             //function: GetRawImageCacheHandle
             //This returns the handle of the image cache. What is returned is backend independent.
             //You can use the returned handle to modify the cached image.
             //If no cache is found, it will return nullptr.
-            virtual void* GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage) = 0;
+            virtual void* GetRawImageCacheHandle(BackendImageInterface* backendImage) = 0;
     };
     
     //Pure virtual destructor needs to be defined

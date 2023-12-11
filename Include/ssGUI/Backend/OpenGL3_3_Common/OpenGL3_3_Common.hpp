@@ -540,11 +540,11 @@ namespace Backend
             
             //function: SaveState
             //See <BackendDrawingInterface::SaveState>
-            void SaveState();
+            void SaveDrawingState();
             
-            //function: RestoreState
-            //See <BackendDrawingInterface::RestoreState>
-            void RestoreState();
+            //function: RestoreDrawingState
+            //See <BackendDrawingInterface::RestoreDrawingState>
+            void RestoreDrawingState();
             
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>

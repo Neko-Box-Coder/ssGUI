@@ -1030,7 +1030,7 @@ namespace Backend
 
     void BackendMainWindowX11_OpenGL3_3::SetVSync(bool vSync)
     {
-        SetContext();
+        SetDrawingContext();
         GLXDrawable drawable = glXGetCurrentDrawable();
         if(drawable == None)
         {
@@ -1120,7 +1120,7 @@ namespace Backend
         UpdateWindowCapability();
     }
 
-    int BackendMainWindowX11_OpenGL3_3::GetMSAA() const
+    int BackendMainWindowX11_OpenGL3_3::GetAntiAliasingLevel() const
     {    
         return MsaaLevel;
     }
@@ -1277,7 +1277,7 @@ namespace Backend
         return CurrentWindowMode;
     }
 
-    bool BackendMainWindowX11_OpenGL3_3::SetContext()
+    bool BackendMainWindowX11_OpenGL3_3::SetDrawingContext()
     {
         int result = glXMakeCurrent(WindowDisplay, WindowId, WindowContext);
         return result == True;
@@ -1288,7 +1288,7 @@ namespace Backend
         return new BackendMainWindowX11_OpenGL3_3(*this);
     }
 
-    void* BackendMainWindowX11_OpenGL3_3::GetRawHandle()
+    void* BackendMainWindowX11_OpenGL3_3::GetRawHandle() const
     {
         CurrentHandle = {
             WindowDisplay,

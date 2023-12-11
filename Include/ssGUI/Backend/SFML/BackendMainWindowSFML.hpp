@@ -181,9 +181,9 @@ namespace Backend
             //See <BackendMainWindowInterface::RemoveFocusChangedByUserEvent>
             void RemoveFocusChangedByUserEvent(int index) override;
 
-            //function: GetMSAA
-            //See <BackendMainWindowInterface::GetMSAA>
-            int GetMSAA() const override;
+            //function: GetAntiAliasingLevel
+            //See <BackendMainWindowInterface::GetAntiAliasingLevel>
+            int GetAntiAliasingLevel() const override;
             
             //function: SetMSAA
             //See <BackendMainWindowInterface::SetMSAA>

@@ -69,13 +69,13 @@ namespace Backend
     
     void BackendDrawingMock::SaveDrawingState()
     {
-        SSGUI_MOCK_PASSTHROUGH(SaveState());
+        SSGUI_MOCK_PASSTHROUGH(SaveDrawingState());
         SavedStateCount++;
     }
 
     void BackendDrawingMock::RestoreDrawingState()
     {
-        SSGUI_MOCK_PASSTHROUGH(SaveState());
+        SSGUI_MOCK_PASSTHROUGH(RestoreDrawingState());
         SavedStateCount--;
     }
 

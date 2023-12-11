@@ -9,10 +9,13 @@ namespace Backend
 
     glm::ivec2 DynamicImageAtlas::GetAllocatedImageSize(ImageAtlasImageInfo info)
     {
-        return info.HasMipmap ? glm::ivec2(info.ImageSizeInPixel.x * 1.5f, info.ImageSizeInPixel.y) : info.ImageSizeInPixel;
+        return  info.HasMipmap ? 
+                glm::ivec2(info.ImageSizeInPixel.x * 1.5f, info.ImageSizeInPixel.y) : 
+                info.ImageSizeInPixel;
     }
     
-    void DynamicImageAtlas::OccupyCells(std::multimap<CellsCount, FreeCellsInfo>::iterator it, glm::ivec2 occupyCellsCountIn2D)
+    void DynamicImageAtlas::OccupyCells(std::multimap<CellsCount, FreeCellsInfo>::iterator it, 
+                                        glm::ivec2 occupyCellsCountIn2D)
     {
         FreeCellsInfo freeCellInfo = it->second;
         
@@ -23,8 +26,12 @@ namespace Backend
             FreeCellsInfo newCellsInfo;
             newCellsInfo.CellsCountIn2D.x = occupyCellsCountIn2D.x;
             newCellsInfo.CellsCountIn2D.y = freeCellInfo.CellsCountIn2D.y - occupyCellsCountIn2D.y;
-            newCellsInfo.CellsPositionIndex = freeCellInfo.CellsPositionIndex + glm::ivec3(0, occupyCellsCountIn2D.y, 0);
-            FreeCells.insert(std::make_pair(newCellsInfo.CellsCountIn2D.x * newCellsInfo.CellsCountIn2D.y, newCellsInfo));
+            newCellsInfo.CellsPositionIndex =   freeCellInfo.CellsPositionIndex + 
+                                                glm::ivec3(0, occupyCellsCountIn2D.y, 0);
+            
+            FreeCells.insert(std::make_pair(newCellsInfo.CellsCountIn2D.x * 
+                                            newCellsInfo.CellsCountIn2D.y, newCellsInfo));
+            
             FreeCells.erase(it);
         }
         else if(occupyCellsCountIn2D.y == freeCellInfo.CellsCountIn2D.y)
@@ -32,8 +39,12 @@ namespace Backend
             FreeCellsInfo newCellsInfo;
             newCellsInfo.CellsCountIn2D.x = freeCellInfo.CellsCountIn2D.x - occupyCellsCountIn2D.x;
             newCellsInfo.CellsCountIn2D.y = occupyCellsCountIn2D.y;
-            newCellsInfo.CellsPositionIndex = freeCellInfo.CellsPositionIndex + glm::ivec3(occupyCellsCountIn2D.x, 0, 0);
-            FreeCells.insert(std::make_pair(newCellsInfo.CellsCountIn2D.x * newCellsInfo.CellsCountIn2D.y, newCellsInfo));
+            newCellsInfo.CellsPositionIndex =   freeCellInfo.CellsPositionIndex + 
+                                                glm::ivec3(occupyCellsCountIn2D.x, 0, 0);
+            
+            FreeCells.insert(std::make_pair(newCellsInfo.CellsCountIn2D.x * 
+                                            newCellsInfo.CellsCountIn2D.y, newCellsInfo));
+            
             FreeCells.erase(it);
         }
         else
@@ -41,14 +52,20 @@ namespace Backend
             FreeCellsInfo newCellsInfoX;
             newCellsInfoX.CellsCountIn2D.x = freeCellInfo.CellsCountIn2D.x - occupyCellsCountIn2D.x;
             newCellsInfoX.CellsCountIn2D.y = occupyCellsCountIn2D.y;
-            newCellsInfoX.CellsPositionIndex = freeCellInfo.CellsPositionIndex + glm::ivec3(occupyCellsCountIn2D.x, 0, 0);
-            FreeCells.insert(std::make_pair(newCellsInfoX.CellsCountIn2D.x * newCellsInfoX.CellsCountIn2D.y, newCellsInfoX));
+            newCellsInfoX.CellsPositionIndex =  freeCellInfo.CellsPositionIndex + 
+                                                glm::ivec3(occupyCellsCountIn2D.x, 0, 0);
+            
+            FreeCells.insert(std::make_pair(newCellsInfoX.CellsCountIn2D.x * 
+                                            newCellsInfoX.CellsCountIn2D.y, newCellsInfoX));
 
             FreeCellsInfo newCellsInfoY;
             newCellsInfoY.CellsCountIn2D.x = freeCellInfo.CellsCountIn2D.x;
             newCellsInfoY.CellsCountIn2D.y = freeCellInfo.CellsCountIn2D.y - occupyCellsCountIn2D.y;
-            newCellsInfoY.CellsPositionIndex = freeCellInfo.CellsPositionIndex + glm::ivec3(0, occupyCellsCountIn2D.y, 0);
-            FreeCells.insert(std::make_pair(newCellsInfoY.CellsCountIn2D.x * newCellsInfoY.CellsCountIn2D.y, newCellsInfoY));
+            newCellsInfoY.CellsPositionIndex =  freeCellInfo.CellsPositionIndex + 
+                                                glm::ivec3(0, occupyCellsCountIn2D.y, 0);
+            
+            FreeCells.insert(std::make_pair(newCellsInfoY.CellsCountIn2D.x * 
+                                            newCellsInfoY.CellsCountIn2D.y, newCellsInfoY));
 
             FreeCells.erase(it);
         }
@@ -65,13 +82,15 @@ namespace Backend
             bool yInside = false;
             
             if( info.CellsPositionIndex.x >= it->second.CellsPositionIndex.x &&
-                info.CellsPositionIndex.x < it->second.CellsPositionIndex.x + it->second.CellsCountIn2D.x)
+                info.CellsPositionIndex.x < it->second.CellsPositionIndex.x + 
+                                            it->second.CellsCountIn2D.x)
             {
                 xInside = true;
             }
             
             if( info.CellsPositionIndex.y >= it->second.CellsPositionIndex.y &&
-                info.CellsPositionIndex.y < it->second.CellsPositionIndex.y + it->second.CellsCountIn2D.y)
+                info.CellsPositionIndex.y < it->second.CellsPositionIndex.y + 
+                                            it->second.CellsCountIn2D.y)
             {
                 yInside = true;
             }
@@ -89,7 +108,10 @@ namespace Backend
         FreeCells.insert(std::make_pair(count, info));
     }
     
-    std::multimap<DynamicImageAtlas::CellsCount, DynamicImageAtlas::FreeCellsInfo>::iterator DynamicImageAtlas::FindCells(glm::ivec2 cellsNeeded, int recursiveCount)
+    #define CELL_IT std::multimap<  DynamicImageAtlas::CellsCount, \
+                                    DynamicImageAtlas::FreeCellsInfo>::iterator
+    
+    CELL_IT DynamicImageAtlas::FindCells(glm::ivec2 cellsNeeded, int recursiveCount)
     {
         const int MAX_RECURSIVE_COUNT = 10;
         if(recursiveCount >= MAX_RECURSIVE_COUNT)
@@ -102,7 +124,10 @@ namespace Backend
         CellsCount maxFreeCellsCount = FreeCells.rbegin()->first;
         
         //ssLOG_LINE("maxFreeCellsCount: "<<maxFreeCellsCount);
-        //ssLOG_LINE("FreeCells.rbegin()->second.CellsCountIn2D: "<<FreeCells.rbegin()->second.CellsCountIn2D.x<<", "<<FreeCells.rbegin()->second.CellsCountIn2D.y);
+        //ssLOG_LINE(   "FreeCells.rbegin()->second.CellsCountIn2D: "<<
+        //              FreeCells.rbegin()->second.CellsCountIn2D.x<<", "<<
+        //              FreeCells.rbegin()->second.CellsCountIn2D.y);
+        
         //ssLOG_LINE("cellsNeeded: "<<cellsNeeded.x <<", "<<cellsNeeded.y);
         
         //Check if size needed exceed this max free cells count
@@ -118,7 +143,9 @@ namespace Backend
         std::multimap<CellsCount, FreeCellsInfo>::iterator it = FreeCells.end();
         
         //Starting from size needed (converted to cells count) until max free cells count
-        for(int curCellCount = cellsNeeded.x * cellsNeeded.y; curCellCount <= maxFreeCellsCount; ++curCellCount)
+        for(int curCellCount = cellsNeeded.x * cellsNeeded.y; 
+            curCellCount <= maxFreeCellsCount; 
+            ++curCellCount)
         {
             //ssLOG_LINE("curCellCount: "<<curCellCount);
             it = FreeCells.find(curCellCount);
@@ -145,8 +172,11 @@ namespace Backend
                 if(it->first != foundSize)
                     break;
             
-                if(it->second.CellsCountIn2D.x >= cellsNeeded.x && it->second.CellsCountIn2D.y >= cellsNeeded.y)
+                if( it->second.CellsCountIn2D.x >= cellsNeeded.x && 
+                    it->second.CellsCountIn2D.y >= cellsNeeded.y)
+                {
                     return it;
+                }
                 
                 if(it == FreeCells.begin())
                     break;
@@ -165,8 +195,11 @@ namespace Backend
                 if(it == FreeCells.end())
                     break;
 
-                if(it->second.CellsCountIn2D.x >= cellsNeeded.x && it->second.CellsCountIn2D.y >= cellsNeeded.y)
+                if( it->second.CellsCountIn2D.x >= cellsNeeded.x && 
+                    it->second.CellsCountIn2D.y >= cellsNeeded.y)
+                {
                     return it;
+                }
             
                 it++;
             }
@@ -195,15 +228,16 @@ namespace Backend
     
     DynamicImageAtlas::DynamicImageAtlas(   glm::ivec2 atlasSize, 
                                             glm::ivec2 cellSize,
-                                            std::function<bool(void)> newAtlasRequestCallback) :    CellSizeInPixel(cellSize),
-                                                                                                    AtlasSizeInPixel(atlasSize),
-                                                                                                    UsableSizeInPixel(),
-                                                                                                    CellsCountInGrid(),
-                                                                                                    NextImageId(1),
-                                                                                                    ImageInfos(),
-                                                                                                    FreeCells(),
-                                                                                                    OnRequestNewAtlasCallback(newAtlasRequestCallback),
-                                                                                                    MaxAtlasIndex(-1)
+                                            std::function<bool(void)> newAtlasRequestCallback) :    
+                                                CellSizeInPixel(cellSize),
+                                                AtlasSizeInPixel(atlasSize),
+                                                UsableSizeInPixel(),
+                                                CellsCountInGrid(),
+                                                NextImageId(1),
+                                                ImageInfos(),
+                                                FreeCells(),
+                                                OnRequestNewAtlasCallback(newAtlasRequestCallback),
+                                                MaxAtlasIndex(-1)
     {
         //First we calculate the actual atlas texture size we can use
         CellsCountInGrid = AtlasSizeInPixel / CellSizeInPixel;
@@ -223,7 +257,8 @@ namespace Backend
         if(sizeNeeded.x > UsableSizeInPixel.x || sizeNeeded.y > UsableSizeInPixel.y)
             return false;    
         
-        glm::ivec2 cellsNeeded = glm::ivec2( glm::vec2(sizeNeeded) / glm::vec2(CellSizeInPixel) + 0.99f );    
+        glm::ivec2 cellsNeeded = glm::ivec2(    glm::vec2(sizeNeeded) / 
+                                                glm::vec2(CellSizeInPixel) + 0.99f );    
      
         //Check if theres any free cells left
         if(FreeCells.empty())
@@ -244,7 +279,9 @@ namespace Backend
         //After this point, foundIt is no longer valid
         OccupyCells(foundIt, cellsNeeded);
         
-        imgInfo.LocationInPixel = occupyCellsInfo.CellsPositionIndex * glm::ivec3(CellSizeInPixel, 1); 
+        imgInfo.LocationInPixel =   occupyCellsInfo.CellsPositionIndex * 
+                                    glm::ivec3(CellSizeInPixel, 1); 
+        
         ImageInfos[NextImageId] = imgInfo;
         
         returnId = NextImageId++;
@@ -262,7 +299,9 @@ namespace Backend
         
         //AddCells back
         FreeCellsInfo cellsInfo;
-        cellsInfo.CellsCountIn2D = glm::vec2(GetAllocatedImageSize(imgInfo)) / glm::vec2(CellSizeInPixel) + 0.99f; 
+        cellsInfo.CellsCountIn2D =  glm::vec2(GetAllocatedImageSize(imgInfo)) / 
+                                    glm::vec2(CellSizeInPixel) + 0.99f; 
+        
         cellsInfo.CellsPositionIndex = imgInfo.LocationInPixel / glm::ivec3(CellSizeInPixel, 1);
         
         AddCells(cellsInfo.CellsCountIn2D.x * cellsInfo.CellsCountIn2D.y, cellsInfo);

@@ -113,9 +113,9 @@ namespace ssGUI
             //See <ssGUI::Backend::BackendMainWindowInterface::SetMSAA>
             virtual void SetMSAA(int level);
 
-            //function: GetMSAA
-            //See <ssGUI::Backend::BackendMainWindowInterface::GetMSAA>
-            virtual int GetMSAA() const;
+            //function: GetAntiAliasingLevel
+            //See <ssGUI::Backend::BackendMainWindowInterface::GetAntiAliasingLevel>
+            virtual int GetAntiAliasingLevel() const;
 
             //function: SetWindowMode
             //See <ssGUI::Backend::BackendMainWindowInterface::SetWindowMode>
@@ -155,11 +155,11 @@ namespace ssGUI
             
             //function: SaveState 
             //See <BackendDrawingInterface::SaveState>
-            void SaveState();
+            void SaveDrawingState();
 
-            //function: RestoreState 
-            //See <BackendDrawingInterface::RestoreState>
-            void RestoreState();
+            //function: RestoreDrawingState 
+            //See <BackendDrawingInterface::RestoreDrawingState>
+            void RestoreDrawingState();
 
             //function: SetEnabled
             //Proxy function for <SetVisible>

@@ -85,13 +85,13 @@ namespace Backend
     void BackendDrawingX11_OpenGL3_3::SaveDrawingState()
     {
         InitializeOpenGLCommonIfNeeded();
-        OpenGLCommon->SaveState();
+        OpenGLCommon->SaveDrawingState();
     }
 
     void BackendDrawingX11_OpenGL3_3::RestoreDrawingState()
     {
         InitializeOpenGLCommonIfNeeded();
-        OpenGLCommon->RestoreState();
+        OpenGLCommon->RestoreDrawingState();
     }
 
     bool BackendDrawingX11_OpenGL3_3::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)

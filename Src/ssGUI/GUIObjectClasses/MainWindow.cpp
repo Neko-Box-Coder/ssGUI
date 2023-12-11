@@ -122,9 +122,9 @@ namespace ssGUI
         BackendMainWindow->SetAntiAliasingLevel(level);
     }
 
-    int MainWindow::GetMSAA() const
+    int MainWindow::GetAntiAliasingLevel() const
     {
-        return BackendMainWindow->GetMSAA();
+        return BackendMainWindow->GetAntiAliasingLevel();
     }
 
     void MainWindow::SetWindowMode(ssGUI::Enums::WindowMode WindowMode)
@@ -175,15 +175,15 @@ namespace ssGUI
     
     bool MainWindow::SetRenderContext()
     {
-        return BackendMainWindow->SetContext();
+        return BackendMainWindow->SetDrawingContext();
     }
 
-    void MainWindow::SaveState()
+    void MainWindow::SaveDrawingState()
     {
-        BackendDrawing->SaveState();        
+        BackendDrawing->SaveDrawingState();        
     }
     
-    void MainWindow::RestoreState()
+    void MainWindow::RestoreDrawingState()
     {
         BackendDrawing->RestoreDrawingState();        
     }

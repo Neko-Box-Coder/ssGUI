@@ -37,7 +37,7 @@ namespace Backend
 
             //function: GetRawHandle
             //See <BackendImageInterface::GetRawHandle>
-            void* GetRawHandle() override;
+            void* GetRawHandle() const override;
 
             //function: IsValid
             //See <BackendImageInterface::IsValid>

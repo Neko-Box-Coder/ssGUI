@@ -7,16 +7,16 @@ namespace ssGUI
 namespace Backend
 {
     int BackendManager::MainWindowCount = 0;
-    std::vector<ssGUI::Backend::BackendDrawingInterface*> BackendManager::BackendDrawingInterfaces;
-    std::vector<ssGUI::Backend::BackendMainWindowInterface*> BackendManager::BackendMainWindowInterfaces;
-    ssGUI::Backend::BackendSystemInputInterface* BackendManager::BackendSystemInputInterface = nullptr;
+    std::vector<BackendDrawingInterface*> BackendManager::BackendDrawingInterfaces;
+    std::vector<BackendMainWindowInterface*> BackendManager::BackendMainWindowInterfaces;
+    BackendSystemInputInterface* BackendManager::CurrentBackendSystemInputInterface = nullptr;
     
-    void BackendManager::AddDrawingInterface(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendManager::AddDrawingInterface(BackendDrawingInterface* backendDrawing)
     {
         BackendDrawingInterfaces.push_back(backendDrawing);
     }
 
-    void BackendManager::RemoveDrawingInterface(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendManager::RemoveDrawingInterface(BackendDrawingInterface* backendDrawing)
     {
         for(int i = 0; i < BackendDrawingInterfaces.size(); i++)
         {
@@ -27,12 +27,12 @@ namespace Backend
         }
     }
 
-    ssGUI::Backend::BackendDrawingInterface* BackendManager::GetDrawingInterface(int index)
+    BackendDrawingInterface* BackendManager::GetDrawingInterface(int index)
     {
         return BackendDrawingInterfaces.at(index);
     }
 
-    int BackendManager::GetDrawingInterfaceIndex(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    int BackendManager::GetDrawingInterfaceIndex(BackendDrawingInterface* backendDrawing)
     {
         for(int i = 0; i < BackendDrawingInterfaces.size(); i++)
         {
@@ -43,27 +43,27 @@ namespace Backend
         return -1;
     }
 
-    void BackendManager::AddInputInterface(ssGUI::Backend::BackendSystemInputInterface* backendInput)
+    void BackendManager::AddInputInterface(BackendSystemInputInterface* backendInput)
     {
-        BackendSystemInputInterface = backendInput;
+        CurrentBackendSystemInputInterface = backendInput;
     }
 
-    void BackendManager::RemoveInputInterface(ssGUI::Backend::BackendSystemInputInterface* backendInput)
+    void BackendManager::RemoveInputInterface(BackendSystemInputInterface* backendInput)
     {
-        BackendSystemInputInterface = nullptr;
+        CurrentBackendSystemInputInterface = nullptr;
     }
 
-    ssGUI::Backend::BackendSystemInputInterface* BackendManager::GetInputInterface()
+    BackendSystemInputInterface* BackendManager::GetInputInterface()
     {
-        return BackendSystemInputInterface;
+        return CurrentBackendSystemInputInterface;
     }
 
-    void BackendManager::AddMainWindowInterface(ssGUI::Backend::BackendMainWindowInterface* backendMainWindow)
+    void BackendManager::AddMainWindowInterface(BackendMainWindowInterface* backendMainWindow)
     {
         BackendMainWindowInterfaces.push_back(backendMainWindow);
     }
 
-    void BackendManager::RemoveMainWindowInterface(ssGUI::Backend::BackendMainWindowInterface* backendMainWindow)
+    void BackendManager::RemoveMainWindowInterface(BackendMainWindowInterface* backendMainWindow)
     {
         for(int i = 0; i < BackendMainWindowInterfaces.size(); i++)
         {
@@ -74,13 +74,13 @@ namespace Backend
         }
     }
 
-    ssGUI::Backend::BackendMainWindowInterface* BackendManager::GetMainWindowInterface(int index)
+    BackendMainWindowInterface* BackendManager::GetMainWindowInterface(int index)
     {
         assert(index >= 0 && index < BackendMainWindowInterfaces.size());
         return BackendMainWindowInterfaces.at(index);
     }
 
-    int BackendManager::GetMainWindowInterfaceIndex(ssGUI::Backend::BackendMainWindowInterface* backendMainWindow)
+    int BackendManager::GetMainWindowInterfaceIndex(BackendMainWindowInterface* backendMainWindow)
     {
         for(int i = 0; i < BackendMainWindowInterfaces.size(); i++)
         {

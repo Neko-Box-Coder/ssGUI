@@ -143,8 +143,8 @@ void TextInputTest()
         ShowInfo = false;
     }
 
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::string charactersEntered = converter.to_bytes(BackendInput->GetTextInput());
+    std::string charactersEntered;
+    BackendInput->GetTextInput(charactersEntered);
     
     if(!charactersEntered.empty())
     {

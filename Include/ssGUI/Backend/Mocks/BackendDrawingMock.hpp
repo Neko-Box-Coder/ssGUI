@@ -57,8 +57,8 @@ namespace Backend
             //See <BackendDrawingInterface::SaveState>
             void SaveDrawingState() override;
 
-            //function: RestoreState
-            //See <BackendDrawingInterface::RestoreState>
+            //function: RestoreDrawingState
+            //See <BackendDrawingInterface::RestoreDrawingState>
             void RestoreDrawingState() override;
 
             //function: DrawEntities

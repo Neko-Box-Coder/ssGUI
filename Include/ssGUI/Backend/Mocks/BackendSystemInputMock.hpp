@@ -140,7 +140,11 @@ namespace Backend
 
             //function: GetTextInput
             //See <BackendSystemInputInterface::GetTextInput>
-            std::wstring GetTextInput() const override;
+            void GetTextInput(std::wstring& outText) const override;
+
+            //function: GetTextInput
+            //See <BackendSystemInputInterface::GetTextInput>
+            void GetTextInput(std::string& outText) const override;
             
             //function: SetCursorType
             //See <BackendSystemInputInterface::SetCursorType>
@@ -217,6 +221,10 @@ namespace Backend
             //function: GetClipboardText
             //See <BackendSystemInputInterface::GetClipboardText>
             bool GetClipboardText(std::wstring& str) override;
+
+            //function: GetClipboardText
+            //See <BackendSystemInputInterface::GetClipboardText>
+            bool GetClipboardText(std::string& str) override;
 
             //function: GetElapsedTime
             //See <BackendSystemInputInterface::GetElapsedTime>

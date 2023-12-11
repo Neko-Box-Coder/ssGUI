@@ -41,7 +41,7 @@ namespace Backend
         HGLRC CurrentOpenGLContext;                                                     //See <GetRawHandle>
         PIXELFORMATDESCRIPTOR CurrentPictureFormatDescriptor;                           //See <GetRawHandle>
         int CurrentPixelFormatId;                                                       //See <GetRawHandle>
-        int MsaaLevel;                                                                  //See <GetMSAA>
+        int MsaaLevel;                                                                  //See <GetAntiAliasingLevel>
         glm::ivec2 OriginalScreenResolution;                                            //(Internal variable) Used to record the screen resolution before going to fullscreen (with a different resolution)
 
         bool Closed;                                                                    //See <IsClosed>
@@ -105,7 +105,7 @@ namespace Backend
             HGLRC CurrentOpenGLContext;                                                     //See <GetRawHandle>
             PIXELFORMATDESCRIPTOR CurrentPictureFormatDescriptor;                           //See <GetRawHandle>
             int CurrentPixelFormatId;                                                       //See <GetRawHandle>
-            int MsaaLevel;                                                                  //See <GetMSAA>
+            int MsaaLevel;                                                                  //See <GetAntiAliasingLevel>
             glm::ivec2 OriginalScreenResolution;                                            //(Internal variable) Used to record the screen resolution before going to fullscreen (with a different resolution)
 
             bool Closed;                                                                    //See <IsClosed>
@@ -147,7 +147,7 @@ namespace Backend
 
             //From http://www.sccg.sk/~samuelcik/opengl/opengl_10.pdf
             //And also https://nehe.gamedev.net/tutorial/fullscreen_antialiasing/16008/
-            bool GetMsaaPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level);
+            bool GetAntiAliasingLevelPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level);
 
             void GeneratePixelFormatDescriptor(PIXELFORMATDESCRIPTOR& pfd);
 
@@ -262,9 +262,9 @@ namespace Backend
             //See <BackendMainWindowInterface::SetMSAA>
             void SetMSAA(int level) override;
 
-            //function: GetMSAA
-            //See <BackendMainWindowInterface::GetMSAA>
-            int GetMSAA() const override;
+            //function: GetAntiAliasingLevel
+            //See <BackendMainWindowInterface::GetAntiAliasingLevel>
+            int GetAntiAliasingLevel() const override;
 
             //function: SetTitlebar
             //See <BackendMainWindowInterface::SetTitlebar>

@@ -408,7 +408,7 @@ namespace Backend
         SetWindowStyle();
     }
 
-    bool BackendMainWindowWin32_OpenGL3_3::GetMsaaPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level)
+    bool BackendMainWindowWin32_OpenGL3_3::GetAntiAliasingLevelPixelFormatId(HDC hDC, PIXELFORMATDESCRIPTOR& pfd, int& pfid, int level)
     {
         if(!gladLoadWGL(hDC))
         {
@@ -993,21 +993,21 @@ namespace Backend
         ExternalFocusChangedCallback[index] = nullptr;
     }
 
-    int BackendMainWindowWin32_OpenGL3_3::GetMSAA() const
+    int BackendMainWindowWin32_OpenGL3_3::GetAntiAliasingLevel() const
     {
         return MsaaLevel;
     }
 
     void BackendMainWindowWin32_OpenGL3_3::SetMSAA(int level)
     {        
-        if(level != GetMSAA())
+        if(level != GetAntiAliasingLevel())
         {
             //PIXELFORMATDESCRIPTOR pfd;
             //GeneratePixelFormatDescriptor(pfd);
             int originalPfid = CurrentPixelFormatId;
 
             //Setup MSAA
-            if(!GetMsaaPixelFormatId(GetDC(CurrentWindowHandle), CurrentPictureFormatDescriptor, CurrentPixelFormatId, level))
+            if(!GetAntiAliasingLevelPixelFormatId(GetDC(CurrentWindowHandle), CurrentPictureFormatDescriptor, CurrentPixelFormatId, level))
             {
                 ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MSAA Pixel Format Id");
                 CurrentPixelFormatId = originalPfid;

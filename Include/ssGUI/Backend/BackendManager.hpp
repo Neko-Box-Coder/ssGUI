@@ -19,59 +19,59 @@ namespace Backend
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-        static int MainWindowCount;
-        static std::vector<ssGUI::Backend::BackendDrawingInterface*> BackendDrawingInterfaces;
-        static std::vector<ssGUI::Backend::BackendMainWindowInterface*> BackendMainWindowInterfaces;
-        static ssGUI::Backend::BackendSystemInputInterface* BackendSystemInputInterface;
+            static int MainWindowCount;
+            static std::vector<BackendDrawingInterface*> BackendDrawingInterfaces;
+            static std::vector<BackendMainWindowInterface*> BackendMainWindowInterfaces;
+            static BackendSystemInputInterface* CurrentBackendSystemInputInterface;
     =================================================================
     ============================== C++ ==============================
     int BackendManager::MainWindowCount = 0;
-    std::vector<ssGUI::Backend::BackendDrawingInterface*> BackendManager::BackendDrawingInterfaces;
-    std::vector<ssGUI::Backend::BackendMainWindowInterface*> BackendManager::BackendMainWindowInterfaces;
-    ssGUI::Backend::BackendSystemInputInterface* BackendManager::BackendSystemInputInterface = nullptr;
+    std::vector<BackendDrawingInterface*> BackendManager::BackendDrawingInterfaces;
+    std::vector<BackendMainWindowInterface*> BackendManager::BackendMainWindowInterfaces;
+    BackendSystemInputInterface* BackendManager::CurrentBackendSystemInputInterface = nullptr;
     =================================================================
     */
     class BackendManager
     {
         private:
             static int MainWindowCount;
-            static std::vector<ssGUI::Backend::BackendDrawingInterface*> BackendDrawingInterfaces;
-            static std::vector<ssGUI::Backend::BackendMainWindowInterface*> BackendMainWindowInterfaces;
-            static ssGUI::Backend::BackendSystemInputInterface* BackendSystemInputInterface;
+            static std::vector<BackendDrawingInterface*> BackendDrawingInterfaces;
+            static std::vector<BackendMainWindowInterface*> BackendMainWindowInterfaces;
+            static BackendSystemInputInterface* CurrentBackendSystemInputInterface;
         
         public:
             //function: AddDrawingInterface
-            static void AddDrawingInterface(ssGUI::Backend::BackendDrawingInterface* backendDrawing);
+            static void AddDrawingInterface(BackendDrawingInterface* backendDrawing);
             
             //function: RemoveDrawingInterface
-            static void RemoveDrawingInterface(ssGUI::Backend::BackendDrawingInterface* backendDrawing);
+            static void RemoveDrawingInterface(BackendDrawingInterface* backendDrawing);
             
             //function: GetDrawingInterface
-            static ssGUI::Backend::BackendDrawingInterface* GetDrawingInterface(int index);
+            static BackendDrawingInterface* GetDrawingInterface(int index);
             
             //function: GetDrawingInterfaceIndex
-            static int GetDrawingInterfaceIndex(ssGUI::Backend::BackendDrawingInterface* backendDrawing);
+            static int GetDrawingInterfaceIndex(BackendDrawingInterface* backendDrawing);
 
             //function: AddInputInterface
-            static void AddInputInterface(ssGUI::Backend::BackendSystemInputInterface* backendInput);
+            static void AddInputInterface(BackendSystemInputInterface* backendInput);
             
             //function: RemoveInputInterface
-            static void RemoveInputInterface(ssGUI::Backend::BackendSystemInputInterface* backendInput);
+            static void RemoveInputInterface(BackendSystemInputInterface* backendInput);
             
             //function: GetInputInterface
-            static ssGUI::Backend::BackendSystemInputInterface* GetInputInterface();
+            static BackendSystemInputInterface* GetInputInterface();
             
             //function: AddMainWindowInterface
-            static void AddMainWindowInterface(ssGUI::Backend::BackendMainWindowInterface* backendMainWindow);
+            static void AddMainWindowInterface(BackendMainWindowInterface* backendMainWindow);
             
             //function: RemoveMainWindowInterface
-            static void RemoveMainWindowInterface(ssGUI::Backend::BackendMainWindowInterface* backendMainWindow);
+            static void RemoveMainWindowInterface(BackendMainWindowInterface* backendMainWindow);
             
             //function: GetMainWindowInterface
-            static ssGUI::Backend::BackendMainWindowInterface* GetMainWindowInterface(int index);
+            static BackendMainWindowInterface* GetMainWindowInterface(int index);
             
             //function: GetMainWindowInterfaceIndex
-            static int GetMainWindowInterfaceIndex(ssGUI::Backend::BackendMainWindowInterface* backendMainWindow);
+            static int GetMainWindowInterfaceIndex(BackendMainWindowInterface* backendMainWindow);
             
             //function: GetMainWindowCount
             static int GetMainWindowCount();

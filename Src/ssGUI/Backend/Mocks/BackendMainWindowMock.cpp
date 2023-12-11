@@ -289,11 +289,11 @@ namespace Backend
         MSAA = level;
     }
 
-    int BackendMainWindowMock::GetMSAA() const
+    int BackendMainWindowMock::GetAntiAliasingLevel() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND(OverrideObject, GetMSAA(), int);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetMSAA(), int);
+        CO_RETURN_IF_FOUND(OverrideObject, GetAntiAliasingLevel(), int);
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetAntiAliasingLevel(), int);
         return MSAA;
     }
 
@@ -357,11 +357,11 @@ namespace Backend
         return WindowMode;
     }
 
-    bool BackendMainWindowMock::SetContext()
+    bool BackendMainWindowMock::SetDrawingContext()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, SetGLContext(), bool);
-        SSGUI_MOCK_PASSTHROUGH(SetContext());
+        SSGUI_MOCK_PASSTHROUGH(SetDrawingContext());
         return true;
     }
     
@@ -370,7 +370,7 @@ namespace Backend
         return new BackendMainWindowMock(*this);
     }
 
-    void* BackendMainWindowMock::GetRawHandle()
+    void* BackendMainWindowMock::GetRawHandle() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);

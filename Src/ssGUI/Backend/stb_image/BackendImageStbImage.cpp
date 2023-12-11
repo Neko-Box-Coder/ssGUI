@@ -58,7 +58,7 @@ namespace Backend
             backends[i]->RemoveImageCache(this);
     }
 
-    void* BackendImageStbImage::GetRawHandle()
+    void* BackendImageStbImage::GetRawHandle() const
     {
         ssGUI_WARNING(ssGUI_BACKEND_TAG, "There's no raw handle for Stb Image");
         return nullptr;

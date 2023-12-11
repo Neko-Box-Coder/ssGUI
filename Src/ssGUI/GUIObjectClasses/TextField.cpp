@@ -571,7 +571,8 @@ namespace ssGUI
         bool wordMode = false;
         if(IsInteractable() && IsBlockInput())
         {
-            std::wstring textInput = inputInterface->GetTextInput();
+            std::wstring textInput;
+            inputInterface->GetTextInput(textInput);
 
             //Holding ctrl to enable word mode
             wordMode =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) || 

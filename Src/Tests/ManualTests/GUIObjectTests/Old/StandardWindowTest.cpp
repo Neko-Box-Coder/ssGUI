@@ -7,7 +7,7 @@ int main()
 {
     //Create the main window
     ssGUI::MainWindow mainWindow;
-    ssLOG_LINE(mainWindow.GetBackendWindowInterface()->GetMSAA());
+    ssLOG_LINE(mainWindow.GetBackendWindowInterface()->GetAntiAliasingLevel());
 
     ssGUI::StandardWindow sw;
     sw.GetWindowTitleObject()->SetText("Test title");

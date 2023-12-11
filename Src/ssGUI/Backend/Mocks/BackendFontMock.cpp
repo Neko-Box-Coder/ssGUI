@@ -37,7 +37,7 @@ namespace Backend
     }
 
     ssGUI::CharacterRenderInfo BackendFontMock::GetCharacterRenderInfo( wchar_t charUnicode, 
-                                                                        float charSize)
+                                                                        float charSize) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize);
         CO_RETURN_IF_FOUND( OverrideObject, 
@@ -50,7 +50,7 @@ namespace Backend
         return ssGUI::CharacterRenderInfo();
     }
     
-    bool BackendFontMock::IsCharacterSupported(wchar_t charUnicode)
+    bool BackendFontMock::IsCharacterSupported(wchar_t charUnicode) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode);
         CO_RETURN_IF_FOUND(OverrideObject, IsCharacterSupported(wchar_t), bool, charUnicode);
@@ -58,7 +58,9 @@ namespace Backend
         return true;
     }
     
-    float BackendFontMock::GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize)
+    float BackendFontMock::GetKerning(  wchar_t charUnicode, 
+                                        wchar_t secondCharUnicode, 
+                                        float charSize) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, (int)secondCharUnicode, charSize);
         CO_RETURN_IF_FOUND( OverrideObject,
@@ -70,7 +72,7 @@ namespace Backend
         return 0;
     }
     
-    float BackendFontMock::GetLineSpacing(float charSize)
+    float BackendFontMock::GetLineSpacing(float charSize) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
         CO_RETURN_IF_FOUND(OverrideObject, GetLineSpacing(float), float, charSize);
@@ -78,7 +80,7 @@ namespace Backend
         return 0;
     }
     
-    float BackendFontMock::GetUnderlineOffset(float charSize)
+    float BackendFontMock::GetUnderlineOffset(float charSize) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
         CO_RETURN_IF_FOUND(OverrideObject, GetUnderlineOffset(float), float, charSize);
@@ -86,7 +88,7 @@ namespace Backend
         return 0;
     }
     
-    float BackendFontMock::GetUnderlineThickness(float charSize)
+    float BackendFontMock::GetUnderlineThickness(float charSize) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(charSize);
         CO_RETURN_IF_FOUND(OverrideObject, GetUnderlineThickness(float), float, charSize);
@@ -102,7 +104,7 @@ namespace Backend
         return true;
     }
 
-    bool BackendFontMock::LoadFromMemory(void* dataPtr, int lengthInBytes)
+    bool BackendFontMock::LoadFromMemory(const void* dataPtr, int lengthInBytes)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, lengthInBytes);
         CO_RETURN_IF_FOUND(OverrideObject, LoadFromMemory(void*, int), bool, dataPtr, lengthInBytes);
@@ -110,7 +112,7 @@ namespace Backend
         return true;
     }
     
-    bool BackendFontMock::GetFixedAvailableFontSizes(std::vector<float>& fontSizes)
+    bool BackendFontMock::GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(fontSizes);
         CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject, 
@@ -124,7 +126,7 @@ namespace Backend
     
     bool BackendFontMock::GetCharacterImage(wchar_t charUnicode, 
                                             float charSize, 
-                                            ssGUI::ImageData& characterImage)
+                                            ssGUI::ImageData& characterImage) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize, characterImage);
         CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject,
@@ -141,7 +143,7 @@ namespace Backend
         return true;
     }
 
-    void* BackendFontMock::GetRawHandle()
+    void* BackendFontMock::GetRawHandle() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);

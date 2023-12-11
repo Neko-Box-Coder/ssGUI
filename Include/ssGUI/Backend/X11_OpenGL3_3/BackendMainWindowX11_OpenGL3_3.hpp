@@ -55,7 +55,7 @@ namespace Backend
         bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
         bool Closed;                                                                    //See <IsClosed>
         X11RawHandle CurrentHandle;                                                     //See <GetRawHandle>
-        int MsaaLevel;                                                                  //See <GetMSAA>
+        int MsaaLevel;                                                                  //See <GetAntiAliasingLevel>
         Atom WindowCloseEventId;                                                        //(Internal variable) Atom used for close event notification
         bool Titlebar;                                                                  //See <HasTitlebar>
         bool Resizable;                                                                 //See <IsResizable>
@@ -164,8 +164,8 @@ namespace Backend
             bool OriginalResolutionSet;                                                     //(Internal variable) Is the above ID valid?
             bool IsClosingAborted;                                                          //(Internal variable) Flag to stop closing operation, see <AbortClosing>
             bool Closed;                                                                    //See <IsClosed>
-            X11RawHandle CurrentHandle;                                                     //See <GetRawHandle>
-            int MsaaLevel;                                                                  //See <GetMSAA>
+            mutable X11RawHandle CurrentHandle;                                                     //See <GetRawHandle>
+            int MsaaLevel;                                                                  //See <GetAntiAliasingLevel>
             Atom WindowCloseEventId;                                                        //(Internal variable) Atom used for close event notification
             bool Titlebar;                                                                  //See <HasTitlebar>
             bool Resizable;                                                                 //See <IsResizable>
@@ -299,9 +299,9 @@ namespace Backend
             //See <BackendMainWindowInterface::SetMSAA>
             void SetAntiAliasingLevel(int level) override;
 
-            //function: GetMSAA
-            //See <BackendMainWindowInterface::GetMSAA>
-            int GetMSAA() const override;
+            //function: GetAntiAliasingLevel
+            //See <BackendMainWindowInterface::GetAntiAliasingLevel>
+            int GetAntiAliasingLevel() const override;
 
             //function: SetTitlebar
             //See <BackendMainWindowInterface::SetTitlebar>
@@ -337,7 +337,7 @@ namespace Backend
 
             //function: SetGLContext
             //See <BackendMainWindowInterface::SetGLContext>
-            bool SetContext() override;
+            bool SetDrawingContext() override;
             
             //function: Clone
             //See <BackendMainWindowInterface::Clone>
@@ -345,7 +345,7 @@ namespace Backend
 
             //function: GetRawHandle
             //See <BackendMainWindowInterface::GetRawHandle>
-            void* GetRawHandle() override;
+            void* GetRawHandle() const override;
     };
 }
 

@@ -118,7 +118,7 @@ void RenderGraphics(GLuint programID, GLuint vertexbuffer, ssGUI::MainWindow& ma
     //  so that GUI is drawn to backbuffer before we draw anything to the back buffer
     //mainWindow.GetBackendDrawingInterface()->DrawToBackBuffer();
 
-    mainWindow.SaveState();                   //Saves the state ssGUI was using
+    mainWindow.SaveDrawingState();                   //Saves the state ssGUI was using
     mainWindow.SetRenderContext();            //Set the mainWindow to be the current context for OpenGL calls
 
     glEnable(GL_DEPTH_TEST);
@@ -146,7 +146,7 @@ void RenderGraphics(GLuint programID, GLuint vertexbuffer, ssGUI::MainWindow& ma
     glUseProgram(0);
     
     glDisable(GL_DEPTH_TEST);
-    mainWindow.RestoreState();                //Restores back the state ssGUI was using
+    mainWindow.RestoreDrawingState();                //Restores back the state ssGUI was using
 }
 
 void CalculateAndShowFPS(ssGUI::ssGUIManager& guiManager, ssGUI::Text& fpsText)

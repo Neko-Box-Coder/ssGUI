@@ -24,7 +24,7 @@ namespace Backend
         
         glm::ivec2 oriRenderSize = other.GetRenderSize();
         CurrentWindow.create(sf::VideoMode(sf::Vector2u(oriRenderSize.x, oriRenderSize.y)), "", sf::Style::Default, sf::ContextSettings(24));
-        ResetWindow(CurrentWindowMode, Resizable, Titlebar, CloseButton, other.GetMSAA());
+        ResetWindow(CurrentWindowMode, Resizable, Titlebar, CloseButton, other.GetAntiAliasingLevel());
         
         ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
     }
@@ -255,7 +255,7 @@ namespace Backend
         ExternalFocusChangedCallback[index] = nullptr;
     }
 
-    int BackendMainWindowSFML::GetMSAA() const
+    int BackendMainWindowSFML::GetAntiAliasingLevel() const
     {
         return CurrentWindow.getSettings().antialiasingLevel;
     }
@@ -267,7 +267,7 @@ namespace Backend
 
     void BackendMainWindowSFML::SetTitlebar(bool titlebar)
     {
-        ResetWindow(GetWindowMode(), IsResizable(), titlebar, HasCloseButton(), GetMSAA());
+        ResetWindow(GetWindowMode(), IsResizable(), titlebar, HasCloseButton(), GetAntiAliasingLevel());
         Titlebar = titlebar;
     }
 
@@ -278,7 +278,7 @@ namespace Backend
 
     void BackendMainWindowSFML::SetResizable(bool resizable)
     {
-        ResetWindow(GetWindowMode(), resizable, HasTitlebar(), HasCloseButton(), GetMSAA());
+        ResetWindow(GetWindowMode(), resizable, HasTitlebar(), HasCloseButton(), GetAntiAliasingLevel());
         Resizable = resizable;
     }
 
@@ -289,7 +289,7 @@ namespace Backend
 
     void BackendMainWindowSFML::SetCloseButton(bool closeButton)
     {
-        ResetWindow(GetWindowMode(), IsResizable(), HasTitlebar(), closeButton, GetMSAA());
+        ResetWindow(GetWindowMode(), IsResizable(), HasTitlebar(), closeButton, GetAntiAliasingLevel());
         CloseButton = closeButton;
     }
 
@@ -300,7 +300,7 @@ namespace Backend
 
     void BackendMainWindowSFML::SetWindowMode(ssGUI::Enums::WindowMode WindowMode)
     {
-        ResetWindow(WindowMode, IsResizable(), HasTitlebar(), HasCloseButton(), GetMSAA());
+        ResetWindow(WindowMode, IsResizable(), HasTitlebar(), HasCloseButton(), GetAntiAliasingLevel());
         CurrentWindowMode = WindowMode;
     }
 

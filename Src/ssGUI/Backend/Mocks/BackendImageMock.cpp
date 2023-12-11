@@ -35,7 +35,7 @@ namespace Backend
             backends[i]->RemoveImageCache(this);
     }
 
-    void* BackendImageMock::GetRawHandle()
+    void* BackendImageMock::GetRawHandle() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, GetRawHandle(), void*);

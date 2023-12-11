@@ -134,7 +134,8 @@ namespace Backend
                 glm::ivec2 ImageSizeInPixel;
                 bool HasMipmap;
 
-                inline friend std::ostream& operator<< (std::ostream& stream, const ImageAtlasImageInfo& other)
+                inline friend std::ostream& operator<< (std::ostream& stream, 
+                                                        const ImageAtlasImageInfo& other)
                 {
                     stream  << SSGUI_OUTPUT_CLASS_NAME(ImageAtlasImageInfo)
                             << SSGUI_OUTPUT_VAR(LocationInPixel)
@@ -155,55 +156,90 @@ namespace Backend
                 glm::ivec2 CellsCountIn2D;
             };
             
-            const glm::ivec2 CellSizeInPixel;                                   //(Internal variable) The size in pixels of each cell in the image atlas
-            const glm::ivec2 AtlasSizeInPixel;                                  //See <GetAtlasSize>
+            //(Internal variable) The size in pixels of each cell in the image atlas
+            const glm::ivec2 CellSizeInPixel;
+            
+            //See <GetAtlasSize>
+            const glm::ivec2 AtlasSizeInPixel;
 
-            glm::ivec2 UsableSizeInPixel;                                       //(Internal variable) If the image atlas is created with size not in the multiples of cell size,
-                                                                                //                          there will be space not used. 
-                                                                                //                          This variable denotes the total space subtracts the space that is not used. 
-            glm::ivec2 CellsCountInGrid;                                        //(Internal variable) Number of cells in each layer. Same as UsableSizeInPixel / CellSizeInPixel.
+            /*
+            (Internal variable) 
+            If the image atlas is created with size not in the multiples of cell size,
+            there will be space not used. 
+            This variable denotes the total space subtracts the space that is not used. 
+            */
+            glm::ivec2 UsableSizeInPixel;
             
-            ImageId NextImageId;                                                //(Internal variable) Used to generate unique image Ids
-            std::unordered_map<ImageId, ImageAtlasImageInfo> ImageInfos;        //See <GetImageInfo>
-            std::multimap<CellsCount, FreeCellsInfo> FreeCells;                 //(Internal variable) Keeps track of all the free cells
+            //(Internal variable) Number of cells in each layer. 
+            //Same as UsableSizeInPixel / CellSizeInPixel.
+            glm::ivec2 CellsCountInGrid;
             
-            std::function<bool(void)> OnRequestNewAtlasCallback;                //See <AddOnRequestNewAtlasCallback>
-            int MaxAtlasIndex;                                                  //(Internal variable) Keeps track of how many layers of image atlas
+            //(Internal variable) Used to generate unique image Ids
+            ImageId NextImageId;
+            
+            //See <GetImageInfo>
+            std::unordered_map<ImageId, ImageAtlasImageInfo> ImageInfos;
+            
+            //(Internal variable) Keeps track of all the free cells
+            std::multimap<CellsCount, FreeCellsInfo> FreeCells;
+            
+            //See <AddOnRequestNewAtlasCallback>
+            std::function<bool(void)> OnRequestNewAtlasCallback;
+            
+            //(Internal variable) Keeps track of how many layers of image atlas
+            int MaxAtlasIndex;
+            
+            
             
             glm::ivec2 GetAllocatedImageSize(ImageAtlasImageInfo info);
             
-            void OccupyCells(std::multimap<CellsCount, FreeCellsInfo>::iterator it, glm::ivec2 occupyCellsCountIn2D);
+            void OccupyCells(   std::multimap<CellsCount, FreeCellsInfo>::iterator it, 
+                                glm::ivec2 occupyCellsCountIn2D);
             
             bool AreCellsOverlapped(FreeCellsInfo info);
             
             void AddCells(CellsCount count, FreeCellsInfo info);
             
-            std::multimap<CellsCount, FreeCellsInfo>::iterator FindCells(glm::ivec2 cellsNeeded, int recursiveCount = 0);
+            std::multimap<CellsCount, FreeCellsInfo>::iterator FindCells(   glm::ivec2 cellsNeeded, 
+                                                                            int recursiveCount = 0);
             
             bool RequestNewAtlas();
             
             //TODO: Auto refragmenting cells
             
         public:
-            DynamicImageAtlas(glm::ivec2 atlasSize, glm::ivec2 cellSize, std::function<bool(void)> newAtlasRequestCallback);
+            DynamicImageAtlas(  glm::ivec2 atlasSize, 
+                                glm::ivec2 cellSize, 
+                                std::function<bool(void)> newAtlasRequestCallback);
             
-            //function: RequestImage
-            //Request an image that WILL BE stored in this image atlas by supplying ImageAtlasImageInfo.
-            //If this function returns true, this means the operation is successful 
-            //and can store the image by querying the ImageAtlasImageInfo with returnId where it will tell you where to store.
+            /*
+            function: RequestImage
+            Request an image that WILL BE stored in this image atlas by 
+            supplying ImageAtlasImageInfo.
+            
+            If this function returns true, this means the operation is successful 
+            and can store the image by querying the ImageAtlasImageInfo with 
+            returnId where it will tell you where to store.
+            */
             bool RequestImage(ImageAtlasImageInfo imgInfo, int& returnId);
             
             //function: RemoveImage
-            //Removes an existing image that is occupying this image atlas by supplying the image Id returned by <RequestImage>
+            //Removes an existing image that is occupying this image atlas by supplying 
+            //the image Id returned by <RequestImage>
             void RemoveImage(int id);
             
             //function: GetImageInfo
             //Returns the infomation on where the image can be stored on the image atlas.
             bool GetImageInfo(int id, ImageAtlasImageInfo& returnInfo);
     
-            //function: AddOnRequestNewAtlasCallback
-            //Registers a callback function which allocates a new layer of image atlas which returns boolean.
-            //If the callback function returns true, it means the new allocation was successful, otherwise failed.
+            /*
+            function: AddOnRequestNewAtlasCallback
+            Registers a callback function which allocates a new layer of image atlas 
+            which returns boolean.
+            
+            If the callback function returns true, it means the new allocation was successful, 
+            otherwise failed.
+            */
             void AddOnRequestNewAtlasCallback(std::function<bool(void)> callback);
             
             //function: GetAtlasSize

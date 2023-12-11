@@ -61,7 +61,7 @@ namespace Backend
         ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
     }
 
-    void BackendDrawingSFML::SaveState()
+    void BackendDrawingSFML::SaveDrawingState()
     {
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());
@@ -81,7 +81,7 @@ namespace Backend
         //targetWindow->pushGLStates();
     }
 
-    void BackendDrawingSFML::RestoreState()
+    void BackendDrawingSFML::RestoreDrawingState()
     {
         sf::RenderWindow* targetWindow = static_cast<sf::RenderWindow*>
             (ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex)->GetRawHandle());

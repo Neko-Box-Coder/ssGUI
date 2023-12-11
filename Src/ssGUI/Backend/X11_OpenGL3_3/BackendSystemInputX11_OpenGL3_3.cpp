@@ -685,9 +685,15 @@ namespace Backend
         return CurrentInputInfos;
     }
 
-    std::wstring BackendSystemInputX11_OpenGL3_3::GetTextInput() const
+    void BackendSystemInputX11_OpenGL3_3::GetTextInput(std::wstring& outText) const
     {
-        return InputText;
+        outText = InputText;
+    }
+    
+    void BackendSystemInputX11_OpenGL3_3::GetTextInput(std::string& outText) const
+    {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        outText = converter.to_bytes(InputText);
     }
     
     void BackendSystemInputX11_OpenGL3_3::SetCursorType(ssGUI::Enums::CursorType cursorType)
@@ -1085,6 +1091,16 @@ namespace Backend
 
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         str = converter.from_bytes(temp);
+        return true;
+    }
+    
+    bool BackendSystemInputX11_OpenGL3_3::GetClipboardText(std::string& str)
+    {
+        std::string temp;
+        if(!clip::get_text(temp))
+            return false;
+
+        str = temp;
         return true;
     }
 

@@ -32,7 +32,8 @@ namespace Backend
             BackendFontMock(ssGUI::Backend::BackendFontInterface* fontInterface);
             ~BackendFontMock() override;
 
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendFontInterface*, UnderlyingInterface)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER( ssGUI::Backend::BackendFontInterface*, 
+                                                UnderlyingInterface)
             
             //function: IsValid
             //See <BackendFontInterface::IsValid>
@@ -40,27 +41,30 @@ namespace Backend
 
             //function: GetCharacterRenderInfo
             //See <BackendFontInterface::GetCharacterRenderInfo>
-            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) override;
+            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(  wchar_t charUnicode, 
+                                                                float charSize) const override;
             
             //function: IsCharacterSupported
             //See <BackendFontInterface::IsCharacterSupported>
-            bool IsCharacterSupported(wchar_t charUnicode) override;
+            bool IsCharacterSupported(wchar_t charUnicode) const override;
             
             //function: GetKerning
             //See <BackendFontInterface::GetKerning>
-            float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) override;
+            float GetKerning(   wchar_t charUnicode, 
+                                wchar_t secondCharUnicode, 
+                                float charSize) const override;
             
             //function: GetLineSpacing
             //See <BackendFontInterface::GetLineSpacing>
-            float GetLineSpacing(float charSize) override;
+            float GetLineSpacing(float charSize) const override;
             
             //function: GetUnderlineOffset
             //See <BackendFontInterface::GetUnderlineOffset>
-            float GetUnderlineOffset(float charSize) override;
+            float GetUnderlineOffset(float charSize) const override;
             
             //function: GetUnderlineThickness
             //See <BackendFontInterface::GetUnderlineThickness>
-            float GetUnderlineThickness(float charSize) override;
+            float GetUnderlineThickness(float charSize) const override;
 
             //function: LoadFromPath
             //See <BackendFontInterface::LoadFromPath>
@@ -68,19 +72,21 @@ namespace Backend
 
             //function: LoadFromMemory
             //See <BackendFontInterface::LoadFromMemory>
-            bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
+            bool LoadFromMemory(const void* dataPtr, int lengthInBytes) override;
 
             //function: GetFixedAvailableFontSizes
             //See <BackendFontInterface::GetFixedAvailableFontSizes>
-            bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) override;
+            bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const override;
 
             //function: GetCharacterImage
             //See <BackendFontInterface::GetCharacterImage>
-            bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage) override;
+            bool GetCharacterImage( wchar_t charUnicode, 
+                                    float charSize, 
+                                    ssGUI::ImageData& characterImage) const override;
 
             //function: GetRawHandle
             //See <BackendFontInterface::GetRawHandle>
-            void* GetRawHandle() override;
+            void* GetRawHandle() const override;
 
             //function: Clone
             //See <BackendFontInterface::Clone>

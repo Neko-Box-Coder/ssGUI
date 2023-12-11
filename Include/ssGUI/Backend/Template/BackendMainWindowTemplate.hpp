@@ -118,9 +118,9 @@ namespace Backend
             //See <BackendMainWindowInterface::SetMSAA>
             void SetMSAA(int level) override;
 
-            //function: GetMSAA
-            //See <BackendMainWindowInterface::GetMSAA>
-            int GetMSAA() const override;
+            //function: GetAntiAliasingLevel
+            //See <BackendMainWindowInterface::GetAntiAliasingLevel>
+            int GetAntiAliasingLevel() const override;
 
             //function: SetTitlebar
             //See <BackendMainWindowInterface::SetTitlebar>

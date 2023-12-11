@@ -36,17 +36,17 @@ namespace Backend
 
             FT_Face FontFace;
             bool Valid;
-            float CurrentSize;
+            mutable float CurrentSize;
             FT_Int32 FontFlags;
 
-            FreeTypeHandles RawHandle;
+            mutable FreeTypeHandles RawHandle;
 
             uint8_t* FontMemory;
             size_t FontMemoryLength;
             std::string FontPath;
             
 
-            bool SetSizeIfDifferent(float size);
+            bool SetSizeIfDifferent(float size) const;
             BackendFontFreeType& operator=(BackendFontFreeType const& other);
 
         protected:
@@ -58,7 +58,7 @@ namespace Backend
             
             //function: GetCurrentGlyph
             //This returns the loaded freetype glyph
-            FT_GlyphSlot GetCurrentGlyph();
+            FT_GlyphSlot GetCurrentGlyph() const;
 
             //function: IsValid
             //See <BackendFontInterface::IsValid>
@@ -66,36 +66,39 @@ namespace Backend
 
             //function: GetCharacterRenderInfo
             //See <BackendFontInterface::GetCharacterRenderInfo>
-            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) override;
+            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(  wchar_t charUnicode, 
+                                                                float charSize) const override;
             
             //function: IsCharacterSupported
             //For fixed size font, this will return the closest fixed size font 
             //and populate the TargetSizeMultiplier field.
             //
             //See <BackendFontInterface::IsCharacterSupported>
-            bool IsCharacterSupported(wchar_t charUnicode) override;
+            bool IsCharacterSupported(wchar_t charUnicode) const override;
             
             //function: GetKerning
             //See <BackendFontInterface::GetKerning>
-            float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) override;
+            float GetKerning(   wchar_t charUnicode, 
+                                wchar_t secondCharUnicode, 
+                                float charSize) const override;
             
             //function: GetLineSpacing
             //For fixed size font, 
             //this will return always return the corresponding line spacing to charSize
             //See <BackendFontInterface::GetLineSpacing>
-            float GetLineSpacing(float charSize) override;
+            float GetLineSpacing(float charSize) const override;
             
             //function: GetUnderlineOffset
             //See <BackendFontInterface::GetUnderlineOffset>
             //For fixed size font, 
             //this will return always return the corresponding underline offset to charSize
-            float GetUnderlineOffset(float charSize) override;
+            float GetUnderlineOffset(float charSize) const override;
             
             //function: GetUnderlineThickness
             //For fixed size font, 
             //this will return always return the corresponding underline thickness to charSize
             //See <BackendFontInterface::GetUnderlineThickness>
-            float GetUnderlineThickness(float charSize) override;
+            float GetUnderlineThickness(float charSize) const override;
 
             //function: LoadFromPath
             //See <BackendFontInterface::LoadFromPath>
@@ -104,18 +107,20 @@ namespace Backend
             //function: LoadFromMemory
             //This mainly supports and tested on TTF, other font formats are not tested.
             //See <BackendFontInterface::LoadFromMemory>
-            bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
+            bool LoadFromMemory(const void* dataPtr, int lengthInBytes) override;
 
             //function: GetFixedAvailableFontSizes
             //See <BackendFontInterface::GetFixedAvailableFontSizes>
-            bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) override;
+            bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const override;
 
             //function: GetCharacterImage
             //See <BackendFontInterface::GetCharacterImage>
-            bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage) override;
+            bool GetCharacterImage( wchar_t charUnicode, 
+                                    float charSize, 
+                                    ssGUI::ImageData& characterImage) const override;
 
             //function: GetRawHandle
-            void* GetRawHandle() override;
+            void* GetRawHandle() const override;
 
             //function: Clone
             //Clones the backend font object

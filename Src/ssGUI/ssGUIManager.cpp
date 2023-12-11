@@ -766,13 +766,12 @@ namespace ssGUI
     
     void ssGUIManager::GetTextInput(std::wstring& textInput) const
     {
-        textInput = BackendInput->GetTextInput();
+         BackendInput->GetTextInput(textInput);
     }
     
     void ssGUIManager::GetTextInput(std::string& textInput) const
     {
-        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        textInput = converter.to_bytes(BackendInput->GetTextInput());
+        BackendInput->GetTextInput(textInput);
     }
     
     void ssGUIManager::SetCursorType(ssGUI::Enums::CursorType cursorType)

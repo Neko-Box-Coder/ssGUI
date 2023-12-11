@@ -179,12 +179,26 @@ namespace Backend
         return CurrentRealtimeInputs;
     }
 
-    std::wstring BackendSystemInputMock::GetTextInput() const
+    void BackendSystemInputMock::GetTextInput(std::wstring& outText) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND(OverrideObject, GetTextInput(), std::wstring);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetTextInput(), std::wstring);
-        return CurrentTextInput;
+        CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject, 
+                                            /**/, 
+                                            GetTextInput(std::wstring&), 
+                                            outText);
+        
+        SSGUI_MOCK_PASSTHROUGH(GetTextInput(outText));
+    }
+    
+    void BackendSystemInputMock::GetTextInput(std::string& outText) const
+    {
+        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject, 
+                                            /**/, 
+                                            GetTextInput(std::string&), 
+                                            outText);
+        
+        SSGUI_MOCK_PASSTHROUGH(GetTextInput(outText));
     }
     
     void BackendSystemInputMock::SetCursorType(ssGUI::Enums::CursorType cursorType)
@@ -427,6 +441,20 @@ namespace Backend
         
         if(!ClipboardText.empty())
             str = ClipboardText;
+        
+        return !ClipboardText.empty();
+    }
+    
+    bool BackendSystemInputMock::GetClipboardText(std::string& str)
+    {
+        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        CO_RETURN_IF_FOUND(OverrideObject, GetClipboardText(std::wstring&), bool, str);
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetClipboardText(str), bool);
+        
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        
+        if(!ClipboardText.empty())
+            str = converter.to_bytes(ClipboardText);
         
         return !ClipboardText.empty();
     }

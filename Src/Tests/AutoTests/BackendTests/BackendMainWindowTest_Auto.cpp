@@ -160,7 +160,7 @@ int main()
     ssTEST("MSAATest()")
     {
         TestWindow->SetAntiAliasingLevel(4);
-        ssTEST_OUTPUT_ASSERT(TestWindow->GetMSAA() == 4);
+        ssTEST_OUTPUT_ASSERT(TestWindow->GetAntiAliasingLevel() == 4);
     };
 
     ssTEST("TitlebarTest()")

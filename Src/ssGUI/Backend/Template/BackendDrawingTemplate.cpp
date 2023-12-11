@@ -21,11 +21,11 @@ namespace Backend
     {
     }
     
-    void BackendDrawingTemplate::SaveState()
+    void BackendDrawingTemplate::SaveDrawingState()
     {
     }
 
-    void BackendDrawingTemplate::RestoreState()
+    void BackendDrawingTemplate::RestoreDrawingState()
     {
         
     }
