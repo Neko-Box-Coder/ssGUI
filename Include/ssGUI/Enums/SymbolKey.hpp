@@ -12,7 +12,7 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
-    using GenericButtonAndKeyInput = uint16_t;
+    using GenericInput = uint16_t;
     
     /*enum: SymbolKey
 
@@ -75,7 +75,7 @@ namespace Enums
     }
     
     //function: InputIsSymbolKey
-    inline bool InputIsSymbolKey(ssGUI::Enums::GenericButtonAndKeyInput input)
+    inline bool InputIsSymbolKey(ssGUI::Enums::GenericInput input)
     {
         return input >= (uint16_t)SymbolKey::BACK_QUOTE && input < (uint16_t)SymbolKey::BACK_QUOTE + (uint16_t)SymbolKey::COUNT;
     }

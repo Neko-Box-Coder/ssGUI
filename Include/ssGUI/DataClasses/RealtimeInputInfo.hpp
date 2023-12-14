@@ -13,8 +13,8 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
-    //var: GenericButtonAndKeyInput
-    using GenericButtonAndKeyInput = uint16_t;
+    //var: GenericInput
+    using GenericInput = uint16_t;
 
     //const: NO_INPUT
     const uint16_t NO_INPUT = 0; 
@@ -30,7 +30,7 @@ namespace ssGUI
     struct RealtimeInputInfo
     {
         //var: CurrentKeyChanged
-        ssGUI::Enums::GenericButtonAndKeyInput CurrentButtonAndKeyChanged = ssGUI::Enums::NO_INPUT;
+        ssGUI::Enums::GenericInput CurrentButtonAndKeyChanged = ssGUI::Enums::NO_INPUT;
 
         //var: MouseMoved
         bool MouseMoved = false;

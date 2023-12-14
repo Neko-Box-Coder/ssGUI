@@ -24,8 +24,8 @@ namespace Backend
     ======================== C++ =======================
     private:
         std::vector<XEvent> CurrentEvents;                                                              //(Internal variable) Allows polling events multiple times within a frame
-        std::vector<ssGUI::Enums::GenericButtonAndKeyInput> CurrentKeyPresses;                          //See <GetCurrentButtonAndKeyPresses>
-        std::vector<ssGUI::Enums::GenericButtonAndKeyInput> LastKeyPresses;                             //See <GetLastButtonAndKeyPresses>
+        std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                          //See <GetCurrentButtonAndKeyPresses>
+        std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                             //See <GetLastButtonAndKeyPresses>
         std::wstring InputText;                                                                         //See <GetTextInput>
         glm::ivec2 CurrentMousePosition;                                                                //See <GetCurrentMousePosition>
         glm::ivec2 LastMousePosition;                                                                   //See <GetLastMousePosition>
@@ -82,8 +82,8 @@ namespace Backend
     {   
         private:
             std::vector<XEvent> CurrentEvents;                                                              //(Internal variable) Allows polling events multiple times within a frame
-            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> CurrentKeyPresses;                          //See <GetCurrentButtonAndKeyPresses>
-            std::vector<ssGUI::Enums::GenericButtonAndKeyInput> LastKeyPresses;                             //See <GetLastButtonAndKeyPresses>
+            std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                          //See <GetCurrentButtonAndKeyPresses>
+            std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                             //See <GetLastButtonAndKeyPresses>
             std::wstring InputText;                                                                         //See <GetTextInput>
             glm::ivec2 CurrentMousePosition;                                                                //See <GetCurrentMousePosition>
             glm::ivec2 LastMousePosition;                                                                   //See <GetLastMousePosition>
@@ -117,8 +117,8 @@ namespace Backend
             template <class T>
             void RemoveExistElement(T elementToRemove, std::vector<T>& vectorRemoveFrom);
 
-            void FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
-            void FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses);
+            void FetchKeysPressed(ssGUI::Enums::GenericInput keysPressedDown, std::vector<ssGUI::Enums::GenericInput>& destinationKeyPresses);
+            void FetchKeysReleased(ssGUI::Enums::GenericInput keysReleased, std::vector<ssGUI::Enums::GenericInput>& destinationKeyPresses);
         
             bool PopulateCursorDataHandles(CursorData& cursorData);
             float GetFPS(uint64_t curTimeInMs, uint64_t lastTimeInMs);
@@ -141,19 +141,19 @@ namespace Backend
 
             //function: GetLastButtonAndKeyPresses
             //See <BackendSystemInputInterface::GetLastButtonAndKeyPresses>
-            const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetLastButtonAndKeyPresses() override;
+            const std::vector<ssGUI::Enums::GenericInput>& GetLastButtonAndKeyPresses() override;
             
             //function: GetCurrentButtonAndKeyPresses
             //See <BackendSystemInputInterface::GetCurrentButtonAndKeyPresses>
-            const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetCurrentButtonAndKeyPresses() override;
+            const std::vector<ssGUI::Enums::GenericInput>& GetCurrentButtonAndKeyPresses() override;
 
             //function: IsButtonOrKeyPressExistLastFrame
             //See <BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
+            bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const override;
 
             //function: IsButtonOrKeyPressExistCurrentFrame
             //See <BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame>
-            bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
+            bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const override;
 
             //function: GetLastMousePosition
             //See <BackendSystemInputInterface::GetLastMousePosition>

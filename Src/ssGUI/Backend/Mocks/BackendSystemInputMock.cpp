@@ -35,7 +35,7 @@ namespace Backend
         SSGUI_MOCK_PASSTHROUGH(UpdateInput());
     }
 
-    using GenericInput = ssGUI::Enums::GenericButtonAndKeyInput;
+    using GenericInput = ssGUI::Enums::GenericInput;
     const std::vector<GenericInput>& BackendSystemInputMock::GetLastButtonAndKeyPresses()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();

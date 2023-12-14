@@ -6,7 +6,7 @@ ssGUI::MainWindow* MainWindow = nullptr;
 ssGUI::ssGUIManager* Manager = nullptr;
 ssGUI::TextField* TestTextField = nullptr;
 
-ssGUI::Enums::GenericButtonAndKeyInput TestMode = ssGUI::Enums::NO_INPUT;
+ssGUI::Enums::GenericInput TestMode = ssGUI::Enums::NO_INPUT;
 
 void SetUp()
 {

@@ -1,9 +1,11 @@
 #ifndef SSGUI_BACKEND_DRAWING_INTERFACE_HPP
 #define SSGUI_BACKEND_DRAWING_INTERFACE_HPP
 
+#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
 #include "ssGUI/DataClasses/DrawingEntity.hpp"
+
 #include <vector>
 
 namespace ssGUI
@@ -22,7 +24,7 @@ namespace Backend
                                                         CharSize, 
                                                         CharCode>;
         
-            BackendDrawingInterface(){}
+            BackendDrawingInterface(BackendMainWindowInterface* mainWindowInterface){}
             virtual ~BackendDrawingInterface() = 0;
 
             //function: SaveDrawingState
@@ -35,22 +37,18 @@ namespace Backend
             //This should be called after custom rendering and handing rendering back to ssGUI.
             virtual void RestoreDrawingState() = 0;
 
-            /*function: DrawEntities
+            /*
+            function: CreateDrawingEntities
             Draws the entities based on which backend is populated in <ssGUI::DrawingEntity>. 
-            Returns true if drawn successfully. 
-            Depending on the backend, the entities might be drawn to internal buffer or
-                drawn to back buffer directly. 
-            For OpenGL backends, it will be drawn to internal buffers.
-            <DrawToBackBuffer> can be called to flush the internal buffer to be drawn on the back buffer.
+            Returns true if created successfully. 
+
             *Note that if you are not using <ssGUIManager>, 
                 you need to call <Render> at the end in order to render it*.
             */
-            virtual bool DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities) = 0;
+            virtual bool CreateDrawingEntities(const std::vector<DrawingEntity>& entities) = 0;
             
             //function: DrawToBackBuffer
-            //This flushes the internal buffer to the back buffer.
-            //Depending on the backend, this might have no effect as <DrawEntities> 
-            //  can draw to back buffer directly.
+            //This draws all the drawing entities to the back buffer.
             //This is also automatically called by <Render>.
             virtual void DrawToBackBuffer() = 0;
 
@@ -65,24 +63,28 @@ namespace Backend
             //This is called automatically by render.
             virtual void ClearBackBuffer(glm::u8vec3 clearColor) = 0;
             
-            //function: AddImageCache
-            //Add the backend image to cache (this can be uploading the image to GPU memory) 
-            //  or system memory for drawing
-            //To update the cached image, call <BackendImageInterface::UpdateCache>.
-            //Calling this fuction multiple times will not update the cache image.
+            /*
+            function: AddImageCache
+            Add the backend image to cache (this can be uploading the image to GPU memory) 
+              or system memory for drawing
+            
+            Call with images that are cached will update the cache.
+            */
             virtual void AddImageCache(BackendImageInterface* backendImage) = 0;
             
             //function: RemoveImageCache
             //This removes the backend image from the cache.
             virtual void RemoveImageCache(BackendImageInterface* backendImage) = 0;
             
-            //function: GetRawImageCacheHandle
-            //This returns the handle of the image cache. What is returned is backend independent.
-            //You can use the returned handle to modify the cached image.
-            //If no cache is found, it will return nullptr.
-            virtual void* GetRawImageCacheHandle(BackendImageInterface* backendImage) = 0;
+            /*
+            function: GetRawImageCacheHandle
+            This returns the handle of the image cache. What is returned is backend independent.
+            You can use the returned handle to modify the cached image.
+            If no cache is found, it will return nullptr.
+            */
+            virtual void* GetRawImageCacheHandle(BackendImageInterface* backendImage) const = 0;
     };
-    
+
     //Pure virtual destructor needs to be defined
     inline BackendDrawingInterface::~BackendDrawingInterface(){}
 } 

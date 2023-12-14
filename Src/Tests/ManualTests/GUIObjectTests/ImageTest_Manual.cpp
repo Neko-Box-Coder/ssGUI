@@ -9,7 +9,7 @@ ssGUI::Image* TestImage = nullptr;
 ssGUI::Image* ClonedImage = nullptr;
 ssGUI::ImageData TestImgData;
 
-ssGUI::Enums::GenericButtonAndKeyInput TestMode = ssGUI::Enums::NO_INPUT;
+ssGUI::Enums::GenericInput TestMode = ssGUI::Enums::NO_INPUT;
 
 void SetUp()
 {
@@ -136,7 +136,7 @@ int main()
     (
         [&]()
         {
-            ssGUI::Enums::GenericButtonAndKeyInput lastTestMode = TestMode;
+            ssGUI::Enums::GenericInput lastTestMode = TestMode;
             if( TestMode == ssGUI::Enums::NO_INPUT &&
                 !Manager->GetBackendInputInterface()->GetCurrentButtonAndKeyPresses().empty() &&
                 Manager->GetBackendInputInterface()->GetLastButtonAndKeyPresses().empty())
@@ -144,9 +144,9 @@ int main()
                 TestMode = Manager->GetBackendInputInterface()->GetCurrentButtonAndKeyPresses()[0];
             }
             
-            ssGUI::Enums::GenericButtonAndKeyInput selectedTestMode = TestMode;
+            ssGUI::Enums::GenericInput selectedTestMode = TestMode;
             
-            #define QUICK_CAST(x) static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(x)
+            #define QUICK_CAST(x) static_cast<ssGUI::Enums::GenericInput>(x)
             
             switch(TestMode)
             {

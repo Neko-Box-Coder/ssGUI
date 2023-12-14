@@ -27,24 +27,24 @@ namespace Backend
 
     }
 
-    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputTemplate::GetLastButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputTemplate::GetLastButtonAndKeyPresses()
     {
-        std::vector<ssGUI::Enums::GenericButtonAndKeyInput> t;
+        std::vector<ssGUI::Enums::GenericInput> t;
         return t;
     }
     
-    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputTemplate::GetCurrentButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputTemplate::GetCurrentButtonAndKeyPresses()
     {
-        std::vector<ssGUI::Enums::GenericButtonAndKeyInput> t;
+        std::vector<ssGUI::Enums::GenericInput> t;
         return t;
     }
 
-    bool BackendSystemInputTemplate::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    bool BackendSystemInputTemplate::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const
     {
         return true;
     }
 
-    bool BackendSystemInputTemplate::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    bool BackendSystemInputTemplate::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const
     {
         return true;
     }

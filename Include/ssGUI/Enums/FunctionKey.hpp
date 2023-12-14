@@ -12,7 +12,7 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
-    using GenericButtonAndKeyInput = uint16_t;
+    using GenericInput = uint16_t;
 
     /*enum: FunctionKey
     
@@ -62,7 +62,7 @@ namespace Enums
     }
     
     //function: InputIsFunctionKey
-    inline bool InputIsFunctionKey(ssGUI::Enums::GenericButtonAndKeyInput input)
+    inline bool InputIsFunctionKey(ssGUI::Enums::GenericInput input)
     {
         return input >= (uint16_t)FunctionKey::F1 && input < (uint16_t)FunctionKey::F1 + (uint16_t)FunctionKey::COUNT;
     }

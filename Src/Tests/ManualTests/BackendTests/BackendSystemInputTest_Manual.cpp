@@ -50,8 +50,8 @@ void KeyAndButtonTest()
         ShowInfo = false;
     }
 
-    std::vector<ssGUI::Enums::GenericButtonAndKeyInput> currentInputs = BackendInput->GetCurrentButtonAndKeyPresses();
-    std::vector<ssGUI::Enums::GenericButtonAndKeyInput> lastInputs = BackendInput->GetLastButtonAndKeyPresses();
+    std::vector<ssGUI::Enums::GenericInput> currentInputs = BackendInput->GetCurrentButtonAndKeyPresses();
+    std::vector<ssGUI::Enums::GenericInput> lastInputs = BackendInput->GetLastButtonAndKeyPresses();
 
     for(int i = 0; i < currentInputs.size(); i++)
     {

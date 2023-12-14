@@ -46,7 +46,7 @@ namespace Backend
             vectorRemoveFrom.erase(foundElement);
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
+    void BackendSystemInputWin32_OpenGL3_3::FetchKeysPressed(ssGUI::Enums::GenericInput keysPressedDown, std::vector<ssGUI::Enums::GenericInput>& destinationKeyPresses)
     {
         ssGUI_LOG_FUNC();
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysPressedDown);
@@ -54,7 +54,7 @@ namespace Backend
             destinationKeyPresses.push_back(keysPressedDown);
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
+    void BackendSystemInputWin32_OpenGL3_3::FetchKeysReleased(ssGUI::Enums::GenericInput keysReleased, std::vector<ssGUI::Enums::GenericInput>& destinationKeyPresses)
     {
         ssGUI_LOG_FUNC();        
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysReleased);
@@ -245,7 +245,7 @@ namespace Backend
             //Key down event
             case WM_KEYDOWN:
             {
-                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertButtonAndKeys(msg);
+                ssGUI::Enums::GenericInput input = Win32InputConverter::ConvertButtonAndKeys(msg);
                 curInfo.CurrentButtonAndKeyChanged = input;
                 FetchKeysPressed(input, CurrentKeyPresses);
                 CurrentInputInfos.push_back(curInfo);
@@ -255,7 +255,7 @@ namespace Backend
             //Key up event
             case WM_KEYUP:
             {
-                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertButtonAndKeys(msg);
+                ssGUI::Enums::GenericInput input = Win32InputConverter::ConvertButtonAndKeys(msg);
                 curInfo.CurrentButtonAndKeyChanged = input;
                 FetchKeysReleased(input, CurrentKeyPresses);
                 CurrentInputInfos.push_back(curInfo);
@@ -268,7 +268,7 @@ namespace Backend
             case WM_RBUTTONDOWN:
             case WM_XBUTTONDOWN:
             {
-                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertMouseButtons(msg);
+                ssGUI::Enums::GenericInput input = Win32InputConverter::ConvertMouseButtons(msg);
                 curInfo.CurrentButtonAndKeyChanged = input;
                 FetchKeysPressed(input, CurrentKeyPresses);
                 CurrentInputInfos.push_back(curInfo);
@@ -282,7 +282,7 @@ namespace Backend
             case WM_RBUTTONUP:
             case WM_XBUTTONUP:
             {
-                ssGUI::Enums::GenericButtonAndKeyInput input = Win32InputConverter::ConvertMouseButtons(msg);
+                ssGUI::Enums::GenericInput input = Win32InputConverter::ConvertMouseButtons(msg);
                 curInfo.CurrentButtonAndKeyChanged = input;
                 FetchKeysReleased(input, CurrentKeyPresses);
                 CurrentInputInfos.push_back(curInfo);
@@ -331,22 +331,22 @@ namespace Backend
         }
     }
 
-    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputWin32_OpenGL3_3::GetLastButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputWin32_OpenGL3_3::GetLastButtonAndKeyPresses()
     {        
         return LastKeyPresses;
     }
 
-    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputWin32_OpenGL3_3::GetCurrentButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputWin32_OpenGL3_3::GetCurrentButtonAndKeyPresses()
     {
         return CurrentKeyPresses;
     }
 
-    bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(LastKeyPresses.begin(), LastKeyPresses.end(), input) != LastKeyPresses.end();
     }
 
-    bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }

@@ -396,7 +396,7 @@ namespace ssGUI
         }
     }
 
-    #define SSGUI_CAST_KEY(x) static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(x)
+    #define SSGUI_CAST_KEY(x) static_cast<ssGUI::Enums::GenericInput>(x)
 
     ImageCanvas::ImageCanvas() :    HorizontalScrollbar(-1),
                                     ShowHorizontalScrollbar(true),
@@ -665,12 +665,12 @@ namespace ssGUI
         return ImageMaxY;
     }
     
-    void ImageCanvas::SetPanKey(ssGUI::Enums::GenericButtonAndKeyInput key)
+    void ImageCanvas::SetPanKey(ssGUI::Enums::GenericInput key)
     {
         PanKey = key;
     }
     
-    ssGUI::Enums::GenericButtonAndKeyInput ImageCanvas::GetPanKey() const
+    ssGUI::Enums::GenericInput ImageCanvas::GetPanKey() const
     {
         return PanKey;
     }
@@ -705,12 +705,12 @@ namespace ssGUI
         return MaxScrollZoom;
     }
     
-    void ImageCanvas::SetRotateKey(ssGUI::Enums::GenericButtonAndKeyInput key)
+    void ImageCanvas::SetRotateKey(ssGUI::Enums::GenericInput key)
     {
         RotateKey = key;
     }
     
-    ssGUI::Enums::GenericButtonAndKeyInput ImageCanvas::GetRotateKey() const
+    ssGUI::Enums::GenericInput ImageCanvas::GetRotateKey() const
     {
         return RotateKey;
     }

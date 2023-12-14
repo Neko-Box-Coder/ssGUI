@@ -1,12 +1,13 @@
 #ifndef SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE_HPP
 #define SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE_HPP
 
-#include <string>
-#include <vector>
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 #include "ssGUI/Enums/CursorType.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
+
+#include <string>
+#include <vector>
 
 namespace ssGUI
 { 
@@ -25,75 +26,75 @@ namespace Backend
     class BackendSystemInputInterface
     {   
         public:
-            BackendSystemInputInterface(){}
+            BackendSystemInputInterface(BackendMainWindowInterface* mainWindowInterface){}
             virtual ~BackendSystemInputInterface() = 0;
             
             //function: UpdateInput
             //Poll and updates the input
             virtual void UpdateInput() = 0;
 
-            using GenericInputs = ssGUI::Enums::GenericButtonAndKeyInput;
+            using GenericInputs = Enums::GenericInput;
 
-            //function: GetLastButtonAndKeyPresses
+            //function: GetLastInputs
             //Get the key presses from last frame
-            virtual const std::vector<GenericInputs>& GetLastButtonAndKeyPresses() = 0;
+            virtual const std::vector<GenericInputs>& GetLastInputs() = 0;
             
-            //function: GetCurrentButtonAndKeyPresses
+            //function: GetCurrentInputs
             //Get the key presses from current frame
-            virtual const std::vector<GenericInputs>& GetCurrentButtonAndKeyPresses() = 0;
+            virtual const std::vector<GenericInputs>& GetCurrentInputs() = 0;
 
-            //function: IsButtonOrKeyPressExistLastFrame
+            //function: IsInputExistLastFrame
             //Check if the button or key is pressed last frame
-            virtual bool IsButtonOrKeyPressExistLastFrame(GenericInputs input) const = 0;
+            virtual bool IsInputExistLastFrame(GenericInputs input) const = 0;
             
-            //function: IsButtonOrKeyPressExistLastFrame
+            //function: IsInputExistLastFrame
             //Check if the button or key is pressed last frame
             template<typename T>
-            bool IsButtonOrKeyPressExistLastFrame(T input) const
+            bool IsInputExistLastFrame(T input) const
             {
-                return IsButtonOrKeyPressExistLastFrame(static_cast<GenericInputs>(input));
+                return IsInputExistLastFrame(static_cast<GenericInputs>(input));
             }
 
-            //function: IsButtonOrKeyPressExistCurrentFrame
+            //function: IsInputExistCurrentFrame
             //Check if the button or key is pressed current frame
-            virtual bool IsButtonOrKeyPressExistCurrentFrame(GenericInputs input) const = 0;
+            virtual bool IsInputExistCurrentFrame(GenericInputs input) const = 0;
 
-            //function: IsButtonOrKeyPressExistCurrentFrame
+            //function: IsInputExistCurrentFrame
             //Check if the button or key is pressed current frame
             template<typename T>
-            bool IsButtonOrKeyPressExistCurrentFrame(T input) const
+            bool IsInputExistCurrentFrame(T input) const
             {
-                return IsButtonOrKeyPressExistCurrentFrame(static_cast<GenericInputs>(input));
+                return IsInputExistCurrentFrame(static_cast<GenericInputs>(input));
             }
 
             //function: IsButtonOrKeyDown
-            //See <IsButtonOrKeyPressExistCurrentFrame> and <IsButtonOrKeyPressExistLastFrame>
+            //See <IsInputExistCurrentFrame> and <IsInputExistLastFrame>
             template<typename T>
             bool IsButtonOrKeyDown(T input) const
             {
-                return  IsButtonOrKeyPressExistCurrentFrame(static_cast<GenericInputs>(input)) && 
-                        !IsButtonOrKeyPressExistLastFrame(static_cast<GenericInputs>(input));
+                return  IsInputExistCurrentFrame(static_cast<GenericInputs>(input)) && 
+                        !IsInputExistLastFrame(static_cast<GenericInputs>(input));
             }
 
             //function: IsButtonOrKeyHeld
-            //See <IsButtonOrKeyPressExistCurrentFrame> and <IsButtonOrKeyPressExistLastFrame>
+            //See <IsInputExistCurrentFrame> and <IsInputExistLastFrame>
             template<typename T>
             bool IsButtonOrKeyHeld(T input) const
             {
-                return  IsButtonOrKeyPressExistCurrentFrame(static_cast<GenericInputs>(input)) && 
-                        IsButtonOrKeyPressExistLastFrame(static_cast<GenericInputs>(input));
+                return  IsInputExistCurrentFrame(static_cast<GenericInputs>(input)) && 
+                        IsInputExistLastFrame(static_cast<GenericInputs>(input));
             }
 
             //function: IsButtonOrKeyUp
-            //See <IsButtonOrKeyPressExistCurrentFrame> and <IsButtonOrKeyPressExistLastFrame>
+            //See <IsInputExistCurrentFrame> and <IsInputExistLastFrame>
             template<typename T>
             bool IsButtonOrKeyUp(T input) const
             {
-                return  !IsButtonOrKeyPressExistCurrentFrame(static_cast<GenericInputs>(input)) && 
-                        IsButtonOrKeyPressExistLastFrame(static_cast<GenericInputs>(input));
+                return  !IsInputExistCurrentFrame(static_cast<GenericInputs>(input)) && 
+                        IsInputExistLastFrame(static_cast<GenericInputs>(input));
             }
 
-            using MainWindowInterface = ssGUI::Backend::BackendMainWindowInterface;
+            using MainWindowInterface = BackendMainWindowInterface;
 
             //function: GetLastMousePosition
             //Get mouse position relative to the mainWindow from last frame. 
@@ -110,14 +111,6 @@ namespace Backend
             //If nullptr is passed, it will set as global mouse position instead.
             virtual void SetMousePosition(glm::ivec2 position, MainWindowInterface* mainWindow) = 0;
 
-            //function: GetLastMouseButton
-            //Return if a mouse button is being pressed last frame
-            virtual bool GetLastMouseButton(ssGUI::Enums::MouseButton button) const = 0;
-            
-            //function: GetCurrentMouseButton
-            //Return if a mouse button is being pressed current frame
-            virtual bool GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const = 0;
-
             /*function: GetCurrentMouseScrollDelta
             Return the direction of mouse scrolling for the current frame.
             ================== Text ==================
@@ -132,28 +125,25 @@ namespace Backend
 
             //function: GetLastRealtimeInputs
             //Return a list of inputs in order happened in last frame. 
-            //The last input info should be the same as <GetLastKeyPresses>, 
-            //  <GetLastMousePosition>, etc...
-            virtual const std::vector<ssGUI::RealtimeInputInfo>& GetLastRealtimeInputs() const = 0;
+            virtual const std::vector<RealtimeInputInfo>& GetLastRealtimeInputs() const = 0;
 
             //function: GetCurrentRealtimeInputs
             //Return a list of inputs in order happened in current frame. 
-            //The last input info should be the same as <GetCurrentKeyPresses>, 
-            //  <GetCurrentMouseButton>, etc...
-            virtual const std::vector<ssGUI::RealtimeInputInfo>& GetCurrentRealtimeInputs() const = 0;
+            virtual const std::vector<RealtimeInputInfo>& GetCurrentRealtimeInputs() const = 0;
 
             //function: GetTextInput
             //Returns all the text typed in current frame.
             //Any characters in here 
             //  https://en.wikipedia.org/wiki/List_of_Unicode_characters#Control_codes
             //are not recorded in here.
-            virtual void GetTextInput(std::wstring& outText) const = 0;
+            virtual void GetTextInput(std::u32string& outText) const = 0;
             
             //function: GetTextInput
             //See above
             virtual void GetTextInput(std::string& outText) const = 0;
             
-            /*function: SetCursorType
+            /*
+            function: SetCursorType
             Sets the cursor type it is currently using. 
             To apply the changes, <UpdateCursor> needs to be called.
             
@@ -163,13 +153,14 @@ namespace Backend
             Therefore you only need to set non normal cursor type every frame when you need to 
             and don't need to care about setting it back to normal once you are done with it. 
             */
-            virtual void SetCursorType(ssGUI::Enums::CursorType cursorType) = 0;
+            virtual void SetCursorType(Enums::CursorType cursorType) = 0;
 
-            /*function: GetCursorType
+            /*
+            function: GetCursorType
             Gets the cursor type it is currently using. 
             Note that the return cursor type does not necessarily mean 
-                the current cursor type being shown on the screen as <UpdateCursor> needs to be called
-                to apply the changes.
+                the current cursor type being shown on the screen as <UpdateCursor> 
+                needs to be called to apply the changes.
             
             By default, <ssGUI::ssGUIManager> sets the cursor type 
             back to normal at the beginning of every frame.
@@ -177,7 +168,7 @@ namespace Backend
             Therefore you only need to set non normal cursor type every frame when you need to 
             and don't need to care about setting it back to normal once you are done with it. 
             */
-            virtual ssGUI::Enums::CursorType GetCursorType() const = 0;
+            virtual Enums::CursorType GetCursorType() const = 0;
 
             /*function: CreateCustomCursor
             Creates a custom cursor. 
@@ -185,7 +176,7 @@ namespace Backend
             The size of customCurrsor image will be resized to cursorSize if needed.
             The passed in hotspot must be smaller than cursorSize, (0, 0) as top-left corner.
             */
-            virtual void CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, 
+            virtual void CreateCustomCursor(BackendImageInterface* customCursor, 
                                             std::string cursorName, 
                                             glm::ivec2 cursorSize, 
                                             glm::ivec2 hotspot) = 0;
@@ -199,8 +190,8 @@ namespace Backend
             //Copies the (resized) current custom cursor image data to customCursor image data and 
             //  returns the hotspot of the cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, 
-                                                glm::ivec2& hotspot) = 0;
+            virtual void GetCurrentCustomCursor(BackendImageInterface& customCursor, 
+                                                glm::ivec2& hotspot) const = 0;
 
             //function: GetCurrentCustomCursorName
             //Gets the name of the current custom cursor. Empty string if nothing is set.
@@ -210,9 +201,9 @@ namespace Backend
             //Copies the (resized) custom cursor image data to customCursor image data and 
             //  returns the hotspot of the cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCustomCursor(   ssGUI::Backend::BackendImageInterface& customCursor, 
+            virtual void GetCustomCursor(   BackendImageInterface& customCursor, 
                                             std::string cursorName, 
-                                            glm::ivec2& hotspot) = 0;
+                                            glm::ivec2& hotspot) const = 0;
 
             //function: HasCustomCursor
             //Returns if the target custom cursor with cursorName exists
@@ -222,7 +213,8 @@ namespace Backend
             //Updates the cursor. This needs to be called after a new cursor is set.
             virtual void UpdateCursor() = 0;
             
-            /*function: AddRawEventHandler
+            /*
+            function: AddRawEventHandler
             Adds an event handler for processing before passing it to ssGUI 
                 and returns an id for removal.
             
@@ -231,7 +223,8 @@ namespace Backend
             
             If the handler returns true, the event will be ingored by ssGUI and not passed down.
             */
-            virtual int AddRawEventHandler(std::function<bool(MainWindowInterface*, void*)> handler) = 0;
+            virtual int AddRawEventHandler(std::function<bool(  MainWindowInterface*, 
+                                                                void*)> handler) = 0;
             
             //function: RemoveRawEventHandler
             //Removes the event handler for processing before passing it to ssGUI.
@@ -249,31 +242,35 @@ namespace Backend
 
             //function: ClipbaordHasText
             //Returns if the clipboard contains text
-            virtual bool ClipbaordHasText() = 0;
+            virtual bool ClipbaordHasText() const = 0;
             
             //function: ClipbaordHasImage
             //Returns if the clipboard contains image
-            virtual bool ClipbaordHasImage() = 0;
+            virtual bool ClipbaordHasImage() const = 0;
 
             //function: SetClipboardImage
             //Sets the clipboard image
-            virtual bool SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData) = 0;
+            virtual bool SetClipboardImage(const BackendImageInterface& imgData) = 0;
             
             //function: SetClipboardText
             //Sets the clipboard text
-            virtual bool SetClipboardText(const std::wstring& str) = 0;
+            virtual bool SetClipboardText(const std::u32string& str) = 0;
+            
+            //function: SetClipboardText
+            //Sets the clipboard text
+            virtual bool SetClipboardText(const std::string& str) = 0;
             
             //function: GetClipboardImage
             //Gets the clipboard image. It currently only supports 32-bit RGBA image
-            virtual bool GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData) = 0;
+            virtual bool GetClipboardImage(BackendImageInterface& imgData) const = 0;
 
             //function: GetClipboardText
             //Gets the clipboard text
-            virtual bool GetClipboardText(std::wstring& str) = 0;
+            virtual bool GetClipboardText(std::u32string& str) const = 0;
 
             //function: GetClipboardText
             //See above
-            virtual bool GetClipboardText(std::string& str) = 0;
+            virtual bool GetClipboardText(std::string& str) const = 0;
 
             //function: GetElapsedTime
             //Returns elapsed time since application startup in millisecond

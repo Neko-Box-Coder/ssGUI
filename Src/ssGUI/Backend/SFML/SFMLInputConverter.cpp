@@ -5,7 +5,7 @@ namespace ssGUI
 
 namespace Backend
 {
-    ssGUI::Enums::GenericButtonAndKeyInput SFMLInputConverter::ConvertButtonAndKeys(const sf::Event& event)
+    ssGUI::Enums::GenericInput SFMLInputConverter::ConvertButtonAndKeys(const sf::Event& event)
     {
         // ssGUI::KeyPresses keys;
 
@@ -15,199 +15,199 @@ namespace Backend
             switch(event.key.code) 
             {
                 case sf::Keyboard::F1:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F1); 
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F1); 
                 case sf::Keyboard::F2:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F2);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F2);
                 case sf::Keyboard::F3:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F3);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F3);
                 case sf::Keyboard::F4:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F4);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F4);
                 case sf::Keyboard::F5:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F5);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F5);
                 case sf::Keyboard::F6:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F6);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F6);
                 case sf::Keyboard::F7:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F7);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F7);
                 case sf::Keyboard::F8:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F8);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F8);
                 case sf::Keyboard::F9:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F9);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F9);
                 case sf::Keyboard::F10:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F10);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F10);
                 case sf::Keyboard::F11:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F11);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F11);
                 case sf::Keyboard::F12:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::FunctionKey::F12);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::FunctionKey::F12);
                 case sf::Keyboard::A:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::A);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::A);
                 case sf::Keyboard::B:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::B);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::B);
                 case sf::Keyboard::C:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::C);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::C);
                 case sf::Keyboard::D:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::D);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::D);
                 case sf::Keyboard::E:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::E);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::E);
                 case sf::Keyboard::F:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::F);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::F);
                 case sf::Keyboard::G:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::G);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::G);
                 case sf::Keyboard::H:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::H);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::H);
                 case sf::Keyboard::I:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::I);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::I);
                 case sf::Keyboard::J:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::J);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::J);
                 case sf::Keyboard::K:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::K);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::K);
                 case sf::Keyboard::L:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::L);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::L);
                 case sf::Keyboard::M:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::M);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::M);
                 case sf::Keyboard::N:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::N);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::N);
                 case sf::Keyboard::O:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::O);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::O);
                 case sf::Keyboard::P:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::P);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::P);
                 case sf::Keyboard::Q:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::Q);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::Q);
                 case sf::Keyboard::R:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::R);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::R);
                 case sf::Keyboard::S:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::S);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::S);
                 case sf::Keyboard::T:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::T);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::T);
                 case sf::Keyboard::U:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::U);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::U);
                 case sf::Keyboard::V:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::V);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::V);
                 case sf::Keyboard::W:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::W);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::W);
                 case sf::Keyboard::X:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::X);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::X);
                 case sf::Keyboard::Y:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::Y);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::Y);
                 case sf::Keyboard::Z:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::LetterKey::Z);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::LetterKey::Z);
                 case sf::Keyboard::Num1:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::ONE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::ONE);
                 case sf::Keyboard::Num2:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::TWO);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::TWO);
                 case sf::Keyboard::Num3:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::THREE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::THREE);
                 case sf::Keyboard::Num4:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::FOUR);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::FOUR);
                 case sf::Keyboard::Num5:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::FIVE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::FIVE);
                 case sf::Keyboard::Num6:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::SIX);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::SIX);
                 case sf::Keyboard::Num7:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::SEVEN);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::SEVEN);
                 case sf::Keyboard::Num8:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::EIGHT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::EIGHT);
                 case sf::Keyboard::Num9:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NINE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NINE);
                 case sf::Keyboard::Num0:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::ZERO);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::ZERO);
                 case sf::Keyboard::Numpad1:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_ONE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_ONE);
                 case sf::Keyboard::Numpad2:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_TWO);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_TWO);
                 case sf::Keyboard::Numpad3:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_THREE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_THREE);
                 case sf::Keyboard::Numpad4:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_FOUR);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_FOUR);
                 case sf::Keyboard::Numpad5:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_FIVE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_FIVE);
                 case sf::Keyboard::Numpad6:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_SIX);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_SIX);
                 case sf::Keyboard::Numpad7:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_SEVEN);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_SEVEN);
                 case sf::Keyboard::Numpad8:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_EIGHT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_EIGHT);
                 case sf::Keyboard::Numpad9:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_NINE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_NINE);
                 case sf::Keyboard::Numpad0:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::NumberKey::NUMPAD_ZERO);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::NumberKey::NUMPAD_ZERO);
                 case sf::Keyboard::Grave:   //Also known as backquote or backtick button
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::BACK_QUOTE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::BACK_QUOTE);
                 case sf::Keyboard::Hyphen:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::MINUS);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::MINUS);
                 case sf::Keyboard::Equal:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::EQUAL);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::EQUAL);
                 case sf::Keyboard::LBracket:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::LEFT_BRACKET);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::LEFT_BRACKET);
                 case sf::Keyboard::RBracket:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::RIGHT_BRACKET);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::RIGHT_BRACKET);
                 case sf::Keyboard::Backslash:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::BACKSLASH);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::BACKSLASH);
                 case sf::Keyboard::Semicolon:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::SEMICOLON);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::SEMICOLON);
                 case sf::Keyboard::Apostrophe:  //Also known as (single) quote
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::QUOTE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::QUOTE);
                 //HASH_UK missing
                 //BACKSLASH_UK missing
                 case sf::Keyboard::Comma:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::COMMA);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::COMMA);
                 case sf::Keyboard::Period:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::PERIOD);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::PERIOD);
                 case sf::Keyboard::Slash:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::FORWARD_SLASH);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::FORWARD_SLASH);
                 case sf::Keyboard::Divide:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::NUMPAD_FORWARD_SLASH);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::NUMPAD_FORWARD_SLASH);
                 case sf::Keyboard::Multiply:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::NUMPAD_MULTIPLY);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::NUMPAD_MULTIPLY);
                 case sf::Keyboard::Subtract:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::NUMPAD_MINUS);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::NUMPAD_MINUS);
                 case sf::Keyboard::Add:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SymbolKey::NUMPAD_PLUS);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SymbolKey::NUMPAD_PLUS);
                 //NUMPAD_PERIOD missing
                 case sf::Keyboard::Tab:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::TAB);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::TAB);
                 //CAPS_LOCK missing
                 case sf::Keyboard::LShift:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::LEFT_SHIFT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::LEFT_SHIFT);
                 case sf::Keyboard::LControl:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::LEFT_CTRL);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::LEFT_CTRL);
                 case sf::Keyboard::LSystem:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::LEFT_SYSTEM);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::LEFT_SYSTEM);
                 case sf::Keyboard::LAlt:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::LEFT_ALT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::LEFT_ALT);
                 case sf::Keyboard::Space:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::SPACE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::SPACE);
                 case sf::Keyboard::RAlt:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::RIGHT_ALT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::RIGHT_ALT);
                 case sf::Keyboard::RSystem:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::RIGHT_SYSTEM);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::RIGHT_SYSTEM);
                 case sf::Keyboard::RControl:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::RIGHT_CTRL);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::RIGHT_CTRL);
                 case sf::Keyboard::RShift:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::RIGHT_SHIFT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::RIGHT_SHIFT);
                 case sf::Keyboard::Enter:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::ENTER);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::ENTER);
                 case sf::Keyboard::Backspace:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::BACKSPACE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::BACKSPACE);
                 case sf::Keyboard::Insert:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::INSERT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::INSERT);
                 case sf::Keyboard::Home:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::HOME);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::HOME);
                 case sf::Keyboard::PageUp:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::PAGE_UP);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::PAGE_UP);
                 case sf::Keyboard::Delete:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::DELETE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::DELETE);
                 case sf::Keyboard::End:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::END);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::END);
                 case sf::Keyboard::PageDown:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::PAGE_DOWN);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::PAGE_DOWN);
                 case sf::Keyboard::Left:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::LEFT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::LEFT);
                 case sf::Keyboard::Up:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::UP);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::UP);
                 case sf::Keyboard::Down:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::DOWN);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::DOWN);
                 case sf::Keyboard::Right:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::SystemKey::RIGHT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::RIGHT);
                 //NUMPAD_ENTER missing
                 //TODO: Add follow keys
                 case sf::Keyboard::Menu:
@@ -224,7 +224,7 @@ namespace Backend
         return ssGUI::Enums::NO_INPUT;
     }
 
-    ssGUI::Enums::GenericButtonAndKeyInput SFMLInputConverter::ConvertMouseButtons(const sf::Event& event)
+    ssGUI::Enums::GenericInput SFMLInputConverter::ConvertMouseButtons(const sf::Event& event)
     {
         // std::vector<ssGUI::Enums::MouseButton> mouseButtons;
 
@@ -233,11 +233,11 @@ namespace Backend
             switch (event.mouseButton.button)
             {
                 case sf::Mouse::Left:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::MouseButton::LEFT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::MouseButton::LEFT);
                 case sf::Mouse::Middle:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::MouseButton::MIDDLE);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::MouseButton::MIDDLE);
                 case sf::Mouse::Right:
-                    return static_cast<ssGUI::Enums::GenericButtonAndKeyInput>(ssGUI::Enums::MouseButton::RIGHT);
+                    return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::MouseButton::RIGHT);
                 case sf::Mouse::XButton1:
                 case sf::Mouse::XButton2:
                 case sf::Mouse::ButtonCount:

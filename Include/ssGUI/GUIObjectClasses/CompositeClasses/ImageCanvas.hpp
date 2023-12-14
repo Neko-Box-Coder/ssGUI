@@ -33,13 +33,13 @@ namespace ssGUI
         glm::vec2 CurrentPosition;                          //See <GetViewportCenterPosition>
         float CurrentRotation;                              //See <GetViewportRotation>
 
-        ssGUI::Enums::GenericButtonAndKeyInput PanKey;
+        ssGUI::Enums::GenericInput PanKey;
         bool ScrollZoom;
         float MinScrollZoom;
         float MaxScrollZoom;
         float ScrollZoomAmount;
                                                             //TODO: Will have public method for this in the future
-        ssGUI::Enums::GenericButtonAndKeyInput RotateKey;
+        ssGUI::Enums::GenericInput RotateKey;
 
         float OnRotateStartRotation;                        //(Internal variable) Start rotation when user is rotating the image
         glm::vec2 OnRotateStartPosition;                    //(Internal variable) Start position when user is rotating the image
@@ -214,13 +214,13 @@ namespace ssGUI
             glm::vec2 CurrentPosition;                          //See <GetViewportCenterPosition>
             float CurrentRotation;                              //See <GetViewportRotation>
 
-            ssGUI::Enums::GenericButtonAndKeyInput PanKey;
+            ssGUI::Enums::GenericInput PanKey;
             bool ScrollZoom;
             float MinScrollZoom;
             float MaxScrollZoom;
             float ScrollZoomAmount;
                                                                 //TODO: Will have public method for this in the future
-            ssGUI::Enums::GenericButtonAndKeyInput RotateKey;
+            ssGUI::Enums::GenericInput RotateKey;
 
             float OnRotateStartRotation;                        //(Internal variable) Start rotation when user is rotating the image
             glm::vec2 OnRotateStartPosition;                    //(Internal variable) Start position when user is rotating the image
@@ -353,11 +353,11 @@ namespace ssGUI
 
             //function: SetPanKey
             //Sets the key to be used for panning the canvas. <ssGUI::Enums::NO_INPUT> to disable it.
-            virtual void SetPanKey(ssGUI::Enums::GenericButtonAndKeyInput key);
+            virtual void SetPanKey(ssGUI::Enums::GenericInput key);
             
             //function: GetPanKey
             //Gets the key to be used for panning the canvas. <ssGUI::Enums::NO_INPUT> if disabled.
-            virtual ssGUI::Enums::GenericButtonAndKeyInput GetPanKey() const;
+            virtual ssGUI::Enums::GenericInput GetPanKey() const;
             
             //function: SetUseScrollZooming
             //Sets if the mouse scroll wheel is used for zooming the viewport
@@ -385,11 +385,11 @@ namespace ssGUI
             
             //function: SetRotateKey
             //Sets the key to be used for rotating the canvas. <ssGUI::Enums::NO_INPUT> to disable it.
-            virtual void SetRotateKey(ssGUI::Enums::GenericButtonAndKeyInput key);
+            virtual void SetRotateKey(ssGUI::Enums::GenericInput key);
             
             //function: GetRotateKey
             //Returns the key to be used for rotating the canvas. <ssGUI::Enums::NO_INPUT> if disabled.
-            virtual ssGUI::Enums::GenericButtonAndKeyInput GetRotateKey() const;
+            virtual ssGUI::Enums::GenericInput GetRotateKey() const;
             
             //function: SetShowHorizontalScrollbar
             //Sets if the horizontal scrollbar is available to use when the image is zoomed larger than the ImageCanvas

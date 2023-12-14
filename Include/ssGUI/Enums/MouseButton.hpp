@@ -12,7 +12,7 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
-    using GenericButtonAndKeyInput = uint16_t;
+    using GenericInput = uint16_t;
 
     /*enum: MouseButton
     
@@ -44,9 +44,10 @@ namespace Enums
     }
     
     //function: InputIsMouseButton
-    inline bool InputIsMouseButton(ssGUI::Enums::GenericButtonAndKeyInput input)
+    inline bool InputIsMouseButton(GenericInput input)
     {
-        return input >= (uint16_t)MouseButton::LEFT && input < (uint16_t)MouseButton::LEFT + (uint16_t)MouseButton::COUNT;
+        return  input >= (uint16_t)MouseButton::LEFT && 
+                input < (uint16_t)MouseButton::LEFT + (uint16_t)MouseButton::COUNT;
     }
 }
 

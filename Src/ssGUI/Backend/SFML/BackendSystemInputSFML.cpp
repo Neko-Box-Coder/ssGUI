@@ -41,7 +41,7 @@ namespace Backend
             vectorRemoveFrom.erase(foundElement);
     }
 
-    void BackendSystemInputSFML::FetchKeysPressed(ssGUI::Enums::GenericButtonAndKeyInput keysPressedDown, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
+    void BackendSystemInputSFML::FetchKeysPressed(ssGUI::Enums::GenericInput keysPressedDown, std::vector<ssGUI::Enums::GenericInput>& destinationKeyPresses)
     {
         ssGUI_LOG_FUNC();
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysPressedDown);
@@ -49,7 +49,7 @@ namespace Backend
             destinationKeyPresses.push_back(keysPressedDown);
     }
 
-    void BackendSystemInputSFML::FetchKeysReleased(ssGUI::Enums::GenericButtonAndKeyInput keysReleased, std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& destinationKeyPresses)
+    void BackendSystemInputSFML::FetchKeysReleased(ssGUI::Enums::GenericInput keysReleased, std::vector<ssGUI::Enums::GenericInput>& destinationKeyPresses)
     {
         ssGUI_LOG_FUNC();        
         auto it = std::find(destinationKeyPresses.begin(), destinationKeyPresses.end(), keysReleased);
@@ -202,7 +202,7 @@ namespace Backend
 
                 if(event.type == sf::Event::KeyPressed)
                 {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
+                    ssGUI::Enums::GenericInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
                     curInfo.CurrentButtonAndKeyChanged = input;
                     FetchKeysPressed(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
@@ -210,7 +210,7 @@ namespace Backend
                 }
                 else if(event.type == sf::Event::KeyReleased)
                 {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
+                    ssGUI::Enums::GenericInput input = SFMLInputConverter::ConvertButtonAndKeys(event);
                     curInfo.CurrentButtonAndKeyChanged = input;
                     FetchKeysReleased(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
@@ -219,7 +219,7 @@ namespace Backend
 
                 if(event.type == sf::Event::MouseButtonPressed)
                 {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
+                    ssGUI::Enums::GenericInput input = SFMLInputConverter::ConvertMouseButtons(event);
                     curInfo.CurrentButtonAndKeyChanged = input;
                     FetchKeysPressed(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
@@ -228,7 +228,7 @@ namespace Backend
                 }
                 else if(event.type == sf::Event::MouseButtonReleased)
                 {
-                    ssGUI::Enums::GenericButtonAndKeyInput input = SFMLInputConverter::ConvertMouseButtons(event);
+                    ssGUI::Enums::GenericInput input = SFMLInputConverter::ConvertMouseButtons(event);
                     curInfo.CurrentButtonAndKeyChanged = input;
                     FetchKeysReleased(input, CurrentKeyPresses);
                     CurrentInputInfos.push_back(curInfo);
@@ -248,22 +248,22 @@ namespace Backend
         }
     }
 
-    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputSFML::GetLastButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputSFML::GetLastButtonAndKeyPresses()
     {
         return LastKeyPresses;
     }
 
-    const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& BackendSystemInputSFML::GetCurrentButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputSFML::GetCurrentButtonAndKeyPresses()
     {
         return CurrentKeyPresses;
     }
 
-    bool BackendSystemInputSFML::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    bool BackendSystemInputSFML::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(LastKeyPresses.begin(), LastKeyPresses.end(), input) != LastKeyPresses.end();
     }
 
-    bool BackendSystemInputSFML::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const
+    bool BackendSystemInputSFML::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }

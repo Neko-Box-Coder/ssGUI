@@ -20,12 +20,12 @@ namespace Backend
     {
         public:
             //function: ConvertButtonAndKeys
-            //This converts sfml key events into <ssGUI::Enums::GenericButtonAndKeyInput> 
-            static ssGUI::Enums::GenericButtonAndKeyInput ConvertButtonAndKeys(const sf::Event& event);
+            //This converts sfml key events into <ssGUI::Enums::GenericInput> 
+            static ssGUI::Enums::GenericInput ConvertButtonAndKeys(const sf::Event& event);
 
             //function: ConvertMouseButtons
             //This converts sfml mouse button events into <Enums::MouseButton>
-            static ssGUI::Enums::GenericButtonAndKeyInput ConvertMouseButtons(const sf::Event& event);
+            static ssGUI::Enums::GenericInput ConvertMouseButtons(const sf::Event& event);
     };
 }
 

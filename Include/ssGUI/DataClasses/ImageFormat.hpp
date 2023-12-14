@@ -14,7 +14,7 @@ namespace ssGUI
     {
         //var: ImgType
         //Indicates the image type
-        ssGUI::Enums::ImageType ImgType = ssGUI::Enums::ImageType::RGB;
+        Enums::ImageType ImgType = Enums::ImageType::RGB;
         
         //var: BitDepthPerChannel
         //How many bits per channel
@@ -54,8 +54,8 @@ namespace ssGUI
         
         inline bool operator== (const ImageFormat& other)
         {
-            bool monoCheck = ImgType == ssGUI::Enums::ImageType::MONO && HasAlpha ? IndexMono == other.IndexMono : true;
-            bool rgbCheck = ImgType == ssGUI::Enums::ImageType::RGB ? 
+            bool monoCheck = ImgType == Enums::ImageType::MONO && HasAlpha ? IndexMono == other.IndexMono : true;
+            bool rgbCheck = ImgType == Enums::ImageType::RGB ? 
                             IndexR == other.IndexR && IndexG == other.IndexG && IndexB == other.IndexB :
                             true;
             bool alphaCheck = HasAlpha ? IndexA == other.IndexA && PreMultipliedAlpha == other.PreMultipliedAlpha : true;

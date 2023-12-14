@@ -3,6 +3,7 @@
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/Enums/WindowMode.hpp"
+
 #include <string>
 #include <functional>
 
@@ -20,36 +21,37 @@ namespace Backend
             virtual ~BackendMainWindowInterface() = 0;
 
             //function: SetWindowPosition
-            //Sets the MainWindow position (distance from top-left) on the screen
+            //Sets the main window position (distance from top-left) on the screen
             virtual void SetWindowPosition(glm::ivec2 pos) = 0;
 
             //function: GetWindowPosition
-            //Gets the MainWindow position (distance from top-left) on the screen
+            //Gets the main window position (distance from top-left) on the screen
             virtual glm::ivec2 GetWindowPosition() const = 0;
 
-            /*function: GetPositionOffset
-            Gets the offset from top-left corner of the rendering area 
-                and the top-left corner of the titlebar.
+            /*
+            function: GetPositionOffset
             
-            The offset should always be positive, meaning adding the offset to 
-                <GetWindowPosition> will get the position of the rendering area.
+            Gets the offsets from the render area to the window 
+              for the top left and bottom right corner.
+            
+            The offsets will always be positive.
             */
-            virtual glm::ivec2 GetPositionOffset() const = 0;
+            virtual void GetDecorationOffsets(glm::ivec2& topLeft, glm::ivec2& bottomRight) const = 0;
 
             //function: SetWindowSize
-            //Sets the size of the main window
+            //Sets the size of the main window, not to be confused with <SetRenderSize>
             virtual void SetWindowSize(glm::ivec2 size) = 0;
 
             //function: GetWindowSize
-            //Gets the size of the window
+            //Gets the size of the main window, not to be confused with <GetRenderSize>
             virtual glm::ivec2 GetWindowSize() const = 0;
 
             //function: SetRenderSize
-            //Sets the rendering (client) size of the window
+            //Sets the rendering (client) size of the window, which does not include window decorations
             virtual void SetRenderSize(glm::ivec2 size) = 0;
             
             //function: GetRenderSize
-            //Gets the rendering (client) size of the window
+            //Gets the rendering (client) size of the window, which does not include window decorations
             virtual glm::ivec2 GetRenderSize() const = 0;
 
             //function: IsClosed
@@ -57,34 +59,34 @@ namespace Backend
             virtual bool IsClosed() const = 0;
 
             //function: Close
-            //Closes the main window
+            //Closes the main window, which will trigger the close events added by <AddOnCloseEvent>
             virtual void Close() = 0;
             
             //function: AbortClosing
             //Stops the main window from closing. 
-            //Needs to be called when it is being closed in order for it to work.
+            //Needs to be called inside the events added by <AddOnCloseEvent>
             virtual void AbortClosing() = 0;
 
             //function: AddOnCloseEvent
-            //Adds the function to be called when the main window closes. 
-            //Returns an index that can be used to remove the function for being called.
+            //Adds the callback to be called when the main window closes. 
+            //Returns an id that can be used to remove the function for being called.
             virtual int AddOnCloseEvent(std::function<void()> func) = 0;
 
             //function: RemoveOnCloseEvent
             //Removes the function to be called when the main window closes.
-            virtual void RemoveOnCloseEvent(int index) = 0;
+            virtual void RemoveOnCloseEvent(int id) = 0;
 
             //function: SetTitle
             //Sets the title of the main window
-            virtual void SetTitle(std::wstring title) = 0;
+            virtual void SetTitle(std::u32string title) = 0;
 
             //function: GetTitle
             //Gets the title of the main window
-            virtual std::wstring GetTitle() const = 0;
+            virtual std::u32string GetTitle() const = 0;
 
             //function: SetIcon
             //Sets the icon of the main window
-            virtual void SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage) = 0;
+            virtual void SetIcon(const BackendImageInterface& iconImage) = 0;
 
             //function: SetVisible
             //Sets if the main window is visible or not
@@ -113,13 +115,13 @@ namespace Backend
             virtual bool IsFocused() const = 0;
 
             //function: AddFocusChangedByUserEvent
-            //Adds the function to be called when the main window gained or lost focus. 
-            //Returns an index that can be used to remove the function for being called.
+            //Adds the callback to be called when the main window gained or lost focus. 
+            //Returns an id that can be used to remove the function for being called.
             virtual int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) = 0;
 
             //function: RemoveFocusChangedByUserEvent
             //Removes the function to be called when the main window gained or lost focus
-            virtual void RemoveFocusChangedByUserEvent(int index) = 0;
+            virtual void RemoveFocusChangedByUserEvent(int id) = 0;
 
             //function: SetAntiAliasingLevel
             //Sets the main window's anti aliasing level
@@ -129,15 +131,6 @@ namespace Backend
             //Gets the main window's anti aliasing level
             virtual int GetAntiAliasingLevel() const = 0;
 
-            //function: SetTitlebar
-            //Sets if the main window has titlebar (and border) or not
-            virtual void SetTitlebar(bool titlebar) = 0;
-
-            //function: HasTitlebar
-            //Returns if the main window has titlebar (and border) or not. 
-            //Note that if the main window is not in normal mode, this will return false.
-            virtual bool HasTitlebar() const = 0;
-
             //function: SetResizable
             //Sets if the main window is resizable or not
             virtual void SetResizable(bool resizable) = 0;
@@ -146,6 +139,8 @@ namespace Backend
             //Returns if the main window is resizable or not. 
             //Note that if the main window is not in normal mode, this will return false.
             virtual bool IsResizable() const = 0;
+            
+            //TODO: Add user handled moving and resizing
 
             //function: SetCloseButton
             //Sets if the main window has close button or not
@@ -158,17 +153,18 @@ namespace Backend
 
             //function: SetWindowMode
             //Sets the main window mode
-            virtual void SetWindowMode(ssGUI::Enums::WindowMode WindowMode) = 0;
+            virtual void SetWindowMode(Enums::WindowMode WindowMode) = 0;
 
             //function: GetWindowMode
             //Gets the main window mode
-            virtual ssGUI::Enums::WindowMode GetWindowMode() const = 0;
+            virtual Enums::WindowMode GetWindowMode() const = 0;
 
             //function: SetDrawingContext
             //Sets this window as the current MainWindow context for drawing
             virtual bool SetDrawingContext() = 0;
             
-            /*function: Clone
+            /*
+            function: Clone
             Clones the current main window with the same settings, 
               dispose it with <ssGUI::Factory::Dispose> when not needed.
             

@@ -12,7 +12,7 @@ namespace ssGUI
 //namespace: ssGUI::Enums
 namespace Enums
 {
-    using GenericButtonAndKeyInput = uint16_t;
+    using GenericInput = uint16_t;
     
     /*enum: LetterKey
     
@@ -89,7 +89,7 @@ namespace Enums
     }
     
     //function: InputIsLetterKey
-    inline bool InputIsLetterKey(ssGUI::Enums::GenericButtonAndKeyInput input)
+    inline bool InputIsLetterKey(ssGUI::Enums::GenericInput input)
     {
         return input >= (uint16_t)LetterKey::A && input < (uint16_t)LetterKey::A + (uint16_t)LetterKey::COUNT;
     }

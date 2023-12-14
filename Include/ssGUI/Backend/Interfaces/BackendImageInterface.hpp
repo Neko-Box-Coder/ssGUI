@@ -1,8 +1,9 @@
 #ifndef SSGUI_IMAGE_INTERFACE_HPP
 #define SSGUI_IMAGE_INTERFACE_HPP
 
-#include <string>
 #include "ssGUI/DataClasses/ImageFormat.hpp"
+
+#include <string>
 
 namespace ssGUI
 { 
@@ -40,7 +41,7 @@ namespace Backend
             //function: LoadRawFromMemory
             //This loads an image with specified image format in memory 
             virtual bool LoadRawFromMemory( const void* dataPtr, 
-                                            ssGUI::ImageFormat format, 
+                                            ImageFormat format, 
                                             glm::ivec2 imageSize) = 0;
 
             //function: GetSize
@@ -49,7 +50,7 @@ namespace Backend
 
             //function: GetPixelPtr
             //Returns the pixel data pointer of the image and also the format of the image
-            virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const = 0;
+            virtual void* GetPixelPtr(ImageFormat& format) const = 0;
             
             //function: UpdateCache
             //Updates the drawing interfaces' cache with the current image

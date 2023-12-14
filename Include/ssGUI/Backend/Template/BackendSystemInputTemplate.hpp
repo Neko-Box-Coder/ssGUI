@@ -29,19 +29,19 @@ namespace Backend
 
             //function: GetLastButtonAndKeyPresses
             //See <BackendSystemInputInterface::GetLastButtonAndKeyPresses>
-            const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetLastButtonAndKeyPresses() override;
+            const std::vector<ssGUI::Enums::GenericInput>& GetLastButtonAndKeyPresses() override;
             
             //function: GetCurrentButtonAndKeyPresses
             //See <BackendSystemInputInterface::GetCurrentButtonAndKeyPresses>
-            const std::vector<ssGUI::Enums::GenericButtonAndKeyInput>& GetCurrentButtonAndKeyPresses() override;
+            const std::vector<ssGUI::Enums::GenericInput>& GetCurrentButtonAndKeyPresses() override;
 
             //function: IsButtonOrKeyPressExistLastFrame
             //See <BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
+            bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const override;
 
             //function: IsButtonOrKeyPressExistCurrentFrame
             //See <BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame>
-            bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericButtonAndKeyInput input) const override;
+            bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const override;
 
             //function: GetLastMousePosition
             //See <BackendSystemInputInterface::GetLastMousePosition>
