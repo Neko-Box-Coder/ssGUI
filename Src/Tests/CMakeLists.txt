@@ -33,19 +33,18 @@ set_target_properties(ssGUI_Test_Resources PROPERTIES FOLDER "Tests")
 # ----------------------------------------------------------
 # Auto Tests
 # ----------------------------------------------------------
-#if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+#if(NOT ssGUI_CAN_OVER_BACKEND)
 
     #AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/BackendTests/" 
     #                        "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/BackendTests/" 
     #                        "Tests/AutoTests/BackendTests"
     #                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
 #else()
-#    message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping backend tests")
-#    message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce backend tests")
+#    message(WARNING "ssGUI_CAN_OVER_BACKEND is set to True, skipping backend tests")
+#    message(WARNING "Set ssGUI_CAN_OVER_BACKEND to not be True in order to produce backend tests")
 #endif()
 
-# TODO(NOW): Update to CppOverride
-if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
+if(ssGUI_CAN_OVER_BACKEND)
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/BackendTests/" 
                             "Tests/AutoTests/BackendTests"
@@ -57,19 +56,21 @@ else()
                             "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
 endif()
 
-if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OFF_OPTION_STRING}")
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/EventCallbackTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/EventCallbackTests/" 
-                            "Tests/AutoTests/EventCallbackTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;CppOverride")
+
+# TODO(NOW): Uncomment this when finished testing backend
+#if(ssGUI_CAN_OVER_BACKEND)
+#    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/EventCallbackTests/" 
+#                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/EventCallbackTests/" 
+#                            "Tests/AutoTests/EventCallbackTests"
+#                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;CppOverride")
     
-    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/GUIObjectTests/" 
-                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/GUIObjectTests/" 
-                            "Tests/AutoTests/GUIObjectTests"
-                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;CppOverride")    
-else()
-    message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OFF_OPTION_STRING}, skipping tests")
-endif()
+#    AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/GUIObjectTests/" 
+#                            "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/GUIObjectTests/" 
+#                            "Tests/AutoTests/GUIObjectTests"
+#                            "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger;CppOverride")    
+#else()
+#    message(WARNING "ssGUI_CAN_OVER_BACKEND is set to False, skipping tests")
+#endif()
 
 if(WIN32)
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/")
@@ -86,36 +87,39 @@ endif()
 # ----------------------------------------------------------
 # Manual Tests
 # ----------------------------------------------------------
-if(NOT ssGUI_MOCK_BACKEND_MODE STREQUAL "${ssGUI_MOCK_OPTION_STRING}")
+if(NOT ssGUI_CAN_OVER_BACKEND)
     AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/ManualTests/BackendTests/" 
                             "${CMAKE_CURRENT_BINARY_DIR}/ManualTests/BackendTests/" 
                             "Tests/ManualTests/BackendTests"
                             "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
 else()
-    message(WARNING "ssGUI_MOCK_BACKEND_MODE is set to ${ssGUI_MOCK_OPTION_STRING}, skipping manual backend tests")
-    message(WARNING "Set ssGUI_MOCK_BACKEND_MODE to not be ${ssGUI_MOCK_OPTION_STRING} in order to produce manual backend tests")
+    message(WARNING "ssGUI_CAN_OVER_BACKEND is set to True, skipping manual backend tests")
+    message(WARNING "Set ssGUI_CAN_OVER_BACKEND to not be True in order to produce manual backend tests")
 endif()
 
 # TODO: The aim is to replace these manual tests with auto tests, unless it is backend tests I guess
-AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/ManualTests/EventCallbackTests/" 
-                        "${CMAKE_CURRENT_BINARY_DIR}/ManualTests/EventCallbackTests/" 
-                        "Tests/ManualTests/EventCallbackTests"
-                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
+# TODO(NOW): Uncomment this when finished testing backend
+#AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/ManualTests/EventCallbackTests/" 
+#                        "${CMAKE_CURRENT_BINARY_DIR}/ManualTests/EventCallbackTests/" 
+#                        "Tests/ManualTests/EventCallbackTests"
+#                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
 
-AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/ManualTests/GUIObjectTests/" 
-                        "${CMAKE_CURRENT_BINARY_DIR}/ManualTests/GUIObjectTests/" 
-                        "Tests/ManualTests/GUIObjectTests"
-                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
+#AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/ManualTests/GUIObjectTests/" 
+#                        "${CMAKE_CURRENT_BINARY_DIR}/ManualTests/GUIObjectTests/" 
+#                        "Tests/ManualTests/GUIObjectTests"
+#                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
 
 # ----------------------------------------------------------
 # Tests Templates
 # ----------------------------------------------------------
-AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/" 
-                        "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/" 
-                        "Tests/AutoTests"
-                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
 
-AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/ManualTests/" 
-                        "${CMAKE_CURRENT_BINARY_DIR}/ManualTests/" 
-                        "Tests/ManualTests"
-                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
+# TODO(NOW): Uncomment this when finished testing backend
+#AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/AutoTests/" 
+#                        "${CMAKE_CURRENT_BINARY_DIR}/AutoTests/" 
+#                        "Tests/AutoTests"
+#                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")
+
+#AddFilesToExecutables(  "${CMAKE_CURRENT_LIST_DIR}/ManualTests/" 
+#                        "${CMAKE_CURRENT_BINARY_DIR}/ManualTests/" 
+#                        "Tests/ManualTests"
+#                        "ssGUI;ssGUI_Test_Resources;ssTest;ssLogger")

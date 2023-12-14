@@ -241,6 +241,7 @@ pipelines:
             - plugin: *InitEmbed2C
             - plugin: *BuildEmbed2C
             
+            # TODO(NOW): Update build options
             - plugin:
                 <<: *ShellRun
                 run_if: passed

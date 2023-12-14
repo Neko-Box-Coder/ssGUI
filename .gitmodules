@@ -16,3 +16,6 @@
 [submodule "External/CppOverride"]
 	path = External/CppOverride
 	url = https://github.com/Neko-Box-Coder/CppOverride.git
+[submodule "External/SDL"]
+	path = External/SDL
+	url = https://github.com/libsdl-org/SDL.git
