@@ -19,10 +19,10 @@ namespace Backend
     Variables & Constructor:
     ============================== C++ ==============================
     private:
-            static int MainWindowCount;
-            static std::vector<BackendDrawingInterface*> BackendDrawingInterfaces;
-            static std::vector<BackendMainWindowInterface*> BackendMainWindowInterfaces;
-            static BackendSystemInputInterface* CurrentBackendSystemInputInterface;
+        static int MainWindowCount;
+        static std::vector<BackendDrawingInterface*> BackendDrawingInterfaces;
+        static std::vector<BackendMainWindowInterface*> BackendMainWindowInterfaces;
+        static BackendSystemInputInterface* CurrentBackendSystemInputInterface;
     =================================================================
     ============================== C++ ==============================
     int BackendManager::MainWindowCount = 0;

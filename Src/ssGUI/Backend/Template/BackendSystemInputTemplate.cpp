@@ -27,16 +27,16 @@ namespace Backend
 
     }
 
+    std::vector<Enums::GenericInput> DummyInputList;
+    
     const std::vector<Enums::GenericInput>& BackendSystemInputTemplate::GetLastInputs() const
     {
-        std::vector<Enums::GenericInput> t;
-        return t;
+        return DummyInputList;
     }
     
     const std::vector<Enums::GenericInput>& BackendSystemInputTemplate::GetCurrentInputs() const
     {
-        std::vector<Enums::GenericInput> t;
-        return t;
+        return DummyInputList;
     }
 
     bool BackendSystemInputTemplate::IsInputExistLastFrame(Enums::GenericInput input) const
@@ -72,16 +72,16 @@ namespace Backend
         return glm::vec2();
     }
 
+    std::vector<RealtimeInputInfo> DummyRealtimeInputList;
+
     const std::vector<RealtimeInputInfo>& BackendSystemInputTemplate::GetLastRealtimeInputs() const
     {
-        std::vector<RealtimeInputInfo> t;
-        return t;
+        return DummyRealtimeInputList;
     }
 
     const std::vector<RealtimeInputInfo>& BackendSystemInputTemplate::GetCurrentRealtimeInputs() const
     {
-        std::vector<RealtimeInputInfo> t;
-        return t;
+        return DummyRealtimeInputList;
     }
 
     void BackendSystemInputTemplate::GetTextInput(std::u32string& outText) const

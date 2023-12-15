@@ -6,6 +6,16 @@ CompileFlags:                     # Tweak the parse settings
   #Compiler: clang++               # Change argv[0] of compile flags to `clang++`
 
 Diagnostics:
-  Suppress: [-Wreturn-local-addr, -Wsign-compare, -Wunused-variable, -Wunused-parameter, -Wreturn-stack-address, -Wdefaulted-function-deleted, -Wgnu-zero-variadic-macro-arguments]
+  Suppress: 
+  [
+    -Wsign-compare, 
+    -Wunused-variable, 
+    -Wunused-parameter, 
+    -Wswitch, 
+    -Wgnu-zero-variadic-macro-arguments,
+    -Wdefaulted-function-deleted
+  ]
+  
+  #Suppress: [-Wreturn-local-addr, -Wsign-compare, -Wunused-variable, -Wunused-parameter, -Wreturn-stack-address, -Wdefaulted-function-deleted, -Wgnu-zero-variadic-macro-arguments]
 
   

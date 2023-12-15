@@ -41,9 +41,10 @@ ssGUI_DATA_TAG
 ssGUI_EXT_TAG
 ssGUI_GUI_OBJECT_TAG")
 
-set(ssGUI_LOG_MANAGER_STATE OFF CACHE BOOL "Log all the state in ssGUIManager")
-set(ssGUI_USE_LOG_FUNC      OFF CACHE BOOL "Logs all recorded function call")
-set(ssGUI_CAN_OVER_BACKEND  OFF CACHE BOOL "Ability to override backend functions, mostly for mocking")
+set(ssGUI_LOG_MANAGER_STATE     OFF CACHE BOOL "Log all the state in ssGUIManager")
+set(ssGUI_USE_LOG_FUNC          OFF CACHE BOOL "Logs all recorded function call")
+set(ssGUI_CAN_OVERRIDE_BACKEND  OFF CACHE BOOL "Ability to override backend functions, 
+mostly for mocking")
 
 #Dropdown
 set_property(CACHE ssGUI_LOG_LEVEL PROPERTY STRINGS "None" 
@@ -73,8 +74,8 @@ set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "SDL-2"
                                                         "Template")
 
 if(ssGUI_MAIN_BACKEND STREQUAL "Mock")
-    unset(ssGUI_CAN_OVER_BACKEND CACHE)
-    set(ssGUI_CAN_OVER_BACKEND ON)
+    unset(ssGUI_CAN_OVERRIDE_BACKEND CACHE)
+    set(ssGUI_CAN_OVERRIDE_BACKEND ON)
 endif()
 
 # Debug Variables
@@ -131,11 +132,12 @@ if(ssGUI_OUTPUT_STATIC)
                             please set BUILD_SHARED_LIBS to OFF")
     endif()
 
+    # TODO(NOW): Uncomment this when finished testing backend
     add_library(ssGUI STATIC
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
+    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
+    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
+    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 else()
     #if(NOT BUILD_SHARED_LIBS)
@@ -143,11 +145,12 @@ else()
     #                        please set BUILD_SHARED_LIBS to ON")
     #endif()
     
+    # TODO(NOW): Uncomment this when finished testing backend
     add_library(ssGUI SHARED
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
+    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
-    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
+    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
+    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 endif()
 
@@ -158,7 +161,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
                                             -Wno-sign-compare 
                                             -Wno-unused-variable 
                                             -Wno-unused-parameter 
-                                            #-Wno-switch 
+                                            -Wno-switch 
                                             -Wextra 
                                             -pedantic 
                                             -Werror)
@@ -172,9 +175,11 @@ add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend")
 
 # Adding Main Backend
 if(ssGUI_MAIN_BACKEND STREQUAL "SDL-2")
-    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/SDL-2")
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/SDL2")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/FreeType")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/stb_image")
+    
+    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_SDL2=1)
     
 #elseif(ssGUI_MAIN_BACKEND STREQUAL "Win32_OpenGL3_3")
 #    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Win32_OpenGL3_3")
@@ -183,9 +188,11 @@ if(ssGUI_MAIN_BACKEND STREQUAL "SDL-2")
 
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Template")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Template")
+    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_TEMPLATE=1)
 
 elseif(ssGUI_MAIN_BACKEND STREQUAL "Mock")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/Mocks")
+    target_compile_definitions(ssGUI PUBLIC SSGUI_MAIN_BACKEND_MOCK=1)
 
 else()
     message(FATAL_ERROR "Invalid Backend")
@@ -394,7 +401,7 @@ endif()
 # CppOverride
 # ==========================================================
 
-if(ssGUI_CAN_OVER_BACKEND)
+if(ssGUI_CAN_OVERRIDE_BACKEND)
     add_subdirectory(   "${CMAKE_CURRENT_LIST_DIR}/External/CppOverride" 
                         "${CMAKE_CURRENT_BINARY_DIR}/External/CppOverride")
     
@@ -414,6 +421,8 @@ if(ssGUI_CAN_OVER_BACKEND)
     else()
         target_link_libraries(ssGUI PRIVATE CppOverride)
     endif()
+    
+    target_compile_definitions(ssGUI PUBLIC SSGUI_OVERRIDE_BACKEND=1)
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "SDL-2")
