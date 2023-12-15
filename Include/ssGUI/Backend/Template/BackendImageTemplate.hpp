@@ -24,7 +24,7 @@ namespace Backend
 
             //function: GetRawHandle
             //See <BackendImageInterface::GetRawHandle>
-            void* GetRawHandle() override;
+            void* GetRawHandle() const override;
 
             //function: IsValid
             //See <BackendImageInterface::IsValid>
@@ -40,7 +40,9 @@ namespace Backend
 
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            bool LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) override;
+            bool LoadRawFromMemory( const void * dataPtr, 
+                                    ImageFormat format, 
+                                    glm::ivec2 imageSize) override;
             
             //function: GetSize
             //See <BackendImageInterface::GetSize>
@@ -48,19 +50,21 @@ namespace Backend
 
             //function: GetPixelPtr
             //See <BackendImageInterface::GetPixelPtr>
-            void* GetPixelPtr(ssGUI::ImageFormat& format) const override;
+            void* GetPixelPtr(ImageFormat& format) const override;
             
             //function: UpdateCache
             //See <BackendImageInterface::UpdateCache>
             void UpdateCache() override;
             
+            using DrawingInterface = ssGUI::Backend::BackendDrawingInterface;
+            
             //function: Internal_AddBackendDrawingRecord
             //See <BackendImageInterface::Internal_AddBackendDrawingRecord>
-            void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing) override;
 
             //function: Internal_RemoveBackendDrawingRecord
             //See <BackendImageInterface::Internal_RemoveBackendDrawingRecord>
-            void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void Internal_RemoveBackendDrawingRecord(DrawingInterface* backendDrawing) override;
 
             //function: Clone
             //See <BackendImageInterface::Clone>

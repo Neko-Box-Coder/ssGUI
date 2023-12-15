@@ -26,7 +26,7 @@ namespace Backend
     class BackendSystemInputInterface
     {   
         public:
-            BackendSystemInputInterface(BackendMainWindowInterface* mainWindowInterface){}
+            BackendSystemInputInterface(){}
             virtual ~BackendSystemInputInterface() = 0;
             
             //function: UpdateInput
@@ -37,11 +37,11 @@ namespace Backend
 
             //function: GetLastInputs
             //Get the key presses from last frame
-            virtual const std::vector<GenericInputs>& GetLastInputs() = 0;
+            virtual const std::vector<GenericInputs>& GetLastInputs() const = 0;
             
             //function: GetCurrentInputs
             //Get the key presses from current frame
-            virtual const std::vector<GenericInputs>& GetCurrentInputs() = 0;
+            virtual const std::vector<GenericInputs>& GetCurrentInputs() const = 0;
 
             //function: IsInputExistLastFrame
             //Check if the button or key is pressed last frame
@@ -195,7 +195,7 @@ namespace Backend
 
             //function: GetCurrentCustomCursorName
             //Gets the name of the current custom cursor. Empty string if nothing is set.
-            virtual std::string GetCurrentCustomCursorName() = 0;
+            virtual std::string GetCurrentCustomCursorName() const = 0;
             
             //function: GetCustomCursor
             //Copies the (resized) custom cursor image data to customCursor image data and 
@@ -207,7 +207,7 @@ namespace Backend
 
             //function: HasCustomCursor
             //Returns if the target custom cursor with cursorName exists
-            virtual bool HasCustomCursor(std::string cursorName) = 0;
+            virtual bool HasCustomCursor(std::string cursorName) const = 0;
 
             //function: UpdateCursor
             //Updates the cursor. This needs to be called after a new cursor is set.

@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_DRAWING_TEMPLATE_H
-#define SSGUI_BACKEND_DRAWING_TEMPLATE_H
+#ifndef SSGUI_BACKEND_DRAWING_TEMPLATE_HPP
+#define SSGUI_BACKEND_DRAWING_TEMPLATE_HPP
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
@@ -13,13 +13,16 @@ namespace Backend
     class BackendDrawingTemplate : public BackendDrawingInterface
     {
         private:
+            BackendMainWindowInterface* MainWindowInterface;
+        
             BackendDrawingTemplate& operator=(BackendDrawingTemplate const& other);
 
         protected:
-            BackendDrawingTemplate(BackendDrawingTemplate const& other);
+            BackendDrawingTemplate( BackendDrawingTemplate const& other,
+                                    BackendMainWindowInterface* otherMainWindow);
         
         public:
-            BackendDrawingTemplate();
+            BackendDrawingTemplate(BackendMainWindowInterface* mainWindowInterface);
             ~BackendDrawingTemplate() override;
 
             //function: SaveState
@@ -30,9 +33,9 @@ namespace Backend
             //See <BackendDrawingInterface::RestoreDrawingState>
             void RestoreDrawingState() override;
 
-            //function: DrawEntities
-            //See <BackendDrawingInterface::DrawEntities>
-            bool DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities) override;
+            //function: CreateDrawingEntities
+            //See <BackendDrawingInterface::CreateDrawingEntities>
+            bool CreateDrawingEntities(const std::vector<DrawingEntity>& entities) override;
 
             //function: DrawToBackBuffer
             //See <BackendDrawingInterface::DrawToBackBuffer>
@@ -48,15 +51,15 @@ namespace Backend
 
             //function: AddImageCache
             //See <BackendDrawingInterface::AddImageCache>
-            void AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            void AddImageCache(BackendImageInterface* backendImage) override;
             
             //function: RemoveImageCache
             //See <BackendDrawingInterface::RemoveImageCache>
-            void RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            void RemoveImageCache(BackendImageInterface* backendImage) override;
             
             //function: GetRawImageCacheHandle
             //See <BackendDrawingInterface::GetRawImageCacheHandle>
-            void* GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage) override;
+            void* GetRawImageCacheHandle(BackendImageInterface* backendImage) const override;
     };
 }
 

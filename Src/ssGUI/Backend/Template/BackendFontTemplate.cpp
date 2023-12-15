@@ -27,32 +27,35 @@ namespace Backend
         return true;
     }
 
-    ssGUI::CharacterRenderInfo BackendFontTemplate::GetCharacterRenderInfo(wchar_t charUnicode, float charSize)
+    CharacterRenderInfo BackendFontTemplate::GetCharacterRenderInfo(char32_t charUnicode, 
+                                                                    float charSize) const
     {
-        return ssGUI::CharacterRenderInfo();
+        return CharacterRenderInfo();
     }
     
-    bool BackendFontTemplate::IsCharacterSupported(wchar_t charUnicode)
+    bool BackendFontTemplate::IsCharacterSupported(char32_t charUnicode) const
     {
         return true;
     }
     
-    float BackendFontTemplate::GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize)
+    float BackendFontTemplate::GetKerning(  char32_t charUnicode, 
+                                            char32_t secondCharUnicode, 
+                                            float charSize) const
     {
         return 0;
     }
     
-    float BackendFontTemplate::GetLineSpacing(float charSize)
+    float BackendFontTemplate::GetLineSpacing(float charSize) const
     {
         return 0;
     }
     
-    float BackendFontTemplate::GetUnderlineOffset(float charSize)
+    float BackendFontTemplate::GetUnderlineOffset(float charSize) const
     {
         return 0;
     }
     
-    float BackendFontTemplate::GetUnderlineThickness(float charSize)
+    float BackendFontTemplate::GetUnderlineThickness(float charSize) const
     {
         return 0;
     }
@@ -62,22 +65,24 @@ namespace Backend
         return true;
     }
 
-    bool BackendFontTemplate::LoadFromMemory(void* dataPtr, int lengthInBytes)
+    bool BackendFontTemplate::LoadFromMemory(const void* dataPtr, int lengthInBytes)
     {
         return true;
     }
     
-    bool BackendFontTemplate::GetFixedAvailableFontSizes(std::vector<float>& fontSizes)
+    bool BackendFontTemplate::GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const
     {
         return true;
     }
     
-    bool BackendFontTemplate::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
+    bool BackendFontTemplate::GetCharacterImage(char32_t charUnicode, 
+                                                float charSize, 
+                                                ImageData& characterImage) const
     {
         return true;
     }
 
-    void* BackendFontTemplate::GetRawHandle()
+    void* BackendFontTemplate::GetRawHandle() const
     {
         return nullptr;
     }

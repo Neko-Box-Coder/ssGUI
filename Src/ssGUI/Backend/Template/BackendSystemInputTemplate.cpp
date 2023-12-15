@@ -27,51 +27,44 @@ namespace Backend
 
     }
 
-    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputTemplate::GetLastButtonAndKeyPresses()
+    const std::vector<Enums::GenericInput>& BackendSystemInputTemplate::GetLastInputs() const
     {
-        std::vector<ssGUI::Enums::GenericInput> t;
+        std::vector<Enums::GenericInput> t;
         return t;
     }
     
-    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputTemplate::GetCurrentButtonAndKeyPresses()
+    const std::vector<Enums::GenericInput>& BackendSystemInputTemplate::GetCurrentInputs() const
     {
-        std::vector<ssGUI::Enums::GenericInput> t;
+        std::vector<Enums::GenericInput> t;
         return t;
     }
 
-    bool BackendSystemInputTemplate::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const
+    bool BackendSystemInputTemplate::IsInputExistLastFrame(Enums::GenericInput input) const
     {
         return true;
     }
 
-    bool BackendSystemInputTemplate::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const
+    bool BackendSystemInputTemplate::IsInputExistCurrentFrame(Enums::GenericInput input) const
     {
         return true;
     }
 
-    glm::ivec2 BackendSystemInputTemplate::GetLastMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 
+    BackendSystemInputTemplate::GetLastMousePosition(BackendMainWindowInterface* mainWindow) const
     {
         return glm::ivec2();
     }
     
-    glm::ivec2 BackendSystemInputTemplate::GetCurrentMousePosition(ssGUI::MainWindow* mainWindow) const
+    glm::ivec2 
+    BackendSystemInputTemplate::GetCurrentMousePosition(BackendMainWindowInterface* mainWindow) const
     {
         return glm::ivec2();
     }
     
-    void BackendSystemInputTemplate::SetMousePosition(glm::ivec2 position, ssGUI::MainWindow* mainWindow)
+    void BackendSystemInputTemplate::SetMousePosition(  glm::ivec2 position, 
+                                                        BackendMainWindowInterface* mainWindow)
     {
 
-    }
-
-    bool BackendSystemInputTemplate::GetLastMouseButton(ssGUI::Enums::MouseButton button) const
-    {
-        return true;
-    }
-    
-    bool BackendSystemInputTemplate::GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const
-    {
-        return true;
     }
 
     glm::vec2 BackendSystemInputTemplate::GetCurrentMouseScrollDelta() const
@@ -79,34 +72,42 @@ namespace Backend
         return glm::vec2();
     }
 
-    const std::vector<ssGUI::RealtimeInputInfo>& BackendSystemInputTemplate::GetLastRealtimeInputs() const
+    const std::vector<RealtimeInputInfo>& BackendSystemInputTemplate::GetLastRealtimeInputs() const
     {
-        std::vector<ssGUI::RealtimeInputInfo> t;
+        std::vector<RealtimeInputInfo> t;
         return t;
     }
 
-    const std::vector<ssGUI::RealtimeInputInfo>& BackendSystemInputTemplate::GetCurrentRealtimeInputs() const
+    const std::vector<RealtimeInputInfo>& BackendSystemInputTemplate::GetCurrentRealtimeInputs() const
     {
-        std::vector<ssGUI::RealtimeInputInfo> t;
+        std::vector<RealtimeInputInfo> t;
         return t;
     }
 
-    std::wstring BackendSystemInputTemplate::GetTextInput() const
+    void BackendSystemInputTemplate::GetTextInput(std::u32string& outText) const
     {
-        return L"";
+    
     }
     
-    void BackendSystemInputTemplate::SetCursorType(ssGUI::Enums::CursorType cursorType)
+    void BackendSystemInputTemplate::GetTextInput(std::string& outText) const
+    {
+    
+    }
+    
+    void BackendSystemInputTemplate::SetCursorType(Enums::CursorType cursorType)
     {
 
     }
 
-    ssGUI::Enums::CursorType BackendSystemInputTemplate::GetCursorType() const
+    Enums::CursorType BackendSystemInputTemplate::GetCursorType() const
     {
-        return ssGUI::Enums::CursorType::NORMAL;
+        return Enums::CursorType::NORMAL;
     }
 
-    void BackendSystemInputTemplate::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    void BackendSystemInputTemplate::CreateCustomCursor(BackendImageInterface* customCursor, 
+                                                        std::string cursorName, 
+                                                        glm::ivec2 cursorSize, 
+                                                        glm::ivec2 hotspot)
     {
 
     }
@@ -116,22 +117,25 @@ namespace Backend
 
     }
 
-    void BackendSystemInputTemplate::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
+    void BackendSystemInputTemplate::GetCurrentCustomCursor(BackendImageInterface& customCursor, 
+                                                            glm::ivec2& hotspot) const
     {
 
     }
 
-    std::string BackendSystemInputTemplate::GetCurrentCustomCursorName()
+    std::string BackendSystemInputTemplate::GetCurrentCustomCursorName() const
     {
         return "";
     }
     
-    void BackendSystemInputTemplate::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    void BackendSystemInputTemplate::GetCustomCursor(   BackendImageInterface& customCursor, 
+                                                        std::string cursorName, 
+                                                        glm::ivec2& hotspot) const
     {
 
     }
 
-    bool BackendSystemInputTemplate::HasCustomCursor(std::string cursorName)
+    bool BackendSystemInputTemplate::HasCustomCursor(std::string cursorName) const
     {
         return true;
     }
@@ -141,7 +145,8 @@ namespace Backend
 
     }
     
-    int BackendSystemInputTemplate::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    int BackendSystemInputTemplate::AddRawEventHandler(std::function<bool(  BackendMainWindowInterface*, 
+                                                                            void*)> handler)
     {
         return 0;
     }
@@ -161,32 +166,43 @@ namespace Backend
         return true;
     }
 
-    bool BackendSystemInputTemplate::ClipbaordHasText()
+    bool BackendSystemInputTemplate::ClipbaordHasText() const
     {
         return true;
     }
     
-    bool BackendSystemInputTemplate::ClipbaordHasImage()
+    bool BackendSystemInputTemplate::ClipbaordHasImage() const
     {
         return true;
     }
 
-    bool BackendSystemInputTemplate::SetClipboardImage(const ssGUI::ImageData& imgData)
+    bool BackendSystemInputTemplate::SetClipboardImage(const BackendImageInterface& imgData)
     {
         return true;
     }
     
-    bool BackendSystemInputTemplate::SetClipboardText(const std::wstring& str)
+    bool BackendSystemInputTemplate::SetClipboardText(const std::u32string& str)
     {
         return true;
     }
     
-    bool BackendSystemInputTemplate::GetClipboardImage(ssGUI::ImageData& imgData)
+    bool BackendSystemInputTemplate::SetClipboardText(const std::string& str)
     {
         return true;
     }
 
-    bool BackendSystemInputTemplate::GetClipboardText(std::wstring& str)
+    
+    bool BackendSystemInputTemplate::GetClipboardImage(BackendImageInterface& imgData) const
+    {
+        return true;
+    }
+
+    bool BackendSystemInputTemplate::GetClipboardText(std::u32string& str) const
+    {
+        return true;
+    }
+    
+    bool BackendSystemInputTemplate::GetClipboardText(std::string& str) const
     {
         return true;
     }

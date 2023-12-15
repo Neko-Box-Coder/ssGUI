@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE_H
-#define SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE_H
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE_HPP
+#define SSGUI_BACKEND_MAIN_WINDOW_TEMPLATE_HPP
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
@@ -30,9 +30,9 @@ namespace Backend
             //See <BackendMainWindowInterface::GetWindowPosition>
             glm::ivec2 GetWindowPosition() const override;
 
-            //function: GetPositionOffset
-            //See <BackendMainWindowInterface::GetPositionOffset>
-            glm::ivec2 GetPositionOffset() const override;
+            //function: GetDecorationOffsets
+            //See <BackendMainWindowInterface::GetDecorationOffsets>
+            void GetDecorationOffsets(glm::ivec2& topLeft, glm::ivec2& bottomRight) const override;
 
             //function: SetWindowSize
             //See <BackendMainWindowInterface::SetWindowSize>
@@ -68,15 +68,23 @@ namespace Backend
 
             //function: RemoveOnCloseEvent
             //See <BackendMainWindowInterface::RemoveOnCloseEvent>
-            void RemoveOnCloseEvent(int index) override;
+            void RemoveOnCloseEvent(int id) override;
 
             //function: SetTitle
             //See <BackendMainWindowInterface::SetTitle>
-            void SetTitle(std::wstring title) override;
+            void SetTitle(std::u32string title) override;
+
+            //function: SetTitle
+            //See <BackendMainWindowInterface::SetTitle>
+            void SetTitle(std::string title) override;
 
             //function: GetTitle
             //See <BackendMainWindowInterface::GetTitle>
-            std::wstring GetTitle() const override;
+            void GetTitle(std::u32string& title) const override;
+
+            //function: GetTitle
+            //See <BackendMainWindowInterface::GetTitle>
+            void GetTitle(std::string& title) const override;
 
             //function: SetIcon
             //See <BackendMainWindowInterface::SetIcon>
@@ -112,23 +120,15 @@ namespace Backend
 
             //function: RemoveFocusChangedByUserEvent
             //See <BackendMainWindowInterface::RemoveFocusChangedByUserEvent>
-            void RemoveFocusChangedByUserEvent(int index) override;
+            void RemoveFocusChangedByUserEvent(int id) override;
 
-            //function: SetMSAA
-            //See <BackendMainWindowInterface::SetMSAA>
-            void SetMSAA(int level) override;
+            //function: SetAntiAliasingLevel
+            //See <BackendMainWindowInterface::SetAntiAliasingLevel>
+            void SetAntiAliasingLevel(int level) override;
 
             //function: GetAntiAliasingLevel
             //See <BackendMainWindowInterface::GetAntiAliasingLevel>
             int GetAntiAliasingLevel() const override;
-
-            //function: SetTitlebar
-            //See <BackendMainWindowInterface::SetTitlebar>
-            void SetTitlebar(bool titlebar) override;
-
-            //function: HasTitlebar
-            //See <BackendMainWindowInterface::HasTitlebar>
-            bool HasTitlebar() const override;
 
             //function: SetResizable
             //See <BackendMainWindowInterface::SetResizable>
@@ -154,9 +154,9 @@ namespace Backend
             //See <BackendMainWindowInterface::GetWindowMode>
             ssGUI::Enums::WindowMode GetWindowMode() const override;
 
-            //function: SetGLContext
-            //See <BackendMainWindowInterface::SetGLContext>
-            bool SetGLContext() override;
+            //function: SetDrawingContext
+            //See <BackendMainWindowInterface::SetDrawingContext>
+            bool SetDrawingContext() override;
             
             //function: Clone
             //See <BackendMainWindowInterface::Clone>
@@ -164,7 +164,7 @@ namespace Backend
 
             //function: GetRawHandle
             //See <BackendMainWindowInterface::GetRawHandle>
-            void* GetRawHandle() override;
+            void* GetRawHandle() const override;
     };
 }
 

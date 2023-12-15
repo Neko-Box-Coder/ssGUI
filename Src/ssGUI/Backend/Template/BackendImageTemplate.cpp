@@ -22,7 +22,7 @@ namespace Backend
 
     }
 
-    void* BackendImageTemplate::GetRawHandle()
+    void* BackendImageTemplate::GetRawHandle() const
     {
         return nullptr;
     }
@@ -42,7 +42,9 @@ namespace Backend
         return true;
     }
 
-    bool BackendImageTemplate::LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
+    bool BackendImageTemplate::LoadRawFromMemory(   const void * dataPtr, 
+                                                    ImageFormat format, 
+                                                    glm::ivec2 imageSize)
     {
         return true;
     }
@@ -52,7 +54,7 @@ namespace Backend
         return glm::ivec2();
     }
 
-    void* BackendImageTemplate::GetPixelPtr(ssGUI::ImageFormat& format) const
+    void* BackendImageTemplate::GetPixelPtr(ImageFormat& format) const
     {
         return nullptr;
     }
@@ -62,11 +64,13 @@ namespace Backend
         
     }
 
-    void BackendImageTemplate::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    using DrawingInterface = ssGUI::Backend::BackendDrawingInterface;
+
+    void BackendImageTemplate::Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing)
     {
     }
 
-    void BackendImageTemplate::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageTemplate::Internal_RemoveBackendDrawingRecord(DrawingInterface* backendDrawing)
     {
     }
 

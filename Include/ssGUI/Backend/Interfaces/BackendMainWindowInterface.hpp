@@ -80,9 +80,17 @@ namespace Backend
             //Sets the title of the main window
             virtual void SetTitle(std::u32string title) = 0;
 
+            //function: SetTitle
+            //Sets the title of the main window
+            virtual void SetTitle(std::string title) = 0;
+
             //function: GetTitle
             //Gets the title of the main window
-            virtual std::u32string GetTitle() const = 0;
+            virtual void GetTitle(std::u32string& outTitle) const = 0;
+
+            //function: GetTitle
+            //Gets the title of the main window
+            virtual void GetTitle(std::string& outTitle) const = 0;
 
             //function: SetIcon
             //Sets the icon of the main window

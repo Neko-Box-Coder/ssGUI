@@ -7,12 +7,14 @@ namespace ssGUI
 
 namespace Backend
 {
-    BackendDrawingTemplate::BackendDrawingTemplate(BackendDrawingTemplate const& other)
+    BackendDrawingTemplate::BackendDrawingTemplate( BackendDrawingTemplate const& other,
+                                                    BackendMainWindowInterface* otherMainWindow) : 
+        BackendDrawingInterface(otherMainWindow)
     {
-    
     }
 
-    BackendDrawingTemplate::BackendDrawingTemplate()
+    BackendDrawingTemplate::BackendDrawingTemplate(BackendMainWindowInterface* mainWindowInterface) :
+        BackendDrawingInterface(mainWindowInterface)
     {
         ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendDrawingTemplate is being created, is this intended?");
     }
@@ -30,7 +32,7 @@ namespace Backend
         
     }
 
-    bool BackendDrawingTemplate::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
+    bool BackendDrawingTemplate::CreateDrawingEntities(const std::vector<DrawingEntity>& entities)
     {
         return true;
     }
@@ -50,17 +52,17 @@ namespace Backend
         
     }
     
-    void BackendDrawingTemplate::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingTemplate::AddImageCache(BackendImageInterface* backendImage)
     {
     
     }
     
-    void BackendDrawingTemplate::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingTemplate::RemoveImageCache(BackendImageInterface* backendImage)
     {
     
     }
     
-    void* BackendDrawingTemplate::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    void* BackendDrawingTemplate::GetRawImageCacheHandle(BackendImageInterface* backendImage) const
     {
         return nullptr;
     }

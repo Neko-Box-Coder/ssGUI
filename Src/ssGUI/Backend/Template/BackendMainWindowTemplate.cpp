@@ -32,9 +32,10 @@ namespace Backend
         return glm::ivec2();
     }
 
-    glm::ivec2 BackendMainWindowTemplate::GetPositionOffset() const
+    void BackendMainWindowTemplate::GetDecorationOffsets(   glm::ivec2& topLeft, 
+                                                            glm::ivec2& bottomRight) const
     {
-        return glm::ivec2();
+    
     }
 
     void BackendMainWindowTemplate::SetWindowSize(glm::ivec2 size)
@@ -82,14 +83,24 @@ namespace Backend
 
     }
 
-    void BackendMainWindowTemplate::SetTitle(std::wstring title)
+    void BackendMainWindowTemplate::SetTitle(std::u32string title)
+    {
+    
+    }
+    
+    void BackendMainWindowTemplate::SetTitle(std::string title)
     {
 
     }
 
-    std::wstring BackendMainWindowTemplate::GetTitle() const
+    void BackendMainWindowTemplate::GetTitle(std::u32string& title) const
     {
-        return L"";
+    
+    }
+
+    void BackendMainWindowTemplate::GetTitle(std::string& title) const
+    {
+    
     }
 
     void BackendMainWindowTemplate::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
@@ -132,12 +143,12 @@ namespace Backend
         return 0;
     }
 
-    void BackendMainWindowTemplate::RemoveFocusChangedByUserEvent(int index)
+    void BackendMainWindowTemplate::RemoveFocusChangedByUserEvent(int id)
     {
 
     }
 
-    void BackendMainWindowTemplate::SetMSAA(int level)
+    void BackendMainWindowTemplate::SetAntiAliasingLevel(int level)
     {
 
     }
@@ -145,16 +156,6 @@ namespace Backend
     int BackendMainWindowTemplate::GetAntiAliasingLevel() const
     {
         return 0;
-    }
-
-    void BackendMainWindowTemplate::SetTitlebar(bool titlebar)
-    {
-
-    }
-
-    bool BackendMainWindowTemplate::HasTitlebar() const
-    {
-        return true;
     }
 
     void BackendMainWindowTemplate::SetResizable(bool resizable)
@@ -187,7 +188,7 @@ namespace Backend
         return ssGUI::Enums::WindowMode::NORMAL;
     }
 
-    bool BackendMainWindowTemplate::SetGLContext()
+    bool BackendMainWindowTemplate::SetDrawingContext()
     {
         return true;
     }
@@ -197,7 +198,7 @@ namespace Backend
         return nullptr;
     }
 
-    void* BackendMainWindowTemplate::GetRawHandle()
+    void* BackendMainWindowTemplate::GetRawHandle() const
     {
         return nullptr;
     }
