@@ -66,20 +66,20 @@ namespace Backend
 
             //function: GetCharacterRenderInfo
             //See <BackendFontInterface::GetCharacterRenderInfo>
-            ssGUI::CharacterRenderInfo GetCharacterRenderInfo(  wchar_t charUnicode, 
-                                                                float charSize) const override;
+            CharacterRenderInfo GetCharacterRenderInfo( char32_t charUnicode, 
+                                                        float charSize) const override;
             
             //function: IsCharacterSupported
             //For fixed size font, this will return the closest fixed size font 
             //and populate the TargetSizeMultiplier field.
             //
             //See <BackendFontInterface::IsCharacterSupported>
-            bool IsCharacterSupported(wchar_t charUnicode) const override;
+            bool IsCharacterSupported(char32_t charUnicode) const override;
             
             //function: GetKerning
             //See <BackendFontInterface::GetKerning>
-            float GetKerning(   wchar_t charUnicode, 
-                                wchar_t secondCharUnicode, 
+            float GetKerning(   char32_t charUnicode, 
+                                char32_t secondCharUnicode, 
                                 float charSize) const override;
             
             //function: GetLineSpacing
@@ -115,9 +115,9 @@ namespace Backend
 
             //function: GetCharacterImage
             //See <BackendFontInterface::GetCharacterImage>
-            bool GetCharacterImage( wchar_t charUnicode, 
+            bool GetCharacterImage( char32_t charUnicode, 
                                     float charSize, 
-                                    ssGUI::ImageData& characterImage) const override;
+                                    BackendImageInterface& characterImage) const override;
 
             //function: GetRawHandle
             void* GetRawHandle() const override;

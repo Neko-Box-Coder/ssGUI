@@ -105,7 +105,7 @@ namespace Backend
         if(ImageBuffer != nullptr)
         {
             free(ImageBuffer);
-            ImageBuffer =  nullptr;
+            ImageBuffer = nullptr;
             ImageSizeInBytes = 0;
         }
     
@@ -116,7 +116,13 @@ namespace Backend
         //If this is a 16 bit image
         if(stbi_is_16_bit_from_memory(static_cast<const stbi_uc*>(dataPtr), size))
         {
-            data = stbi_load_16_from_memory(static_cast<const stbi_uc*>(dataPtr), size, &width, &height, &channels, 0);
+            data = stbi_load_16_from_memory(static_cast<const stbi_uc*>(dataPtr), 
+                                            size, 
+                                            &width, 
+                                            &height, 
+                                            &channels, 
+                                            0);
+
             if(data != nullptr)
             {
                 validImg = true;
@@ -127,7 +133,13 @@ namespace Backend
         //Otherwise 8 bit
         else
         {
-            data = stbi_load_from_memory(static_cast<const stbi_uc*>(dataPtr), size, &width, &height, &channels, 0);
+            data = stbi_load_from_memory(   static_cast<const stbi_uc*>(dataPtr), 
+                                            size, 
+                                            &width, 
+                                            &height, 
+                                            &channels, 
+                                            0);
+
             if(data != nullptr)
             {
                 validImg = true;
@@ -146,11 +158,17 @@ namespace Backend
             memcpy(ImageBuffer, data, ImageSizeInBytes);
             stbi_image_free(data);
             
-            CurrentImageFormat.ImgType = channels <= 2 ? ssGUI::Enums::ImageType::MONO : ssGUI::Enums::ImageType::RGB;
+            CurrentImageFormat.ImgType =    channels <= 2 ? 
+                                            Enums::ImageType::MONO : 
+                                            Enums::ImageType::RGB;
+            
             CurrentImageFormat.BitPerPixel = CurrentImageFormat.BitDepthPerChannel * channels;
             CurrentImageFormat.HasAlpha = channels == 2 || channels == 4;
-            CurrentImageFormat.PreMultipliedAlpha = false;      //stb image provides function for converting it to non pre-multiplied 
-                                                                //but we have no way to find out. Assuming non pre-multiplied.
+            
+            //stb image provides function for converting it to non pre-multiplied 
+            //but we have no way to find out. Assuming non pre-multiplied.
+            CurrentImageFormat.PreMultipliedAlpha = false;
+
             CurrentImageFormat.IndexR = -1;
             CurrentImageFormat.IndexG = -1;
             CurrentImageFormat.IndexB = -1;
@@ -193,7 +211,9 @@ namespace Backend
         return false;
     }
 
-    bool BackendImageStbImage::LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize)
+    bool BackendImageStbImage::LoadRawFromMemory(   const void * dataPtr, 
+                                                    ImageFormat format, 
+                                                    glm::ivec2 imageSize)
     {
         if(ImageBuffer != nullptr)
         {
@@ -202,7 +222,9 @@ namespace Backend
             ImageSizeInBytes = 0;
         }
         
-        ImageSizeInBytes = (format.BitPerPixel / 8 * imageSize.x + format.RowPaddingInBytes) * imageSize.y;
+        ImageSizeInBytes = (format.BitPerPixel / 8 * imageSize.x + 
+                            format.RowPaddingInBytes) * imageSize.y;
+
         ImageBuffer = static_cast<uint8_t*>(malloc(ImageSizeInBytes));
         memcpy(ImageBuffer, dataPtr, ImageSizeInBytes);
         
@@ -221,7 +243,7 @@ namespace Backend
         return glm::ivec2(ImageWidth, ImageHeight);
     }
 
-    void* BackendImageStbImage::GetPixelPtr(ssGUI::ImageFormat& format) const
+    void* BackendImageStbImage::GetPixelPtr(ImageFormat& format) const
     {
         format = CurrentImageFormat;
         return ImageBuffer;
@@ -229,7 +251,7 @@ namespace Backend
     
     void BackendImageStbImage::UpdateCache()
     {
-        std::vector<ssGUI::Backend::BackendDrawingInterface*> backends = LinkedBackendDrawing;
+        std::vector<BackendDrawingInterface*> backends = LinkedBackendDrawing;
         for(int i = 0; i < backends.size(); i++)
         {
             backends[i]->RemoveImageCache(this);
@@ -237,7 +259,7 @@ namespace Backend
         }
     }
 
-    void BackendImageStbImage::Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageStbImage::Internal_AddBackendDrawingRecord(BackendDrawingInterface* backendDrawing)
     {
         for(int i = 0; i < LinkedBackendDrawing.size(); i++)
         {
@@ -248,7 +270,7 @@ namespace Backend
         LinkedBackendDrawing.push_back(backendDrawing);
     }
 
-    void BackendImageStbImage::Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing)
+    void BackendImageStbImage::Internal_RemoveBackendDrawingRecord(BackendDrawingInterface* backendDrawing)
     {
         for(int i = 0; i < LinkedBackendDrawing.size(); i++)
         {

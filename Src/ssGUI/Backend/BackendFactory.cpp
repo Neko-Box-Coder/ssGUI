@@ -10,8 +10,6 @@
 
 #ifdef SSGUI_MAIN_BACKEND_SDL2
     #include "ssGUI/Backend/SDL2/BackendDrawingSDL2.hpp"
-    #include "ssGUI/Backend/SDL2/BackendFontSDL2.hpp"
-    #include "ssGUI/Backend/SDL2/BackendImageSDL2.hpp"
     #include "ssGUI/Backend/SDL2/BackendSystemInputSDL2.hpp"
     #include "ssGUI/Backend/SDL2/BackendMainWindowSDL2.hpp"
     #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"

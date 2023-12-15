@@ -11,10 +11,6 @@
 
 namespace ssGUI
 { 
-    
-    class GUIObject;
-    class MainWindow;
-    class ImageData;
     struct RealtimeInputInfo;
     
 //namespace: ssGUI::Backend

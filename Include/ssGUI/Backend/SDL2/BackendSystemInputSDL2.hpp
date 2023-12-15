@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_SYSTEM_INPUT_TEMPLATE_HPP
-#define SSGUI_BACKEND_SYSTEM_INPUT_TEMPLATE_HPP
+#ifndef SSGUI_BACKEND_SYSTEM_INPUT_SDL2_HPP
+#define SSGUI_BACKEND_SYSTEM_INPUT_SDL2_HPP
 
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 
@@ -10,18 +10,18 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //class: ssGUI::Backend::BackendSystemInputTemplate
-    class BackendSystemInputTemplate : public BackendSystemInputInterface
+    //class: ssGUI::Backend::BackendSystemInputSDL2
+    class BackendSystemInputSDL2 : public BackendSystemInputInterface
     {   
         private:
-            BackendSystemInputTemplate& operator=(BackendSystemInputTemplate const& other);
+            BackendSystemInputSDL2& operator=(BackendSystemInputSDL2 const& other);
 
         protected:
-            BackendSystemInputTemplate(BackendSystemInputTemplate const& other);
+            BackendSystemInputSDL2(BackendSystemInputSDL2 const& other);
 
         public:
-            BackendSystemInputTemplate();
-            ~BackendSystemInputTemplate() override;
+            BackendSystemInputSDL2();
+            ~BackendSystemInputSDL2() override;
             
             //function: UpdateInput
             //See <BackendSystemInputInterface::UpdateInput>

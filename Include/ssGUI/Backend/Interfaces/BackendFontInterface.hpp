@@ -9,11 +9,12 @@
 namespace ssGUI
 { 
 
-class ImageData;
 
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    class BackendImageInterface;
+    
     //class: ssGUI::Backend::BackendFontInterface
     class BackendFontInterface
     {   
@@ -78,7 +79,7 @@ namespace Backend
             //For fixed size font behaviour, please see the backend you are using.
             virtual bool GetCharacterImage( char32_t charUnicode, 
                                             float charSize, 
-                                            ImageData& characterImage) const = 0;
+                                            BackendImageInterface& characterImage) const = 0;
  
             //function: GetRawHandle
             //Returns the raw pointer to the underlying backend implmentation object

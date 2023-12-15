@@ -63,13 +63,13 @@ set_property(CACHE ssGUI_LOG_TAG PROPERTY STRINGS   "None"
 
 set(ssGUI_MAIN_BACKEND_DESCRIPTION 
 "The backend that can be used by ssGUI:
-SDL-2
+SDL2
 Mock
 Template")
 
-set(ssGUI_MAIN_BACKEND "SDL-2" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
+set(ssGUI_MAIN_BACKEND "SDL2" CACHE STRING "${ssGUI_MAIN_BACKEND_DESCRIPTION}")
 
-set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "SDL-2" 
+set_property(CACHE ssGUI_MAIN_BACKEND PROPERTY STRINGS  "SDL2" 
                                                         "Mock" 
                                                         "Template")
 
@@ -174,7 +174,7 @@ endif()
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend")
 
 # Adding Main Backend
-if(ssGUI_MAIN_BACKEND STREQUAL "SDL-2")
+if(ssGUI_MAIN_BACKEND STREQUAL "SDL2")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/SDL2")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/FreeType")
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Backend/stb_image")
@@ -425,8 +425,7 @@ if(ssGUI_CAN_OVERRIDE_BACKEND)
     target_compile_definitions(ssGUI PUBLIC SSGUI_OVERRIDE_BACKEND=1)
 endif()
 
-if(ssGUI_MAIN_BACKEND STREQUAL "SDL-2")
-    
+if(ssGUI_MAIN_BACKEND STREQUAL "SDL2")
     ## ==========================================================
     ## clip 
     ## ==========================================================

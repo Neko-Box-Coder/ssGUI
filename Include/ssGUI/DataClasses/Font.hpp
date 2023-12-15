@@ -1,7 +1,10 @@
-#ifndef SSGUI_FONT_H
-#define SSGUI_FONT_H
+#ifndef SSGUI_FONT_HPP
+#define SSGUI_FONT_HPP
 
 #include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/DataClasses/ImageData.hpp"
+
+//TODO(NOW): Convert wchar_t to uint32_t
 
 //namespace: ssGUI
 namespace ssGUI
@@ -37,7 +40,8 @@ namespace ssGUI
 
             //function: GetCharacterRenderInfo
             //See <ssGUI::Backend::BackendFontInterface::GetCharacterRenderInfo>
-            virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize);
+            virtual ssGUI::CharacterRenderInfo GetCharacterRenderInfo(  wchar_t charUnicode, 
+                                                                        float charSize);
 
             //function: IsCharacterSupported
             //See <ssGUI::Backend::BackendFontInterface::IsCharacterSupported>
@@ -63,6 +67,8 @@ namespace ssGUI
             //See <ssGUI::Backend::BackendFontInterface::LoadFromPath>
             virtual bool LoadFromPath(std::string path);
             
+            //TODO(NOW): Convert void* to const void*
+            
             //function: LoadFromMemory
             //See <ssGUI::Backend::BackendFontInterface::LoadFromMemory>
             virtual bool LoadFromMemory(void* dataPtr, int lengthInBytes);
@@ -73,7 +79,9 @@ namespace ssGUI
             
             //function: GetCharacterImage
             //See <ssGUI::Backend::BackendFontInterface::GetCharacterImage>
-            virtual bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage);
+            virtual bool GetCharacterImage( wchar_t charUnicode, 
+                                            float charSize, 
+                                            ImageData& characterImage);
             
             //function: GetRawHandle
             //See <ssGUI::Backend::BackendFontInterface::GetRawHandle>

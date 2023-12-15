@@ -70,9 +70,13 @@ namespace ssGUI
         return BackendFont->GetFixedAvailableFontSizes(fontSizes);
     }
     
-    bool Font::GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage)
+    bool Font::GetCharacterImage(   wchar_t charUnicode, 
+                                    float charSize, 
+                                    ImageData& characterImage)
     {
-        return BackendFont->GetCharacterImage(charUnicode, charSize, characterImage);
+        return BackendFont->GetCharacterImage(  charUnicode, 
+                                                charSize, 
+                                                *characterImage.GetBackendImageInterface());
     }
     
     void* Font::GetRawHandle()

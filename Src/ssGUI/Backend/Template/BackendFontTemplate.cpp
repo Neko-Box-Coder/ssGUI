@@ -77,7 +77,7 @@ namespace Backend
     
     bool BackendFontTemplate::GetCharacterImage(char32_t charUnicode, 
                                                 float charSize, 
-                                                ImageData& characterImage) const
+                                                BackendImageInterface& characterImage) const
     {
         return true;
     }

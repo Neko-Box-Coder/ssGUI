@@ -69,7 +69,7 @@ namespace Backend
             //See <BackendFontInterface::GetCharacterImage>
             bool GetCharacterImage( char32_t charUnicode, 
                                     float charSize, 
-                                    ImageData& characterImage) const override;
+                                    BackendImageInterface& characterImage) const override;
 
             //function: GetRawHandle
             //See <BackendFontInterface::GetRawHandle>

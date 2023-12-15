@@ -198,7 +198,7 @@ namespace Backend
         return Valid;
     }
 
-    ssGUI::CharacterRenderInfo BackendFontFreeType::GetCharacterRenderInfo( wchar_t charUnicode, 
+    ssGUI::CharacterRenderInfo BackendFontFreeType::GetCharacterRenderInfo( char32_t charUnicode, 
                                                                             float charSize) const
     {
         ssGUI::CharacterRenderInfo info;
@@ -235,7 +235,7 @@ namespace Backend
 
         //For some reason, variable selections is taking spaces. We don't want that
         //https://en.wikipedia.org/wiki/Variation_Selectors_(Unicode_block)
-        if(charUnicode < L'\uFE00' || charUnicode > L'\uFE0F')
+        if(charUnicode < U'\uFE00' || charUnicode > U'\uFE0F')
         {
             info.Advance = static_cast<float>(FontFace->glyph->advance.x) / 64.f;
             info.DrawOffset = glm::vec2(FontFace->glyph->bitmap_left, -FontFace->glyph->bitmap_top);
@@ -249,13 +249,13 @@ namespace Backend
         return info;
     }
     
-    bool BackendFontFreeType::IsCharacterSupported(wchar_t charUnicode) const
+    bool BackendFontFreeType::IsCharacterSupported(char32_t charUnicode) const
     {
         return FT_Get_Char_Index(FontFace, charUnicode) != 0;
     }
     
-    float BackendFontFreeType::GetKerning(  wchar_t charUnicode, 
-                                            wchar_t secondCharUnicode, 
+    float BackendFontFreeType::GetKerning(  char32_t charUnicode, 
+                                            char32_t secondCharUnicode, 
                                             float charSize) const
     {
         if(!FT_HAS_KERNING(FontFace))
@@ -462,9 +462,9 @@ namespace Backend
         return true;
     }
 
-    bool BackendFontFreeType::GetCharacterImage(wchar_t charUnicode, 
+    bool BackendFontFreeType::GetCharacterImage(char32_t charUnicode, 
                                                 float charSize, 
-                                                ssGUI::ImageData& characterImage) const
+                                                BackendImageInterface& characterImage) const
     {
         if(!SetSizeIfDifferent(charSize))
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
@@ -490,9 +490,7 @@ namespace Backend
             format.IndexA = 3;
             format.PreMultipliedAlpha = true;
             
-            //sf::Vector2u size = sf::Vector2u(freeTypeFont->GetCurrentGlyph()->bitmap.width, freeTypeFont->GetCurrentGlyph()->bitmap.rows);
             //Convert to bitmap if there isn't one
-            
             if(FontFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
             {
                 error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
