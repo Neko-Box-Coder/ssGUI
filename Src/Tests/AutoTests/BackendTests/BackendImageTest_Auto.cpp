@@ -1,4 +1,5 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssTest.hpp"
 #include "TestsResources.h"
@@ -32,12 +33,14 @@ int main()
 
     ssTEST_SET_UP
     {
+        ssGUI::Backend::BackendFactory::Initialize();
         TestImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
     };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(TestImage);
+        ssGUI::Backend::BackendFactory::Cleanup();
     };
 
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();

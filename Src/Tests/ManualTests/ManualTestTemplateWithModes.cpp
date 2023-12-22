@@ -54,10 +54,10 @@ int main()
         {
             ssGUI::Enums::GenericInput lastTestMode = TestMode;
             if( TestMode == ssGUI::Enums::NO_INPUT &&
-                !Manager->GetBackendInputInterface()->GetCurrentButtonAndKeyPresses().empty() &&
-                Manager->GetBackendInputInterface()->GetLastButtonAndKeyPresses().empty())
+                !Manager->GetBackendInputInterface()->GetCurrentInputs().empty() &&
+                Manager->GetBackendInputInterface()->GetLastInputs().empty())
             {
-                TestMode = Manager->GetBackendInputInterface()->GetCurrentButtonAndKeyPresses()[0];
+                TestMode = Manager->GetBackendInputInterface()->GetCurrentInputs()[0];
             }
             
             ssGUI::Enums::GenericInput selectedTestMode = TestMode;

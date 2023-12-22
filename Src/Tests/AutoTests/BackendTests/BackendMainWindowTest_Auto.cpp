@@ -1,4 +1,5 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssTest.hpp"
@@ -21,10 +22,11 @@ int main()
 
     ssTEST_SET_UP
     {
-        BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+        ssGUI::Backend::BackendFactory::Initialize();
         TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
+        BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(TestWindow);
         BackendInputs = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
-        BackendInputs->UpdateInput();
+        BackendInputs->UpdateInput(TestWindow, 1);
     };
 
     ssTEST_CLEAN_UP
@@ -32,6 +34,7 @@ int main()
         ssGUI::Factory::Dispose(BackendDrawing);
         ssGUI::Factory::Dispose(TestWindow);
         ssGUI::Factory::Dispose(BackendInputs);
+        ssGUI::Backend::BackendFactory::Cleanup();
     };
 
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
@@ -51,9 +54,13 @@ int main()
         //              TestWindow->GetWindowPosition().y);
     };
 
-    ssTEST("GetPositionOffsetTest")
+    ssTEST("GetDecorationOffsetsTest")
     {
-        ssTEST_OUTPUT_ASSERT(TestWindow->GetPositionOffset().x >= 0 && TestWindow->GetPositionOffset().y >= 0);
+        glm::ivec2 topLeft;
+        glm::ivec2 bottomRight;
+        TestWindow->GetDecorationOffsets(topLeft, bottomRight);
+        
+        ssTEST_OUTPUT_ASSERT(topLeft.x >= 0 && topLeft.y >= 0);
         
         //ssLOG_LINE(   "TestWindow->GetPositionOffset(): " << 
         //              TestWindow->GetPositionOffset().x << 
@@ -136,9 +143,11 @@ int main()
 
     ssTEST("TitleTest")
     {
-        std::wstring someTitle = L"someTitle";
+        std::u32string someTitle = U"someTitle";
         TestWindow->SetTitle(someTitle);
-        ssTEST_OUTPUT_ASSERT(TestWindow->GetTitle() == someTitle);
+        std::u32string retrievedTitle;
+        TestWindow->GetTitle(retrievedTitle);
+        ssTEST_OUTPUT_ASSERT(retrievedTitle == someTitle);
     };
 
     ssTEST("VisibleTest")
@@ -161,14 +170,6 @@ int main()
     {
         TestWindow->SetAntiAliasingLevel(4);
         ssTEST_OUTPUT_ASSERT(TestWindow->GetAntiAliasingLevel() == 4);
-    };
-
-    ssTEST("TitlebarTest()")
-    {
-        TestWindow->SetTitlebar(false);
-        ssTEST_OUTPUT_ASSERT("False", !TestWindow->HasTitlebar());
-        TestWindow->SetTitlebar(true);
-        ssTEST_OUTPUT_ASSERT("True", TestWindow->HasTitlebar());
     };
 
     ssTEST("ResizableTest()")

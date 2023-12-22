@@ -16,6 +16,8 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    class BackendMainWindowInterface;
+
     //class: ssGUI::Backend::BackendSystemInputInterface
     //This class is the interface for getting all the inputs needed. 
     //**There will be changes regarding on how to get key presses and realtime input info soon.**
@@ -27,7 +29,7 @@ namespace Backend
             
             //function: UpdateInput
             //Poll and updates the input
-            virtual void UpdateInput() = 0;
+            virtual void UpdateInput(BackendMainWindowInterface* mainWindows, int count) = 0;
 
             using GenericInputs = Enums::GenericInput;
 

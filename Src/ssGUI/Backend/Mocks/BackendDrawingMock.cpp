@@ -79,9 +79,9 @@ namespace Backend
         SavedStateCount--;
     }
 
-    bool BackendDrawingMock::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
+    bool BackendDrawingMock::CreateDrawingEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_IF_FALSE(DrawEntities(entities));
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_IF_FALSE(CreateDrawingEntities(entities));
 
         Entities[CurrentDrawingBuffer].insert(Entities[CurrentDrawingBuffer].end(), entities.begin(), entities.end());
 

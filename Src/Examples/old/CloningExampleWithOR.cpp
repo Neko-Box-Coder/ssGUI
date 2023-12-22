@@ -71,8 +71,8 @@ int main()
         {
             ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
             
-            if( inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
+            if( inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->IsInputExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 window.Clone(true)->SetPosition(glm::vec2(window.GetPosition().x + 10, window.GetPosition().y + 10));
             }

@@ -60,27 +60,44 @@ namespace Backend
 
     bool BackendMainWindowTemplate::IsClosed() const
     {
-        return true;
+        return WindowClosed;
     }
 
     void BackendMainWindowTemplate::Close()
     {
+        for(int i = 0; i < OnCloseCallback.size(); i++)
+        {
+            if(OnCloseCallback[i] != nullptr)
+                OnCloseCallback[i]();
 
+            if(WindowClosingAborted)
+            {
+                WindowClosingAborted = false;
+                return;
+            }
+        }
+        
+        WindowClosed = true;
+        DestroyWindow();
     }
     
     void BackendMainWindowTemplate::AbortClosing()
     {
-
+        WindowClosingAborted = true;
     }
 
     int BackendMainWindowTemplate::AddOnCloseEvent(std::function<void()> func)
     {
-        return 0;
+        OnCloseCallback.push_back(func);
+        return OnCloseCallback.size() - 1;
     }
 
     void BackendMainWindowTemplate::RemoveOnCloseEvent(int index)
     {
+        if(index < 0 || index >= OnCloseCallback.size())
+            return;
 
+        OnCloseCallback.at(index) = nullptr;
     }
 
     void BackendMainWindowTemplate::SetTitle(std::u32string title)
@@ -130,7 +147,18 @@ namespace Backend
 
     void BackendMainWindowTemplate::SetFocus(bool focus, bool externalByUser)
     {
-
+        if(externalByUser)
+        {
+            for(int i = 0; i < ExternalFocusChangedCallback.size(); i++)
+            {
+                if(ExternalFocusChangedCallback[i] != nullptr)
+                    ExternalFocusChangedCallback[i](focus);
+            }
+        }
+        else
+        {
+            //Set window focus...
+        }
     }
     
     bool BackendMainWindowTemplate::IsFocused() const
@@ -140,12 +168,16 @@ namespace Backend
 
     int BackendMainWindowTemplate::AddFocusChangedByUserEvent(std::function<void(bool focused)> func)
     {
-        return 0;
+        ExternalFocusChangedCallback.push_back(func);
+        return ExternalFocusChangedCallback.size() - 1;
     }
 
     void BackendMainWindowTemplate::RemoveFocusChangedByUserEvent(int id)
     {
+        if(id < 0 || id >= ExternalFocusChangedCallback.size())
+            return;
 
+        ExternalFocusChangedCallback.at(id) = nullptr;
     }
 
     void BackendMainWindowTemplate::SetAntiAliasingLevel(int level)
@@ -178,14 +210,14 @@ namespace Backend
         return true;
     }
 
-    void BackendMainWindowTemplate::SetWindowMode(ssGUI::Enums::WindowMode windowMode)
+    void BackendMainWindowTemplate::SetWindowMode(Enums::WindowMode windowMode)
     {
 
     }
 
-    ssGUI::Enums::WindowMode BackendMainWindowTemplate::GetWindowMode() const
+    Enums::WindowMode BackendMainWindowTemplate::GetWindowMode() const
     {
-        return ssGUI::Enums::WindowMode::NORMAL;
+        return Enums::WindowMode::NORMAL;
     }
 
     bool BackendMainWindowTemplate::SetDrawingContext()

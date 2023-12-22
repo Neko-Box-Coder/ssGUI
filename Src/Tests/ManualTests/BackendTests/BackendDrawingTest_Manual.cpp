@@ -60,6 +60,7 @@ ssGUI::DrawingEntity CreateShapes(  glm::vec2 pos,
 
 void SetUp()
 {
+    ssGUI::Backend::BackendFactory::Initialize();
     ImgBackend = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
     if(!ImgBackend->LoadImgFileFromMemory(ssGUI_Test_sd_edge, ssGUI_Test_sd_edge_size))
     {
@@ -70,8 +71,8 @@ void SetUp()
     {
         ssLOG_LINE("Failed to load font");
     }
-    DrawingBackend = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
     WindowBackend = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
+    DrawingBackend = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(WindowBackend);
     InputBackend = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
 }
 
@@ -86,6 +87,7 @@ void CleanUp()
     ssGUI::Factory::Dispose(DrawingBackend);
     ssGUI::Factory::Dispose(WindowBackend);
     ssGUI::Factory::Dispose(InputBackend);
+    ssGUI::Backend::BackendFactory::Cleanup();
 }
 
 void Instructions()
@@ -95,24 +97,36 @@ void Instructions()
     ssLOG_SIMPLE("Press 3 to test drawing fonts");
     ssLOG_SIMPLE("Press 4 to test removing iamge cache");
     ssLOG_SIMPLE("Press 5 to test getting raw image cache handle pointer");
-    ssLOG_SIMPLE("Please note that cache doesn't apply to SFML backend and it will always return the handle regardless.");
+    ssLOG_SIMPLE(   "Please note that cache doesn't apply to SFML backend and "
+                    "it will always return the handle regardless.");
 }
 
 void DrawColorShapesTest()
 {
-    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
-        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
+    if( !InputBackend->IsInputExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
+        InputBackend->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
     {
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         std::vector<ssGUI::DrawingEntity> drawingEntities;
         
-        drawingEntities.push_back(CreateShapes(glm::vec2(50, 50), glm::vec2(100, 100), glm::u8vec4(127, 127, 127, 255)));
-        drawingEntities.push_back(CreateShapes(glm::vec2(200, 50), glm::vec2(200, 100), glm::u8vec4(255, 255, 255, 255), true));
-        drawingEntities.push_back(CreateShapes(glm::vec2(500, 50), glm::vec2(100, 200), glm::u8vec4(127, 127, 127, 127)));
-        drawingEntities.push_back(CreateShapes(glm::vec2(700, 50), glm::vec2(100, 100), glm::u8vec4(255, 255, 255, 127), true, true));
+        drawingEntities.push_back(CreateShapes( glm::vec2(50, 50), 
+                                                glm::vec2(100, 100), 
+                                                glm::u8vec4(127, 127, 127, 255)));
         
-        DrawingBackend->DrawEntities(drawingEntities);
+        drawingEntities.push_back(CreateShapes( glm::vec2(200, 50), 
+                                                glm::vec2(200, 100), 
+                                                glm::u8vec4(255, 255, 255, 255), true));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(500, 50), 
+                                                glm::vec2(100, 200), 
+                                                glm::u8vec4(127, 127, 127, 127)));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(700, 50), 
+                                                glm::vec2(100, 100), 
+                                                glm::u8vec4(255, 255, 255, 127), true, true));
+        
+        DrawingBackend->CreateDrawingEntities(drawingEntities);
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         ssLOG_SIMPLE("Shapes drawn");
@@ -125,8 +139,8 @@ void DrawColorShapesTest()
 
 void DrawTextureTest()
 {
-    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
-        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
+    if( !InputBackend->IsInputExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
+        InputBackend->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
     {
         //DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
@@ -134,10 +148,21 @@ void DrawTextureTest()
         
         std::vector<ssGUI::DrawingEntity> drawingEntities;
         
-        drawingEntities.push_back(CreateShapes(glm::vec2(50, 50), imgSize, glm::u8vec4(255, 255, 255, 255)));
-        drawingEntities.push_back(CreateShapes(glm::vec2(450, 50), imgSize, glm::u8vec4(255, 255, 255, 255), true));
-        drawingEntities.push_back(CreateShapes(glm::vec2(850, 50), imgSize, glm::u8vec4(255, 255, 255, 127)));
-        drawingEntities.push_back(CreateShapes(glm::vec2(1050, 50), imgSize, glm::u8vec4(255, 255, 255, 127), true, true));
+        drawingEntities.push_back(CreateShapes( glm::vec2(50, 50), 
+                                                imgSize, 
+                                                glm::u8vec4(255, 255, 255, 255)));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(450, 50), 
+                                                imgSize, 
+                                                glm::u8vec4(255, 255, 255, 255), true));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(850, 50), 
+                                                imgSize, 
+                                                glm::u8vec4(255, 255, 255, 127)));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(1050, 50), 
+                                                imgSize, 
+                                                glm::u8vec4(255, 255, 255, 127), true, true));
         
         std::vector<glm::vec2> texCoords = 
         {
@@ -163,22 +188,31 @@ void DrawTextureTest()
         };
         
         //Mipmap level 1
-        drawingEntities.push_back(CreateShapes(glm::vec2(50, 500), imgSize / 2, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(  CreateShapes(glm::vec2(50, 500), 
+                                    imgSize / 2, 
+                                    glm::u8vec4(255, 255, 255, 255)));
+        
         drawingEntities.at(4).TexCoords = texCoords;
         drawingEntities.at(4).BackendImage = ImgBackend;
     
         //Mipmap level 2
-        drawingEntities.push_back(CreateShapes(glm::vec2(450, 500), imgSize / 4, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(  CreateShapes(glm::vec2(450, 500), 
+                                    imgSize / 4, 
+                                    glm::u8vec4(255, 255, 255, 255)));
+        
         drawingEntities.at(5).TexCoords = texCoords;
         drawingEntities.at(5).BackendImage = ImgBackend;
         
         //Mipmap level 3
-        drawingEntities.push_back(CreateShapes(glm::vec2(850, 500), imgSize / 8, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(  CreateShapes(glm::vec2(850, 500), 
+                                    imgSize / 8, 
+                                    glm::u8vec4(255, 255, 255, 255)));
+        
         drawingEntities.at(6).TexCoords = texCoords;
         drawingEntities.at(6).BackendImage = ImgBackend;
     
     
-        DrawingBackend->DrawEntities(drawingEntities);
+        DrawingBackend->CreateDrawingEntities(drawingEntities);
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         
         ssLOG_SIMPLE("Texture drawn");
@@ -196,8 +230,8 @@ void DrawTextureTest()
 
 void DrawFontTest()
 {
-    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
-        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
+    if( !InputBackend->IsInputExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
+        InputBackend->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
     {
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
         DrawingBackend->Render(glm::u8vec3(255, 255, 255));
@@ -209,10 +243,21 @@ void DrawFontTest()
         
         //CreateShapes(drawingEntities, info.Size, glm::u8vec4(0, 0, 0, 255));
         
-        drawingEntities.push_back(CreateShapes(glm::vec2(50, 50), info.Size, glm::u8vec4(255, 255, 255, 255)));
-        drawingEntities.push_back(CreateShapes(glm::vec2(200, 50), info.Size, glm::u8vec4(255, 255, 255, 255), true));
-        drawingEntities.push_back(CreateShapes(glm::vec2(500, 50), info.Size, glm::u8vec4(255, 255, 255, 127)));
-        drawingEntities.push_back(CreateShapes(glm::vec2(700, 50), info.Size, glm::u8vec4(255, 255, 255, 127), true, true));
+        drawingEntities.push_back(CreateShapes( glm::vec2(50, 50), 
+                                                info.Size, 
+                                                glm::u8vec4(255, 255, 255, 255)));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(200, 50), 
+                                                info.Size, 
+                                                glm::u8vec4(255, 255, 255, 255), true));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(500, 50), 
+                                                info.Size, 
+                                                glm::u8vec4(255, 255, 255, 127)));
+        
+        drawingEntities.push_back(CreateShapes( glm::vec2(700, 50), 
+                                                info.Size, 
+                                                glm::u8vec4(255, 255, 255, 127), true, true));
         
         //std::vector<glm::u8vec4> colors;
         //CreateColors(colors, glm::u8vec4(0, 0, 0, 255));
@@ -245,7 +290,10 @@ void DrawFontTest()
         };
         
         //Mipmap level 1
-        drawingEntities.push_back(CreateShapes(glm::vec2(50, 500), glm::ivec2(info.Size) / 2, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(CreateShapes( glm::vec2(50, 500), 
+                                                glm::ivec2(info.Size) / 2, 
+                                                glm::u8vec4(255, 255, 255, 255)));
+        
         drawingEntities.at(4).TexCoords = texCoords;
         drawingEntities.at(4).BackendFont = FontBackend;
         drawingEntities.at(4).Character = L'A';
@@ -253,20 +301,26 @@ void DrawFontTest()
 
     
         //Mipmap level 2
-        drawingEntities.push_back(CreateShapes(glm::vec2(450, 500), glm::ivec2(info.Size) / 4, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(CreateShapes( glm::vec2(450, 500), 
+                                                glm::ivec2(info.Size) / 4, 
+                                                glm::u8vec4(255, 255, 255, 255)));
+        
         drawingEntities.at(5).TexCoords = texCoords;
         drawingEntities.at(5).BackendFont = FontBackend;
         drawingEntities.at(5).Character = L'A';
         drawingEntities.at(5).CharacterSize = 80;
         
         //Mipmap level 3
-        drawingEntities.push_back(CreateShapes(glm::vec2(850, 500), glm::ivec2(info.Size) / 8, glm::u8vec4(255, 255, 255, 255)));
+        drawingEntities.push_back(CreateShapes( glm::vec2(850, 500), 
+                                                glm::ivec2(info.Size) / 8, 
+                                                glm::u8vec4(255, 255, 255, 255)));
+        
         drawingEntities.at(6).TexCoords = texCoords;
         drawingEntities.at(6).BackendFont = FontBackend;
         drawingEntities.at(6).Character = L'A';
         drawingEntities.at(6).CharacterSize = 80;
     
-        DrawingBackend->DrawEntities(drawingEntities);
+        DrawingBackend->CreateDrawingEntities(drawingEntities);
         DrawingBackend->Render(glm::u8vec3(0, 0, 0));
         
         ssLOG_SIMPLE("Character drawn");
@@ -286,8 +340,8 @@ void DrawFontTest()
 
 void RemoveImageCacheTest()
 {
-    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
-        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
+    if( !InputBackend->IsInputExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
+        InputBackend->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
     {
         DrawingBackend->RemoveImageCache(ImgBackend);
     
@@ -298,14 +352,15 @@ void RemoveImageCacheTest()
 
 void GetRawImageCacheHandleTest()
 {
-    if( !InputBackend->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FIVE) &&
-        InputBackend->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE))
+    if( !InputBackend->IsInputExistLastFrame(ssGUI::Enums::NumberKey::FIVE) &&
+        InputBackend->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE))
     {
         void* rawImageHandle = DrawingBackend->GetRawImageCacheHandle(ImgBackend);
     
         ssLOG_SIMPLE("rawImageCacheHandle: "<<rawImageHandle);
         ssLOG_SIMPLE("If the image has been rendered before, it should be a non-nullptr address");
-        ssLOG_SIMPLE("Otherwise if the image hasn't been rendered or the cache is removed, it should return nullptr");
+        ssLOG_SIMPLE(   "Otherwise if the image hasn't been rendered or the cache is removed, "
+                        "it should return nullptr");
     }
 }
 
@@ -317,11 +372,11 @@ int main()
         
     //Setup window and run it
     WindowBackend->SetRenderSize(glm::ivec2(1280, 720));
-    InputBackend->UpdateInput();
+    InputBackend->UpdateInput(WindowBackend, 1);
 
     while(!WindowBackend->IsClosed())
     {
-        InputBackend->UpdateInput();
+        InputBackend->UpdateInput(WindowBackend, 1);
         if(!WindowBackend->IsClosed())
         {
             DrawColorShapesTest();

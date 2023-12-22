@@ -248,22 +248,22 @@ namespace Backend
         }
     }
 
-    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputSFML::GetLastButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputSFML::GetLastInputs()
     {
         return LastKeyPresses;
     }
 
-    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputSFML::GetCurrentButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputSFML::GetCurrentInputs()
     {
         return CurrentKeyPresses;
     }
 
-    bool BackendSystemInputSFML::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const
+    bool BackendSystemInputSFML::IsInputExistLastFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(LastKeyPresses.begin(), LastKeyPresses.end(), input) != LastKeyPresses.end();
     }
 
-    bool BackendSystemInputSFML::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const
+    bool BackendSystemInputSFML::IsInputExistCurrentFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }

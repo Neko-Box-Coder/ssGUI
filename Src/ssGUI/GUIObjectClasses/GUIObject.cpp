@@ -314,7 +314,7 @@ namespace ssGUI
             if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
                 GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
 
-            if(!drawingInterface->DrawEntities(DrawingEntities))
+            if(!drawingInterface->CreateDrawingEntities(DrawingEntities))
                 ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "DrawEntities failed");
             
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
@@ -331,7 +331,7 @@ namespace ssGUI
             if(IsEventCallbackExist(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER))
                 GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
             
-            if(!drawingInterface->DrawEntities(LastDrawingEntities))
+            if(!drawingInterface->CreateDrawingEntities(LastDrawingEntities))
                 ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "DrawEntities failed");
         
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))

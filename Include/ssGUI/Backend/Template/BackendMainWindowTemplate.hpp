@@ -13,7 +13,14 @@ namespace Backend
     class BackendMainWindowTemplate : public BackendMainWindowInterface
     {
         private:
+            bool WindowClosed;
+            bool WindowClosingAborted;
+            std::vector<std::function<void()>> OnCloseCallback;
+            std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;
+            
             BackendMainWindowTemplate& operator=(BackendMainWindowTemplate const& other);
+            
+            void DestroyWindow();
 
         protected:
             BackendMainWindowTemplate(BackendMainWindowTemplate const& other);
@@ -148,11 +155,11 @@ namespace Backend
 
             //function: SetWindowMode
             //See <BackendMainWindowInterface::SetWindowMode>
-            void SetWindowMode(ssGUI::Enums::WindowMode windowMode) override;
+            void SetWindowMode(Enums::WindowMode windowMode) override;
 
             //function: GetWindowMode
             //See <BackendMainWindowInterface::GetWindowMode>
-            ssGUI::Enums::WindowMode GetWindowMode() const override;
+            Enums::WindowMode GetWindowMode() const override;
 
             //function: SetDrawingContext
             //See <BackendMainWindowInterface::SetDrawingContext>

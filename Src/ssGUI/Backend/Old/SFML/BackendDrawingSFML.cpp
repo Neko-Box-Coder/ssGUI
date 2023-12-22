@@ -101,7 +101,7 @@ namespace Backend
         //targetWindow->popGLStates();
     }
 
-    bool BackendDrawingSFML::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
+    bool BackendDrawingSFML::CreateDrawingEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
         //Check correct backend index
         if(BackendIndex >= ssGUI::Backend::BackendManager::GetMainWindowCount())

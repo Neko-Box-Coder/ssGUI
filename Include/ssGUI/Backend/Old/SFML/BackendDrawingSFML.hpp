@@ -96,7 +96,7 @@ namespace Backend
 
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>
-            bool DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities) override;
+            bool CreateDrawingEntities(const std::vector<ssGUI::DrawingEntity>& entities) override;
 
             //function: DrawToBackBuffer
             //See <BackendDrawingInterface::DrawToBackBuffer>

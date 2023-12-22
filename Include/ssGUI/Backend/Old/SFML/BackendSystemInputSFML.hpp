@@ -94,8 +94,8 @@ namespace Backend
     class BackendSystemInputSFML : public BackendSystemInputInterface
     {
         private:
-            std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                  //See <GetCurrentButtonAndKeyPresses>
-            std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                     //See <GetLastButtonAndKeyPresses>
+            std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                  //See <GetCurrentInputs>
+            std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                     //See <GetLastInputs>
             std::wstring InputText;                                                                 //See <GetTextInput>
             glm::ivec2 CurrentMousePosition;                                                        //See <GetCurrentMousePosition>
             glm::ivec2 LastMousePosition;                                                           //See <GetLastMousePosition>
@@ -142,19 +142,19 @@ namespace Backend
 
             //function: GetLastKeyPresses
             //See <BackendSystemInputInterface::GetLastKeyPresses>
-            const std::vector<ssGUI::Enums::GenericInput>& GetLastButtonAndKeyPresses() override;
+            const std::vector<ssGUI::Enums::GenericInput>& GetLastInputs() override;
 
             //function: GetCurrentKeyPresses
             //See <BackendSystemInputInterface::GetCurrentKeyPresses>
-            const std::vector<ssGUI::Enums::GenericInput>& GetCurrentButtonAndKeyPresses() override;
+            const std::vector<ssGUI::Enums::GenericInput>& GetCurrentInputs() override;
 
-            //function: IsButtonOrKeyPressExistLastFrame
-            //See <IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const override;
+            //function: IsInputExistLastFrame
+            //See <IsInputExistLastFrame>
+            bool IsInputExistLastFrame(ssGUI::Enums::GenericInput input) const override;
             
-            //function: IsButtonOrKeyPressExistCurrentFrame
-            //See <IsButtonOrKeyPressExistCurrentFrame>
-            bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const override;
+            //function: IsInputExistCurrentFrame
+            //See <IsInputExistCurrentFrame>
+            bool IsInputExistCurrentFrame(ssGUI::Enums::GenericInput input) const override;
 
             //function: GetLastMousePosition
             //See <BackendSystemInputInterface::GetLastMousePosition>

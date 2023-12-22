@@ -8,15 +8,16 @@ namespace ssGUI
 namespace Backend
 {
     BackendDrawingSDL2::BackendDrawingSDL2( BackendDrawingSDL2 const& other,
-                                                    BackendMainWindowInterface* otherMainWindow) : 
+                                            BackendMainWindowInterface* otherMainWindow) : 
         BackendDrawingInterface(otherMainWindow)
     {
+        //TODO(NOW)
     }
 
     BackendDrawingSDL2::BackendDrawingSDL2(BackendMainWindowInterface* mainWindowInterface) :
         BackendDrawingInterface(mainWindowInterface)
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendDrawingSDL2 is being created, is this intended?");
+        //ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendDrawingSDL2 is being created, is this intended?");
     }
 
     BackendDrawingSDL2::~BackendDrawingSDL2()

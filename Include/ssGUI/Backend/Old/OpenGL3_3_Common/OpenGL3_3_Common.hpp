@@ -548,7 +548,7 @@ namespace Backend
             
             //function: DrawEntities
             //See <BackendDrawingInterface::DrawEntities>
-            bool DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities);
+            bool CreateDrawingEntities(const std::vector<ssGUI::DrawingEntity>& entities);
             
             //function: AddFontCache
             //Adds a texture cache for displaying a character from a font with corresponding font size

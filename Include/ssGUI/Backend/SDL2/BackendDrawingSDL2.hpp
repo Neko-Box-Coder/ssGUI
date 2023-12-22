@@ -3,6 +3,8 @@
 
 #include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 
+#include "SDL.h"
+
 namespace ssGUI
 {
 
@@ -13,13 +15,14 @@ namespace Backend
     class BackendDrawingSDL2 : public BackendDrawingInterface
     {
         private:
+            //TODO(NOW): Change to sdl2 main window
             BackendMainWindowInterface* MainWindowInterface;
         
             BackendDrawingSDL2& operator=(BackendDrawingSDL2 const& other);
 
         protected:
             BackendDrawingSDL2( BackendDrawingSDL2 const& other,
-                                    BackendMainWindowInterface* otherMainWindow);
+                                BackendMainWindowInterface* otherMainWindow);
         
         public:
             BackendDrawingSDL2(BackendMainWindowInterface* mainWindowInterface);

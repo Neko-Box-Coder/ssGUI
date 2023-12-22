@@ -324,23 +324,23 @@ namespace ssGUI
                 };
                 
                 //Start of left/down input
-                bool leftKeyDown =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT) &&
-                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::LEFT);
+                bool leftKeyDown =  inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT) &&
+                                    !inputInterface->IsInputExistLastFrame(ssGUI::Enums::SystemKey::LEFT);
                 
-                bool downKeyDown =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN) &&
-                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::DOWN);
+                bool downKeyDown =  inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN) &&
+                                    !inputInterface->IsInputExistLastFrame(ssGUI::Enums::SystemKey::DOWN);
 
-                bool leftOrDownKeyPressed = inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT) ||
-                                            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN);
+                bool leftOrDownKeyPressed = inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT) ||
+                                            inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::DOWN);
 
-                bool rightKeyDown = inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT) &&
-                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::RIGHT);
+                bool rightKeyDown = inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT) &&
+                                    !inputInterface->IsInputExistLastFrame(ssGUI::Enums::SystemKey::RIGHT);
                 
-                bool upKeyDown =    inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::UP) &&
-                                    !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::UP);
+                bool upKeyDown =    inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::UP) &&
+                                    !inputInterface->IsInputExistLastFrame(ssGUI::Enums::SystemKey::UP);
 
-                bool rightOrUpKeyPressed =  inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT) ||
-                                            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::UP);
+                bool rightOrUpKeyPressed =  inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT) ||
+                                            inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::UP);
 
 
                 if(leftKeyDown || downKeyDown)

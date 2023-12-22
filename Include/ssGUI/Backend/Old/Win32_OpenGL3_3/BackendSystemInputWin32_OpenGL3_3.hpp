@@ -38,8 +38,8 @@ namespace Backend
     Variables & Constructor:
     ======================== C++ =======================
     private:
-        std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                          //See <GetCurrentButtonAndKeyPresses>
-        std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                             //See <GetLastButtonAndKeyPresses>
+        std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                          //See <GetCurrentInputs>
+        std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                             //See <GetLastInputs>
         std::wstring InputText;                                                                         //See <GetTextInput>
         glm::ivec2 CurrentMousePosition;                                                                //See <GetCurrentMousePosition>
         glm::ivec2 LastMousePosition;                                                                   //See <GetLastMousePosition>
@@ -93,8 +93,8 @@ namespace Backend
     class BackendSystemInputWin32_OpenGL3_3 : public BackendSystemInputInterface
     {
         private:
-            std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                          //See <GetCurrentButtonAndKeyPresses>
-            std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                             //See <GetLastButtonAndKeyPresses>
+            std::vector<ssGUI::Enums::GenericInput> CurrentKeyPresses;                          //See <GetCurrentInputs>
+            std::vector<ssGUI::Enums::GenericInput> LastKeyPresses;                             //See <GetLastInputs>
             std::wstring InputText;                                                                         //See <GetTextInput>
             glm::ivec2 CurrentMousePosition;                                                                //See <GetCurrentMousePosition>
             glm::ivec2 LastMousePosition;                                                                   //See <GetLastMousePosition>
@@ -149,21 +149,21 @@ namespace Backend
             //See <BackendSystemInputInterface::UpdateInput>
             void UpdateInput() override;
 
-            //function: GetLastButtonAndKeyPresses
-            //See <BackendSystemInputInterface::GetLastButtonAndKeyPresses>
-            const std::vector<ssGUI::Enums::GenericInput>& GetLastButtonAndKeyPresses() override;
+            //function: GetLastInputs
+            //See <BackendSystemInputInterface::GetLastInputs>
+            const std::vector<ssGUI::Enums::GenericInput>& GetLastInputs() override;
             
-            //function: GetCurrentButtonAndKeyPresses
-            //See <BackendSystemInputInterface::GetCurrentButtonAndKeyPresses>
-            const std::vector<ssGUI::Enums::GenericInput>& GetCurrentButtonAndKeyPresses() override;
+            //function: GetCurrentInputs
+            //See <BackendSystemInputInterface::GetCurrentInputs>
+            const std::vector<ssGUI::Enums::GenericInput>& GetCurrentInputs() override;
 
-            //function: IsButtonOrKeyPressExistLastFrame
-            //See <BackendSystemInputInterface::IsButtonOrKeyPressExistLastFrame>
-            bool IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const override;
+            //function: IsInputExistLastFrame
+            //See <BackendSystemInputInterface::IsInputExistLastFrame>
+            bool IsInputExistLastFrame(ssGUI::Enums::GenericInput input) const override;
 
-            //function: IsButtonOrKeyPressExistCurrentFrame
-            //See <BackendSystemInputInterface::IsButtonOrKeyPressExistCurrentFrame>
-            bool IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const override;
+            //function: IsInputExistCurrentFrame
+            //See <BackendSystemInputInterface::IsInputExistCurrentFrame>
+            bool IsInputExistCurrentFrame(ssGUI::Enums::GenericInput input) const override;
 
             //function: GetLastMousePosition
             //See <BackendSystemInputInterface::GetLastMousePosition>

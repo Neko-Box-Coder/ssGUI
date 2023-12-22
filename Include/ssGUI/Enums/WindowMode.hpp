@@ -17,7 +17,8 @@ namespace Enums
     {
         NORMAL,
         BORDERLESS,
-        FULLSCREEN
+        FULLSCREEN,
+        COUNT
     };
 }
 

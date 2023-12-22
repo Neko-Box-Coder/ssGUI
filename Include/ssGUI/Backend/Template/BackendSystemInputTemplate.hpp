@@ -14,6 +14,12 @@ namespace Backend
     class BackendSystemInputTemplate : public BackendSystemInputInterface
     {   
         private:
+            std::vector<Enums::GenericInput> CurrentInputs;
+            std::vector<Enums::GenericInput> LastInputs;
+        
+            std::vector<RealtimeInputInfo> CurrentRealtimeInputs;
+            std::vector<RealtimeInputInfo> LastRealtimeInputs;
+            
             BackendSystemInputTemplate& operator=(BackendSystemInputTemplate const& other);
 
         protected:
@@ -25,7 +31,7 @@ namespace Backend
             
             //function: UpdateInput
             //See <BackendSystemInputInterface::UpdateInput>
-            void UpdateInput() override;
+            void UpdateInput(BackendMainWindowInterface* mainWindows, int count) override;
 
             //function: GetLastInputs
             //See <BackendSystemInputInterface::GetLastInputs>

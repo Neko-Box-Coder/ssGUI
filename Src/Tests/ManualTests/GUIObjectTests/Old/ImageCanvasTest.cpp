@@ -55,13 +55,13 @@ int main()
             // else
             //     imageCanvas.SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));
 
-            if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::U))
+            if(guiManager.GetBackendInputInterface()->IsInputExistCurrentFrame(ssGUI::Enums::LetterKey::U))
             {
                 auto uv = imageCanvas.GetUVFromGlobalPosition(guiManager.GetBackendInputInterface()->GetCurrentMousePosition(&mainWindow));
                 ssLOG_LINE("uv: "<<uv.x<<", "<<uv.y);
             }
 
-            if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::G))
+            if(guiManager.GetBackendInputInterface()->IsInputExistCurrentFrame(ssGUI::Enums::LetterKey::G))
             {
                 auto g = imageCanvas.GetGlobalPositionFromUV(glm::vec2(20, 20)) - imageCanvas.GetGlobalPosition();
                 auto g2 = imageCanvas.GetGlobalPositionFromUV(glm::vec2(270, 20)) - imageCanvas.GetGlobalPosition();

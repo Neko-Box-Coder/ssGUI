@@ -49,12 +49,14 @@ int main()
 
     ssTEST_SET_UP
     {
+        ssGUI::Backend::BackendFactory::Initialize();
         TestFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
     };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(TestFont);
+        ssGUI::Backend::BackendFactory::Cleanup();
     };
     
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
@@ -332,7 +334,9 @@ int main()
         #endif
 
         ssGUI::ImageData data;
-        ssTEST_OUTPUT_ASSERT("Operation", TestFont->GetCharacterImage(L'A', 20, data));
+        ssTEST_OUTPUT_ASSERT("Operation", TestFont->GetCharacterImage(  U'A', 
+                                                                        20, 
+                                                                        *data.GetBackendImageInterface()));
         
         #ifdef SSGUI_FONT_BACKEND_MOCK
             if(calledCorrectly)

@@ -27,8 +27,8 @@ void SetUp()
     Manager->AddPostGUIUpdateEventListener([&]()
     {
         auto* inputInterface = Manager->GetBackendInputInterface();
-        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
-            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
+        if( !inputInterface->IsInputExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
+            inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
         {
             TestButton->SetInteractable(!TestButton->IsInteractable());
         }

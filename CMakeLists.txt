@@ -136,7 +136,7 @@ if(ssGUI_OUTPUT_STATIC)
     add_library(ssGUI STATIC
     #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
-    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
     #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 else()
@@ -149,7 +149,7 @@ else()
     add_library(ssGUI SHARED
     #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/ssGUIManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/Factory.cpp"
-    #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
+    "${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EmbeddedResources.c"
     #"${CMAKE_CURRENT_LIST_DIR}/Src/ssGUI/EventCallback.cpp"
 )
 endif()

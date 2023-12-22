@@ -85,8 +85,8 @@ int main()
     (
         [&]()
         {
-            if( guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SymbolKey::EQUAL) &&
-                !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SymbolKey::EQUAL))
+            if( guiManager.GetBackendInputInterface()->IsInputExistCurrentFrame(ssGUI::Enums::SymbolKey::EQUAL) &&
+                !guiManager.GetBackendInputInterface()->IsInputExistLastFrame(ssGUI::Enums::SymbolKey::EQUAL))
             {
                 for(int i = 0; i < text.GetCharactersDetailsCount(); i++)
                 {
@@ -95,8 +95,8 @@ int main()
                     text.SetCharacterDetails(i, curDetails);
                 }
             }
-            else if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SymbolKey::MINUS) &&
-                    !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SymbolKey::MINUS))
+            else if(guiManager.GetBackendInputInterface()->IsInputExistCurrentFrame(ssGUI::Enums::SymbolKey::MINUS) &&
+                    !guiManager.GetBackendInputInterface()->IsInputExistLastFrame(ssGUI::Enums::SymbolKey::MINUS))
             {
                 for(int i = 0; i < text.GetCharactersDetailsCount(); i++)
                 {

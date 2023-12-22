@@ -962,7 +962,7 @@ namespace Backend
         GL_CHECK_ERROR( glPopAttrib(); );
     }
     
-    bool OpenGL3_3_Common::DrawEntities(const std::vector<ssGUI::DrawingEntity>& entities)
+    bool OpenGL3_3_Common::CreateDrawingEntities(const std::vector<ssGUI::DrawingEntity>& entities)
     {
         //Check if the main window is already closed
         if(CurrentMainWindow->IsClosed())

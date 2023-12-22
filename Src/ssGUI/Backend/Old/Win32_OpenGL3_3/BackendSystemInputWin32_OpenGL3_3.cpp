@@ -331,22 +331,22 @@ namespace Backend
         }
     }
 
-    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputWin32_OpenGL3_3::GetLastButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputWin32_OpenGL3_3::GetLastInputs()
     {        
         return LastKeyPresses;
     }
 
-    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputWin32_OpenGL3_3::GetCurrentButtonAndKeyPresses()
+    const std::vector<ssGUI::Enums::GenericInput>& BackendSystemInputWin32_OpenGL3_3::GetCurrentInputs()
     {
         return CurrentKeyPresses;
     }
 
-    bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::GenericInput input) const
+    bool BackendSystemInputWin32_OpenGL3_3::IsInputExistLastFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(LastKeyPresses.begin(), LastKeyPresses.end(), input) != LastKeyPresses.end();
     }
 
-    bool BackendSystemInputWin32_OpenGL3_3::IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::GenericInput input) const
+    bool BackendSystemInputWin32_OpenGL3_3::IsInputExistCurrentFrame(ssGUI::Enums::GenericInput input) const
     {
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }

@@ -53,8 +53,8 @@ int main()
         {
             ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
             
-            if( inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
-                !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
+            if( inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !inputInterface->IsInputExistLastFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 auto obj = window2.GetParent();
                 auto obj2 = window5.GetParent();

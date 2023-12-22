@@ -2,6 +2,8 @@
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
+#include "SDL.h"
+
 namespace ssGUI
 {
 
@@ -9,12 +11,12 @@ namespace Backend
 {
     BackendSystemInputSDL2::BackendSystemInputSDL2(BackendSystemInputSDL2 const& other)
     {
-    
+        //TODO(NOW)
     }
 
     BackendSystemInputSDL2::BackendSystemInputSDL2()
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendSystemInputSDL2 is being created, is this intended?");
+        //ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendSystemInputSDL2 is being created, is this intended?");
     }
 
     BackendSystemInputSDL2::~BackendSystemInputSDL2()
@@ -22,21 +24,33 @@ namespace Backend
 
     }
     
-    void BackendSystemInputSDL2::UpdateInput()
+    void BackendSystemInputSDL2::UpdateInput(BackendMainWindowInterface* mainWindows, int count)
     {
-
+        SDL_Event currentEvent;
+        
+        while(SDL_PollEvent(&currentEvent))
+        {
+            switch(currentEvent.type)
+            {
+                case SDL_QUIT:
+                {
+                    for(int i = 0; i < count; i++)
+                    {
+                        mainWindows[i].Close();
+                    }
+                }
+            }
+        }
     }
 
-    std::vector<Enums::GenericInput> DummyInputList;
-    
     const std::vector<Enums::GenericInput>& BackendSystemInputSDL2::GetLastInputs() const
     {
-        return DummyInputList;
+        return LastInputs;
     }
     
     const std::vector<Enums::GenericInput>& BackendSystemInputSDL2::GetCurrentInputs() const
     {
-        return DummyInputList;
+        return CurrentInputs;
     }
 
     bool BackendSystemInputSDL2::IsInputExistLastFrame(Enums::GenericInput input) const
@@ -72,16 +86,14 @@ namespace Backend
         return glm::vec2();
     }
 
-    std::vector<RealtimeInputInfo> DummyRealtimeInputList;
-
     const std::vector<RealtimeInputInfo>& BackendSystemInputSDL2::GetLastRealtimeInputs() const
     {
-        return DummyRealtimeInputList;
+        return LastRealtimeInputs;
     }
 
     const std::vector<RealtimeInputInfo>& BackendSystemInputSDL2::GetCurrentRealtimeInputs() const
     {
-        return DummyRealtimeInputList;
+        return CurrentRealtimeInputs;
     }
 
     void BackendSystemInputSDL2::GetTextInput(std::u32string& outText) const

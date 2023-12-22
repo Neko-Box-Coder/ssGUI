@@ -1,4 +1,6 @@
 #include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
+#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -16,8 +18,9 @@ bool ShowInfo = true;
 
 void SetUp()
 {
-    BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+    ssGUI::Backend::BackendFactory::Initialize();
     TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
+    BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(TestWindow);
     BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
 }
 
@@ -26,6 +29,7 @@ void CleanUp()
     ssGUI::Factory::Dispose(BackendDrawing);
     ssGUI::Factory::Dispose(TestWindow);
     ssGUI::Factory::Dispose(BackendInput);
+    ssGUI::Backend::BackendFactory::Cleanup();
 }
 
 void Instructions()
@@ -50,25 +54,19 @@ void KeyAndButtonTest()
         ShowInfo = false;
     }
 
-    std::vector<ssGUI::Enums::GenericInput> currentInputs = BackendInput->GetCurrentButtonAndKeyPresses();
-    std::vector<ssGUI::Enums::GenericInput> lastInputs = BackendInput->GetLastButtonAndKeyPresses();
+    std::vector<ssGUI::Enums::GenericInput> currentInputs = BackendInput->GetCurrentInputs();
+    std::vector<ssGUI::Enums::GenericInput> lastInputs = BackendInput->GetLastInputs();
 
     for(int i = 0; i < currentInputs.size(); i++)
     {
         ssLOG_SIMPLE("Current Input: "<<ssGUI::GenericInputToString(currentInputs[i]));
-        assert(BackendInput->IsButtonOrKeyPressExistCurrentFrame(currentInputs[i]));
-        
-        if(ssGUI::Enums::InputIsMouseButton(currentInputs[i]))
-            assert(BackendInput->GetCurrentMouseButton((ssGUI::Enums::MouseButton)currentInputs[i]));
+        assert(BackendInput->IsInputExistCurrentFrame(currentInputs[i]));
     }
 
     for(int i = 0; i < lastInputs.size(); i++)
     {
         ssLOG_SIMPLE("Last Input: "<<ssGUI::GenericInputToString(lastInputs[i]));
-        assert(BackendInput->IsButtonOrKeyPressExistLastFrame(lastInputs[i]));
-        
-        if(ssGUI::Enums::InputIsMouseButton(lastInputs[i]))
-            assert(BackendInput->GetLastMouseButton((ssGUI::Enums::MouseButton)lastInputs[i]));
+        assert(BackendInput->IsInputExistLastFrame(lastInputs[i]));
     }
     
     if(!currentInputs.empty() || !lastInputs.empty())
@@ -100,14 +98,14 @@ void MousePositionTest()
         lastTime = curTime;
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::THREE) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::THREE))
     {
         BackendInput->SetMousePosition(glm::ivec2(50, 50), nullptr);
         ssLOG_SIMPLE("Mouse position set");
     }
-    else if(BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR) &&
-            !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR))
+    else if(BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR) &&
+            !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::FOUR))
     {
         BackendInput->SetMousePosition(glm::ivec2(50, 50), TestWindow);
         ssLOG_SIMPLE("Mouse position set");
@@ -193,8 +191,8 @@ void CustomCursorTest()
         ShowInfo = false;
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::ONE) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::ONE))
     {
         if(BackendInput->HasCustomCursor("custom normal cursor"))
         {
@@ -237,49 +235,49 @@ void ClipboardTest()
         ShowInfo = false;
     }
 
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::ONE) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::ONE))
     {
         ssLOG_SIMPLE("ClearClipboard: "<<BackendInput->ClearClipboard());
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::TWO) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::TWO))
     {
         ssLOG_SIMPLE("ClipbaordHasText: "<<BackendInput->ClipbaordHasText());
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::THREE) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::THREE))
     {
         ssLOG_SIMPLE("ClipbaordHasImage: "<<BackendInput->ClipbaordHasImage());
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::FOUR))
     {
         //TODO: SetClipboardImage
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FIVE))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::FIVE) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::FIVE))
     {
-        ssLOG_SIMPLE("SetClipboardText: "<<BackendInput->SetClipboardText(L"Clipboard Text"));
+        ssLOG_SIMPLE("SetClipboardText: "<<BackendInput->SetClipboardText(U"Clipboard Text"));
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::SIX) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::SIX))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::SIX) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::SIX))
     {
         //TODO: GetClipboardImage
     }
     
-    if( BackendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::EIGHT) &&
-        !BackendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::EIGHT))
+    if( BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::EIGHT) &&
+        !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::EIGHT))
     {
-        std::wstring clipboardTest = L"";
+        std::u32string clipboardTest = U"";
         ssLOG_SIMPLE("GetClipboardText: "<<BackendInput->GetClipboardText(clipboardTest));
         
-        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
         ssLOG_SIMPLE("GetClipboardText: "<<converter.to_bytes(clipboardTest));
     }
 }
@@ -294,15 +292,15 @@ int main()
         
     //Setup window and run it
     TestWindow->SetRenderSize(glm::ivec2(1280, 720));
-    BackendInput->UpdateInput();
+    BackendInput->UpdateInput(TestWindow, 1);
     
     int currentModeIndex = -1;
     const int maxNumberOfModes = 7;
     
     auto modeTogglePressed = [&](ssGUI::Enums::NumberKey numKey)
     {
-        return( BackendInput->IsButtonOrKeyPressExistCurrentFrame(numKey) &&
-                !BackendInput->IsButtonOrKeyPressExistLastFrame(numKey));
+        return( BackendInput->IsInputExistCurrentFrame(numKey) &&
+                !BackendInput->IsInputExistLastFrame(numKey));
     };
     
     auto updateTestModes = [&]()
@@ -332,7 +330,7 @@ int main()
 
     while(!TestWindow->IsClosed())
     {
-        BackendInput->UpdateInput();
+        BackendInput->UpdateInput(TestWindow, 1);
         if(!TestWindow->IsClosed())
         {
             updateTestModes();

@@ -36,46 +36,46 @@ namespace Backend
     }
 
     using GenericInput = ssGUI::Enums::GenericInput;
-    const std::vector<GenericInput>& BackendSystemInputMock::GetLastButtonAndKeyPresses()
+    const std::vector<GenericInput>& BackendSystemInputMock::GetLastInputs()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetLastButtonAndKeyPresses(), 
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetLastInputs(), 
                                                 const std::vector<GenericInput>&);
         return LastKeyPresses;
     }
     
-    const std::vector<GenericInput>& BackendSystemInputMock::GetCurrentButtonAndKeyPresses()
+    const std::vector<GenericInput>& BackendSystemInputMock::GetCurrentInputs()
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetCurrentButtonAndKeyPresses(), 
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetCurrentInputs(), 
                                                 const std::vector<GenericInput>&);
         return CurrentKeyPresses;
     }
 
-    bool BackendSystemInputMock::IsButtonOrKeyPressExistLastFrame(GenericInput input) const
+    bool BackendSystemInputMock::IsInputExistLastFrame(GenericInput input) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND( OverrideObject, 
-                            IsButtonOrKeyPressExistLastFrame(GenericInput), 
+                            IsInputExistLastFrame(GenericInput), 
                             bool, 
                             input);
         
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsButtonOrKeyPressExistLastFrame(input), bool);
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsInputExistLastFrame(input), bool);
         
         return std::find(   LastKeyPresses.begin(), 
                             LastKeyPresses.end(), 
                             input) != LastKeyPresses.end();
     }
 
-    bool BackendSystemInputMock::IsButtonOrKeyPressExistCurrentFrame(GenericInput input) const
+    bool BackendSystemInputMock::IsInputExistCurrentFrame(GenericInput input) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND( OverrideObject, 
-                            IsButtonOrKeyPressExistCurrentFrame(GenericInput), 
+                            IsInputExistCurrentFrame(GenericInput), 
                             bool, 
                             input);
         
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsButtonOrKeyPressExistCurrentFrame(input), bool);
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsInputExistCurrentFrame(input), bool);
         
         return std::find(   CurrentKeyPresses.begin(), 
                             CurrentKeyPresses.end(), 

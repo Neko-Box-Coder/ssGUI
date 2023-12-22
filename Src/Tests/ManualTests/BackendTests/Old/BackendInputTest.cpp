@@ -19,7 +19,7 @@ int main()
     (
         [&]()
         {
-            if(guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::A))
+            if(guiManager.GetBackendInputInterface()->IsInputExistCurrentFrame(ssGUI::Enums::LetterKey::A))
             {
                 // ssLOG_LINE(time(0)<<": A");
                 mainWindow.SetBackgroundColor(glm::u8vec4(255, 0, 0, 255));

@@ -14,6 +14,7 @@
     #include "ssGUI/Backend/SDL2/BackendMainWindowSDL2.hpp"
     #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
     #include "ssGUI/Backend/stb_image/BackendImageStbImage.hpp"
+    #include "SDL.h"
 #endif
 
 #ifdef SSGUI_MAIN_BACKEND_TEMPLATE
@@ -117,6 +118,30 @@ namespace Backend
             ssLOG_EXIT_PROGRAM();
             return nullptr;
         #endif
+    }
+    
+    bool BackendFactory::Initialize()
+    {
+        #if SSGUI_MAIN_BACKEND_SDL2
+            if(SDL_Init(SDL_INIT_VIDEO) != 0)
+            {
+                ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 couldn't be initialized, error: " << 
+                                                SDL_GetError());
+                
+                return false;
+            }
+        #endif
+        
+        return true;
+    }
+    
+    bool BackendFactory::Cleanup()
+    {
+        #if SSGUI_MAIN_BACKEND_SDL2
+            SDL_Quit();
+        #endif
+        
+        return true;
     }
 }
 

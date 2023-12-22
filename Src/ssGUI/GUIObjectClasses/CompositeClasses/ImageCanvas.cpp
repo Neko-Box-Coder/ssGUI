@@ -281,7 +281,7 @@ namespace ssGUI
             }
 
             //If space key is pressed, use delta cursor position to move canvas
-            if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(GetPanKey()))
+            if(inputInterface->IsInputExistCurrentFrame(GetPanKey()))
             {
                 currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                 
@@ -300,7 +300,7 @@ namespace ssGUI
             }
 
             //If r key is pressed, use start cursor position and current cursor position to rotate canvas
-            else if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(GetRotateKey()))
+            else if(inputInterface->IsInputExistCurrentFrame(GetRotateKey()))
             {
                 currentInputStatus.KeyInputBlockedData.SetBlockData(this);
                 SetFocus(true);
@@ -329,7 +329,7 @@ namespace ssGUI
                 }
 
                 //Show rotation gui when this is the first frame when the R button is pressed
-                if(shape != nullptr && !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::R))
+                if(shape != nullptr && !inputInterface->IsInputExistLastFrame(ssGUI::Enums::LetterKey::R))
                 {
                     glm::vec2 outerCircleSize = glm::vec2(9, 9);
                     glm::vec2 bgCircleSize = glm::vec2(6, 6);
@@ -364,8 +364,8 @@ namespace ssGUI
             }
 
             //Hide rotation circle when R button is not pressed
-            else if(inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::R) &&
-                    !inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::R))
+            else if(inputInterface->IsInputExistLastFrame(ssGUI::Enums::LetterKey::R) &&
+                    !inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::LetterKey::R))
             {
                 if(shape != nullptr)
                 {

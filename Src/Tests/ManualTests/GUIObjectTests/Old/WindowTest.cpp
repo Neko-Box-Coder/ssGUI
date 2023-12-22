@@ -19,8 +19,8 @@ int main()
         [&]()
         {
             auto backendInput = guiManager.GetBackendInputInterface();
-            if( backendInput->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::ENTER) &&
-                !backendInput->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER))
+            if( backendInput->IsInputExistLastFrame(ssGUI::Enums::SystemKey::ENTER) &&
+                !backendInput->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER))
             {
                 auto bgColor = window.GetBackgroundColor();
                 int red = bgColor.r;

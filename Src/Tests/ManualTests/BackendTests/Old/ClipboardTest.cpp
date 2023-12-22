@@ -50,10 +50,10 @@ int main()
             }*/
 
             //Pasting
-            if((inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) ||
-                inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL)) &&
-                !inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::V) && 
-                inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::V))
+            if((inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) ||
+                inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL)) &&
+                !inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::LetterKey::V) && 
+                inputInterface->IsInputExistLastFrame(ssGUI::Enums::LetterKey::V))
             {
                 if(inputInterface->ClipbaordHasText())
                 {
@@ -77,10 +77,10 @@ int main()
                 }
             }
             //Copying
-            else if((inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) ||
-                    inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL)) &&
-                    !inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::LetterKey::C) && 
-                    inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::LetterKey::C))
+            else if((inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_CTRL) ||
+                    inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::RIGHT_CTRL)) &&
+                    !inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::LetterKey::C) && 
+                    inputInterface->IsInputExistLastFrame(ssGUI::Enums::LetterKey::C))
             {
                 //inputInterface->SetClipboardText(L"Clipboard Test :D");
 

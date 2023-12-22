@@ -1,18 +1,18 @@
 #ifndef SSGUI_BACKEND_FACTORY_HPP
 #define SSGUI_BACKEND_FACTORY_HPP
 
+#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
+#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+
 namespace ssGUI 
 { 
     
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    class BackendDrawingInterface;
-    class BackendFontInterface;
-    class BackendImageInterface;
-    class BackendSystemInputInterface;
-    class BackendMainWindowInterface;
-
     //class: ssGUI::Backend::BackendFactory
     //BackendFactory is used to create backend objects without referencing 
     //the actual backend by using interfaces.
@@ -35,6 +35,9 @@ namespace Backend
             
             //function: CreateBackendMainWindowInterface
             static BackendMainWindowInterface* CreateBackendMainWindowInterface();
+            
+            static bool Initialize();
+            static bool Cleanup();
     };
 }
 

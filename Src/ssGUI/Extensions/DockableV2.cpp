@@ -685,8 +685,8 @@ namespace Extensions
         }
         
         //Check if anything is trying to be docked to here
-        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::MouseButton::LEFT) &&
-            !inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::MouseButton::LEFT))
+        if( !inputInterface->IsInputExistLastFrame(ssGUI::Enums::MouseButton::LEFT) &&
+            !inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::MouseButton::LEFT))
         {
             DISCARD_AND_RETURN();
         }
@@ -832,7 +832,7 @@ namespace Extensions
                 mousePos.y < triggerMax.y)
             {
                 //If so, show the preview if mouse held
-                if(inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::MouseButton::LEFT))
+                if(inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::MouseButton::LEFT))
                     showPreview = i;
                 //Otherwise, dock the object if mouse up
                 else if(inputInterface->IsButtonOrKeyUp(ssGUI::Enums::MouseButton::LEFT))

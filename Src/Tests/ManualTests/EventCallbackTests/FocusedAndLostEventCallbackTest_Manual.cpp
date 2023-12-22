@@ -78,29 +78,29 @@ void SetUp()
     Manager->AddPostGUIUpdateEventListener([&]()
     {
         auto* inputInterface = Manager->GetBackendInputInterface();
-        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
-            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
+        if( !inputInterface->IsInputExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
+            inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
         {
             TestWindow->SetFocus(!TestWindow->IsFocused());
             ssLOG_SIMPLE("window focus set to: "<<TestWindow->IsFocused());
         }
         
-        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
-            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
+        if( !inputInterface->IsInputExistLastFrame(ssGUI::Enums::NumberKey::TWO) &&
+            inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::TWO))
         {
             TestWindow2->SetFocus(!TestWindow2->IsFocused());
             ssLOG_SIMPLE("window2 focus set to: "<<TestWindow2->IsFocused());
         }
         
-        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
-            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
+        if( !inputInterface->IsInputExistLastFrame(ssGUI::Enums::NumberKey::THREE) &&
+            inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::THREE))
         {
             TestWidget->SetFocus(!TestWidget->IsFocused());
             ssLOG_SIMPLE("widget focus set to: "<<TestWidget->IsFocused());
         }
         
-        if( !inputInterface->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
-            inputInterface->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
+        if( !inputInterface->IsInputExistLastFrame(ssGUI::Enums::NumberKey::FOUR) &&
+            inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::FOUR))
         {
             TestWidget2->SetFocus(!TestWidget2->IsFocused());
             ssLOG_SIMPLE("widget2 focus set to: "<<TestWidget2->IsFocused());

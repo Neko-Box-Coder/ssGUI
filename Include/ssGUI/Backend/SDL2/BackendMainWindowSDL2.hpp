@@ -3,17 +3,39 @@
 
 #include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
 
+#include "SDL.h"
+
 namespace ssGUI
 {
 
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    class BackendDrawingSDL2;
+
     //class: ssGUI::Backend::BackendMainWindowSDL2
     class BackendMainWindowSDL2 : public BackendMainWindowInterface
     {
         private:
+            SDL_Window* CurrentWindow;
+            bool WindowClosed;
+            bool WindowClosingAborted;
+            bool WindowHidden;
+            bool WindowVsync;
+            bool WindowResizable;
+            BackendDrawingSDL2* BackendDrawing;
+            Enums::WindowMode CurrentWindowMode;
+            SDL_Renderer* CurrentSDL_Renderer;
+            
+            std::vector<std::function<void()>> OnCloseCallback;
+            std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;
+        
             BackendMainWindowSDL2& operator=(BackendMainWindowSDL2 const& other);
+            
+            void CreateWindow();
+            void DestroyWindow();
+            glm::vec2 GetDPIScaling() const;
+            
 
         protected:
             BackendMainWindowSDL2(BackendMainWindowSDL2 const& other);
@@ -148,11 +170,11 @@ namespace Backend
 
             //function: SetWindowMode
             //See <BackendMainWindowInterface::SetWindowMode>
-            void SetWindowMode(ssGUI::Enums::WindowMode windowMode) override;
+            void SetWindowMode(Enums::WindowMode windowMode) override;
 
             //function: GetWindowMode
             //See <BackendMainWindowInterface::GetWindowMode>
-            ssGUI::Enums::WindowMode GetWindowMode() const override;
+            Enums::WindowMode GetWindowMode() const override;
 
             //function: SetDrawingContext
             //See <BackendMainWindowInterface::SetDrawingContext>
@@ -165,6 +187,10 @@ namespace Backend
             //function: GetRawHandle
             //See <BackendMainWindowInterface::GetRawHandle>
             void* GetRawHandle() const override;
+            
+            void Internal_SetBackendDrawing(BackendDrawingSDL2* backendDrawing);
+            
+            SDL_Renderer* Internal_GetSDLRenderer() const;
     };
 }
 

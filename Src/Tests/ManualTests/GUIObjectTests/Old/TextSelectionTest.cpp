@@ -35,8 +35,8 @@ int main()
     (
         [&]()
         {
-            if( !guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistCurrentFrame(ssGUI::Enums::SystemKey::SPACE) &&
-                guiManager.GetBackendInputInterface()->IsButtonOrKeyPressExistLastFrame(ssGUI::Enums::SystemKey::SPACE))
+            if( !guiManager.GetBackendInputInterface()->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::SPACE) &&
+                guiManager.GetBackendInputInterface()->IsInputExistLastFrame(ssGUI::Enums::SystemKey::SPACE))
             {
                 ssLOG_LINE("text.GetStartSelectionIndex(): "<<text.GetStartSelectionIndex());    
                 ssLOG_LINE("text.GetEndSelectionIndex(): "<<text.GetEndSelectionIndex());    

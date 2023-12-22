@@ -1468,8 +1468,8 @@ namespace ssGUI
             ssGUI::Enums::MouseButton leftMouseButton = ssGUI::Enums::MouseButton::LEFT;
 
             bool mouseInput =
-                inputInterface->IsButtonOrKeyPressExistCurrentFrame(leftMouseButton) ||
-                inputInterface->IsButtonOrKeyPressExistLastFrame(leftMouseButton);
+                inputInterface->IsInputExistCurrentFrame(leftMouseButton) ||
+                inputInterface->IsInputExistLastFrame(leftMouseButton);
 
             //Check if we are dragging one of our tab content
             ssGUI::DragData& lastDragData = lastInputStatus.CurrentDragData;
