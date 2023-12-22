@@ -31,7 +31,7 @@ namespace Backend
             
             //function: UpdateInput
             //See <BackendSystemInputInterface::UpdateInput>
-            void UpdateInput(BackendMainWindowInterface* mainWindows, int count) override;
+            void UpdateInput(BackendMainWindowInterface** mainWindows, int count) override;
 
             //function: GetLastInputs
             //See <BackendSystemInputInterface::GetLastInputs>

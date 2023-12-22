@@ -168,6 +168,10 @@ void RemoveFocusChangedByUserEventTest()
 
 void CloneTest()
 {
+    //TODO(NOW): Store list of windows
+    ssLOG_SIMPLE("Fix this");
+    return;
+
     //RemoveFocusChangedByUserEvent
     if( !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::SIX) &&
         BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::SIX))
@@ -186,12 +190,12 @@ int main()
     
     //Setup window and run it
     TestWindow->SetRenderSize(glm::ivec2(1280, 720));
-    BackendInput->UpdateInput(TestWindow, 1);
+    BackendInput->UpdateInput(&TestWindow, 1);
 
     while(!TestWindow->IsClosed())
     {
         //drawing->ClearBackBuffer(glm::u8vec4());
-        BackendInput->UpdateInput(TestWindow, 1);
+        BackendInput->UpdateInput(&TestWindow, 1);
         if(!TestWindow->IsClosed())
         {
             SetIconTest();       

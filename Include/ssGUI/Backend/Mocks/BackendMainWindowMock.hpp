@@ -17,17 +17,17 @@ namespace Backend
     class BackendMainWindowMock : public BackendMainWindowInterface
     {
         private:
-            ssGUI::Backend::BackendMainWindowInterface* UnderlyingInterface;
+            BackendMainWindowInterface* UnderlyingInterface;
             glm::ivec2 WindowPosition;
-            glm::ivec2 PositionOffset;
-            glm::ivec2 SizeOffset;
+            glm::ivec2 WindowTopLeftDecor;
+            glm::ivec2 WindowBotRightDecor;
             glm::ivec2 WindowSize;
             //glm::ivec2 RenderSize;
             std::vector<std::pair<std::function<void()>, bool>> OnCloseListeners;
             bool Closed;
             bool ClosingAborted;
-            std::wstring Title;
-            ssGUI::Backend::BackendImageInterface* IconImage;
+            std::u32string Title;
+            BackendImageInterface* IconImage;
             bool Visible;
             bool VSync;
             bool Focused;
@@ -37,7 +37,7 @@ namespace Backend
             bool Titlebar;
             bool Resizable;
             bool CloseButton;
-            ssGUI::Enums::WindowMode WindowMode;
+            Enums::WindowMode WindowMode;
             
             CO_DECLARE_MEMBER_INSTNACE(OverrideObject);
         
@@ -47,17 +47,17 @@ namespace Backend
             BackendMainWindowMock(BackendMainWindowMock const& other);
 
         public:
-            BackendMainWindowMock(ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface);
+            BackendMainWindowMock(BackendMainWindowInterface* mainWindowInterface);
             ~BackendMainWindowMock() override;
 
             CO_DECLARE_OVERRIDE_METHODS(OverrideObject)
 
-            void SetMockPositionOffset(glm::ivec2 offset);
+            void SetMockDecorOffset(glm::ivec2 topLeft, glm::ivec2 bottomRight);
 
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendMainWindowInterface*, UnderlyingInterface)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(BackendMainWindowInterface*, UnderlyingInterface)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowPosition)
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, PositionOffset)
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, SizeOffset)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowTopLeftDecor)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowBotRightDecor)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, WindowSize)
             //SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, RenderSize)
             
@@ -65,8 +65,8 @@ namespace Backend
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(CloseListeners, OnCloseListeners)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Closed)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, ClosingAborted)
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::wstring, Title)
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendImageInterface*, IconImage)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::u32string, Title)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(BackendImageInterface*, IconImage)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Visible)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, VSync)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Focused)
@@ -78,7 +78,7 @@ namespace Backend
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Titlebar)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, Resizable)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, CloseButton)
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Enums::WindowMode, WindowMode)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(Enums::WindowMode, WindowMode)
 
             //function: SetWindowPosition
             //See <BackendMainWindowInterface::SetWindowPosition>
@@ -88,9 +88,9 @@ namespace Backend
             //See <BackendMainWindowInterface::GetWindowPosition>
             glm::ivec2 GetWindowPosition() const override;
 
-            //function: GetPositionOffset
-            //See <BackendMainWindowInterface::GetPositionOffset>
-            glm::ivec2 GetPositionOffset() const override;
+            //function: GetDecorationOffsets
+            //See <BackendMainWindowInterface::GetDecorationOffsets>
+            void GetDecorationOffsets(glm::ivec2& topLeft, glm::ivec2& bottomRight) const override;
 
             //function: SetWindowSize
             //See <BackendMainWindowInterface::SetWindowSize>
@@ -130,15 +130,23 @@ namespace Backend
 
             //function: SetTitle
             //See <BackendMainWindowInterface::SetTitle>
-            void SetTitle(std::wstring title) override;
+            void SetTitle(std::u32string title) override;
+
+            //function: SetTitle
+            //See <BackendMainWindowInterface::SetTitle>
+            void SetTitle(std::string title) override;
 
             //function: GetTitle
             //See <BackendMainWindowInterface::GetTitle>
-            std::wstring GetTitle() const override;
+            void GetTitle(std::u32string& outTitle) const override;
+
+            //function: GetTitle
+            //See <BackendMainWindowInterface::GetTitle>
+            void GetTitle(std::string& outTitle) const override;
 
             //function: SetIcon
             //See <BackendMainWindowInterface::SetIcon>
-            void SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage) override;
+            void SetIcon(const BackendImageInterface& iconImage) override;
 
             //function: SetVisible
             //See <BackendMainWindowInterface::SetVisible>
@@ -180,14 +188,6 @@ namespace Backend
             //See <BackendMainWindowInterface::GetAntiAliasingLevel>
             int GetAntiAliasingLevel() const override;
 
-            //function: SetTitlebar
-            //See <BackendMainWindowInterface::SetTitlebar>
-            void SetTitlebar(bool titlebar) override;
-
-            //function: HasTitlebar
-            //See <BackendMainWindowInterface::HasTitlebar>
-            bool HasTitlebar() const override;
-
             //function: SetResizable
             //See <BackendMainWindowInterface::SetResizable>
             void SetResizable(bool resizable) override;
@@ -206,11 +206,11 @@ namespace Backend
 
             //function: SetWindowMode
             //See <BackendMainWindowInterface::SetWindowMode>
-            void SetWindowMode(ssGUI::Enums::WindowMode windowMode) override;
+            void SetWindowMode(Enums::WindowMode windowMode) override;
 
             //function: GetWindowMode
             //See <BackendMainWindowInterface::GetWindowMode>
-            ssGUI::Enums::WindowMode GetWindowMode() const override;
+            Enums::WindowMode GetWindowMode() const override;
 
             //function: SetGLContext
             //See <BackendMainWindowInterface::SetGLContext>

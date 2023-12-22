@@ -292,7 +292,7 @@ int main()
         
     //Setup window and run it
     TestWindow->SetRenderSize(glm::ivec2(1280, 720));
-    BackendInput->UpdateInput(TestWindow, 1);
+    BackendInput->UpdateInput(&TestWindow, 1);
     
     int currentModeIndex = -1;
     const int maxNumberOfModes = 7;
@@ -330,7 +330,7 @@ int main()
 
     while(!TestWindow->IsClosed())
     {
-        BackendInput->UpdateInput(TestWindow, 1);
+        BackendInput->UpdateInput(&TestWindow, 1);
         if(!TestWindow->IsClosed())
         {
             updateTestModes();

@@ -18,7 +18,7 @@ namespace Backend
         OverrideObject = other.OverrideObject;
     }
 
-    BackendFontMock::BackendFontMock(ssGUI::Backend::BackendFontInterface* fontInterface) : 
+    BackendFontMock::BackendFontMock(BackendFontInterface* fontInterface) : 
         UnderlyingInterface(fontInterface)
     {}
 
@@ -36,12 +36,12 @@ namespace Backend
         return true;
     }
 
-    ssGUI::CharacterRenderInfo BackendFontMock::GetCharacterRenderInfo( wchar_t charUnicode, 
+    ssGUI::CharacterRenderInfo BackendFontMock::GetCharacterRenderInfo( char32_t charUnicode, 
                                                                         float charSize) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize);
         CO_RETURN_IF_FOUND( OverrideObject, 
-                            GetCharacterRenderInfo(wchar_t, float), 
+                            GetCharacterRenderInfo(char32_t, float), 
                             ssGUI::CharacterRenderInfo, charUnicode, charSize);
         
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetCharacterRenderInfo(charUnicode, charSize), 
@@ -50,21 +50,21 @@ namespace Backend
         return ssGUI::CharacterRenderInfo();
     }
     
-    bool BackendFontMock::IsCharacterSupported(wchar_t charUnicode) const
+    bool BackendFontMock::IsCharacterSupported(char32_t charUnicode) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode);
-        CO_RETURN_IF_FOUND(OverrideObject, IsCharacterSupported(wchar_t), bool, charUnicode);
+        CO_RETURN_IF_FOUND(OverrideObject, IsCharacterSupported(char32_t), bool, charUnicode);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(IsCharacterSupported(charUnicode), bool);
         return true;
     }
     
-    float BackendFontMock::GetKerning(  wchar_t charUnicode, 
-                                        wchar_t secondCharUnicode, 
+    float BackendFontMock::GetKerning(  char32_t charUnicode, 
+                                        char32_t secondCharUnicode, 
                                         float charSize) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, (int)secondCharUnicode, charSize);
         CO_RETURN_IF_FOUND( OverrideObject,
-                            GetKerning(wchar_t, wchar_t, float), float,
+                            GetKerning(char32_t, char32_t, float), float,
                             charUnicode, secondCharUnicode, charSize);
         
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetKerning(charUnicode, secondCharUnicode, charSize), 
@@ -124,14 +124,14 @@ namespace Backend
         return true;
     }
     
-    bool BackendFontMock::GetCharacterImage(wchar_t charUnicode, 
+    bool BackendFontMock::GetCharacterImage(char32_t charUnicode, 
                                             float charSize, 
-                                            ssGUI::ImageData& characterImage) const
+                                            BackendImageInterface& characterImage) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize, characterImage);
         CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject,
                                             true, 
-                                            GetCharacterImage(wchar_t, float, ssGUI::ImageData&), 
+                                            GetCharacterImage(char32_t, float, BackendImageInterface&), 
                                             charUnicode, 
                                             charSize, 
                                             characterImage);

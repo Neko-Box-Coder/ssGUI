@@ -24,21 +24,50 @@ namespace Backend
 
     }
     
-    void BackendSystemInputSDL2::UpdateInput(BackendMainWindowInterface* mainWindows, int count)
+    void BackendSystemInputSDL2::UpdateInput(BackendMainWindowInterface** mainWindows, int count)
     {
         SDL_Event currentEvent;
         
         while(SDL_PollEvent(&currentEvent))
         {
+            //TODO(NOW): Handle events
             switch(currentEvent.type)
             {
                 case SDL_QUIT:
-                {
+                    
                     for(int i = 0; i < count; i++)
                     {
                         mainWindows[i].Close();
                     }
-                }
+                    break;
+                
+                case SDL_WINDOWEVENT:
+                    switch(currentEvent.window.event)
+                    {
+                        case SDL_WINDOWEVENT_FOCUS_GAINED:
+                            break;
+                        case SDL_WINDOWEVENT_FOCUS_LOST:
+                            break;
+                        case SDL_WINDOWEVENT_CLOSE:
+                            break;
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    break;
+                case SDL_KEYUP:
+                    break;
+                case SDL_TEXTINPUT:
+                    break;
+                case SDL_MOUSEMOTION:
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    break;
+                case SDL_MOUSEWHEEL:
+                    break;
+                default:
+                    break;
             }
         }
     }

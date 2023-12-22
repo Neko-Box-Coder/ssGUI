@@ -372,11 +372,11 @@ int main()
         
     //Setup window and run it
     WindowBackend->SetRenderSize(glm::ivec2(1280, 720));
-    InputBackend->UpdateInput(WindowBackend, 1);
+    InputBackend->UpdateInput(&WindowBackend, 1);
 
     while(!WindowBackend->IsClosed())
     {
-        InputBackend->UpdateInput(WindowBackend, 1);
+        InputBackend->UpdateInput(&WindowBackend, 1);
         if(!WindowBackend->IsClosed())
         {
             DrawColorShapesTest();

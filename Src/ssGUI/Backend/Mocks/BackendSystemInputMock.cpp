@@ -29,14 +29,14 @@ namespace Backend
             delete UnderlyingInterface;
     }
     
-    void BackendSystemInputMock::UpdateInput()
+    void BackendSystemInputMock::UpdateInput(BackendMainWindowInterface** mainWindows, int count)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SSGUI_MOCK_PASSTHROUGH(UpdateInput());
+        SSGUI_MOCK_PASSTHROUGH(UpdateInput(mainWindows, count));
     }
 
     using GenericInput = ssGUI::Enums::GenericInput;
-    const std::vector<GenericInput>& BackendSystemInputMock::GetLastInputs()
+    const std::vector<GenericInput>& BackendSystemInputMock::GetLastInputs() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetLastInputs(), 
@@ -44,7 +44,7 @@ namespace Backend
         return LastKeyPresses;
     }
     
-    const std::vector<GenericInput>& BackendSystemInputMock::GetCurrentInputs()
+    const std::vector<GenericInput>& BackendSystemInputMock::GetCurrentInputs() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC( GetCurrentInputs(), 
@@ -117,39 +117,14 @@ namespace Backend
             CurrentMousePosition = position;
         else
         {
+            glm::ivec2 topleft;
+            glm::ivec2 botright;
+            mainWindow->GetDecorationOffsets(topleft, botright);
+            
             CurrentMousePosition =  mainWindow->GetWindowPosition() + 
-                                    mainWindow->GetPositionOffset() + 
+                                    topleft + 
                                     position;
         }
-    }
-
-    bool BackendSystemInputMock::GetLastMouseButton(ssGUI::Enums::MouseButton button) const
-    {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND( OverrideObject, 
-                            GetLastMouseButton(ssGUI::Enums::MouseButton), 
-                            bool, 
-                            button);
-        
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetLastMouseButton(button), bool);
-        return std::find(   LastKeyPresses.begin(), 
-                            LastKeyPresses.end(), 
-                            static_cast<GenericInput>(button)) != LastKeyPresses.end();
-    }
-    
-    bool BackendSystemInputMock::GetCurrentMouseButton(ssGUI::Enums::MouseButton button) const
-    {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND( OverrideObject, 
-                            GetCurrentMouseButton(ssGUI::Enums::MouseButton), 
-                            bool, 
-                            button);
-        
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetCurrentMouseButton(button), bool);
-        
-        return std::find(   CurrentKeyPresses.begin(), 
-                            CurrentKeyPresses.end(), 
-                            static_cast<GenericInput>(button)) != CurrentKeyPresses.end();
     }
 
     glm::vec2 BackendSystemInputMock::GetCurrentMouseScrollDelta() const
@@ -179,12 +154,12 @@ namespace Backend
         return CurrentRealtimeInputs;
     }
 
-    void BackendSystemInputMock::GetTextInput(std::wstring& outText) const
+    void BackendSystemInputMock::GetTextInput(std::u32string& outText) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject, 
                                             /**/, 
-                                            GetTextInput(std::wstring&), 
+                                            GetTextInput(std::u32string&), 
                                             outText);
         
         SSGUI_MOCK_PASSTHROUGH(GetTextInput(outText));
@@ -253,7 +228,8 @@ namespace Backend
         }
     }
 
-    void BackendSystemInputMock::GetCurrentCustomCursor(ImageInterface& customCursor, glm::ivec2& hotspot)
+    void BackendSystemInputMock::GetCurrentCustomCursor(ImageInterface& customCursor, 
+                                                        glm::ivec2& hotspot) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject,
@@ -271,7 +247,7 @@ namespace Backend
         }
     }
 
-    std::string BackendSystemInputMock::GetCurrentCustomCursorName()
+    std::string BackendSystemInputMock::GetCurrentCustomCursorName() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, GetCurrentCustomCursorName(), std::string);
@@ -285,17 +261,17 @@ namespace Backend
     
     void BackendSystemInputMock::GetCustomCursor(   ImageInterface& customCursor, 
                                                     std::string cursorName, 
-                                                    glm::ivec2& hotspot)
+                                                    glm::ivec2& hotspot) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_MODIFY_ARGS_AND_RETURN_IF_FOUND(OverrideObject,
-                                                /*Empty return*/, 
-                                                GetCustomCursor(ImageInterface&, 
-                                                                std::string, 
-                                                                glm::ivec2&), 
-                                                customCursor, 
-                                                cursorName, 
-                                                hotspot);
+        CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject,
+                                            /*Empty return*/, 
+                                            GetCustomCursor(ImageInterface&, 
+                                                            std::string, 
+                                                            glm::ivec2&), 
+                                            customCursor, 
+                                            cursorName, 
+                                            hotspot);
         
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN(GetCustomCursor(customCursor, cursorName, hotspot));
         
@@ -306,7 +282,7 @@ namespace Backend
         }
     }
 
-    bool BackendSystemInputMock::HasCustomCursor(std::string cursorName)
+    bool BackendSystemInputMock::HasCustomCursor(std::string cursorName) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND( OverrideObject, 
@@ -372,7 +348,7 @@ namespace Backend
         return true;
     }
 
-    bool BackendSystemInputMock::ClipbaordHasText()
+    bool BackendSystemInputMock::ClipbaordHasText() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, ClipbaordHasText(), bool);
@@ -380,7 +356,7 @@ namespace Backend
         return !ClipboardText.empty();
     }
     
-    bool BackendSystemInputMock::ClipbaordHasImage()
+    bool BackendSystemInputMock::ClipbaordHasImage() const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, ClipbaordHasImage(), bool);
@@ -405,16 +381,26 @@ namespace Backend
         return true;
     }
     
-    bool BackendSystemInputMock::SetClipboardText(const std::wstring& str)
+    bool BackendSystemInputMock::SetClipboardText(const std::u32string& str)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND(OverrideObject, SetClipboardText(const std::wstring&), bool, str);
+        CO_RETURN_IF_FOUND(OverrideObject, SetClipboardText(const std::u32string&), bool, str);
         ClipboardText = str;
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(SetClipboardText(str), bool);
         return true;
     }
     
-    bool BackendSystemInputMock::GetClipboardImage(ImageInterface& imgData)
+    bool BackendSystemInputMock::SetClipboardText(const std::string& str)
+    {
+        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        CO_RETURN_IF_FOUND(OverrideObject, SetClipboardText(const std::string&), bool, str);
+        std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> converter;
+        ClipboardText = converter.from_bytes(str);
+        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(SetClipboardText(str), bool);
+        return true;
+    }
+    
+    bool BackendSystemInputMock::GetClipboardImage(ImageInterface& imgData) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND( OverrideObject, 
@@ -433,10 +419,10 @@ namespace Backend
             return false;
     }
 
-    bool BackendSystemInputMock::GetClipboardText(std::wstring& str)
+    bool BackendSystemInputMock::GetClipboardText(std::u32string& str) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND(OverrideObject, GetClipboardText(std::wstring&), bool, str);
+        CO_RETURN_IF_FOUND(OverrideObject, GetClipboardText(std::u32string&), bool, str);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetClipboardText(str), bool);
         
         if(!ClipboardText.empty())
@@ -445,13 +431,13 @@ namespace Backend
         return !ClipboardText.empty();
     }
     
-    bool BackendSystemInputMock::GetClipboardText(std::string& str)
+    bool BackendSystemInputMock::GetClipboardText(std::string& str) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, GetClipboardText(std::wstring&), bool, str);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetClipboardText(str), bool);
         
-        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> converter;
         
         if(!ClipboardText.empty())
             str = converter.to_bytes(ClipboardText);

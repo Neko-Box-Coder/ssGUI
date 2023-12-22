@@ -52,7 +52,8 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
             return static_cast<BackendDrawingInterface*>(new BackendDrawingTemplate(mainWindowInterface));
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendDrawingInterface*>(new BackendDrawingMock(mainWindowInterface));
+            return static_cast<BackendDrawingInterface*>(new BackendDrawingMock(nullptr, 
+                                                                                mainWindowInterface));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -67,7 +68,7 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
             return static_cast<BackendFontInterface*>(new BackendFontTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendFontInterface*>(new BackendFontMock());
+            return static_cast<BackendFontInterface*>(new BackendFontMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -82,7 +83,7 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
             return static_cast<BackendImageInterface*>(new BackendImageTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendImageInterface*>(new BackendImageMock());
+            return static_cast<BackendImageInterface*>(new BackendImageMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -97,7 +98,7 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
             return static_cast<BackendSystemInputInterface*>(new BackendSystemInputTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendSystemInputInterface*>(new BackendSystemInputMock());
+            return static_cast<BackendSystemInputInterface*>(new BackendSystemInputMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -112,7 +113,7 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
             return static_cast<BackendMainWindowInterface*>(new BackendMainWindowTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendMainWindowInterface*>(new BackendMainWindowMock());
+            return static_cast<BackendMainWindowInterface*>(new BackendMainWindowMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();

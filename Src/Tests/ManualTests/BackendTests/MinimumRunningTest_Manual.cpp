@@ -31,12 +31,12 @@ int main()
 
 
     BackendWindow->SetRenderSize(glm::ivec2(1280, 720));
-    BackendInput->UpdateInput(BackendWindow, 1);
+    BackendInput->UpdateInput(&BackendWindow, 1);
 
     while(!BackendWindow->IsClosed())
     {
         //drawing->ClearBackBuffer(glm::u8vec4());
-        BackendInput->UpdateInput(BackendWindow, 1);
+        BackendInput->UpdateInput(&BackendWindow, 1);
         if(!BackendWindow->IsClosed())
         {
             //drawing->CreateDrawingEntities(pos, uv, color, counts, props);

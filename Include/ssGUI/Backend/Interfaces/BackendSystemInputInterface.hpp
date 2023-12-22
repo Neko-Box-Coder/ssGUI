@@ -29,7 +29,7 @@ namespace Backend
             
             //function: UpdateInput
             //Poll and updates the input
-            virtual void UpdateInput(BackendMainWindowInterface* mainWindows, int count) = 0;
+            virtual void UpdateInput(BackendMainWindowInterface** mainWindows, int count) = 0;
 
             using GenericInputs = Enums::GenericInput;
 

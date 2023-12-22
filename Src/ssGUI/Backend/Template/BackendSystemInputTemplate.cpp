@@ -22,7 +22,7 @@ namespace Backend
 
     }
     
-    void BackendSystemInputTemplate::UpdateInput(BackendMainWindowInterface* mainWindows, int count)
+    void BackendSystemInputTemplate::UpdateInput(BackendMainWindowInterface** mainWindows, int count)
     {
 
     }

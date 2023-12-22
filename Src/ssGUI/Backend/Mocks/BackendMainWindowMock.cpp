@@ -11,8 +11,8 @@ namespace Backend
     BackendMainWindowMock::BackendMainWindowMock(BackendMainWindowMock const& other) :
         UnderlyingInterface(nullptr),
         WindowPosition(other.WindowPosition),
-        PositionOffset(other.PositionOffset),
-        SizeOffset(other.SizeOffset),
+        WindowTopLeftDecor(other.WindowTopLeftDecor),
+        WindowBotRightDecor(other.WindowBotRightDecor),
         WindowSize(other.WindowSize),
         //RenderSize(other.RenderSize),
         OnCloseListeners(),
@@ -40,8 +40,8 @@ namespace Backend
     BackendMainWindowMock::BackendMainWindowMock(MainWindowInterface* mainWindowInterface) :
         UnderlyingInterface(mainWindowInterface),
         WindowPosition(),
-        PositionOffset(glm::ivec2(5, 5)),
-        SizeOffset(glm::ivec2(10, 10)),
+        WindowTopLeftDecor(glm::ivec2(5, 5)),
+        WindowBotRightDecor(glm::ivec2(5, 5)),
         WindowSize(100, 100),
         //RenderSize(90, 90),
         OnCloseListeners(),
@@ -67,9 +67,10 @@ namespace Backend
             delete UnderlyingInterface;
     }
     
-    void BackendMainWindowMock::SetMockPositionOffset(glm::ivec2 offset)
+    void BackendMainWindowMock::SetMockDecorOffset(glm::ivec2 topLeft, glm::ivec2 bottomRight)
     {
-        PositionOffset = offset;
+        WindowTopLeftDecor = topLeft;
+        WindowBotRightDecor = bottomRight;
     }
     
     void BackendMainWindowMock::SetWindowPosition(glm::ivec2 pos)
@@ -87,12 +88,12 @@ namespace Backend
         return WindowPosition;
     }
 
-    glm::ivec2 BackendMainWindowMock::GetPositionOffset() const
+    void BackendMainWindowMock::GetDecorationOffsets(   glm::ivec2& topLeft, 
+                                                        glm::ivec2& bottomRight) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND(OverrideObject, GetPositionOffset(), glm::ivec2);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetPositionOffset(), glm::ivec2);
-        return PositionOffset;
+        CO_MODIFY_ARGS_IF_FOUND(OverrideObject, GetDecorationOffsets(), topLeft, bottomRight);
+        SSGUI_MOCK_PASSTHROUGH(GetDecorationOffsets(topLeft, bottomRight));
     }
 
     void BackendMainWindowMock::SetWindowSize(glm::ivec2 size)
@@ -114,8 +115,7 @@ namespace Backend
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         SSGUI_MOCK_PASSTHROUGH(SetRenderSize(size));
-        WindowSize = size + SizeOffset;
-        //RenderSize = size;
+        WindowSize = size + WindowTopLeftDecor + WindowBotRightDecor;
     }
     
     glm::ivec2 BackendMainWindowMock::GetRenderSize() const
@@ -123,8 +123,7 @@ namespace Backend
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         CO_RETURN_IF_FOUND(OverrideObject, GetRenderSize(), glm::ivec2);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRenderSize(), glm::ivec2);
-        //return RenderSize;
-        return WindowSize - SizeOffset;
+        return WindowSize - WindowTopLeftDecor - WindowBotRightDecor;
     }
 
     bool BackendMainWindowMock::IsClosed() const
@@ -181,20 +180,33 @@ namespace Backend
             OnCloseListeners[index].second = false;
     }
 
-    void BackendMainWindowMock::SetTitle(std::wstring title)
+    void BackendMainWindowMock::SetTitle(std::string title)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         SSGUI_MOCK_PASSTHROUGH(SetTitle(title));
-        
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> codec;
+        Title = codec.from_bytes(title);
+    }
+
+    void BackendMainWindowMock::SetTitle(std::u32string title)
+    {
+        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        SSGUI_MOCK_PASSTHROUGH(SetTitle(title));
         Title = title;
     }
 
-    std::wstring BackendMainWindowMock::GetTitle() const
+    void BackendMainWindowMock::GetTitle(std::u32string& outTitle) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND(OverrideObject, GetTitle(), std::wstring);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetTitle(), std::wstring);
-        return Title;
+        CO_MODIFY_ARGS_IF_FOUND(OverrideObject, GetTitle(std::u32string&), outTitle);
+        SSGUI_MOCK_PASSTHROUGH(GetTitle(outTitle));
+    }
+    
+    void BackendMainWindowMock::GetTitle(std::string& outTitle) const
+    {
+        SSGUI_MOCK_LOG_FUNCTION_CALL();
+        CO_MODIFY_ARGS_IF_FOUND(OverrideObject, GetTitle(std::string&), outTitle);
+        SSGUI_MOCK_PASSTHROUGH(GetTitle(outTitle));
     }
 
     void BackendMainWindowMock::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
@@ -295,21 +307,6 @@ namespace Backend
         CO_RETURN_IF_FOUND(OverrideObject, GetAntiAliasingLevel(), int);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetAntiAliasingLevel(), int);
         return MSAA;
-    }
-
-    void BackendMainWindowMock::SetTitlebar(bool titlebar)
-    {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
-        SSGUI_MOCK_PASSTHROUGH(SetTitlebar(titlebar));
-        Titlebar = titlebar;
-    }
-
-    bool BackendMainWindowMock::HasTitlebar() const
-    {
-        SSGUI_MOCK_LOG_FUNCTION_CALL();
-        CO_RETURN_IF_FOUND(OverrideObject, HasTitlebar(), bool);
-        SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(HasTitlebar(), bool);
-        return Titlebar;
     }
 
     void BackendMainWindowMock::SetResizable(bool resizable)

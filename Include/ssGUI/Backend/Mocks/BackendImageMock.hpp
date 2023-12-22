@@ -18,8 +18,8 @@ namespace Backend
     class BackendImageMock : public BackendImageInterface
     {
         private:
-            ssGUI::Backend::BackendImageInterface* UnderlyingInterface;
-            std::vector<ssGUI::Backend::BackendDrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
+            BackendImageInterface* UnderlyingInterface;
+            std::vector<BackendDrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
             CO_DECLARE_MEMBER_INSTNACE(OverrideObject);
             
             BackendImageMock& operator=(BackendImageMock const& other);
@@ -28,12 +28,12 @@ namespace Backend
             BackendImageMock(BackendImageMock const& other);
 
         public:
-            BackendImageMock(ssGUI::Backend::BackendImageInterface* imageInterface);
+            BackendImageMock(BackendImageInterface* imageInterface);
             ~BackendImageMock() override;
 
             CO_DECLARE_OVERRIDE_METHODS(OverrideObject)
 
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ssGUI::Backend::BackendImageInterface*, UnderlyingInterface)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(BackendImageInterface*, UnderlyingInterface)
 
             //function: GetRawHandle
             //See <BackendImageInterface::GetRawHandle>
@@ -53,7 +53,9 @@ namespace Backend
 
             //function: LoadRawFromMemory
             //See <BackendImageInterface::LoadRawFromMemory>
-            bool LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) override;
+            bool LoadRawFromMemory( const void * dataPtr, 
+                                    ImageFormat format, 
+                                    glm::ivec2 imageSize) override;
             
             //function: GetSize
             //See <BackendImageInterface::GetSize>
@@ -61,7 +63,7 @@ namespace Backend
 
             //function: GetPixelPtr
             //See <BackendImageInterface::GetPixelPtr>
-            void* GetPixelPtr(ssGUI::ImageFormat& format) const override;
+            void* GetPixelPtr(ImageFormat& format) const override;
             
             //function: UpdateCache
             //See <BackendImageInterface::UpdateCache>
@@ -69,11 +71,11 @@ namespace Backend
             
             //function: Internal_AddBackendDrawingRecord
             //See <BackendImageInterface::Internal_AddBackendDrawingRecord>
-            void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void Internal_AddBackendDrawingRecord(BackendDrawingInterface* backendDrawing) override;
 
             //function: Internal_RemoveBackendDrawingRecord
             //See <BackendImageInterface::Internal_RemoveBackendDrawingRecord>
-            void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void Internal_RemoveBackendDrawingRecord(BackendDrawingInterface* backendDrawing) override;
 
             //function: Clone
             //See <BackendImageInterface::Clone>

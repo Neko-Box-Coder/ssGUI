@@ -26,7 +26,7 @@ int main()
         TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
         BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(TestWindow);
         BackendInputs = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
-        BackendInputs->UpdateInput(TestWindow, 1);
+        BackendInputs->UpdateInput(&TestWindow, 1);
     };
 
     ssTEST_CLEAN_UP

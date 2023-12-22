@@ -8,7 +8,9 @@ namespace ssGUI
 
 namespace Backend
 {
-    BackendDrawingMock::BackendDrawingMock(BackendDrawingMock const& other)
+    BackendDrawingMock::BackendDrawingMock( BackendDrawingMock const& other,
+                                            BackendMainWindowInterface* otherMainWindow) :
+        BackendDrawingInterface(otherMainWindow)
     {
         ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not Implemented");
         ssLOG_EXIT_PROGRAM(1);
@@ -20,7 +22,9 @@ namespace Backend
         //std::copy(std::begin(other.ClearedColor), std::end(other.ClearedColor), std::begin(ClearedColor));
     }
 
-    BackendDrawingMock::BackendDrawingMock(ssGUI::Backend::BackendDrawingInterface* drawingInterface) :
+    BackendDrawingMock::BackendDrawingMock( BackendDrawingInterface* drawingInterface,
+                                            BackendMainWindowInterface* mainWindowInterface) :
+        BackendDrawingInterface(mainWindowInterface),
         UnderlyingInterface(drawingInterface),
         SavedStateCount(0),
         CurrentDrawingBuffer(0),
@@ -117,7 +121,7 @@ namespace Backend
         ClearedColor[CurrentDrawingBuffer] = clearColor;
     }
     
-    void BackendDrawingMock::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingMock::AddImageCache(BackendImageInterface* backendImage)
     {
         //NOTE: The underlying interface will get an extra AddImageCache call
         SSGUI_MOCK_PASSTHROUGH(AddImageCache(backendImage));
@@ -129,7 +133,7 @@ namespace Backend
         }
     }
     
-    void BackendDrawingMock::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingMock::RemoveImageCache(BackendImageInterface* backendImage)
     {
         //NOTE: The underlying interface will get an extra RemoveImageCache call
         SSGUI_MOCK_PASSTHROUGH(RemoveImageCache(backendImage));
@@ -141,7 +145,7 @@ namespace Backend
         }
     }
     
-    void* BackendDrawingMock::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    void* BackendDrawingMock::GetRawImageCacheHandle(BackendImageInterface* backendImage) const
     {
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetRawImageCacheHandle(backendImage), void*);
         return CachedImage.find(backendImage) != CachedImage.end() ? backendImage : nullptr;

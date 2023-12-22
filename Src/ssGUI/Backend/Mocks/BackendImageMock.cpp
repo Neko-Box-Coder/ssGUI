@@ -15,11 +15,11 @@ namespace Backend
         else
             UnderlyingInterface = nullptr;
         
-        LinkedBackendDrawing = std::vector<ssGUI::Backend::BackendDrawingInterface*>();
+        LinkedBackendDrawing = std::vector<BackendDrawingInterface*>();
         OverrideObject = other.OverrideObject;
     }
 
-    BackendImageMock::BackendImageMock(ssGUI::Backend::BackendImageInterface* imageInterface) : 
+    BackendImageMock::BackendImageMock(BackendImageInterface* imageInterface) : 
         UnderlyingInterface(imageInterface),
         LinkedBackendDrawing()
     {}
@@ -30,7 +30,7 @@ namespace Backend
             delete UnderlyingInterface;
             
         //Remove all linked backend drawing
-        std::vector<ssGUI::Backend::BackendDrawingInterface*> backends = LinkedBackendDrawing;
+        std::vector<BackendDrawingInterface*> backends = LinkedBackendDrawing;
         for(int i = 0; i < backends.size(); i++)
             backends[i]->RemoveImageCache(this);
     }
@@ -73,12 +73,12 @@ namespace Backend
     }
 
     bool BackendImageMock::LoadRawFromMemory(   const void * dataPtr, 
-                                                ssGUI::ImageFormat format, 
+                                                ImageFormat format, 
                                                 glm::ivec2 imageSize)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(dataPtr, format, imageSize);
         CO_RETURN_IF_FOUND( OverrideObject, 
-                            LoadRawFromMemory(const void*, ssGUI::ImageFormat, glm::ivec2), 
+                            LoadRawFromMemory(const void*, ImageFormat, glm::ivec2), 
                             bool, 
                             dataPtr, 
                             format, 
@@ -96,11 +96,11 @@ namespace Backend
         return glm::ivec2();
     }
 
-    void* BackendImageMock::GetPixelPtr(ssGUI::ImageFormat& format) const
+    void* BackendImageMock::GetPixelPtr(ImageFormat& format) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL(format);
-        CO_MODIFY_ARGS_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), format);
-        CO_RETURN_IF_FOUND(OverrideObject, GetPixelPtr(ssGUI::ImageFormat&), void*, format);
+        CO_MODIFY_ARGS_IF_FOUND(OverrideObject, GetPixelPtr(ImageFormat&), format);
+        CO_RETURN_IF_FOUND(OverrideObject, GetPixelPtr(ImageFormat&), void*, format);
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(GetPixelPtr(format), void*);
         return nullptr;
     }
@@ -111,7 +111,7 @@ namespace Backend
         //      since the drawing backend holds a reference (pointer) to this instead
         
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        std::vector<ssGUI::Backend::BackendDrawingInterface*> backends = LinkedBackendDrawing;
+        std::vector<BackendDrawingInterface*> backends = LinkedBackendDrawing;
         for(int i = 0; i < backends.size(); i++)
         {
             backends[i]->RemoveImageCache(this);
@@ -119,7 +119,7 @@ namespace Backend
         }
     }
 
-    using DrawingInterface = ssGUI::Backend::BackendDrawingInterface;
+    using DrawingInterface = BackendDrawingInterface;
     void BackendImageMock::Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing)
     {
         //NOTE: We don't want to pass the drawing backend to the underlying interface
