@@ -1,5 +1,5 @@
-#ifndef SSGUI_MAIN_WINDOW_INTERFACE_HPP
-#define SSGUI_MAIN_WINDOW_INTERFACE_HPP
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_HPP
+#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_HPP
 
 #include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 #include "ssGUI/Enums/WindowDecorationOptions.hpp"

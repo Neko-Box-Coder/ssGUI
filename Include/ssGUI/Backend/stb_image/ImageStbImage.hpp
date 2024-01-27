@@ -1,5 +1,5 @@
-#ifndef SSGUI_IMAGE_STB_IMAGE_HPP
-#define SSGUI_IMAGE_STB_IMAGE_HPP
+#ifndef SSGUI_BACKEND_IMAGE_STB_IMAGE_HPP
+#define SSGUI_BACKEND_IMAGE_STB_IMAGE_HPP
 
 #include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 

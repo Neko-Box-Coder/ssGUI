@@ -1,5 +1,5 @@
-#ifndef SSGUI_SYSTEM_INPUT_SDL2_HPP
-#define SSGUI_SYSTEM_INPUT_SDL2_HPP
+#ifndef SSGUI_BACKEND_SYSTEM_INPUT_SDL2_HPP
+#define SSGUI_BACKEND_SYSTEM_INPUT_SDL2_HPP
 
 #include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
 #include "SDL_mouse.h"

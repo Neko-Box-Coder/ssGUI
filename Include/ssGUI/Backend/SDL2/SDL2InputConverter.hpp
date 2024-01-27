@@ -1,5 +1,5 @@
-#ifndef SSGUI_SDL2_INPUT_CONVERTER_HPP
-#define SSGUI_SDL2_INPUT_CONVERTER_HPP
+#ifndef SSGUI_BACKEND_SDL2_INPUT_CONVERTER_HPP
+#define SSGUI_BACKEND_SDL2_INPUT_CONVERTER_HPP
 
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"

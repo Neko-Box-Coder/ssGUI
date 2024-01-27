@@ -1,5 +1,5 @@
-#ifndef SSGUI_MAIN_WINDOW_SDL2_HPP
-#define SSGUI_MAIN_WINDOW_SDL2_HPP
+#ifndef SSGUI_BACKEND_MAIN_WINDOW_SDL2_HPP
+#define SSGUI_BACKEND_MAIN_WINDOW_SDL2_HPP
 
 #include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
 

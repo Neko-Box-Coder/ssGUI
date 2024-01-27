@@ -1,5 +1,5 @@
-#ifndef SSGUI_DRAWING_INTERFACE_HPP
-#define SSGUI_DRAWING_INTERFACE_HPP
+#ifndef SSGUI_BACKEND_DRAWING_INTERFACE_HPP
+#define SSGUI_BACKEND_DRAWING_INTERFACE_HPP
 
 #include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
 #include "ssGUI/Backend/Interfaces/ImageInterface.hpp"

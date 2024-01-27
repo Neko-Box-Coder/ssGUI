@@ -1,5 +1,5 @@
-#ifndef SSGUI_FONT_INTERFACE_HPP
-#define SSGUI_FONT_INTERFACE_HPP
+#ifndef SSGUI_BACKEND_FONT_INTERFACE_HPP
+#define SSGUI_BACKEND_FONT_INTERFACE_HPP
 
 #include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
 

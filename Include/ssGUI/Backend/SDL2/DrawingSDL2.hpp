@@ -1,5 +1,5 @@
-#ifndef SSGUI_DRAWING_SDL2_HPP
-#define SSGUI_DRAWING_SDL2_HPP
+#ifndef SSGUI_BACKEND_DRAWING_SDL2_HPP
+#define SSGUI_BACKEND_DRAWING_SDL2_HPP
 
 #include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 
