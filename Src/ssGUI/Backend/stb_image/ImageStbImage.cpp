@@ -39,11 +39,11 @@ namespace Backend
         LinkedBackendDrawing = std::vector<ssGUI::Backend::DrawingInterface*>();
     }
 
-    ImageStbImage::ImageStbImage() :  ImageBuffer(nullptr),
-                                                    ImageSizeInBytes(0),
-                                                    CurrentImageFormat(),
-                                                    ImageWidth(0),
-                                                    ImageHeight(0)
+    ImageStbImage::ImageStbImage() :    ImageBuffer(nullptr),
+                                        ImageSizeInBytes(0),
+                                        CurrentImageFormat(),
+                                        ImageWidth(0),
+                                        ImageHeight(0)
     {
     }
 
@@ -56,6 +56,11 @@ namespace Backend
         std::vector<ssGUI::Backend::DrawingInterface*> backends = LinkedBackendDrawing;
         for(int i = 0; i < backends.size(); i++)
             backends[i]->RemoveImageCache(this);
+    }
+    
+    bool ImageStbImage::Initialize()
+    {
+        return true;
     }
 
     void* ImageStbImage::GetRawHandle() const

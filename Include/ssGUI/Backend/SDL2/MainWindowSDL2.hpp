@@ -57,6 +57,9 @@ namespace Backend
             //function: SetDPIScaling
             glm::vec2 GetDPIScaling() const;
 
+            //function: Initialize
+            bool Initialize() override;
+
             //function: SetWindowPosition
             //See <MainWindowInterface::SetWindowPosition>
             void SetWindowPosition(glm::ivec2 pos) override;

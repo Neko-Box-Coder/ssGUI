@@ -76,13 +76,17 @@ namespace Backend
                                                         RawEventHandlers(),
                                                         StartTime()
     {
-        StartTime = std::chrono::high_resolution_clock::now();
-        SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
     }
 
     SystemInputSDL2::~SystemInputSDL2()
     {
-
+    }
+    
+    bool SystemInputSDL2::Initialize()
+    {
+        StartTime = std::chrono::high_resolution_clock::now();
+        SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+        return true;
     }
     
     void SystemInputSDL2::UpdateInput(MainWindowInterface** mainWindows, int count)

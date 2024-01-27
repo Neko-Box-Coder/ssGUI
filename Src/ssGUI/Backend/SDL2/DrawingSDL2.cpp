@@ -7,21 +7,24 @@ namespace ssGUI
 
 namespace Backend
 {
-    DrawingSDL2::DrawingSDL2( DrawingSDL2 const& other,
-                                            MainWindowInterface* otherMainWindow) : 
-        DrawingInterface(otherMainWindow)
+    DrawingSDL2::DrawingSDL2(   DrawingSDL2 const& other,
+                                MainWindowInterface* otherMainWindow)
     {
         //TODO(NOW)
     }
 
-    DrawingSDL2::DrawingSDL2(MainWindowInterface* mainWindowInterface) :
-        DrawingInterface(mainWindowInterface)
+    DrawingSDL2::DrawingSDL2()
     {
         //ssGUI_WARNING(ssGUI_BACKEND_TAG, "DrawingSDL2 is being created, is this intended?");
     }
 
     DrawingSDL2::~DrawingSDL2()
     {
+    }
+    
+    bool DrawingSDL2::Initialize(MainWindowInterface* mainWindowInterface)
+    {
+        return true;
     }
     
     void DrawingSDL2::SaveDrawingState()

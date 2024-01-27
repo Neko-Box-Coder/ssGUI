@@ -24,8 +24,11 @@ namespace Backend
                                                         CharSize, 
                                                         CharCode>;
         
-            DrawingInterface(MainWindowInterface* mainWindowInterface){}
+            DrawingInterface(){}
             virtual ~DrawingInterface() = 0;
+
+            //function: Initialize
+            virtual bool Initialize(MainWindowInterface* mainWindowInterface) = 0;
 
             //function: SaveDrawingState
             //Saves the drawing context state.

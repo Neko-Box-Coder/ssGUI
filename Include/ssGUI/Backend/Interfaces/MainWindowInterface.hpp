@@ -21,6 +21,9 @@ namespace Backend
             MainWindowInterface(){}
             virtual ~MainWindowInterface() = 0;
 
+            //function: Initialize
+            virtual bool Initialize() = 0;
+
             //function: SetWindowPosition
             //Sets the main window position (distance from top-left) on the screen
             virtual void SetWindowPosition(glm::ivec2 pos) = 0;

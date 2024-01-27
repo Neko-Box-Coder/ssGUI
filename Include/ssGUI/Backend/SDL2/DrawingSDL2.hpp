@@ -9,12 +9,14 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
+    class MainWindowSDL2;
+    
     //class: ssGUI::Backend::DrawingSDL2
     class DrawingSDL2 : public DrawingInterface
     {
         private:
             //TODO(NOW): Change to sdl2 main window
-            MainWindowInterface* MainWindow;
+            MainWindowSDL2* MainWindow;
         
             DrawingSDL2& operator=(DrawingSDL2 const& other);
 
@@ -23,8 +25,11 @@ namespace Backend
                                 MainWindowInterface* otherMainWindow);
         
         public:
-            DrawingSDL2(MainWindowInterface* mainWindowInterface);
+            DrawingSDL2();
             ~DrawingSDL2() override;
+
+            //function: Initialize
+            bool Initialize(MainWindowInterface* mainWindowInterface) override;
 
             //function: SaveState
             //See <DrawingInterface::SaveState>

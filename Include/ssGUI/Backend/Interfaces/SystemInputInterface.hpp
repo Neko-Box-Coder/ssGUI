@@ -27,6 +27,9 @@ namespace Backend
             SystemInputInterface(){}
             virtual ~SystemInputInterface() = 0;
             
+            //function: Initialize
+            virtual bool Initialize() = 0;
+            
             //function: UpdateInput
             //Poll and updates the input
             virtual void UpdateInput(MainWindowInterface** mainWindows, int count) = 0;

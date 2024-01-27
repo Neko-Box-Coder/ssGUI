@@ -56,6 +56,9 @@ namespace Backend
             ImageStbImage();
             ~ImageStbImage() override;
 
+            //function: Initialize
+            bool Initialize() override;
+
             //function: GetRawHandle
             //See <ImageInterface::GetRawHandle>
             void* GetRawHandle() const override;

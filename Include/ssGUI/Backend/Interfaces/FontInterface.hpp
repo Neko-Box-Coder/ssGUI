@@ -22,6 +22,9 @@ namespace Backend
             FontInterface(){}
             virtual ~FontInterface() = 0;
             
+            //function: Initialize
+            virtual bool Initialize() = 0;
+            
             //function: IsValid
             //Returns true if the font is loaded.
             virtual bool IsValid() const = 0;

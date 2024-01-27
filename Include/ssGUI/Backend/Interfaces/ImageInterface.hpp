@@ -21,6 +21,9 @@ namespace Backend
             ImageInterface(){}
             virtual ~ImageInterface() = 0;
 
+            //function: Initialize
+            virtual bool Initialize() = 0;
+            
             //function: GetRawHandle
             //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr.
             virtual void* GetRawHandle() const = 0;

@@ -55,6 +55,9 @@ namespace Backend
     
     void MainWindowSDL2::DestroyWindow()
     {
+        if(CurrentWindow == nullptr || CurrentSDL_Renderer == nullptr)
+            return;
+        
         SDL_DestroyRenderer(CurrentSDL_Renderer);
         SDL_DestroyWindow(CurrentWindow);
     }
@@ -75,30 +78,33 @@ namespace Backend
         OnCloseCallback(other.OnCloseCallback),
         ExternalFocusChangedCallback(other.ExternalFocusChangedCallback)
     {
-        CreateWindow();
     }
 
-    MainWindowSDL2::MainWindowSDL2() :    CurrentWindow(nullptr),
-                                                        WindowTitle(),
-                                                        WindowPosition(),
-                                                        WindowSize(),
-                                                        WindowClosed(false), 
-                                                        WindowClosingAborted(false),
-                                                        WindowHidden(false),
-                                                        WindowVsync(false),
-                                                        WindowResizable(true),
-                                                        BackendDrawing(nullptr),
-                                                        CurrentWindowMode(Enums::WindowMode::NORMAL),
-                                                        CurrentSDL_Renderer(nullptr),
-                                                        OnCloseCallback(),
-                                                        ExternalFocusChangedCallback()
+    MainWindowSDL2::MainWindowSDL2() :  CurrentWindow(nullptr),
+                                        WindowTitle(),
+                                        WindowPosition(),
+                                        WindowSize(),
+                                        WindowClosed(false), 
+                                        WindowClosingAborted(false),
+                                        WindowHidden(false),
+                                        WindowVsync(false),
+                                        WindowResizable(true),
+                                        BackendDrawing(nullptr),
+                                        CurrentWindowMode(Enums::WindowMode::NORMAL),
+                                        CurrentSDL_Renderer(nullptr),
+                                        OnCloseCallback(),
+                                        ExternalFocusChangedCallback()
     {
-        CreateWindow();
     }
 
     MainWindowSDL2::~MainWindowSDL2()
     {
         DestroyWindow();
+    }
+    
+    bool MainWindowSDL2::Initialize()
+    {
+        return CreateWindow();
     }
     
     glm::vec2 MainWindowSDL2::GetDPIScaling() const
@@ -487,8 +493,14 @@ namespace Backend
     
     MainWindowInterface* MainWindowSDL2:: Clone()
     {
-        //TODO(NOW)
-        return nullptr;
+        MainWindowSDL2* newMainWindow = new MainWindowSDL2();
+        if(!newMainWindow->Initialize())
+        {
+            delete newMainWindow;
+            return nullptr;
+        }
+        
+        return newMainWindow;
     }
 
     void* MainWindowSDL2::GetRawHandle() const

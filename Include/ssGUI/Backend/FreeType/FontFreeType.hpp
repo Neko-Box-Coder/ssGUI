@@ -32,7 +32,8 @@ namespace Backend
     class FontFreeType : public FontInterface
     {   
         private:
-            static StaticDefaultWrapper<FT_Library> FreeTypeLib;
+            //static StaticDefaultWrapper<FT_Library> FreeTypeLib;
+            static FT_Library FreeTypeLib;
 
             FT_Face FontFace;
             bool Valid;
@@ -59,6 +60,12 @@ namespace Backend
             //function: GetCurrentGlyph
             //This returns the loaded freetype glyph
             FT_GlyphSlot GetCurrentGlyph() const;
+
+            static bool InitializeFreeType();
+            static bool CleanupFreeType();
+
+            //function: Initialize
+            virtual bool Initialize() override;
 
             //function: IsValid
             //See <FontInterface::IsValid>

@@ -62,6 +62,9 @@ namespace Backend
             SystemInputSDL2();
             ~SystemInputSDL2() override;
             
+            //function: Initialize
+            bool Initialize() override;
+            
             //function: UpdateInput
             //See <SystemInputInterface::UpdateInput>
             void UpdateInput(MainWindowInterface** mainWindows, int count) override;

@@ -10,8 +10,8 @@ namespace ssGUI
 
 namespace Backend
 {
-    StaticDefaultWrapper<FT_Library> FontFreeType::FreeTypeLib;
-
+    FT_Library FontFreeType::FreeTypeLib = FT_Library();
+    
     bool FontFreeType::SetSizeIfDifferent(float size) const
     {
         if(CurrentSize == size)
@@ -145,39 +145,14 @@ namespace Backend
         }
     }
 
-    FontFreeType::FontFreeType() :    FontFace(nullptr),
-                                                    Valid(false),
-                                                    CurrentSize(-1),
-                                                    FontFlags(0),
-                                                    FontMemory(nullptr),
-                                                    FontMemoryLength(0),
-                                                    FontPath()
-    {
-        //First time initialization
-        if(FreeTypeLib.Obj == nullptr)
-        {
-            FreeTypeLib.Obj = ssGUI::Factory::Create<FT_Library>();
-            
-            FT_Error error = FT_Init_FreeType(FreeTypeLib.Obj);
-            if(error)
-            {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, 
-                            "Failed to initialize FreeType library with error: " << error);
-                
-                ssLOG_EXIT_PROGRAM();
-            }
-
-            FT_Library* lib = FreeTypeLib.Obj;
-            FreeTypeLib.CleanUpFunc.push_back
-            (
-                [lib]()
-                {
-                    FT_Done_FreeType(*lib);     //Clean up FreeType Library
-                    ssGUI::Factory::Dispose(lib);
-                }
-            );
-        }
-    }
+    FontFreeType::FontFreeType() :  FontFace(nullptr),
+                                    Valid(false),
+                                    CurrentSize(-1),
+                                    FontFlags(0),
+                                    FontMemory(nullptr),
+                                    FontMemoryLength(0),
+                                    FontPath()
+    {}
     
     FontFreeType::~FontFreeType()
     {
@@ -191,6 +166,46 @@ namespace Backend
     FT_GlyphSlot FontFreeType::GetCurrentGlyph() const
     {
         return FontFace->glyph;
+    }
+
+    bool FontFreeType::InitializeFreeType()
+    {
+        //First time initialization
+        if(FreeTypeLib == nullptr)
+        {
+            FT_Error error = FT_Init_FreeType(&FreeTypeLib);
+            if(error)
+            {
+                ssGUI_ERROR(ssGUI_BACKEND_TAG, 
+                            "Failed to initialize FreeType library with error: " << error);
+                
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    bool FontFreeType::CleanupFreeType()
+    {
+        if(FreeTypeLib != nullptr)
+        {
+            //Clean up FreeType Library
+            FT_Error error = FT_Done_FreeType(FreeTypeLib);
+            if(error)
+            {
+                ssGUI_WARNING(ssGUI_BACKEND_TAG, 
+                            "Failed to cleanup FreeType library with error: " << error);
+                
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    bool FontFreeType::Initialize()
+    {
+        return true;
     }
 
     bool FontFreeType::IsValid() const
@@ -372,7 +387,7 @@ namespace Backend
         FT_Error error = 0;
         error = FT_New_Face
         ( 
-            *(FreeTypeLib.Obj),
+            FreeTypeLib,
             path.c_str(),
             0,                      //First font by default
             &FontFace 
@@ -421,7 +436,7 @@ namespace Backend
         FT_Error error = 0;
         error = FT_New_Memory_Face
         (
-            *(FreeTypeLib.Obj),
+            FreeTypeLib,
             reinterpret_cast<FT_Byte*>(FontMemory), //first byte in memory
             lengthInBytes,                          //size in bytes
             0,                                      //face_index
@@ -583,7 +598,7 @@ namespace Backend
 
     void* FontFreeType::GetRawHandle() const
     {
-        RawHandle.FreeTypeLib = *FreeTypeLib.Obj;
+        RawHandle.FreeTypeLib = FreeTypeLib;
         RawHandle.FontFace = FontFace;
         RawHandle.FontFlags = FontFlags;
         return &RawHandle;
