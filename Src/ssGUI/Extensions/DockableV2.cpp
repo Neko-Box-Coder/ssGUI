@@ -66,7 +66,7 @@ namespace Extensions
     {
         if(Container == nullptr)
         {
-            ssGUI_ERROR(ssGUI_EXT_TAG, "Trying to create dock preview and trigger without container");
+            ssGUI_ERROR(ssGUI_TAG_EXT, "Trying to create dock preview and trigger without container");
             return;
         }
     

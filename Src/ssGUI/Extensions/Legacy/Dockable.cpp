@@ -661,7 +661,7 @@ namespace Extensions
     {
         if(TopLevelParent != -1 && CurrentObjectsReferences.GetObjectReference(TopLevelParent) == nullptr)
         {
-            ssGUI_WARNING(ssGUI_EXT_TAG, "Invalid TopLevelParent detected, probably something wrong internally or bug happened");
+            ssGUI_WARNING(ssGUI_TAG_EXT, "Invalid TopLevelParent detected, probably something wrong internally or bug happened");
             return nullptr;
         }
         else if(TopLevelParent == -1)
@@ -744,7 +744,7 @@ namespace Extensions
             //This is not supposed to happen
             if(mainWindow == nullptr)
             {
-                ssGUI_WARNING(ssGUI_EXT_TAG, "what?");
+                ssGUI_WARNING(ssGUI_TAG_EXT, "what?");
                 return;
             }
 
@@ -910,7 +910,7 @@ namespace Extensions
                 {
                     if(!info.Container->IsExtensionExist<ssGUI::Extensions::Dockable>())
                     {
-                        ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find Dockable extension. Probably something wrong with cloning");
+                        ssGUI_ERROR(ssGUI_TAG_EXT, "Failed to find Dockable extension. Probably something wrong with cloning");
                         ssLOG_EXIT_PROGRAM();
                         return;
                     }

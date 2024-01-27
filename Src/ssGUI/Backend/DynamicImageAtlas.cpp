@@ -116,7 +116,7 @@ namespace Backend
         const int MAX_RECURSIVE_COUNT = 10;
         if(recursiveCount >= MAX_RECURSIVE_COUNT)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "recursiveCount has reached MAX_RECURSIVE_COUNT!");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "recursiveCount has reached MAX_RECURSIVE_COUNT!");
             return FreeCells.end();
         }
     

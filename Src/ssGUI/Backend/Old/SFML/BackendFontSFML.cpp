@@ -54,8 +54,8 @@ namespace Backend
             glyph.textureRect.left == 0 &&
             glyph.textureRect.top == 0)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph");
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Aborting...");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load glyph");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Aborting...");
             return info;
         }
 
@@ -136,7 +136,7 @@ namespace Backend
         if(!SFFontValid)
             return false;
 
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "GetFixedAvailableFontSizes is not supported on SFML");
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "GetFixedAvailableFontSizes is not supported on SFML");
         return true;
     }
     

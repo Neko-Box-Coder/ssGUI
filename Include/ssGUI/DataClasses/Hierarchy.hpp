@@ -159,7 +159,7 @@ namespace ssGUI
             {\
                 if(!std::is_base_of<ssGUI::GUIObject, T>::value)\
                 {\
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");\
+                    ssGUI_WARNING(ssGUI_TAG_DATA, "You cannot add non GUI object");\
                     return nullptr;\
                 }\
             }\
@@ -440,7 +440,7 @@ namespace ssGUI
                     return static_cast<T*>(GetChild(childName, recursive));
                 else
                 {
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non GUI object");
+                    ssGUI_WARNING(ssGUI_TAG_DATA, "You cannot add non GUI object");
                     return nullptr;
                 }
             }

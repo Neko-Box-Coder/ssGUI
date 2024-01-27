@@ -161,7 +161,7 @@ namespace Extensions
                                     bool changed,
                                     int originalEntityVertexIndex)
         {
-            // ssGUI_DEBUG(ssGUI_EXT_TAG,"newVertex: "<<newVertex.x<<", "<<newVertex.y);
+            // ssGUI_DEBUG(ssGUI_TAG_EXT,"newVertex: "<<newVertex.x<<", "<<newVertex.y);
             currentEntity.Vertices.push_back(newVertex);
             currentEntity.Colors.push_back(originalEntity.Colors.at(originalEntityVertexIndex));
             
@@ -177,7 +177,7 @@ namespace Extensions
             if( currentEntity.Vertices.size() != currentEntity.Colors.size() || 
                 (originalEntity.BackendImage != nullptr && currentEntity.Colors.size() != currentEntity.TexCoords.size()))
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Number of vertices or colors or texcoords not matching. This should not happen.");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Number of vertices or colors or texcoords not matching. This should not happen.");
             }
         };
 
@@ -189,11 +189,11 @@ namespace Extensions
                 containedMaskVertices.push_back(i);
         }
 
-        // ssGUI_DEBUG(ssGUI_EXT_TAG,"start");
+        // ssGUI_DEBUG(ssGUI_TAG_EXT,"start");
         //Iterating each vertex in the shape
         for(int currentShapeVertexIndex = 0; currentShapeVertexIndex < originalEntity.Vertices.size(); currentShapeVertexIndex++)
         {
-            // ssGUI_DEBUG(ssGUI_EXT_TAG,"currentShapeVertexIndex: "<<currentShapeVertexIndex);
+            // ssGUI_DEBUG(ssGUI_TAG_EXT,"currentShapeVertexIndex: "<<currentShapeVertexIndex);
 
             bool isCurVertexContained = IsPointContainedInMask(originalEntity.Vertices[currentShapeVertexIndex], maskMin, maskMax);
             std::vector<int> curIntersectionIndices;
@@ -207,7 +207,7 @@ namespace Extensions
 
             if(isCurVertexContained)
             {
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"in");
+                // ssGUI_DEBUG(ssGUI_TAG_EXT,"in");
                 //If current vertex is inside the mask, add it to new shape
                 addNewVertexInfo(   currentEntity, 
                                     originalEntity.Vertices[currentShapeVertexIndex], 
@@ -257,7 +257,7 @@ namespace Extensions
                                 
                             if(loopCounter == 99)
                             {
-                                ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find vertex");
+                                ssGUI_ERROR(ssGUI_TAG_EXT, "Failed to find vertex");
                                 return;
                             }
                         }
@@ -266,7 +266,7 @@ namespace Extensions
             }
             else
             {
-                // ssGUI_DEBUG(ssGUI_EXT_TAG,"out");
+                // ssGUI_DEBUG(ssGUI_TAG_EXT,"out");
                 //If there are intersections, check how many are there
                 if(!curIntersectionIndices.empty())
                 {
@@ -346,7 +346,7 @@ namespace Extensions
         //Sample the new UVs and colours
         if(changed.size() != newEntities.size())
         {
-            ssGUI_ERROR(ssGUI_EXT_TAG, "size for entities changed not matching size of new entities.");
+            ssGUI_ERROR(ssGUI_TAG_EXT, "size for entities changed not matching size of new entities.");
             return;
         }
 
@@ -550,7 +550,7 @@ namespace Extensions
             return true;
 
         //Should never be able to reach this point
-        ssGUI_WARNING(ssGUI_EXT_TAG, "Unexpected input. minA: "<<minA<<", maxA: "<<maxA<<", minB: "<<minB<<", maxB: "<<maxB);
+        ssGUI_WARNING(ssGUI_TAG_EXT, "Unexpected input. minA: "<<minA<<", maxA: "<<maxA<<", minB: "<<minB<<", maxB: "<<maxB);
         return false;
     }
 
@@ -584,7 +584,7 @@ namespace Extensions
         
         if(vertices.size() < 3)
         {
-            ssGUI_ERROR(ssGUI_EXT_TAG, "We are trying to sample a shape that has less than 3 vertices, this is invalid");
+            ssGUI_ERROR(ssGUI_TAG_EXT, "We are trying to sample a shape that has less than 3 vertices, this is invalid");
             return false;
         }
 
@@ -1119,7 +1119,7 @@ namespace Extensions
                                     originalEntities.at(shapeIndex).Vertices, 
                                     maskShape);
 
-                // ssGUI_DEBUG(ssGUI_EXT_TAG, "intersections count: "<<intersections.size());
+                // ssGUI_DEBUG(ssGUI_TAG_EXT, "intersections count: "<<intersections.size());
 
                 ssGUI::DrawingEntity curEntity;
                 //std::vector<bool> currentVertexChanged;

@@ -65,7 +65,7 @@ namespace Backend
 
     void* ImageStbImage::GetRawHandle() const
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "There's no raw handle for Stb Image");
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "There's no raw handle for Stb Image");
         return nullptr;
     }
 
@@ -80,7 +80,7 @@ namespace Backend
         
         if(!inputStream)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to open file");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to open file");
             return false;
         }
         size_t fileSize = inputStream.tellg();
@@ -94,7 +94,7 @@ namespace Backend
     
         if(!inputStream)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to read the file");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to read the file");
             return false;
         }
         
@@ -202,7 +202,7 @@ namespace Backend
                     CurrentImageFormat.IndexA = 3;
                     break;
                 default:
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "What?");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "What?");
                     return false;
                     //ssLOG_EXIT_PROGRAM();
             }

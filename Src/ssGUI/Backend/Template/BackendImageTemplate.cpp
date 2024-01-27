@@ -14,7 +14,7 @@ namespace Backend
 
     BackendImageTemplate::BackendImageTemplate()
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendImageTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "BackendImageTemplate is being created, is this intended?");
     }
 
     BackendImageTemplate::~BackendImageTemplate()

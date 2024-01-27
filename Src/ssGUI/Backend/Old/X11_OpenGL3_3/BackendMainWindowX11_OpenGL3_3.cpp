@@ -114,7 +114,7 @@ namespace Backend
 
         if (WindowDisplay == NULL) 
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "cannot connect to X server");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "cannot connect to X server");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -123,7 +123,7 @@ namespace Backend
         int loadGLX = gladLoadGLX(WindowDisplay, screen);
         if (!loadGLX) 
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unable to load GLX");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Unable to load GLX");
             ssLOG_EXIT_PROGRAM();
         }
         
@@ -174,19 +174,19 @@ namespace Backend
             if(glxAttrib[auxIndex + 1] == 32)
             {
                 glxAttrib[auxIndex + 1] = 16;
-                ssGUI_INFO(ssGUI_BACKEND_TAG, "Aux Buffer: "<<glxAttrib[auxIndex + 1]);
+                ssGUI_INFO(ssGUI_TAG_BACKEND, "Aux Buffer: "<<glxAttrib[auxIndex + 1]);
                 goto fallback;
             }
             else if(glxAttrib[auxIndex + 1] == 16)
             {
                 glxAttrib[auxIndex + 1] = 8;
-                ssGUI_INFO(ssGUI_BACKEND_TAG, "Aux Buffer: "<<glxAttrib[auxIndex + 1]);
+                ssGUI_INFO(ssGUI_TAG_BACKEND, "Aux Buffer: "<<glxAttrib[auxIndex + 1]);
                 goto fallback;
             }
             else if(glxAttrib[auxIndex + 1] == 8)
             {
                 glxAttrib[auxIndex + 1] = 0;
-                ssGUI_INFO(ssGUI_BACKEND_TAG, "Aux Buffer: "<<glxAttrib[auxIndex + 1]);
+                ssGUI_INFO(ssGUI_TAG_BACKEND, "Aux Buffer: "<<glxAttrib[auxIndex + 1]);
                 goto fallback;
             }
 
@@ -197,14 +197,14 @@ namespace Backend
                 glxAttrib[accumIndex + 3] = 0;
                 glxAttrib[accumIndex + 5] = 0;
                 glxAttrib[accumIndex + 7] = 0;
-                ssGUI_INFO(ssGUI_BACKEND_TAG, "Accum Buffer: "<<0);
+                ssGUI_INFO(ssGUI_TAG_BACKEND, "Accum Buffer: "<<0);
                 goto fallback;
             }
             
             //Maybe the MSAA level is not correct?
             else if(MsaaLevel > 0)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Trying to disable MSAA and retry...");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Trying to disable MSAA and retry...");
                 glxAttrib[msaaIndex + 1] = 0;
                 glxAttrib[msaaIndex + 3] = 0;
                 MsaaLevel = 0;
@@ -215,13 +215,13 @@ namespace Backend
             else if(glxAttrib[stencilIndex + 1] == 32)
             {
                 glxAttrib[stencilIndex + 1] = 16;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Stencil bit: "<<glxAttrib[stencilIndex + 1]);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Stencil bit: "<<glxAttrib[stencilIndex + 1]);
                 goto fallback;
             }
             else if(glxAttrib[stencilIndex + 1] == 16)
             {
                 glxAttrib[stencilIndex + 1] = 8;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Stencil bit: "<<glxAttrib[stencilIndex + 1]);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Stencil bit: "<<glxAttrib[stencilIndex + 1]);
                 goto fallback;
             }
 
@@ -229,17 +229,17 @@ namespace Backend
             else if(glxAttrib[depthIndex + 1] == 32)
             {
                 glxAttrib[depthIndex + 1] = 16;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Depth bit: "<<glxAttrib[depthIndex + 1]);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Depth bit: "<<glxAttrib[depthIndex + 1]);
                 goto fallback;
             }
             else if(glxAttrib[depthIndex + 1] == 16)
             {
                 glxAttrib[depthIndex + 1] = 8;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Depth bit: "<<glxAttrib[depthIndex + 1]);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Depth bit: "<<glxAttrib[depthIndex + 1]);
                 goto fallback;
             }
             
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to resolve GLX Attributes, exited");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to resolve GLX Attributes, exited");
             ssLOG_EXIT_PROGRAM();
         }
         
@@ -274,7 +274,7 @@ namespace Backend
         if(!XInputManager)
         {
             // Error creating input method
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -287,7 +287,7 @@ namespace Backend
         if (!XInputContext) 
         {
             // Error creating input context
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed");
             ssLOG_EXIT_PROGRAM();
         }
         
@@ -322,7 +322,7 @@ namespace Backend
         int loadGL = gladLoadGL();
         if (!loadGL) 
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unable to load GL");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Unable to load GL");
             ssLOG_EXIT_PROGRAM();
             //return false;
         }
@@ -344,7 +344,7 @@ namespace Backend
         {
             if(!OriginalResolutionSet)
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "OriginalResolutionSet not set, this is probably a bug, please report.");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "OriginalResolutionSet not set, this is probably a bug, please report.");
                 return;
             }
             
@@ -432,7 +432,7 @@ namespace Backend
                                     &bytesAfter, 
                                     &data) != Success || numberOfItems != 4 || bytesAfter != 0)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Attempting to get _NET_FRAME_EXTENTS");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Attempting to get _NET_FRAME_EXTENTS");
             XNextEvent(WindowDisplay, &e);
         }
         
@@ -460,12 +460,12 @@ namespace Backend
             targetResolution.y = DisplayHeight(WindowDisplay, screen);
         }
         
-        //ssGUI_DEBUG(ssGUI_BACKEND_TAG, "targetResolution: "<<targetResolution.x<<", "<<targetResolution.y);
+        //ssGUI_DEBUG(ssGUI_TAG_BACKEND, "targetResolution: "<<targetResolution.x<<", "<<targetResolution.y);
         
         //Debug
         //for(int i = 0; i < nsize; i++)
         //{
-        //    ssGUI_DEBUG(ssGUI_BACKEND_TAG, "size: "<<sizes[i].width<<" x "<<sizes[i].height);
+        //    ssGUI_DEBUG(ssGUI_TAG_BACKEND, "size: "<<sizes[i].width<<" x "<<sizes[i].height);
         //}
         
         //Check if there's an exact match first
@@ -505,8 +505,8 @@ namespace Backend
 
         if (sizeindex >= nsize || sizeindex < 0)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set fullscreen resolution to "<<targetResolution.x<<" x "<<targetResolution.y);
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Using current resolution instead.");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set fullscreen resolution to "<<targetResolution.x<<" x "<<targetResolution.y);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Using current resolution instead.");
             
             return false;
         }
@@ -514,7 +514,7 @@ namespace Backend
         {
             if(!conf)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get screen info");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get screen info");
                 return false;
             }
 
@@ -528,7 +528,7 @@ namespace Backend
             
             if(status != Success)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set resolution: "<<sizeindex);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set resolution: "<<sizeindex);
                 return false;
             }
 
@@ -555,7 +555,7 @@ namespace Backend
 
         if(!conf)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get screen info");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get screen info");
             return;
         }
 
@@ -569,7 +569,7 @@ namespace Backend
         
         if(status != Success)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set resolution: "<<OriginalResolutionId);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set resolution: "<<OriginalResolutionId);
             return;
         }
 
@@ -785,7 +785,7 @@ namespace Backend
             XWindowAttributes attr;
             if(!XGetWindowAttributes(WindowDisplay, WindowId, &attr))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to XGetWindowAttributes");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to XGetWindowAttributes");
                 return glm::ivec2(0, 0);
             }
         #endif
@@ -930,7 +930,7 @@ namespace Backend
     {
         if(!iconImage.IsValid())
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid icon image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Invalid icon image");
             return;
         }
         
@@ -956,7 +956,7 @@ namespace Backend
         {
             if(!ImageUtil::FormatToBGRA32(&iconDataToApply[2], rawIcon, format, iconImage.GetSize()))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image to bgra32");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to convert image to bgra32");
                 delete[] iconDataToApply;
                 return;
             }    
@@ -1034,7 +1034,7 @@ namespace Backend
         GLXDrawable drawable = glXGetCurrentDrawable();
         if(drawable == None)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set VSync, maybe this window is not visible?");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set VSync, maybe this window is not visible?");
             return;
         }
 
@@ -1068,7 +1068,7 @@ namespace Backend
             //if(!XSetInputFocus(WindowDisplay, WindowId, RevertToNone, CurrentTime))
             if(!XRaiseWindow(WindowDisplay, WindowId))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set focus");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set focus");
             }
         }
         else
@@ -1089,7 +1089,7 @@ namespace Backend
         int revert_to;
         if(!XGetInputFocus(d, &w, &revert_to))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get focused window");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get focused window");
         }
 
         return w;
@@ -1177,7 +1177,7 @@ namespace Backend
         
         //if(!result)
         //{
-        //    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set close button using _NET_WM: "<<closeButton);
+        //    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set close button using _NET_WM: "<<closeButton);
         //}
         
         CloseButton = closeButton;
@@ -1209,7 +1209,7 @@ namespace Backend
         {
             if(!OriginalResolutionSet)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "OriginalResolutionSet not set, this is probably a bug, please report.");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "OriginalResolutionSet not set, this is probably a bug, please report.");
                 return;
             }
             
@@ -1227,7 +1227,7 @@ namespace Backend
             
             if(!SendXClientEvent(WindowDisplay, RootWindow(WindowDisplay, DefaultScreen(WindowDisplay)), WindowId, "_NET_WM_STATE", data, 32))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to call SendXClientEvent");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to call SendXClientEvent");
             }
 
             MwmHintsData hintData;
@@ -1260,7 +1260,7 @@ namespace Backend
             
             if(!SendXClientEvent(WindowDisplay, RootWindow(WindowDisplay, DefaultScreen(WindowDisplay)), WindowId, "_NET_WM_STATE", data, 32))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to call SendXClientEvent");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to call SendXClientEvent");
             }
         }
        

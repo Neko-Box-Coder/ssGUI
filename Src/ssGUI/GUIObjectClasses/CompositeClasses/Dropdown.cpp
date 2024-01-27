@@ -372,14 +372,14 @@ namespace ssGUI
         
         if(fileContent == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded dropdown icon");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Failed to load embedded dropdown icon");
             ssGUI::Factory::Dispose(data);
             return;
         }        
         
         if(!data->LoadImgFileFromMemory(fileContent, fileSize))
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Failed to load default font");
             ssGUI::Factory::Dispose<ssGUI::ImageData>(data);
         }
         else

@@ -94,7 +94,7 @@ namespace ssGUI
                 }
                 else
                 {
-                    ssGUI_WARNING(ssGUI_MANAGER_TAG, "You cannot add non MainWindow object as root GUI Object");
+                    ssGUI_WARNING(ssGUI_TAG_MANAGER, "You cannot add non MainWindow object as root GUI Object");
                     return nullptr;
                 }
             }
@@ -112,7 +112,7 @@ namespace ssGUI
                 }
                 else
                 {
-                    ssGUI_WARNING(ssGUI_MANAGER_TAG, "You cannot add non GUI object to manager");
+                    ssGUI_WARNING(ssGUI_TAG_MANAGER, "You cannot add non GUI object to manager");
                     return nullptr;
                 }
             }

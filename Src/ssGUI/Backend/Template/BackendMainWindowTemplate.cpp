@@ -14,7 +14,7 @@ namespace Backend
 
     BackendMainWindowTemplate::BackendMainWindowTemplate()
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendMainWindowTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "BackendMainWindowTemplate is being created, is this intended?");
     }
 
     BackendMainWindowTemplate::~BackendMainWindowTemplate()

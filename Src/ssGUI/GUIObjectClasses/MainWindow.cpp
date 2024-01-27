@@ -277,7 +277,7 @@ namespace ssGUI
 
     void MainWindow::Internal_OnClose()
     {
-        ssGUI_DEBUG(ssGUI_GUI_OBJECT_TAG, "Main Window closing");
+        ssGUI_DEBUG(ssGUI_TAG_GUI_OBJECT, "Main Window closing");
         
         //Forwarding signal to window
         Window::Internal_OnClose();

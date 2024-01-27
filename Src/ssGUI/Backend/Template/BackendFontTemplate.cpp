@@ -14,7 +14,7 @@ namespace Backend
 
     BackendFontTemplate::BackendFontTemplate()
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendFontTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "BackendFontTemplate is being created, is this intended?");
     }
     
     BackendFontTemplate::~BackendFontTemplate()

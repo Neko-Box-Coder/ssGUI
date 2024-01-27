@@ -20,7 +20,7 @@
     x;\
     if((err = glGetError()) != GL_NO_ERROR)\
     {\
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed: "<<err);\
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed: "<<err);\
     }\
 }
 
@@ -59,7 +59,7 @@ namespace Backend
 
     //    if(mainWindow == nullptr)
     //    {
-    //        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
+    //        ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get MainWinodw");
     //        return;
     //    }
 
@@ -80,7 +80,7 @@ namespace Backend
     BackendDrawingWin32_OpenGL3_3::BackendDrawingWin32_OpenGL3_3(BackendDrawingWin32_OpenGL3_3 const& other)
     {
         //TODO
-        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not implemented");
+        ssGUI_ERROR(ssGUI_TAG_BACKEND, "Not implemented");
         ssLOG_EXIT_PROGRAM();
     }
     
@@ -138,7 +138,7 @@ namespace Backend
         
         if(mainWindow == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get MainWinodw");
             return;
         }
         
@@ -146,7 +146,7 @@ namespace Backend
         HDC hDC = GetDC(static_cast<ssGUI::Backend::Win32_OpenGL_Handles*>(mainWindow->GetRawHandle())->WindowHandle);
         if(hDC == NULL)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to GetDC");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to GetDC");
             ssLOG_EXIT_PROGRAM();
         }
         SwapBuffers(hDC);
@@ -172,7 +172,7 @@ namespace Backend
         InitializeOpenGLCommonIfNeeded();
         if(!OpenGLCommon->AddImageCache(backendImage))
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to add image cache");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to add image cache");
             return;
         }
         

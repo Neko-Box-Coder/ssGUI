@@ -62,8 +62,8 @@ namespace Backend
             //If the fixed font size is not really relative close, report it
             if(lastDiff > size * 0.25)
             {
-                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Requested font size: " << size);
-                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Closest font size: " << 
+                ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Requested font size: " << size);
+                ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Closest font size: " << 
                             (chosenIndex == lastIndex ? size + lastDiff : size - lastDiff));
                 //return false;
             }
@@ -73,7 +73,7 @@ namespace Backend
             //If failed to select size, just don't change anything
             if(error)
             {
-                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Failed with error: " << error);
+                ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Failed with error: " << error);
                 return false;
             }
             
@@ -92,7 +92,7 @@ namespace Backend
             //If failed to select size, just don't change anything
             if(error)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed with error: " << error);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed with error: " << error);
                 return false;
             }
 
@@ -125,22 +125,22 @@ namespace Backend
         {
             if(!LoadFromMemory(other.FontMemory, other.FontMemoryLength))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to copy via memory");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to copy via memory");
             }
         }
         else if(!other.FontPath.empty())
         {
             if(!LoadFromPath(other.FontPath))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to copy via path");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to copy via path");
             }
         }
         else
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "What? This is unexpected condition, exiting...");
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.IsValid(): " << other.IsValid());
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.FontMemory: " << other.FontMemory);
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "other.FontPath: " << other.FontPath);
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "What? This is unexpected condition, exiting...");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "other.IsValid(): " << other.IsValid());
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "other.FontMemory: " << other.FontMemory);
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "other.FontPath: " << other.FontPath);
             ssLOG_EXIT_PROGRAM();
         }
     }
@@ -176,7 +176,7 @@ namespace Backend
             FT_Error error = FT_Init_FreeType(&FreeTypeLib);
             if(error)
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, 
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, 
                             "Failed to initialize FreeType library with error: " << error);
                 
                 return false;
@@ -194,7 +194,7 @@ namespace Backend
             FT_Error error = FT_Done_FreeType(FreeTypeLib);
             if(error)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, 
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, 
                             "Failed to cleanup FreeType library with error: " << error);
                 
                 return false;
@@ -226,7 +226,7 @@ namespace Backend
         
         if(!SetSizeIfDifferent(charSize))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, aborting...");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set character size, aborting...");
             info.Valid = false;
             return info;
         }
@@ -242,8 +242,8 @@ namespace Backend
 
         if(error)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph with error: " << error);
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Aborting...");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load glyph with error: " << error);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Aborting...");
             info.Valid = false;
             return info;
         }
@@ -277,7 +277,7 @@ namespace Backend
             return 0;
 
         if(!SetSizeIfDifferent(charSize))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set character size, continuing");
 
         FT_Vector delta;    //Delta is expressed in 1/64 of points
         FT_Error err = FT_Get_Kerning(  FontFace, 
@@ -288,7 +288,7 @@ namespace Backend
         
         if(err)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get kerning");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get kerning");
             return 0;
         }
 
@@ -298,7 +298,7 @@ namespace Backend
     float FontFreeType::GetLineSpacing(float charSize) const
     {
         if(!SetSizeIfDifferent(charSize))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set character size, continuing");
         
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
@@ -320,7 +320,7 @@ namespace Backend
     float FontFreeType::GetUnderlineOffset(float charSize) const
     {
         if(!SetSizeIfDifferent(charSize))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set character size, continuing");
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
@@ -344,7 +344,7 @@ namespace Backend
     float FontFreeType::GetUnderlineThickness(float charSize) const
     {
         if(!SetSizeIfDifferent(charSize))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set character size, continuing");
 
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_facerec
         //See https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_size_metrics
@@ -395,7 +395,7 @@ namespace Backend
 
         if(error)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to laod font");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to laod font");
             Valid = false;
             return false;
         }
@@ -445,7 +445,7 @@ namespace Backend
 
         if(error)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to laod font: "<<error);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to laod font: "<<error);
             Valid = false;
             return false;
         }
@@ -482,7 +482,7 @@ namespace Backend
                                                 ImageInterface& characterImage) const
     {
         if(!SetSizeIfDifferent(charSize))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set character size, continuing");
 
         bool result = false;
 
@@ -491,7 +491,7 @@ namespace Backend
         
         if(error)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load glyph");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load glyph");
             return false;
         }
         
@@ -511,7 +511,7 @@ namespace Backend
                 error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
                 if(error)
                 {
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to FT_Render_Glyph");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to FT_Render_Glyph");
                     return false;
                 }
             }
@@ -526,7 +526,7 @@ namespace Backend
             }
             else if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_BGRA)
             {
-                ssGUI_WARNING(  ssGUI_BACKEND_TAG, "Invalid pixel mode: " << 
+                ssGUI_WARNING(  ssGUI_TAG_BACKEND, "Invalid pixel mode: " << 
                                 (int)FontFace->glyph->bitmap.pixel_mode);
                 
                 return false;
@@ -562,7 +562,7 @@ namespace Backend
                  error = FT_Render_Glyph(FontFace->glyph, FT_RENDER_MODE_NORMAL);
                 if(error)
                 {
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to FT_Render_Glyph");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to FT_Render_Glyph");
                     return false;
                 }
             }
@@ -577,7 +577,7 @@ namespace Backend
             }
             else if(FontFace->glyph->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
             {
-                ssGUI_WARNING(  ssGUI_BACKEND_TAG, "Invalid pixel mode: " << 
+                ssGUI_WARNING(  ssGUI_TAG_BACKEND, "Invalid pixel mode: " << 
                                 FontFace->glyph->bitmap.pixel_mode);
                 
                 return false;

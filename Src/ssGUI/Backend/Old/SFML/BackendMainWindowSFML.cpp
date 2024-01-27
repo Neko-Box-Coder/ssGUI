@@ -120,13 +120,13 @@ namespace Backend
 
     void BackendMainWindowSFML::SetWindowSize(glm::ivec2 size)
     {
-        //ssGUI_WARNING(ssGUI_BACKEND_TAG, "SFML doesn't support setting window size, setting render size instead");
+        //ssGUI_WARNING(ssGUI_TAG_BACKEND, "SFML doesn't support setting window size, setting render size instead");
         SetRenderSize(size);
     }
 
     glm::ivec2 BackendMainWindowSFML::GetWindowSize() const
     {
-        //ssGUI_WARNING(ssGUI_BACKEND_TAG, "SFML doesn't support setting window size, getting render size instead");
+        //ssGUI_WARNING(ssGUI_TAG_BACKEND, "SFML doesn't support setting window size, getting render size instead");
         return GetRenderSize();
     }
     

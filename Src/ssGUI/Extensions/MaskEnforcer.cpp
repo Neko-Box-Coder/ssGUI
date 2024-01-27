@@ -162,7 +162,7 @@ namespace Extensions
 
         if(Container == nullptr)
         {
-            //ssGUI_ERROR(ssGUI_EXT_TAG, "You need to bind a container first before adding target mask object");
+            //ssGUI_ERROR(ssGUI_TAG_EXT, "You need to bind a container first before adding target mask object");
             MasksToAddEventCallbacks.push_back(maskObjIndex);
             return;
         }

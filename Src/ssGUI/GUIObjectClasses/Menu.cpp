@@ -163,7 +163,7 @@ namespace ssGUI
     {
         if(menuItem == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Nullptr is passed to RegisterMenuItem, this is invalid.");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Nullptr is passed to RegisterMenuItem, this is invalid.");
             return;
         }
     

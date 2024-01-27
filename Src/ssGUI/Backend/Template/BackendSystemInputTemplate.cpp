@@ -14,7 +14,7 @@ namespace Backend
 
     BackendSystemInputTemplate::BackendSystemInputTemplate()
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendSystemInputTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "BackendSystemInputTemplate is being created, is this intended?");
     }
 
     BackendSystemInputTemplate::~BackendSystemInputTemplate()

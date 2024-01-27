@@ -12,7 +12,7 @@ namespace Backend
                                             MainWindowInterface* otherMainWindow) :
         DrawingInterface(otherMainWindow)
     {
-        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not Implemented");
+        ssGUI_ERROR(ssGUI_TAG_BACKEND, "Not Implemented");
         ssLOG_EXIT_PROGRAM(1);
         //std::copy(std::begin(other.Vertices), std::end(other.Vertices), std::begin(Vertices));
         //std::copy(std::begin(other.TexCoords), std::end(other.TexCoords), std::begin(TexCoords));

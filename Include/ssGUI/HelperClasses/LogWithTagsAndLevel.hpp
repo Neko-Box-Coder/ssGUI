@@ -12,12 +12,13 @@
 //#define ssGUI_LOG_TAG 20
 
 
-#define ssGUI_MANAGER_TAG 1
-#define ssGUI_IMAGE_UTIL_TAG 2
-#define ssGUI_BACKEND_TAG 3
-#define ssGUI_DATA_TAG 4
-#define ssGUI_EXT_TAG 5
-#define ssGUI_GUI_OBJECT_TAG 6
+#define ssGUI_TAG_ANY 0
+#define ssGUI_TAG_MANAGER 1
+#define ssGUI_TAG_IMAGE_UTIL 2
+#define ssGUI_TAG_BACKEND 3
+#define ssGUI_TAG_DATA 4
+#define ssGUI_TAG_EXT 5
+#define ssGUI_TAG_GUI_OBJECT 6
 
 
 

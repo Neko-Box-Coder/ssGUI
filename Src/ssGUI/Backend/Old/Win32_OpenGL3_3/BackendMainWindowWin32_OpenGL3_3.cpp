@@ -77,11 +77,11 @@ namespace Backend
             POINT winPos = GetRawPosition();
             POINT winSize = GetRawSize();
             if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, winPos.x, winPos.y, winSize.x, winSize.y, SWP_SHOWWINDOW))
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set window position");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set window position");
         }
 
         if(!result)
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to change window style");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to change window style");
     }
 
     int BackendMainWindowWin32_OpenGL3_3::GetTitlebarHeight() const
@@ -110,7 +110,7 @@ namespace Backend
 
         if(!GetWindowRect(CurrentWindowHandle, &windowRect))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get window position");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get window position");
             return POINT();
         }
 
@@ -127,7 +127,7 @@ namespace Backend
 
         if(!GetWindowRect(CurrentWindowHandle, &windowRect))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get window size");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get window size");
             return POINT();
         }
 
@@ -152,7 +152,7 @@ namespace Backend
         HINSTANCE hInstance = GetModuleHandle(NULL);
 
         if(!SetProcessDPIAware())
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set DPI aware");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set DPI aware");
 
         if(GetWindowMode() == ssGUI::Enums::WindowMode::FULLSCREEN)
         {
@@ -170,8 +170,8 @@ namespace Backend
             LONG result = ChangeDisplaySettings(&dmScreenSettings,CDS_FULLSCREEN);
             if (result != DISP_CHANGE_SUCCESSFUL)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to change to fullscreen: "<<result);
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "falling back to window mode");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to change to fullscreen: "<<result);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "falling back to window mode");
                 CurrentWindowMode = ssGUI::Enums::WindowMode::NORMAL;
             }
         }
@@ -222,7 +222,7 @@ namespace Backend
         // Check if window is created sucessfully. If not, you can check with GetLastError
         if (hwnd == NULL)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to create window");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to create window");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -230,7 +230,7 @@ namespace Backend
         HDC hDC = GetDC(hwnd);
         if(hDC == NULL)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to GetDC");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to GetDC");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -246,7 +246,7 @@ namespace Backend
             pf = ChoosePixelFormat(hDC, &CurrentPictureFormatDescriptor);
             if(pf == 0)
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to ChoosePixelFormat");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to ChoosePixelFormat");
                 ssLOG_EXIT_PROGRAM();
             }
             CurrentPixelFormatId = pf;
@@ -255,8 +255,8 @@ namespace Backend
         //Set the pixel format for the window
         if(SetPixelFormat(hDC, CurrentPixelFormatId, &CurrentPictureFormatDescriptor) == FALSE)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to SetPixelFormat");
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Falling back...");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to SetPixelFormat");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Falling back...");
 
             //Decreasing each bitdepth and see what works
 
@@ -264,19 +264,19 @@ namespace Backend
             if(CurrentPictureFormatDescriptor.cAuxBuffers == 32)
             {
                 CurrentPictureFormatDescriptor.cAuxBuffers = 16;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
                 goto fallback;
             }
             else if(CurrentPictureFormatDescriptor.cAuxBuffers == 16)
             {
                 CurrentPictureFormatDescriptor.cAuxBuffers = 8;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
                 goto fallback;
             }
             else if(CurrentPictureFormatDescriptor.cAuxBuffers == 8)
             {
                 CurrentPictureFormatDescriptor.cAuxBuffers = 0;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cAuxBuffers: "<<CurrentPictureFormatDescriptor.cAuxBuffers);
                 goto fallback;
             }
 
@@ -284,14 +284,14 @@ namespace Backend
             else if(CurrentPictureFormatDescriptor.cAccumBits == 32)
             {
                 CurrentPictureFormatDescriptor.cAccumBits = 0;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cAccumBits: "<<CurrentPictureFormatDescriptor.cAccumBits);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cAccumBits: "<<CurrentPictureFormatDescriptor.cAccumBits);
                 goto fallback;
             }
             
             //Maybe the MSAA level is not correct?
             else if(MsaaLevel > 0)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Trying to disable MSAA and retry...");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Trying to disable MSAA and retry...");
                 MsaaLevel = 0;
                 goto fallback;
             }
@@ -300,13 +300,13 @@ namespace Backend
             else if(CurrentPictureFormatDescriptor.cStencilBits == 32)
             {
                 CurrentPictureFormatDescriptor.cStencilBits = 16;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cStencilBits: "<<CurrentPictureFormatDescriptor.cStencilBits);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cStencilBits: "<<CurrentPictureFormatDescriptor.cStencilBits);
                 goto fallback;
             }
             else if(CurrentPictureFormatDescriptor.cStencilBits == 16)
             {
                 CurrentPictureFormatDescriptor.cStencilBits = 8;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cStencilBits: "<<CurrentPictureFormatDescriptor.cStencilBits);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cStencilBits: "<<CurrentPictureFormatDescriptor.cStencilBits);
                 goto fallback;
             }
 
@@ -314,17 +314,17 @@ namespace Backend
             else if(CurrentPictureFormatDescriptor.cDepthBits == 32)
             {
                 CurrentPictureFormatDescriptor.cDepthBits = 16;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cDepthBits: "<<CurrentPictureFormatDescriptor.cDepthBits);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cDepthBits: "<<CurrentPictureFormatDescriptor.cDepthBits);
                 goto fallback;
             }
             else if(CurrentPictureFormatDescriptor.cDepthBits == 16)
             {
                 CurrentPictureFormatDescriptor.cDepthBits = 8;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "cDepthBits: "<<CurrentPictureFormatDescriptor.cDepthBits);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "cDepthBits: "<<CurrentPictureFormatDescriptor.cDepthBits);
                 goto fallback;
             }
 
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to resolve a pixel format, exited");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to resolve a pixel format, exited");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -337,32 +337,32 @@ namespace Backend
         HGLRC hRC = wglCreateContext(hDC);        //Creates OpenGL Render Context
         if(hRC == NULL)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to wglCreateContext");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to wglCreateContext");
             ssLOG_EXIT_PROGRAM();
         }
 
         if(!wglMakeCurrent(hDC, hRC))           //Select the OpenGL Render Context
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to wglMakeCurrent");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to wglMakeCurrent");
             ssLOG_EXIT_PROGRAM();
         }
 
         if(!gladLoadWGL(hDC))
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to gladLoadWGL");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to gladLoadWGL");
             ssLOG_EXIT_PROGRAM();
         }
 
         if (!gladLoadGL())                  //Load Glad
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to gladLoadGL");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to gladLoadGL");
             ssLOG_EXIT_PROGRAM();
         }
 
         //Check OpenGL version
         if (GLVersion.major < 3 && GLVersion.minor < 3)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "OpenGL version failed");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "OpenGL version failed");
             ssLOG_EXIT_PROGRAM();
         }
 
@@ -383,11 +383,11 @@ namespace Backend
             TRUE)
         {
             //m_settings.antialiasingLevel = static_cast<unsigned int>(sampleValues[0] ? sampleValues[1] : 0);
-            ssGUI_DEBUG(ssGUI_BACKEND_TAG, "WGL_SAMPLE_BUFFERS_ARB: "<<sampleValues[0]);
-            ssGUI_DEBUG(ssGUI_BACKEND_TAG, "WGL_SAMPLES_ARB: "<<sampleValues[1]);
+            ssGUI_DEBUG(ssGUI_TAG_BACKEND, "WGL_SAMPLE_BUFFERS_ARB: "<<sampleValues[0]);
+            ssGUI_DEBUG(ssGUI_TAG_BACKEND, "WGL_SAMPLES_ARB: "<<sampleValues[1]);
         }
         else
-            ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Failed");
+            ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Failed");
         */
 
         CurrentWindowHandle = hwnd;
@@ -412,13 +412,13 @@ namespace Backend
     {
         if(!gladLoadWGL(hDC))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to gladLoadWGL");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to gladLoadWGL");
             return false;
         }
 
         if(!GLAD_WGL_ARB_multisample)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "GLAD_WGL_ARB_multisample not supported");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "GLAD_WGL_ARB_multisample not supported");
             return false;
         }
 
@@ -486,7 +486,7 @@ namespace Backend
         //Alternatively, you can use the Ex version
         if(!RegisterClass(&wc))
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to RegisterClass");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to RegisterClass");
             ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -500,7 +500,7 @@ namespace Backend
         info.cbSize = sizeof(info);
         if(!GetMonitorInfo(activeMonitor, &info))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get active monitor");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get active monitor");
             return false;
         }
 
@@ -535,11 +535,11 @@ namespace Backend
 
         if(finalizedSize.x == 0 && finalizedSize.y == 0)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set size: "<<size.x<<", "<<size.y);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set size: "<<size.x<<", "<<size.y);
             return;
         }
 
-        //ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Finalized size: "<<finalizedSize.x<<", "<<finalizedSize.y)
+        //ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Finalized size: "<<finalizedSize.x<<", "<<finalizedSize.y)
 
         ssGUI_DestroyWindow();
         ssGUI_CreateWindow(finalizedSize.x, finalizedSize.y, false, CLASS_NAME);
@@ -639,7 +639,7 @@ namespace Backend
             pt.x = pt.x - VISUAL_OFFSET;
 
         if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, pt.x, pt.y, windowSize.x, windowSize.y, SWP_SHOWWINDOW))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set window position");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set window position");
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetWindowPosition() const
@@ -651,7 +651,7 @@ namespace Backend
 
         if(!GetWindowRect(CurrentWindowHandle, &windowRect))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get window position");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get window position");
             return glm::ivec2();
         }
 
@@ -674,13 +674,13 @@ namespace Backend
 
         if(!ClientToScreen(CurrentWindowHandle, &clientPt))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get position offset");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get position offset");
             return glm::ivec2();
         }
         
         RECT winRect;
         if(!GetWindowRect(CurrentWindowHandle, &winRect))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed");
 
         //Hitbox offset
         //return glm::ivec2(clientPt.x - winRect.left, clientPt.y - winRect.top);
@@ -711,7 +711,7 @@ namespace Backend
         }
 
         if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, windowPos.x, windowPos.y, size.x, size.y, SWP_SHOWWINDOW))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set window size");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set window size");
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetWindowSize() const
@@ -722,7 +722,7 @@ namespace Backend
 
         if(!GetWindowRect(CurrentWindowHandle, &windowRect))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get window size");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get window size");
             return glm::ivec2();
         }
 
@@ -748,13 +748,13 @@ namespace Backend
 
         if(!AdjustWindowRect(&renderSize, dwStyle, FALSE))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to calculate render size");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to calculate render size");
             return;
         }
         POINT windowPos = GetRawPosition();
 
         if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, windowPos.x, windowPos.y, renderSize.right - renderSize.left, renderSize.bottom - renderSize.top, SWP_SHOWWINDOW))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set render size");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set render size");
     }
 
     glm::ivec2 BackendMainWindowWin32_OpenGL3_3::GetRenderSize() const
@@ -762,7 +762,7 @@ namespace Backend
         RECT renderSize;
         if(!GetClientRect(CurrentWindowHandle, &renderSize))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get render size");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get render size");
             return glm::ivec2();
         }
         
@@ -813,7 +813,7 @@ namespace Backend
     {   
         if(!SetWindowText(CurrentWindowHandle, Title.c_str()))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set title");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set title");
             return;
         }
 
@@ -870,7 +870,7 @@ namespace Backend
                 hIcon = CreateIconIndirect(&iconInfo);
                 if (hIcon == NULL) 
                 {
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to create icon.");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to create icon.");
                     success = false;
                 }
                 DeleteObject(iconInfo.hbmMask);
@@ -878,14 +878,14 @@ namespace Backend
             else 
             {
                 success = false;
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to create color mask.");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to create color mask.");
             }
             DeleteObject(iconInfo.hbmColor);
         } 
         else 
         {
             success = false;
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to create bitmap mask.");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to create bitmap mask.");
         }
 
         delete[] rawBitmap;
@@ -904,13 +904,13 @@ namespace Backend
         Visible = visible;
 
         if(!visible && !ShowWindow(CurrentWindowHandle, SW_HIDE))
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Hide window failed");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Hide window failed");
         
         if(visible && !ShowWindow(CurrentWindowHandle, SW_SHOW))
         {
             //TODO: For some reason, this keep getting triggered even though the window did show.
             //      Add this back when tags are added to logging
-            // ssGUI_WARNING(ssGUI_BACKEND_TAG, "Show window failed");
+            // ssGUI_WARNING(ssGUI_TAG_BACKEND, "Show window failed");
         }
     }
 
@@ -941,7 +941,7 @@ namespace Backend
         //Get the error message ID, if any.
         DWORD errorMessageID = ::GetLastError();
         if(errorMessageID == 0) {
-            ssGUI_DEBUG(ssGUI_BACKEND_TAG, "No error");
+            ssGUI_DEBUG(ssGUI_TAG_BACKEND, "No error");
             return std::string(); //No error message has been recorded
         }
     
@@ -977,7 +977,7 @@ namespace Backend
             {
                 //NOTE: For some reason (at least on my system), this call always fails but give no error information.
                 //      Maybe the return is unreliable. IDK
-                //ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set focus for backend mainwindow: "<<GetLastErrorAsString());
+                //ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set focus for backend mainwindow: "<<GetLastErrorAsString());
             }
         }
     }
@@ -1009,7 +1009,7 @@ namespace Backend
             //Setup MSAA
             if(!GetAntiAliasingLevelPixelFormatId(GetDC(CurrentWindowHandle), CurrentPictureFormatDescriptor, CurrentPixelFormatId, level))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MSAA Pixel Format Id");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get MSAA Pixel Format Id");
                 CurrentPixelFormatId = originalPfid;
             }
             else
@@ -1112,8 +1112,8 @@ namespace Backend
                 glm::ivec2 size;
                 if(!GetActiveMonitorPosSize(pos, size))
                 {
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get monitro info");
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Falling back");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get monitro info");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Falling back");
                     CurrentWindowMode = oriWindowMode;
                     break;
                 }
@@ -1124,7 +1124,7 @@ namespace Backend
                 SetWindowStyle();
 
                 if(!SetWindowPos(CurrentWindowHandle, HWND_TOP, pos.x, pos.y, size.x, size.y, SWP_SHOWWINDOW))
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set window size");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set window size");
 
                 break;
             }

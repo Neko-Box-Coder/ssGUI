@@ -74,7 +74,7 @@ namespace Backend
         XcursorImage* cursorImg = XcursorImageCreate(cursorData.CursorImage->GetSize().x, cursorData.CursorImage->GetSize().y);
         if(cursorImg == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to create cursor image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to create cursor image");
             XcursorImageDestroy(cursorImg);
             return false;
         }
@@ -97,7 +97,7 @@ namespace Backend
             
             if(currentCursor == None)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor from image");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load cursor from image");
                 XcursorImageDestroy(cursorImg);
                 return false;
             }
@@ -127,7 +127,7 @@ namespace Backend
 
     BackendSystemInputX11_OpenGL3_3::BackendSystemInputX11_OpenGL3_3(BackendSystemInputX11_OpenGL3_3 const& other)
     {
-        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not implemented");
+        ssGUI_ERROR(ssGUI_TAG_BACKEND, "Not implemented");
         ssLOG_EXIT_PROGRAM();
     }
 
@@ -199,7 +199,7 @@ namespace Backend
             static bool reminder = false;
             if(!reminder)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendSystemInputX11_OpenGL3_3 is not designed to use without any main window, this could fail");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "BackendSystemInputX11_OpenGL3_3 is not designed to use without any main window, this could fail");
                 reminder = true;
             }
                  
@@ -242,7 +242,7 @@ namespace Backend
 
         if(result != True)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get mouse cursor");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get mouse cursor");
         }
 
         //TODO: This is invalid
@@ -411,8 +411,8 @@ namespace Backend
                     {
                         LastKeyDownTime = CurrentEvents[i].xkey.time;
                         ssGUI::Enums::GenericInput input = X11InputConverter::ConvertButtonAndKeys(XLookupKeysym(&CurrentEvents[i].xkey, 0));
-                        //ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Key Down: "<<ssGUI::InputToString(input));
-                        //ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Time: "<< CurrentEvents[i].xkey.time);
+                        //ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Key Down: "<<ssGUI::InputToString(input));
+                        //ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Time: "<< CurrentEvents[i].xkey.time);
                         curInfo.CurrentButtonAndKeyChanged = input;
                         FetchKeysPressed(input, CurrentKeyPresses);
                         CurrentInputInfos.push_back(curInfo);
@@ -493,8 +493,8 @@ namespace Backend
                     if(!repeatKey)
                     {
                         ssGUI::Enums::GenericInput input = X11InputConverter::ConvertButtonAndKeys(XLookupKeysym(&CurrentEvents[i].xkey, 0));
-                        //ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Key Up: "<<ssGUI::InputToString(input));
-                        //ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Time: "<< CurrentEvents[i].xkey.time);
+                        //ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Key Up: "<<ssGUI::InputToString(input));
+                        //ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Time: "<< CurrentEvents[i].xkey.time);
                         curInfo.CurrentButtonAndKeyChanged = input;
                         FetchKeysReleased(input, CurrentKeyPresses);
                         CurrentInputInfos.push_back(curInfo);
@@ -626,7 +626,7 @@ namespace Backend
         {
             if(ssGUI::Backend::BackendManager::GetMainWindowCount() == 0)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Unable to set mouse position without any window.");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Unable to set mouse position without any window.");
                 return;
             }
             else
@@ -646,7 +646,7 @@ namespace Backend
                             position.x, 
                             position.y))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "XWarpPointer failed");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "XWarpPointer failed");
         }
         
         XFlush(rawHandle->WindowDisplay);
@@ -711,7 +711,7 @@ namespace Backend
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
             return;
         }
         
@@ -719,7 +719,7 @@ namespace Backend
         void* customCursorPtr = customCursor->GetPixelPtr(customCursorFormat);
         if(customCursorPtr == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid custom cursor image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Invalid custom cursor image");
             return;
         }
 
@@ -749,7 +749,7 @@ namespace Backend
         
             if(!result)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Conversion failed");
                 delete[] convertedPtr;
                 return;
             }
@@ -776,7 +776,7 @@ namespace Backend
          
             if(!result)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Conversion failed");
                 delete[] convertedPtr;
                 return;
             }
@@ -790,7 +790,7 @@ namespace Backend
             result = ssGUI::ImageUtil::FormatToBGRA32(convertedPtr, resizedPtr, ssGUI::ImageFormat(), cursorSize);
             if(!result)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Conversion failed");
                 delete[] resizedPtr;
                 delete[] convertedPtr;
                 return;
@@ -852,7 +852,7 @@ namespace Backend
                                             imgFormat,
                                             CustomCursors[cursorName].CursorImage->GetSize()))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load custom cursor image");
             return;
         }
 
@@ -937,7 +937,7 @@ namespace Backend
                             bool result = PopulateCursorDataHandles(currentCursorData);
                             if(!result)
                             {
-                                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
+                                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load cursor");
                                 continue;
                             }
                         }
@@ -945,7 +945,7 @@ namespace Backend
                         cursor = currentCursorData.X11CursorHandles[rawHandle->WindowDisplay];
                     }
                     else
-                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
+                        ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load cursor");
 
                     break;
                 }

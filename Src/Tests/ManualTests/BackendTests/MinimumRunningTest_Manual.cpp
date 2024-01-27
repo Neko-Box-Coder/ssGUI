@@ -3,6 +3,7 @@
 #include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
 #include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
+#include "ssGUI/Enums/SystemKey.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
@@ -54,10 +55,19 @@ int main()
         BackendInput->UpdateInput(&BackendWindow, 1);
         if(!BackendWindow->IsClosed())
         {
+            if(BackendInput->IsButtonOrKeyDown(ssGUI::Enums::SystemKey::ENTER))
+            {
+                glm::ivec2 topLeft, bottomRight;
+                BackendWindow->GetDecorationOffsets(topLeft, bottomRight);
+            
+                ssLOG_LINE("topLeft: " << topLeft);
+                ssLOG_LINE("bottomRight: " << bottomRight);
+            }
+            
             //drawing->CreateDrawingEntities(pos, uv, color, counts, props);
             BackendDrawing->Render(glm::u8vec3(255, 255, 255));
-            
         }
+        
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }

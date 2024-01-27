@@ -56,8 +56,8 @@ namespace ssGUI
     {
         if(CurrentDragDataType != ssGUI::Enums::DragDataType::GUI_OBJECT)
         {
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid access of drag data");
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Trying to access GUI Object but get " << 
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Invalid access of drag data");
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Trying to access GUI Object but get " << 
                                         Enums::DragDataTypeToString(CurrentDragDataType) << " instead.");
             return nullptr;
         }
@@ -70,8 +70,8 @@ namespace ssGUI
     {
         if(CurrentDragDataType != ssGUI::Enums::DragDataType::CUSTOM)
         {
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid access of drag data");
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Trying to access Custom Data but get " << 
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Invalid access of drag data");
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Trying to access Custom Data but get " << 
                                         Enums::DragDataTypeToString(CurrentDragDataType) << " instead.");
             return nullptr;
         }

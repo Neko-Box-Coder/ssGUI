@@ -671,7 +671,7 @@ namespace ssGUI
             
             if(fileContent == nullptr)
             {
-                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded window icon");
+                ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Failed to load embedded window icon");
                 ssGUI::Factory::Dispose(data);
                 return;
             }

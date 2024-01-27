@@ -313,7 +313,7 @@ namespace ssGUI
                         InitiateDefaultResources();
                         if(DefaultRotationCursor == nullptr)
                         {
-                            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load rotation cursor");
+                            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Failed to load rotation cursor");
                         }
                         else
                         {
@@ -852,14 +852,14 @@ namespace ssGUI
             
             if(fileContent == nullptr)
             {
-                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded rotation cursor");
+                ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Failed to load embedded rotation cursor");
                 ssGUI::Factory::Dispose(data);
                 return;
             }
             
             if(!data->LoadImgFileFromMemory(fileContent, fileSize))
             {
-                ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to load rotation cursor");
+                ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Failed to load rotation cursor");
                 ssGUI::Factory::Dispose(data);
                 return;
             }

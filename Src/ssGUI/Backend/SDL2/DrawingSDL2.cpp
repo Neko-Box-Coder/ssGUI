@@ -15,7 +15,7 @@ namespace Backend
 
     DrawingSDL2::DrawingSDL2()
     {
-        //ssGUI_WARNING(ssGUI_BACKEND_TAG, "DrawingSDL2 is being created, is this intended?");
+        //ssGUI_WARNING(ssGUI_TAG_BACKEND, "DrawingSDL2 is being created, is this intended?");
     }
 
     DrawingSDL2::~DrawingSDL2()

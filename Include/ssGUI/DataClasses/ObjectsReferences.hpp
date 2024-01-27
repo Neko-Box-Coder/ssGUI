@@ -96,7 +96,7 @@ namespace ssGUI
                     return static_cast<T*>(GetObjectReference(index));
                 else
                 {
-                    ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid object type");
+                    ssGUI_ERROR(ssGUI_TAG_DATA, "Invalid object type");
                     ssLOG_EXIT_PROGRAM();
                     return nullptr; 
                 }

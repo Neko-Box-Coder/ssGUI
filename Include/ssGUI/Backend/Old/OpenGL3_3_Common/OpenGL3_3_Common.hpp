@@ -190,8 +190,8 @@ namespace Backend
             if(success != GL_TRUE)
             {
                 GL_CHECK_ERROR( glGetShaderInfoLog(vertexShaderId, 512, NULL, infoLog) );
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to compile shaders:");
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, infoLog);
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to compile shaders:");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, infoLog);
                 ssLOG_EXIT_PROGRAM(1);
             };
         }
@@ -208,8 +208,8 @@ namespace Backend
             if(success != GL_TRUE)
             {
                 GL_CHECK_ERROR( glGetShaderInfoLog(fragmentShaderId, 512, NULL, infoLog) );
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to compile shaders:");
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, infoLog);
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to compile shaders:");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, infoLog);
                 ssLOG_EXIT_PROGRAM(1);
             };
         }
@@ -228,8 +228,8 @@ namespace Backend
             if(success != GL_TRUE)
             {
                 GL_CHECK_ERROR( glGetProgramInfoLog(ProgramId, 512, NULL, infoLog) );
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to compile shaders:");
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, infoLog);
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to compile shaders:");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, infoLog);
                 ssLOG_EXIT_PROGRAM(1);
             };
         }

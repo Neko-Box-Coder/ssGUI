@@ -57,7 +57,7 @@ namespace ssGUI
             
             if(outputFormat.ImgType != ssGUI::Enums::ImageType::MONO)
             {
-                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Invalid output format");
+                ssGUI_WARNING(ssGUI_TAG_IMAGE_UTIL, "Invalid output format");
                 return false;
             }
             
@@ -444,7 +444,7 @@ namespace ssGUI
                 outputFormat.IndexG < 0 ||
                 outputFormat.IndexB < 0)
             {
-                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Invalid output format");
+                ssGUI_WARNING(ssGUI_TAG_IMAGE_UTIL, "Invalid output format");
                 return false;
             }
 
@@ -508,7 +508,7 @@ namespace ssGUI
             \
             if(!result)\
             {\
-                ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Failed to convert bitmap to mono");\
+                ssGUI_WARNING(ssGUI_TAG_IMAGE_UTIL, "Failed to convert bitmap to mono");\
                 return result; \
             }\
             \
@@ -550,7 +550,7 @@ namespace ssGUI
                 }
                 default:
                 {
-                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
+                    ssGUI_WARNING(ssGUI_TAG_IMAGE_UTIL, "Unsupported bit depth");
                     return false;
                 }
             }
@@ -594,7 +594,7 @@ namespace ssGUI
                 }
                 default:
                 {
-                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
+                    ssGUI_WARNING(ssGUI_TAG_IMAGE_UTIL, "Unsupported bit depth");
                     return false;
                 }
             }
@@ -638,7 +638,7 @@ namespace ssGUI
                 }
                 default:
                 {
-                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
+                    ssGUI_WARNING(ssGUI_TAG_IMAGE_UTIL, "Unsupported bit depth");
                     return false;
                 }
             }
@@ -682,7 +682,7 @@ namespace ssGUI
                 }
                 default:
                 {
-                    ssGUI_WARNING(ssGUI_IMAGE_UTIL_TAG, "Unsupported bit depth");
+                    ssGUI_WARNING(ssGUI_TAG_IMAGE_UTIL, "Unsupported bit depth");
                     return false;
                 }
             }

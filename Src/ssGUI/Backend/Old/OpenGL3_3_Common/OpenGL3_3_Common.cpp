@@ -14,7 +14,7 @@
     x;\
     if((err = glGetError()) != GL_NO_ERROR)\
     {\
-        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed: "<<err);\
+        ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed: "<<err);\
         ssLOG_EXIT_PROGRAM(1);\
     }\
 }
@@ -208,13 +208,13 @@ namespace Backend
     {
         if(!font.IsValid())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid font");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Trying to draw invalid font");
             return false;
         }
         
         if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Each vertex mush have a texture coordinates and color attribute");
             return false;
         }
 
@@ -265,13 +265,13 @@ namespace Backend
     {
         if(!image.IsValid())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid image");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Trying to draw invalid image");
             return false;
         }
         
         if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Each vertex mush have a texture coordinates and color attribute");
             return false;
         }
         
@@ -317,7 +317,7 @@ namespace Backend
     {
         if(vertices.size() != colors.size())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a color attribute");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Each vertex mush have a color attribute");
             return false;
         }
 
@@ -368,7 +368,7 @@ namespace Backend
     
     bool OpenGL3_3_Common::OnNewAtlasRequest()
     {
-        ssGUI_INFO(ssGUI_BACKEND_TAG, "Requesting new atlas...");
+        ssGUI_INFO(ssGUI_TAG_BACKEND, "Requesting new atlas...");
     
         GLint maxTextureSize = 0;
         GLint maxLayerSize = 0;
@@ -384,9 +384,9 @@ namespace Backend
         //First create a texture 2D array with a new layer
         if(currentLayersCount + 1 >= maxLayerSize)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Max number of layers for image atlas reached");
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "currentLayersCount: "<<currentLayersCount);
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "maxLayerSize: "<<maxLayerSize);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Max number of layers for image atlas reached");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "currentLayersCount: "<<currentLayersCount);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "maxLayerSize: "<<maxLayerSize);
             return false;
         }
         
@@ -415,7 +415,7 @@ namespace Backend
                                                         i) );
 
             if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to attach to framebuffer");
 
             GL_CHECK_ERROR( glFramebufferTextureLayer(  GL_READ_FRAMEBUFFER, 
                                                         GL_COLOR_ATTACHMENT0, 
@@ -424,7 +424,7 @@ namespace Backend
                                                         i) );
 
             if(glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to attach to framebuffer");
 
             GL_CHECK_ERROR( glBlitFramebuffer(  0, 
                                                 0, 
@@ -481,7 +481,7 @@ namespace Backend
             
             if(!CurrentImageAtlas->RequestImage(imgInfo, imgId))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to request atlas image");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to request atlas image");
                 return false;
             }
             
@@ -546,7 +546,7 @@ namespace Backend
                                                             imgInfo.LocationInPixel.z) );
 
                 if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+                    ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to attach to framebuffer");
 
                 GL_CHECK_ERROR( glBindRenderbuffer(GL_RENDERBUFFER, mipmapRenderbuffer) );
                 GL_CHECK_ERROR( glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, lastMipmapSize.x / 2, lastMipmapSize.y / 2) );
@@ -558,7 +558,7 @@ namespace Backend
                                                             mipmapRenderbuffer) );
                 
                 if(glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+                    ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to attach to framebuffer");
 
                 GL_CHECK_ERROR( glBlitFramebuffer(  imgInfo.LocationInPixel.x + lastMipmampPixelPosOffset.x, 
                                                     imgInfo.LocationInPixel.y + lastMipmampPixelPosOffset.y, 
@@ -578,7 +578,7 @@ namespace Backend
                                                             mipmapRenderbuffer) );
 
                 if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+                    ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to attach to framebuffer");
 
                 GL_CHECK_ERROR( glFramebufferTextureLayer(  GL_DRAW_FRAMEBUFFER, 
                                                             GL_COLOR_ATTACHMENT0, 
@@ -587,7 +587,7 @@ namespace Backend
                                                             imgInfo.LocationInPixel.z) );
 
                 if(glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to attach to framebuffer");
+                    ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to attach to framebuffer");
 
                 GL_CHECK_ERROR( glBlitFramebuffer(  0, 
                                                     0, 
@@ -638,7 +638,7 @@ namespace Backend
                 
                 if(i == MAX_LOOP - 1)
                 {
-                    ssGUI_ERROR(ssGUI_BACKEND_TAG, "MAX_LOOP reached, internal error!!");
+                    ssGUI_ERROR(ssGUI_TAG_BACKEND, "MAX_LOOP reached, internal error!!");
                     GL_CHECK_ERROR( glDeleteFramebuffers(2, readDrawFramebuffers) );
                     return false;
                 }
@@ -674,7 +674,7 @@ namespace Backend
         std::ofstream wf(outputFileName.c_str(), std::ios::out | std::ios::binary);
         if(!wf)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to open file: " << outputFileName.c_str());
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to open file: " << outputFileName.c_str());
         }
         else
         {
@@ -779,8 +779,8 @@ namespace Backend
             if(success != GL_TRUE)
             {
                 GL_CHECK_ERROR( glGetShaderInfoLog(vertexShaderId, 512, NULL, infoLog) );
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to compile shaders:");
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, infoLog);
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to compile shaders:");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, infoLog);
                 ssLOG_EXIT_PROGRAM(1);
             };
         }
@@ -797,8 +797,8 @@ namespace Backend
             if(success != GL_TRUE)
             {
                 GL_CHECK_ERROR( glGetShaderInfoLog(fragmentShaderId, 512, NULL, infoLog) );
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to compile shaders:");
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, infoLog);
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to compile shaders:");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, infoLog);
                 ssLOG_EXIT_PROGRAM(1);
             };
         }
@@ -817,8 +817,8 @@ namespace Backend
             if(success != GL_TRUE)
             {
                 GL_CHECK_ERROR( glGetProgramInfoLog(ProgramId, 512, NULL, infoLog) );
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "Failed to compile shaders:");
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, infoLog);
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "Failed to compile shaders:");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, infoLog);
                 ssLOG_EXIT_PROGRAM(1);
             };
         }
@@ -883,7 +883,7 @@ namespace Backend
     {
         if(CurrentMainWindow == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get MainWinodw");
             return glm::mat4x4();
         }
 
@@ -918,13 +918,13 @@ namespace Backend
     {
         if(CurrentMainWindow == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get MainWinodw");
             return;
         }
 
         if(!CurrentMainWindow->SetDrawingContext())
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set GL state");
             return;
         }
 
@@ -942,13 +942,13 @@ namespace Backend
     {
         if(CurrentMainWindow == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get MainWinodw");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get MainWinodw");
             return;
         }
 
         if(!CurrentMainWindow->SetDrawingContext())
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set GL state");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set GL state");
             return;
         }
 

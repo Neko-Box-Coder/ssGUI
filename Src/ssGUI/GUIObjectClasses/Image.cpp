@@ -114,7 +114,7 @@ namespace ssGUI
                 imageEntity.Vertices.push_back(imgDrawPosition + glm::vec2(0, GetSize().y));
                 break;
             default:
-                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Invalid ssGUI::Enums::ImageFitting: " << (int)imgFitting);
+                ssGUI_ERROR(ssGUI_TAG_GUI_OBJECT, "Invalid ssGUI::Enums::ImageFitting: " << (int)imgFitting);
                 ssLOG_EXIT_PROGRAM();
         }
 

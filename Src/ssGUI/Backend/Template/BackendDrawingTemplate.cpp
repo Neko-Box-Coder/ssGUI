@@ -16,7 +16,7 @@ namespace Backend
     BackendDrawingTemplate::BackendDrawingTemplate(MainWindowInterface* mainWindowInterface) :
         DrawingInterface(mainWindowInterface)
     {
-        ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendDrawingTemplate is being created, is this intended?");
+        ssGUI_WARNING(ssGUI_TAG_BACKEND, "BackendDrawingTemplate is being created, is this intended?");
     }
 
     BackendDrawingTemplate::~BackendDrawingTemplate()

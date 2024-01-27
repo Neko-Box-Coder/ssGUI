@@ -61,20 +61,20 @@ namespace Backend
             destinationKeyPresses.erase(it);
     }
     
-    SystemInputSDL2::SystemInputSDL2() :  CurrentInputs(),
-                                                        LastInputs(),
-                                                        CurrentRealtimeInputs(),
-                                                        LastRealtimeInputs(),
-                                                        LastMousePosition(),
-                                                        CurrentMousePosition(),
-                                                        CurrentMouseScrollDelta(),
-                                                        CurrentTextInput(),
-                                                        CurrentCursorType(Enums::CursorType::NORMAL),
-                                                        CurrentSDLCursor(nullptr),
-                                                        CurrentCustomCursorName(""),
-                                                        CustomCursors(),
-                                                        RawEventHandlers(),
-                                                        StartTime()
+    SystemInputSDL2::SystemInputSDL2() :    CurrentInputs(),
+                                            LastInputs(),
+                                            CurrentRealtimeInputs(),
+                                            LastRealtimeInputs(),
+                                            LastMousePosition(),
+                                            CurrentMousePosition(),
+                                            CurrentMouseScrollDelta(),
+                                            CurrentTextInput(),
+                                            CurrentCursorType(Enums::CursorType::NORMAL),
+                                            CurrentSDLCursor(nullptr),
+                                            CurrentCustomCursorName(""),
+                                            CustomCursors(),
+                                            RawEventHandlers(),
+                                            StartTime()
     {
     }
 
@@ -124,7 +124,7 @@ namespace Backend
             
             if(numEvents < 0)
             {
-                ssGUI_WARNING(  ssGUI_BACKEND_TAG, 
+                ssGUI_WARNING(  ssGUI_TAG_BACKEND, 
                                 "SDL2 error while fetching window events: " << numEvents);
             }
             else
@@ -324,7 +324,7 @@ namespace Backend
                 
                 default:
                     //Log events that are not captured
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG,    "SDL2 event not captured: " << 
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND,    "SDL2 event not captured: " << 
                                                         currentEvent.type);
                     break;
             }
@@ -343,29 +343,42 @@ namespace Backend
 
     bool SystemInputSDL2::IsInputExistLastFrame(Enums::GenericInput input) const
     {
-        return !LastInputs.empty();
+        for(int i = 0; i < LastInputs.size(); ++i)
+        {
+            if(LastInputs.at(i) == input)
+                return true;
+        }
+        
+        return false;
     }
 
     bool SystemInputSDL2::IsInputExistCurrentFrame(Enums::GenericInput input) const
     {
-        return CurrentInputs.empty();
+        for(int i = 0; i < CurrentInputs.size(); ++i)
+        {
+            if(CurrentInputs.at(i) == input)
+                return true;
+        }
+        
+        return false;
     }
 
-    glm::ivec2 
-    SystemInputSDL2::GetLastMousePosition(MainWindowInterface* mainWindow) const
+    glm::ivec2 SystemInputSDL2::GetLastMousePosition(MainWindowInterface* mainWindow) const
     {
+        //TODO(NOW)
         return LastMousePosition;
     }
     
-    glm::ivec2 
-    SystemInputSDL2::GetCurrentMousePosition(MainWindowInterface* mainWindow) const
+    glm::ivec2 SystemInputSDL2::GetCurrentMousePosition(MainWindowInterface* mainWindow) const
     {
+        //TODO(NOW)
         return CurrentMousePosition;
     }
     
-    void SystemInputSDL2::SetMousePosition(  glm::ivec2 position, 
-                                                    MainWindowInterface* mainWindow)
+    void SystemInputSDL2::SetMousePosition( glm::ivec2 position, 
+                                            MainWindowInterface* mainWindow)
     {
+        //TODO(NOW): Allow mainWindow to be nullptr
         SDL_WarpMouseInWindow((SDL_Window*)mainWindow->GetRawHandle(), position.x, position.y);
     }
 
@@ -423,15 +436,15 @@ namespace Backend
         return CurrentCursorType;
     }
 
-    void SystemInputSDL2::CreateCustomCursor(ImageInterface* customCursor, 
-                                                    std::string cursorName, 
-                                                    glm::ivec2 cursorSize, 
-                                                    glm::ivec2 hotspot)
+    void SystemInputSDL2::CreateCustomCursor(   ImageInterface* customCursor, 
+                                                std::string cursorName, 
+                                                glm::ivec2 cursorSize, 
+                                                glm::ivec2 hotspot)
     {
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG,    "Invalid hotspot position: " << 
+            ssGUI_WARNING(ssGUI_TAG_BACKEND,    "Invalid hotspot position: " << 
                                                 hotspot.x << ", " << hotspot.y);
             return;
         }
@@ -440,7 +453,7 @@ namespace Backend
         void* customCursorPtr = customCursor->GetPixelPtr(customCursorFormat);
         if(customCursorPtr == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid custom cursor image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Invalid custom cursor image");
             return;
         }
 
@@ -474,7 +487,7 @@ namespace Backend
          
             if(!result)
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Conversion failed");
                 return;
             }
             
@@ -502,7 +515,7 @@ namespace Backend
         
         if(!result)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Conversion failed");
             return;
         }
         
@@ -525,7 +538,7 @@ namespace Backend
         
         if(CustomCursors.find(cursorName) == CustomCursors.end())
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Cursor not found: " << cursorName);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Cursor not found: " << cursorName);
             return;
         }
         
@@ -552,7 +565,7 @@ namespace Backend
     {
         if(CustomCursors.find(cursorName) == CustomCursors.end())
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Cursor not found: " << cursorName);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Cursor not found: " << cursorName);
             return;
         }
         
@@ -567,7 +580,7 @@ namespace Backend
                                             imgFormat,
                                             data.CursorImage->GetSize()))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load custom cursor image");
             return;
         }
 
@@ -595,7 +608,7 @@ namespace Backend
             {
                 int result = SDL_ShowCursor(SDL_FALSE);
                 if(result < 0)
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "SDL2 error while hiding cursor: " << result);
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "SDL2 error while hiding cursor: " << result);
                 
                 CurrentSDLCursor = nullptr;
                 break;
@@ -637,7 +650,7 @@ namespace Backend
                 CurrentSDLCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
                 break;
             case Enums::CursorType::HELP:
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "SDL2 does not have a help cursor");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "SDL2 does not have a help cursor");
                 break;
             case Enums::CursorType::NOT_ALLOWED:
                 CurrentSDLCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
@@ -669,7 +682,7 @@ namespace Backend
                 
                 if(cursorSurface == NULL)
                 {
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "SDL error while creating cursor surface");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "SDL error while creating cursor surface");
                     break;
                 }
                 
@@ -679,7 +692,7 @@ namespace Backend
                                                             hotspot.y);
                 
                 if(CurrentSDLCursor == NULL)
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "SDL error while creating cursor");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "SDL error while creating cursor");
                 
                 break;
             }
@@ -691,7 +704,7 @@ namespace Backend
             int result = SDL_ShowCursor(SDL_TRUE);
             
             if(result < 0)
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "SDL2 error while showing cursor: " << result);
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "SDL2 error while showing cursor: " << result);
         }
     }
     

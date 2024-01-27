@@ -133,7 +133,7 @@ namespace ssGUI
             auto oriParent = originalObjsToClone[i]->GetParent();
             if(originalObjsIndex.find(oriParent) == originalObjsIndex.end())
             {
-                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Unable to clone, original parent can't be found: "<<oriParent);
+                ssGUI_ERROR(ssGUI_TAG_GUI_OBJECT, "Unable to clone, original parent can't be found: "<<oriParent);
                 ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
@@ -315,7 +315,7 @@ namespace ssGUI
                 GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
 
             if(!drawingInterface->CreateDrawingEntities(DrawingEntities))
-                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "DrawEntities failed");
+                ssGUI_ERROR(ssGUI_TAG_GUI_OBJECT, "DrawEntities failed");
             
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
                 GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);
@@ -332,7 +332,7 @@ namespace ssGUI
                 GetEventCallback(ssGUI::Enums::EventType::BEFORE_OBJECT_RENDER)->Notify(mainWindow);
             
             if(!drawingInterface->CreateDrawingEntities(LastDrawingEntities))
-                ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "DrawEntities failed");
+                ssGUI_ERROR(ssGUI_TAG_GUI_OBJECT, "DrawEntities failed");
         
             if(IsEventCallbackExist(ssGUI::Enums::EventType::OBJECT_RENDERED))
                 GetEventCallback(ssGUI::Enums::EventType::OBJECT_RENDERED)->Notify(mainWindow);

@@ -84,7 +84,7 @@ namespace Extensions
         //Vertices are either at the same place or on a line
         if(nba + nbc == glm::vec2())
         {
-            ssGUI_WARNING(ssGUI_EXT_TAG, "Vertices at same place or on a line");
+            ssGUI_WARNING(ssGUI_TAG_EXT, "Vertices at same place or on a line");
             return;
         }
 
@@ -115,25 +115,25 @@ namespace Extensions
         bool invalidAngle = false;
         if(angleT1CirT2 < 0)
         {
-            ssGUI_WARNING(ssGUI_EXT_TAG, "Container type: "<<(int)Container->GetType());
-            ssGUI_WARNING(ssGUI_EXT_TAG, "anti-clockwise placements of vertices detected. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_TAG_EXT, "Container type: "<<(int)Container->GetType());
+            ssGUI_WARNING(ssGUI_TAG_EXT, "anti-clockwise placements of vertices detected. Rounded corners failed.");
             invalidAngle = true;
         }
         else if(angleT1CirT2 > pi())
         {
-            ssGUI_WARNING(ssGUI_EXT_TAG, "Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_TAG_EXT, "Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            ssGUI_WARNING(ssGUI_EXT_TAG, "angleT1CirT2: "<<angleT1CirT2);
-            ssGUI_WARNING(ssGUI_EXT_TAG, "a: "<<a.x<<", "<<a.y);
-            ssGUI_WARNING(ssGUI_EXT_TAG, "b: "<<b.x<<", "<<b.y);
-            ssGUI_WARNING(ssGUI_EXT_TAG, "c: "<<c.x<<", "<<c.y);
-            ssGUI_WARNING(ssGUI_EXT_TAG, "t1: "<<t1.x<<", "<<t1.y);
-            ssGUI_WARNING(ssGUI_EXT_TAG, "t2: "<<t2.x<<", "<<t2.y);
-            ssGUI_WARNING(ssGUI_EXT_TAG, "cir: "<<cir.x<<", "<<cir.y);
+            ssGUI_WARNING(ssGUI_TAG_EXT, "angleT1CirT2: "<<angleT1CirT2);
+            ssGUI_WARNING(ssGUI_TAG_EXT, "a: "<<a.x<<", "<<a.y);
+            ssGUI_WARNING(ssGUI_TAG_EXT, "b: "<<b.x<<", "<<b.y);
+            ssGUI_WARNING(ssGUI_TAG_EXT, "c: "<<c.x<<", "<<c.y);
+            ssGUI_WARNING(ssGUI_TAG_EXT, "t1: "<<t1.x<<", "<<t1.y);
+            ssGUI_WARNING(ssGUI_TAG_EXT, "t2: "<<t2.x<<", "<<t2.y);
+            ssGUI_WARNING(ssGUI_TAG_EXT, "cir: "<<cir.x<<", "<<cir.y);
             // ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -146,20 +146,20 @@ namespace Extensions
         //Using the information with tangent points, angles between them and clockwise information
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // ssGUI_DEBUG(ssGUI_EXT_TAG, "points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
+        // ssGUI_DEBUG(ssGUI_TAG_EXT, "points: "<<((int)(roundRadius * angleT1CirT2 * 1) + 2));
         int minSamples = 5;
         int sampleCount = (int)(roundRadius * angleT1CirT2 * 1) + 2;
         int finalSampleCount = sampleCount < minSamples ? minSamples : sampleCount;
-        //ssGUI_DEBUG(ssGUI_EXT_TAG, "originLineToT1Angle: "<<originLineToT1Angle);
-        //ssGUI_DEBUG(ssGUI_EXT_TAG, "angleT1CirT2: "<<angleT1CirT2);
+        //ssGUI_DEBUG(ssGUI_TAG_EXT, "originLineToT1Angle: "<<originLineToT1Angle);
+        //ssGUI_DEBUG(ssGUI_TAG_EXT, "angleT1CirT2: "<<angleT1CirT2);
         for(int i = 1; i < finalSampleCount; i++)
         {
-            //ssGUI_DEBUG(ssGUI_EXT_TAG, "i: "<<i<<"/"<<finalSampleCount);
-            //ssGUI_DEBUG(ssGUI_EXT_TAG, "((double)i / (double)finalSampleCount): "<<((double)i / (double)finalSampleCount));
+            //ssGUI_DEBUG(ssGUI_TAG_EXT, "i: "<<i<<"/"<<finalSampleCount);
+            //ssGUI_DEBUG(ssGUI_TAG_EXT, "((double)i / (double)finalSampleCount): "<<((double)i / (double)finalSampleCount));
             double currentAngle = originLineToT1Angle + angleT1CirT2 * ((double)i / (double)finalSampleCount);
-            //ssGUI_DEBUG(ssGUI_EXT_TAG, "currentAngle: "<<currentAngle);
+            //ssGUI_DEBUG(ssGUI_TAG_EXT, "currentAngle: "<<currentAngle);
             glm::dvec2 plotPoint = glm::dvec2(cos(currentAngle), sin(currentAngle)) * (double)roundRadius;
-            //ssGUI_DEBUG(ssGUI_EXT_TAG, "plotPoint: "<<plotPoint.x<<", "<<plotPoint.y);
+            //ssGUI_DEBUG(ssGUI_TAG_EXT, "plotPoint: "<<plotPoint.x<<", "<<plotPoint.y);
             plottedPoints.push_back(/*glm::ivec2(round(plotPoint.x), round(plotPoint.y))*/glm::vec2(plotPoint) + cir);
         }
     }

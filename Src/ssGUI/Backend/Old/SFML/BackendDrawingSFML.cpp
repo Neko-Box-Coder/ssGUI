@@ -28,13 +28,13 @@ namespace Backend
             //Notify each image to delink
             for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
             {
-                ssGUI_DEBUG(ssGUI_BACKEND_TAG, "Removing link: "<<it->first);
+                ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Removing link: "<<it->first);
                 it->first->Internal_RemoveBackendDrawingRecord(this);
             }
             ImageTextures.clear();
         #endif
         //TODO: AddDrawingInterface
-        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not implemented");
+        ssGUI_ERROR(ssGUI_TAG_BACKEND, "Not implemented");
         ssLOG_EXIT_PROGRAM();
     }
 
@@ -196,7 +196,7 @@ namespace Backend
                 if(!result)
                 {
                     delete[] convertedRawImg;
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to convert image");
                     return;
                 }
                 else
@@ -254,13 +254,13 @@ namespace Backend
     {
         if(!font.IsValid())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid font");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Trying to draw invalid font");
             return false;
         }
         
         if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Each vertex mush have a texture coordinates and color attribute");
             return false;
         }
 
@@ -312,7 +312,7 @@ namespace Backend
                 //If failed to import, clean up and exit
                 if(!rawFont->GetCharacterImage(character, characterSize, imgData))
                 {
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get character image");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get character image");
                     return false;
                 }
                 
@@ -332,7 +332,7 @@ namespace Backend
                     if(!result)
                     {
                         delete[] convertedRawImg;
-                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image");
+                        ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to convert image");
                         return false;
                     }
                     else
@@ -368,13 +368,13 @@ namespace Backend
     {
         if(!image.IsValid())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Trying to draw invalid image");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Trying to draw invalid image");
             return false;
         }
 
         if(vertices.size() != texCoords.size() || texCoords.size() != colors.size())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a texture coordinates and color attribute");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Each vertex mush have a texture coordinates and color attribute");
             return false;
         }
 
@@ -418,7 +418,7 @@ namespace Backend
     {
         if(vertices.size() != colors.size())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Each vertex mush have a color attribute");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Each vertex mush have a color attribute");
             return false;
         }
 

@@ -92,7 +92,7 @@ namespace ssGUI
                 }
                 else
                 {
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non extension type");
+                    ssGUI_WARNING(ssGUI_TAG_DATA, "You cannot add non extension type");
                     return nullptr;
                 }                
             }
@@ -118,7 +118,7 @@ namespace ssGUI
                 }
                 else
                 {
-                    ssGUI_WARNING(ssGUI_DATA_TAG, "You cannot add non extension type");
+                    ssGUI_WARNING(ssGUI_TAG_DATA, "You cannot add non extension type");
                     return nullptr;
                 }                
             }

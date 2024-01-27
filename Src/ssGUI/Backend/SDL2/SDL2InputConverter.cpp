@@ -210,7 +210,7 @@ namespace Backend
             case SDLK_KP_ENTER:
                 return static_cast<Enums::GenericInput>(Enums::SystemKey::NUMPAD_ENTER);
             default:
-                //ssGUI_WARNING(ssGUI_BACKEND_TAG, "Unknown input: " << keycode);
+                //ssGUI_WARNING(ssGUI_TAG_BACKEND, "Unknown input: " << keycode);
                 return Enums::NO_INPUT;
         }
     }
@@ -230,7 +230,7 @@ namespace Backend
             case SDL_BUTTON_X2:
                 return static_cast<Enums::GenericInput>(Enums::MouseButton::EXTRA_2);
             default:
-                //ssGUI_WARNING(ssGUI_BACKEND_TAG, "Unknown input: " << button);
+                //ssGUI_WARNING(ssGUI_TAG_BACKEND, "Unknown input: " << button);
                 return Enums::NO_INPUT;
         }
     }

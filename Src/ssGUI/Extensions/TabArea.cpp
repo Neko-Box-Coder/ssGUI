@@ -170,7 +170,7 @@ namespace ssGUI
             if(!previewObject->IsExtensionExist<ssGUI::Extensions::AdvancedPosition>() ||
                !previewObject->IsExtensionExist<ssGUI::Extensions::AdvancedSize>())
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG,
+                ssGUI_ERROR(ssGUI_TAG_EXT,
                             "Preview object does not have advanced size or advanced position");
                 ssLOG_EXIT_PROGRAM();
                 return;
@@ -227,7 +227,7 @@ namespace ssGUI
             if(!previewObject->IsExtensionExist<ssGUI::Extensions::AdvancedPosition>() ||
                !previewObject->IsExtensionExist<ssGUI::Extensions::AdvancedSize>())
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG,
+                ssGUI_ERROR(ssGUI_TAG_EXT,
                             "Preview object does not have advanced size or advanced position");
                 ssLOG_EXIT_PROGRAM();
                 return;
@@ -252,7 +252,7 @@ namespace ssGUI
         {
             if(!SanityCheck())
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Sanity check failed");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Sanity check failed");
                 ssLOG_EXIT_PROGRAM();
                 return;
             }
@@ -335,7 +335,7 @@ namespace ssGUI
                         else
                             tabsHolder->MoveChildAfterTargetChild(currentContentTab, lastTab);
 
-                        ssGUI_ERROR(ssGUI_EXT_TAG, "Tab registered but not found");
+                        ssGUI_ERROR(ssGUI_TAG_EXT, "Tab registered but not found");
                     }
 
                     lastTab = currentContentTab;
@@ -388,7 +388,7 @@ namespace ssGUI
         {
             if(!SanityCheck())
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Sanity check failed");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Sanity check failed");
                 ssLOG_EXIT_PROGRAM();
                 return nullptr;
             }
@@ -587,7 +587,7 @@ namespace ssGUI
                         if(tabsHolder == nullptr ||
                            !tabsHolder->IsExtensionExist<ssGUI::Extensions::Layout>())
                         {
-                            ssGUI_ERROR(ssGUI_EXT_TAG, "Invalid tabs holder");
+                            ssGUI_ERROR(ssGUI_TAG_EXT, "Invalid tabs holder");
                             ssLOG_EXIT_PROGRAM();
                             return false;
                         }
@@ -695,7 +695,7 @@ namespace ssGUI
                !CurrentObjectsReferences.GetObjectReference(TabsHolder)
                     ->IsExtensionExist<ssGUI::Extensions::Layout>())
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Sanity check failed");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Sanity check failed");
                 return false;
             }
 
@@ -732,7 +732,7 @@ namespace ssGUI
                 else
                 {
                     //This should not happen, but if it does, exit
-                    ssGUI_ERROR(ssGUI_EXT_TAG, "We are not under Main Window, this is not handled");
+                    ssGUI_ERROR(ssGUI_TAG_EXT, "We are not under Main Window, this is not handled");
                     ssLOG_EXIT_PROGRAM();
                     return false;
                 }
@@ -1156,7 +1156,7 @@ namespace ssGUI
 
             if(tabToMove == nullptr || tabBefore == nullptr)
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Tab object not found");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Tab object not found");
                 return;
             }
 
@@ -1189,7 +1189,7 @@ namespace ssGUI
 
             if(tabToMove == nullptr)
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Tab object not found");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Tab object not found");
                 return;
             }
 
@@ -1217,7 +1217,7 @@ namespace ssGUI
 
             if(tabToMove == nullptr)
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Tab object not found");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Tab object not found");
                 return;
             }
 
@@ -1244,7 +1244,7 @@ namespace ssGUI
 
             if(tabToMove == nullptr || tabAfter == nullptr)
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Tab object not found");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Tab object not found");
                 return;
             }
 
@@ -1454,7 +1454,7 @@ namespace ssGUI
             auto* tabBar = CurrentObjectsReferences.GetObjectReference(TabBar);
             if(tabBar == nullptr)
             {
-                ssGUI_ERROR(ssGUI_EXT_TAG, "Tab bar missing");
+                ssGUI_ERROR(ssGUI_TAG_EXT, "Tab bar missing");
                 DISCARD_AND_RETURN();
             }
 

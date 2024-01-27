@@ -53,8 +53,8 @@ namespace ssGUI
     {
         if(CurrentBlockDataType != ssGUI::Enums::BlockDataType::GUI_OBJECT)
         {
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid access of Block data");
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Trying to access GUI Object but get " << 
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Invalid access of Block data");
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Trying to access GUI Object but get " << 
                                         Enums::BlockDataTypeToString(CurrentBlockDataType) << " instead.");
             return nullptr;
         }
@@ -67,8 +67,8 @@ namespace ssGUI
     {
         if(CurrentBlockDataType != ssGUI::Enums::BlockDataType::EXTENSION)
         {
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid access of Block data");
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Trying to access Extension but get " << 
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Invalid access of Block data");
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Trying to access Extension but get " << 
                                         Enums::BlockDataTypeToString(CurrentBlockDataType) << " instead.");
             return nullptr;
         }
@@ -81,8 +81,8 @@ namespace ssGUI
     {
         if(CurrentBlockDataType != ssGUI::Enums::BlockDataType::EVENT_CALLBACK)
         {
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid access of Block data");
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Trying to access Event Callback but get " << 
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Invalid access of Block data");
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Trying to access Event Callback but get " << 
                                         Enums::BlockDataTypeToString(CurrentBlockDataType) << " instead.");
             return nullptr;
         }
@@ -95,8 +95,8 @@ namespace ssGUI
     {
         if(CurrentBlockDataType != ssGUI::Enums::BlockDataType::CUSTOM)
         {
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Invalid access of Block data");
-            ssGUI_ERROR(ssGUI_DATA_TAG, "Trying to access Custom Data but get " << 
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Invalid access of Block data");
+            ssGUI_ERROR(ssGUI_TAG_DATA, "Trying to access Custom Data but get " << 
                                         Enums::BlockDataTypeToString(CurrentBlockDataType) << " instead.");
             return nullptr;
         }

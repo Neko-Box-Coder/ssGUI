@@ -34,12 +34,12 @@ Error")
 
 set(ssGUI_LOG_TAG           "None"      CACHE STRING    
 "Log tag (overrides level): 
-ssGUI_MANAGER_TAG
-ssGUI_IMAGE_UTIL_TAG
-ssGUI_BACKEND_TAG
-ssGUI_DATA_TAG
-ssGUI_EXT_TAG
-ssGUI_GUI_OBJECT_TAG")
+ssGUI_TAG_MANAGER
+ssGUI_TAG_IMAGE_UTIL
+ssGUI_TAG_BACKEND
+ssGUI_TAG_DATA
+ssGUI_TAG_EXT
+ssGUI_TAG_GUI_OBJECT")
 
 set(ssGUI_LOG_MANAGER_STATE     OFF CACHE BOOL "Log all the state in ssGUIManager")
 set(ssGUI_USE_LOG_FUNC          OFF CACHE BOOL "Logs all recorded function call")
@@ -54,12 +54,12 @@ set_property(CACHE ssGUI_LOG_LEVEL PROPERTY STRINGS "None"
                                                     "Error")
 
 set_property(CACHE ssGUI_LOG_TAG PROPERTY STRINGS   "None" 
-                                                    "ssGUI_MANAGER_TAG" 
-                                                    "ssGUI_IMAGE_UTIL_TAG" 
-                                                    "ssGUI_BACKEND_TAG" 
-                                                    "ssGUI_DATA_TAG" 
-                                                    "ssGUI_EXT_TAG" 
-                                                    "ssGUI_GUI_OBJECT_TAG")
+                                                    "ssGUI_TAG_MANAGER" 
+                                                    "ssGUI_TAG_IMAGE_UTIL" 
+                                                    "ssGUI_TAG_BACKEND" 
+                                                    "ssGUI_TAG_DATA" 
+                                                    "ssGUI_TAG_EXT" 
+                                                    "ssGUI_TAG_GUI_OBJECT")
 
 set(ssGUI_MAIN_BACKEND_DESCRIPTION 
 "The backend that can be used by ssGUI:
@@ -240,17 +240,17 @@ endif()
 
 #See ssGUI/HelperClasses/LogWithTagsAndLevel.hpp for log tags and levels
 if(NOT ssGUI_LOG_TAG STREQUAL "None")
-    if(ssGUI_LOG_TAG STREQUAL "ssGUI_MANAGER_TAG")
+    if(ssGUI_LOG_TAG STREQUAL "ssGUI_TAG_MANAGER")
         target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=1)
-    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_IMAGE_UTIL_TAG")
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_TAG_IMAGE_UTIL")
         target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=2)
-    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_BACKEND_TAG")
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_TAG_BACKEND")
         target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=3)
-    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_DATA_TAG")
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_TAG_DATA")
         target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=4)
-    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_EXT_TAG")
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_TAG_EXT")
         target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=5)
-    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_GUI_OBJECT_TAG")
+    elseif(ssGUI_LOG_TAG STREQUAL "ssGUI_TAG_GUI_OBJECT")
         target_compile_definitions(ssGUI PUBLIC ssGUI_LOG_TAG=6)
     endif()
 else()

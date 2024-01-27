@@ -166,7 +166,7 @@ namespace Backend
             if(!found)
             {
                 //TODO: Silence this, for now. Will enable this back when tags are added to logging 
-                // ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to find main window from handle: "<<msg.hwnd);
+                // ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to find main window from handle: "<<msg.hwnd);
                 //return false;
             }
         }
@@ -320,7 +320,7 @@ namespace Backend
         POINT p;
         if(!GetCursorPos(&p))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to get cursor position");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to get cursor position");
         }
         CurrentMousePosition = glm::ivec2(p.x, p.y);
 
@@ -374,7 +374,7 @@ namespace Backend
         {
             if(!SetCursorPos(position.x, position.y))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set mouse position");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set mouse position");
                 return;
             }
 
@@ -387,7 +387,7 @@ namespace Backend
             ClientToScreen(hwnd, &pt);
             if(!SetCursorPos(pt.x, pt.y))
             {
-                ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set mouse position");
+                ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to set mouse position");
                 return;
             }
 
@@ -452,7 +452,7 @@ namespace Backend
         //Validation
         if(hotspot.x > cursorSize.x || hotspot.y > cursorSize.y)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Invalid hotspot position: "<<hotspot.x<<", "<<hotspot.y);
             return;
         }
 
@@ -460,7 +460,7 @@ namespace Backend
         void* customCursorPtr = customCursor->GetPixelPtr(customCursorFormat);
         if(customCursorPtr == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Invalid custom cursor image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Invalid custom cursor image");
             return;
         }
 
@@ -521,7 +521,7 @@ namespace Backend
         cursorData.Win32CursorHandle = CreateWin32Cursor(hotspot, cursorData.CursorImage.get());
         if(cursorData.Win32CursorHandle == nullptr)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to recreate the cursor");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to recreate the cursor");
             return;
         }
 
@@ -567,7 +567,7 @@ namespace Backend
                                             imgFormat,
                                             CustomCursors[cursorName].CursorImage->GetSize()))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load custom cursor image");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load custom cursor image");
             return;
         }
 
@@ -597,7 +597,7 @@ namespace Backend
                 HCURSOR cursor = LoadCursor(NULL, win32Cursor);\
                 if(cursor == NULL)\
                 {\
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");\
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load cursor");\
                     break;\
                 }\
                 SetClassLongPtr(mainWindowHandle, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(cursor));\
@@ -653,12 +653,12 @@ namespace Backend
                     }
                     else
                     {
-                        ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to load cursor");
+                        ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to load cursor");
                         break;
                     }
                 }
                 default:
-                    ssGUI_WARNING(ssGUI_BACKEND_TAG, "Unimplemented Cursor");
+                    ssGUI_WARNING(ssGUI_TAG_BACKEND, "Unimplemented Cursor");
                     ssLOG_EXIT_PROGRAM();
             }
 

@@ -225,7 +225,7 @@ namespace Backend
             case XK_KP_Enter:
                 return static_cast<ssGUI::Enums::GenericInput>(ssGUI::Enums::SystemKey::NUMPAD_ENTER);
             default:
-                //ssGUI_WARNING(ssGUI_BACKEND_TAG, "Unknown input: "<<keysym);
+                //ssGUI_WARNING(ssGUI_TAG_BACKEND, "Unknown input: "<<keysym);
                 return ssGUI::Enums::NO_INPUT;
         }
     }

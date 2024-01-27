@@ -335,7 +335,7 @@ namespace ssGUI
     {
         if(GetSliderObject() == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Slider Object is not set");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Slider Object is not set");
             return;
         }
         
@@ -350,7 +350,7 @@ namespace ssGUI
     {
         if(GetSliderObject() == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Slider Object is not set");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Slider Object is not set");
             return 0.f;
         }
 
@@ -363,7 +363,7 @@ namespace ssGUI
     {
         if(GetSliderObject() == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Slider Object is not set");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Slider Object is not set");
             return;
         }
         
@@ -377,7 +377,7 @@ namespace ssGUI
     {
         if(GetSliderObject() == nullptr)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Slider Object is not set");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Slider Object is not set");
             return 0.f;
         }
         

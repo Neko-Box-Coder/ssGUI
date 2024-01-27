@@ -14,7 +14,7 @@ namespace Backend
 {
     BackendSystemInputMock::BackendSystemInputMock(BackendSystemInputMock const& other)
     {
-        ssGUI_ERROR(ssGUI_BACKEND_TAG, "Not Implemented");
+        ssGUI_ERROR(ssGUI_TAG_BACKEND, "Not Implemented");
         ssLOG_EXIT_PROGRAM(1);
     }
 

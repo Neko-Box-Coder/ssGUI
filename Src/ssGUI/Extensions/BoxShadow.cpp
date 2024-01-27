@@ -46,21 +46,21 @@ namespace Extensions
         bool invalidAngle = false;
         if(startToEndAngle < 0)
         {
-            ssGUI_WARNING(ssGUI_EXT_TAG, "anti-clockwise placements of vertices detected. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_TAG_EXT, "anti-clockwise placements of vertices detected. Rounded corners failed.");
             invalidAngle = true;
         }
         else if(startToEndAngle > pi())
         {
-            ssGUI_WARNING(ssGUI_EXT_TAG, "Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
+            ssGUI_WARNING(ssGUI_TAG_EXT, "Angle between 2 tangents should not be larger than 180 degrees. Rounded corners failed.");
             invalidAngle = true;
         }
 
         if(invalidAngle)
         {
-            ssGUI_ERROR(ssGUI_EXT_TAG, "startToEndAngle: "<<startToEndAngle);
-            ssGUI_ERROR(ssGUI_EXT_TAG, "start: "<<start.x<<", "<<start.y);
-            ssGUI_ERROR(ssGUI_EXT_TAG, "end: "<<end.x<<", "<<end.y);
-            ssGUI_ERROR(ssGUI_EXT_TAG, "circlePos: "<<circlePos.x<<", "<<circlePos.y);
+            ssGUI_ERROR(ssGUI_TAG_EXT, "startToEndAngle: "<<startToEndAngle);
+            ssGUI_ERROR(ssGUI_TAG_EXT, "start: "<<start.x<<", "<<start.y);
+            ssGUI_ERROR(ssGUI_TAG_EXT, "end: "<<end.x<<", "<<end.y);
+            ssGUI_ERROR(ssGUI_TAG_EXT, "circlePos: "<<circlePos.x<<", "<<circlePos.y);
             ssLOG_EXIT_PROGRAM();
             return;
         }
@@ -71,7 +71,7 @@ namespace Extensions
         //https://stackoverflow.com/questions/15525941/find-points-on-circle
         //Plot the arc
         //std::vector<glm::ivec2> arcVertices = std::vector<glm::ivec2>();
-        // ssGUI_DEBUG(ssGUI_EXT_TAG, "points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
+        // ssGUI_DEBUG(ssGUI_TAG_EXT, "points: "<<((int)(arcRadius * startToEndAngle * 1) + 2));        
         for(int i = 0; i < (int)(arcRadius * startToEndAngle * 1) + 2; i++)
         {
             double currentAngle = originLineToStartAngle + startToEndAngle * ((double)i / (double)((int)(arcRadius * startToEndAngle * 1) + 1));

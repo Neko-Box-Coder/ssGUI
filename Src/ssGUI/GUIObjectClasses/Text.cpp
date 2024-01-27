@@ -1452,7 +1452,7 @@ namespace ssGUI
 
         if(GetFontsCount() == 0 && GetDefaultFontsCount() == 0)
         {
-            ssGUI_WARNING(ssGUI_GUI_OBJECT_TAG, "Failed to find any fonts");
+            ssGUI_WARNING(ssGUI_TAG_GUI_OBJECT, "Failed to find any fonts");
             return;
         }
 
@@ -2653,14 +2653,14 @@ namespace ssGUI
 
         if(fileContent == nullptr)
         {
-            ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load embedded font");
+            ssGUI_ERROR(ssGUI_TAG_GUI_OBJECT, "Failed to load embedded font");
             return;
         }
 
         auto font = new ssGUI::Font();
         if(!font->GetFontInterface()->LoadFromMemory(const_cast<uint8_t*>(fileContent), fileSize))
         {
-            ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
+            ssGUI_ERROR(ssGUI_TAG_GUI_OBJECT, "Failed to load default font");
             ssGUI::Factory::Dispose(font);
         }
         else

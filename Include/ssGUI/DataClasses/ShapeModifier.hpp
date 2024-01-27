@@ -69,7 +69,7 @@ namespace ssGUI
                             verts.insert(verts.end(), TargetVertices[i].VerticesIndices.begin(), TargetVertices[i].VerticesIndices.end());
                         }
                         else
-                            ssGUI_WARNING(ssGUI_DATA_TAG, "TargetVertices' shape is not properly set!!");
+                            ssGUI_WARNING(ssGUI_TAG_DATA, "TargetVertices' shape is not properly set!!");
                     }
                 }
                 else
@@ -81,7 +81,7 @@ namespace ssGUI
                         else if(!TargetShapes[i].ShapeName.empty())
                             TargetShapesNameSet.insert(TargetShapes[i].ShapeName);
                         else
-                            ssGUI_WARNING(ssGUI_DATA_TAG, "TargetShape is not properly set!!");
+                            ssGUI_WARNING(ssGUI_TAG_DATA, "TargetShape is not properly set!!");
                     }
                 }
             }
@@ -136,7 +136,7 @@ namespace ssGUI
                         return nextIndex;
                 }
                 
-                ssGUI_ERROR(ssGUI_DATA_TAG, "GetNextIndex failed");
+                ssGUI_ERROR(ssGUI_TAG_DATA, "GetNextIndex failed");
                 return -1;
             }
             
@@ -157,7 +157,7 @@ namespace ssGUI
                         return prevIndex;
                 }
                 
-                ssGUI_ERROR(ssGUI_DATA_TAG, "GetPrevIndex failed");
+                ssGUI_ERROR(ssGUI_TAG_DATA, "GetPrevIndex failed");
                 return -1;
             }
             

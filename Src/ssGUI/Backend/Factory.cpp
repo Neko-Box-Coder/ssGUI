@@ -56,14 +56,14 @@ namespace Backend
             return static_cast<DrawingInterface*>(new BackendDrawingMock(nullptr, 
                                                                                 mainWindowInterface));
         #else
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
             return nullptr;
         #endif
         
         if(!drawingInterface->Initialize(mainWindowInterface))
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Drawing Interface wasn't initialized successfully");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Drawing Interface wasn't initialized successfully");
             delete drawingInterface;
             return nullptr;
         }
@@ -82,14 +82,14 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_MOCK
             fontInterface = new BackendFontMock(nullptr);
         #else
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
             return nullptr;
         #endif
         
         if(!fontInterface->Initialize())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Font Interface wasn't initialized successfully");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Font Interface wasn't initialized successfully");
             delete fontInterface;
             return nullptr;
         }
@@ -108,14 +108,14 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_MOCK
             imageInterface = new BackendImageMock(nullptr);
         #else
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
             return nullptr;
         #endif
     
         if(!imageInterface->Initialize())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Image Interface wasn't initialized successfully");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Image Interface wasn't initialized successfully");
             delete imageInterface;
             return nullptr;
         }
@@ -134,14 +134,14 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_MOCK
             inputInterface = new BackendSystemInputMock(nullptr);
         #else
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
             return nullptr;
         #endif
         
         if(!inputInterface->Initialize())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Input Interface wasn't initialized successfully");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Input Interface wasn't initialized successfully");
             delete inputInterface;
             return nullptr;
         }
@@ -160,14 +160,14 @@ namespace Backend
         #elif SSGUI_MAIN_BACKEND_MOCK
             mainWindowInterface = new BackendMainWindowMock(nullptr);
         #else
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
             return nullptr;
         #endif
         
         if(!mainWindowInterface->Initialize())
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG, "Main Window Interface wasn't initialized successfully");
+            ssGUI_ERROR(ssGUI_TAG_BACKEND, "Main Window Interface wasn't initialized successfully");
             delete mainWindowInterface;
             return nullptr;
         }
@@ -180,7 +180,7 @@ namespace Backend
         #if SSGUI_MAIN_BACKEND_SDL2
             if(SDL_Init(SDL_INIT_VIDEO) != 0)
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 couldn't be initialized, error: " << 
+                ssGUI_ERROR(ssGUI_TAG_BACKEND,  "SDL2 couldn't be initialized, error: " << 
                                                 SDL_GetError());
                 
                 return false;
@@ -188,7 +188,7 @@ namespace Backend
             
             if(!FontFreeType::InitializeFreeType())
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "FreeType couldn't be initialized");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "FreeType couldn't be initialized");
                 return false;
             }
         #endif
@@ -203,7 +203,7 @@ namespace Backend
             
             if(!FontFreeType::CleanupFreeType())
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG, "FreeType couldn't be cleaned up");
+                ssGUI_ERROR(ssGUI_TAG_BACKEND, "FreeType couldn't be cleaned up");
                 return false;
             }
         #endif

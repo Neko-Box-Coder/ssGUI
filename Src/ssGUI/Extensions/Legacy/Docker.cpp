@@ -482,7 +482,7 @@ namespace Extensions
             //This is not supposed to happen
             if(mainWindow == nullptr)
             {
-                ssGUI_WARNING(ssGUI_EXT_TAG, "what?");
+                ssGUI_WARNING(ssGUI_TAG_EXT, "what?");
                 return;
             }
 
@@ -608,7 +608,7 @@ namespace Extensions
             {
                 if(!info.Container->IsExtensionExist<ssGUI::Extensions::Docker>())
                 {
-                    ssGUI_ERROR(ssGUI_EXT_TAG, "Failed to find docker extension. Probably something wrong with cloning");
+                    ssGUI_ERROR(ssGUI_TAG_EXT, "Failed to find docker extension. Probably something wrong with cloning");
                     ssLOG_EXIT_PROGRAM();
                     return;
                 }

@@ -92,7 +92,7 @@ namespace ssGUI
     {
         if(objToForwardTo == nullptr)
         {
-            ssGUI_WARNING(ssGUI_DATA_TAG, "Can't forward event to nullptr GUI Object");
+            ssGUI_WARNING(ssGUI_TAG_DATA, "Can't forward event to nullptr GUI Object");
             return;
         }
     

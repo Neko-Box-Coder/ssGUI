@@ -26,7 +26,7 @@ namespace Backend
 
         if(!CurrentWindow)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 Window couldn't be created, error: " << 
+            ssGUI_ERROR(ssGUI_TAG_BACKEND,  "SDL2 Window couldn't be created, error: " << 
                                             SDL_GetError());
 
             return false;
@@ -39,7 +39,7 @@ namespace Backend
         CurrentSDL_Renderer = SDL_CreateRenderer(CurrentWindow, -1, 0);
         if(!CurrentSDL_Renderer)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 Renderer couldn't be created, error: " << 
+            ssGUI_ERROR(ssGUI_TAG_BACKEND,  "SDL2 Renderer couldn't be created, error: " << 
                                             SDL_GetError());
 
             return false;
@@ -116,7 +116,7 @@ namespace Backend
         
         if(logicalSize.x <= 0 || logicalSize.y <= 0)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 is unable to get the window size to get the DPI " <<
+            ssGUI_ERROR(ssGUI_TAG_BACKEND,  "SDL2 is unable to get the window size to get the DPI " <<
                                             "scaling, error: " << SDL_GetError());
             
             return glm::vec2(1.0f);
@@ -156,7 +156,7 @@ namespace Backend
         
         if(result != 0)
         {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 is unable to get the window decoration, error: " << 
+            ssGUI_ERROR(ssGUI_TAG_BACKEND,  "SDL2 is unable to get the window decoration, error: " << 
                                             SDL_GetError());
             
             return;
@@ -165,15 +165,17 @@ namespace Backend
         topLeft = glm::ivec2(top, left);
         bottomRight = glm::ivec2(bottom, right);
         
-        //TODO(NOW): Need to check if window borders are in pixels
-        glm::vec2 scaling = GetDPIScaling();
-        topLeft *= scaling;
-        bottomRight *= scaling;
+        //NOTE: It seems like the decoration(border) size is in pixels
+        #if 0
+            glm::vec2 scaling = GetDPIScaling();
+            ssGUI_DEBUG(ssGUI_TAG_BACKEND, "Scaling is: " << scaling);
+            topLeft *= scaling;
+            bottomRight *= scaling;
+        #endif
     }
 
     void MainWindowSDL2::SetWindowSize(glm::ivec2 size)
     {
-        //TODO(NOW): Need to check if window borders are in pixels
         glm::vec2 scaling = GetDPIScaling();
         size /= scaling;
         
@@ -185,12 +187,12 @@ namespace Backend
             
             if(result < 0 || index < 0)
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 is unable to get the display mode or index"
+                ssGUI_ERROR(ssGUI_TAG_BACKEND,  "SDL2 is unable to get the display mode or index"
                                                 ", error: " << SDL_GetError());
                 return;
             }
             
-            ssGUI_DEBUG(ssGUI_BACKEND_TAG,  "Display mode is " << 
+            ssGUI_DEBUG(ssGUI_TAG_BACKEND,  "Display mode is " << 
                                             SDL_BITSPERPIXEL(current.format) << " bits per pixel" <<
                                             "\t" << SDL_GetPixelFormatName(current.format) <<
                                             "\t" << current.w << " x " << current.h);
@@ -206,7 +208,7 @@ namespace Backend
             
             if(SDL_GetClosestDisplayMode(index, &desired, &closest) == NULL)
             {
-                ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 is unable to get the closest display mode"
+                ssGUI_ERROR(ssGUI_TAG_BACKEND,  "SDL2 is unable to get the closest display mode"
                                                 ", error: " << SDL_GetError());
                 return;
             }
@@ -329,7 +331,7 @@ namespace Backend
     {
         if(!iconImage.IsValid())
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Set icon is passed with invalid iamge");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Set icon is passed with invalid iamge");
             return;
         }
         
@@ -341,7 +343,7 @@ namespace Backend
         
         if(!ImageUtil::FormatToRGBA32(iconPixels.get(), inPixPtr, inImgformat, iconImage.GetSize()))
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image to rgba32");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "Failed to convert image to rgba32");
             return;
         }
         
@@ -356,7 +358,7 @@ namespace Backend
         
         if(cursorSurface == NULL)
         {
-            ssGUI_WARNING(ssGUI_BACKEND_TAG, "SDL error while creating icon surface");
+            ssGUI_WARNING(ssGUI_TAG_BACKEND, "SDL error while creating icon surface");
             return;
         }
         
