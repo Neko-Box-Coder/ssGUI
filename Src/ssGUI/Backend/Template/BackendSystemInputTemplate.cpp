@@ -39,12 +39,12 @@ namespace Backend
 
     bool BackendSystemInputTemplate::IsInputExistLastFrame(Enums::GenericInput input) const
     {
-        return true;
+        return !LastInputs.empty();
     }
 
     bool BackendSystemInputTemplate::IsInputExistCurrentFrame(Enums::GenericInput input) const
     {
-        return true;
+        return CurrentInputs.empty();
     }
 
     glm::ivec2 

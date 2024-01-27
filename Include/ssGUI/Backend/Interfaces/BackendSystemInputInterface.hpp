@@ -129,6 +129,17 @@ namespace Backend
             //Return a list of inputs in order happened in current frame. 
             virtual const std::vector<RealtimeInputInfo>& GetCurrentRealtimeInputs() const = 0;
 
+            //TODO(NOW): Add these functions to textfield GUI object
+            //TODO(NOW): Add these to auto tests
+
+            //function: StartTextInput
+            //Tells the OS to start accepting text input.
+            virtual void StartTextInput(glm::ivec2 inputPos, glm::ivec2 inputSize) = 0;
+            
+            //function: FinishTextInput
+            //Tells the OS to stop accepting text input.
+            virtual void FinishTextInput() = 0;
+
             //function: GetTextInput
             //Returns all the text typed in current frame.
             //Any characters in here 

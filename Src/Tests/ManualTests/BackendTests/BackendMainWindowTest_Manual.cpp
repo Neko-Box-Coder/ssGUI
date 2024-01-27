@@ -133,10 +133,13 @@ void AddFocusChangedByUserEventTest()
     {
         if(FocusEventIndex < 0)
         {
-            FocusEventIndex = TestWindow->AddFocusChangedByUserEvent([](bool focus)
-            {
-                ssLOG_SIMPLE("Focus event called: "<<focus);
-            });
+            FocusEventIndex = TestWindow->AddFocusChangedByUserEvent
+            (
+                [](ssGUI::Backend::BackendMainWindowInterface* mainWindow, bool focus)
+                {
+                    ssLOG_SIMPLE("Focus event called: "<<focus);
+                }
+            );
             
             ssLOG_SIMPLE("Focus event added");
         }

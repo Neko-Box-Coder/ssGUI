@@ -118,23 +118,26 @@ int main()
 
     ssTEST("CloseEventTest")
     {
-        bool called = false;
-        int id = TestWindow->AddOnCloseEvent(   [&]()
-                                            {
-                                                called = true;
-                                                TestWindow->AbortClosing();
-                                            });
+        bool valid = false;
+        int id =    TestWindow->AddOnCloseEvent
+                    ( 
+                        [&](ssGUI::Backend::BackendMainWindowInterface* mainWindow)
+                        {
+                            valid = TestWindow == mainWindow;
+                            TestWindow->AbortClosing();
+                        }
+                    );
         TestWindow->Close();
         
-        ssTEST_OUTPUT_ASSERT("Event Called", called);
+        ssTEST_OUTPUT_ASSERT("Event Called", valid);
         ssTEST_OUTPUT_ASSERT("Close Abort", !TestWindow->IsClosed());
         
         if(!TestWindow->IsClosed())
         {
-            called = false;
+            valid = false;
             TestWindow->RemoveOnCloseEvent(id);
             TestWindow->Close();
-            ssTEST_OUTPUT_ASSERT("Event Remove", !called);
+            ssTEST_OUTPUT_ASSERT("Event Remove", !valid);
         }
         
         ssTEST_CALL_CLEAN_UP();
@@ -180,13 +183,7 @@ int main()
         ssTEST_OUTPUT_ASSERT("True", TestWindow->IsResizable());
     };
 
-    ssTEST("CloseButtonTest()")
-    {
-        TestWindow->SetCloseButton(false);
-        ssTEST_OUTPUT_ASSERT("False", !TestWindow->HasCloseButton());
-        TestWindow->SetCloseButton(true);
-        ssTEST_OUTPUT_ASSERT("True", TestWindow->HasCloseButton());
-    };
+    //TODO(NOW): Window decoration test
 
     ssTEST("WindowModeTest()")
     {

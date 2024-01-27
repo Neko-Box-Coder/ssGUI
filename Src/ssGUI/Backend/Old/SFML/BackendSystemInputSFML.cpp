@@ -371,7 +371,7 @@ namespace Backend
             sf::Image cursorImg = static_cast<sf::Texture*>(customCursor->GetRawHandle())->copyToImage();
         #else
             uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
-            bool result = ssGUI::ImageUtil::ConvertToRGBA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+            bool result = ssGUI::ImageUtil::FormatToRGBA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
             if(!result)
             {
                 ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");

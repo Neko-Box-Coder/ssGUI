@@ -41,6 +41,7 @@ int main()
         {
             //drawing->CreateDrawingEntities(pos, uv, color, counts, props);
             BackendDrawing->Render(glm::u8vec3(255, 255, 255));
+            
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));

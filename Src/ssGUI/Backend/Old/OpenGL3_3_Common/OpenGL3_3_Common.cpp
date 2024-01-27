@@ -1028,7 +1028,7 @@ namespace Backend
         ssGUI::ImageFormat format;
         void* rawPixel = charImgData.GetPixelPtr(format);
         
-        if(!ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img.get()), rawPixel, format, imgSize))
+        if(!ssGUI::ImageUtil::FormatToRGBA32(static_cast<void*>(rgba32Img.get()), rawPixel, format, imgSize))
             return false;
 
         if(!AddDrawingCache(MappedFontIds, charTexture, imgSize, rgba32Img.get()))
@@ -1051,7 +1051,7 @@ namespace Backend
 
         //Convert it to rgba32
         auto rgba32Img = std::unique_ptr<uint8_t[]>(new uint8_t[backendImage->GetSize().x * backendImage->GetSize().y * 4]);
-        if(!ssGUI::ImageUtil::ConvertToRGBA32(static_cast<void*>(rgba32Img.get()), rawPtr, format, backendImage->GetSize()))
+        if(!ssGUI::ImageUtil::FormatToRGBA32(static_cast<void*>(rgba32Img.get()), rawPtr, format, backendImage->GetSize()))
             return false;
 
         if(!AddDrawingCache(MappedImgIds, backendImage, backendImage->GetSize(), rgba32Img.get()))

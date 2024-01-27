@@ -14,7 +14,8 @@ namespace Enums
 {
     using GenericInput = uint16_t;
     
-    /*enum: LetterKey
+    /*
+    enum: LetterKey
     
     A   - Respective letter.
     B   - Respective letter.

@@ -4,6 +4,8 @@
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
 
 
+//TODO(NOW): Sync this with SDL2
+
 namespace ssGUI
 {
 

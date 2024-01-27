@@ -2,7 +2,10 @@
 #define SSGUI_BACKEND_SYSTEM_INPUT_SDL2_HPP
 
 #include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
-
+#include "SDL_mouse.h"
+#include <chrono>
+#include <memory>
+#include <unordered_map>
 
 namespace ssGUI
 {
@@ -19,12 +22,42 @@ namespace Backend
         
             std::vector<RealtimeInputInfo> CurrentRealtimeInputs;
             std::vector<RealtimeInputInfo> LastRealtimeInputs;
+            
+            glm::ivec2 LastMousePosition;
+            glm::ivec2 CurrentMousePosition;
+            
+            glm::vec2 CurrentMouseScrollDelta;
+            std::u32string CurrentTextInput;
+            
+            Enums::CursorType CurrentCursorType;
+            
+            SDL_Cursor* CurrentSDLCursor;
+            SDL_Surface* CurrentCustomCursorSurface;
+            
+            std::string CurrentCustomCursorName;
+            
+            struct CursorData
+            {
+                std::shared_ptr<BackendImageInterface> CursorImage;
+                glm::ivec2 Hotspot;
+            };
+            
+            std::unordered_map<std::string, CursorData> CustomCursors;
+            
+            std::vector<std::function<bool(BackendMainWindowInterface*, void*)>> RawEventHandlers;
+            std::chrono::high_resolution_clock::time_point StartTime;
         
             BackendSystemInputSDL2& operator=(BackendSystemInputSDL2 const& other);
 
         protected:
             BackendSystemInputSDL2(BackendSystemInputSDL2 const& other);
-
+            
+            void FetchKeysPressed(  Enums::GenericInput keysPressedDown, 
+                                    std::vector<Enums::GenericInput>& destinationKeyPresses);
+            
+            void FetchKeysReleased( Enums::GenericInput keysReleased, 
+                                    std::vector<Enums::GenericInput>& destinationKeyPresses);
+            
         public:
             BackendSystemInputSDL2();
             ~BackendSystemInputSDL2() override;
@@ -67,12 +100,20 @@ namespace Backend
 
             //function: GetLastRealtimeInputs
             //See <BackendSystemInputInterface::GetLastRealtimeInputs>
-            const std::vector<ssGUI::RealtimeInputInfo>& GetLastRealtimeInputs() const override;
+            const std::vector<RealtimeInputInfo>& GetLastRealtimeInputs() const override;
 
             //function: GetCurrentRealtimeInputs
             //See <BackendSystemInputInterface::GetCurrentRealtimeInputs>
-            const std::vector<ssGUI::RealtimeInputInfo>& GetCurrentRealtimeInputs() const override;
+            const std::vector<RealtimeInputInfo>& GetCurrentRealtimeInputs() const override;
 
+            //function: StartTextInput
+            //See <BackendSystemInputInterface::StartTextInput>
+            void StartTextInput(glm::ivec2 inputPos, glm::ivec2 inputSize) override;
+            
+            //function: FinishTextInput
+            //See <BackendSystemInputInterface::FinishTextInput>
+            void FinishTextInput() override;
+            
             //function: GetTextInput
             //See <BackendSystemInputInterface::GetTextInput>
             void GetTextInput(std::u32string& outText) const override;
@@ -83,11 +124,11 @@ namespace Backend
             
             //function: SetCursorType
             //See <BackendSystemInputInterface::SetCursorType>
-            void SetCursorType(ssGUI::Enums::CursorType cursorType) override;
+            void SetCursorType(Enums::CursorType cursorType) override;
 
             //function: GetCursorType
             //See <BackendSystemInputInterface::GetCursorType>
-            ssGUI::Enums::CursorType GetCursorType() const override;
+            Enums::CursorType GetCursorType() const override;
 
             //function: CreateCustomCursor
             //See <BackendSystemInputInterface::CreateCustomCursor>

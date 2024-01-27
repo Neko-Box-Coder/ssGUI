@@ -79,7 +79,7 @@ namespace Backend
             
             uint8_t* convertedRawImg = new uint8_t[imageSize.x * imageSize.y * 4];
 
-            result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, dataPtr, format, imageSize);
+            result = ssGUI::ImageUtil::FormatToRGBA32(convertedRawImg, dataPtr, format, imageSize);
             if(!result)
             {
                 delete[] convertedRawImg;

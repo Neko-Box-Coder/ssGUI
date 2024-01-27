@@ -426,35 +426,41 @@ if(ssGUI_CAN_OVERRIDE_BACKEND)
 endif()
 
 if(ssGUI_MAIN_BACKEND STREQUAL "SDL2")
-    ## ==========================================================
-    ## clip 
-    ## ==========================================================
-    ## Disable clip examples and tests
-    #set(CLIP_EXAMPLES OFF CACHE BOOL "Compile clip examples")
-    #set(CLIP_TESTS OFF CACHE BOOL "Compile clip tests")
+    # ==========================================================
+    # clip 
+    # ==========================================================
+    # Disable clip examples and tests
+    set(CLIP_EXAMPLES OFF CACHE BOOL "Compile clip examples")
+    set(CLIP_TESTS OFF CACHE BOOL "Compile clip tests")
 
-    ## In case that you have ${PNG_LIBRARY} set to support copy/paste images on Linux
-    ##set(CLIP_X11_PNG_LIBRARY "${PNG_LIBRARY}")
+    # In case that you have ${PNG_LIBRARY} set to support copy/paste images on Linux
+    #set(CLIP_X11_PNG_LIBRARY "${PNG_LIBRARY}")
 
-    ## Add clip subdirectory to compile the library
-    #add_subdirectory("${PROJECT_SOURCE_DIR}/External/clip")
+    # Add clip subdirectory to compile the library
+    add_subdirectory("${PROJECT_SOURCE_DIR}/External/clip")
     
-    #if(ssGUI_HIDE_VARIABLES_CLIP)
-    #    mark_as_advanced(FORCE  CLIP_EXAMPLES
-    #                            CLIP_TESTS
-    #                            CLIP_X11_WITH_PNG
-    #                            PNG_LIBRARY)
-    #else()
-    #    mark_as_advanced(CLEAR  CLIP_EXAMPLES
-    #                            CLIP_TESTS
-    #                            CLIP_X11_WITH_PNG
-    #                            PNG_LIBRARY)
-    #endif()
+    if(ssGUI_HIDE_VARIABLES_CLIP)
+        mark_as_advanced(FORCE  CLIP_EXAMPLES
+                                CLIP_TESTS
+                                CLIP_X11_WITH_PNG
+                                PNG_LIBRARY)
+    else()
+        mark_as_advanced(CLEAR  CLIP_EXAMPLES
+                                CLIP_TESTS
+                                CLIP_X11_WITH_PNG
+                                PNG_LIBRARY)
+    endif()
 
-    #target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/External/clip")
+    target_include_directories(clip PUBLIC "${PROJECT_SOURCE_DIR}/External/clip")
 
-    ## Set folder name for IDEs such as Visual Studio
-    #set_target_properties(clip PROPERTIES FOLDER External)
+    # Set folder name for IDEs such as Visual Studio
+    set_target_properties(clip PROPERTIES FOLDER External)
+
+    if(ssGUI_EXPOSE_CLIP)
+        target_link_libraries(ssGUI PUBLIC clip)
+    else()
+        target_link_libraries(ssGUI PRIVATE clip)
+    endif()
 
     # ==========================================================
     # FreeType

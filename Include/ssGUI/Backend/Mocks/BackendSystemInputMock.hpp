@@ -57,6 +57,9 @@ namespace Backend
             BackendImageInterface* ClipboardImg;
             std::chrono::high_resolution_clock::time_point StartTime;
             
+            glm::ivec2 TextInputPos;
+            glm::ivec2 TextInputSize;
+            bool AcceptTextInput;
 
             CO_DECLARE_MEMBER_INSTNACE(OverrideObject);
 
@@ -87,6 +90,9 @@ namespace Backend
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::u32string, ClipboardText)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(BackendImageInterface*, ClipboardImg)
             SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::chrono::high_resolution_clock::time_point, StartTime)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, TextInputPos)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(glm::ivec2, TextInputSize)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(bool, AcceptTextInput)
 
             //function: UpdateInput
             //See <BackendSystemInputInterface::UpdateInput>
@@ -132,6 +138,14 @@ namespace Backend
             //See <BackendSystemInputInterface::GetCurrentRealtimeInputs>
             const std::vector<RealtimeInputInfo>& GetCurrentRealtimeInputs() const override;
 
+            //function: StartTextInput
+            //See <BackendSystemInputInterface::StartTextInput>
+            void StartTextInput(glm::ivec2 inputPos, glm::ivec2 inputSize) override;
+            
+            //function: FinishTextInput
+            //See <BackendSystemInputInterface::FinishTextInput>
+            void FinishTextInput() override;
+            
             //function: GetTextInput
             //See <BackendSystemInputInterface::GetTextInput>
             void GetTextInput(std::u32string& outText) const override;

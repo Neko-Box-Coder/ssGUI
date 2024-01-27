@@ -16,8 +16,18 @@ namespace Backend
     //class: ssGUI::Backend::BackendMainWindowSDL2
     class BackendMainWindowSDL2 : public BackendMainWindowInterface
     {
+        public:
+            struct SDL_RawHandle
+            {
+                SDL_Window* Window;
+                SDL_Renderer* Renderer;
+            };
+        
         private:
             SDL_Window* CurrentWindow;
+            std::u32string WindowTitle;
+            glm::ivec2 WindowPosition;
+            glm::ivec2 WindowSize;
             bool WindowClosed;
             bool WindowClosingAborted;
             bool WindowHidden;
@@ -26,16 +36,16 @@ namespace Backend
             BackendDrawingSDL2* BackendDrawing;
             Enums::WindowMode CurrentWindowMode;
             SDL_Renderer* CurrentSDL_Renderer;
+            mutable SDL_RawHandle CurrentSDLHandle;
             
-            std::vector<std::function<void()>> OnCloseCallback;
-            std::vector<std::function<void(bool focused)>> ExternalFocusChangedCallback;
+            std::vector<std::function<void(BackendMainWindowInterface* mainWindow)>> OnCloseCallback;
+            std::vector<std::function<void( BackendMainWindowInterface* mainWindow, 
+                                            bool focused)>> ExternalFocusChangedCallback;
         
             BackendMainWindowSDL2& operator=(BackendMainWindowSDL2 const& other);
             
-            void CreateWindow();
+            bool CreateWindow();
             void DestroyWindow();
-            glm::vec2 GetDPIScaling() const;
-            
 
         protected:
             BackendMainWindowSDL2(BackendMainWindowSDL2 const& other);
@@ -43,6 +53,9 @@ namespace Backend
         public:
             BackendMainWindowSDL2();
             ~BackendMainWindowSDL2() override;
+
+            //function: SetDPIScaling
+            glm::vec2 GetDPIScaling() const;
 
             //function: SetWindowPosition
             //See <BackendMainWindowInterface::SetWindowPosition>
@@ -86,7 +99,7 @@ namespace Backend
 
             //function: AddOnCloseEvent
             //See <BackendMainWindowInterface::AddOnCloseEvent>
-            int AddOnCloseEvent(std::function<void()> func) override;
+            int AddOnCloseEvent(std::function<void(BackendMainWindowInterface* mainWindow)> func) override;
 
             //function: RemoveOnCloseEvent
             //See <BackendMainWindowInterface::RemoveOnCloseEvent>
@@ -138,7 +151,8 @@ namespace Backend
 
             //function: AddFocusChangedByUserEvent
             //See <BackendMainWindowInterface::AddFocusChangedByUserEvent>
-            int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) override;
+            int AddFocusChangedByUserEvent(std::function<void(  BackendMainWindowInterface* mainWindow,
+                                                                bool focused)> func) override;
 
             //function: RemoveFocusChangedByUserEvent
             //See <BackendMainWindowInterface::RemoveFocusChangedByUserEvent>
@@ -160,13 +174,13 @@ namespace Backend
             //See <BackendMainWindowInterface::IsResizable>
             bool IsResizable() const override;
 
-            //function: SetCloseButton
-            //See <BackendMainWindowInterface::SetCloseButton>
-            void SetCloseButton(bool closeButton) override;
-
-            //function: HasCloseButton
-            //See <BackendMainWindowInterface::HasCloseButton>
-            bool HasCloseButton() const override;
+            //function: SetDecorationOptions
+            //See <BackendMainWindowInterface::SetDecorationOptions>
+            bool SetDecorationOptions(Enums::WindowDecorationOptions options) override;
+            
+            //function: GetDecorationOptions
+            //See <BackendMainWindowInterface::GetDecorationOptions>
+            Enums::WindowDecorationOptions GetDecorationOptions() const override;
 
             //function: SetWindowMode
             //See <BackendMainWindowInterface::SetWindowMode>

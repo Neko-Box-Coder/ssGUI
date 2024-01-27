@@ -25,18 +25,22 @@ namespace Enums
         LEFT = 1100,
         MIDDLE,
         RIGHT,
-        COUNT = RIGHT - LEFT + 1
+        EXTRA_1,
+        EXTRA_2,
+        COUNT = EXTRA_2 - LEFT + 1
     };
     
     //function: InputToString
     inline std::string InputToString(MouseButton input)
     {
-        static_assert((int)MouseButton::COUNT == 3, "ToString");
+        static_assert((int)MouseButton::COUNT == 5, "ToString");
         switch(input)
         {
             RETURN_ENUM_STRING(MouseButton::LEFT);
             RETURN_ENUM_STRING(MouseButton::MIDDLE);
             RETURN_ENUM_STRING(MouseButton::RIGHT);
+            RETURN_ENUM_STRING(MouseButton::EXTRA_1);
+            RETURN_ENUM_STRING(MouseButton::EXTRA_2);
             RETURN_ENUM_STRING(MouseButton::COUNT);
         }
         

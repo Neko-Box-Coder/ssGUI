@@ -473,7 +473,7 @@ namespace Backend
 
         //First we need to convert the image data to BGRA32
         uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
-        bool result = ssGUI::ImageUtil::ConvertToBGRA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+        bool result = ssGUI::ImageUtil::FormatToBGRA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
 
         if(!result)
         {
@@ -745,7 +745,7 @@ namespace Backend
         uint8_t* imgPtr = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
         bool result = false;
 
-        result = ssGUI::ImageUtil::ConvertToRGBA32(imgPtr, oriImgPtr, format, imgData.GetSize());
+        result = ssGUI::ImageUtil::FormatToRGBA32(imgPtr, oriImgPtr, format, imgData.GetSize());
 
         if(!result)
             return false;

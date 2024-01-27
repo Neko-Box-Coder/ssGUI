@@ -954,7 +954,7 @@ namespace Backend
             format.IndexG != 2 ||
             format.IndexA != 3)
         {
-            if(!ImageUtil::ConvertToBGRA32(&iconDataToApply[2], rawIcon, format, iconImage.GetSize()))
+            if(!ImageUtil::FormatToBGRA32(&iconDataToApply[2], rawIcon, format, iconImage.GetSize()))
             {
                 ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image to bgra32");
                 delete[] iconDataToApply;

@@ -745,7 +745,7 @@ namespace Backend
         {
             ssLOG_LINE();
             uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
-            bool result = ssGUI::ImageUtil::ConvertToBGRA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+            bool result = ssGUI::ImageUtil::FormatToBGRA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
         
             if(!result)
             {
@@ -772,7 +772,7 @@ namespace Backend
         else
         {
             uint8_t* convertedPtr = new uint8_t[customCursor->GetSize().x * customCursor->GetSize().y * 4];
-            bool result = ssGUI::ImageUtil::ConvertToRGBA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
+            bool result = ssGUI::ImageUtil::FormatToRGBA32(convertedPtr, customCursorPtr, customCursorFormat, customCursor->GetSize());
          
             if(!result)
             {
@@ -787,7 +787,7 @@ namespace Backend
             delete[] convertedPtr;
             convertedPtr = new uint8_t[cursorSize.x * cursorSize.y * 4];
             
-            result = ssGUI::ImageUtil::ConvertToBGRA32(convertedPtr, resizedPtr, ssGUI::ImageFormat(), cursorSize);
+            result = ssGUI::ImageUtil::FormatToBGRA32(convertedPtr, resizedPtr, ssGUI::ImageFormat(), cursorSize);
             if(!result)
             {
                 ssGUI_WARNING(ssGUI_BACKEND_TAG, "Conversion failed");
@@ -1053,7 +1053,7 @@ namespace Backend
         uint8_t* imgPtr = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
         bool result = false;
 
-        result = ssGUI::ImageUtil::ConvertToRGBA32(imgPtr, oriImgPtr, format, imgData.GetSize());
+        result = ssGUI::ImageUtil::FormatToRGBA32(imgPtr, oriImgPtr, format, imgData.GetSize());
 
         if(!result)
             return false;

@@ -192,7 +192,7 @@ namespace Backend
                 
                 uint8_t* convertedRawImg = new uint8_t[backendImage->GetSize().x * backendImage->GetSize().y * 4];
 
-                result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, backendImage->GetSize());
+                result = ssGUI::ImageUtil::FormatToRGBA32(convertedRawImg, imgRawPtr, imgFmt, backendImage->GetSize());
                 if(!result)
                 {
                     delete[] convertedRawImg;
@@ -328,7 +328,7 @@ namespace Backend
                     
                     uint8_t* convertedRawImg = new uint8_t[imgData.GetSize().x * imgData.GetSize().y * 4];
 
-                    result = ssGUI::ImageUtil::ConvertToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgData.GetSize());
+                    result = ssGUI::ImageUtil::FormatToRGBA32(convertedRawImg, imgRawPtr, imgFmt, imgData.GetSize());
                     if(!result)
                     {
                         delete[] convertedRawImg;

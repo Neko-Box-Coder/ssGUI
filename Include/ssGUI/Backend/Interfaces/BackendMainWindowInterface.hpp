@@ -2,6 +2,7 @@
 #define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_HPP
 
 #include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Enums/WindowDecorationOptions.hpp"
 #include "ssGUI/Enums/WindowMode.hpp"
 
 #include <string>
@@ -70,7 +71,8 @@ namespace Backend
             //function: AddOnCloseEvent
             //Adds the callback to be called when the main window closes. 
             //Returns an id that can be used to remove the function for being called.
-            virtual int AddOnCloseEvent(std::function<void()> func) = 0;
+            virtual int 
+                AddOnCloseEvent(std::function<void(BackendMainWindowInterface* mainWindow)> func) = 0;
 
             //function: RemoveOnCloseEvent
             //Removes the function to be called when the main window closes.
@@ -125,7 +127,9 @@ namespace Backend
             //function: AddFocusChangedByUserEvent
             //Adds the callback to be called when the main window gained or lost focus. 
             //Returns an id that can be used to remove the function for being called.
-            virtual int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) = 0;
+            virtual int 
+                AddFocusChangedByUserEvent(std::function<void(  BackendMainWindowInterface* mainWindow, 
+                                                                bool focused)> func) = 0;
 
             //function: RemoveFocusChangedByUserEvent
             //Removes the function to be called when the main window gained or lost focus
@@ -150,15 +154,15 @@ namespace Backend
             
             //TODO: Add user handled moving and resizing
 
-            //function: SetCloseButton
-            //Sets if the main window has close button or not
-            virtual void SetCloseButton(bool closeButton) = 0;
-
-            //function: HasCloseButton
-            //Returns if the main window has close button or not. 
-            //Note that if the main window is not in normal mode, this will return false.
-            virtual bool HasCloseButton() const = 0;
-
+            //function: SetDecorationOptions
+            //Sets the window decoration options, this is just a request to the display server,
+            //  therefore it is not necessary that it will be honored.
+            virtual bool SetDecorationOptions(Enums::WindowDecorationOptions options) = 0;
+            
+            //function: GetDecorationOptions
+            //Gets the window decoration options
+            virtual Enums::WindowDecorationOptions GetDecorationOptions() const = 0;
+            
             //function: SetWindowMode
             //Sets the main window mode
             virtual void SetWindowMode(Enums::WindowMode WindowMode) = 0;

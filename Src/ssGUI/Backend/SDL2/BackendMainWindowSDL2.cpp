@@ -1,5 +1,6 @@
 #include "ssGUI/Backend/SDL2/BackendMainWindowSDL2.hpp"
 #include "ssGUI/Backend/SDL2/BackendDrawingSDL2.hpp"
+#include "ssGUI/HelperClasses/ImageUtil.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
@@ -11,17 +12,95 @@ namespace ssGUI
 
 namespace Backend
 {
-    void BackendMainWindowSDL2::CreateWindow()
+    bool BackendMainWindowSDL2::CreateWindow()
     {
-        //TODO(NOW)
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> codec;
+        std::string titleUtf8 = codec.to_bytes(WindowTitle);
+        
+        CurrentWindow = SDL_CreateWindow(   titleUtf8.c_str(), 
+                                            WindowPosition.x, 
+                                            WindowPosition.y, 
+                                            WindowSize.x, 
+                                            WindowSize.y, 
+                                            SDL_WINDOW_SHOWN);
+
+        if(!CurrentWindow)
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 Window couldn't be created, error: " << 
+                                            SDL_GetError());
+
+            return false;
+        }
+        
+        SetResizable(WindowResizable);
+        SetWindowMode(CurrentWindowMode);
+        SetVisible(!WindowHidden);
+        
+        CurrentSDL_Renderer = SDL_CreateRenderer(CurrentWindow, -1, 0);
+        if(!CurrentSDL_Renderer)
+        {
+            ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 Renderer couldn't be created, error: " << 
+                                            SDL_GetError());
+
+            return false;
+        }
+        
+        //NOTE: SDL does not have support for anti-aliasing
+        //SetAntiAliasingLevel(WindowAntiAliasingLevel);
+        
+        SetVSync(WindowVsync);
+        
+        return true;
     }
     
     void BackendMainWindowSDL2::DestroyWindow()
     {
-        //TODO(NOW)
+        SDL_DestroyRenderer(CurrentSDL_Renderer);
         SDL_DestroyWindow(CurrentWindow);
     }
 
+    BackendMainWindowSDL2::BackendMainWindowSDL2(BackendMainWindowSDL2 const& other) :
+        CurrentWindow(nullptr),
+        WindowTitle(other.WindowTitle),
+        WindowPosition(other.WindowPosition),
+        WindowSize(other.WindowSize),
+        WindowClosed(false),
+        WindowClosingAborted(false),
+        WindowHidden(other.WindowHidden),
+        WindowVsync(other.WindowVsync),
+        WindowResizable(other.WindowResizable),
+        BackendDrawing(nullptr),
+        CurrentWindowMode(other.CurrentWindowMode),
+        CurrentSDL_Renderer(nullptr),
+        OnCloseCallback(other.OnCloseCallback),
+        ExternalFocusChangedCallback(other.ExternalFocusChangedCallback)
+    {
+        CreateWindow();
+    }
+
+    BackendMainWindowSDL2::BackendMainWindowSDL2() :    CurrentWindow(nullptr),
+                                                        WindowTitle(),
+                                                        WindowPosition(),
+                                                        WindowSize(),
+                                                        WindowClosed(false), 
+                                                        WindowClosingAborted(false),
+                                                        WindowHidden(false),
+                                                        WindowVsync(false),
+                                                        WindowResizable(true),
+                                                        BackendDrawing(nullptr),
+                                                        CurrentWindowMode(Enums::WindowMode::NORMAL),
+                                                        CurrentSDL_Renderer(nullptr),
+                                                        OnCloseCallback(),
+                                                        ExternalFocusChangedCallback()
+    {
+        CreateWindow();
+    }
+
+    BackendMainWindowSDL2::~BackendMainWindowSDL2()
+    {
+        DestroyWindow();
+    }
+    
     glm::vec2 BackendMainWindowSDL2::GetDPIScaling() const
     {
         glm::ivec2 logicalSize;
@@ -40,35 +119,6 @@ namespace Backend
         SDL_GetWindowSizeInPixels(CurrentWindow, &pixelSize.x, &pixelSize.y);
         
         return static_cast<glm::vec2>(pixelSize) / static_cast<glm::vec2>(logicalSize);
-    }
-    
-    BackendMainWindowSDL2::BackendMainWindowSDL2(BackendMainWindowSDL2 const& other)
-    {
-        //TODO(NOW)
-    }
-
-    BackendMainWindowSDL2::BackendMainWindowSDL2()
-    {
-        CurrentWindow = SDL_CreateWindow(   "Test", 
-                                            SDL_WINDOWPOS_UNDEFINED, 
-                                            SDL_WINDOWPOS_UNDEFINED, 
-                                            800, 
-                                            600, 
-                                            SDL_WINDOW_SHOWN);
-
-        if(!CurrentWindow)
-        {
-            ssGUI_ERROR(ssGUI_BACKEND_TAG,  "SDL2 Window couldn't be created, error: " << 
-                                            SDL_GetError());
-        }
-        
-        //TODO(NOW): Create SDL Renderer
-    }
-
-    BackendMainWindowSDL2::~BackendMainWindowSDL2()
-    {
-        DestroyWindow();
-        //SDL_DestroyWindow(CurrentWindow);
     }
     
     void BackendMainWindowSDL2::SetWindowPosition(glm::ivec2 pos)
@@ -209,7 +259,7 @@ namespace Backend
         for(int i = 0; i < OnCloseCallback.size(); i++)
         {
             if(OnCloseCallback[i] != nullptr)
-                OnCloseCallback[i]();
+                OnCloseCallback[i](this);
 
             if(WindowClosingAborted)
             {
@@ -227,7 +277,8 @@ namespace Backend
         WindowClosingAborted = true;
     }
 
-    int BackendMainWindowSDL2::AddOnCloseEvent(std::function<void()> func)
+    int BackendMainWindowSDL2::
+        AddOnCloseEvent(std::function<void(BackendMainWindowInterface* mainWindow)> func)
     {
         OnCloseCallback.push_back(func);
         return OnCloseCallback.size() - 1;
@@ -264,14 +315,47 @@ namespace Backend
 
     void BackendMainWindowSDL2::GetTitle(std::string& title) const
     {
-        std::string utf8Title;
         const char* windowTitle = SDL_GetWindowTitle(CurrentWindow);
-        utf8Title = std::string(windowTitle);
+        title = std::string(windowTitle);
     }
 
     void BackendMainWindowSDL2::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
     {
-        //TODO(NOW)
+        if(!iconImage.IsValid())
+        {
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Set icon is passed with invalid iamge");
+            return;
+        }
+        
+        auto iconPixels = std::unique_ptr<uint8_t[]>(new uint8_t[   iconImage.GetSize().x * 
+                                                                    iconImage.GetSize().y * 4]);
+        
+        ImageFormat inImgformat;
+        void* inPixPtr = iconImage.GetPixelPtr(inImgformat);
+        
+        if(!ImageUtil::FormatToRGBA32(iconPixels.get(), inPixPtr, inImgformat, iconImage.GetSize()))
+        {
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to convert image to rgba32");
+            return;
+        }
+        
+        SDL_Surface* cursorSurface = 
+            SDL_CreateRGBSurfaceWithFormatFrom( iconPixels.get(), 
+                                                iconImage.GetSize().x, 
+                                                iconImage.GetSize().y, 
+                                                32, 
+                                                iconImage.GetSize().x * 32 + 
+                                                    inImgformat.RowPaddingInBytes, 
+                                                SDL_PIXELFORMAT_RGBA32);
+        
+        if(cursorSurface == NULL)
+        {
+            ssGUI_WARNING(ssGUI_BACKEND_TAG, "SDL error while creating icon surface");
+            return;
+        }
+        
+        SDL_SetWindowIcon(CurrentWindow, cursorSurface);
+        SDL_FreeSurface(cursorSurface);
     }
 
     void BackendMainWindowSDL2::SetVisible(bool visible)
@@ -309,7 +393,7 @@ namespace Backend
             for(int i = 0; i < ExternalFocusChangedCallback.size(); i++)
             {
                 if(ExternalFocusChangedCallback[i] != nullptr)
-                    ExternalFocusChangedCallback[i](focus);
+                    ExternalFocusChangedCallback[i](this, focus);
             }
         }
     }
@@ -319,7 +403,9 @@ namespace Backend
         return SDL_GetKeyboardFocus() == CurrentWindow;
     }
 
-    int BackendMainWindowSDL2::AddFocusChangedByUserEvent(std::function<void(bool focused)> func)
+    int BackendMainWindowSDL2::
+        AddFocusChangedByUserEvent(std::function<void(  BackendMainWindowInterface* mainWindow, 
+                                                        bool focused)> func)
     {
         ExternalFocusChangedCallback.push_back(func);
         return ExternalFocusChangedCallback.size() - 1;
@@ -352,19 +438,18 @@ namespace Backend
 
     bool BackendMainWindowSDL2::IsResizable() const
     {
-        //TODO(NOW): Check fullscreen
-        return WindowResizable;
+        return CurrentWindowMode == Enums::WindowMode::NORMAL ? WindowResizable : false;
     }
 
-    void BackendMainWindowSDL2::SetCloseButton(bool closeButton)
+    bool BackendMainWindowSDL2::SetDecorationOptions(Enums::WindowDecorationOptions options)
     {
-        //NOTE: Not supported by SDL2
+        //NOTE: SDL2 has no decorations support
+        return false;
     }
-
-    bool BackendMainWindowSDL2::HasCloseButton() const
+    
+    Enums::WindowDecorationOptions BackendMainWindowSDL2::GetDecorationOptions() const
     {
-        //NOTE: Not supported by SDL2
-        return true;
+        return Enums::WindowDecorationOptions::UNKNOWN;
     }
 
     void BackendMainWindowSDL2::SetWindowMode(Enums::WindowMode windowMode)
@@ -402,12 +487,15 @@ namespace Backend
     
     BackendMainWindowInterface* BackendMainWindowSDL2:: Clone()
     {
+        //TODO(NOW)
         return nullptr;
     }
 
     void* BackendMainWindowSDL2::GetRawHandle() const
     {
-        return nullptr;
+        CurrentSDLHandle.Window = CurrentWindow;
+        CurrentSDLHandle.Renderer = CurrentSDL_Renderer;
+        return &CurrentSDLHandle;
     }
     
     void BackendMainWindowSDL2::Internal_SetBackendDrawing(BackendDrawingSDL2* backendDrawing)

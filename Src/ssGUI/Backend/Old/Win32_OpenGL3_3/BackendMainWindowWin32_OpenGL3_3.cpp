@@ -841,7 +841,7 @@ namespace Backend
         ssGUI::ImageFormat format;
         void* imgPtr = iconImage.GetPixelPtr(format);
 
-        ssGUI::ImageUtil::ConvertToRGBA32(rgbaImg, imgPtr, format, iconImage.GetSize());
+        ssGUI::ImageUtil::FormatToRGBA32(rgbaImg, imgPtr, format, iconImage.GetSize());
 
         uint8_t* rawBitmap = new uint8_t[iconImage.GetSize().x * iconImage.GetSize().y * 4];
 
