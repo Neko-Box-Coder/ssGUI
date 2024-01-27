@@ -124,7 +124,7 @@ namespace ssGUI
         imageEntity.TexCoords.push_back(showUVOrigin + glm::vec2(0, showHeight));
 
         imageEntity.EntityName = IMAGE_SHAPE_NAME;
-        imageEntity.BackendImage = ImageData->GetBackendImageInterface();
+        imageEntity.BackendImage = ImageData->GetImageInterface();
         DrawingEntities.push_back(imageEntity);
     }
     

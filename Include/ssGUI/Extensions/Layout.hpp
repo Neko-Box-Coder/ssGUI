@@ -152,7 +152,7 @@ namespace Extensions
             void AssignPositionsAndSizesToChildren(std::vector<float>& childrenPos, std::vector<float>& childrenSize);
 
             virtual void ConstructRenderInfo() override;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
 
             //NOTE: A little bit retarded but works well enough to shut the compiler up when "floats... sizeMultipliers" is empty
             inline void AddPreferredSizeMultipliers(){}
@@ -297,7 +297,7 @@ namespace Extensions
 
             //function: ForceUpdateLayout
             //Forces layout to be updated early, and it will not be updated again by <Internal_Update>
-            virtual void ForceUpdateLayout( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void ForceUpdateLayout( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
                                             ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow);
@@ -330,14 +330,14 @@ namespace Extensions
             For what <Internal_Update> does, see <Extension::Internal_Update>
             */
             virtual void Internal_Update(   bool isPreUpdate, 
-                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::Backend::SystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
                                             ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow) override;
             
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
-            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) override;
             
             //function: GetExtensionName
             //See <Extension::GetExtensionName>

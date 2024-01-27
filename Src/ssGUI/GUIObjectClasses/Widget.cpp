@@ -34,7 +34,7 @@ namespace ssGUI
         DrawingEntities.push_back(backgroundEntitiy);
     }
 
-    void Widget::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Widget::MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
                             ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)

@@ -214,7 +214,7 @@ namespace Extensions
         drawingEntities.insert(drawingEntities.end(), newEntities.begin(), newEntities.end());
     }
 
-    void BoxShadow::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void BoxShadow::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {
         ConstructRenderInfo();
     }
@@ -278,7 +278,7 @@ namespace Extensions
 
     //Extension methods
     void BoxShadow::Internal_Update(bool isPreUpdate, 
-                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
@@ -289,7 +289,7 @@ namespace Extensions
             return;
     }
 
-    void BoxShadow::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void BoxShadow::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {
         ssGUI_LOG_FUNC();
 

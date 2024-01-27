@@ -1,4 +1,4 @@
-#include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
+#include "ssGUI/Backend/FreeType/FontFreeType.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
@@ -10,9 +10,9 @@ namespace ssGUI
 
 namespace Backend
 {
-    StaticDefaultWrapper<FT_Library> BackendFontFreeType::FreeTypeLib;
+    StaticDefaultWrapper<FT_Library> FontFreeType::FreeTypeLib;
 
-    bool BackendFontFreeType::SetSizeIfDifferent(float size) const
+    bool FontFreeType::SetSizeIfDifferent(float size) const
     {
         if(CurrentSize == size)
             return true;
@@ -102,7 +102,7 @@ namespace Backend
         return true;
     }
 
-    BackendFontFreeType::BackendFontFreeType(BackendFontFreeType const& other)
+    FontFreeType::FontFreeType(FontFreeType const& other)
     {
         FontFace = nullptr;
         Valid = false;
@@ -145,7 +145,7 @@ namespace Backend
         }
     }
 
-    BackendFontFreeType::BackendFontFreeType() :    FontFace(nullptr),
+    FontFreeType::FontFreeType() :    FontFace(nullptr),
                                                     Valid(false),
                                                     CurrentSize(-1),
                                                     FontFlags(0),
@@ -179,7 +179,7 @@ namespace Backend
         }
     }
     
-    BackendFontFreeType::~BackendFontFreeType()
+    FontFreeType::~FontFreeType()
     {
         if(FontFace != nullptr)
             FT_Done_Face(FontFace);
@@ -188,17 +188,17 @@ namespace Backend
             free(FontMemory);
     }
 
-    FT_GlyphSlot BackendFontFreeType::GetCurrentGlyph() const
+    FT_GlyphSlot FontFreeType::GetCurrentGlyph() const
     {
         return FontFace->glyph;
     }
 
-    bool BackendFontFreeType::IsValid() const
+    bool FontFreeType::IsValid() const
     {
         return Valid;
     }
 
-    ssGUI::CharacterRenderInfo BackendFontFreeType::GetCharacterRenderInfo( char32_t charUnicode, 
+    ssGUI::CharacterRenderInfo FontFreeType::GetCharacterRenderInfo( char32_t charUnicode, 
                                                                             float charSize) const
     {
         ssGUI::CharacterRenderInfo info;
@@ -249,12 +249,12 @@ namespace Backend
         return info;
     }
     
-    bool BackendFontFreeType::IsCharacterSupported(char32_t charUnicode) const
+    bool FontFreeType::IsCharacterSupported(char32_t charUnicode) const
     {
         return FT_Get_Char_Index(FontFace, charUnicode) != 0;
     }
     
-    float BackendFontFreeType::GetKerning(  char32_t charUnicode, 
+    float FontFreeType::GetKerning(  char32_t charUnicode, 
                                             char32_t secondCharUnicode, 
                                             float charSize) const
     {
@@ -280,7 +280,7 @@ namespace Backend
         return static_cast<float>(delta.x) / static_cast<float>(64); 
     }
     
-    float BackendFontFreeType::GetLineSpacing(float charSize) const
+    float FontFreeType::GetLineSpacing(float charSize) const
     {
         if(!SetSizeIfDifferent(charSize))
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
@@ -302,7 +302,7 @@ namespace Backend
         }
     }
     
-    float BackendFontFreeType::GetUnderlineOffset(float charSize) const
+    float FontFreeType::GetUnderlineOffset(float charSize) const
     {
         if(!SetSizeIfDifferent(charSize))
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
@@ -326,7 +326,7 @@ namespace Backend
         }
     }
     
-    float BackendFontFreeType::GetUnderlineThickness(float charSize) const
+    float FontFreeType::GetUnderlineThickness(float charSize) const
     {
         if(!SetSizeIfDifferent(charSize))
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
@@ -350,7 +350,7 @@ namespace Backend
         }
     }
 
-    bool BackendFontFreeType::LoadFromPath(std::string path)
+    bool FontFreeType::LoadFromPath(std::string path)
     {
         //Discard current font
         if(FontFace != nullptr)
@@ -400,7 +400,7 @@ namespace Backend
         return true;
     }
 
-    bool BackendFontFreeType::LoadFromMemory(const void* dataPtr, int lengthInBytes)
+    bool FontFreeType::LoadFromMemory(const void* dataPtr, int lengthInBytes)
     {
         //Discard current font
         if(FontFace != nullptr)
@@ -449,7 +449,7 @@ namespace Backend
         return true;
     }
     
-    bool BackendFontFreeType::GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const
+    bool FontFreeType::GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const
     {
         if(!Valid)
             return false;
@@ -462,9 +462,9 @@ namespace Backend
         return true;
     }
 
-    bool BackendFontFreeType::GetCharacterImage(char32_t charUnicode, 
+    bool FontFreeType::GetCharacterImage(char32_t charUnicode, 
                                                 float charSize, 
-                                                BackendImageInterface& characterImage) const
+                                                ImageInterface& characterImage) const
     {
         if(!SetSizeIfDifferent(charSize))
             ssGUI_WARNING(ssGUI_BACKEND_TAG, "Failed to set character size, continuing");
@@ -581,7 +581,7 @@ namespace Backend
         return result;
     }
 
-    void* BackendFontFreeType::GetRawHandle() const
+    void* FontFreeType::GetRawHandle() const
     {
         RawHandle.FreeTypeLib = *FreeTypeLib.Obj;
         RawHandle.FontFace = FontFace;
@@ -589,9 +589,9 @@ namespace Backend
         return &RawHandle;
     }
 
-    BackendFontInterface* BackendFontFreeType::Clone()
+    FontInterface* FontFreeType::Clone()
     {
-        return new BackendFontFreeType(*this);
+        return new FontFreeType(*this);
     }
 }
 

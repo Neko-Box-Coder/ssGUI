@@ -19,7 +19,7 @@ int main()
         mainWindow = ssGUI::Create<ssGUI::MainWindow>();
         testButton = mainWindow->AddChild<ssGUI::Button>();
         backendDrawingMock = static_cast<ssGUI::Backend::BackendDrawingMock*>
-            (mainWindow->GetBackendDrawingInterface());
+            (mainWindow->GetDrawingInterface());
         
         manager->AddRootGUIObject(mainWindow);
         manager->StartRunningAsync();

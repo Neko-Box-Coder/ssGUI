@@ -6,7 +6,7 @@ namespace ssGUI
 {
     namespace Backend
     {
-        class BackendSystemInputInterface;
+        class SystemInputInterface;
     }
 
     class GUIObject;
@@ -19,7 +19,7 @@ namespace ssGUI
         public:
             //var: InputInterface
             //Pointer to the input interface
-            ssGUI::Backend::BackendSystemInputInterface* InputInterface;
+            ssGUI::Backend::SystemInputInterface* InputInterface;
 
             //var: InputStatus
             //Input status for current frame

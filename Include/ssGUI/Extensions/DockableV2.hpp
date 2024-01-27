@@ -123,7 +123,7 @@ namespace Extensions
             static void operator delete[](void* p)      {free(p);};
 
             virtual void ConstructRenderInfo() override;
-            virtual void ConstructRenderInfo(   ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+            virtual void ConstructRenderInfo(   ssGUI::Backend::DrawingInterface* drawingInterface, 
                                                 ssGUI::GUIObject* mainWindow, 
                                                 glm::vec2 mainWindowPositionOffset) override;
 
@@ -349,7 +349,7 @@ namespace Extensions
             //function: Internal_Update
             //See <Extension::Internal_Update>
             virtual void Internal_Update(   bool isPreUpdate, 
-                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::Backend::SystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
                                             ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow) override;
@@ -357,7 +357,7 @@ namespace Extensions
             //function: Internal_Draw
             //See <Extension::Internal_Draw>
             virtual void Internal_Draw( bool isPreRender, 
-                                        ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                        ssGUI::Backend::DrawingInterface* drawingInterface, 
                                         ssGUI::GUIObject* mainWindow, 
                                         glm::vec2 mainWindowPositionOffset) override;
             

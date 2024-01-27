@@ -1,7 +1,7 @@
 #ifndef SSGUI_BACKEND_MAIN_WINDOW_X11_OPEN_GL_3_3_H
 #define SSGUI_BACKEND_MAIN_WINDOW_X11_OPEN_GL_3_3_H
 
-#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+#include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -38,8 +38,8 @@ namespace Backend
         XIC XInputContext;
     };
 
-    /*class: ssGUI::Backend::BackendMainWindowInterface
-    For functions explainations, please see <BackendMainWindowInterface>. Normally you don't need to deal with this class
+    /*class: ssGUI::Backend::MainWindowInterface
+    For functions explainations, please see <MainWindowInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:
     ======================== C++ =======================
@@ -95,11 +95,11 @@ namespace Backend
     {        
         BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
         
-        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
     ====================================================       
     */
-    class BackendMainWindowX11_OpenGL3_3 : public BackendMainWindowInterface
+    class BackendMainWindowX11_OpenGL3_3 : public MainWindowInterface
     {
         private:
             //https://stackoverflow.com/questions/5134297/xlib-how-does-this-removing-window-decoration-work
@@ -204,147 +204,147 @@ namespace Backend
             ~BackendMainWindowX11_OpenGL3_3() override;
 
             //function: SetWindowPosition
-            //See <BackendMainWindowInterface::SetWindowPosition>
+            //See <MainWindowInterface::SetWindowPosition>
             void SetWindowPosition(glm::ivec2 pos) override;
 
             //function: GetWindowPosition
-            //See <BackendMainWindowInterface::GetWindowPosition>
+            //See <MainWindowInterface::GetWindowPosition>
             glm::ivec2 GetWindowPosition() const override;
 
             //function: GetPositionOffset
-            //See <BackendMainWindowInterface::GetPositionOffset>
+            //See <MainWindowInterface::GetPositionOffset>
             glm::ivec2 GetPositionOffset() const override;
 
             //function: SetWindowSize
-            //See <BackendMainWindowInterface::SetWindowSize>
+            //See <MainWindowInterface::SetWindowSize>
             void SetWindowSize(glm::ivec2 size) override;
 
             //function: GetWindowSize
-            //See <BackendMainWindowInterface::GetWindowSize>
+            //See <MainWindowInterface::GetWindowSize>
             glm::ivec2 GetWindowSize() const override;
 
             //function: SetRenderSize
-            //See <BackendMainWindowInterface::SetRenderSize>
+            //See <MainWindowInterface::SetRenderSize>
             void SetRenderSize(glm::ivec2 size) override;
 
             //function: GetRenderSize
-            //See <BackendMainWindowInterface::GetRenderSize>
+            //See <MainWindowInterface::GetRenderSize>
             glm::ivec2 GetRenderSize() const override;
 
             //function: IsClosed
-            //See <BackendMainWindowInterface::IsClosed>
+            //See <MainWindowInterface::IsClosed>
             bool IsClosed() const override;
 
             //function: Close
-            //See <BackendMainWindowInterface::Close>
+            //See <MainWindowInterface::Close>
             void Close() override;
             
             //function: AbortClosing
-            //See <BackendMainWindowInterface::AbortClosing>
+            //See <MainWindowInterface::AbortClosing>
             void AbortClosing() override;
 
             //function: AddOnCloseEvent
-            //See <BackendMainWindowInterface::AddOnCloseEvent>
+            //See <MainWindowInterface::AddOnCloseEvent>
             int AddOnCloseEvent(std::function<void()> func) override;
 
             //function: RemoveOnCloseEvent
-            //See <BackendMainWindowInterface::RemoveOnCloseEvent>
+            //See <MainWindowInterface::RemoveOnCloseEvent>
             void RemoveOnCloseEvent(int index) override;
 
             //function: SetTitle
-            //See <BackendMainWindowInterface::SetTitle>
+            //See <MainWindowInterface::SetTitle>
             void SetTitle(std::wstring title) override;
 
             //function: GetTitle
-            //See <BackendMainWindowInterface::GetTitle>
+            //See <MainWindowInterface::GetTitle>
             std::wstring GetTitle() const override;
 
             //function: SetIcon
-            //See <BackendMainWindowInterface::SetIcon>
-            void SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage) override;
+            //See <MainWindowInterface::SetIcon>
+            void SetIcon(const ssGUI::Backend::ImageInterface& iconImage) override;
 
             //function: SetVisible
-            //See <BackendMainWindowInterface::SetVisible>
+            //See <MainWindowInterface::SetVisible>
             void SetVisible(bool visible) override;
 
             //function: IsVisible
-            //See <BackendMainWindowInterface::IsVisible>
+            //See <MainWindowInterface::IsVisible>
             bool IsVisible() const override;
 
             //function: SetVSync
-            //See <BackendMainWindowInterface::SetVSync>
+            //See <MainWindowInterface::SetVSync>
             void SetVSync(bool vSync) override;
 
             //function: IsVSync
-            //See <BackendMainWindowInterface::IsVSync>
+            //See <MainWindowInterface::IsVSync>
             bool IsVSync() const override;
 
             //function: SetFocus
-            //See <BackendMainWindowInterface::SetFocus>
+            //See <MainWindowInterface::SetFocus>
             void SetFocus(bool focus, bool externalByUser) override;
             
             //function: IsFocused
-            //See <BackendMainWindowInterface::IsFocused>
+            //See <MainWindowInterface::IsFocused>
             bool IsFocused() const override;
 
             //function: AddFocusChangedByUserEvent
-            //See <BackendMainWindowInterface::AddFocusChangedByUserEvent>
+            //See <MainWindowInterface::AddFocusChangedByUserEvent>
             int AddFocusChangedByUserEvent(std::function<void(bool focused)> func) override;
 
             //function: RemoveFocusChangedByUserEvent
-            //See <BackendMainWindowInterface::RemoveFocusChangedByUserEvent>
+            //See <MainWindowInterface::RemoveFocusChangedByUserEvent>
             void RemoveFocusChangedByUserEvent(int index) override;
 
             //function: SetMSAA
-            //See <BackendMainWindowInterface::SetMSAA>
+            //See <MainWindowInterface::SetMSAA>
             void SetAntiAliasingLevel(int level) override;
 
             //function: GetAntiAliasingLevel
-            //See <BackendMainWindowInterface::GetAntiAliasingLevel>
+            //See <MainWindowInterface::GetAntiAliasingLevel>
             int GetAntiAliasingLevel() const override;
 
             //function: SetTitlebar
-            //See <BackendMainWindowInterface::SetTitlebar>
+            //See <MainWindowInterface::SetTitlebar>
             void SetTitlebar(bool titlebar) override;
 
             //function: HasTitlebar
-            //See <BackendMainWindowInterface::HasTitlebar>
+            //See <MainWindowInterface::HasTitlebar>
             bool HasTitlebar() const override;
 
             //function: SetResizable
-            //See <BackendMainWindowInterface::SetResizable>
+            //See <MainWindowInterface::SetResizable>
             void SetResizable(bool resizable) override;
 
             //function: IsResizable
-            //See <BackendMainWindowInterface::IsResizable>
+            //See <MainWindowInterface::IsResizable>
             bool IsResizable() const override;
 
             //function: SetCloseButton
-            //See <BackendMainWindowInterface::SetCloseButton>
+            //See <MainWindowInterface::SetCloseButton>
             void SetCloseButton(bool closeButton) override;
 
             //function: HasCloseButton
-            //See <BackendMainWindowInterface::HasCloseButton>
+            //See <MainWindowInterface::HasCloseButton>
             bool HasCloseButton() const override;
 
             //function: SetWindowMode
-            //See <BackendMainWindowInterface::SetWindowMode>
+            //See <MainWindowInterface::SetWindowMode>
             void SetWindowMode(ssGUI::Enums::WindowMode windowMode) override;
 
             //function: GetWindowMode
-            //See <BackendMainWindowInterface::GetWindowMode>
+            //See <MainWindowInterface::GetWindowMode>
             ssGUI::Enums::WindowMode GetWindowMode() const override;
 
             //function: SetGLContext
-            //See <BackendMainWindowInterface::SetGLContext>
+            //See <MainWindowInterface::SetGLContext>
             bool SetDrawingContext() override;
             
             //function: Clone
-            //See <BackendMainWindowInterface::Clone>
-            BackendMainWindowInterface* Clone() override;
+            //See <MainWindowInterface::Clone>
+            MainWindowInterface* Clone() override;
 
             //function: GetRawHandle
-            //See <BackendMainWindowInterface::GetRawHandle>
+            //See <MainWindowInterface::GetRawHandle>
             void* GetRawHandle() const override;
     };
 }

@@ -77,7 +77,7 @@ namespace Backend
     
     bool BackendFontTemplate::GetCharacterImage(char32_t charUnicode, 
                                                 float charSize, 
-                                                BackendImageInterface& characterImage) const
+                                                ImageInterface& characterImage) const
     {
         return true;
     }
@@ -87,7 +87,7 @@ namespace Backend
         return nullptr;
     }
 
-    BackendFontInterface* BackendFontTemplate::Clone()
+    FontInterface* BackendFontTemplate::Clone()
     {
         return nullptr;
     }

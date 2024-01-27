@@ -171,7 +171,7 @@ namespace ssGUI
         }
     }
 
-    void GUIObject::CheckRightClickMenu(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void GUIObject::CheckRightClickMenu(ssGUI::Backend::SystemInputInterface* inputInterface, 
                                         ssGUI::InputStatus& inputStatus, 
                                         ssGUI::GUIObject* mainWindow)
     {
@@ -207,7 +207,7 @@ namespace ssGUI
         }
     }
 
-    void GUIObject::MainLogic(  ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void GUIObject::MainLogic(  ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
@@ -285,7 +285,7 @@ namespace ssGUI
         RightClickMenuId = -1;
     }
 
-    void GUIObject::Internal_Draw(  ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+    void GUIObject::Internal_Draw(  ssGUI::Backend::DrawingInterface* drawingInterface, 
                                     ssGUI::GUIObject* mainWindow, 
                                     glm::vec2 mainWindowPositionOffset)
     {
@@ -339,7 +339,7 @@ namespace ssGUI
         }
     }
 
-    void GUIObject::Internal_Update(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void GUIObject::Internal_Update(ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)

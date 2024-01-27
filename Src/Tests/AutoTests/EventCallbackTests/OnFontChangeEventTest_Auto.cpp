@@ -30,7 +30,7 @@ int main()
         Callback->SetEventType(ssGUI::Enums::EventType::BEFORE_FONT_CHANGE);
         TextObj = ssGUI::Factory::Create<ssGUI::Text>();
         CustomFont = ssGUI::Factory::Create<ssGUI::Font>();
-        CustomFont->GetBackendFontInterface()->LoadFromPath("./arial.ttf");
+        CustomFont->GetFontInterface()->LoadFromPath("./arial.ttf");
         
         
         //Timing is making sure the listener is triggered **before** the event
@@ -63,7 +63,7 @@ int main()
         TextObj->AddFont(CustomFont);
         ssTEST_OUTPUT_ASSERT("Text font", TextObj->GetFontsCount() == 1 && ListenerNum == 1);
         
-        ssGUI::Text::AddDefaultFont()->GetBackendFontInterface()->LoadFromPath("./arial.ttf");
+        ssGUI::Text::AddDefaultFont()->GetFontInterface()->LoadFromPath("./arial.ttf");
         ssTEST_OUTPUT_ASSERT("Default font not triggering event", TextObj->GetDefaultFontsCount() == 2 && ListenerNum == 1);
     };
 

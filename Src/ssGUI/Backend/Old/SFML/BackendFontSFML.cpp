@@ -162,7 +162,7 @@ namespace Backend
         return &Font;
     }
 
-    ssGUI::Backend::BackendFontInterface* BackendFontSFML::Clone()
+    ssGUI::Backend::FontInterface* BackendFontSFML::Clone()
     {
         return new BackendFontSFML(*this);
     }

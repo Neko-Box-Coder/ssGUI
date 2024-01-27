@@ -1,9 +1,9 @@
-#ifndef SSGUI_BACKEND_DRAWING_INTERFACE_HPP
-#define SSGUI_BACKEND_DRAWING_INTERFACE_HPP
+#ifndef SSGUI_DRAWING_INTERFACE_HPP
+#define SSGUI_DRAWING_INTERFACE_HPP
 
-#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/FontInterface.hpp"
 #include "ssGUI/DataClasses/DrawingEntity.hpp"
 
 #include <vector>
@@ -14,18 +14,18 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //class: ssGUI::Backend::BackendDrawingInterface
-    class BackendDrawingInterface
+    //class: ssGUI::Backend::DrawingInterface
+    class DrawingInterface
     {        
         public:
             using CharSize = uint16_t;
             using CharCode = uint32_t;
-            using CharTextureIdentifier = std::tuple<   BackendFontInterface*, 
+            using CharTextureIdentifier = std::tuple<   FontInterface*, 
                                                         CharSize, 
                                                         CharCode>;
         
-            BackendDrawingInterface(BackendMainWindowInterface* mainWindowInterface){}
-            virtual ~BackendDrawingInterface() = 0;
+            DrawingInterface(MainWindowInterface* mainWindowInterface){}
+            virtual ~DrawingInterface() = 0;
 
             //function: SaveDrawingState
             //Saves the drawing context state.
@@ -70,11 +70,11 @@ namespace Backend
             
             Call with images that are cached will update the cache.
             */
-            virtual void AddImageCache(BackendImageInterface* backendImage) = 0;
+            virtual void AddImageCache(ImageInterface* backendImage) = 0;
             
             //function: RemoveImageCache
             //This removes the backend image from the cache.
-            virtual void RemoveImageCache(BackendImageInterface* backendImage) = 0;
+            virtual void RemoveImageCache(ImageInterface* backendImage) = 0;
             
             /*
             function: GetRawImageCacheHandle
@@ -82,11 +82,11 @@ namespace Backend
             You can use the returned handle to modify the cached image.
             If no cache is found, it will return nullptr.
             */
-            virtual void* GetRawImageCacheHandle(BackendImageInterface* backendImage) const = 0;
+            virtual void* GetRawImageCacheHandle(ImageInterface* backendImage) const = 0;
     };
 
     //Pure virtual destructor needs to be defined
-    inline BackendDrawingInterface::~BackendDrawingInterface(){}
+    inline DrawingInterface::~DrawingInterface(){}
 } 
 
 }

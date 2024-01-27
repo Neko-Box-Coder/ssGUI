@@ -21,7 +21,7 @@ int main()
         #ifdef SSGUI_FONT_BACKEND_MOCK
             assert(TestText->GetDefaultFontsCount() > 0);
             auto* defaultBackendMockFont = 
-                static_cast<ssGUI::Backend::BackendFontMock*>(TestText->GetDefaultFont(0)->GetBackendFontInterface());
+                static_cast<ssGUI::Backend::BackendFontMock*>(TestText->GetDefaultFont(0)->GetFontInterface());
             
             ssGUI::SetMockBackendFontData(*defaultBackendMockFont);
         #endif

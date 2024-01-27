@@ -62,7 +62,7 @@ namespace ssGUI
 
             static void CloseRootMenu(ssGUI::GUIObject* currentMenu);
 
-            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;

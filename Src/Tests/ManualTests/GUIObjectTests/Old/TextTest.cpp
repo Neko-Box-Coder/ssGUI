@@ -12,8 +12,8 @@ int main()
 
     //Loading the font
     //ssGUI::Font font;
-    //if(font.GetBackendFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
-    // if(font.GetBackendFontInterface()->LoadFromPath("Resources/SourceHanSansJP-Normal.otf"))
+    //if(font.GetFontInterface()->LoadFromPath("Resources/NotoSans-Regular.ttf"))
+    // if(font.GetFontInterface()->LoadFromPath("Resources/SourceHanSansJP-Normal.otf"))
     //    std::cout<<"font loaded\n";
 
     //Create a text widget and set the respective properties

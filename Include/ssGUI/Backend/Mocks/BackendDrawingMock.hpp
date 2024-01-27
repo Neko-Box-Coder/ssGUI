@@ -4,7 +4,7 @@
 //#define SSGUI_MOCK_ENABLE_LOG
 #include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include <unordered_set>
 
 namespace ssGUI
@@ -14,31 +14,31 @@ namespace ssGUI
 namespace Backend
 {
     //class: ssGUI::Backend::BackendDrawingMock
-    class BackendDrawingMock : public BackendDrawingInterface
+    class BackendDrawingMock : public DrawingInterface
     {
         private:
-            BackendDrawingInterface* UnderlyingInterface;
+            DrawingInterface* UnderlyingInterface;
             int SavedStateCount;
             int CurrentDrawingBuffer;
             
             std::vector<ssGUI::DrawingEntity> Entities[2];
             glm::u8vec3 ClearedColor[2];
-            std::unordered_set<BackendImageInterface*> CachedImage;
+            std::unordered_set<ImageInterface*> CachedImage;
 
             BackendDrawingMock& operator=(BackendDrawingMock const& other);
 
         protected:
             BackendDrawingMock( BackendDrawingMock const& other,
-                                BackendMainWindowInterface* otherMainWindow);
+                                MainWindowInterface* otherMainWindow);
         
         public:
-            BackendDrawingMock( BackendDrawingInterface* drawingInterface,
-                                BackendMainWindowInterface* mainWindowInterface);
+            BackendDrawingMock( DrawingInterface* drawingInterface,
+                                MainWindowInterface* mainWindowInterface);
             ~BackendDrawingMock() override;
             
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(BackendDrawingInterface*, UnderlyingInterface)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(DrawingInterface*, UnderlyingInterface)
             
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::unordered_set<BackendImageInterface*>, CachedImage);
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(std::unordered_set<ImageInterface*>, CachedImage);
             
             //function: GetStateCounter
             int GetStateCounter() const;
@@ -56,40 +56,40 @@ namespace Backend
             const glm::u8vec3& GetRenderedClearedColor() const;
             
             //function: SaveState
-            //See <BackendDrawingInterface::SaveState>
+            //See <DrawingInterface::SaveState>
             void SaveDrawingState() override;
 
             //function: RestoreDrawingState
-            //See <BackendDrawingInterface::RestoreDrawingState>
+            //See <DrawingInterface::RestoreDrawingState>
             void RestoreDrawingState() override;
 
             //function: DrawEntities
-            //See <BackendDrawingInterface::DrawEntities>
+            //See <DrawingInterface::DrawEntities>
             bool CreateDrawingEntities(  const std::vector<DrawingEntity>& entities) override;
 
             //function: DrawToBackBuffer
-            //See <BackendDrawingInterface::DrawToBackBuffer>
+            //See <DrawingInterface::DrawToBackBuffer>
             void DrawToBackBuffer() override;
             
             //function: Render
-            //See <BackendDrawingInterface::Render>
+            //See <DrawingInterface::Render>
             void Render(glm::u8vec3 clearColor) override;
 
             //function: ClearBackBuffer
-            //See <BackendDrawingInterface::ClearBackBuffer>
+            //See <DrawingInterface::ClearBackBuffer>
             void ClearBackBuffer(glm::u8vec3 clearColor) override;
 
             //function: AddImageCache
-            //See <BackendDrawingInterface::AddImageCache>
-            void AddImageCache(BackendImageInterface* backendImage) override;
+            //See <DrawingInterface::AddImageCache>
+            void AddImageCache(ImageInterface* backendImage) override;
             
             //function: RemoveImageCache
-            //See <BackendDrawingInterface::RemoveImageCache>
-            void RemoveImageCache(BackendImageInterface* backendImage) override;
+            //See <DrawingInterface::RemoveImageCache>
+            void RemoveImageCache(ImageInterface* backendImage) override;
             
             //function: GetRawImageCacheHandle
-            //See <BackendDrawingInterface::GetRawImageCacheHandle>
-            void* GetRawImageCacheHandle(BackendImageInterface* backendImage) const override;
+            //See <DrawingInterface::GetRawImageCacheHandle>
+            void* GetRawImageCacheHandle(ImageInterface* backendImage) const override;
     };
 }
 

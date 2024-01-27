@@ -1,7 +1,7 @@
 #ifndef SSGUI_IMAGE_DATA_H
 #define SSGUI_IMAGE_DATA_H
 
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 #include <functional>
 #include <vector>
 //#include <iostream>
@@ -15,7 +15,7 @@ namespace ssGUI
     Variables & Constructor:
     ============================== C++ ==============================
     protected:
-        ssGUI::Backend::BackendImageInterface* BackendImage;                        //See <GetBackendImageInterface>
+        ssGUI::Backend::ImageInterface* BackendImage;                        //See <GetImageInterface>
         std::vector<std::function<void(ssGUI::ImageData*)>> DataChangedCallbacks;   //See <AddDataChangedCallback>
         std::vector<bool> DataChangedCallbacksValid;                                //See <AddDataChangedCallback>
     =================================================================
@@ -24,7 +24,7 @@ namespace ssGUI
                                 DataChangedCallbacks(),
                                 DataChangedCallbacksValid()
     {
-        BackendImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
+        BackendImage = ssGUI::Backend::Factory::CreateImageInterface();
     }
     =================================================================
     */
@@ -34,7 +34,7 @@ namespace ssGUI
             ImageData& operator=(ImageData const& other) = default;
 
         protected:
-            ssGUI::Backend::BackendImageInterface* BackendImage;                        //See <GetBackendImageInterface>
+            ssGUI::Backend::ImageInterface* BackendImage;                        //See <GetImageInterface>
             std::vector<std::function<void(ssGUI::ImageData*)>> DataChangedCallbacks;   //See <AddDataChangedCallback>
             std::vector<bool> DataChangedCallbacksValid;                                //See <AddDataChangedCallback>
 
@@ -44,17 +44,17 @@ namespace ssGUI
             ImageData();
             virtual ~ImageData();
 
-            //function: GetBackendImageInterface
-            //Gets the pointer of the BackendImageInterface
-            virtual ssGUI::Backend::BackendImageInterface* GetBackendImageInterface() const;
+            //function: GetImageInterface
+            //Gets the pointer of the ImageInterface
+            virtual ssGUI::Backend::ImageInterface* GetImageInterface() const;
 
             //function: IsValid
-            //See <BackendImageInterface::IsValid>
+            //See <ImageInterface::IsValid>
             virtual bool IsValid() const;
 
             //function: AddDataChangedCallback
             //Adds a callback function when the image data is changed.
-            //Note that this can't capture data change if BackendImageInterface function is called or
+            //Note that this can't capture data change if ImageInterface function is called or
             //if the image data is directly modified from the pointer without calling <NotifyImageDataChange>.
             virtual int AddDataChangedCallback(std::function<void(ssGUI::ImageData*)> callback);
             
@@ -67,30 +67,30 @@ namespace ssGUI
             virtual void NotifyImageDataChange();
 
             //function: LoadFromPath
-            //See <ssGUI::Backend::BackendImageInterface::LoadFromPath>
+            //See <ssGUI::Backend::ImageInterface::LoadFromPath>
             virtual bool LoadFromPath(std::string path);
 
             //function: LoadImgFileFromMemory
-            //See <ssGUI::Backend::BackendImageInterface::LoadImgFileFromMemory>
+            //See <ssGUI::Backend::ImageInterface::LoadImgFileFromMemory>
             virtual bool LoadImgFileFromMemory(void const * dataPtr, std::size_t size);
 
             //function: LoadRawFromMemory
-            //See <ssGUI::Backend::BackendImageInterface::LoadRawFromMemory>
+            //See <ssGUI::Backend::ImageInterface::LoadRawFromMemory>
             bool LoadRawFromMemory(void const * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize);
             
             //function: GetSize
-            //See <ssGUI::Backend::BackendImageInterface::GetSize>
+            //See <ssGUI::Backend::ImageInterface::GetSize>
             virtual glm::ivec2 GetSize() const;
 
             //TODO: Change this to be returning const pointer
             //function: GetPixelPtr
-            //See <ssGUI::Backend::BackendImageInterface::GetPixelPtr>
+            //See <ssGUI::Backend::ImageInterface::GetPixelPtr>
             //If there's any modification to the pixels, you need to call <NotifyImageDataChange>
             //in order to notify any image data changes. 
             virtual void* GetPixelPtr(ssGUI::ImageFormat& format) const;
 
             //function: UpdateCache
-            //See <ssGUI::Backend::BackendImageInterface::UpdateCache>
+            //See <ssGUI::Backend::ImageInterface::UpdateCache>
             virtual void UpdateCache();
 
             //function: Clone

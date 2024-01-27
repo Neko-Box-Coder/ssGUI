@@ -114,7 +114,7 @@ int main()
     (
         [&]()
         {
-            ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
+            ssGUI::Backend::SystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
             
             if( inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::ENTER) &&
                 !inputInterface->IsInputExistLastFrame(ssGUI::Enums::SystemKey::ENTER))

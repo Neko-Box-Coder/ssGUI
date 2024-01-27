@@ -5,7 +5,7 @@
 #include "ssGUI/Backend/Mocks/MockMacro.hpp"
 
 #include "CppOverride.hpp"
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 #include <vector>
 
 namespace ssGUI
@@ -15,11 +15,11 @@ namespace ssGUI
 namespace Backend
 {
     //class: ssGUI::Backend::BackendImageMock
-    class BackendImageMock : public BackendImageInterface
+    class BackendImageMock : public ImageInterface
     {
         private:
-            BackendImageInterface* UnderlyingInterface;
-            std::vector<BackendDrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
+            ImageInterface* UnderlyingInterface;
+            std::vector<DrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
             CO_DECLARE_MEMBER_INSTNACE(OverrideObject);
             
             BackendImageMock& operator=(BackendImageMock const& other);
@@ -28,58 +28,58 @@ namespace Backend
             BackendImageMock(BackendImageMock const& other);
 
         public:
-            BackendImageMock(BackendImageInterface* imageInterface);
+            BackendImageMock(ImageInterface* imageInterface);
             ~BackendImageMock() override;
 
             CO_DECLARE_OVERRIDE_METHODS(OverrideObject)
 
-            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(BackendImageInterface*, UnderlyingInterface)
+            SSGUI_MOCK_DECLARE_VARIABLE_GETTER(ImageInterface*, UnderlyingInterface)
 
             //function: GetRawHandle
-            //See <BackendImageInterface::GetRawHandle>
+            //See <ImageInterface::GetRawHandle>
             void* GetRawHandle() const override;
 
             //function: IsValid
-            //See <BackendImageInterface::IsValid>
+            //See <ImageInterface::IsValid>
             bool IsValid() const override;
 
             //function: LoadFromPath
-            //See <BackendImageInterface::LoadFromPath>
+            //See <ImageInterface::LoadFromPath>
             bool LoadFromPath(std::string path) override;
 
             //function: LoadImgFileFromMemory
-            //See <BackendImageInterface::LoadImgFileFromMemory>
+            //See <ImageInterface::LoadImgFileFromMemory>
             bool LoadImgFileFromMemory(const void * dataPtr, std::size_t size) override;
 
             //function: LoadRawFromMemory
-            //See <BackendImageInterface::LoadRawFromMemory>
+            //See <ImageInterface::LoadRawFromMemory>
             bool LoadRawFromMemory( const void * dataPtr, 
                                     ImageFormat format, 
                                     glm::ivec2 imageSize) override;
             
             //function: GetSize
-            //See <BackendImageInterface::GetSize>
+            //See <ImageInterface::GetSize>
             glm::ivec2 GetSize() const override;
 
             //function: GetPixelPtr
-            //See <BackendImageInterface::GetPixelPtr>
+            //See <ImageInterface::GetPixelPtr>
             void* GetPixelPtr(ImageFormat& format) const override;
             
             //function: UpdateCache
-            //See <BackendImageInterface::UpdateCache>
+            //See <ImageInterface::UpdateCache>
             void UpdateCache() override;
             
             //function: Internal_AddBackendDrawingRecord
-            //See <BackendImageInterface::Internal_AddBackendDrawingRecord>
-            void Internal_AddBackendDrawingRecord(BackendDrawingInterface* backendDrawing) override;
+            //See <ImageInterface::Internal_AddBackendDrawingRecord>
+            void Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing) override;
 
             //function: Internal_RemoveBackendDrawingRecord
-            //See <BackendImageInterface::Internal_RemoveBackendDrawingRecord>
-            void Internal_RemoveBackendDrawingRecord(BackendDrawingInterface* backendDrawing) override;
+            //See <ImageInterface::Internal_RemoveBackendDrawingRecord>
+            void Internal_RemoveBackendDrawingRecord(DrawingInterface* backendDrawing) override;
 
             //function: Clone
-            //See <BackendImageInterface::Clone>
-            BackendImageInterface* Clone() override;
+            //See <ImageInterface::Clone>
+            ImageInterface* Clone() override;
     };
 }
 

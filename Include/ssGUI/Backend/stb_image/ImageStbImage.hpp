@@ -1,7 +1,7 @@
-#ifndef SSGUI_BACKEND_IMAGE_STB_IMAGE_H
-#define SSGUI_BACKEND_IMAGE_STB_IMAGE_H
+#ifndef SSGUI_IMAGE_STB_IMAGE_HPP
+#define SSGUI_IMAGE_STB_IMAGE_HPP
 
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 
 #include <vector>
 
@@ -12,8 +12,8 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    /*class: ssGUI::Backend::BackendImageStbImage
-    For functions explainations, please see <BackendDrawingInterface>. Normally you don't need to deal with this class
+    /*class: ssGUI::Backend::ImageStbImage
+    For functions explainations, please see <DrawingInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:
     ======================== C++ =======================
@@ -24,7 +24,7 @@ namespace Backend
         uint16_t ImageWidth;                                                            //See <GetSize>
         uint16_t ImageHeight;                                                           //See <GetSize>
 
-        std::vector<ssGUI::Backend::BackendDrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
+        std::vector<ssGUI::Backend::DrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
     ====================================================
     ======================== C++ =======================
     BackendImageStbImage::BackendImageStbImage() :  ImageBuffer(nullptr),
@@ -36,7 +36,7 @@ namespace Backend
     }
     ====================================================
     */
-    class BackendImageStbImage : public BackendImageInterface
+    class ImageStbImage : public ImageInterface
     {
         private:
             uint8_t* ImageBuffer;                                                           //See <GetPixelPtr>
@@ -45,62 +45,62 @@ namespace Backend
             uint16_t ImageWidth;                                                            //See <GetSize>
             uint16_t ImageHeight;                                                           //See <GetSize>
 
-            std::vector<ssGUI::Backend::BackendDrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
+            std::vector<DrawingInterface*> LinkedBackendDrawing;     //See <AddBackendDrawingLinking>
         
-            BackendImageStbImage& operator=(BackendImageStbImage const& other);
+            ImageStbImage& operator=(ImageStbImage const& other);
 
         protected:
-            BackendImageStbImage(BackendImageStbImage const& other);
+            ImageStbImage(ImageStbImage const& other);
 
         public:
-            BackendImageStbImage();
-            ~BackendImageStbImage() override;
+            ImageStbImage();
+            ~ImageStbImage() override;
 
             //function: GetRawHandle
-            //See <BackendImageInterface::GetRawHandle>
+            //See <ImageInterface::GetRawHandle>
             void* GetRawHandle() const override;
 
             //function: IsValid
-            //See <BackendImageInterface::IsValid>
+            //See <ImageInterface::IsValid>
             bool IsValid() const override;
 
             //function: LoadFromPath
-            //See <BackendImageInterface::LoadFromPath>
+            //See <ImageInterface::LoadFromPath>
             bool LoadFromPath(std::string path) override;
 
             //function: LoadImgFileFromMemory
-            //See <BackendImageInterface::LoadImgFileFromMemory>
+            //See <ImageInterface::LoadImgFileFromMemory>
             bool LoadImgFileFromMemory(const void * dataPtr, std::size_t size) override;
 
             //function: LoadRawFromMemory
-            //See <BackendImageInterface::LoadRawFromMemory>
+            //See <ImageInterface::LoadRawFromMemory>
             bool LoadRawFromMemory( const void * dataPtr, 
                                     ImageFormat format, 
                                     glm::ivec2 imageSize) override;
             
             //function: GetSize
-            //See <BackendImageInterface::GetSize>
+            //See <ImageInterface::GetSize>
             glm::ivec2 GetSize() const override;
 
             //function: GetPixelPtr
-            //See <BackendImageInterface::GetPixelPtr>
+            //See <ImageInterface::GetPixelPtr>
             void* GetPixelPtr(ImageFormat& format) const override;
 
             //function: UpdateCache
-            //See <BackendImageInterface::UpdateCache>
+            //See <ImageInterface::UpdateCache>
             void UpdateCache() override;
             
             //function: Internal_AddBackendDrawingRecord
-            //See <BackendImageInterface::Internal_AddBackendDrawingRecord>
-            void Internal_AddBackendDrawingRecord(BackendDrawingInterface* backendDrawing) override;
+            //See <ImageInterface::Internal_AddBackendDrawingRecord>
+            void Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing) override;
             
             //function: Internal_RemoveBackendDrawingRecord
-            //See <BackendImageInterface::Internal_RemoveBackendDrawingRecord>
-            void Internal_RemoveBackendDrawingRecord(BackendDrawingInterface* backendDrawing) override;
+            //See <ImageInterface::Internal_RemoveBackendDrawingRecord>
+            void Internal_RemoveBackendDrawingRecord(DrawingInterface* backendDrawing) override;
 
             //function: Clone
-            //See <BackendImageInterface::Clone>
-            BackendImageInterface* Clone() override;
+            //See <ImageInterface::Clone>
+            ImageStbImage* Clone() override;
     };
 }
 

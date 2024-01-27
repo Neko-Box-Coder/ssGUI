@@ -31,7 +31,7 @@ namespace ssGUI
         {
         }
 
-        void Tabbable::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface*
+        void Tabbable::ConstructRenderInfo(ssGUI::Backend::DrawingInterface*
                                                drawingInterface,
                                            ssGUI::GUIObject* mainWindow,
                                            glm::vec2 mainWindowPositionOffset)
@@ -109,7 +109,7 @@ namespace ssGUI
         }
 
         void Tabbable::Internal_Update(bool isPreUpdate,
-                                       ssGUI::Backend::BackendSystemInputInterface* inputInterface,
+                                       ssGUI::Backend::SystemInputInterface* inputInterface,
                                        ssGUI::InputStatus& currentInputStatus,
                                        ssGUI::InputStatus& lastInputStatus,
                                        ssGUI::GUIObject* mainWindow)
@@ -153,7 +153,7 @@ namespace ssGUI
         }
 
         void Tabbable::Internal_Draw(bool isPreRender,
-                                     ssGUI::Backend::BackendDrawingInterface* drawingInterface,
+                                     ssGUI::Backend::DrawingInterface* drawingInterface,
                                      ssGUI::GUIObject* mainWindow,
                                      glm::vec2 mainWindowPositionOffset)
         {

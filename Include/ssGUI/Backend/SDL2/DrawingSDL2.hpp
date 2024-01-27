@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_DRAWING_TEMPLATE_HPP
-#define SSGUI_BACKEND_DRAWING_TEMPLATE_HPP
+#ifndef SSGUI_DRAWING_SDL2_HPP
+#define SSGUI_DRAWING_SDL2_HPP
 
 #include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 
@@ -9,21 +9,22 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //class: ssGUI::Backend::BackendDrawingTemplate
-    class BackendDrawingTemplate : public DrawingInterface
+    //class: ssGUI::Backend::DrawingSDL2
+    class DrawingSDL2 : public DrawingInterface
     {
         private:
-            MainWindowInterface* MainWindowInterface;
+            //TODO(NOW): Change to sdl2 main window
+            MainWindowInterface* MainWindow;
         
-            BackendDrawingTemplate& operator=(BackendDrawingTemplate const& other);
+            DrawingSDL2& operator=(DrawingSDL2 const& other);
 
         protected:
-            BackendDrawingTemplate( BackendDrawingTemplate const& other,
-                                    MainWindowInterface* otherMainWindow);
+            DrawingSDL2( DrawingSDL2 const& other,
+                                MainWindowInterface* otherMainWindow);
         
         public:
-            BackendDrawingTemplate(MainWindowInterface* mainWindowInterface);
-            ~BackendDrawingTemplate() override;
+            DrawingSDL2(MainWindowInterface* mainWindowInterface);
+            ~DrawingSDL2() override;
 
             //function: SaveState
             //See <DrawingInterface::SaveState>

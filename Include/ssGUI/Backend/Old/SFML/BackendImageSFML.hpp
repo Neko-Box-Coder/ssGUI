@@ -1,7 +1,7 @@
 #ifndef SSGUI_BACKEND_IMAGE_SFML_H
 #define SSGUI_BACKEND_IMAGE_SFML_H
 
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 #include "SFML/Graphics.hpp"
 
 namespace ssGUI
@@ -11,7 +11,7 @@ namespace ssGUI
 namespace Backend
 {
     /*class: ssGUI::Backend::BackendImageSFML
-    For functions explainations, please see <BackendImageInterface>. Normally you don't need to deal with this class
+    For functions explainations, please see <ImageInterface>. Normally you don't need to deal with this class
     
     Variables & Constructor:
     ========================== C++ ==========================
@@ -27,7 +27,7 @@ namespace Backend
     {}
     =========================================================
     */
-    class BackendImageSFML : public BackendImageInterface
+    class BackendImageSFML : public ImageInterface
     {
         private:
             sf::Texture GPUTexture; //See <GetRawHandle>
@@ -50,29 +50,29 @@ namespace Backend
             // sf::Texture* GetGPUTextureP();
 
             //function: GetRawHandle
-            //See <BackendImageInterface::GetRawHandle>
+            //See <ImageInterface::GetRawHandle>
             void* GetRawHandle() override;
 
             //function: IsValid
-            //See <BackendImageInterface::IsValid>
+            //See <ImageInterface::IsValid>
             bool IsValid() const override;
             
             //function: LoadFromPath
-            //See <BackendImageInterface::LoadFromPath>
+            //See <ImageInterface::LoadFromPath>
             //The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.
             bool LoadFromPath(std::string path) override;
             
             //function: LoadImgFileFromMemory
-            //See <BackendImageInterface::LoadImgFileFromMemory>
+            //See <ImageInterface::LoadImgFileFromMemory>
             //The supported image formats are bmp, png, tga, jpg, gif, psd, hdr and pic. Some format options are not supported, like progressive jpeg.
             bool LoadImgFileFromMemory(const void * dataPtr, std::size_t size) override;
             
             //function: LoadRawFromMemory
-            //See <BackendImageInterface::LoadRawFromMemory>
+            //See <ImageInterface::LoadRawFromMemory>
             bool LoadRawFromMemory(const void * dataPtr, ssGUI::ImageFormat format, glm::ivec2 imageSize) override;
             
             //function: GetSize
-            //See <BackendImageInterface::GetSize>
+            //See <ImageInterface::GetSize>
             glm::ivec2 GetSize() const override;
 
             //function: GetPixelPtr
@@ -86,14 +86,14 @@ namespace Backend
             
             //function: Internal_AddBackendDrawingRecord 
             //This is not used, SFML handles image memory internally
-            void Internal_AddBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void Internal_AddBackendDrawingRecord(ssGUI::Backend::DrawingInterface* backendDrawing) override;
             
             //function: Internal_RemoveBackendDrawingRecord 
             //This is not used, SFML handles image memory internally
-            void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::BackendDrawingInterface* backendDrawing) override;
+            void Internal_RemoveBackendDrawingRecord(ssGUI::Backend::DrawingInterface* backendDrawing) override;
 
             //function: Clone
-            ssGUI::Backend::BackendImageInterface* Clone() override;
+            ssGUI::Backend::ImageInterface* Clone() override;
     };
 }
 

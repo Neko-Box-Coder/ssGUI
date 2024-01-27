@@ -89,7 +89,7 @@ namespace ssGUI
 
     void Window::OnMouseDragOrResizeUpdate( ssGUI::InputStatus& inputStatus, 
                                             glm::vec2 mouseDelta, 
-                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+                                            ssGUI::Backend::SystemInputInterface* inputInterface)
     {
         ssGUI_LOG_FUNC();
         inputStatus.MouseInputBlockedData.SetBlockData(this);
@@ -176,7 +176,7 @@ namespace ssGUI
 
     void Window::BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, 
                                                 glm::vec2 currentMousePos, 
-                                                ssGUI::Backend::BackendSystemInputInterface* inputInterface)
+                                                ssGUI::Backend::SystemInputInterface* inputInterface)
     {
         ssGUI_LOG_FUNC();
         
@@ -349,7 +349,7 @@ namespace ssGUI
         // std::cout<<"drawPosition: "<<drawPosition.x<<", "<<drawPosition.y<<"\n";
     }
 
-    void Window::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Window::MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
                             ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)

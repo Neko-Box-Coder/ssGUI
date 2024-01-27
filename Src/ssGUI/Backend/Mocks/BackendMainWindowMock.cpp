@@ -36,7 +36,6 @@ namespace Backend
             UnderlyingInterface = other.UnderlyingInterface->Clone();
     }
 
-    using MainWindowInterface = ssGUI::Backend::BackendMainWindowInterface;
     BackendMainWindowMock::BackendMainWindowMock(MainWindowInterface* mainWindowInterface) :
         UnderlyingInterface(mainWindowInterface),
         WindowPosition(),
@@ -209,11 +208,11 @@ namespace Backend
         SSGUI_MOCK_PASSTHROUGH(GetTitle(outTitle));
     }
 
-    void BackendMainWindowMock::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
+    void BackendMainWindowMock::SetIcon(const ssGUI::Backend::ImageInterface& iconImage)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         SSGUI_MOCK_PASSTHROUGH(SetIcon(iconImage));
-        IconImage = &const_cast<ssGUI::Backend::BackendImageInterface&>(iconImage);
+        IconImage = &const_cast<ssGUI::Backend::ImageInterface&>(iconImage);
     }
 
     void BackendMainWindowMock::SetVisible(bool visible)
@@ -362,7 +361,7 @@ namespace Backend
         return true;
     }
     
-    BackendMainWindowInterface* BackendMainWindowMock:: Clone()
+    MainWindowInterface* BackendMainWindowMock:: Clone()
     {
         return new BackendMainWindowMock(*this);
     }

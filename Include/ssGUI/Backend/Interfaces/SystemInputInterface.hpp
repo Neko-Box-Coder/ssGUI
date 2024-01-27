@@ -1,8 +1,8 @@
-#ifndef SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE_HPP
-#define SSGUI_BACKEND_SYSTEM_INPUT_INTERFACE_HPP
+#ifndef SSGUI_SYSTEM_INPUT_INTERFACE_HPP
+#define SSGUI_SYSTEM_INPUT_INTERFACE_HPP
 
 #include "ssGUI/DataClasses/RealtimeInputInfo.hpp"
-#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+#include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
 #include "ssGUI/Enums/CursorType.hpp"
 #include "ssGUI/Enums/MouseButton.hpp"
 
@@ -16,20 +16,20 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    class BackendMainWindowInterface;
+    class MainWindowInterface;
 
-    //class: ssGUI::Backend::BackendSystemInputInterface
+    //class: ssGUI::Backend::SystemInputInterface
     //This class is the interface for getting all the inputs needed. 
     //**There will be changes regarding on how to get key presses and realtime input info soon.**
-    class BackendSystemInputInterface
+    class SystemInputInterface
     {   
         public:
-            BackendSystemInputInterface(){}
-            virtual ~BackendSystemInputInterface() = 0;
+            SystemInputInterface(){}
+            virtual ~SystemInputInterface() = 0;
             
             //function: UpdateInput
             //Poll and updates the input
-            virtual void UpdateInput(BackendMainWindowInterface** mainWindows, int count) = 0;
+            virtual void UpdateInput(MainWindowInterface** mainWindows, int count) = 0;
 
             using GenericInputs = Enums::GenericInput;
 
@@ -91,8 +91,6 @@ namespace Backend
                 return  !IsInputExistCurrentFrame(static_cast<GenericInputs>(input)) && 
                         IsInputExistLastFrame(static_cast<GenericInputs>(input));
             }
-
-            using MainWindowInterface = BackendMainWindowInterface;
 
             //function: GetLastMousePosition
             //Get mouse position relative to the mainWindow from last frame. 
@@ -185,7 +183,7 @@ namespace Backend
             The size of customCurrsor image will be resized to cursorSize if needed.
             The passed in hotspot must be smaller than cursorSize, (0, 0) as top-left corner.
             */
-            virtual void CreateCustomCursor(BackendImageInterface* customCursor, 
+            virtual void CreateCustomCursor(ImageInterface* customCursor, 
                                             std::string cursorName, 
                                             glm::ivec2 cursorSize, 
                                             glm::ivec2 hotspot) = 0;
@@ -199,7 +197,7 @@ namespace Backend
             //Copies the (resized) current custom cursor image data to customCursor image data and 
             //  returns the hotspot of the cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCurrentCustomCursor(BackendImageInterface& customCursor, 
+            virtual void GetCurrentCustomCursor(ImageInterface& customCursor, 
                                                 glm::ivec2& hotspot) const = 0;
 
             //function: GetCurrentCustomCursorName
@@ -210,7 +208,7 @@ namespace Backend
             //Copies the (resized) custom cursor image data to customCursor image data and 
             //  returns the hotspot of the cursor.
             //customCursor & hotspot are unchanged if there's no custom cursor.
-            virtual void GetCustomCursor(   BackendImageInterface& customCursor, 
+            virtual void GetCustomCursor(   ImageInterface& customCursor, 
                                             std::string cursorName, 
                                             glm::ivec2& hotspot) const = 0;
 
@@ -259,7 +257,7 @@ namespace Backend
 
             //function: SetClipboardImage
             //Sets the clipboard image
-            virtual bool SetClipboardImage(const BackendImageInterface& imgData) = 0;
+            virtual bool SetClipboardImage(const ImageInterface& imgData) = 0;
             
             //function: SetClipboardText
             //Sets the clipboard text
@@ -271,7 +269,7 @@ namespace Backend
             
             //function: GetClipboardImage
             //Gets the clipboard image. It currently only supports 32-bit RGBA image
-            virtual bool GetClipboardImage(BackendImageInterface& imgData) const = 0;
+            virtual bool GetClipboardImage(ImageInterface& imgData) const = 0;
 
             //function: GetClipboardText
             //Gets the clipboard text
@@ -287,7 +285,7 @@ namespace Backend
     };
     
     //Pure virtual destructor needs to be defined
-    inline BackendSystemInputInterface::~BackendSystemInputInterface(){}
+    inline SystemInputInterface::~SystemInputInterface(){}
 }
 
 }

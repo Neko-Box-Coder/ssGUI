@@ -18,7 +18,7 @@ namespace Backend
         OverrideObject = other.OverrideObject;
     }
 
-    BackendFontMock::BackendFontMock(BackendFontInterface* fontInterface) : 
+    BackendFontMock::BackendFontMock(FontInterface* fontInterface) : 
         UnderlyingInterface(fontInterface)
     {}
 
@@ -126,12 +126,12 @@ namespace Backend
     
     bool BackendFontMock::GetCharacterImage(char32_t charUnicode, 
                                             float charSize, 
-                                            BackendImageInterface& characterImage) const
+                                            ImageInterface& characterImage) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL((int)charUnicode, charSize, characterImage);
         CO_MODIFY_ARGS_AND_RETURN_IF_FOUND( OverrideObject,
                                             true, 
-                                            GetCharacterImage(char32_t, float, BackendImageInterface&), 
+                                            GetCharacterImage(char32_t, float, ImageInterface&), 
                                             charUnicode, 
                                             charSize, 
                                             characterImage);
@@ -151,7 +151,7 @@ namespace Backend
         return nullptr;
     }
 
-    BackendFontInterface* BackendFontMock::Clone()
+    FontInterface* BackendFontMock::Clone()
     {
         return new BackendFontMock(*this);
     }

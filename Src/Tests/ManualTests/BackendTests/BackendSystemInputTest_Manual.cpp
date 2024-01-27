@@ -1,6 +1,6 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
-#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Factory.hpp"
+#include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -11,17 +11,17 @@
 #include <thread>
 #include <vector>
 
-ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;
-ssGUI::Backend::BackendMainWindowInterface* TestWindow = nullptr;
-ssGUI::Backend::BackendSystemInputInterface* BackendInput = nullptr;
+ssGUI::Backend::DrawingInterface* BackendDrawing = nullptr;
+ssGUI::Backend::MainWindowInterface* TestWindow = nullptr;
+ssGUI::Backend::SystemInputInterface* BackendInput = nullptr;
 bool ShowInfo = true;
 
 void SetUp()
 {
-    ssGUI::Backend::BackendFactory::Initialize();
-    TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
-    BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(TestWindow);
-    BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+    ssGUI::Backend::Factory::Initialize();
+    TestWindow = ssGUI::Backend::Factory::CreateMainWindowInterface();
+    BackendDrawing = ssGUI::Backend::Factory::CreateDrawingInterface(TestWindow);
+    BackendInput = ssGUI::Backend::Factory::CreateInputInterface();
 }
 
 void CleanUp()
@@ -29,7 +29,7 @@ void CleanUp()
     ssGUI::Factory::Dispose(BackendDrawing);
     ssGUI::Factory::Dispose(TestWindow);
     ssGUI::Factory::Dispose(BackendInput);
-    ssGUI::Backend::BackendFactory::Cleanup();
+    ssGUI::Backend::Factory::Cleanup();
 }
 
 void Instructions()
@@ -200,7 +200,7 @@ void CustomCursorTest()
             return;
         }
 
-        ssGUI::Backend::BackendImageInterface* img = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
+        ssGUI::Backend::ImageInterface* img = ssGUI::Backend::Factory::CreateImageInterface();
         //if(!img->LoadFromPath(ResourcesFolderPath+"CustomCursor.png"))           //https://www.pngwing.com/en/free-png-zgwrc
         if(!img->LoadImgFileFromMemory(ssGUI_Test_sd, ssGUI_Test_sd_size))
         // if(!img.LoadFromPath(ResourcesFolderPath+"BlueCursor.png"))          //https://www.subpng.com/png-ttdxzq/

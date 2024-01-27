@@ -1,6 +1,6 @@
 #include "ssGUI/DataClasses/Font.hpp"
 
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 
 
 namespace ssGUI
@@ -12,7 +12,7 @@ namespace ssGUI
     
     Font::Font() :  BackendFont(nullptr)
     {
-        BackendFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
+        BackendFont = ssGUI::Backend::Factory::CreateFontInterface();
     }
 
     Font::~Font()
@@ -20,7 +20,7 @@ namespace ssGUI
         delete BackendFont;
     }
         
-    ssGUI::Backend::BackendFontInterface* Font::GetBackendFontInterface()
+    ssGUI::Backend::FontInterface* Font::GetFontInterface()
     {
         return BackendFont;
     }
@@ -76,7 +76,7 @@ namespace ssGUI
     {
         return BackendFont->GetCharacterImage(  charUnicode, 
                                                 charSize, 
-                                                *characterImage.GetBackendImageInterface());
+                                                *characterImage.GetImageInterface());
     }
     
     void* Font::GetRawHandle()

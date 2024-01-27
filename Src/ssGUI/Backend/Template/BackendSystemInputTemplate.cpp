@@ -22,7 +22,7 @@ namespace Backend
 
     }
     
-    void BackendSystemInputTemplate::UpdateInput(BackendMainWindowInterface** mainWindows, int count)
+    void BackendSystemInputTemplate::UpdateInput(MainWindowInterface** mainWindows, int count)
     {
 
     }
@@ -48,19 +48,19 @@ namespace Backend
     }
 
     glm::ivec2 
-    BackendSystemInputTemplate::GetLastMousePosition(BackendMainWindowInterface* mainWindow) const
+    BackendSystemInputTemplate::GetLastMousePosition(MainWindowInterface* mainWindow) const
     {
         return glm::ivec2();
     }
     
     glm::ivec2 
-    BackendSystemInputTemplate::GetCurrentMousePosition(BackendMainWindowInterface* mainWindow) const
+    BackendSystemInputTemplate::GetCurrentMousePosition(MainWindowInterface* mainWindow) const
     {
         return glm::ivec2();
     }
     
     void BackendSystemInputTemplate::SetMousePosition(  glm::ivec2 position, 
-                                                        BackendMainWindowInterface* mainWindow)
+                                                        MainWindowInterface* mainWindow)
     {
 
     }
@@ -100,7 +100,7 @@ namespace Backend
         return Enums::CursorType::NORMAL;
     }
 
-    void BackendSystemInputTemplate::CreateCustomCursor(BackendImageInterface* customCursor, 
+    void BackendSystemInputTemplate::CreateCustomCursor(ImageInterface* customCursor, 
                                                         std::string cursorName, 
                                                         glm::ivec2 cursorSize, 
                                                         glm::ivec2 hotspot)
@@ -113,7 +113,7 @@ namespace Backend
 
     }
 
-    void BackendSystemInputTemplate::GetCurrentCustomCursor(BackendImageInterface& customCursor, 
+    void BackendSystemInputTemplate::GetCurrentCustomCursor(ImageInterface& customCursor, 
                                                             glm::ivec2& hotspot) const
     {
 
@@ -124,7 +124,7 @@ namespace Backend
         return "";
     }
     
-    void BackendSystemInputTemplate::GetCustomCursor(   BackendImageInterface& customCursor, 
+    void BackendSystemInputTemplate::GetCustomCursor(   ImageInterface& customCursor, 
                                                         std::string cursorName, 
                                                         glm::ivec2& hotspot) const
     {
@@ -141,7 +141,7 @@ namespace Backend
 
     }
     
-    int BackendSystemInputTemplate::AddRawEventHandler(std::function<bool(  BackendMainWindowInterface*, 
+    int BackendSystemInputTemplate::AddRawEventHandler(std::function<bool(  MainWindowInterface*, 
                                                                             void*)> handler)
     {
         return 0;
@@ -172,7 +172,7 @@ namespace Backend
         return true;
     }
 
-    bool BackendSystemInputTemplate::SetClipboardImage(const BackendImageInterface& imgData)
+    bool BackendSystemInputTemplate::SetClipboardImage(const ImageInterface& imgData)
     {
         return true;
     }
@@ -188,7 +188,7 @@ namespace Backend
     }
 
     
-    bool BackendSystemInputTemplate::GetClipboardImage(BackendImageInterface& imgData) const
+    bool BackendSystemInputTemplate::GetClipboardImage(ImageInterface& imgData) const
     {
         return true;
     }

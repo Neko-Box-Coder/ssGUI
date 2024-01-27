@@ -22,7 +22,7 @@ namespace Extensions
     void TemplateExtension::ConstructRenderInfo()
     {}
 
-    void TemplateExtension::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+    void TemplateExtension::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, 
                                                 ssGUI::GUIObject* mainWindow, 
                                                 glm::vec2 mainWindowPositionOffset)
     {}
@@ -40,7 +40,7 @@ namespace Extensions
     }
     
     void TemplateExtension::Internal_Update(bool isPreUpdate, 
-                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::Backend::SystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
                                             ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow)
@@ -58,7 +58,7 @@ namespace Extensions
     }
 
     void TemplateExtension::Internal_Draw(  bool isPreRender, 
-                                            ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                            ssGUI::Backend::DrawingInterface* drawingInterface, 
                                             ssGUI::GUIObject* mainWindow, 
                                             glm::vec2 mainWindowPositionOffset)
     {

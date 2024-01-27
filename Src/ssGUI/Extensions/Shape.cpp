@@ -211,7 +211,7 @@ namespace Extensions
         }
     }
 
-    void Shape::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void Shape::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {       
         //Otherwise just call this
         ConstructRenderInfo();
@@ -580,7 +580,7 @@ namespace Extensions
         
     //Extension methods
     void Shape::Internal_Update(bool isPreUpdate, 
-                                ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
@@ -591,7 +591,7 @@ namespace Extensions
             return;
     }
 
-    void Shape::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void Shape::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
         ssGUI_LOG_FUNC();
         

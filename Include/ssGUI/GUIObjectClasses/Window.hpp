@@ -108,12 +108,12 @@ namespace ssGUI
 
             virtual void SetWindowDragState(ssGUI::Enums::WindowDragState dragState);
             virtual void OnMouseDownUpdate(glm::vec2 currentMousePos, ssGUI::InputStatus& inputStatus);
-            virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& inputStatus, glm::vec2 mouseDelta, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
-            virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, glm::vec2 currentMousePos, ssGUI::Backend::BackendSystemInputInterface* inputInterface);
+            virtual void OnMouseDragOrResizeUpdate(ssGUI::InputStatus& inputStatus, glm::vec2 mouseDelta, ssGUI::Backend::SystemInputInterface* inputInterface);
+            virtual void BlockMouseInputAndUpdateCursor(ssGUI::InputStatus& inputStatus, glm::vec2 currentMousePos, ssGUI::Backend::SystemInputInterface* inputInterface);
 
             Window(Window const& other);
             virtual void ConstructRenderInfo() override;
-            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;

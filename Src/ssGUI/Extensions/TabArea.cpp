@@ -503,7 +503,7 @@ namespace ssGUI
             }
         }
 
-        bool TabArea::TabbedIfNeeded(ssGUI::Backend::BackendSystemInputInterface*
+        bool TabArea::TabbedIfNeeded(ssGUI::Backend::SystemInputInterface*
                                                  inputInterface,
                                              ssGUI::InputStatus& currentInputStatus,
                                              ssGUI::InputStatus& lastInputStatus,
@@ -794,7 +794,7 @@ namespace ssGUI
         {
         }
 
-        void TabArea::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface,
+        void TabArea::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface,
                                           ssGUI::GUIObject* mainWindow,
                                           glm::vec2 mainWindowPositionOffset)
         {
@@ -1400,7 +1400,7 @@ namespace ssGUI
     while(0)
 
         void TabArea::Internal_Update(bool isPreUpdate,
-                                      ssGUI::Backend::BackendSystemInputInterface* inputInterface,
+                                      ssGUI::Backend::SystemInputInterface* inputInterface,
                                       ssGUI::InputStatus& currentInputStatus,
                                       ssGUI::InputStatus& lastInputStatus,
                                       ssGUI::GUIObject* mainWindow)
@@ -1606,7 +1606,7 @@ namespace ssGUI
         }
 
         void TabArea::Internal_Draw(bool isPreRender,
-                                    ssGUI::Backend::BackendDrawingInterface* drawingInterface,
+                                    ssGUI::Backend::DrawingInterface* drawingInterface,
                                     ssGUI::GUIObject* mainWindow,
                                     glm::vec2 mainWindowPositionOffset)
         {

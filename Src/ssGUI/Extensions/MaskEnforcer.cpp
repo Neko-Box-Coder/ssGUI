@@ -139,7 +139,7 @@ namespace Extensions
         }
     }
 
-    void MaskEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void MaskEnforcer::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         ConstructRenderInfo();
     }
@@ -255,7 +255,7 @@ namespace Extensions
         
     //Extension methods
     void MaskEnforcer::Internal_Update( bool isPreUpdate, 
-                                        ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::Backend::SystemInputInterface* inputInterface, 
                                         ssGUI::InputStatus& currentInputStatus, 
                                         ssGUI::InputStatus& lastInputStatus, 
                                         ssGUI::GUIObject* mainWindow)
@@ -322,7 +322,7 @@ namespace Extensions
         }
     }
 
-    void MaskEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void MaskEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {        
         ssGUI_LOG_FUNC();
         

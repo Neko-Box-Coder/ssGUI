@@ -1,7 +1,7 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_SDL2_HPP
-#define SSGUI_BACKEND_MAIN_WINDOW_SDL2_HPP
+#ifndef SSGUI_MAIN_WINDOW_SDL2_HPP
+#define SSGUI_MAIN_WINDOW_SDL2_HPP
 
-#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+#include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
 
 #include "SDL.h"
 
@@ -11,10 +11,10 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    class BackendDrawingSDL2;
+    class DrawingSDL2;
 
-    //class: ssGUI::Backend::BackendMainWindowSDL2
-    class BackendMainWindowSDL2 : public BackendMainWindowInterface
+    //class: ssGUI::Backend::MainWindowSDL2
+    class MainWindowSDL2 : public MainWindowInterface
     {
         public:
             struct SDL_RawHandle
@@ -33,176 +33,176 @@ namespace Backend
             bool WindowHidden;
             bool WindowVsync;
             bool WindowResizable;
-            BackendDrawingSDL2* BackendDrawing;
+            DrawingSDL2* BackendDrawing;
             Enums::WindowMode CurrentWindowMode;
             SDL_Renderer* CurrentSDL_Renderer;
             mutable SDL_RawHandle CurrentSDLHandle;
             
-            std::vector<std::function<void(BackendMainWindowInterface* mainWindow)>> OnCloseCallback;
-            std::vector<std::function<void( BackendMainWindowInterface* mainWindow, 
+            std::vector<std::function<void(MainWindowInterface* mainWindow)>> OnCloseCallback;
+            std::vector<std::function<void( MainWindowInterface* mainWindow, 
                                             bool focused)>> ExternalFocusChangedCallback;
         
-            BackendMainWindowSDL2& operator=(BackendMainWindowSDL2 const& other);
+            MainWindowSDL2& operator=(MainWindowSDL2 const& other);
             
             bool CreateWindow();
             void DestroyWindow();
 
         protected:
-            BackendMainWindowSDL2(BackendMainWindowSDL2 const& other);
+            MainWindowSDL2(MainWindowSDL2 const& other);
 
         public:
-            BackendMainWindowSDL2();
-            ~BackendMainWindowSDL2() override;
+            MainWindowSDL2();
+            ~MainWindowSDL2() override;
 
             //function: SetDPIScaling
             glm::vec2 GetDPIScaling() const;
 
             //function: SetWindowPosition
-            //See <BackendMainWindowInterface::SetWindowPosition>
+            //See <MainWindowInterface::SetWindowPosition>
             void SetWindowPosition(glm::ivec2 pos) override;
 
             //function: GetWindowPosition
-            //See <BackendMainWindowInterface::GetWindowPosition>
+            //See <MainWindowInterface::GetWindowPosition>
             glm::ivec2 GetWindowPosition() const override;
 
             //function: GetDecorationOffsets
-            //See <BackendMainWindowInterface::GetDecorationOffsets>
+            //See <MainWindowInterface::GetDecorationOffsets>
             void GetDecorationOffsets(glm::ivec2& topLeft, glm::ivec2& bottomRight) const override;
 
             //function: SetWindowSize
-            //See <BackendMainWindowInterface::SetWindowSize>
+            //See <MainWindowInterface::SetWindowSize>
             void SetWindowSize(glm::ivec2 size) override;
 
             //function: GetWindowSize
-            //See <BackendMainWindowInterface::GetWindowSize>
+            //See <MainWindowInterface::GetWindowSize>
             glm::ivec2 GetWindowSize() const override;
 
             //function: SetRenderSize
-            //See <BackendMainWindowInterface::SetRenderSize>
+            //See <MainWindowInterface::SetRenderSize>
             void SetRenderSize(glm::ivec2 size) override;
 
             //function: GetRenderSize
-            //See <BackendMainWindowInterface::GetRenderSize>
+            //See <MainWindowInterface::GetRenderSize>
             glm::ivec2 GetRenderSize() const override;
 
             //function: IsClosed
-            //See <BackendMainWindowInterface::IsClosed>
+            //See <MainWindowInterface::IsClosed>
             bool IsClosed() const override;
 
             //function: Close
-            //See <BackendMainWindowInterface::Close>
+            //See <MainWindowInterface::Close>
             void Close() override;
             
             //function: AbortClosing
-            //See <BackendMainWindowInterface::AbortClosing>
+            //See <MainWindowInterface::AbortClosing>
             void AbortClosing() override;
 
             //function: AddOnCloseEvent
-            //See <BackendMainWindowInterface::AddOnCloseEvent>
-            int AddOnCloseEvent(std::function<void(BackendMainWindowInterface* mainWindow)> func) override;
+            //See <MainWindowInterface::AddOnCloseEvent>
+            int AddOnCloseEvent(std::function<void(MainWindowInterface* mainWindow)> func) override;
 
             //function: RemoveOnCloseEvent
-            //See <BackendMainWindowInterface::RemoveOnCloseEvent>
+            //See <MainWindowInterface::RemoveOnCloseEvent>
             void RemoveOnCloseEvent(int id) override;
 
             //function: SetTitle
-            //See <BackendMainWindowInterface::SetTitle>
+            //See <MainWindowInterface::SetTitle>
             void SetTitle(std::u32string title) override;
 
             //function: SetTitle
-            //See <BackendMainWindowInterface::SetTitle>
+            //See <MainWindowInterface::SetTitle>
             void SetTitle(std::string title) override;
 
             //function: GetTitle
-            //See <BackendMainWindowInterface::GetTitle>
+            //See <MainWindowInterface::GetTitle>
             void GetTitle(std::u32string& title) const override;
 
             //function: GetTitle
-            //See <BackendMainWindowInterface::GetTitle>
+            //See <MainWindowInterface::GetTitle>
             void GetTitle(std::string& title) const override;
 
             //function: SetIcon
-            //See <BackendMainWindowInterface::SetIcon>
-            void SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage) override;
+            //See <MainWindowInterface::SetIcon>
+            void SetIcon(const ImageInterface& iconImage) override;
 
             //function: SetVisible
-            //See <BackendMainWindowInterface::SetVisible>
+            //See <MainWindowInterface::SetVisible>
             void SetVisible(bool visible) override;
 
             //function: IsVisible
-            //See <BackendMainWindowInterface::IsVisible>
+            //See <MainWindowInterface::IsVisible>
             bool IsVisible() const override;
 
             //function: SetVSync
-            //See <BackendMainWindowInterface::SetVSync>
+            //See <MainWindowInterface::SetVSync>
             void SetVSync(bool vSync) override;
 
             //function: IsVSync
-            //See <BackendMainWindowInterface::IsVSync>
+            //See <MainWindowInterface::IsVSync>
             bool IsVSync() const override;
 
             //function: SetFocus
-            //See <BackendMainWindowInterface::SetFocus>
+            //See <MainWindowInterface::SetFocus>
             void SetFocus(bool focus, bool externalByUser) override;
             
             //function: IsFocused
-            //See <BackendMainWindowInterface::IsFocused>
+            //See <MainWindowInterface::IsFocused>
             bool IsFocused() const override;
 
             //function: AddFocusChangedByUserEvent
-            //See <BackendMainWindowInterface::AddFocusChangedByUserEvent>
-            int AddFocusChangedByUserEvent(std::function<void(  BackendMainWindowInterface* mainWindow,
+            //See <MainWindowInterface::AddFocusChangedByUserEvent>
+            int AddFocusChangedByUserEvent(std::function<void(  MainWindowInterface* mainWindow,
                                                                 bool focused)> func) override;
 
             //function: RemoveFocusChangedByUserEvent
-            //See <BackendMainWindowInterface::RemoveFocusChangedByUserEvent>
+            //See <MainWindowInterface::RemoveFocusChangedByUserEvent>
             void RemoveFocusChangedByUserEvent(int id) override;
 
             //function: SetAntiAliasingLevel
-            //See <BackendMainWindowInterface::SetAntiAliasingLevel>
+            //See <MainWindowInterface::SetAntiAliasingLevel>
             void SetAntiAliasingLevel(int level) override;
 
             //function: GetAntiAliasingLevel
-            //See <BackendMainWindowInterface::GetAntiAliasingLevel>
+            //See <MainWindowInterface::GetAntiAliasingLevel>
             int GetAntiAliasingLevel() const override;
 
             //function: SetResizable
-            //See <BackendMainWindowInterface::SetResizable>
+            //See <MainWindowInterface::SetResizable>
             void SetResizable(bool resizable) override;
 
             //function: IsResizable
-            //See <BackendMainWindowInterface::IsResizable>
+            //See <MainWindowInterface::IsResizable>
             bool IsResizable() const override;
 
             //function: SetDecorationOptions
-            //See <BackendMainWindowInterface::SetDecorationOptions>
+            //See <MainWindowInterface::SetDecorationOptions>
             bool SetDecorationOptions(Enums::WindowDecorationOptions options) override;
             
             //function: GetDecorationOptions
-            //See <BackendMainWindowInterface::GetDecorationOptions>
+            //See <MainWindowInterface::GetDecorationOptions>
             Enums::WindowDecorationOptions GetDecorationOptions() const override;
 
             //function: SetWindowMode
-            //See <BackendMainWindowInterface::SetWindowMode>
+            //See <MainWindowInterface::SetWindowMode>
             void SetWindowMode(Enums::WindowMode windowMode) override;
 
             //function: GetWindowMode
-            //See <BackendMainWindowInterface::GetWindowMode>
+            //See <MainWindowInterface::GetWindowMode>
             Enums::WindowMode GetWindowMode() const override;
 
             //function: SetDrawingContext
-            //See <BackendMainWindowInterface::SetDrawingContext>
+            //See <MainWindowInterface::SetDrawingContext>
             bool SetDrawingContext() override;
             
             //function: Clone
-            //See <BackendMainWindowInterface::Clone>
-            BackendMainWindowInterface* Clone() override;
+            //See <MainWindowInterface::Clone>
+            MainWindowInterface* Clone() override;
 
             //function: GetRawHandle
-            //See <BackendMainWindowInterface::GetRawHandle>
+            //See <MainWindowInterface::GetRawHandle>
             void* GetRawHandle() const override;
             
-            void Internal_SetBackendDrawing(BackendDrawingSDL2* backendDrawing);
+            void Internal_SetBackendDrawing(DrawingSDL2* backendDrawing);
             
             SDL_Renderer* Internal_GetSDLRenderer() const;
     };

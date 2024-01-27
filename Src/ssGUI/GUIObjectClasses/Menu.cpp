@@ -31,7 +31,7 @@ namespace ssGUI
         currentMenu->SetEnabled(false);        
     }
 
-    void Menu::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Menu::MainLogic(   ssGUI::Backend::SystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
                             ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)

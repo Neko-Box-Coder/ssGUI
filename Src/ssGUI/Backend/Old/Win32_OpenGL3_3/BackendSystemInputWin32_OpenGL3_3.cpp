@@ -134,12 +134,12 @@ namespace Backend
                                                                                 RawEventHandlers()
     {
         StartTime = std::chrono::high_resolution_clock::now();
-        ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
+        ssGUI::Backend::BackendManager::AddInputInterface(static_cast<ssGUI::Backend::SystemInputInterface*>(this));
     }
 
     BackendSystemInputWin32_OpenGL3_3::~BackendSystemInputWin32_OpenGL3_3()
     {
-        ssGUI::Backend::BackendManager::RemoveInputInterface(static_cast<ssGUI::Backend::BackendSystemInputInterface*>(this));
+        ssGUI::Backend::BackendManager::RemoveInputInterface(static_cast<ssGUI::Backend::SystemInputInterface*>(this));
     }
 
     bool BackendSystemInputWin32_OpenGL3_3::HandleMessage(MSG msg)
@@ -302,7 +302,7 @@ namespace Backend
         return false;
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::UpdateInput(/*std::vector<ssGUI::Backend::BackendMainWindowInterface*>& mainWindows*/)
+    void BackendSystemInputWin32_OpenGL3_3::UpdateInput(/*std::vector<ssGUI::Backend::MainWindowInterface*>& mainWindows*/)
     {    
         MSG msg = { };
 
@@ -351,7 +351,7 @@ namespace Backend
         return std::find(CurrentKeyPresses.begin(), CurrentKeyPresses.end(), input) != CurrentKeyPresses.end();
     }
 
-    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetLastMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
+    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetLastMousePosition(ssGUI::Backend::MainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
             return LastMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
@@ -359,7 +359,7 @@ namespace Backend
             return LastMousePosition;
     }
 
-    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetCurrentMousePosition(ssGUI::Backend::BackendMainWindowInterface* mainWindow) const
+    glm::ivec2 BackendSystemInputWin32_OpenGL3_3::GetCurrentMousePosition(ssGUI::Backend::MainWindowInterface* mainWindow) const
     {
         if(mainWindow != nullptr)
             return CurrentMousePosition - mainWindow->GetWindowPosition() - mainWindow->GetPositionOffset();
@@ -367,7 +367,7 @@ namespace Backend
             return CurrentMousePosition;
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::Backend::BackendMainWindowInterface* mainWindow)
+    void BackendSystemInputWin32_OpenGL3_3::SetMousePosition(glm::ivec2 position, ssGUI::Backend::MainWindowInterface* mainWindow)
     {
         //Screen pos
         if(mainWindow == nullptr)
@@ -445,7 +445,7 @@ namespace Backend
     }
 
     //TODO: Store the hotspot and also shouldn't be setting the cursor 
-    void BackendSystemInputWin32_OpenGL3_3::CreateCustomCursor(ssGUI::Backend::BackendImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
+    void BackendSystemInputWin32_OpenGL3_3::CreateCustomCursor(ssGUI::Backend::ImageInterface* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
         ssGUI_LOG_FUNC();
 
@@ -540,7 +540,7 @@ namespace Backend
         CurrentCustomCursor = cursorName;
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, glm::ivec2& hotspot)
+    void BackendSystemInputWin32_OpenGL3_3::GetCurrentCustomCursor(ssGUI::Backend::ImageInterface& customCursor, glm::ivec2& hotspot)
     {        
         if(CurrentCustomCursor.empty())
             return;
@@ -553,7 +553,7 @@ namespace Backend
         return CurrentCustomCursor;
     }
 
-    void BackendSystemInputWin32_OpenGL3_3::GetCustomCursor(ssGUI::Backend::BackendImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot)
+    void BackendSystemInputWin32_OpenGL3_3::GetCustomCursor(ssGUI::Backend::ImageInterface& customCursor, std::string cursorName, glm::ivec2& hotspot)
     {
         if(CustomCursors.find(cursorName) == CustomCursors.end())
             return;
@@ -666,7 +666,7 @@ namespace Backend
         }
     }
     
-    int BackendSystemInputWin32_OpenGL3_3::AddRawEventHandler(std::function<bool(ssGUI::Backend::BackendMainWindowInterface*, void*)> handler)
+    int BackendSystemInputWin32_OpenGL3_3::AddRawEventHandler(std::function<bool(ssGUI::Backend::MainWindowInterface*, void*)> handler)
     {
         RawEventHandlers.push_back(handler);
         return RawEventHandlers.size() - 1;
@@ -701,7 +701,7 @@ namespace Backend
         return clip::has(clip::image_format());
     }
 
-    bool BackendSystemInputWin32_OpenGL3_3::SetClipboardImage(const ssGUI::Backend::BackendImageInterface& imgData)
+    bool BackendSystemInputWin32_OpenGL3_3::SetClipboardImage(const ssGUI::Backend::ImageInterface& imgData)
     {
         if(!imgData.IsValid())
             return false;
@@ -763,7 +763,7 @@ namespace Backend
         return clip::set_text(converter.to_bytes(str));
     }
             
-    bool BackendSystemInputWin32_OpenGL3_3::GetClipboardImage(ssGUI::Backend::BackendImageInterface& imgData)
+    bool BackendSystemInputWin32_OpenGL3_3::GetClipboardImage(ssGUI::Backend::ImageInterface& imgData)
     {
         clip::image img;
 

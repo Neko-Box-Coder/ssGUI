@@ -1,5 +1,5 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
-#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
+#include "ssGUI/Backend/Factory.hpp"
+#include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssTest.hpp"
@@ -12,9 +12,9 @@
     #include "ssGUI/Backend/Mocks/BackendMainWindowMock.hpp"
 #endif
 
-ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;
-ssGUI::Backend::BackendMainWindowInterface* TestWindow = nullptr;
-ssGUI::Backend::BackendSystemInputInterface* BackendInputs = nullptr;
+ssGUI::Backend::DrawingInterface* BackendDrawing = nullptr;
+ssGUI::Backend::MainWindowInterface* TestWindow = nullptr;
+ssGUI::Backend::SystemInputInterface* BackendInputs = nullptr;
 
 int main()
 {
@@ -22,10 +22,10 @@ int main()
 
     ssTEST_SET_UP
     {
-        ssGUI::Backend::BackendFactory::Initialize();
-        TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
-        BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(TestWindow);
-        BackendInputs = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+        ssGUI::Backend::Factory::Initialize();
+        TestWindow = ssGUI::Backend::Factory::CreateMainWindowInterface();
+        BackendDrawing = ssGUI::Backend::Factory::CreateDrawingInterface(TestWindow);
+        BackendInputs = ssGUI::Backend::Factory::CreateInputInterface();
         BackendInputs->UpdateInput(&TestWindow, 1);
     };
 
@@ -34,7 +34,7 @@ int main()
         ssGUI::Factory::Dispose(BackendDrawing);
         ssGUI::Factory::Dispose(TestWindow);
         ssGUI::Factory::Dispose(BackendInputs);
-        ssGUI::Backend::BackendFactory::Cleanup();
+        ssGUI::Backend::Factory::Cleanup();
     };
 
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
@@ -121,7 +121,7 @@ int main()
         bool valid = false;
         int id =    TestWindow->AddOnCloseEvent
                     ( 
-                        [&](ssGUI::Backend::BackendMainWindowInterface* mainWindow)
+                        [&](ssGUI::Backend::MainWindowInterface* mainWindow)
                         {
                             valid = TestWindow == mainWindow;
                             TestWindow->AbortClosing();

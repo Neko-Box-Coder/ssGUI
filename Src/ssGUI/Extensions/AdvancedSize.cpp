@@ -28,7 +28,7 @@ namespace Extensions
     void AdvancedSize::ConstructRenderInfo()
     {}
 
-    void AdvancedSize::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void AdvancedSize::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     const std::string AdvancedSize::EXTENSION_NAME = "Advanced Size";
@@ -101,7 +101,7 @@ namespace Extensions
     }
 
     void AdvancedSize::Internal_Update( bool isPreUpdate, 
-                                        ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                        ssGUI::Backend::SystemInputInterface* inputInterface, 
                                         ssGUI::InputStatus& currentInputStatus, 
                                         ssGUI::InputStatus& lastInputStatus, 
                                         ssGUI::GUIObject* mainWindow)
@@ -136,7 +136,7 @@ namespace Extensions
         SettingsChanged = false;
     }
 
-    void AdvancedSize::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void AdvancedSize::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //Nothing to draw
     }

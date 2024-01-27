@@ -61,10 +61,10 @@ namespace ssGUI
             
             virtual void CloneExtensionsAndEventCallbacks(ssGUI::GUIObject* clonedObj);
             
-            virtual void CheckRightClickMenu(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void CheckRightClickMenu(   ssGUI::Backend::SystemInputInterface* inputInterface, 
                                                 ssGUI::InputStatus& inputStatus, 
                                                 ssGUI::GUIObject* mainWindow);
-            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow);
@@ -110,13 +110,13 @@ namespace ssGUI
 
             //function: Internal_Draw
             //(Internal ssGUI function) Draw function called by <ssGUIManager>
-            virtual void Internal_Draw( ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+            virtual void Internal_Draw( ssGUI::Backend::DrawingInterface* drawingInterface, 
                                         ssGUI::GUIObject* mainWindow, 
                                         glm::vec2 mainWindowPositionOffset);
             
             //function: Internal_Update
             //(Internal ssGUI function) Update function called by <ssGUIManager>
-            virtual void Internal_Update(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void Internal_Update(   ssGUI::Backend::SystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
                                             ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow);

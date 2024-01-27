@@ -7,84 +7,84 @@ namespace ssGUI
 namespace Backend
 {
     int BackendManager::MainWindowCount = 0;
-    std::vector<BackendDrawingInterface*> BackendManager::BackendDrawingInterfaces;
-    std::vector<BackendMainWindowInterface*> BackendManager::BackendMainWindowInterfaces;
-    BackendSystemInputInterface* BackendManager::CurrentBackendSystemInputInterface = nullptr;
+    std::vector<DrawingInterface*> BackendManager::DrawingInterfaces;
+    std::vector<MainWindowInterface*> BackendManager::MainWindowInterfaces;
+    SystemInputInterface* BackendManager::CurrentSystemInputInterface = nullptr;
     
-    void BackendManager::AddDrawingInterface(BackendDrawingInterface* backendDrawing)
+    void BackendManager::AddDrawingInterface(DrawingInterface* backendDrawing)
     {
-        BackendDrawingInterfaces.push_back(backendDrawing);
+        DrawingInterfaces.push_back(backendDrawing);
     }
 
-    void BackendManager::RemoveDrawingInterface(BackendDrawingInterface* backendDrawing)
+    void BackendManager::RemoveDrawingInterface(DrawingInterface* backendDrawing)
     {
-        for(int i = 0; i < BackendDrawingInterfaces.size(); i++)
+        for(int i = 0; i < DrawingInterfaces.size(); i++)
         {
-            if(BackendDrawingInterfaces.at(i) == backendDrawing)
+            if(DrawingInterfaces.at(i) == backendDrawing)
             {
-                BackendDrawingInterfaces.erase(BackendDrawingInterfaces.begin() + i);
+                DrawingInterfaces.erase(DrawingInterfaces.begin() + i);
             }
         }
     }
 
-    BackendDrawingInterface* BackendManager::GetDrawingInterface(int index)
+    DrawingInterface* BackendManager::GetDrawingInterface(int index)
     {
-        return BackendDrawingInterfaces.at(index);
+        return DrawingInterfaces.at(index);
     }
 
-    int BackendManager::GetDrawingInterfaceIndex(BackendDrawingInterface* backendDrawing)
+    int BackendManager::GetDrawingInterfaceIndex(DrawingInterface* backendDrawing)
     {
-        for(int i = 0; i < BackendDrawingInterfaces.size(); i++)
+        for(int i = 0; i < DrawingInterfaces.size(); i++)
         {
-            if(BackendDrawingInterfaces.at(i) == backendDrawing)
+            if(DrawingInterfaces.at(i) == backendDrawing)
                 return i;
         }
 
         return -1;
     }
 
-    void BackendManager::AddInputInterface(BackendSystemInputInterface* backendInput)
+    void BackendManager::AddInputInterface(SystemInputInterface* backendInput)
     {
-        CurrentBackendSystemInputInterface = backendInput;
+        CurrentSystemInputInterface = backendInput;
     }
 
-    void BackendManager::RemoveInputInterface(BackendSystemInputInterface* backendInput)
+    void BackendManager::RemoveInputInterface(SystemInputInterface* backendInput)
     {
-        CurrentBackendSystemInputInterface = nullptr;
+        CurrentSystemInputInterface = nullptr;
     }
 
-    BackendSystemInputInterface* BackendManager::GetInputInterface()
+    SystemInputInterface* BackendManager::GetInputInterface()
     {
-        return CurrentBackendSystemInputInterface;
+        return CurrentSystemInputInterface;
     }
 
-    void BackendManager::AddMainWindowInterface(BackendMainWindowInterface* backendMainWindow)
+    void BackendManager::AddMainWindowInterface(MainWindowInterface* backendMainWindow)
     {
-        BackendMainWindowInterfaces.push_back(backendMainWindow);
+        MainWindowInterfaces.push_back(backendMainWindow);
     }
 
-    void BackendManager::RemoveMainWindowInterface(BackendMainWindowInterface* backendMainWindow)
+    void BackendManager::RemoveMainWindowInterface(MainWindowInterface* backendMainWindow)
     {
-        for(int i = 0; i < BackendMainWindowInterfaces.size(); i++)
+        for(int i = 0; i < MainWindowInterfaces.size(); i++)
         {
-            if(BackendMainWindowInterfaces.at(i) == backendMainWindow)
+            if(MainWindowInterfaces.at(i) == backendMainWindow)
             {
-                BackendMainWindowInterfaces.erase(BackendMainWindowInterfaces.begin() + i);
+                MainWindowInterfaces.erase(MainWindowInterfaces.begin() + i);
             }
         }
     }
 
-    BackendMainWindowInterface* BackendManager::GetMainWindowInterface(int index)
+    MainWindowInterface* BackendManager::GetMainWindowInterface(int index)
     {
-        assert(index >= 0 && index < BackendMainWindowInterfaces.size());
-        return BackendMainWindowInterfaces.at(index);
+        assert(index >= 0 && index < MainWindowInterfaces.size());
+        return MainWindowInterfaces.at(index);
     }
 
-    int BackendManager::GetMainWindowInterfaceIndex(BackendMainWindowInterface* backendMainWindow)
+    int BackendManager::GetMainWindowInterfaceIndex(MainWindowInterface* backendMainWindow)
     {
-        for(int i = 0; i < BackendMainWindowInterfaces.size(); i++)
+        for(int i = 0; i < MainWindowInterfaces.size(); i++)
         {
-            if(BackendMainWindowInterfaces.at(i) == backendMainWindow)
+            if(MainWindowInterfaces.at(i) == backendMainWindow)
                 return i;
         }
 
@@ -93,7 +93,7 @@ namespace Backend
 
     int BackendManager::GetMainWindowCount()
     {
-        return BackendMainWindowInterfaces.size();
+        return MainWindowInterfaces.size();
     }
 }
 

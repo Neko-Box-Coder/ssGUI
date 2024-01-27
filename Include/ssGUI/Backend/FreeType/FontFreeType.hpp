@@ -1,7 +1,7 @@
-#ifndef SSGUI_BACKEND_FONT_FREE_TYPE_H
-#define SSGUI_BACKEND_FONT_FREE_TYPE_H
+#ifndef SSGUI_FONT_FREE_TYPE_HPP
+#define SSGUI_FONT_FREE_TYPE_HPP
 
-#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/FontInterface.hpp"
 
 #include "ft2build.h" 
 #include "ssGUI/HelperClasses/StaticDefaultWrapper.hpp"
@@ -28,8 +28,8 @@ namespace Backend
         FT_Int32 FontFlags = 0;
     };
 
-    //class: ssGUI::Backend::BackendFontFreeType
-    class BackendFontFreeType : public BackendFontInterface
+    //class: ssGUI::Backend::FontFreeType
+    class FontFreeType : public FontInterface
     {   
         private:
             static StaticDefaultWrapper<FT_Library> FreeTypeLib;
@@ -47,25 +47,25 @@ namespace Backend
             
 
             bool SetSizeIfDifferent(float size) const;
-            BackendFontFreeType& operator=(BackendFontFreeType const& other);
+            FontFreeType& operator=(FontFreeType const& other);
 
         protected:
-            BackendFontFreeType(BackendFontFreeType const& other);
+            FontFreeType(FontFreeType const& other);
 
         public:
-            BackendFontFreeType();
-            ~BackendFontFreeType() override;
+            FontFreeType();
+            ~FontFreeType() override;
             
             //function: GetCurrentGlyph
             //This returns the loaded freetype glyph
             FT_GlyphSlot GetCurrentGlyph() const;
 
             //function: IsValid
-            //See <BackendFontInterface::IsValid>
+            //See <FontInterface::IsValid>
             bool IsValid() const override;
 
             //function: GetCharacterRenderInfo
-            //See <BackendFontInterface::GetCharacterRenderInfo>
+            //See <FontInterface::GetCharacterRenderInfo>
             CharacterRenderInfo GetCharacterRenderInfo( char32_t charUnicode, 
                                                         float charSize) const override;
             
@@ -73,11 +73,11 @@ namespace Backend
             //For fixed size font, this will return the closest fixed size font 
             //and populate the TargetSizeMultiplier field.
             //
-            //See <BackendFontInterface::IsCharacterSupported>
+            //See <FontInterface::IsCharacterSupported>
             bool IsCharacterSupported(char32_t charUnicode) const override;
             
             //function: GetKerning
-            //See <BackendFontInterface::GetKerning>
+            //See <FontInterface::GetKerning>
             float GetKerning(   char32_t charUnicode, 
                                 char32_t secondCharUnicode, 
                                 float charSize) const override;
@@ -85,11 +85,11 @@ namespace Backend
             //function: GetLineSpacing
             //For fixed size font, 
             //this will return always return the corresponding line spacing to charSize
-            //See <BackendFontInterface::GetLineSpacing>
+            //See <FontInterface::GetLineSpacing>
             float GetLineSpacing(float charSize) const override;
             
             //function: GetUnderlineOffset
-            //See <BackendFontInterface::GetUnderlineOffset>
+            //See <FontInterface::GetUnderlineOffset>
             //For fixed size font, 
             //this will return always return the corresponding underline offset to charSize
             float GetUnderlineOffset(float charSize) const override;
@@ -97,27 +97,27 @@ namespace Backend
             //function: GetUnderlineThickness
             //For fixed size font, 
             //this will return always return the corresponding underline thickness to charSize
-            //See <BackendFontInterface::GetUnderlineThickness>
+            //See <FontInterface::GetUnderlineThickness>
             float GetUnderlineThickness(float charSize) const override;
 
             //function: LoadFromPath
-            //See <BackendFontInterface::LoadFromPath>
+            //See <FontInterface::LoadFromPath>
             bool LoadFromPath(std::string path) override;
 
             //function: LoadFromMemory
             //This mainly supports and tested on TTF, other font formats are not tested.
-            //See <BackendFontInterface::LoadFromMemory>
+            //See <FontInterface::LoadFromMemory>
             bool LoadFromMemory(const void* dataPtr, int lengthInBytes) override;
 
             //function: GetFixedAvailableFontSizes
-            //See <BackendFontInterface::GetFixedAvailableFontSizes>
+            //See <FontInterface::GetFixedAvailableFontSizes>
             bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const override;
 
             //function: GetCharacterImage
-            //See <BackendFontInterface::GetCharacterImage>
+            //See <FontInterface::GetCharacterImage>
             bool GetCharacterImage( char32_t charUnicode, 
                                     float charSize, 
-                                    BackendImageInterface& characterImage) const override;
+                                    ImageInterface& characterImage) const override;
 
             //function: GetRawHandle
             void* GetRawHandle() const override;
@@ -128,8 +128,8 @@ namespace Backend
             //https://gitlab.freedesktop.org/freetype/freetype/-/issues/1040
             //
             //Therefore, this will just load the same font instead of copying
-            //See <BackendFontInterface::Clone>
-            BackendFontInterface* Clone() override;
+            //See <FontInterface::Clone>
+            FontInterface* Clone() override;
     };   
 }
 

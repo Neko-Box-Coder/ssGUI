@@ -2,7 +2,7 @@
 #define SSGUI_RENDERER_H
 
 #include "ssGUI/DataClasses/DrawingEntity.hpp"
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include "glm/vec4.hpp"
 #include "glm/vec2.hpp"
 #include <vector>
@@ -89,7 +89,7 @@ namespace ssGUI
 
             Renderer(Renderer const& other);
             virtual void ConstructRenderInfo();
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset);
+            virtual void ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset);
             virtual void CacheRendering();
             virtual void DisableRedrawObjectRequest();
             virtual void EnableRedrawObjectRequest();

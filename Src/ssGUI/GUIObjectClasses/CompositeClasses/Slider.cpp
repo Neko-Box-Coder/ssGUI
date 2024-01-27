@@ -183,7 +183,7 @@ namespace ssGUI
         DrawingEntities.push_back(sliderFillEntity);
     }
 
-    void Slider::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Slider::MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
                             ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)

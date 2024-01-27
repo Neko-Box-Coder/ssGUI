@@ -1,5 +1,5 @@
-#include "ssGUI/Backend/SDL2/BackendMainWindowSDL2.hpp"
-#include "ssGUI/Backend/SDL2/BackendDrawingSDL2.hpp"
+#include "ssGUI/Backend/SDL2/MainWindowSDL2.hpp"
+#include "ssGUI/Backend/SDL2/DrawingSDL2.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -12,7 +12,7 @@ namespace ssGUI
 
 namespace Backend
 {
-    bool BackendMainWindowSDL2::CreateWindow()
+    bool MainWindowSDL2::CreateWindow()
     {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> codec;
         std::string titleUtf8 = codec.to_bytes(WindowTitle);
@@ -53,13 +53,13 @@ namespace Backend
         return true;
     }
     
-    void BackendMainWindowSDL2::DestroyWindow()
+    void MainWindowSDL2::DestroyWindow()
     {
         SDL_DestroyRenderer(CurrentSDL_Renderer);
         SDL_DestroyWindow(CurrentWindow);
     }
 
-    BackendMainWindowSDL2::BackendMainWindowSDL2(BackendMainWindowSDL2 const& other) :
+    MainWindowSDL2::MainWindowSDL2(MainWindowSDL2 const& other) :
         CurrentWindow(nullptr),
         WindowTitle(other.WindowTitle),
         WindowPosition(other.WindowPosition),
@@ -78,7 +78,7 @@ namespace Backend
         CreateWindow();
     }
 
-    BackendMainWindowSDL2::BackendMainWindowSDL2() :    CurrentWindow(nullptr),
+    MainWindowSDL2::MainWindowSDL2() :    CurrentWindow(nullptr),
                                                         WindowTitle(),
                                                         WindowPosition(),
                                                         WindowSize(),
@@ -96,12 +96,12 @@ namespace Backend
         CreateWindow();
     }
 
-    BackendMainWindowSDL2::~BackendMainWindowSDL2()
+    MainWindowSDL2::~MainWindowSDL2()
     {
         DestroyWindow();
     }
     
-    glm::vec2 BackendMainWindowSDL2::GetDPIScaling() const
+    glm::vec2 MainWindowSDL2::GetDPIScaling() const
     {
         glm::ivec2 logicalSize;
         glm::ivec2 pixelSize;
@@ -121,7 +121,7 @@ namespace Backend
         return static_cast<glm::vec2>(pixelSize) / static_cast<glm::vec2>(logicalSize);
     }
     
-    void BackendMainWindowSDL2::SetWindowPosition(glm::ivec2 pos)
+    void MainWindowSDL2::SetWindowPosition(glm::ivec2 pos)
     {
         if(GetWindowMode() == Enums::WindowMode::FULLSCREEN)
         {
@@ -132,7 +132,7 @@ namespace Backend
         SDL_SetWindowPosition(CurrentWindow, pos.x, pos.y);
     }
 
-    glm::ivec2 BackendMainWindowSDL2::GetWindowPosition() const
+    glm::ivec2 MainWindowSDL2::GetWindowPosition() const
     {
         glm::ivec2 windowPos;
         
@@ -140,7 +140,7 @@ namespace Backend
         return windowPos;
     }
 
-    void BackendMainWindowSDL2::GetDecorationOffsets(   glm::ivec2& topLeft, 
+    void MainWindowSDL2::GetDecorationOffsets(   glm::ivec2& topLeft, 
                                                         glm::ivec2& bottomRight) const
     {
         int top, left, bottom, right;
@@ -165,7 +165,7 @@ namespace Backend
         bottomRight *= scaling;
     }
 
-    void BackendMainWindowSDL2::SetWindowSize(glm::ivec2 size)
+    void MainWindowSDL2::SetWindowSize(glm::ivec2 size)
     {
         //TODO(NOW): Need to check if window borders are in pixels
         glm::vec2 scaling = GetDPIScaling();
@@ -219,7 +219,7 @@ namespace Backend
         SDL_SetWindowSize(CurrentWindow, size.x, size.y);
     }
 
-    glm::ivec2 BackendMainWindowSDL2::GetWindowSize() const
+    glm::ivec2 MainWindowSDL2::GetWindowSize() const
     {
         glm::ivec2 size;
         SDL_GetWindowSizeInPixels(CurrentWindow, &size.x, &size.y);
@@ -234,7 +234,7 @@ namespace Backend
         return size;
     }
 
-    void BackendMainWindowSDL2::SetRenderSize(glm::ivec2 size)
+    void MainWindowSDL2::SetRenderSize(glm::ivec2 size)
     {
         glm::vec2 scaling = GetDPIScaling();
         size /= scaling;
@@ -242,19 +242,19 @@ namespace Backend
         SDL_SetWindowSize(CurrentWindow, size.x, size.y);
     }
     
-    glm::ivec2 BackendMainWindowSDL2::GetRenderSize() const
+    glm::ivec2 MainWindowSDL2::GetRenderSize() const
     {
         glm::ivec2 size;
         SDL_GetWindowSizeInPixels(CurrentWindow, &size.x, &size.y);
         return size;
     }
 
-    bool BackendMainWindowSDL2::IsClosed() const
+    bool MainWindowSDL2::IsClosed() const
     {
         return WindowClosed;
     }
 
-    void BackendMainWindowSDL2::Close()
+    void MainWindowSDL2::Close()
     {
         for(int i = 0; i < OnCloseCallback.size(); i++)
         {
@@ -272,19 +272,19 @@ namespace Backend
         DestroyWindow();
     }
     
-    void BackendMainWindowSDL2::AbortClosing()
+    void MainWindowSDL2::AbortClosing()
     {
         WindowClosingAborted = true;
     }
 
-    int BackendMainWindowSDL2::
-        AddOnCloseEvent(std::function<void(BackendMainWindowInterface* mainWindow)> func)
+    int MainWindowSDL2::
+        AddOnCloseEvent(std::function<void(MainWindowInterface* mainWindow)> func)
     {
         OnCloseCallback.push_back(func);
         return OnCloseCallback.size() - 1;
     }
 
-    void BackendMainWindowSDL2::RemoveOnCloseEvent(int index)
+    void MainWindowSDL2::RemoveOnCloseEvent(int index)
     {
         if(index < 0 || index >= OnCloseCallback.size())
             return;
@@ -292,19 +292,19 @@ namespace Backend
         OnCloseCallback.at(index) = nullptr;
     }
 
-    void BackendMainWindowSDL2::SetTitle(std::u32string title)
+    void MainWindowSDL2::SetTitle(std::u32string title)
     {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> codec;
         std::string titleUtf8 = codec.to_bytes(title);
         SDL_SetWindowTitle(CurrentWindow, titleUtf8.c_str());
     }
     
-    void BackendMainWindowSDL2::SetTitle(std::string title)
+    void MainWindowSDL2::SetTitle(std::string title)
     {
         SDL_SetWindowTitle(CurrentWindow, title.c_str());
     }
 
-    void BackendMainWindowSDL2::GetTitle(std::u32string& title) const
+    void MainWindowSDL2::GetTitle(std::u32string& title) const
     {
         std::string utf8Title;
         GetTitle(utf8Title);
@@ -313,13 +313,13 @@ namespace Backend
         title = codec.from_bytes(utf8Title);
     }
 
-    void BackendMainWindowSDL2::GetTitle(std::string& title) const
+    void MainWindowSDL2::GetTitle(std::string& title) const
     {
         const char* windowTitle = SDL_GetWindowTitle(CurrentWindow);
         title = std::string(windowTitle);
     }
 
-    void BackendMainWindowSDL2::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
+    void MainWindowSDL2::SetIcon(const ImageInterface& iconImage)
     {
         if(!iconImage.IsValid())
         {
@@ -358,7 +358,7 @@ namespace Backend
         SDL_FreeSurface(cursorSurface);
     }
 
-    void BackendMainWindowSDL2::SetVisible(bool visible)
+    void MainWindowSDL2::SetVisible(bool visible)
     {
         WindowHidden = visible;
         
@@ -368,23 +368,23 @@ namespace Backend
             SDL_HideWindow(CurrentWindow);
     }
 
-    bool BackendMainWindowSDL2::IsVisible() const
+    bool MainWindowSDL2::IsVisible() const
     {
         return WindowHidden;
     }
 
-    void BackendMainWindowSDL2::SetVSync(bool vSync)
+    void MainWindowSDL2::SetVSync(bool vSync)
     {
         WindowVsync = vSync;
         SDL_RenderSetVSync(CurrentSDL_Renderer, vSync);
     }
 
-    bool BackendMainWindowSDL2::IsVSync() const
+    bool MainWindowSDL2::IsVSync() const
     {
         return WindowVsync;
     }
 
-    void BackendMainWindowSDL2::SetFocus(bool focus, bool externalByUser)
+    void MainWindowSDL2::SetFocus(bool focus, bool externalByUser)
     {
         if(focus && !externalByUser)
             SDL_RaiseWindow(CurrentWindow);
@@ -398,20 +398,20 @@ namespace Backend
         }
     }
     
-    bool BackendMainWindowSDL2::IsFocused() const
+    bool MainWindowSDL2::IsFocused() const
     {
         return SDL_GetKeyboardFocus() == CurrentWindow;
     }
 
-    int BackendMainWindowSDL2::
-        AddFocusChangedByUserEvent(std::function<void(  BackendMainWindowInterface* mainWindow, 
+    int MainWindowSDL2::
+        AddFocusChangedByUserEvent(std::function<void(  MainWindowInterface* mainWindow, 
                                                         bool focused)> func)
     {
         ExternalFocusChangedCallback.push_back(func);
         return ExternalFocusChangedCallback.size() - 1;
     }
 
-    void BackendMainWindowSDL2::RemoveFocusChangedByUserEvent(int id)
+    void MainWindowSDL2::RemoveFocusChangedByUserEvent(int id)
     {
         if(id < 0 || id >= ExternalFocusChangedCallback.size())
             return;
@@ -419,40 +419,40 @@ namespace Backend
         ExternalFocusChangedCallback.at(id) = nullptr;
     }
 
-    void BackendMainWindowSDL2::SetAntiAliasingLevel(int level)
+    void MainWindowSDL2::SetAntiAliasingLevel(int level)
     {
         //NOTE: Anti-aliasing not supported by SDL2
     }
 
-    int BackendMainWindowSDL2::GetAntiAliasingLevel() const
+    int MainWindowSDL2::GetAntiAliasingLevel() const
     {
         //NOTE: Anti-aliasing not supported by SDL2
         return 0;
     }
 
-    void BackendMainWindowSDL2::SetResizable(bool resizable)
+    void MainWindowSDL2::SetResizable(bool resizable)
     {
         WindowResizable = resizable;
         SDL_SetWindowResizable(CurrentWindow, static_cast<SDL_bool>(resizable));
     }
 
-    bool BackendMainWindowSDL2::IsResizable() const
+    bool MainWindowSDL2::IsResizable() const
     {
         return CurrentWindowMode == Enums::WindowMode::NORMAL ? WindowResizable : false;
     }
 
-    bool BackendMainWindowSDL2::SetDecorationOptions(Enums::WindowDecorationOptions options)
+    bool MainWindowSDL2::SetDecorationOptions(Enums::WindowDecorationOptions options)
     {
         //NOTE: SDL2 has no decorations support
         return false;
     }
     
-    Enums::WindowDecorationOptions BackendMainWindowSDL2::GetDecorationOptions() const
+    Enums::WindowDecorationOptions MainWindowSDL2::GetDecorationOptions() const
     {
         return Enums::WindowDecorationOptions::UNKNOWN;
     }
 
-    void BackendMainWindowSDL2::SetWindowMode(Enums::WindowMode windowMode)
+    void MainWindowSDL2::SetWindowMode(Enums::WindowMode windowMode)
     {
         static_assert(  static_cast<int>(Enums::WindowMode::COUNT) == 3, 
                         "WindowMode is changed, check this function");
@@ -475,35 +475,35 @@ namespace Backend
         CurrentWindowMode = windowMode;
     }
 
-    ssGUI::Enums::WindowMode BackendMainWindowSDL2::GetWindowMode() const
+    ssGUI::Enums::WindowMode MainWindowSDL2::GetWindowMode() const
     {
         return CurrentWindowMode;
     }
 
-    bool BackendMainWindowSDL2::SetDrawingContext()
+    bool MainWindowSDL2::SetDrawingContext()
     {
         return true;
     }
     
-    BackendMainWindowInterface* BackendMainWindowSDL2:: Clone()
+    MainWindowInterface* MainWindowSDL2:: Clone()
     {
         //TODO(NOW)
         return nullptr;
     }
 
-    void* BackendMainWindowSDL2::GetRawHandle() const
+    void* MainWindowSDL2::GetRawHandle() const
     {
         CurrentSDLHandle.Window = CurrentWindow;
         CurrentSDLHandle.Renderer = CurrentSDL_Renderer;
         return &CurrentSDLHandle;
     }
     
-    void BackendMainWindowSDL2::Internal_SetBackendDrawing(BackendDrawingSDL2* backendDrawing)
+    void MainWindowSDL2::Internal_SetBackendDrawing(DrawingSDL2* backendDrawing)
     {
         BackendDrawing = backendDrawing;
     }
     
-    SDL_Renderer* BackendMainWindowSDL2::Internal_GetSDLRenderer() const
+    SDL_Renderer* MainWindowSDL2::Internal_GetSDLRenderer() const
     {
         return CurrentSDL_Renderer;
     }

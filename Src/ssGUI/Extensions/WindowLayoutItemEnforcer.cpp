@@ -31,7 +31,7 @@ namespace Extensions
     void WindowLayoutItemEnforcer::ConstructRenderInfo()
     {}
 
-    void WindowLayoutItemEnforcer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void WindowLayoutItemEnforcer::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {}
     
     //Defining the extension name
@@ -53,7 +53,7 @@ namespace Extensions
         
     //Extension methods
     void WindowLayoutItemEnforcer::Internal_Update( bool isPreUpdate, 
-                                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                                    ssGUI::Backend::SystemInputInterface* inputInterface, 
                                                     ssGUI::InputStatus& currentInputStatus, 
                                                     ssGUI::InputStatus& lastInputStatus, 
                                                     ssGUI::GUIObject* mainWindow)
@@ -183,7 +183,7 @@ namespace Extensions
         //Check if container's min size has reached. 
         //If so, decrease the size to previous GUI object depending on the distance the cursor 
         //Increase the same amount of size to next GUI Object 
-        ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface = static_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface();
+        ssGUI::Backend::MainWindowInterface* mainWindowInterface = static_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface();
         if(layout->IsHorizontalLayout() && 
             (Container->GetSize().x <= Container->GetMinSize().x || Container->GetSize().x >= Container->GetMaxSize().x))
         {               
@@ -256,7 +256,7 @@ namespace Extensions
             ContainerResizeStarted = false;
     }
 
-    void WindowLayoutItemEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
+    void WindowLayoutItemEnforcer::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindowP, glm::vec2 mainWindowPositionOffset)
     {        
         ssGUI_LOG_FUNC();
         //Don't need to draw anything

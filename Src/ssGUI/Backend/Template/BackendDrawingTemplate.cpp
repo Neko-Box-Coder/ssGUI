@@ -8,13 +8,13 @@ namespace ssGUI
 namespace Backend
 {
     BackendDrawingTemplate::BackendDrawingTemplate( BackendDrawingTemplate const& other,
-                                                    BackendMainWindowInterface* otherMainWindow) : 
-        BackendDrawingInterface(otherMainWindow)
+                                                    MainWindowInterface* otherMainWindow) : 
+        DrawingInterface(otherMainWindow)
     {
     }
 
-    BackendDrawingTemplate::BackendDrawingTemplate(BackendMainWindowInterface* mainWindowInterface) :
-        BackendDrawingInterface(mainWindowInterface)
+    BackendDrawingTemplate::BackendDrawingTemplate(MainWindowInterface* mainWindowInterface) :
+        DrawingInterface(mainWindowInterface)
     {
         ssGUI_WARNING(ssGUI_BACKEND_TAG, "BackendDrawingTemplate is being created, is this intended?");
     }
@@ -52,17 +52,17 @@ namespace Backend
         
     }
     
-    void BackendDrawingTemplate::AddImageCache(BackendImageInterface* backendImage)
+    void BackendDrawingTemplate::AddImageCache(ImageInterface* backendImage)
     {
     
     }
     
-    void BackendDrawingTemplate::RemoveImageCache(BackendImageInterface* backendImage)
+    void BackendDrawingTemplate::RemoveImageCache(ImageInterface* backendImage)
     {
     
     }
     
-    void* BackendDrawingTemplate::GetRawImageCacheHandle(BackendImageInterface* backendImage) const
+    void* BackendDrawingTemplate::GetRawImageCacheHandle(ImageInterface* backendImage) const
     {
         return nullptr;
     }

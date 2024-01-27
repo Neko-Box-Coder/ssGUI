@@ -15,7 +15,7 @@ namespace ssGUI
     {
     }
 
-    void MenuItem::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void MenuItem::MainLogic(   ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)

@@ -11,15 +11,15 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    class BackendDrawingInterface;
+    class DrawingInterface;
 
-    //class: ssGUI::Backend::BackendImageInterface
+    //class: ssGUI::Backend::ImageInterface
     //This allows transferring the image data from the host memory to the gpu memory
-    class BackendImageInterface
+    class ImageInterface
     {
         public:
-            BackendImageInterface(){}
-            virtual ~BackendImageInterface() = 0;
+            ImageInterface(){}
+            virtual ~ImageInterface() = 0;
 
             //function: GetRawHandle
             //Returns the actual backend handle if the image data is valid. Otherwise returns nullptr.
@@ -56,8 +56,6 @@ namespace Backend
             //Updates the drawing interfaces' cache with the current image
             virtual void UpdateCache() = 0;
             
-            using DrawingInterface = ssGUI::Backend::BackendDrawingInterface;
-            
             //function: Internal_AddBackendDrawingRecord
             //(Internal ssGUI function) Adds a linking record of indicating 
             //  this image is stored in backend drawing.
@@ -72,11 +70,11 @@ namespace Backend
 
             //function: Clone
             //Clones the backend image
-            virtual BackendImageInterface* Clone() = 0;
+            virtual ImageInterface* Clone() = 0;
     };
 
     //Pure virtual destructor needs to be defined
-    inline BackendImageInterface::~BackendImageInterface(){}
+    inline ImageInterface::~ImageInterface(){}
 }
 
 }

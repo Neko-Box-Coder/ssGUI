@@ -5,7 +5,7 @@
 #include "ssGUI/GUIObjectClasses/CompositeClasses/StandardWindow.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 
 //Debug
 #include "ssGUI/Extensions/Layout.hpp"
@@ -234,14 +234,14 @@ namespace ssGUI
                     if(IsRedrawEveryFrame())
                         currentObjP->RedrawObject();
 
-                    (currentObjP)->Internal_Draw(   currentMainWindowP->GetBackendDrawingInterface(), 
+                    (currentObjP)->Internal_Draw(   currentMainWindowP->GetDrawingInterface(), 
                                                     dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
                                                     currentMainWindowP->GetPositionOffset());
                 }
 
                 for(int i = 0; i < overlayQueue.size(); i++)
                 {
-                    overlayQueue[i]->Internal_Draw(  currentMainWindowP->GetBackendDrawingInterface(), 
+                    overlayQueue[i]->Internal_Draw(  currentMainWindowP->GetDrawingInterface(), 
                                                     dynamic_cast<ssGUI::GUIObject*>(currentMainWindowP), 
                                                     currentMainWindowP->GetPositionOffset());
                 }
@@ -307,7 +307,7 @@ namespace ssGUI
                                     FrameTimeIndex(0), 
                                     FrameTimes()
     {
-        BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+        BackendInput = ssGUI::Backend::Factory::CreateInputInterface();
         CurrentInstanceP = this;
     }
 
@@ -594,7 +594,7 @@ namespace ssGUI
         return true;
     }
 
-    ssGUI::Backend::BackendSystemInputInterface* ssGUIManager::GetBackendInputInterface()
+    ssGUI::Backend::SystemInputInterface* ssGUIManager::GetBackendInputInterface()
     {
         return BackendInput;
     }
@@ -786,7 +786,7 @@ namespace ssGUI
     
     void ssGUIManager::CreateCustomCursor(ssGUI::ImageData* customCursor, std::string cursorName, glm::ivec2 cursorSize, glm::ivec2 hotspot)
     {
-        BackendInput->CreateCustomCursor(customCursor->GetBackendImageInterface(), cursorName, cursorSize, hotspot);
+        BackendInput->CreateCustomCursor(customCursor->GetImageInterface(), cursorName, cursorSize, hotspot);
     }
     
     void ssGUIManager::SetCurrentCustomCursor(std::string cursorName)
@@ -796,7 +796,7 @@ namespace ssGUI
     
     void ssGUIManager::GetCurrentCustomCursor(ssGUI::ImageData& customCursor, glm::ivec2& hotspot)
     {
-        BackendInput->GetCurrentCustomCursor(*customCursor.GetBackendImageInterface(), hotspot);
+        BackendInput->GetCurrentCustomCursor(*customCursor.GetImageInterface(), hotspot);
     }
     
     void ssGUIManager::GetCurrentCustomCursorName(std::string& name)
@@ -806,7 +806,7 @@ namespace ssGUI
     
     void ssGUIManager::GetCustomCursor(ssGUI::ImageData& customCursor, std::string cursorName, glm::ivec2& hotspot)
     {
-        BackendInput->GetCustomCursor(*customCursor.GetBackendImageInterface(), cursorName, hotspot);
+        BackendInput->GetCustomCursor(*customCursor.GetImageInterface(), cursorName, hotspot);
     }
     
     bool ssGUIManager::HasCustomCursor(const std::string& cursorName)
@@ -831,7 +831,7 @@ namespace ssGUI
     
     bool ssGUIManager::SetClipboardImage(const ssGUI::ImageData& imgData)
     {
-        return BackendInput->SetClipboardImage(*imgData.GetBackendImageInterface());
+        return BackendInput->SetClipboardImage(*imgData.GetImageInterface());
     }
     
     bool ssGUIManager::SetClipboardText(const std::wstring& str)
@@ -847,7 +847,7 @@ namespace ssGUI
     
     bool ssGUIManager::GetClipboardImage(ssGUI::ImageData& imgData)
     {
-        return BackendInput->GetClipboardImage(*imgData.GetBackendImageInterface());
+        return BackendInput->GetClipboardImage(*imgData.GetImageInterface());
     }
     
     bool ssGUIManager::GetClipboardText(std::wstring& str)

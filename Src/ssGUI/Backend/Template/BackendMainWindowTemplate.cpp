@@ -120,7 +120,7 @@ namespace Backend
     
     }
 
-    void BackendMainWindowTemplate::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
+    void BackendMainWindowTemplate::SetIcon(const ssGUI::Backend::ImageInterface& iconImage)
     {
 
     }
@@ -225,7 +225,7 @@ namespace Backend
         return true;
     }
     
-    BackendMainWindowInterface* BackendMainWindowTemplate:: Clone()
+    MainWindowInterface* BackendMainWindowTemplate:: Clone()
     {
         return nullptr;
     }

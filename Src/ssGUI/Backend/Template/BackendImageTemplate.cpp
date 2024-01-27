@@ -64,8 +64,6 @@ namespace Backend
         
     }
 
-    using DrawingInterface = ssGUI::Backend::BackendDrawingInterface;
-
     void BackendImageTemplate::Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing)
     {
     }
@@ -74,7 +72,7 @@ namespace Backend
     {
     }
 
-    BackendImageInterface* BackendImageTemplate::Clone()
+    ImageInterface* BackendImageTemplate::Clone()
     {
         return nullptr;
     }

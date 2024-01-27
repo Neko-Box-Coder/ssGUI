@@ -1,19 +1,19 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
+#include "ssGUI/Backend/Interfaces/FontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
+#include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
 
 #ifdef SSGUI_MAIN_BACKEND_SDL2
-    #include "ssGUI/Backend/SDL2/BackendDrawingSDL2.hpp"
-    #include "ssGUI/Backend/SDL2/BackendSystemInputSDL2.hpp"
-    #include "ssGUI/Backend/SDL2/BackendMainWindowSDL2.hpp"
-    #include "ssGUI/Backend/FreeType/BackendFontFreeType.hpp"
-    #include "ssGUI/Backend/stb_image/BackendImageStbImage.hpp"
+    #include "ssGUI/Backend/SDL2/DrawingSDL2.hpp"
+    #include "ssGUI/Backend/SDL2/SystemInputSDL2.hpp"
+    #include "ssGUI/Backend/SDL2/MainWindowSDL2.hpp"
+    #include "ssGUI/Backend/FreeType/FontFreeType.hpp"
+    #include "ssGUI/Backend/stb_image/ImageStbImage.hpp"
     #include "SDL.h"
 #endif
 
@@ -44,15 +44,15 @@ namespace ssGUI
 //TODO: Add exit code or log when no backends are found
 namespace Backend
 {
-    BackendDrawingInterface* 
-    BackendFactory::CreateBackendDrawingInterface(BackendMainWindowInterface* mainWindowInterface)
+    DrawingInterface* 
+    Factory::CreateDrawingInterface(MainWindowInterface* mainWindowInterface)
     {
         #if SSGUI_MAIN_BACKEND_SDL2
-            return static_cast<BackendDrawingInterface*>(new BackendDrawingSDL2(mainWindowInterface));
+            return static_cast<DrawingInterface*>(new DrawingSDL2(mainWindowInterface));
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
-            return static_cast<BackendDrawingInterface*>(new BackendDrawingTemplate(mainWindowInterface));
+            return static_cast<DrawingInterface*>(new BackendDrawingTemplate(mainWindowInterface));
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendDrawingInterface*>(new BackendDrawingMock(nullptr, 
+            return static_cast<DrawingInterface*>(new BackendDrawingMock(nullptr, 
                                                                                 mainWindowInterface));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
@@ -61,14 +61,14 @@ namespace Backend
         #endif
     }
 
-    BackendFontInterface* BackendFactory::CreateBackendFontInterface()
+    FontInterface* Factory::CreateFontInterface()
     {
         #if SSGUI_MAIN_BACKEND_SDL2
-            return static_cast<BackendFontInterface*>(new BackendFontFreeType());
+            return static_cast<FontInterface*>(new FontFreeType());
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
-            return static_cast<BackendFontInterface*>(new BackendFontTemplate());
+            return static_cast<FontInterface*>(new BackendFontTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendFontInterface*>(new BackendFontMock(nullptr));
+            return static_cast<FontInterface*>(new BackendFontMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -76,14 +76,14 @@ namespace Backend
         #endif
     }
 
-    BackendImageInterface* BackendFactory::CreateBackendImageInterface()
+    ImageInterface* Factory::CreateImageInterface()
     {
         #if SSGUI_MAIN_BACKEND_SDL2
-            return static_cast<BackendImageInterface*>(new BackendImageStbImage());
+            return static_cast<ImageInterface*>(new ImageStbImage());
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
-            return static_cast<BackendImageInterface*>(new BackendImageTemplate());
+            return static_cast<ImageInterface*>(new BackendImageTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendImageInterface*>(new BackendImageMock(nullptr));
+            return static_cast<ImageInterface*>(new BackendImageMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -91,14 +91,14 @@ namespace Backend
         #endif
     }
 
-    BackendSystemInputInterface* BackendFactory::CreateBackendInputInterface()
+    SystemInputInterface* Factory::CreateInputInterface()
     {
         #if SSGUI_MAIN_BACKEND_SDL2
-            return static_cast<BackendSystemInputInterface*>(new BackendSystemInputSDL2());
+            return static_cast<SystemInputInterface*>(new SystemInputSDL2());
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
-            return static_cast<BackendSystemInputInterface*>(new BackendSystemInputTemplate());
+            return static_cast<SystemInputInterface*>(new BackendSystemInputTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendSystemInputInterface*>(new BackendSystemInputMock(nullptr));
+            return static_cast<SystemInputInterface*>(new BackendSystemInputMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -106,14 +106,14 @@ namespace Backend
         #endif
     }
     
-    BackendMainWindowInterface* BackendFactory::CreateBackendMainWindowInterface()
+    MainWindowInterface* Factory::CreateMainWindowInterface()
     {
         #if SSGUI_MAIN_BACKEND_SDL2
-            return static_cast<BackendMainWindowInterface*>(new BackendMainWindowSDL2());
+            return static_cast<MainWindowInterface*>(new MainWindowSDL2());
         #elif SSGUI_MAIN_BACKEND_TEMPLATE
-            return static_cast<BackendMainWindowInterface*>(new BackendMainWindowTemplate());
+            return static_cast<MainWindowInterface*>(new BackendMainWindowTemplate());
         #elif SSGUI_MAIN_BACKEND_MOCK
-            return static_cast<BackendMainWindowInterface*>(new BackendMainWindowMock(nullptr));
+            return static_cast<MainWindowInterface*>(new BackendMainWindowMock(nullptr));
         #else
             ssGUI_ERROR(ssGUI_BACKEND_TAG, "Unimplemented backend");
             ssLOG_EXIT_PROGRAM();
@@ -121,7 +121,7 @@ namespace Backend
         #endif
     }
     
-    bool BackendFactory::Initialize()
+    bool Factory::Initialize()
     {
         #if SSGUI_MAIN_BACKEND_SDL2
             if(SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -136,7 +136,7 @@ namespace Backend
         return true;
     }
     
-    bool BackendFactory::Cleanup()
+    bool Factory::Cleanup()
     {
         #if SSGUI_MAIN_BACKEND_SDL2
             SDL_Quit();

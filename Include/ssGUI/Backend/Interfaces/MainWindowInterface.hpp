@@ -1,7 +1,7 @@
-#ifndef SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_HPP
-#define SSGUI_BACKEND_MAIN_WINDOW_INTERFACE_HPP
+#ifndef SSGUI_MAIN_WINDOW_INTERFACE_HPP
+#define SSGUI_MAIN_WINDOW_INTERFACE_HPP
 
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 #include "ssGUI/Enums/WindowDecorationOptions.hpp"
 #include "ssGUI/Enums/WindowMode.hpp"
 
@@ -14,12 +14,12 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    //class: ssGUI::Backend::BackendMainWindowInterface
-    class BackendMainWindowInterface
+    //class: ssGUI::Backend::MainWindowInterface
+    class MainWindowInterface
     {   
         public:
-            BackendMainWindowInterface(){}
-            virtual ~BackendMainWindowInterface() = 0;
+            MainWindowInterface(){}
+            virtual ~MainWindowInterface() = 0;
 
             //function: SetWindowPosition
             //Sets the main window position (distance from top-left) on the screen
@@ -72,7 +72,7 @@ namespace Backend
             //Adds the callback to be called when the main window closes. 
             //Returns an id that can be used to remove the function for being called.
             virtual int 
-                AddOnCloseEvent(std::function<void(BackendMainWindowInterface* mainWindow)> func) = 0;
+                AddOnCloseEvent(std::function<void(MainWindowInterface* mainWindow)> func) = 0;
 
             //function: RemoveOnCloseEvent
             //Removes the function to be called when the main window closes.
@@ -96,7 +96,7 @@ namespace Backend
 
             //function: SetIcon
             //Sets the icon of the main window
-            virtual void SetIcon(const BackendImageInterface& iconImage) = 0;
+            virtual void SetIcon(const ImageInterface& iconImage) = 0;
 
             //function: SetVisible
             //Sets if the main window is visible or not
@@ -128,7 +128,7 @@ namespace Backend
             //Adds the callback to be called when the main window gained or lost focus. 
             //Returns an id that can be used to remove the function for being called.
             virtual int 
-                AddFocusChangedByUserEvent(std::function<void(  BackendMainWindowInterface* mainWindow, 
+                AddFocusChangedByUserEvent(std::function<void(  MainWindowInterface* mainWindow, 
                                                                 bool focused)> func) = 0;
 
             //function: RemoveFocusChangedByUserEvent
@@ -187,14 +187,14 @@ namespace Backend
             
             This function is tested limitedly, creating a new <MainWindow> is advised.
             */
-            virtual BackendMainWindowInterface* Clone() = 0;
+            virtual MainWindowInterface* Clone() = 0;
 
             //function: GetRawHandle
             virtual void* GetRawHandle() const = 0;
     };
 
     //Pure virtual destructor needs to be defined
-    inline BackendMainWindowInterface::~BackendMainWindowInterface(){}
+    inline MainWindowInterface::~MainWindowInterface(){}
 }
 
 }

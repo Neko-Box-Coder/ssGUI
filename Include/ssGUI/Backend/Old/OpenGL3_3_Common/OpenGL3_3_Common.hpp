@@ -82,10 +82,10 @@ struct DrawingEntity;
 
 namespace Backend
 {
-    class BackendMainWindowInterface;
-    class BackendFontInterface;
-    class BackendImageInterface;
-    class BackendDrawingInterface;
+    class MainWindowInterface;
+    class FontInterface;
+    class ImageInterface;
+    class DrawingInterface;
     
     /*class: ssGUI::Backend::OpenGL3_3_Common
     This is a common class for OpenGL backend on Linux and Windows. It uses the same shader for rendering everything.
@@ -97,7 +97,7 @@ namespace Backend
     public:
         using CharSize = uint16_t;
         using CharCode = uint32_t;
-        using CharTextureIdentifier = std::tuple<ssGUI::Backend::BackendFontInterface*, CharSize, CharCode>;
+        using CharTextureIdentifier = std::tuple<ssGUI::Backend::FontInterface*, CharSize, CharCode>;
 
     private:
         static const std::string VertShader;                                                //(Internal variable) Vertex shader string
@@ -120,10 +120,10 @@ namespace Backend
         std::vector<glm::vec3> TextureBotRightCoords;                                       //(Internal variable) Internal buffer for storing bottom right corner for texture in image atlas
         std::vector<GLuint> Idx;                                                            //(Internal variable) Internal buffer for storing indices for drawing GUI shapes.
 
-        BackendMainWindowInterface* CurrentMainWindow;                                      //(Internal variable) Used for performing viewport related operations
+        MainWindowInterface* CurrentMainWindow;                                      //(Internal variable) Used for performing viewport related operations
         
         DynamicImageAtlas* CurrentImageAtlas;                                               //(Internal variable) <DynamicImageAtlas> object for managing image atlas
-        std::unordered_map<ssGUI::Backend::BackendImageInterface*, int> MappedImgIds;       //See <AddImageCache>
+        std::unordered_map<ssGUI::Backend::ImageInterface*, int> MappedImgIds;       //See <AddImageCache>
         std::unordered_map<CharTextureIdentifier, int> MappedFontIds;                       //See <AddFontCache>
         
         const int VERT_POS_INDEX;                                                           //(Internal variable) Shader layout location for vertex position
@@ -134,7 +134,7 @@ namespace Backend
         static const int MAX_TEXTURE_LAYER_SIZE;                                            //(Internal variable) Size in pixel for width and height for each layer in image atlas
     =================================================================
     ============================== C++ ==============================
-    OpenGL3_3_Common::OpenGL3_3_Common( BackendMainWindowInterface* mainWindow) :   ProgramId(0),
+    OpenGL3_3_Common::OpenGL3_3_Common( MainWindowInterface* mainWindow) :   ProgramId(0),
                                                                                     CachedImages(0),
                                                                                     VAO(0),
                                                                                     VertsVBO(0),
@@ -462,7 +462,7 @@ namespace Backend
         public:
             using CharSize = uint16_t;
             using CharCode = uint32_t;
-            using CharTextureIdentifier = std::tuple<ssGUI::Backend::BackendFontInterface*, CharSize, CharCode>;
+            using CharTextureIdentifier = std::tuple<ssGUI::Backend::FontInterface*, CharSize, CharCode>;
     
         private:
             static const std::string VertShader;                                                //(Internal variable) Vertex shader string
@@ -485,10 +485,10 @@ namespace Backend
             std::vector<glm::vec3> TextureBotRightCoords;                                       //(Internal variable) Internal buffer for storing bottom right corner for texture in image atlas
             std::vector<GLuint> Idx;                                                            //(Internal variable) Internal buffer for storing indices for drawing GUI shapes.
 
-            BackendMainWindowInterface* CurrentMainWindow;                                      //(Internal variable) Used for performing viewport related operations
+            MainWindowInterface* CurrentMainWindow;                                      //(Internal variable) Used for performing viewport related operations
             
             DynamicImageAtlas* CurrentImageAtlas;                                               //(Internal variable) <DynamicImageAtlas> object for managing image atlas
-            std::unordered_map<ssGUI::Backend::BackendImageInterface*, int> MappedImgIds;       //See <AddImageCache>
+            std::unordered_map<ssGUI::Backend::ImageInterface*, int> MappedImgIds;       //See <AddImageCache>
             std::unordered_map<CharTextureIdentifier, int> MappedFontIds;                       //See <AddFontCache>
             
             const int VERT_POS_INDEX;                                                           //(Internal variable) Shader layout location for vertex position
@@ -504,13 +504,13 @@ namespace Backend
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,
                             const uint32_t character,
-                            const ssGUI::Backend::BackendFontInterface& font,
+                            const ssGUI::Backend::FontInterface& font,
                             int characterSize);
                             
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::vec2>& texCoords,
                             const std::vector<glm::u8vec4>& colors,
-                            const ssGUI::Backend::BackendImageInterface& image);
+                            const ssGUI::Backend::ImageInterface& image);
 
             bool DrawShape( const std::vector<glm::vec2>& vertices, 
                             const std::vector<glm::u8vec4>& colors);
@@ -530,7 +530,7 @@ namespace Backend
             bool RemoveDrawingCache(std::unordered_map<T, int>& cachedIds, T key);
     
         public:        
-            OpenGL3_3_Common(BackendMainWindowInterface* mainWindow);
+            OpenGL3_3_Common(MainWindowInterface* mainWindow);
             
             ~OpenGL3_3_Common();
         
@@ -539,15 +539,15 @@ namespace Backend
             glm::mat4x4 UpdateViewPortAndModelView(glm::ivec2 widthHeight);
             
             //function: SaveState
-            //See <BackendDrawingInterface::SaveState>
+            //See <DrawingInterface::SaveState>
             void SaveDrawingState();
             
             //function: RestoreDrawingState
-            //See <BackendDrawingInterface::RestoreDrawingState>
+            //See <DrawingInterface::RestoreDrawingState>
             void RestoreDrawingState();
             
             //function: DrawEntities
-            //See <BackendDrawingInterface::DrawEntities>
+            //See <DrawingInterface::DrawEntities>
             bool CreateDrawingEntities(const std::vector<ssGUI::DrawingEntity>& entities);
             
             //function: AddFontCache
@@ -555,19 +555,19 @@ namespace Backend
             bool AddFontCache(CharTextureIdentifier charTexture);
             
             //function: AddImageCache
-            //See <BackendDrawingInterface::AddImageCache>
-            bool AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage);
+            //See <DrawingInterface::AddImageCache>
+            bool AddImageCache(ssGUI::Backend::ImageInterface* backendImage);
             
             //function: RemoveFontCache
             //This removes the backend font from the cache.
             void RemoveFontCache(CharTextureIdentifier charTexture);
             
             //function: RemoveImageCache
-            //See <BackendDrawingInterface::RemoveImageCache>
-            void RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage);
+            //See <DrawingInterface::RemoveImageCache>
+            void RemoveImageCache(ssGUI::Backend::ImageInterface* backendImage);
             
             //function: DrawToBackBuffer
-            //See <BackendDrawingInterface::DrawToBackBuffer>
+            //See <DrawingInterface::DrawToBackBuffer>
             void DrawToBackBuffer();
             //void ClearBackBuffer(glm::u8vec3 clearColor);
             
@@ -575,8 +575,8 @@ namespace Backend
             //function: GetRawImageCacheHandle
             //This will return nullptr for OpenGL backends.
             //
-            //For original purpose, see <BackendDrawingInterface::GetRawImageCacheHandle>
-            void* GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage);
+            //For original purpose, see <DrawingInterface::GetRawImageCacheHandle>
+            void* GetRawImageCacheHandle(ssGUI::Backend::ImageInterface* backendImage);
     };
 
 }

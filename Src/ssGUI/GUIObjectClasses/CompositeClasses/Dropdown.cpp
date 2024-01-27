@@ -46,7 +46,7 @@ namespace ssGUI
         );
     }
 
-    void Dropdown::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Dropdown::MainLogic(   ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)

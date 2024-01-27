@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Mocks/BackendSystemInputMock.hpp"
 
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/Factory.hpp"
 
@@ -18,7 +18,7 @@ namespace Backend
         ssLOG_EXIT_PROGRAM(1);
     }
 
-    BackendSystemInputMock::BackendSystemInputMock(BackendSystemInputInterface* systemInputInterface)
+    BackendSystemInputMock::BackendSystemInputMock(SystemInputInterface* systemInputInterface)
     {
         UnderlyingInterface = systemInputInterface;
     }
@@ -29,7 +29,7 @@ namespace Backend
             delete UnderlyingInterface;
     }
     
-    void BackendSystemInputMock::UpdateInput(BackendMainWindowInterface** mainWindows, int count)
+    void BackendSystemInputMock::UpdateInput(MainWindowInterface** mainWindows, int count)
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
         SSGUI_MOCK_PASSTHROUGH(UpdateInput(mainWindows, count));
@@ -82,7 +82,6 @@ namespace Backend
                             input) != CurrentKeyPresses.end();
     }
 
-    using MainWindowInterface = BackendMainWindowInterface;
     glm::ivec2 BackendSystemInputMock::GetLastMousePosition(MainWindowInterface* mainWindow) const
     {
         SSGUI_MOCK_LOG_FUNCTION_CALL();
@@ -208,7 +207,6 @@ namespace Backend
         return CurrentCursorType;
     }
 
-    using ImageInterface = BackendImageInterface;
     void BackendSystemInputMock::CreateCustomCursor(ImageInterface* customCursor, 
                                                     std::string cursorName, 
                                                     glm::ivec2 cursorSize, 
@@ -392,7 +390,7 @@ namespace Backend
         if(ClipboardImg != nullptr)
             ssGUI::Dispose(ClipboardImg);
 
-        ClipboardImg = BackendFactory::CreateBackendImageInterface();
+        ClipboardImg = Factory::CreateImageInterface();
         *ClipboardImg = imgData;
         SSGUI_MOCK_PASSTHROUGH_AND_RETURN_FUNC(SetClipboardImage(imgData), bool);
         return true;

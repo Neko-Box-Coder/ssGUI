@@ -1,8 +1,8 @@
 #ifndef SSGUI_DRAWING_ENTITY_HPP
 #define SSGUI_DRAWING_ENTITY_HPP
 
-#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Interfaces/FontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 #include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
 #include "glm/vec2.hpp"
@@ -34,13 +34,13 @@ namespace ssGUI
             uint32_t Character = 0;
 
             //var: fontP
-            ssGUI::Backend::BackendFontInterface* BackendFont = nullptr;
+            Backend::FontInterface* BackendFont = nullptr;
             
             //var: characterSize
             int CharacterSize = -1;
 
             //var: imageP
-            ssGUI::Backend::BackendImageInterface* BackendImage = nullptr;
+            Backend::ImageInterface* BackendImage = nullptr;
             
             inline bool operator== (const DrawingEntity& other)
             {

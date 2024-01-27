@@ -1,16 +1,16 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 #include "ssGUI/HeaderGroups/StandardGroup.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 #include <thread>
 #include "TestsResources.h"
 
-ssGUI::Backend::BackendDrawingInterface* DrawingBackend = nullptr;
-ssGUI::Backend::BackendMainWindowInterface* WindowBackend = nullptr;
-ssGUI::Backend::BackendSystemInputInterface* InputBackend = nullptr;
+ssGUI::Backend::DrawingInterface* DrawingBackend = nullptr;
+ssGUI::Backend::MainWindowInterface* WindowBackend = nullptr;
+ssGUI::Backend::SystemInputInterface* InputBackend = nullptr;
 
-ssGUI::Backend::BackendImageInterface* ImgBackend = nullptr;
-ssGUI::Backend::BackendFontInterface* FontBackend = nullptr;
+ssGUI::Backend::ImageInterface* ImgBackend = nullptr;
+ssGUI::Backend::FontInterface* FontBackend = nullptr;
 
 const std::string DrawingTestShapeName = "Backend Test Shape";
 
@@ -60,20 +60,20 @@ ssGUI::DrawingEntity CreateShapes(  glm::vec2 pos,
 
 void SetUp()
 {
-    ssGUI::Backend::BackendFactory::Initialize();
-    ImgBackend = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
+    ssGUI::Backend::Factory::Initialize();
+    ImgBackend = ssGUI::Backend::Factory::CreateImageInterface();
     if(!ImgBackend->LoadImgFileFromMemory(ssGUI_Test_sd_edge, ssGUI_Test_sd_edge_size))
     {
         ssLOG_LINE("Failed to load image");
     }
-    FontBackend = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
+    FontBackend = ssGUI::Backend::Factory::CreateFontInterface();
     if(!FontBackend->LoadFromMemory((void*)ssGUI_Test_arial, ssGUI_Test_arial_size))
     {
         ssLOG_LINE("Failed to load font");
     }
-    WindowBackend = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
-    DrawingBackend = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(WindowBackend);
-    InputBackend = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+    WindowBackend = ssGUI::Backend::Factory::CreateMainWindowInterface();
+    DrawingBackend = ssGUI::Backend::Factory::CreateDrawingInterface(WindowBackend);
+    InputBackend = ssGUI::Backend::Factory::CreateInputInterface();
 }
 
 //========================================================================================
@@ -87,7 +87,7 @@ void CleanUp()
     ssGUI::Factory::Dispose(DrawingBackend);
     ssGUI::Factory::Dispose(WindowBackend);
     ssGUI::Factory::Dispose(InputBackend);
-    ssGUI::Backend::BackendFactory::Cleanup();
+    ssGUI::Backend::Factory::Cleanup();
 }
 
 void Instructions()

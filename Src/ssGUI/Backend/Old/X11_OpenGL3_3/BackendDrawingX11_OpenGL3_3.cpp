@@ -37,16 +37,16 @@ namespace Backend
     }
     
     //TODO: Move to common method
-    ssGUI::Backend::BackendMainWindowInterface* BackendDrawingX11_OpenGL3_3::GetMainWindow()
+    ssGUI::Backend::MainWindowInterface* BackendDrawingX11_OpenGL3_3::GetMainWindow()
     {
         //Check correct backend index
         if(BackendIndex >= ssGUI::Backend::BackendManager::GetMainWindowCount())
             BackendIndex = 0;
         
         if(ssGUI::Backend::BackendManager::GetDrawingInterface(BackendIndex) != 
-            static_cast<ssGUI::Backend::BackendDrawingInterface*>(this))
+            static_cast<ssGUI::Backend::DrawingInterface*>(this))
         {
-            BackendIndex = ssGUI::Backend::BackendManager::GetDrawingInterfaceIndex(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+            BackendIndex = ssGUI::Backend::BackendManager::GetDrawingInterfaceIndex(static_cast<ssGUI::Backend::DrawingInterface*>(this));
         }
 
         return ssGUI::Backend::BackendManager::GetMainWindowInterface(BackendIndex);
@@ -56,7 +56,7 @@ namespace Backend
     {
         if(OpenGLCommon == nullptr)
         {
-            ssGUI::Backend::BackendMainWindowInterface* mainWindow = GetMainWindow();
+            ssGUI::Backend::MainWindowInterface* mainWindow = GetMainWindow();
             OpenGLCommon = new ssGUI::Backend::OpenGL3_3_Common(mainWindow);
         }
     }
@@ -67,7 +67,7 @@ namespace Backend
                                                                     ImageTextures(),
                                                                     OpenGLCommon(nullptr)
     {
-        ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));   
+        ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::DrawingInterface*>(this));   
     }
 
     BackendDrawingX11_OpenGL3_3::~BackendDrawingX11_OpenGL3_3()
@@ -76,7 +76,7 @@ namespace Backend
         for(auto it = ImageTextures.begin(); it != ImageTextures.end(); it++)
             it->first->Internal_RemoveBackendDrawingRecord(this);
     
-        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::DrawingInterface*>(this));
         
         if(OpenGLCommon != nullptr)
             delete OpenGLCommon;
@@ -108,7 +108,7 @@ namespace Backend
 
     void BackendDrawingX11_OpenGL3_3::Render(glm::u8vec3 clearColor)
     {
-        ssGUI::Backend::BackendMainWindowInterface* mainWindow = GetMainWindow();
+        ssGUI::Backend::MainWindowInterface* mainWindow = GetMainWindow();
         InitializeOpenGLCommonIfNeeded();
         DrawToBackBuffer();
         
@@ -136,7 +136,7 @@ namespace Backend
         GL_CHECK_ERROR( glClear(GL_COLOR_BUFFER_BIT); );
     }
     
-    void BackendDrawingX11_OpenGL3_3::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingX11_OpenGL3_3::AddImageCache(ssGUI::Backend::ImageInterface* backendImage)
     {
         InitializeOpenGLCommonIfNeeded();
         if(!OpenGLCommon->AddImageCache(backendImage))
@@ -148,14 +148,14 @@ namespace Backend
         backendImage->Internal_AddBackendDrawingRecord(this);
     }
     
-    void BackendDrawingX11_OpenGL3_3::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingX11_OpenGL3_3::RemoveImageCache(ssGUI::Backend::ImageInterface* backendImage)
     {
         InitializeOpenGLCommonIfNeeded();
         OpenGLCommon->RemoveImageCache(backendImage);
         backendImage->Internal_RemoveBackendDrawingRecord(this);
     }
     
-    void* BackendDrawingX11_OpenGL3_3::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    void* BackendDrawingX11_OpenGL3_3::GetRawImageCacheHandle(ssGUI::Backend::ImageInterface* backendImage)
     {
         return nullptr;
     }

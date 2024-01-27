@@ -708,7 +708,7 @@ namespace Extensions
     void Layout::ConstructRenderInfo()
     {}
 
-    void Layout::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Layout::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     const std::string Layout::EXTENSION_NAME = "Layout";
@@ -954,7 +954,7 @@ namespace Extensions
         }
     }
 
-    void Layout::ForceUpdateLayout( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Layout::ForceUpdateLayout( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
@@ -1119,7 +1119,7 @@ namespace Extensions
 
     //Override from Extension
     void Layout::Internal_Update(   bool isPreUpdate, 
-                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
@@ -1225,7 +1225,7 @@ namespace Extensions
         AssignPositionsAndSizesToChildren(childrenPos, childrenSize);
     }
 
-    void Layout::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Layout::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     std::string Layout::GetExtensionName() const

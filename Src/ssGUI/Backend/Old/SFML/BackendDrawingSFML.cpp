@@ -47,7 +47,7 @@ namespace Backend
                                                 #endif
                                                 endVar(nullptr)
     {
-        ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+        ssGUI::Backend::BackendManager::AddDrawingInterface(static_cast<ssGUI::Backend::DrawingInterface*>(this));
     }
 
     BackendDrawingSFML::~BackendDrawingSFML()
@@ -58,7 +58,7 @@ namespace Backend
                 it->first->Internal_RemoveBackendDrawingRecord(this);
         #endif
         
-        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+        ssGUI::Backend::BackendManager::RemoveDrawingInterface(static_cast<ssGUI::Backend::DrawingInterface*>(this));
     }
 
     void BackendDrawingSFML::SaveDrawingState()
@@ -108,9 +108,9 @@ namespace Backend
             BackendIndex = 0;
         
         if(ssGUI::Backend::BackendManager::GetDrawingInterface(BackendIndex) != 
-            static_cast<ssGUI::Backend::BackendDrawingInterface*>(this))
+            static_cast<ssGUI::Backend::DrawingInterface*>(this))
         {
-            BackendIndex = ssGUI::Backend::BackendManager::GetDrawingInterfaceIndex(static_cast<ssGUI::Backend::BackendDrawingInterface*>(this));
+            BackendIndex = ssGUI::Backend::BackendManager::GetDrawingInterfaceIndex(static_cast<ssGUI::Backend::DrawingInterface*>(this));
         }
 
         //Check if the main window is already closed
@@ -176,7 +176,7 @@ namespace Backend
     }
     
     
-    void BackendDrawingSFML::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingSFML::AddImageCache(ssGUI::Backend::ImageInterface* backendImage)
     {
         #if !defined(SSGUI_IMAGE_BACKEND_SFML)
             if(!backendImage->IsValid())
@@ -222,7 +222,7 @@ namespace Backend
         #endif
     }
     
-    void BackendDrawingSFML::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void BackendDrawingSFML::RemoveImageCache(ssGUI::Backend::ImageInterface* backendImage)
     {
         #ifndef SSGUI_IMAGE_BACKEND_SFML
             if(ImageTextures.find(backendImage) != ImageTextures.end())
@@ -233,7 +233,7 @@ namespace Backend
         #endif
     }
     
-    void* BackendDrawingSFML::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    void* BackendDrawingSFML::GetRawImageCacheHandle(ssGUI::Backend::ImageInterface* backendImage)
     {
         #if !defined(SSGUI_IMAGE_BACKEND_SFML)
             if(ImageTextures.find(backendImage) == ImageTextures.end())
@@ -249,7 +249,7 @@ namespace Backend
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
                                         const uint32_t character,
-                                        const ssGUI::Backend::BackendFontInterface& font,
+                                        const ssGUI::Backend::FontInterface& font,
                                         int characterSize)
     {
         if(!font.IsValid())
@@ -292,7 +292,7 @@ namespace Backend
         //Using generic font interface
         #else
             //TODO: Fix this and don't use const cast
-            ssGUI::Backend::BackendFontInterface* rawFont = const_cast<ssGUI::Backend::BackendFontInterface*>(&font);
+            ssGUI::Backend::FontInterface* rawFont = const_cast<ssGUI::Backend::FontInterface*>(&font);
 
             //load character and check size
             ssGUI::CharacterRenderInfo info = rawFont->GetCharacterRenderInfo(character, characterSize);
@@ -306,7 +306,7 @@ namespace Backend
             //If we don't have this character stored, add it
             if(CharTextures.find(id) == CharTextures.end())
             {                
-                //ssGUI::Backend::BackendFontInterface* freeTypeFont = static_cast<ssGUI::Backend::BackendFontFreeType*>(rawFont); 
+                //ssGUI::Backend::FontInterface* freeTypeFont = static_cast<ssGUI::Backend::BackendFontFreeType*>(rawFont); 
                 ssGUI::ImageData imgData;
 
                 //If failed to import, clean up and exit
@@ -317,7 +317,7 @@ namespace Backend
                 }
                 
                 #ifdef SSGUI_IMAGE_BACKEND_SFML
-                    CharTextures[id] = *static_cast<sf::Texture*>(imgData.GetBackendImageInterface()->GetRawHandle());
+                    CharTextures[id] = *static_cast<sf::Texture*>(imgData.GetImageInterface()->GetRawHandle());
                 #else
 
                     ssGUI::ImageFormat imgFmt;
@@ -364,7 +364,7 @@ namespace Backend
     bool BackendDrawingSFML::DrawShape( const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
-                                        const ssGUI::Backend::BackendImageInterface& image)
+                                        const ssGUI::Backend::ImageInterface& image)
     {
         if(!image.IsValid())
         {
@@ -398,7 +398,7 @@ namespace Backend
         //Using generic Image interface
         #else            
             //TODO: Again same thing, change const to avoid const cast
-            auto imgPtr = const_cast<ssGUI::Backend::BackendImageInterface*>(&image);
+            auto imgPtr = const_cast<ssGUI::Backend::ImageInterface*>(&image);
 
             AddImageCache(imgPtr);
             

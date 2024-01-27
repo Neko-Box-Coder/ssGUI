@@ -50,7 +50,7 @@ int main()
     (
         [&]()
         {
-            ssGUI::Backend::BackendSystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
+            ssGUI::Backend::SystemInputInterface* inputInterface = guiManager.GetBackendInputInterface();
 
             // if(inputInterface->GetCurrentMouseButton(ssGUI::Enums::MouseButton::RIGHT) &&
             //     !inputInterface->GetLastMouseButton(ssGUI::Enums::MouseButton::RIGHT))

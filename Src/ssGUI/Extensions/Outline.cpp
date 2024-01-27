@@ -433,7 +433,7 @@ nextVertex (n)    (a)                   curVertex
         
     }
 
-    void Outline::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Outline::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //If you need the drawingInterface or mainWindow, do it here.
 
@@ -610,7 +610,7 @@ nextVertex (n)    (a)                   curVertex
 
     //Extension methods
     void Outline::Internal_Update(  bool isPreUpdate, 
-                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
@@ -621,7 +621,7 @@ nextVertex (n)    (a)                   curVertex
             return;
     }
 
-    void Outline::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Outline::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         ssGUI_LOG_FUNC();
 

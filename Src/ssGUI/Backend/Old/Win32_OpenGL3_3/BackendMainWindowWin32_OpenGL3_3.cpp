@@ -572,7 +572,7 @@ namespace Backend
         glm::ivec2 windowSize = GetWindowSize();
         ssGUI_CreateWindow(windowSize.x, windowSize.y, true, CLASS_NAME);
         
-        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
 
     BackendMainWindowWin32_OpenGL3_3::BackendMainWindowWin32_OpenGL3_3() :  CurrentWindowHandle(nullptr),
@@ -607,7 +607,7 @@ namespace Backend
 
         ssGUI_CreateWindow(0, 0, true, CLASS_NAME);
 
-        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
 
     BackendMainWindowWin32_OpenGL3_3::~BackendMainWindowWin32_OpenGL3_3()
@@ -617,7 +617,7 @@ namespace Backend
             ssGUI_DestroyWindow();
         }
 
-        ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
     
     void BackendMainWindowWin32_OpenGL3_3::SetWindowPosition(glm::ivec2 pos)
@@ -825,7 +825,7 @@ namespace Backend
         return Title;
     }
 
-    void BackendMainWindowWin32_OpenGL3_3::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
+    void BackendMainWindowWin32_OpenGL3_3::SetIcon(const ssGUI::Backend::ImageInterface& iconImage)
     {
         //From https://stackoverflow.com/questions/41533158/create-32-bit-color-icon-programmatically
         ICONINFO iconInfo = 
@@ -1148,7 +1148,7 @@ namespace Backend
         return success;
     }
 
-    ssGUI::Backend::BackendMainWindowInterface* BackendMainWindowWin32_OpenGL3_3::Clone()
+    ssGUI::Backend::MainWindowInterface* BackendMainWindowWin32_OpenGL3_3::Clone()
     {
         return new BackendMainWindowWin32_OpenGL3_3(*this);
     }

@@ -26,7 +26,7 @@ namespace Backend
         CurrentWindow.create(sf::VideoMode(sf::Vector2u(oriRenderSize.x, oriRenderSize.y)), "", sf::Style::Default, sf::ContextSettings(24));
         ResetWindow(CurrentWindowMode, Resizable, Titlebar, CloseButton, other.GetAntiAliasingLevel());
         
-        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
     
     void BackendMainWindowSFML::ResetWindow(ssGUI::Enums::WindowMode mode, bool resize, bool titlebar, bool canClose, int msaa)
@@ -88,12 +88,12 @@ namespace Backend
                                                         IsClosingAborted(false),
                                                         PositionOffset()
     {
-        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
 
     BackendMainWindowSFML::~BackendMainWindowSFML()
     {
-        ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
 
     void wrapper(BackendMainWindowSFML* target)
@@ -195,7 +195,7 @@ namespace Backend
         return Title;
     }
 
-    void BackendMainWindowSFML::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
+    void BackendMainWindowSFML::SetIcon(const ssGUI::Backend::ImageInterface& iconImage)
     {
         ssGUI::Backend::BackendImageSFML& castedIcon = (ssGUI::Backend::BackendImageSFML&)iconImage;
         sf::Image sfImg = (*static_cast<sf::Texture*>(castedIcon.GetRawHandle())).copyToImage();
@@ -314,7 +314,7 @@ namespace Backend
         return CurrentWindow.setActive();
     }
 
-    ssGUI::Backend::BackendMainWindowInterface* BackendMainWindowSFML::Clone()
+    ssGUI::Backend::MainWindowInterface* BackendMainWindowSFML::Clone()
     {
         return new BackendMainWindowSFML(*this);
     }

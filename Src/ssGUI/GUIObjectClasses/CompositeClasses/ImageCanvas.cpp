@@ -154,7 +154,7 @@ namespace ssGUI
         imageEntity.Vertices.push_back(imgVertices[2]);
         imageEntity.Vertices.push_back(imgVertices[3]);
 
-        imageEntity.BackendImage = ImageData->GetBackendImageInterface();
+        imageEntity.BackendImage = ImageData->GetImageInterface();
         
         imageEntity.TexCoords.push_back(glm::vec2(0, 0));
         imageEntity.TexCoords.push_back(glm::vec2(GetImageData()->GetSize().x, 0));
@@ -237,7 +237,7 @@ namespace ssGUI
     const std::string ImageCanvas::ListenerKey = "Image Canvas";
     const std::string ImageCanvas::IMAGE_CANVAS_IMAGE_SHAPE_NAME = "Image Canvas Image";
 
-    void ImageCanvas::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void ImageCanvas::MainLogic(ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
@@ -317,7 +317,7 @@ namespace ssGUI
                         }
                         else
                         {
-                            inputInterface->CreateCustomCursor(DefaultRotationCursor->GetBackendImageInterface(), "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
+                            inputInterface->CreateCustomCursor(DefaultRotationCursor->GetImageInterface(), "RotationCursor", glm::ivec2(30, 30), glm::ivec2(15, 15));
                         }
                     }
 

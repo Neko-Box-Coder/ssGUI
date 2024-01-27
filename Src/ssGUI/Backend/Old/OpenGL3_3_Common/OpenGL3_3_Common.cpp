@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/OpenGL3_3_Common/OpenGL3_3_Common.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
+#include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -203,7 +203,7 @@ namespace Backend
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
                                         const uint32_t character,
-                                        const ssGUI::Backend::BackendFontInterface& font,
+                                        const ssGUI::Backend::FontInterface& font,
                                         int characterSize)
     {
         if(!font.IsValid())
@@ -218,7 +218,7 @@ namespace Backend
             return false;
         }
 
-        auto& rawFont = const_cast<ssGUI::Backend::BackendFontInterface&>(font);
+        auto& rawFont = const_cast<ssGUI::Backend::FontInterface&>(font);
 
         CharTextureIdentifier curIdentifier = CharTextureIdentifier(&rawFont, characterSize, character);
         
@@ -261,7 +261,7 @@ namespace Backend
     bool OpenGL3_3_Common::DrawShape(   const std::vector<glm::vec2>& vertices, 
                                         const std::vector<glm::vec2>& texCoords,
                                         const std::vector<glm::u8vec4>& colors,
-                                        const ssGUI::Backend::BackendImageInterface& image)
+                                        const ssGUI::Backend::ImageInterface& image)
     {
         if(!image.IsValid())
         {
@@ -275,13 +275,13 @@ namespace Backend
             return false;
         }
         
-        if(MappedImgIds.find((ssGUI::Backend::BackendImageInterface*)&image) == MappedImgIds.end())
+        if(MappedImgIds.find((ssGUI::Backend::ImageInterface*)&image) == MappedImgIds.end())
         {
-            if(!AddImageCache((ssGUI::Backend::BackendImageInterface*)&image))
+            if(!AddImageCache((ssGUI::Backend::ImageInterface*)&image))
                 return false;
         }
         
-        int atlasId = MappedImgIds.at((ssGUI::Backend::BackendImageInterface*)&image);
+        int atlasId = MappedImgIds.at((ssGUI::Backend::ImageInterface*)&image);
         
         DynamicImageAtlas::ImageAtlasImageInfo returnInfo;
         if(!CurrentImageAtlas->GetImageInfo(atlasId, returnInfo))
@@ -706,8 +706,8 @@ namespace Backend
     }
     
     //Explicit template instantiations
-    template bool OpenGL3_3_Common::AddDrawingCache(std::unordered_map<ssGUI::Backend::BackendImageInterface*, int>& cachedIds, 
-                                                    ssGUI::Backend::BackendImageInterface* key,
+    template bool OpenGL3_3_Common::AddDrawingCache(std::unordered_map<ssGUI::Backend::ImageInterface*, int>& cachedIds, 
+                                                    ssGUI::Backend::ImageInterface* key,
                                                     glm::ivec2 textureSize, 
                                                     const void* rgba32Pixels);
     
@@ -716,14 +716,14 @@ namespace Backend
                                                     glm::ivec2 textureSize, 
                                                     const void* rgba32Pixels);
 
-    template bool OpenGL3_3_Common::RemoveDrawingCache( std::unordered_map<ssGUI::Backend::BackendImageInterface*, int>& cachedIds, 
-                                                        ssGUI::Backend::BackendImageInterface* key);
+    template bool OpenGL3_3_Common::RemoveDrawingCache( std::unordered_map<ssGUI::Backend::ImageInterface*, int>& cachedIds, 
+                                                        ssGUI::Backend::ImageInterface* key);
     
     
     template bool OpenGL3_3_Common::RemoveDrawingCache( std::unordered_map<OpenGL3_3_Common::CharTextureIdentifier*, int>& cachedIds, 
                                                         OpenGL3_3_Common::CharTextureIdentifier* key);
 
-    OpenGL3_3_Common::OpenGL3_3_Common( BackendMainWindowInterface* mainWindow) :   ProgramId(0),
+    OpenGL3_3_Common::OpenGL3_3_Common( MainWindowInterface* mainWindow) :   ProgramId(0),
                                                                                     CachedImages(0),
                                                                                     VAO(0),
                                                                                     VertsVBO(0),
@@ -1015,7 +1015,7 @@ namespace Backend
         if(MappedFontIds.find(charTexture) != MappedFontIds.end())
             return true;
 
-        auto& rawFont = const_cast<ssGUI::Backend::BackendFontInterface&>(*std::get<0>(charTexture));
+        auto& rawFont = const_cast<ssGUI::Backend::FontInterface&>(*std::get<0>(charTexture));
 
         ssGUI::ImageData charImgData;
         if(!rawFont.GetCharacterImage(std::get<2>(charTexture), std::get<1>(charTexture), charImgData))
@@ -1037,7 +1037,7 @@ namespace Backend
         return true;
     }
     
-    bool OpenGL3_3_Common::AddImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    bool OpenGL3_3_Common::AddImageCache(ssGUI::Backend::ImageInterface* backendImage)
     {
         if(!backendImage->IsValid())
             return false;
@@ -1068,7 +1068,7 @@ namespace Backend
         MappedFontIds.erase(charTexture);
     }
     
-    void OpenGL3_3_Common::RemoveImageCache(ssGUI::Backend::BackendImageInterface* backendImage)
+    void OpenGL3_3_Common::RemoveImageCache(ssGUI::Backend::ImageInterface* backendImage)
     {
         if(MappedImgIds.find(backendImage) == MappedImgIds.end())
             return;
@@ -1147,7 +1147,7 @@ namespace Backend
         LoadLastViewport();
     }
     
-    void* OpenGL3_3_Common::GetRawImageCacheHandle(ssGUI::Backend::BackendImageInterface* backendImage)
+    void* OpenGL3_3_Common::GetRawImageCacheHandle(ssGUI::Backend::ImageInterface* backendImage)
     {
         //TODO
     

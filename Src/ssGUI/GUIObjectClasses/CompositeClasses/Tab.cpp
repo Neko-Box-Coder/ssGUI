@@ -136,7 +136,7 @@ namespace ssGUI
         CloseButton = CurrentObjectsReferences.AddObjectReference(closeButton);
     }
 
-    void Tab::MainLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface,
+    void Tab::MainLogic(ssGUI::Backend::SystemInputInterface* inputInterface,
                         ssGUI::InputStatus& currentInputStatus,
                         ssGUI::InputStatus& lastInputStatus,
                         ssGUI::GUIObject* mainWindow)

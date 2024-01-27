@@ -9,12 +9,12 @@ int main()
 {
 
     ssGUI::Font f;
-    if(!f.GetBackendFontInterface()->LoadFromPath("./Resources/NotoSans-Regular.ttf"))
+    if(!f.GetFontInterface()->LoadFromPath("./Resources/NotoSans-Regular.ttf"))
         return -1;
     
     
     ssGUI::ImageData imgData;
-    if(!f.GetBackendFontInterface()->GetCharacterImage(L'B', 200, imgData))
+    if(!f.GetFontInterface()->GetCharacterImage(L'B', 200, imgData))
         return -1;
     
     std::ofstream outputStream("./output.fontImage", std::ios::out | std::ios::binary);

@@ -1,6 +1,6 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
-#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Factory.hpp"
+#include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/HeaderGroups/InputGroup.hpp"
@@ -8,9 +8,9 @@
 
 #include <thread>
 
-ssGUI::Backend::BackendDrawingInterface* BackendDrawing = nullptr;
-ssGUI::Backend::BackendMainWindowInterface* TestWindow = nullptr;
-ssGUI::Backend::BackendSystemInputInterface* BackendInput = nullptr;
+ssGUI::Backend::DrawingInterface* BackendDrawing = nullptr;
+ssGUI::Backend::MainWindowInterface* TestWindow = nullptr;
+ssGUI::Backend::SystemInputInterface* BackendInput = nullptr;
 
 ssGUI::ImageData TestImage;
 
@@ -25,10 +25,10 @@ int FocusEventIndex = -1;
 
 void SetUp()
 {
-    ssGUI::Backend::BackendFactory::Initialize();
-    TestWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
-    BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(TestWindow);
-    BackendInput = ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+    ssGUI::Backend::Factory::Initialize();
+    TestWindow = ssGUI::Backend::Factory::CreateMainWindowInterface();
+    BackendDrawing = ssGUI::Backend::Factory::CreateDrawingInterface(TestWindow);
+    BackendInput = ssGUI::Backend::Factory::CreateInputInterface();
 }
 
 void CleanUp()
@@ -36,7 +36,7 @@ void CleanUp()
     ssGUI::Factory::Dispose(BackendDrawing);
     ssGUI::Factory::Dispose(TestWindow);
     ssGUI::Factory::Dispose(BackendInput);
-    ssGUI::Backend::BackendFactory::Cleanup();
+    ssGUI::Backend::Factory::Cleanup();
 }
 
 void GenerateImage()
@@ -78,7 +78,7 @@ void SetIconTest()
     if( !BackendInput->IsInputExistLastFrame(ssGUI::Enums::NumberKey::ONE) &&
         BackendInput->IsInputExistCurrentFrame(ssGUI::Enums::NumberKey::ONE))
     {
-        TestWindow->SetIcon(*TestImage.GetBackendImageInterface());
+        TestWindow->SetIcon(*TestImage.GetImageInterface());
         ssLOG_SIMPLE("Icon set, you should be able to see a RGB column icon.");
     }
 }
@@ -135,7 +135,7 @@ void AddFocusChangedByUserEventTest()
         {
             FocusEventIndex = TestWindow->AddFocusChangedByUserEvent
             (
-                [](ssGUI::Backend::BackendMainWindowInterface* mainWindow, bool focus)
+                [](ssGUI::Backend::MainWindowInterface* mainWindow, bool focus)
                 {
                     ssLOG_SIMPLE("Focus event called: "<<focus);
                 }

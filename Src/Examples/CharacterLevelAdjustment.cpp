@@ -15,12 +15,12 @@ int main()
     
     ssGUI::Font boldFont;
     ssGUI::Font normalFont;
-    if(!boldFont.GetBackendFontInterface()->LoadFromMemory((void*)ssGUI_Example_NotoSans_Bold, ssGUI_Example_NotoSans_Bold_size))
+    if(!boldFont.GetFontInterface()->LoadFromMemory((void*)ssGUI_Example_NotoSans_Bold, ssGUI_Example_NotoSans_Bold_size))
     {
         std::cout<<"failed to import font\n";
         return 0;
     }
-    if(!normalFont.GetBackendFontInterface()->LoadFromMemory((void*)NotoSans_Regular, NotoSans_Regular_size))
+    if(!normalFont.GetFontInterface()->LoadFromMemory((void*)NotoSans_Regular, NotoSans_Regular_size))
     {
         std::cout<<"failed to import font\n";
         return 0;

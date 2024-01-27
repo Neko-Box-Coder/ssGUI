@@ -1,5 +1,5 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
-#include "ssGUI/Backend/Interfaces/BackendImageInterface.hpp"
+#include "ssGUI/Backend/Factory.hpp"
+#include "ssGUI/Backend/Interfaces/ImageInterface.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssTest.hpp"
 #include "TestsResources.h"
@@ -8,7 +8,7 @@
 #include <fstream>
 #include <thread>
 
-ssGUI::Backend::BackendImageInterface* TestImage = nullptr;
+ssGUI::Backend::ImageInterface* TestImage = nullptr;
 
 #ifdef SSGUI_IMAGE_BACKEND_MOCK
     #include "ssGUI/Backend/Mocks/BackendImageMock.hpp"
@@ -33,14 +33,14 @@ int main()
 
     ssTEST_SET_UP
     {
-        ssGUI::Backend::BackendFactory::Initialize();
-        TestImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
+        ssGUI::Backend::Factory::Initialize();
+        TestImage = ssGUI::Backend::Factory::CreateImageInterface();
     };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(TestImage);
-        ssGUI::Backend::BackendFactory::Cleanup();
+        ssGUI::Backend::Factory::Cleanup();
     };
 
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
@@ -371,7 +371,7 @@ int main()
                                 .Returns(glm::ivec2(imgWidth, imgWidth));
         #endif
     
-        ssGUI::Backend::BackendImageInterface* clonedImg = TestImage->Clone();
+        ssGUI::Backend::ImageInterface* clonedImg = TestImage->Clone();
         
         ssTEST_OUTPUT_ASSERT(   clonedImg != nullptr &&
                                 clonedImg->GetSize().x == TestImage->GetSize().x &&

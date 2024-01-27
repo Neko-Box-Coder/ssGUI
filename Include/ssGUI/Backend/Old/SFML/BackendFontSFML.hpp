@@ -1,7 +1,7 @@
 #ifndef SSGUI_BACKEND_FONT_SFML_H
 #define SSGUI_BACKEND_FONT_SFML_H
 
-#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/FontInterface.hpp"
 #include "SFML/Graphics.hpp"
 
 namespace ssGUI
@@ -11,7 +11,7 @@ namespace ssGUI
 namespace Backend
 {
     /*class: ssGUI::Backend::BackendFontSFML
-    For functions explainations, please see <BackendFontInterface>. Normally you don't need to deal with this class
+    For functions explainations, please see <FontInterface>. Normally you don't need to deal with this class
 
     Variables & Constructor:
     =============================== C++ ===============================
@@ -26,7 +26,7 @@ namespace Backend
     }
     ===================================================================
     */
-    class BackendFontSFML : public BackendFontInterface
+    class BackendFontSFML : public FontInterface
     {
         private:
             sf::Font Font;      //See <GetRawHandle>
@@ -46,44 +46,44 @@ namespace Backend
             sf::Font* GetSFMLFont();
             
             //function: IsValid
-            //See <BackendFontInterface::IsValid>
+            //See <FontInterface::IsValid>
             bool IsValid() const override;
             
             //function: GetCharacterRenderInfo
-            //See <BackendFontInterface::GetCharacterRenderInfo>
+            //See <FontInterface::GetCharacterRenderInfo>
             ssGUI::CharacterRenderInfo GetCharacterRenderInfo(wchar_t charUnicode, float charSize) override;
             
             //function: IsCharacterSupported
-            //See <BackendFontInterface::IsCharacterSupported>
+            //See <FontInterface::IsCharacterSupported>
             bool IsCharacterSupported(wchar_t charUnicode) override;
             
             //function: GetKerning
             //For fixed size font, this is undefined.
-            //See <BackendFontInterface::GetKerning>
+            //See <FontInterface::GetKerning>
             float GetKerning(wchar_t charUnicode, wchar_t secondCharUnicode, float charSize) override;
             
             //function: GetLineSpacing
             //For fixed size font, this is undefined.
-            //See <BackendFontInterface::GetLineSpacing>
+            //See <FontInterface::GetLineSpacing>
             float GetLineSpacing(float charSize) override;
             
             //function: GetUnderlineOffset
             //For fixed size font, this is undefined.
-            //See <BackendFontInterface::GetUnderlineOffset>
+            //See <FontInterface::GetUnderlineOffset>
             float GetUnderlineOffset(float charSize) override;
             
             //function: GetUnderlineThickness
             //For fixed size font, this is undefined.
-            //See <BackendFontInterface::GetUnderlineThickness>
+            //See <FontInterface::GetUnderlineThickness>
             float GetUnderlineThickness(float charSize) override;
 
             //function: LoadFromPath
-            //See <BackendFontInterface::LoadFromPath>
+            //See <FontInterface::LoadFromPath>
             //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromPath(std::string path) override;
             
             //function: LoadFromMemory
-            //See <BackendFontInterface::LoadFromMemory>
+            //See <FontInterface::LoadFromMemory>
             //SFML supports: TrueType, Type 1, CFF, OpenType, SFNT, X11 PCF, Windows FNT, BDF, PFR and Type 42
             bool LoadFromMemory(void* dataPtr, int lengthInBytes) override;
 
@@ -92,16 +92,16 @@ namespace Backend
             bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) override;
 
             //function: GetCharacterImage
-            //See <BackendFontInterface::GetCharacterImage>
+            //See <FontInterface::GetCharacterImage>
             bool GetCharacterImage(wchar_t charUnicode, float charSize, ssGUI::ImageData& characterImage) override;
 
             //function: GetRawHandle
-            //See <BackendFontInterface::GetRawHandle>
+            //See <FontInterface::GetRawHandle>
             void* GetRawHandle() override;
 
             //function: Clone
-            //See <BackendFontInterface::Clone>
-            ssGUI::Backend::BackendFontInterface* Clone() override;
+            //See <FontInterface::Clone>
+            ssGUI::Backend::FontInterface* Clone() override;
     };
 }
 

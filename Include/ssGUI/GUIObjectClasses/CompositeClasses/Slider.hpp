@@ -167,7 +167,7 @@ namespace ssGUI
 
             virtual void ConstructRenderInfo() override;
 
-            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;

@@ -232,7 +232,7 @@ namespace ssGUI
 
                 virtual void UpdateOrientationsForContentsAndPreviews();
 
-                virtual bool TabbedIfNeeded(ssGUI::Backend::BackendSystemInputInterface*
+                virtual bool TabbedIfNeeded(ssGUI::Backend::SystemInputInterface*
                                                 inputInterface,
                                             ssGUI::InputStatus& inputStatus,
                                             ssGUI::InputStatus& lastInputStatus,
@@ -249,7 +249,7 @@ namespace ssGUI
                 virtual void AddDeletionToCloseButton(ssGUI::Tab* tab);
 
                 virtual void ConstructRenderInfo() override;
-                virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface*
+                virtual void ConstructRenderInfo(ssGUI::Backend::DrawingInterface*
                                                      drawingInterface,
                                                  ssGUI::GUIObject* mainWindow,
                                                  glm::vec2 mainWindowPositionOffset) override;
@@ -437,7 +437,7 @@ namespace ssGUI
                 //function: Internal_Update
                 //See <Extension::Internal_Update>
                 virtual void Internal_Update(bool isPreUpdate,
-                                             ssGUI::Backend::BackendSystemInputInterface*
+                                             ssGUI::Backend::SystemInputInterface*
                                                  inputInterface,
                                              ssGUI::InputStatus& currentInputStatus,
                                              ssGUI::InputStatus& lastInputStatus,
@@ -446,7 +446,7 @@ namespace ssGUI
                 //function: Internal_Draw
                 //See <Extension::Internal_Draw>
                 virtual void Internal_Draw(bool isPreRender,
-                                           ssGUI::Backend::BackendDrawingInterface*
+                                           ssGUI::Backend::DrawingInterface*
                                                drawingInterface,
                                            ssGUI::GUIObject* mainWindow,
                                            glm::vec2 mainWindowPositionOffset) override;

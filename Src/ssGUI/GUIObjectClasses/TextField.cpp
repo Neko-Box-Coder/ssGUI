@@ -193,7 +193,7 @@ namespace ssGUI
         RecalculateTextNeeded = true;
     }
 
-    void TextField::CaretNavigationUpdate(ssGUI::Backend::BackendSystemInputInterface* inputInterface, bool& refreshBlinkTimer, bool& blockKeys, bool& wordMode)
+    void TextField::CaretNavigationUpdate(ssGUI::Backend::SystemInputInterface* inputInterface, bool& refreshBlinkTimer, bool& blockKeys, bool& wordMode)
     {
         //Holding shift to enable selection mode
         bool selectionMode =    inputInterface->IsInputExistCurrentFrame(ssGUI::Enums::SystemKey::LEFT_SHIFT) || 
@@ -426,12 +426,12 @@ namespace ssGUI
                 if(GetCharacterDetails(lastValidIndex).Character == '\n')
                 {
                     const ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(lastValidIndex);
-                    ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+                    ssGUI::Backend::FontInterface* fontInterface = nullptr;
             
                     if(curDetail.FontIndex != -1)
-                        fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
+                        fontInterface = GetFont(curDetail.FontIndex)->GetFontInterface();
                     else
-                        fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
+                        fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetFontInterface();
                     
                     auto horiAlignment = GetTextHorizontalAlignment(); 
                     if(horiAlignment == ssGUI::Enums::AlignmentHorizontal::LEFT)
@@ -506,12 +506,12 @@ namespace ssGUI
             if(BlinkCaret || !IsInteractable() || !IsFocused())
                 return;
 
-            ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+            ssGUI::Backend::FontInterface* fontInterface = nullptr;
             
             if(GetFontsCount() > 0)
-                fontInterface = GetFont(0)->GetBackendFontInterface();
+                fontInterface = GetFont(0)->GetFontInterface();
             else if(GetDefaultFontsCount() > 0)
-                fontInterface = GetDefaultFont(0)->GetBackendFontInterface();
+                fontInterface = GetDefaultFont(0)->GetFontInterface();
             else
                 return;
 
@@ -561,7 +561,7 @@ namespace ssGUI
         }
     }
     
-    void TextField::MainLogic(  ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void TextField::MainLogic(  ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)

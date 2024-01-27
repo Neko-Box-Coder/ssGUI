@@ -236,11 +236,11 @@ namespace ssGUI
             //TODO: Rename this to GetIndexForNextLine
             virtual int GetPositionForNextLine(int curIndex);
 
-            virtual void MouseSelectionLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, glm::ivec2 currentMousePos);
+            virtual void MouseSelectionLogic(ssGUI::Backend::SystemInputInterface* inputInterface, glm::ivec2 currentMousePos);
 
             virtual void ConstructRenderInfo() override;
 
-            virtual void MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+            virtual void MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow) override;

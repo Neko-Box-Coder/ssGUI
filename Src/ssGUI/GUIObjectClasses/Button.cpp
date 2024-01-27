@@ -44,7 +44,7 @@ namespace ssGUI
             GetEventCallback(ssGUI::Enums::EventType::BUTTON_STATE_CHANGED)->Notify(static_cast<ssGUI::GUIObject*>(this));
     }
 
-    void Button::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Button::MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
                             ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)

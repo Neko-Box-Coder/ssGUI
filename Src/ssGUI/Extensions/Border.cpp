@@ -157,7 +157,7 @@ namespace Extensions
         DrawBorder();
     }
 
-    void Border::ConstructRenderInfo(   ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+    void Border::ConstructRenderInfo(   ssGUI::Backend::DrawingInterface* drawingInterface, 
                                         ssGUI::GUIObject* mainWindow, 
                                         glm::vec2 mainWindowPositionOffset)
     {
@@ -256,7 +256,7 @@ namespace Extensions
     }
 
     void Border::Internal_Update(   bool isPreUpdate, 
-                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
@@ -264,7 +264,7 @@ namespace Extensions
         //Do nothing
     }
     
-    void Border::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Border::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         if(isPreRender || Container == nullptr || Container->GetType() == ssGUI::Enums::GUIObjectType::MAIN_WINDOW || !Enabled)
             return;

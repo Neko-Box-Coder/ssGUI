@@ -1,7 +1,7 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
-#include "ssGUI/Backend/Interfaces/BackendMainWindowInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Factory.hpp"
+#include "ssGUI/Backend/Interfaces/MainWindowInterface.hpp"
+#include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/Factory.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -12,16 +12,16 @@
 
 int main()
 {
-    ssGUI::Backend::BackendFactory::Initialize();
+    ssGUI::Backend::Factory::Initialize();
     
-    ssGUI::Backend::BackendMainWindowInterface* BackendWindow = 
-        ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
+    ssGUI::Backend::MainWindowInterface* BackendWindow = 
+        ssGUI::Backend::Factory::CreateMainWindowInterface();
     
-    ssGUI::Backend::BackendDrawingInterface* BackendDrawing = 
-        ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface(BackendWindow);
+    ssGUI::Backend::DrawingInterface* BackendDrawing = 
+        ssGUI::Backend::Factory::CreateDrawingInterface(BackendWindow);
     
-    ssGUI::Backend::BackendSystemInputInterface* BackendInput = 
-        ssGUI::Backend::BackendFactory::CreateBackendInputInterface();
+    ssGUI::Backend::SystemInputInterface* BackendInput = 
+        ssGUI::Backend::Factory::CreateInputInterface();
 
     //std::vector<glm::vec2> pos {glm::ivec2(100, 100), glm::ivec2(100, 50), glm::ivec2(50, 50) };
     //std::vector<glm::vec2> uv;
@@ -50,7 +50,7 @@ int main()
     ssGUI::Factory::Dispose(BackendDrawing);
     ssGUI::Factory::Dispose(BackendWindow);
     ssGUI::Factory::Dispose(BackendInput);
-    ssGUI::Backend::BackendFactory::Cleanup();
+    ssGUI::Backend::Factory::Cleanup();
 
     return 0;
 }

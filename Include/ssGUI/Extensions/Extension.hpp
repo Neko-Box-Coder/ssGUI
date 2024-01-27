@@ -2,8 +2,8 @@
 #define SSGUI_EXTENSION_H
 
 #include "ssGUI/Factory.hpp"
-#include "ssGUI/Backend/Interfaces/BackendSystemInputInterface.hpp"
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Interfaces/SystemInputInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include "ssGUI/DataClasses/InputStatus.hpp"
 #include "ssGUI/DataClasses/ObjectsReferences.hpp"
 #include "glm/vec2.hpp"
@@ -38,7 +38,7 @@ namespace Extensions
             static void operator delete(void* p)        {free(p);};
             static void operator delete[](void* p)      {free(p);};
             virtual void ConstructRenderInfo() = 0;
-            virtual void ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
+            virtual void ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
 
         public:
             virtual ~Extension() = 0;
@@ -58,14 +58,14 @@ namespace Extensions
             //function: Internal_Update
             //Updates function called every frame
             virtual void Internal_Update(   bool isPreUpdate, 
-                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::Backend::SystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
                                             ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow) = 0;
             
             //function: Internal_Draw
             //Renders function called every frame
-            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
+            virtual void Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset) = 0;
             
             //function: GetExtensionName
             //Returns this extension's name

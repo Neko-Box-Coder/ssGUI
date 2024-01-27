@@ -1,6 +1,6 @@
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 #include "ssGUI/Factory.hpp"
-#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/FontInterface.hpp"
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssTest.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
@@ -19,7 +19,7 @@
 //      Probably to do with OpenGL textures used for fonts where in the case of ssGUI on native Backend,
 //      the wgl or glx is initialized only when you create a mainWindow. This could be the same for SFML as well.
 
-ssGUI::Backend::BackendFontInterface* TestFont = nullptr;
+ssGUI::Backend::FontInterface* TestFont = nullptr;
 
 int main()
 {
@@ -49,14 +49,14 @@ int main()
 
     ssTEST_SET_UP
     {
-        ssGUI::Backend::BackendFactory::Initialize();
-        TestFont = ssGUI::Backend::BackendFactory::CreateBackendFontInterface();
+        ssGUI::Backend::Factory::Initialize();
+        TestFont = ssGUI::Backend::Factory::CreateFontInterface();
     };
 
     ssTEST_CLEAN_UP
     {
         ssGUI::Factory::Dispose(TestFont);
-        ssGUI::Backend::BackendFactory::Cleanup();
+        ssGUI::Backend::Factory::Cleanup();
     };
     
     ssTEST_DISABLE_CLEANUP_BETWEEN_TESTS();
@@ -336,13 +336,13 @@ int main()
         ssGUI::ImageData data;
         ssTEST_OUTPUT_ASSERT("Operation", TestFont->GetCharacterImage(  U'A', 
                                                                         20, 
-                                                                        *data.GetBackendImageInterface()));
+                                                                        *data.GetImageInterface()));
         
         #ifdef SSGUI_FONT_BACKEND_MOCK
             if(calledCorrectly)
             {
                 using ImageMock = ssGUI::Backend::BackendImageMock;
-                auto& imgBackendMock = *static_cast<ImageMock*>(data.GetBackendImageInterface());
+                auto& imgBackendMock = *static_cast<ImageMock*>(data.GetImageInterface());
                 
                 CO_OVERRIDE_RETURNS (imgBackendMock, GetSize())
                                     .Returns(glm::ivec2(15, 15));
@@ -382,7 +382,7 @@ int main()
                                 .Otherwise_Do([](...){ssGUI_ERROR(0, "Failed");});
         #endif
     
-        ssGUI::Backend::BackendFontInterface* clonedFont = TestFont->Clone();
+        ssGUI::Backend::FontInterface* clonedFont = TestFont->Clone();
         ssTEST_OUTPUT_ASSERT("Validation", clonedFont != nullptr);
         
         glm::vec2 fontSize = clonedFont->GetCharacterRenderInfo(L'A', 20).Size;

@@ -1,5 +1,5 @@
-#ifndef SSGUI_BACKEND_FONT_INTERFACE_HPP
-#define SSGUI_BACKEND_FONT_INTERFACE_HPP
+#ifndef SSGUI_FONT_INTERFACE_HPP
+#define SSGUI_FONT_INTERFACE_HPP
 
 #include "ssGUI/DataClasses/CharacterRenderInfo.hpp"
 
@@ -13,14 +13,14 @@ namespace ssGUI
 //namespace: ssGUI::Backend
 namespace Backend
 {
-    class BackendImageInterface;
+    class ImageInterface;
     
-    //class: ssGUI::Backend::BackendFontInterface
-    class BackendFontInterface
+    //class: ssGUI::Backend::FontInterface
+    class FontInterface
     {   
         public:
-            BackendFontInterface(){}
-            virtual ~BackendFontInterface() = 0;
+            FontInterface(){}
+            virtual ~FontInterface() = 0;
             
             //function: IsValid
             //Returns true if the font is loaded.
@@ -79,7 +79,7 @@ namespace Backend
             //For fixed size font behaviour, please see the backend you are using.
             virtual bool GetCharacterImage( char32_t charUnicode, 
                                             float charSize, 
-                                            BackendImageInterface& characterImage) const = 0;
+                                            ImageInterface& characterImage) const = 0;
  
             //function: GetRawHandle
             //Returns the raw pointer to the underlying backend implmentation object
@@ -87,11 +87,11 @@ namespace Backend
 
             //function: Clone
             //Clones the backend font object
-            virtual BackendFontInterface* Clone() = 0;
+            virtual FontInterface* Clone() = 0;
     };
     
     //Pure virtual destructor needs to be defined
-    inline BackendFontInterface::~BackendFontInterface(){}
+    inline FontInterface::~FontInterface(){}
 }
  
 }

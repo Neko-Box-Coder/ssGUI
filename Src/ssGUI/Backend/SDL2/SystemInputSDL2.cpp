@@ -1,11 +1,11 @@
-#include "ssGUI/Backend/SDL2/BackendSystemInputSDL2.hpp"
+#include "ssGUI/Backend/SDL2/SystemInputSDL2.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 #include "ssGUI/HelperClasses/GenericInputToString.hpp"
 #include "ssGUI/Backend/SDL2/SDL2InputConverter.hpp"
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 #include "ssGUI/HelperClasses/ImageUtil.hpp"
-#include "ssGUI/Backend/SDL2/BackendMainWindowSDL2.hpp"
+#include "ssGUI/Backend/SDL2/MainWindowSDL2.hpp"
 
 #include "clip.h"
 #include "SDL.h"
@@ -21,7 +21,7 @@ namespace ssGUI
 
 namespace Backend
 {
-    BackendSystemInputSDL2::BackendSystemInputSDL2(BackendSystemInputSDL2 const& other) : 
+    SystemInputSDL2::SystemInputSDL2(SystemInputSDL2 const& other) : 
         CurrentInputs(other.CurrentInputs),
         LastInputs(other.LastInputs),
         CurrentRealtimeInputs(other.CurrentRealtimeInputs),
@@ -39,7 +39,7 @@ namespace Backend
     {
     }
 
-    void BackendSystemInputSDL2::FetchKeysPressed(  Enums::GenericInput keysPressedDown, 
+    void SystemInputSDL2::FetchKeysPressed(  Enums::GenericInput keysPressedDown, 
                                                     std::vector<Enums::GenericInput>& destinationKeyPresses)
     {
         auto it = std::find(destinationKeyPresses.begin(), 
@@ -50,7 +50,7 @@ namespace Backend
             destinationKeyPresses.push_back(keysPressedDown);
     }
 
-    void BackendSystemInputSDL2::FetchKeysReleased( Enums::GenericInput keysReleased, 
+    void SystemInputSDL2::FetchKeysReleased( Enums::GenericInput keysReleased, 
                                                     std::vector<Enums::GenericInput>& destinationKeyPresses)
     {
         auto it = std::find(destinationKeyPresses.begin(), 
@@ -61,7 +61,7 @@ namespace Backend
             destinationKeyPresses.erase(it);
     }
     
-    BackendSystemInputSDL2::BackendSystemInputSDL2() :  CurrentInputs(),
+    SystemInputSDL2::SystemInputSDL2() :  CurrentInputs(),
                                                         LastInputs(),
                                                         CurrentRealtimeInputs(),
                                                         LastRealtimeInputs(),
@@ -80,12 +80,12 @@ namespace Backend
         SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
     }
 
-    BackendSystemInputSDL2::~BackendSystemInputSDL2()
+    SystemInputSDL2::~SystemInputSDL2()
     {
 
     }
     
-    void BackendSystemInputSDL2::UpdateInput(BackendMainWindowInterface** mainWindows, int count)
+    void SystemInputSDL2::UpdateInput(MainWindowInterface** mainWindows, int count)
     {
         LastInputs = CurrentInputs;
         LastRealtimeInputs = CurrentRealtimeInputs;
@@ -178,9 +178,9 @@ namespace Backend
                 {
                     for(int i = 0; i < count; ++i)
                     {
-                        auto* currentSDL_Window = static_cast<BackendMainWindowSDL2*>(mainWindows[i]);
+                        auto* currentSDL_Window = static_cast<MainWindowSDL2*>(mainWindows[i]);
                         
-                        using RawHandle = BackendMainWindowSDL2::SDL_RawHandle;
+                        using RawHandle = MainWindowSDL2::SDL_RawHandle;
                         auto* sdlRawHandle = static_cast<RawHandle*>(currentSDL_Window->GetRawHandle());
                         
                         if(currentEvent.window.windowID == SDL_GetWindowID(sdlRawHandle->Window))
@@ -327,60 +327,60 @@ namespace Backend
         }
     }
 
-    const std::vector<Enums::GenericInput>& BackendSystemInputSDL2::GetLastInputs() const
+    const std::vector<Enums::GenericInput>& SystemInputSDL2::GetLastInputs() const
     {
         return LastInputs;
     }
     
-    const std::vector<Enums::GenericInput>& BackendSystemInputSDL2::GetCurrentInputs() const
+    const std::vector<Enums::GenericInput>& SystemInputSDL2::GetCurrentInputs() const
     {
         return CurrentInputs;
     }
 
-    bool BackendSystemInputSDL2::IsInputExistLastFrame(Enums::GenericInput input) const
+    bool SystemInputSDL2::IsInputExistLastFrame(Enums::GenericInput input) const
     {
         return !LastInputs.empty();
     }
 
-    bool BackendSystemInputSDL2::IsInputExistCurrentFrame(Enums::GenericInput input) const
+    bool SystemInputSDL2::IsInputExistCurrentFrame(Enums::GenericInput input) const
     {
         return CurrentInputs.empty();
     }
 
     glm::ivec2 
-    BackendSystemInputSDL2::GetLastMousePosition(BackendMainWindowInterface* mainWindow) const
+    SystemInputSDL2::GetLastMousePosition(MainWindowInterface* mainWindow) const
     {
         return LastMousePosition;
     }
     
     glm::ivec2 
-    BackendSystemInputSDL2::GetCurrentMousePosition(BackendMainWindowInterface* mainWindow) const
+    SystemInputSDL2::GetCurrentMousePosition(MainWindowInterface* mainWindow) const
     {
         return CurrentMousePosition;
     }
     
-    void BackendSystemInputSDL2::SetMousePosition(  glm::ivec2 position, 
-                                                    BackendMainWindowInterface* mainWindow)
+    void SystemInputSDL2::SetMousePosition(  glm::ivec2 position, 
+                                                    MainWindowInterface* mainWindow)
     {
         SDL_WarpMouseInWindow((SDL_Window*)mainWindow->GetRawHandle(), position.x, position.y);
     }
 
-    glm::vec2 BackendSystemInputSDL2::GetCurrentMouseScrollDelta() const
+    glm::vec2 SystemInputSDL2::GetCurrentMouseScrollDelta() const
     {
         return CurrentMouseScrollDelta;
     }
 
-    const std::vector<RealtimeInputInfo>& BackendSystemInputSDL2::GetLastRealtimeInputs() const
+    const std::vector<RealtimeInputInfo>& SystemInputSDL2::GetLastRealtimeInputs() const
     {
         return LastRealtimeInputs;
     }
 
-    const std::vector<RealtimeInputInfo>& BackendSystemInputSDL2::GetCurrentRealtimeInputs() const
+    const std::vector<RealtimeInputInfo>& SystemInputSDL2::GetCurrentRealtimeInputs() const
     {
         return CurrentRealtimeInputs;
     }
 
-    void BackendSystemInputSDL2::StartTextInput(glm::ivec2 inputPos, glm::ivec2 inputSize)
+    void SystemInputSDL2::StartTextInput(glm::ivec2 inputPos, glm::ivec2 inputSize)
     {
         SDL_Rect inputRect;
         inputRect.x = inputPos.x;
@@ -393,33 +393,33 @@ namespace Backend
         SDL_StartTextInput();
     }
     
-    void BackendSystemInputSDL2::FinishTextInput()
+    void SystemInputSDL2::FinishTextInput()
     {
         SDL_StopTextInput();
     }
 
-    void BackendSystemInputSDL2::GetTextInput(std::u32string& outText) const
+    void SystemInputSDL2::GetTextInput(std::u32string& outText) const
     {
         outText = CurrentTextInput;
     }
     
-    void BackendSystemInputSDL2::GetTextInput(std::string& outText) const
+    void SystemInputSDL2::GetTextInput(std::string& outText) const
     {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
         outText = converter.to_bytes(CurrentTextInput);
     }
     
-    void BackendSystemInputSDL2::SetCursorType(Enums::CursorType cursorType)
+    void SystemInputSDL2::SetCursorType(Enums::CursorType cursorType)
     {
         CurrentCursorType = cursorType;
     }
 
-    Enums::CursorType BackendSystemInputSDL2::GetCursorType() const
+    Enums::CursorType SystemInputSDL2::GetCursorType() const
     {
         return CurrentCursorType;
     }
 
-    void BackendSystemInputSDL2::CreateCustomCursor(BackendImageInterface* customCursor, 
+    void SystemInputSDL2::CreateCustomCursor(ImageInterface* customCursor, 
                                                     std::string cursorName, 
                                                     glm::ivec2 cursorSize, 
                                                     glm::ivec2 hotspot)
@@ -446,8 +446,8 @@ namespace Backend
 
         CursorData& cursorData = CustomCursors[cursorName] = 
         {
-            std::shared_ptr<BackendImageInterface>( BackendFactory::CreateBackendImageInterface(), 
-                                                    [](BackendImageInterface* ptr)
+            std::shared_ptr<ImageInterface>( Factory::CreateImageInterface(), 
+                                                    [](ImageInterface* ptr)
                                                     { 
                                                         delete ptr; 
                                                     }),
@@ -511,7 +511,7 @@ namespace Backend
         cursorData.Hotspot = hotspot;
     }
     
-    void BackendSystemInputSDL2::SetCurrentCustomCursor(std::string cursorName)
+    void SystemInputSDL2::SetCurrentCustomCursor(std::string cursorName)
     {
         if(cursorName.empty())
         {
@@ -528,7 +528,7 @@ namespace Backend
         CurrentCustomCursorName = cursorName;
     }
 
-    void BackendSystemInputSDL2::GetCurrentCustomCursor(BackendImageInterface& customCursor, 
+    void SystemInputSDL2::GetCurrentCustomCursor(ImageInterface& customCursor, 
                                                         glm::ivec2& hotspot) const
     {
         if(CurrentCustomCursorName.empty())
@@ -537,12 +537,12 @@ namespace Backend
         GetCustomCursor(customCursor, CurrentCustomCursorName, hotspot);
     }
 
-    std::string BackendSystemInputSDL2::GetCurrentCustomCursorName() const
+    std::string SystemInputSDL2::GetCurrentCustomCursorName() const
     {
         return CurrentCustomCursorName;
     }
     
-    void BackendSystemInputSDL2::GetCustomCursor(   BackendImageInterface& customCursor, 
+    void SystemInputSDL2::GetCustomCursor(   ImageInterface& customCursor, 
                                                     std::string cursorName, 
                                                     glm::ivec2& hotspot) const
     {
@@ -570,12 +570,12 @@ namespace Backend
         hotspot = data.Hotspot;
     }
 
-    bool BackendSystemInputSDL2::HasCustomCursor(std::string cursorName) const
+    bool SystemInputSDL2::HasCustomCursor(std::string cursorName) const
     {
         return CustomCursors.find(cursorName) != CustomCursors.end();
     }
 
-    void BackendSystemInputSDL2::UpdateCursor()
+    void SystemInputSDL2::UpdateCursor()
     {
         static_assert((uint8_t)Enums::CursorType::COUNT == 16, "Not Match");
         
@@ -643,7 +643,7 @@ namespace Backend
                 if(CurrentCustomCursorName.empty())
                     break;
                 
-                BackendImageInterface* cursorImg = CustomCursors.at(CurrentCustomCursorName)
+                ImageInterface* cursorImg = CustomCursors.at(CurrentCustomCursorName)
                                                                 .CursorImage
                                                                 .get();
                 
@@ -691,40 +691,40 @@ namespace Backend
         }
     }
     
-    int BackendSystemInputSDL2::AddRawEventHandler(std::function<bool(  BackendMainWindowInterface*, 
+    int SystemInputSDL2::AddRawEventHandler(std::function<bool(  MainWindowInterface*, 
                                                                         void*)> handler)
     {
         RawEventHandlers.push_back(handler);
         return RawEventHandlers.size();
     }
     
-    void BackendSystemInputSDL2::RemoveRawEventHandler(int id)
+    void SystemInputSDL2::RemoveRawEventHandler(int id)
     {
         RawEventHandlers.at(id) = nullptr;
     }
     
-    void BackendSystemInputSDL2::ClearRawEventHandler()
+    void SystemInputSDL2::ClearRawEventHandler()
     {
         for(int i = 0; i < RawEventHandlers.size(); i++)
             RawEventHandlers.at(i) = nullptr;
     }
 
-    bool BackendSystemInputSDL2::ClearClipboard()
+    bool SystemInputSDL2::ClearClipboard()
     {
         return clip::clear();
     }
 
-    bool BackendSystemInputSDL2::ClipbaordHasText() const
+    bool SystemInputSDL2::ClipbaordHasText() const
     {
         return clip::has(clip::text_format());
     }
     
-    bool BackendSystemInputSDL2::ClipbaordHasImage() const
+    bool SystemInputSDL2::ClipbaordHasImage() const
     {
         return clip::has(clip::image_format());
     }
 
-    bool BackendSystemInputSDL2::SetClipboardImage(const BackendImageInterface& imgData)
+    bool SystemInputSDL2::SetClipboardImage(const ImageInterface& imgData)
     {
         if(!imgData.IsValid())
             return false;
@@ -779,18 +779,18 @@ namespace Backend
         return result;
     }
     
-    bool BackendSystemInputSDL2::SetClipboardText(const std::u32string& str)
+    bool SystemInputSDL2::SetClipboardText(const std::u32string& str)
     {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> codec;
         return clip::set_text(codec.to_bytes(str));
     }
     
-    bool BackendSystemInputSDL2::SetClipboardText(const std::string& str)
+    bool SystemInputSDL2::SetClipboardText(const std::string& str)
     {
         return clip::set_text(str);
     }
 
-    bool BackendSystemInputSDL2::GetClipboardImage(BackendImageInterface& imgData) const
+    bool SystemInputSDL2::GetClipboardImage(ImageInterface& imgData) const
     {
         clip::image img;
 
@@ -804,7 +804,7 @@ namespace Backend
                                             glm::ivec2(img.spec().width, img.spec().height));
     }
 
-    bool BackendSystemInputSDL2::GetClipboardText(std::u32string& str) const
+    bool SystemInputSDL2::GetClipboardText(std::u32string& str) const
     {
         std::string temp;
         if(!clip::get_text(temp))
@@ -815,7 +815,7 @@ namespace Backend
         return true;
     }
     
-    bool BackendSystemInputSDL2::GetClipboardText(std::string& str) const
+    bool SystemInputSDL2::GetClipboardText(std::string& str) const
     {
         std::string temp;
         if(!clip::get_text(temp))
@@ -825,7 +825,7 @@ namespace Backend
         return true;
     }
 
-    uint64_t BackendSystemInputSDL2::GetElapsedTime() const
+    uint64_t SystemInputSDL2::GetElapsedTime() const
     {
         using namespace std::chrono;
         using sysClock = high_resolution_clock;

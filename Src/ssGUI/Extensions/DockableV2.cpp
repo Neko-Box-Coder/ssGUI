@@ -57,7 +57,7 @@ namespace Extensions
     void DockableV2::ConstructRenderInfo()
     {}
 
-    void DockableV2::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+    void DockableV2::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, 
                                                 ssGUI::GUIObject* mainWindow, 
                                                 glm::vec2 mainWindowPositionOffset)
     {}
@@ -624,7 +624,7 @@ namespace Extensions
     }
     
     void DockableV2::Internal_Update(bool isPreUpdate, 
-                                            ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                            ssGUI::Backend::SystemInputInterface* inputInterface, 
                                             ssGUI::InputStatus& currentInputStatus, 
                                             ssGUI::InputStatus& lastInputStatus, 
                                             ssGUI::GUIObject* mainWindow)
@@ -864,7 +864,7 @@ namespace Extensions
     }
 
     void DockableV2::Internal_Draw(  bool isPreRender, 
-                                            ssGUI::Backend::BackendDrawingInterface* drawingInterface, 
+                                            ssGUI::Backend::DrawingInterface* drawingInterface, 
                                             ssGUI::GUIObject* mainWindow, 
                                             glm::vec2 mainWindowPositionOffset)
     {

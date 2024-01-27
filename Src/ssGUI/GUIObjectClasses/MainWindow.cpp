@@ -1,6 +1,6 @@
 #include "ssGUI/GUIObjectClasses/MainWindow.hpp"
 
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
@@ -9,7 +9,7 @@ namespace ssGUI
     MainWindow::MainWindow(MainWindow const& other) : Window(other)
     {
         BackendMainWindow = other.BackendMainWindow->Clone();
-        BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+        BackendDrawing = ssGUI::Backend::Factory::CreateDrawingInterface();
         LastSize = other.LastSize;
         RedrawCount = other.RedrawCount;
         LastSyncTime = other.LastSyncTime;
@@ -17,7 +17,7 @@ namespace ssGUI
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
     }
 
-    void MainWindow::MainLogic( ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void MainWindow::MainLogic( ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
@@ -29,8 +29,8 @@ namespace ssGUI
                                 RedrawCount(0),
                                 LastSyncTime(0)
     {
-        BackendMainWindow = ssGUI::Backend::BackendFactory::CreateBackendMainWindowInterface();
-        BackendDrawing = ssGUI::Backend::BackendFactory::CreateBackendDrawingInterface();
+        BackendMainWindow = ssGUI::Backend::Factory::CreateMainWindowInterface();
+        BackendDrawing = ssGUI::Backend::Factory::CreateDrawingInterface();
         BackendMainWindow->AddOnCloseEvent(std::bind(&ssGUI::MainWindow::Internal_OnClose, this));
         BackendMainWindow->AddFocusChangedByUserEvent(std::bind(&ssGUI::MainWindow::Internal_FocusChanged, this, std::placeholders::_1));
         BackendMainWindow->SetAntiAliasingLevel(8);
@@ -55,12 +55,12 @@ namespace ssGUI
         BackendDrawing->ClearBackBuffer(GetBackgroundColor());
     }
 
-    ssGUI::Backend::BackendMainWindowInterface* MainWindow::GetBackendWindowInterface()
+    ssGUI::Backend::MainWindowInterface* MainWindow::GetBackendWindowInterface()
     {
         return BackendMainWindow;
     }
 
-    ssGUI::Backend::BackendDrawingInterface* MainWindow::GetBackendDrawingInterface()
+    ssGUI::Backend::DrawingInterface* MainWindow::GetDrawingInterface()
     {
         return BackendDrawing;
     }
@@ -92,7 +92,7 @@ namespace ssGUI
 
     void MainWindow::SetIcon(ssGUI::ImageData& iconImage)
     {
-        BackendMainWindow->SetIcon(*(iconImage.GetBackendImageInterface()));
+        BackendMainWindow->SetIcon(*(iconImage.GetImageInterface()));
     }
 
     void MainWindow::SetVSync(bool vSync)
@@ -319,7 +319,7 @@ namespace ssGUI
     }
 
     //TODO : Refactor this, merge it to sync in update function
-    void MainWindow::Internal_Draw(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void MainWindow::Internal_Draw(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {       
         DisableRedrawObjectRequest();
         
@@ -378,7 +378,7 @@ namespace ssGUI
     }
 
     //TODO : Add WindowDragStateChangedEvent call
-    void MainWindow::Internal_Update(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void MainWindow::Internal_Update(   ssGUI::Backend::SystemInputInterface* inputInterface, 
                                         ssGUI::InputStatus& currentInputStatus, 
                                         ssGUI::InputStatus& lastInputStatus, 
                                         ssGUI::GUIObject* mainWindow)

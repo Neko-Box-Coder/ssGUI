@@ -44,7 +44,7 @@ namespace Backend
         BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
         
         //Add this record to backend manager
-        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
         
         //Then we set the position and size if possible
         if(!other.Closed)
@@ -751,7 +751,7 @@ namespace Backend
     {        
         BackendMainWindowX11_OpenGL3_3::ssGUI_CreateWindow();
         
-        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::AddMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
 
     BackendMainWindowX11_OpenGL3_3::~BackendMainWindowX11_OpenGL3_3()
@@ -761,7 +761,7 @@ namespace Backend
             ssGUI_DestroyWindow();        
         }
         
-        ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::BackendMainWindowInterface*>(this));
+        ssGUI::Backend::BackendManager::RemoveMainWindowInterface(static_cast<ssGUI::Backend::MainWindowInterface*>(this));
     }
     
     void BackendMainWindowX11_OpenGL3_3::SetWindowPosition(glm::ivec2 pos)
@@ -926,7 +926,7 @@ namespace Backend
         return Title;
     }
 
-    void BackendMainWindowX11_OpenGL3_3::SetIcon(const ssGUI::Backend::BackendImageInterface& iconImage)
+    void BackendMainWindowX11_OpenGL3_3::SetIcon(const ssGUI::Backend::ImageInterface& iconImage)
     {
         if(!iconImage.IsValid())
         {
@@ -1283,7 +1283,7 @@ namespace Backend
         return result == True;
     }
     
-    BackendMainWindowInterface* BackendMainWindowX11_OpenGL3_3:: Clone()
+    MainWindowInterface* BackendMainWindowX11_OpenGL3_3:: Clone()
     {
         return new BackendMainWindowX11_OpenGL3_3(*this);
     }

@@ -25,7 +25,7 @@ namespace ssGUI
         //This should be overriden.
     }
 
-    void Renderer::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Renderer::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //This can be overriden if needed.
         ConstructRenderInfo();

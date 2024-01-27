@@ -1,7 +1,7 @@
 #ifndef SSGUI_BACKEND_FONT_TEMPLATE_HPP
 #define SSGUI_BACKEND_FONT_TEMPLATE_HPP
 
-#include "ssGUI/Backend/Interfaces/BackendFontInterface.hpp"
+#include "ssGUI/Backend/Interfaces/FontInterface.hpp"
 
 namespace ssGUI
 {
@@ -10,7 +10,7 @@ namespace ssGUI
 namespace Backend
 {
     //class: ssGUI::Backend::BackendFontTemplate
-    class BackendFontTemplate : public BackendFontInterface
+    class BackendFontTemplate : public FontInterface
     {   
         private:
             BackendFontTemplate& operator=(BackendFontTemplate const& other);
@@ -23,61 +23,61 @@ namespace Backend
             ~BackendFontTemplate() override;
             
             //function: IsValid
-            //See <BackendFontInterface::IsValid>
+            //See <FontInterface::IsValid>
             bool IsValid() const override;
 
             //function: GetCharacterRenderInfo
-            //See <BackendFontInterface::GetCharacterRenderInfo>
+            //See <FontInterface::GetCharacterRenderInfo>
             CharacterRenderInfo GetCharacterRenderInfo( char32_t charUnicode, 
                                                         float charSize) const override;
             
             //function: IsCharacterSupported
-            //See <BackendFontInterface::IsCharacterSupported>
+            //See <FontInterface::IsCharacterSupported>
             bool IsCharacterSupported(char32_t charUnicode) const override;
             
             //function: GetKerning
-            //See <BackendFontInterface::GetKerning>
+            //See <FontInterface::GetKerning>
             float GetKerning(   char32_t charUnicode, 
                                 char32_t secondCharUnicode, 
                                 float charSize) const override;
             
             //function: GetLineSpacing
-            //See <BackendFontInterface::GetLineSpacing>
+            //See <FontInterface::GetLineSpacing>
             float GetLineSpacing(float charSize) const override;
             
             //function: GetUnderlineOffset
-            //See <BackendFontInterface::GetUnderlineOffset>
+            //See <FontInterface::GetUnderlineOffset>
             float GetUnderlineOffset(float charSize) const override;
             
             //function: GetUnderlineThickness
-            //See <BackendFontInterface::GetUnderlineThickness>
+            //See <FontInterface::GetUnderlineThickness>
             float GetUnderlineThickness(float charSize) const override;
 
             //function: LoadFromPath
-            //See <BackendFontInterface::LoadFromPath>
+            //See <FontInterface::LoadFromPath>
             bool LoadFromPath(std::string path) override;
 
             //function: LoadFromMemory
-            //See <BackendFontInterface::LoadFromMemory>
+            //See <FontInterface::LoadFromMemory>
             bool LoadFromMemory(const void* dataPtr, int lengthInBytes) override;
 
             //function: GetFixedAvailableFontSizes
-            //See <BackendFontInterface::GetFixedAvailableFontSizes>
+            //See <FontInterface::GetFixedAvailableFontSizes>
             bool GetFixedAvailableFontSizes(std::vector<float>& fontSizes) const override;
 
             //function: GetCharacterImage
-            //See <BackendFontInterface::GetCharacterImage>
+            //See <FontInterface::GetCharacterImage>
             bool GetCharacterImage( char32_t charUnicode, 
                                     float charSize, 
-                                    BackendImageInterface& characterImage) const override;
+                                    ImageInterface& characterImage) const override;
 
             //function: GetRawHandle
-            //See <BackendFontInterface::GetRawHandle>
+            //See <FontInterface::GetRawHandle>
             void* GetRawHandle() const override;
 
             //function: Clone
-            //See <BackendFontInterface::Clone>
-            BackendFontInterface* Clone() override;
+            //See <FontInterface::Clone>
+            FontInterface* Clone() override;
     };   
 }
 

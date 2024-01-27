@@ -792,7 +792,7 @@ namespace Extensions
     void Mask::ConstructRenderInfo()
     {}
 
-    void Mask::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Mask::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     Mask::Mask() :  Container(nullptr),
@@ -1215,7 +1215,7 @@ namespace Extensions
     
     //Extension methods
     void Mask::Internal_Update( bool isPreUpdate, 
-                                ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                ssGUI::Backend::SystemInputInterface* inputInterface, 
                                 ssGUI::InputStatus& currentInputStatus, 
                                 ssGUI::InputStatus& lastInputStatus, 
                                 ssGUI::GUIObject* mainWindow)
@@ -1252,7 +1252,7 @@ namespace Extensions
         }
     }
 
-    void Mask::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Mask::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {
         //Call mask function
     }

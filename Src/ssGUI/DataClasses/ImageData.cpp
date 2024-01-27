@@ -1,7 +1,7 @@
 #include "ssGUI/DataClasses/ImageData.hpp"
 #include "ssGUI/HelperClasses/OutputStreamUtil.hpp"
 
-#include "ssGUI/Backend/BackendFactory.hpp"
+#include "ssGUI/Backend/Factory.hpp"
 
 namespace ssGUI
 {
@@ -14,7 +14,7 @@ namespace ssGUI
                                 DataChangedCallbacks(),
                                 DataChangedCallbacksValid()
     {
-        BackendImage = ssGUI::Backend::BackendFactory::CreateBackendImageInterface();
+        BackendImage = ssGUI::Backend::Factory::CreateImageInterface();
     }
 
     ImageData::~ImageData()
@@ -22,7 +22,7 @@ namespace ssGUI
         delete BackendImage;
     }
 
-    ssGUI::Backend::BackendImageInterface* ImageData::GetBackendImageInterface() const
+    ssGUI::Backend::ImageInterface* ImageData::GetImageInterface() const
     {
         return BackendImage;
     }
@@ -106,13 +106,13 @@ namespace ssGUI
     std::ostream& operator<<(std::ostream& stream, const ssGUI::ImageData& other)
     {
         stream  << SSGUI_OUTPUT_CLASS_NAME(ImageData)
-                << SSGUI_OUTPUT_VAR(GetBackendImageInterface());
+                << SSGUI_OUTPUT_VAR(GetImageInterface());
 
         if(other.IsValid())
         {
             ssGUI::ImageFormat dummyFormat;
             stream  << SSGUI_OUTPUT_VAR(IsValid())
-                    << SSGUI_OUTPUT_VAR(GetBackendImageInterface())
+                    << SSGUI_OUTPUT_VAR(GetImageInterface())
                     << SSGUI_OUTPUT_LAST_VAR(GetPixelPtr(dummyFormat));
         }
         else

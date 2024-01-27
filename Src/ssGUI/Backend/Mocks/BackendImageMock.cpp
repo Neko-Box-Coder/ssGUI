@@ -1,6 +1,6 @@
 #include "ssGUI/Backend/Mocks/BackendImageMock.hpp"
 
-#include "ssGUI/Backend/Interfaces/BackendDrawingInterface.hpp"
+#include "ssGUI/Backend/Interfaces/DrawingInterface.hpp"
 #include "ssGUI/HelperClasses/LogWithTagsAndLevel.hpp"
 
 namespace ssGUI
@@ -15,11 +15,11 @@ namespace Backend
         else
             UnderlyingInterface = nullptr;
         
-        LinkedBackendDrawing = std::vector<BackendDrawingInterface*>();
+        LinkedBackendDrawing = std::vector<DrawingInterface*>();
         OverrideObject = other.OverrideObject;
     }
 
-    BackendImageMock::BackendImageMock(BackendImageInterface* imageInterface) : 
+    BackendImageMock::BackendImageMock(ImageInterface* imageInterface) : 
         UnderlyingInterface(imageInterface),
         LinkedBackendDrawing()
     {}
@@ -30,7 +30,7 @@ namespace Backend
             delete UnderlyingInterface;
             
         //Remove all linked backend drawing
-        std::vector<BackendDrawingInterface*> backends = LinkedBackendDrawing;
+        std::vector<DrawingInterface*> backends = LinkedBackendDrawing;
         for(int i = 0; i < backends.size(); i++)
             backends[i]->RemoveImageCache(this);
     }
@@ -111,7 +111,7 @@ namespace Backend
         //      since the drawing backend holds a reference (pointer) to this instead
         
         SSGUI_MOCK_LOG_FUNCTION_CALL();
-        std::vector<BackendDrawingInterface*> backends = LinkedBackendDrawing;
+        std::vector<DrawingInterface*> backends = LinkedBackendDrawing;
         for(int i = 0; i < backends.size(); i++)
         {
             backends[i]->RemoveImageCache(this);
@@ -119,7 +119,6 @@ namespace Backend
         }
     }
 
-    using DrawingInterface = BackendDrawingInterface;
     void BackendImageMock::Internal_AddBackendDrawingRecord(DrawingInterface* backendDrawing)
     {
         //NOTE: We don't want to pass the drawing backend to the underlying interface
@@ -151,7 +150,7 @@ namespace Backend
         }
     }
 
-    BackendImageInterface* BackendImageMock::Clone()
+    ImageInterface* BackendImageMock::Clone()
     {
         return new BackendImageMock(*this);
     }

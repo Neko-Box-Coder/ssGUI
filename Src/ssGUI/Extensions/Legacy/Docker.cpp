@@ -60,7 +60,7 @@ namespace Extensions
     void Docker::ConstructRenderInfo()
     {}
 
-    void Docker::ConstructRenderInfo(ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Docker::ConstructRenderInfo(ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     void Docker::CreateWidgetIfNotPresent(ssGUI::GUIObject** widget, glm::u8vec4 color)
@@ -426,7 +426,7 @@ namespace Extensions
 
     //Extension methods
     void Docker::Internal_Update(   bool isPreUpdate, 
-                                    ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+                                    ssGUI::Backend::SystemInputInterface* inputInterface, 
                                     ssGUI::InputStatus& currentInputStatus, 
                                     ssGUI::InputStatus& lastInputStatus, 
                                     ssGUI::GUIObject* mainWindow)
@@ -507,7 +507,7 @@ namespace Extensions
             //bool previewDrawn = false;
 
             //Check if the cursor is inside the window
-            ssGUI::Backend::BackendMainWindowInterface* mainWindowInterface = dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface();
+            ssGUI::Backend::MainWindowInterface* mainWindowInterface = dynamic_cast<ssGUI::MainWindow*>(mainWindow)->GetBackendWindowInterface();
             bool mouseInsideWindow =    inputInterface->GetCurrentMousePosition(mainWindowInterface).x >= containerPos.x && 
                                         inputInterface->GetCurrentMousePosition(mainWindowInterface).x <= containerPos.x + containerSize.x &&
                                         inputInterface->GetCurrentMousePosition(mainWindowInterface).y >= containerPos.y + titleBarOffset && 
@@ -552,7 +552,7 @@ namespace Extensions
         }
     }
 
-    void Docker::Internal_Draw(bool isPreRender, ssGUI::Backend::BackendDrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
+    void Docker::Internal_Draw(bool isPreRender, ssGUI::Backend::DrawingInterface* drawingInterface, ssGUI::GUIObject* mainWindow, glm::vec2 mainWindowPositionOffset)
     {}
 
     std::string Docker::GetExtensionName() const

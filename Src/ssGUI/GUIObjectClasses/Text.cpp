@@ -199,7 +199,7 @@ namespace ssGUI
         characterEntity.TexCoords.push_back(info.Size);
         characterEntity.TexCoords.push_back(glm::vec2(0, info.Size.y));
 
-        characterEntity.BackendFont = targetFont->GetBackendFontInterface();
+        characterEntity.BackendFont = targetFont->GetFontInterface();
         characterEntity.CharacterSize = details.FontSize;
         characterEntity.Character = details.Character;
         characterEntity.EntityName = TEXT_CHARACTER_SHAPE_NAME;
@@ -431,12 +431,12 @@ namespace ssGUI
                 continue;
             }
             
-            ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+            ssGUI::Backend::FontInterface* fontInterface = nullptr;
             
             if(curDetail.FontIndex != -1)
-                fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
+                fontInterface = GetFont(curDetail.FontIndex)->GetFontInterface();
             else
-                fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
+                fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetFontInterface();
             
             // Apply the kerning offset
             drawXPos += fontInterface->GetKerning(prevChar, curChar, curDetail.FontSize);
@@ -533,7 +533,7 @@ namespace ssGUI
         float currentOffset = 0;
         int lineCount = 0;
         int lastValidIndex = GetLastValidCharacterIndex();
-        ssGUI::Backend::BackendFontInterface* backendFont = nullptr;
+        ssGUI::Backend::FontInterface* backendFont = nullptr;
 
         while (currentIndex < CharactersRenderInfos.size())
         {
@@ -546,9 +546,9 @@ namespace ssGUI
                 continue;
             }
             else if(curDetail.FontIndex != -1)
-                backendFont = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
+                backendFont = GetFont(curDetail.FontIndex)->GetFontInterface();
             else
-                backendFont = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
+                backendFont = GetDefaultFont(curDetail.DefaultFontIndex)->GetFontInterface();
 
             //When there's a newline, offset the current line
             if(CharactersRenderInfos[currentIndex].CharacterAtNewline)
@@ -887,11 +887,11 @@ namespace ssGUI
                 }
             }
 
-            ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+            ssGUI::Backend::FontInterface* fontInterface = nullptr;
             if(GetInternalCharacterDetail(maxFontSizeCharIndex).FontIndex != -1)
-                fontInterface = GetFont(GetInternalCharacterDetail(maxFontSizeCharIndex).FontIndex)->GetBackendFontInterface();
+                fontInterface = GetFont(GetInternalCharacterDetail(maxFontSizeCharIndex).FontIndex)->GetFontInterface();
             else
-                fontInterface = GetDefaultFont(GetInternalCharacterDetail(maxFontSizeCharIndex).DefaultFontIndex)->GetBackendFontInterface();
+                fontInterface = GetDefaultFont(GetInternalCharacterDetail(maxFontSizeCharIndex).DefaultFontIndex)->GetFontInterface();
 
             //Draw underlines
             glm::u8vec4 currentUnderlineColor = GetInternalCharacterDetail(startIndex).CharacterColor;
@@ -936,7 +936,7 @@ namespace ssGUI
 
         int underlineStartIndex = -1;
 
-        //ssGUI::Backend::BackendFontInterface* fontInterface = nullptr;
+        //ssGUI::Backend::FontInterface* fontInterface = nullptr;
         for (int i = 0; i < CurrentCharactersDetails.Size(); i++)
         {
             ssGUI::CharacterDetails& curDetail = GetInternalCharacterDetail(i);
@@ -949,9 +949,9 @@ namespace ssGUI
             }
             
             //if(curDetail.FontIndex != -1)
-            //    fontInterface = GetFont(curDetail.FontIndex)->GetBackendFontInterface();
+            //    fontInterface = GetFont(curDetail.FontIndex)->GetFontInterface();
             //else
-            //    fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetBackendFontInterface();
+            //    fontInterface = GetDefaultFont(curDetail.DefaultFontIndex)->GetFontInterface();
             
             //If underline started
             if(underlineStartIndex != -1)
@@ -1469,7 +1469,7 @@ namespace ssGUI
         ApplyTextUnderline();
     }
 
-    void Text::MouseSelectionLogic(ssGUI::Backend::BackendSystemInputInterface* inputInterface, glm::ivec2 currentMousePos)
+    void Text::MouseSelectionLogic(ssGUI::Backend::SystemInputInterface* inputInterface, glm::ivec2 currentMousePos)
     {
         int closestIndex = GetNearestCharacterIndexFromPos(currentMousePos, true);
 
@@ -1573,7 +1573,7 @@ namespace ssGUI
         //ssLOG_LINE();
     }
 
-    void Text::MainLogic(   ssGUI::Backend::BackendSystemInputInterface* inputInterface, 
+    void Text::MainLogic(   ssGUI::Backend::SystemInputInterface* inputInterface, 
                             ssGUI::InputStatus& currentInputStatus, 
                             ssGUI::InputStatus& lastInputStatus, 
                             ssGUI::GUIObject* mainWindow)
@@ -2658,7 +2658,7 @@ namespace ssGUI
         }
 
         auto font = new ssGUI::Font();
-        if(!font->GetBackendFontInterface()->LoadFromMemory(const_cast<uint8_t*>(fileContent), fileSize))
+        if(!font->GetFontInterface()->LoadFromMemory(const_cast<uint8_t*>(fileContent), fileSize))
         {
             ssGUI_ERROR(ssGUI_GUI_OBJECT_TAG, "Failed to load default font");
             ssGUI::Factory::Dispose(font);
