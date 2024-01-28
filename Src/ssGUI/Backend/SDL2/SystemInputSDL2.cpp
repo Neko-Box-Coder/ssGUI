@@ -365,21 +365,27 @@ namespace Backend
 
     glm::ivec2 SystemInputSDL2::GetLastMousePosition(MainWindowInterface* mainWindow) const
     {
-        //TODO(NOW)
-        return LastMousePosition;
+        if(mainWindow == nullptr)
+            return LastMousePosition;
+        else
+            return LastMousePosition - mainWindow->GetWindowPosition();
     }
     
     glm::ivec2 SystemInputSDL2::GetCurrentMousePosition(MainWindowInterface* mainWindow) const
     {
-        //TODO(NOW)
-        return CurrentMousePosition;
+        if(mainWindow == nullptr)
+            return CurrentMousePosition;
+        else
+            return CurrentMousePosition - mainWindow->GetWindowPosition();
     }
     
     void SystemInputSDL2::SetMousePosition( glm::ivec2 position, 
                                             MainWindowInterface* mainWindow)
     {
-        //TODO(NOW): Allow mainWindow to be nullptr
-        SDL_WarpMouseInWindow((SDL_Window*)mainWindow->GetRawHandle(), position.x, position.y);
+        if(mainWindow == nullptr)
+            SDL_WarpMouseGlobal(position.x, position.y);
+        else
+            SDL_WarpMouseInWindow((SDL_Window*)mainWindow->GetRawHandle(), position.x, position.y);
     }
 
     glm::vec2 SystemInputSDL2::GetCurrentMouseScrollDelta() const

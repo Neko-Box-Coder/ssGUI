@@ -8,6 +8,12 @@
 #include <string>
 #include <functional>
 
+
+//TODO(NOW): Allow to create a window from a given raw handle
+
+
+
+
 namespace ssGUI
 { 
     
@@ -74,8 +80,7 @@ namespace Backend
             //function: AddOnCloseEvent
             //Adds the callback to be called when the main window closes. 
             //Returns an id that can be used to remove the function for being called.
-            virtual int 
-                AddOnCloseEvent(std::function<void(MainWindowInterface* mainWindow)> func) = 0;
+            virtual int AddOnCloseEvent(std::function<void(MainWindowInterface* mainWindow)> func) = 0;
 
             //function: RemoveOnCloseEvent
             //Removes the function to be called when the main window closes.
@@ -174,10 +179,6 @@ namespace Backend
             //Gets the main window mode
             virtual Enums::WindowMode GetWindowMode() const = 0;
 
-            //function: SetDrawingContext
-            //Sets this window as the current MainWindow context for drawing
-            virtual bool SetDrawingContext() = 0;
-            
             /*
             function: Clone
             Clones the current main window with the same settings, 

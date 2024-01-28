@@ -39,9 +39,21 @@ namespace Backend
             //See <DrawingInterface::RestoreDrawingState>
             void RestoreDrawingState() override;
 
-            //function: CreateDrawingEntities
-            //See <DrawingInterface::CreateDrawingEntities>
-            bool CreateDrawingEntities(const std::vector<DrawingEntity>& entities) override;
+            //function: QueueDrawingEntities
+            //See <DrawingInterface::QueueDrawingEntities>
+            bool QueueDrawingEntities(const std::vector<DrawingEntity>& entities) override;
+
+            //function: UploadDrawingEntitiesGroup
+            //See <DrawingInterface::UploadDrawingEntitiesGroup>
+            int UploadDrawingEntitiesGroup(const std::vector<DrawingEntity>& group) override;
+            
+            //function: DiscardDrawingEntitiesGroup
+            //See <DrawingInterface::DiscardDrawingEntitiesGroup>
+            void DiscardDrawingEntitiesGroup(int groupId) override;
+            
+            //function: QueueDrawingEntitiesGroups
+            //See <DrawingInterface::QueueDrawingEntitiesGroups>
+            bool QueueDrawingEntitiesGroups(const std::vector<int> groupsIds) override;
 
             //function: DrawToBackBuffer
             //See <DrawingInterface::DrawToBackBuffer>

@@ -41,23 +41,41 @@ namespace Backend
             virtual void RestoreDrawingState() = 0;
 
             /*
-            function: CreateDrawingEntities
+            function: QueueDrawingEntities
             Draws the entities based on which backend is populated in <ssGUI::DrawingEntity>. 
             Returns true if created successfully. 
 
             *Note that if you are not using <ssGUIManager>, 
-                you need to call <Render> at the end in order to render it*.
+            you need to call <Render> at the end in order to render it*.
             */
-            virtual bool CreateDrawingEntities(const std::vector<DrawingEntity>& entities) = 0;
+            virtual bool QueueDrawingEntities(const std::vector<DrawingEntity>& entities) = 0;
+            
+            /*
+            function: UploadDrawingEntitiesGroup
+            Uploads the drawing entities group that can be ququed to be drawn 
+              with the returned group id. 
+            
+            Failed to upload if returned id is negative.
+            */
+            virtual int UploadDrawingEntitiesGroup(const std::vector<DrawingEntity>& group) = 0;
+            
+            //function: DiscardDrawingEntitiesGroup
+            //Discards the drawing entities group that is uploaded with the specified group id.
+            virtual void DiscardDrawingEntitiesGroup(int groupId) = 0;
+            
+            //function: QueueDrawingEntitiesGroups
+            //Queues the uploaded drawing entities groups to be drawn, 
+            //similar to <QueueDrawingEntities>.
+            virtual bool QueueDrawingEntitiesGroups(const std::vector<int> groupsIds) = 0;
             
             //function: DrawToBackBuffer
-            //This draws all the drawing entities to the back buffer.
+            //This draws all the ququed drawing entities to the back buffer.
             //This is also automatically called by <Render>.
             virtual void DrawToBackBuffer() = 0;
 
             //function: Render
-            //Renders every entity that are drawn to the <MainWindow>. 
-            //This will automatically clear the back buffer. 
+            //Renders every entity that are drawn to the back buffer to the <MainWindow>. 
+            //This will automatically swap and clear the back buffer. 
             //If you are using <ssGUIManager>, this will be automatically called.
             virtual void Render(glm::u8vec3 clearColor) = 0;
 

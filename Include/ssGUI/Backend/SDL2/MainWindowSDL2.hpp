@@ -26,8 +26,8 @@ namespace Backend
         private:
             SDL_Window* CurrentWindow;
             std::u32string WindowTitle;
-            glm::ivec2 WindowPosition;
-            glm::ivec2 WindowSize;
+            mutable glm::ivec2 WindowPosition;
+            mutable glm::ivec2 WindowSize;
             bool WindowClosed;
             bool WindowClosingAborted;
             bool WindowHidden;
@@ -193,10 +193,6 @@ namespace Backend
             //See <MainWindowInterface::GetWindowMode>
             Enums::WindowMode GetWindowMode() const override;
 
-            //function: SetDrawingContext
-            //See <MainWindowInterface::SetDrawingContext>
-            bool SetDrawingContext() override;
-            
             //function: Clone
             //See <MainWindowInterface::Clone>
             MainWindowInterface* Clone() override;

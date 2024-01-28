@@ -83,7 +83,7 @@ namespace Backend
             virtual bool GetCharacterImage( char32_t charUnicode, 
                                             float charSize, 
                                             ImageInterface& characterImage) const = 0;
- 
+
             //function: GetRawHandle
             //Returns the raw pointer to the underlying backend implmentation object
             virtual void* GetRawHandle() const = 0;
@@ -96,7 +96,7 @@ namespace Backend
     //Pure virtual destructor needs to be defined
     inline FontInterface::~FontInterface(){}
 }
- 
+
 }
 
 #endif

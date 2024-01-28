@@ -7,6 +7,11 @@ namespace ssGUI
 
 namespace Backend
 {
+    //TODO(NOW): OpenGL?
+    //TODO(NOW): SDL_GL_SetAttribute before creating the window
+    //TODO(NOW): SDL_RenderGeometry
+    //TODO(NOW): glEnable(GL_MULTISAMPLE);
+    
     DrawingSDL2::DrawingSDL2(   DrawingSDL2 const& other,
                                 MainWindowInterface* otherMainWindow)
     {
@@ -36,9 +41,24 @@ namespace Backend
         
     }
 
-    bool DrawingSDL2::CreateDrawingEntities(const std::vector<DrawingEntity>& entities)
+    bool DrawingSDL2::QueueDrawingEntities(const std::vector<DrawingEntity>& entities)
     {
         return true;
+    }
+    
+    int DrawingSDL2::UploadDrawingEntitiesGroup(const std::vector<DrawingEntity>& group)
+    {
+        return -1;
+    }
+    
+    void DrawingSDL2::DiscardDrawingEntitiesGroup(int groupId)
+    {
+        
+    }
+    
+    bool DrawingSDL2::QueueDrawingEntitiesGroups(const std::vector<int> groupsIds)
+    {
+        return false;
     }
     
     void DrawingSDL2::DrawToBackBuffer()

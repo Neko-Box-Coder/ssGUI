@@ -292,6 +292,7 @@ namespace Backend
             else if(MsaaLevel > 0)
             {
                 ssGUI_WARNING(ssGUI_TAG_BACKEND, "Trying to disable MSAA and retry...");
+                //TODO(NOW): Actually modify the level with wglChoosePixelFormatARB
                 MsaaLevel = 0;
                 goto fallback;
             }
