@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Development for this project is currently **on hold**. There are no plans to resume development at the moment.
+
 > ⚠️ This library is constantly changing & incomplete until v1.00 . However, feel free to star or bookmark this project.
 
 ### 🔗 Quick Links
